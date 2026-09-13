@@ -88,3 +88,48 @@ console.log("ok   each slide searches for its own UI labels, and relevance is ju
 }
 
 console.log("ok   a real green-screen slide now searches for TikTok's own Green Screen screen");
+
+// Telegram run #459 (2026-09-13 13:01), the rebuild of this same green-screen
+// pack. Its rescue diagnostics said, in order:
+//   strategy 1/3 — 6 candidates … tooSmall:2 notRelevant:2
+//   strategy 2/3 — 8 candidates … used:2 download:1 badType:2 tooSmall:1
+//   strategy 3/3 — 8 candidates … tooSmall:3 notRelevant:3
+//   generateAIImage(...): attempt 1 — Gemini 429 — "You exceeded your current quota"
+// Two defects in that report, both inside findRealImage():
+{
+  const src = readFileSync("lib/auto-image.mjs", "utf8");
+
+  // 1. The loop has always stopped at six hits while the line printed
+  //    hits.length, so "8 candidates, none passed" named two that were never
+  //    opened — and the counters, summing to six, quietly disagreed with it.
+  assert.match(src, /const examined = hits\.slice\(0, MAX_CANDIDATES_PER_STRATEGY\)/);
+  assert.match(src, /\$\{examined\.length\} candidates examined/,
+    "the diagnostic must report what was examined, not what was found");
+  assert.ok(!/\$\{hits\.length\} candidates, none passed/.test(src),
+    "the headline that overstated how many candidates were tried must not come back");
+
+  // 2. isRelevant() returns false BOTH when a model says the picture is wrong
+  //    and when no model answers at all. Gemini was returning 429 in the same
+  //    second as strategy 3's three «notRelevant» rejections, so those may
+  //    never have been judged. The two must be counted apart.
+  assert.match(src, /judgeUnavailable:\$\{rejected\.unjudged\}/,
+    "a judge outage must be reported as an outage, not as an irrelevant picture");
+  assert.match(src, /rejected\[verdict\.judged \? "irrelevant" : "unjudged"\]\+\+/);
+}
+
+// The gate itself is unchanged: an image no model could judge is still
+// REJECTED. Only the bookkeeping was split — if this ever flips to accepting
+// an unjudged image, the Visual Truth Gate has been routed around.
+{
+  const { judgeRelevance, isRelevant } = await import("./lib/auto-image.mjs");
+  const candidate = { title: "x", url: "https://example.invalid/x", snippet: "" };
+  // No GEMINI_KEY / GROQ_KEY is set in the test environment, so no provider
+  // can answer — exactly the outage case.
+  const verdict = await judgeRelevance("green-screen", ["مرحله ۱"], candidate);
+  assert.equal(verdict.relevant, false, "an unjudged image must never be accepted");
+  assert.equal(verdict.judged, false, "and it must be reported as unjudged, not as judged-irrelevant");
+  assert.equal(await isRelevant("green-screen", ["مرحله ۱"], candidate), false,
+    "the original predicate must keep its exact contract for every existing caller");
+}
+
+console.log("ok   a judge outage is no longer logged as an irrelevant picture, and the candidate count means what it says");
