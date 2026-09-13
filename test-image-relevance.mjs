@@ -192,8 +192,68 @@ console.log("ok   an undersized candidate reports its real size, so 'tooSmall' c
   // The verdict itself is untouched: unjudged still means rejected.
   assert.match(src, /return \{ relevant: false, judged: false, why: why\.join\("; "\) \}/,
     "a candidate no model judged must still be rejected");
-  assert.match(src, /if \(!verdict\.relevant\) \{ rejected\[verdict\.judged \? "irrelevant" : "unjudged"\]\+\+; continue; \}/,
-    "the reject-on-unjudged path must stay exactly as it is");
+  // Pinned as a PROPERTY, not as one line's formatting: a candidate the judge
+  // did not approve must be counted under "unjudged" when no model answered
+  // and "irrelevant" when one did, and must never be returned. An earlier
+  // version of this assertion matched the exact single-line spelling and so
+  // failed the moment that line was reformatted, which says nothing about
+  // whether the gate still holds.
+  assert.match(src, /rejected\[verdict\.judged \? "irrelevant" : "unjudged"\]\+\+/,
+    "an unapproved candidate must still be counted as a rejection");
+  assert.doesNotMatch(src, /if \(!verdict\.relevant\)[\s\S]{0,200}?return \{ photo/,
+    "an unapproved candidate must never be returned as a usable photo");
 }
 
 console.log("ok   a rate-limited judge provider is tried last, never dropped, and unjudged still means rejected");
+
+// judge-probe run 2 (2026-09-13) measured what a starved judge costs. Every
+// word of episode 18, every layer:
+//
+//   Pexels(«…»): 8 candidates examined, none passed — download:0 badType:0
+//     tooSmall:0 notRelevant:0 judgeUnavailable:8
+//     · judge down: gemini: Gemini 429; groq: Groq 429
+//
+// Eight real, correctly-sized, relevant photographs per word, rejected only
+// because nothing could answer. Both providers were already 429 on the job's
+// FIRST call, so this was not that job's own load — daily #242 had spent the
+// previous 40 minutes judging and exhausted both free tiers for everything
+// else sharing the keys.
+{
+  const { judgesAllCoolingOff } = await import("./lib/auto-image.mjs");
+  const now = 1_000;
+  // Local runs configure no keys at all, which is its own "cannot judge" case.
+  const anyKey = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GROQ_API_KEY);
+  if (anyKey) {
+    assert.equal(judgesAllCoolingOff(now, { gemini: 0, groq: 0 }), false,
+      "a live provider means the judge is not down");
+    assert.equal(judgesAllCoolingOff(now, { gemini: now + 1, groq: 0 }), false,
+      "one provider cooling off is not every provider cooling off");
+    assert.equal(judgesAllCoolingOff(now, { gemini: now + 1, groq: now + 1 }), true,
+      "every provider cooling off must be recognised, so the loop can stop");
+  }
+  assert.equal(judgesAllCoolingOff(now, { gemini: 0, groq: 0 }), !anyKey,
+    "with no key configured at all there is no judge to ask");
+
+  const src = readFileSync("lib/auto-image.mjs", "utf8");
+  const shared = readFileSync("lib/image-candidates.mjs", "utf8");
+
+  // Stopping early must never turn into accepting something. Both loops break
+  // AFTER counting the rejection, so an unreached candidate is simply unused.
+  for (const [name, text] of [["auto-image", src], ["image-candidates", shared]]) {
+    assert.match(text, /if \(!verdict\.judged && judgesAllCoolingOff\(\)\) \{ judgeStopped = true; break; \}/,
+      `${name} must stop asking a rate-limited judge, and only after counting the rejection`);
+  }
+
+  // Only a real verdict is ever remembered. Caching a FAILURE would turn a
+  // 60-second outage into a permanent rejection of that image.
+  assert.match(src, /const answer = \{ relevant: verdict\.relevant, judged: true \};[\s\S]{0,120}verdictCache\.set\(prompt, answer\)/,
+    "only a successful verdict may be cached");
+  assert.doesNotMatch(src, /verdictCache\.set\([^)]*judged: false/,
+    "a failed judgement must never be cached");
+  // A cached verdict is handed out as a copy, so a caller cannot mutate the
+  // cache and change a later verdict.
+  assert.match(src, /const cached = verdictCache\.get\(prompt\);\s*\n\s*if \(cached\) return \{ \.\.\.cached \};/,
+    "a cached verdict must be returned as a copy");
+}
+
+console.log("ok   a starved judge stops the loop instead of burning the quota, and only real verdicts are cached");
