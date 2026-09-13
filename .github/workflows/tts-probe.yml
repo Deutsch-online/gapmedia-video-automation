@@ -141,6 +141,44 @@ jobs:
             echo "refused as designed (exit non-zero) — see the message above"
           fi
 
+
+      # The blocker episode 18 has been dying on all day. pocket-tts has no
+      # German model, MiniMax has no credit, and the owner rejected an
+      # English-accented reading on 2026-09-10 — so the question is whether
+      # Edge's neural service, which lib/edge-tts.mjs already speaks and which
+      # needs no key at all, gives a real NATIVE German voice for the exact
+      # word that keeps failing. It cannot be answered from the agent sandbox:
+      # speech.platform.bing.com is not in that egress allowlist (403 "Host not
+      # in allowlist", measured 2026-09-13 19:0x). A runner has open internet.
+      - name: A real German voice, keyless — the exact clip episode 18 dies on
+        continue-on-error: true
+        id: german
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          node music/edge-tts.mjs "Was kostet das?" -o de-katja.mp3
+          echo "--- what came out ---"
+          ls -la de-katja.mp3
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 de-katja.mp3
+
+      # A second German voice, so a rejected audition has somewhere to go
+      # without another probe cycle.
+      - name: The same line in the alternate German voice
+        if: steps.german.outcome == 'success'
+        continue-on-error: true
+        env:
+          EDGE_TTS_VOICE: de-DE-ConradNeural
+        run: |
+          node music/edge-tts.mjs "Was kostet das?" -o de-conrad.mp3
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 de-conrad.mp3
+
+      - name: Keep both German takes so the owner can listen
+        if: steps.german.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: german-voice-audition
+          path: de-*.mp3
+          if-no-files-found: warn
+
       - name: Verdict
         if: always()
         run: |
