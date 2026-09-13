@@ -1,1 +1,7 @@
-last touch: 2026-09-13T22:56:05Z
+Pushing a new line to this file fires .github/workflows/daily.yml through
+its `push` trigger. It exists only because the GitHub App connected to
+this repo has "contents: write" but not "actions: write" — a plain commit
+here is what a workflow_dispatch call would otherwise be used for. See the
+comment at the top of daily.yml for the full reason.
+
+last touch: 2026-09-13T22:56:22Z
