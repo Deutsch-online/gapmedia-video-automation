@@ -248,6 +248,27 @@ jobs:
             echo "voice=on" >> "$GITHUB_OUTPUT"
           fi
 
+      # pocket-tts needs its Python package and the Farsi model on the runner.
+      # Proven fetchable with NO token by .github/workflows/tts-probe.yml run
+      # #1 (2026-09-13): "fetch-without-token: success", model loaded, a real
+      # Persian narration line out as a 5.16s / 247,724-byte wav. The Hub's own
+      # note asks for a token only for rate limits and download speed.
+      - name: Free local TTS (pocket-tts)
+        if: steps.gate.outputs.go == 'yes' && steps.voicemode.outputs.voice == 'on'
+        run: |
+          python -m pip install --disable-pip-version-check --quiet pocket-tts
+          python - <<'PYEOF'
+          import os, pathlib
+          from huggingface_hub import snapshot_download
+          root = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
+          cfg = next(root.rglob("farsi.yaml"))
+          voice = next(root.rglob("example_voice.wav"))
+          with open(os.environ["GITHUB_ENV"], "a") as fh:
+              fh.write(f"POCKET_TTS_FARSI_CONFIG={cfg}\n")
+              fh.write(f"POCKET_TTS_VOICE={voice}\n")
+          print("pocket-tts model ready:", cfg)
+          PYEOF
+
       - name: Produce and send the scheduled pair
         id: produce
         if: steps.gate.outputs.go == 'yes'
@@ -259,6 +280,9 @@ jobs:
           VOICE: ${{ steps.voicemode.outputs.voice }}
           REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
           NARRATION_QC: ${{ steps.voicemode.outputs.voice }}
+          # Free, local, no credit, no secret. MiniMax stays in the tree and is
+          # one variable away — set TTS_ENGINE to "minimax" to go back.
+          TTS_ENGINE: "pocket"
           ASR_MODEL: "medium"
           # daily-render.mjs's Visual QC retry loop calls lib/auto-image.mjs's
           # rescuePackPhotos() to auto-source a real photo for a rotation

@@ -650,3 +650,47 @@ if pitch 2 reads as not high enough, the right next lever is a different
 and failed by objective production evidence once (2026-09-13, this case).
 **Status: pitch 2 — back to LOCKED value. `speed: 0.88` — still NOT
 LOCKED, unchanged, unaffected by this entry.**
+
+## 2026-09-13 — TTS engine: MiniMax → pocket-tts (owner request)
+
+**Why:** `music/minimax-tts.mjs` began returning "insufficient credit" between
+08:32 and 10:30 UTC. daily.yml runs #224/#226/#227 burned 36 attempts across
+both slots and shipped nothing; news-scan #231 (episode 18) died on its very
+first TTS call, one second in. This is an account/billing stop — no code change
+clears it. Owner then asked for a replacement that does not need MiniMax.
+
+**What changed:** `TTS_ENGINE: "pocket"` in daily.yml and news-scan.yml. That
+is the whole change — `music/plan-voice.mjs:26` and `music/make-voice.mjs:47`
+already read this variable and already switch the text preparation with it
+(`pocketSpeakable` instead of `minimaxSpeakable`). No voice parameter was
+touched: `GERMAN_LESSON_NARRATION_OVERRIDE`'s `pitch: 2` / `speed: 0.88` and
+`GERMAN_WORD_VOICE_SETTINGS` are exactly as the entries above left them, and
+MiniMax stays in the tree — setting the variable back to `"minimax"` restores
+the old engine with nothing else to undo.
+
+**Evidence before switching, not after** (`.github/workflows/tts-probe.yml`
+run #1, on a real runner, 12:16 UTC):
+- `mehdi-hf/pocket-tts-farsi` downloaded with **no token** —
+  `fetch-without-token: success`. The Hub's own note ("set a HF_TOKEN to enable
+  higher rate limits and faster downloads") is about rate limits, not access.
+- A real line from `lib/narration.mjs` (a1-18-shopping step 4, pure Persian, so
+  the gated English half is never reached) synthesised to **5.16s / 247,724
+  bytes**. pocket-tts reported "Generated: 4960 ms of audio in 1530 ms".
+- 5.16s sits comfortably under this project's own overrun bound for that
+  sentence (`0.9 + 0.55 × 14 words` = 8.6s, `music/pocket-tts.mjs`), so the
+  line was neither truncated nor stretched.
+
+**This is NOT a by-ear confirmation, and this file's own rule still stands.**
+Duration and byte size are consistent with a real spoken line; nobody has
+listened to it. The engine is a different voice, so the next narrated episode
+needs a human listen against the criteria at the top of this file — clarity,
+pauses, word endings, energy — before anyone calls this settled.
+
+**What protects the channel in the meantime:** `NARRATION_QC` is back ON, so
+`music/voice-qc.mjs` compares every pocket-tts take against Whisper ASR exactly
+as it did for MiniMax, and `lib/hear.mjs` is untouched. If the new voice is
+less intelligible, QC rejects it and the Recovery Loop reworks it — the gate
+was not relaxed to make room for a new engine.
+
+**Status: pocket-tts — PROVISIONAL, pending a human listen.** Revert lever:
+`TTS_ENGINE=minimax`.

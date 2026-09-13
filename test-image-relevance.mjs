@@ -59,3 +59,32 @@ for (const [i, build] of REAL_IMAGE_SEARCH_STRATEGIES.entries()) {
 }
 
 console.log("ok   each slide searches for its own UI labels, and relevance is judged against that slide's claim");
+
+// End to end on the REAL pack, offline: the query a green-screen slide now
+// actually produces. Owner report 2026-09-13 — the three delivered frames came
+// from searching the literal string "green-screen", because the pack carries
+// no photo, brand, title or name and the topic fell through to the bare id.
+{
+  const { packForFeature } = await import("./lib/content.mjs");
+  const pack = packForFeature("green-screen");
+  assert.ok(pack, "the green-screen pack must exist");
+
+  // buildFeaturePack() copies named fields only, so a feature-level key it does
+  // not list is dropped. That silently happened on the first attempt at this
+  // fix; pin it so the plumbing cannot rot back.
+  assert.equal(pack.searchTopic, "TikTok Green Screen effect mobile app",
+    "searchTopic must survive buildFeaturePack() — verified against a real pack, not assumed");
+
+  // rescuePackPhotos()'s own precedence, reproduced: searchTopic wins.
+  const topic = pack.searchTopic || pack.title || pack.name || pack.id;
+  const slide = (pack.tips || pack.steps || [])[1];
+  const slideText = String(slide.text || slide.head || "");
+  const query = REAL_IMAGE_SEARCH_STRATEGIES[0](topic, slideSearchCue(slideText));
+
+  assert.match(query, /TikTok/, "the query must name the product, not just the effect");
+  assert.match(query, /Green Screen/, "and the specific screen the slide is about");
+  assert.ok(!/^green-screen /.test(query),
+    "the bare pack id must no longer be the whole topic — that is what returned a Figma page");
+}
+
+console.log("ok   a real green-screen slide now searches for TikTok's own Green Screen screen");
