@@ -93,6 +93,54 @@ jobs:
           ls -la probe.wav
           ffprobe -v error -show_entries format=duration,size -of default=nw=1 probe.wav
 
+      # music/pocket-tts.mjs reads the model paths from these and otherwise
+      # falls back to a developer's Windows cache, so without them the wrapper
+      # steps below would exit "model files not found" and prove nothing about
+      # the wrapper itself. Exported exactly as the production workflows do.
+      - name: Point the wrapper at the downloaded model
+        if: steps.fetch.outcome == 'success'
+        run: |
+          python - <<'PYEOF'
+          import os, pathlib
+          from huggingface_hub import snapshot_download
+          root = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
+          with open(os.environ["GITHUB_ENV"], "a") as fh:
+              fh.write(f"POCKET_TTS_FARSI_CONFIG={next(root.rglob('farsi.yaml'))}\n")
+              fh.write(f"POCKET_TTS_VOICE={next(root.rglob('example_voice.wav'))}\n")
+          PYEOF
+
+      # The one link the earlier probe did NOT cover. It ran `python -m
+      # pocket_tts generate` directly; production never does that. It runs
+      # music/pocket-tts.mjs, which additionally segments Persian from Latin,
+      # applies lib/pronounce.mjs's pocketSpeakable, concatenates segments with
+      # ffmpeg and trims dead air. As of 13:45 UTC pocket-tts had still never
+      # spoken a line in a real run — Visual QC stopped every render before
+      # narration — so this is the only way to test the wrapper without waiting
+      # for a production slot.
+      - name: The REAL production wrapper, end to end
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        run: |
+          node music/pocket-tts.mjs "و با این سؤال رسمی، از فروشنده بپرس که چیزی را دارد یا نه." -o wrapper.mp3
+          echo "--- what the wrapper produced ---"
+          ls -la wrapper.mp3
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 wrapper.mp3
+
+      # A line with an English app name takes the OTHER path: it needs the
+      # gated kyutai weights, so with no HF_TOKEN it must refuse cleanly and
+      # name the offending span — never crash, and never silently drop the
+      # English word the way pocket-tts-farsi does on its own.
+      - name: A mixed Persian+English line refuses cleanly without a token
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        id: mixed
+        run: |
+          if node music/pocket-tts.mjs "با اپلیکیشن Second Space دو حساب داشته باش." -o mixed.mp3; then
+            echo "unexpected: it produced audio for an English span with no token"
+          else
+            echo "refused as designed (exit non-zero) — see the message above"
+          fi
+
       - name: Verdict
         if: always()
         run: |
