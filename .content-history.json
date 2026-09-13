@@ -334,5 +334,21 @@
     "hook": "با این قابلیت تیک‌تاک، بدون اینکه حرف بزنی ویدیوی پرویو بساز",
     "messageId": 1802,
     "sentAt": "2026-09-12T07:36:14.286Z"
+  },
+  {
+    "id": "green-screen",
+    "platform": "tiktok",
+    "topic": "green-screen",
+    "hook": "با این قابلیت تیک‌تاک، ویدیوی واکنشی بساز و ویو بگیر",
+    "messageId": 1856,
+    "sentAt": "2026-09-13T12:26:06.015Z"
+  },
+  {
+    "id": "saved-replies",
+    "platform": "instagram",
+    "topic": "Saved Replies",
+    "hook": "دایرکت فروش می‌ماند؛ مشتری می‌رود. چهار مرحله را ببین.",
+    "messageId": 1857,
+    "sentAt": "2026-09-13T12:42:21.501Z"
   }
 ]
