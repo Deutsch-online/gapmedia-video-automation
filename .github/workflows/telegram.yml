@@ -24,7 +24,23 @@ on:
   # Telegram for updates since the last run (cloud-listen.mjs, the same path
   # workflow_dispatch falls back to below) and acts on the newest command.
   schedule:
-    - cron: "*/5 * * * *"
+    # Hourly, not every five minutes. Measured 2026-09-13: this cron was the
+    # main thing starving the other production workflows. GitHub keeps exactly
+    # ONE pending run per concurrency group, and daily.yml shares
+    # "gapmedia-production" with this file — so during a 30-minute evening
+    # render, a run arriving every 5 minutes evicted whatever was queued behind
+    # it, six times over. Three separate lesson builds and daily.yml #239 (which
+    # carried the image-rescue fix) were cancelled that way in one hour, each
+    # having never executed a single step.
+    #
+    # Nothing is lost by slowing it down: this cron was never the thing that
+    # made the listener responsive. Its own header records that it "does not
+    # fire anywhere near every 5 minutes (real gaps of hours)", which is
+    # precisely why the hourly .trigger-telegram-poll push mechanism exists —
+    # and a real Telegram command arrives through that push, not by waiting for
+    # this. Slowing the unreliable half removes ~11 of every 12 evictions and
+    # changes no delivery state or serialization.
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       action:

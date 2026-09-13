@@ -193,4 +193,26 @@ for (const [name, src] of [
     "planning and synthesis must select the engine identically — the cache key depends on it");
 }
 
+// Regression guard for the starvation measured 2026-09-13 19:16-20:19. GitHub
+// keeps ONE pending run per concurrency group. daily.yml and telegram.yml share
+// "gapmedia-production", and telegram.yml's cron was "*/5 * * * *" — so during
+// a 30-minute evening render a run arrived every five minutes and evicted
+// whatever was queued behind it. Three lesson builds and daily.yml #239 (which
+// carried the image-rescue fix) were cancelled that way inside one hour, none
+// having executed a single step. The work was never failing; it was never
+// starting, which is far harder to notice.
+//
+// The cron was never what made the listener responsive — telegram.yml's own
+// header records that it "does not fire anywhere near every 5 minutes", which
+// is why the .trigger-telegram-poll push mechanism exists. Slowing it removes
+// the evictions without touching delivery state or serialization.
+assert.ok(!/cron: "\*\/5 \* \* \* \*"/.test(telegramWorkflow),
+  "a 5-minute cron in the shared production group evicts every queued render — that is what stopped three builds from ever starting");
+assert.match(telegramWorkflow, /cron: "\d+ \* \* \* \*"/,
+  "the listener still polls hourly on its own, independent of the push trigger");
+// The push trigger — the half that actually delivers a command promptly —
+// must stay.
+assert.match(telegramWorkflow, /\.trigger-telegram-poll/,
+  "the reliable push trigger is what makes the listener responsive and must remain");
+
 console.log("ok   every narration path recognises the free engines, so none of them can fall back to the dead one by accident");
