@@ -330,6 +330,14 @@ jobs:
           # "insufficient credit" while the scheduled pipeline succeeded —
           # the two paths render the same packs and must not diverge.
           TTS_ENGINE: "pocket"
+          # The offline engine speaks Persian with no credentials at all
+          # (proven on a runner, tts-probe.yml run #2, 2026-09-13). It needs
+          # this FREE HuggingFace token only for spans written in Latin
+          # script — an app name inside an otherwise Persian line — which use
+          # the gated kyutai voice-cloning weights. Unset it is an empty
+          # string, which behaves exactly as before: pure-Persian lines still
+          # synthesise, a Latin span still refuses with a named reason.
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
           RENDER_DIAGNOSTIC_FILE: ".last-render-stage.json"
           # custom-content.mjs's lib/auto-image.mjs needs these to search and

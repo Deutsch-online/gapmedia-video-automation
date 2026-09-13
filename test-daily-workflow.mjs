@@ -111,4 +111,25 @@ assert.match(readFileSync("german-lesson-build.mjs", "utf8"), /runWithRecovery/,
 assert.match(readFileSync("german-lesson-build.mjs", "utf8"), /rewordPersistentWord/,
   "German-lesson narration recovery must actually generate a new strategy (reword the failing line), not just report the failure");
 
+// The free TTS engine is now the default for all three production workflows.
+// It speaks Persian with no credentials (proven on a runner, tts-probe.yml run
+// #2, 2026-09-13: the real wrapper produced a 5.088s mp3 for a live narration
+// line), and needs a FREE HuggingFace token only for spans written in Latin
+// script. Every workflow that renders narration must pass that secret through,
+// so adding it is a one-click owner action and never a code change. Unset, it
+// is an empty string and nothing changes.
+for (const [name, wf] of [["daily.yml", workflow], ["news-scan.yml", germanWorkflow], ["telegram.yml", telegramWorkflow]]) {
+  assert.match(wf, /TTS_ENGINE: "pocket"/, `${name} must select the free engine`);
+  assert.match(wf, /HF_TOKEN: \$\{\{ secrets\.HF_TOKEN \}\}/,
+    `${name} renders narration, so it must pass the free token through — a Latin span otherwise fails the whole build for a secret that costs nothing`);
+  assert.match(wf, /POCKET_TTS_FARSI_CONFIG=/,
+    `${name} must point the wrapper at the downloaded model — music/pocket-tts.mjs otherwise falls back to a developer's local cache path and exits "model files not found"`);
+}
+
+// The classification that decides what the owner is told must stay in the
+// tested module. Inline in daily-render.mjs it read the free engine's benign
+// "higher rate limits" note as a quota failure.
+assert.match(readFileSync("daily-render.mjs", "utf8"), /classifyVoiceFailure\(detail\)/,
+  "voice-failure classification belongs to lib/slot-failure-report.mjs, where it is tested");
+
 console.log("production workflows keep delivery state serialized and correction paths explicit");

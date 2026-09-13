@@ -694,3 +694,41 @@ was not relaxed to make room for a new engine.
 
 **Status: pocket-tts — PROVISIONAL, pending a human listen.** Revert lever:
 `TTS_ENGINE=minimax`.
+
+### 2026-09-13 · the production wrapper, not just the model (probe run #2)
+
+Run #1 proved the **model**. It called `python -m pocket_tts generate` directly,
+which production never does: production runs `music/pocket-tts.mjs`, which also
+applies `pocketSpeakable()`, splits Persian from Latin, concatenates segments
+with ffmpeg and trims dead air. That wrapper was the untested link.
+
+`.github/workflows/tts-probe.yml` run #2 (13:45 UTC) exercised it end to end,
+with `POCKET_TTS_FARSI_CONFIG` / `POCKET_TTS_VOICE` exported exactly as the
+three production workflows export them:
+
+- **The real wrapper, real line** (a1-18-shopping step 4):
+  `wrapper.mp3` = **5.088s / 81,837 bytes**, reported as "1 segment".
+  The model generated 5120 ms this run, so `trimDeadAir` removed ~32 ms — the
+  0.072s difference from run #1's 5.16s is the sampler, not damage: run #1
+  generated 4960 ms of audio for the same sentence at the same temperature.
+  Nothing is mangled by the ffmpeg concat or the trim.
+- **A mixed Persian+English line refused cleanly**, exit non-zero, no crash,
+  and it **named the span**: «Second Space». It did not silently drop the
+  English word the way the Farsi-only model does on its own.
+
+**What this changes in practice.** Measured against the real corpus: only
+**1 of 170** curated narration lines in `lib/narration.mjs` contains Latin text
+(a1-01's «کلمهٔ Guten»), so the daily TikTok/Instagram VO runs on the free
+engine with no credentials at all. The exposure is the **news and
+Telegram-custom** paths, whose text is not hand-checked — 30% of the feature
+banks' written strings carry a Latin app name — and any such line hard-fails
+the build.
+
+The remedy is free and is now one click: all three production workflows pass
+`HF_TOKEN: ${{ secrets.HF_TOKEN }}` through to the render step. Unset, it is an
+empty string and behaves exactly as today. Set once (a free token from
+huggingface.co/settings/tokens), the English half works with no code change.
+
+**Status unchanged: pocket-tts — PROVISIONAL, pending a human listen.** As of
+this entry it has still never spoken in a delivered video. Revert lever:
+`TTS_ENGINE=minimax`.

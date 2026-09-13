@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { summariseSlotFailure } from "./lib/slot-failure-report.mjs";
+import { summariseSlotFailure, classifyVoiceFailure } from "./lib/slot-failure-report.mjs";
 
 // The exact production run this exists for. Reproduced offline on 2026-09-13
 // against the real registry and the real Visual Truth Gate for that day's
@@ -118,3 +118,65 @@ console.log("ok   a slot's give-up alert reports every attempt's cause, so a fix
 }
 
 console.log("ok   an out-of-credit provider leads the alert with its own words — no screenshot or new subject can clear it");
+
+// The free engine's own benign note, quoted verbatim from tts-probe.yml run #2
+// (2026-09-13, 13:45:35): it is printed on EVERY unauthenticated run, and it is
+// about download speed, not about an account limit. The old inline matcher in
+// daily-render.mjs searched the whole stderr for "rate limit", so this line
+// alone would have re-labelled every pocket-tts failure — whatever its real
+// cause — as «سرویس بیرونی اعتبار یا سهمیه ندارد» and sent the owner to a
+// billing page for a free, unbilled engine.
+{
+  const benign = [
+    "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.",
+    "pocket-tts: ffmpeg exited 1",
+  ].join("\n");
+  assert.equal(classifyVoiceFailure(benign).kind, "narration-planning",
+    "the Hub's download-speed note is not an account limit and must never be reported as one");
+
+  // A real one still classifies, with its own words.
+  const real = classifyVoiceFailure([
+    "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.",
+    "MiniMax TTS failed: insufficient credit. Please purchase top-up credits",
+  ].join("\n"));
+  assert.equal(real.kind, "providerShortage");
+  assert.match(real.providerShortage, /insufficient credit/);
+}
+
+// The wrapper's real refusal, quoted verbatim from the same run. Only 1 of the
+// 170 curated narration lines in lib/narration.mjs contains Latin text, but the
+// news and Telegram-custom paths speak text that was not hand-checked, and 30%
+// of the feature banks' written strings do. This must reach the owner as the
+// one free action that clears it — not as an unexplained technical error, and
+// not as a credit problem for an engine that is never billed.
+{
+  const refusal = "HF_TOKEN is not set, and this line contains English: «Second Space». The English half needs the token once, to fetch the gated kyutai/pocket-tts voice-cloning weights. A line with no Latin text needs no token at all.";
+  const v = classifyVoiceFailure(refusal);
+  assert.equal(v.kind, "missingToken");
+  assert.match(v.missingToken, /Second Space/, "the offending span must survive into the alert");
+
+  const out = summariseSlotFailure([{ id: "custom-1", kind: "missingToken", missingToken: v.missingToken }]);
+  assert.match(out, /HuggingFace/);
+  assert.match(out, /HF_TOKEN/, "the owner must be told the exact secret name to create");
+  assert.match(out, /Second Space/);
+  assert.ok(!out.includes("خطای فنی"), "a one-secret fix must not be filed as an unexplained technical error");
+  assert.ok(!out.includes("اعتبار یا سهمیه"), "the free engine is never billed — do not send the owner to a billing page");
+}
+
+// It survives alongside the other causes in a mixed run, with its own count.
+{
+  const out = summariseSlotFailure([
+    { id: "a", kind: "missingToken", missingToken: "HF_TOKEN is not set, and this line contains English: «Collab»." },
+    { id: "b", kind: "duplicate" },
+    { id: "c", kind: "visualQc", missingSlides: [{ n: 2, text: "هایلایت استوری" }] },
+  ]);
+  assert.match(out, /۱ مورد به توکن رایگان HuggingFace نیاز داشت/);
+  assert.match(out, /۱ مورد تکراری بود/);
+  assert.match(out, /اسکرین‌شات/);
+}
+
+// Degenerate input must not crash the alert path.
+assert.equal(classifyVoiceFailure("").kind, "narration-planning");
+assert.equal(classifyVoiceFailure(null).kind, "narration-planning");
+
+console.log("ok   a missing free token is reported as one free action, and the engine's own download-speed note is never mistaken for a billing problem");

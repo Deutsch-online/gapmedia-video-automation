@@ -22,7 +22,7 @@ import { rescuePackPhotos } from "./lib/auto-image.mjs";
 import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register, hasHistory } from "./lib/dedupe.mjs";
-import { summariseSlotFailure } from "./lib/slot-failure-report.mjs";
+import { summariseSlotFailure, classifyVoiceFailure } from "./lib/slot-failure-report.mjs";
 
 const projectDir = dirname(fileURLToPath(import.meta.url));
 process.chdir(projectDir);
@@ -336,19 +336,23 @@ for (const firstDelivery of deliveries) {
       // above is for classification, never to hide it.
       if (e.stderr) process.stderr.write(e.stderr);
       const detail = String(e.stderr || "");
-      // A paid provider saying it is out of credit or over quota is not this
-      // topic's problem: the next five topics will hit the identical wall, and
-      // only the owner can clear it. Marked so the give-up alert can say that
-      // instead of reporting a generic technical error.
-      const shortage = detail.match(/^.*(insufficient credit|quota|rate limit|429).*$/im);
-      if (shortage) e.providerShortage = shortage[0].trim().slice(0, 200);
+      // An account-level stop is not this topic's problem: the next five topics
+      // hit the identical wall and only the owner can clear it. Marked so the
+      // give-up alert names the real remedy instead of reporting a generic
+      // technical error. The decision lives in lib/slot-failure-report.mjs so
+      // it can be tested — in particular, the free engine prints a benign
+      // "higher rate limits" note on every unauthenticated run, which a naive
+      // substring match reads as a quota failure.
+      const verdict = classifyVoiceFailure(detail);
+      if (verdict.providerShortage) e.providerShortage = verdict.providerShortage;
+      if (verdict.missingToken) e.missingToken = verdict.missingToken;
       console.error("   ✗ voice planning failed:", String(e.message).split(String.fromCharCode(10))[0]);
       // A required narrated delivery may never fall back to an unmeasured beat
       // grid. That was the root of a later timing-guard failure: the real TTS
       // line was longer than a default scene and the video could not be sent.
       // Local music-only design previews may still intentionally continue.
       if (process.env.REQUIRE_VOICE === "on") {
-        e.kind = e.providerShortage ? "providerShortage" : "narration-planning";
+        e.kind = verdict.kind === "missingToken" || verdict.kind === "providerShortage" ? verdict.kind : "narration-planning";
         throw e;
       }
     }
@@ -517,6 +521,7 @@ for (const firstDelivery of deliveries) {
         kind: err.kind,
         message: err.message,
         providerShortage: err.providerShortage,
+        missingToken: err.missingToken,
         // Captured here, while this attempt's pack is still in scope: by the
         // time the slot gives up, `pack` is whichever topic failed LAST.
         missingSlides: err.kind === "visualQc"
