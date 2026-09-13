@@ -223,6 +223,31 @@ jobs:
             libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
             libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
 
+      # Narrated by default. Committing a `.silent-render` file at the repo
+      # root switches this run to music-only: no TTS call, no narration, no
+      # ASR check — because there is no narration to check. Owner request
+      # 2026-09-13, after music/minimax-tts.mjs returned "insufficient credit"
+      # and every slot in runs #224 and #226 died at narration while the
+      # pictures themselves were fine.
+      #
+      # A file, not a workflow_dispatch input, because the GitHub App on this
+      # repo has "contents: write" but not "actions: write" — the same reason
+      # .trigger-daily-dispatch exists. Delete the file to return to narrated
+      # delivery; nothing else needs changing.
+      #
+      # This does NOT relax any content gate: lib/visual-proof.mjs still runs
+      # unchanged, and a slide without a real photo still stops the video.
+      - name: Narrated, or silent by request
+        id: voicemode
+        if: steps.gate.outputs.go == 'yes'
+        run: |
+          if [ -f .silent-render ]; then
+            echo "voice=off" >> "$GITHUB_OUTPUT"
+            echo "::warning::.silent-render is present — building music-only videos with no narration."
+          else
+            echo "voice=on" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Produce and send the scheduled pair
         id: produce
         if: steps.gate.outputs.go == 'yes'
@@ -231,9 +256,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
-          VOICE: "on"
-          REQUIRE_VOICE: "on"
-          NARRATION_QC: "on"
+          VOICE: ${{ steps.voicemode.outputs.voice }}
+          REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
+          NARRATION_QC: ${{ steps.voicemode.outputs.voice }}
           ASR_MODEL: "medium"
           # daily-render.mjs's Visual QC retry loop calls lib/auto-image.mjs's
           # rescuePackPhotos() to auto-source a real photo for a rotation

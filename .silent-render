@@ -1,0 +1,20 @@
+SILENT MODE IS ON — every daily TikTok/Instagram video builds WITHOUT narration.
+
+Why this exists: music/minimax-tts.mjs returned "insufficient credit" on
+2026-09-13 and every slot in daily.yml runs #224 and #226 died at the
+narration stage, although the pictures themselves were fine. Owner request
+that day: build the videos without voice rather than ship nothing.
+
+What it changes, while this file exists:
+  VOICE=off  REQUIRE_VOICE=off  NARRATION_QC=off
+No TTS call is made, scene timing comes from the beat grid instead of measured
+speech, and the music track plays alone. The ASR narration check is off only
+because there is no narration to check.
+
+What it does NOT change: lib/visual-proof.mjs runs exactly as before. A slide
+without a real photo of the real feature still stops the video, and the
+duplicate check still rejects a repeated subject.
+
+TO RESTORE NARRATED DELIVERY: delete this file and push. Nothing else needs
+changing. Every silent run also prints a ::warning:: naming this file, so it
+cannot sit here forgotten.

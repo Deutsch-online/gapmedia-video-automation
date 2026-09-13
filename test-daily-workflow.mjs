@@ -34,7 +34,23 @@ assert.match(workflow, /if \[ "\$morning_due" = true \] && \[ "\$evening_due" = 
 assert.match(workflow, /REQUIRED = \{ morning: \["tiktok", "instagram"\], evening: \["ai-tiktok", "ai-instagram"\] \}/,
   "the delivered marker must be derived from actual per-slot completion, not the run's overall pass/fail");
 assert.match(workflow, /Install Persian narration quality gate/);
-assert.match(workflow, /NARRATION_QC: "on"/);
+// Narration and its ASR check are ON unless a `.silent-render` file is
+// committed at the repo root (owner request 2026-09-13, so a paid-TTS outage
+// can ship music-only videos instead of nothing). The default must stay
+// narrated: a run with no marker has to come out "on" for all three, and
+// silence has to be a deliberate, visible, committed act — never something a
+// missing file or an unset variable produces by accident.
+assert.match(workflow, /VOICE: \$\{\{ steps\.voicemode\.outputs\.voice \}\}/);
+assert.match(workflow, /REQUIRE_VOICE: \$\{\{ steps\.voicemode\.outputs\.voice \}\}/);
+assert.match(workflow, /NARRATION_QC: \$\{\{ steps\.voicemode\.outputs\.voice \}\}/);
+assert.match(workflow, /if \[ -f \.silent-render \]; then\s*\n\s*echo "voice=off"[\s\S]{0,220}else\s*\n\s*echo "voice=on"/,
+  "the marker must select silence and its ABSENCE must select narration — never the other way round");
+// Deliberately NOT asserted: that .silent-render is absent. Silence is a
+// legitimate state the owner asked for, so a test that fails for as long as
+// they want it would just be noise they learn to ignore. The safeguard that
+// actually works is visibility at the moment it matters — the workflow emits
+// a ::warning:: naming the file on every silent run, and the file itself
+// explains how to undo it.
 assert.match(workflow, /ASR_MODEL: "medium"/);
 assert.match(workflow, /group: gapmedia-production/);
 
