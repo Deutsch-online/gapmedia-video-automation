@@ -805,3 +805,44 @@ and byte size are consistent with a real German reading; nobody has heard it.
 Listen to both takes in the artifact above. Revert levers:
 `GERMAN_WORD_ENGINE=minimax` once credit returns, or `EDGE_TTS_VOICE=de-DE-ConradNeural`
 for the male voice with no code change.
+
+### 2026-09-13 20:01 UTC · pocket-tts FAILS this project's own narration gate
+
+The first time pocket-tts's Persian was measured by `music/voice-qc.mjs` on a
+complete episode, it failed **every line**. news-scan #245, episode 18:
+
+```
+Narration QC line 1: wrong «جمله‌ها» → «جملها»
+Narration QC line 2: wrong «کاربردی» → «کاربوردی»
+Narration QC line 3: wrong «جمله»   → «جمعه»
+Narration QC line 4: wrong «وقتی»   → «اختی»
+Narration QC line 5: wrong «سؤال،»  → «سهل»
+```
+
+**The gate was right to reject these.** «جمله» (jomle, *sentence*) heard as
+«جمعه» (jom'e, *Friday*), «وقتی» (vaghti) as «اختی», «سؤال» (so'āl) as «سهل»
+(sahl) are different WORDS, not alternate spellings of the same sound — the
+distinction `lib/hear.mjs` exists to make. Folding any of these in would have
+shipped a language lesson that mispronounces its own vocabulary.
+
+So the earlier entries stand corrected on the point that matters: pocket-tts
+downloads free, runs free, and produces audio of a plausible length — and none
+of that was ever evidence it speaks Persian *well enough for this channel*.
+Duration and byte size measure that a file exists. They do not measure
+pronunciation. The gate does, and it says no.
+
+**What changed:** `TTS_ENGINE` now accepts `"edge"`, and news-scan.yml uses it.
+Edge's neural service is free and keyless like pocket-tts, is already used by
+`render-ai-education-voice.mjs` for Persian, and was proven on a runner hours
+earlier for German. `EDGE_PERSIAN_VOICE` (default `fa-IR-FaridNeural`) names
+the Persian voice explicitly, because `music/edge-tts.mjs`'s own default is
+German.
+
+**What did not change:** `music/voice-qc.mjs` and `lib/hear.mjs` are untouched.
+The gate stays the judge — if Edge reads no better, nothing ships, exactly as
+nothing shipped before. That is the point: this is not a workaround, it is the
+next candidate put in front of the same examiner.
+
+**Status: fa-IR-FaridNeural — UNPROVEN on this path.** The next lesson run is
+its first exam. pocket-tts remains available (`TTS_ENGINE=pocket`) but is now
+known to fail QC on this content; MiniMax remains the paid fallback.

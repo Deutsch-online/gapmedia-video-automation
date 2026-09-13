@@ -242,7 +242,19 @@ console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}
 // English-accented"), which is why GERMAN_WORD_VOICE_ID exists. So the engine
 // is chosen PER CLIP: the Persian hook/explanations/outro follow TTS_ENGINE,
 // and the German-word clip stays on the only engine that has a German voice.
-const TTS_ENGINE = process.env.TTS_ENGINE === "pocket" ? "pocket" : "minimax";
+// Persian narration engine. "edge" joins pocket/minimax as of 2026-09-13:
+// pocket-tts's Persian was measured against this project's own narration gate
+// for the first time in news-scan #245 and FAILED every line of episode 18 —
+// «جمله»→«جمعه» (sentence → Friday), «وقتی»→«اختی», «سؤال»→«سهل»: different
+// words, not spellings, so music/voice-qc.mjs was right to reject them. Edge's
+// neural service, already proven here for German and already used by
+// render-ai-education-voice.mjs for Persian, is the free engine that has not
+// been tried on this path.
+const TTS_ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "minimax";
+// The Persian voice for that engine. Its default is GERMAN, because
+// music/edge-tts.mjs exists for the German word — so a Persian line must name
+// its own voice or it would be read by a German speaker.
+const EDGE_PERSIAN_VOICE = process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural";
 // The German vocabulary clip's own engine, separate from the Persian one.
 // Default "edge": Microsoft Edge's neural service has genuinely NATIVE German
 // voices, needs no key and no credit, and — unlike every other free option
@@ -252,6 +264,8 @@ const TTS_ENGINE = process.env.TTS_ENGINE === "pocket" ? "pocket" : "minimax";
 // 1.296s/21,165-byte mp3 from de-DE-KatjaNeural with no credentials at all.
 // Set GERMAN_WORD_ENGINE=minimax to go back the moment that credit returns.
 const GERMAN_WORD_ENGINE = process.env.GERMAN_WORD_ENGINE === "minimax" ? "minimax" : "edge";
+// Edge is an ordinary neural engine like MiniMax, so it takes the long-standing
+// Persian transform with its tested pronunciation fixes, not pocket's.
 const speakableFor = (engine) => (engine === "pocket" ? pocketSpeakable : minimaxSpeakable);
 
 function ttsSynthesize(text, languageBoost, outFile, voiceId) {
@@ -289,7 +303,12 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
   if (!voiceId) {
     env.MINIMAX_VOICE_PITCH = String(GERMAN_LESSON_NARRATION_OVERRIDE.pitch);
     env.VOICE_SPEED = String(GERMAN_LESSON_NARRATION_OVERRIDE.speed);
-  } else if (voiceId === GERMAN_WORD_VOICE_ID && engine === "edge") {
+  }
+  // A Persian line on Edge must name its voice, or music/edge-tts.mjs — whose
+  // default is German, because it exists for the German word — would read
+  // Persian with a German speaker.
+  if (engine === "edge" && !languageBoost) env.EDGE_TTS_VOICE = EDGE_PERSIAN_VOICE;
+  if (voiceId === GERMAN_WORD_VOICE_ID && engine === "edge") {
     // Same correction, this engine's units. music/edge-tts.mjs converts these
     // multipliers to Edge's percentage strings, so the owner's 2026-09-11
     // "slower and louder" fix survives the engine change instead of silently

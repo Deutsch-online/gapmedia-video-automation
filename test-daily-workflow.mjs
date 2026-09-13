@@ -119,7 +119,15 @@ assert.match(readFileSync("german-lesson-build.mjs", "utf8"), /rewordPersistentW
 // so adding it is a one-click owner action and never a code change. Unset, it
 // is an empty string and nothing changes.
 for (const [name, wf] of [["daily.yml", workflow], ["news-scan.yml", germanWorkflow], ["telegram.yml", telegramWorkflow]]) {
-  assert.match(wf, /TTS_ENGINE: "pocket"/, `${name} must select the free engine`);
+  // A FREE engine, named as a property rather than a product. pocket was the
+  // first; news-scan.yml moved to edge on 2026-09-13 after pocket-tts failed
+  // every narration line of episode 18 against music/voice-qc.mjs. Pinning the
+  // product name here would have turned that quality finding into a test
+  // failure, which is backwards — what must not come back is the paid engine
+  // whose exhausted credit stopped the pipeline.
+  assert.match(wf, /TTS_ENGINE: "(pocket|edge)"/, `${name} must select a free engine`);
+  assert.ok(!/TTS_ENGINE: "minimax"/.test(wf),
+    `${name} must not go back to the paid engine by default — its credit running out is what stopped delivery`);
   assert.match(wf, /HF_TOKEN: \$\{\{ secrets\.HF_TOKEN \}\}/,
     `${name} renders narration, so it must pass the free token through — a Latin span otherwise fails the whole build for a secret that costs nothing`);
   assert.match(wf, /POCKET_TTS_FARSI_CONFIG=/,

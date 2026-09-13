@@ -241,7 +241,14 @@ jobs:
           NARRATION_QC: "on"
           # Free, local, no credit, no secret — MiniMax ran out of credit
           # 2026-09-13. Set to "minimax" to go back; both engines stay wired.
-          TTS_ENGINE: "pocket"
+          # Persian narration engine. pocket-tts was measured against this
+          # project's own narration gate for the first time in run #245 and
+          # failed EVERY line of episode 18 — «جمله»→«جمعه», «وقتی»→«اختی»,
+          # «سؤال»→«سهل» are different words, not spellings, so the rejection
+          # was correct. Edge is the free engine that path had not tried, and
+          # music/voice-qc.mjs remains the judge: if this reads no better,
+          # nothing ships, exactly as nothing shipped before.
+          TTS_ENGINE: "edge"
           # The offline engine speaks Persian with no credentials at all
           # (proven on a runner, tts-probe.yml run #2, 2026-09-13). It needs
           # this FREE HuggingFace token only for spans written in Latin

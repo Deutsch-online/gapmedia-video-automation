@@ -9,8 +9,17 @@ import { readFileSync } from "node:fs";
 // music/make-voice.mjs:47 had always read it; this file simply never did.
 const src = readFileSync("german-lesson-build.mjs", "utf8");
 
-assert.match(src, /const TTS_ENGINE = process\.env\.TTS_ENGINE === "pocket" \? "pocket" : "minimax";/,
+// It reads TTS_ENGINE, and the set of engines it accepts grew on 2026-09-13
+// when pocket-tts failed every narration line of episode 18 against
+// music/voice-qc.mjs. What matters is that the variable is honoured and that
+// the paid engine is only ever the fallback, never silently the default.
+assert.match(src, /const TTS_ENGINE = \["pocket", "edge"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "minimax";/,
   "the German build must read TTS_ENGINE like the other two synthesis paths");
+// A Persian line on Edge must name a Persian voice — the adapter's own default
+// is German, so an unset voice would have a German speaker read Persian.
+assert.match(src, /if \(engine === "edge" && !languageBoost\) env\.EDGE_TTS_VOICE = EDGE_PERSIAN_VOICE;/,
+  "Persian on Edge must select a Persian voice explicitly");
+assert.match(src, /const EDGE_PERSIAN_VOICE = process\.env\.EDGE_PERSIAN_VOICE \|\| "fa-IR-[A-Za-z]+Neural";/);
 // The script is still chosen BY the engine and never hardcoded. The shape grew
 // a third branch on 2026-09-13 (edge, for the German word), so this pins the
 // property rather than the exact ternary: pocket still routes to pocket-tts,
@@ -76,9 +85,10 @@ console.log("ok   the German build honours TTS_ENGINE, and the German word stays
   assert.match(src, /env\.EDGE_TTS_SPEED = String\(GERMAN_WORD_VOICE_SETTINGS\.speed\);/);
   assert.match(src, /env\.EDGE_TTS_VOL = String\(GERMAN_WORD_VOICE_SETTINGS\.vol\);/);
 
-  // The Persian half is untouched by any of this.
-  assert.match(src, /const TTS_ENGINE = process\.env\.TTS_ENGINE === "pocket" \? "pocket" : "minimax";/,
-    "the Persian engine switch must stay exactly as it was");
+  // The Persian half is chosen independently of the German one, and the paid
+  // engine is only ever its fallback.
+  assert.match(src, /const TTS_ENGINE = \["pocket", "edge"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "minimax";/,
+    "the Persian engine switch stays separate from the German one");
 }
 
 // The adapter converts MiniMax-shaped multipliers into Edge's percentage
