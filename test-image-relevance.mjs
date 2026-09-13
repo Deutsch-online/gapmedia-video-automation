@@ -158,3 +158,42 @@ console.log("ok   a judge outage is no longer logged as an irrelevant picture, a
 }
 
 console.log("ok   an undersized candidate reports its real size, so 'tooSmall' can be diagnosed instead of guessed");
+
+// A saturated provider must not be asked first for the rest of the run.
+// daily #240 (2026-09-13) spent its whole 8-minute pre-scan budget and
+// delivered neither evening format: withRetry() waits 1.5s then 3s, which
+// does not outlast a per-MINUTE rate limit, so every later candidate paid
+// 4.5s to re-ask the same saturated provider before the working one was
+// tried at all. Ordering is pure and tested without a network.
+{
+  const { judgeProviderOrder } = await import("./lib/auto-image.mjs");
+  const now = 1_000;
+  assert.deepEqual(
+    judgeProviderOrder(["gemini", "groq"], now, { gemini: now + 5_000, groq: 0 }),
+    ["groq", "gemini"],
+    "a provider that just rate-limited must go to the back of the order",
+  );
+  assert.deepEqual(
+    judgeProviderOrder(["gemini", "groq"], now, { gemini: 0, groq: 0 }),
+    ["gemini", "groq"],
+    "with nothing cooling off the established order is unchanged",
+  );
+  // The important half. Cooling off REORDERS; it never removes a provider, so
+  // a candidate is never rejected as unjudged just because both providers were
+  // busy a moment ago. A real attempt always beats an unexamined rejection.
+  assert.deepEqual(
+    judgeProviderOrder(["gemini", "groq"], now, { gemini: now + 1, groq: now + 1 }),
+    ["gemini", "groq"],
+    "when every provider is cooling off, all of them must still be tried",
+  );
+  assert.deepEqual(judgeProviderOrder([], now, { gemini: 0, groq: 0 }), []);
+
+  const src = readFileSync("lib/auto-image.mjs", "utf8");
+  // The verdict itself is untouched: unjudged still means rejected.
+  assert.match(src, /return \{ relevant: false, judged: false, why: why\.join\("; "\) \}/,
+    "a candidate no model judged must still be rejected");
+  assert.match(src, /if \(!verdict\.relevant\) \{ rejected\[verdict\.judged \? "irrelevant" : "unjudged"\]\+\+; continue; \}/,
+    "the reject-on-unjudged path must stay exactly as it is");
+}
+
+console.log("ok   a rate-limited judge provider is tried last, never dropped, and unjudged still means rejected");
