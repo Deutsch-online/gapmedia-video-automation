@@ -36,7 +36,7 @@ import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register } from "./lib/dedupe.mjs";
 import { narrationFor } from "./lib/narration.mjs";
-import { minimaxSpeakable } from "./lib/pronounce.mjs";
+import { minimaxSpeakable, pocketSpeakable } from "./lib/pronounce.mjs";
 import { GERMAN_WORD_VOICE_ID, GERMAN_LESSON_NARRATION_OVERRIDE, GERMAN_WORD_VOICE_SETTINGS, narrationLineCheck } from "./lib/voice-settings.mjs";
 import { runWithRecovery, RecoveryExhausted } from "./lib/recovery-engine.mjs";
 import { rewordPersistentWord, patchSourceText, proposePronunciationFix, patchPronunciationTable, persistentFaultWords, containsWord } from "./lib/narration-recovery.mjs";
@@ -228,7 +228,33 @@ console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}
 // uses lives in that one file) picks a real German-native voice for the
 // German-word clip specifically, leaving the approved Persian voice (used
 // for every other clip, hook, and outro) untouched.
+// TTS_ENGINE, honoured here at last. This function called music/minimax-tts.mjs
+// by a hardcoded path, so news-scan.yml's TTS_ENGINE had no effect on this
+// pipeline at all and episode 18 still died on "insufficient credit" after the
+// switch (owner alert 2026-09-13). music/plan-voice.mjs:26 and
+// music/make-voice.mjs:47 already read this variable; this file simply never
+// did.
+//
+// But the German clip is NOT free to move. pocket-tts ships a Farsi model and
+// an English one — it has no German. Speaking German words through either is
+// precisely the failure this file's header records and the owner already
+// rejected (2026-09-10: "the German clips still came out sounding
+// English-accented"), which is why GERMAN_WORD_VOICE_ID exists. So the engine
+// is chosen PER CLIP: the Persian hook/explanations/outro follow TTS_ENGINE,
+// and the German-word clip stays on the only engine that has a German voice.
+const TTS_ENGINE = process.env.TTS_ENGINE === "pocket" ? "pocket" : "minimax";
+const speakableFor = (engine) => (engine === "pocket" ? pocketSpeakable : minimaxSpeakable);
+
 function ttsSynthesize(text, languageBoost, outFile, voiceId) {
+  // languageBoost is set only for the German vocabulary clip.
+  const engine = languageBoost ? "minimax" : TTS_ENGINE;
+  if (languageBoost && TTS_ENGINE === "pocket") {
+    console.error(
+      "   ℹ German word clip stays on MiniMax: pocket-tts has a Farsi and an "
+      + "English model, no German one, and a German word read by either is the "
+      + "English-accented result the owner rejected on 2026-09-10.",
+    );
+  }
   // Persian explanatory lines must be validated before their text ever reaches
   // the engine. German vocabulary uses a separate native-German voice.
   if (!languageBoost) {
@@ -259,7 +285,8 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
     env.VOICE_SPEED = String(GERMAN_WORD_VOICE_SETTINGS.speed);
     env.MINIMAX_VOICE_VOL = String(GERMAN_WORD_VOICE_SETTINGS.vol);
   }
-  execFileSync("node", ["music/minimax-tts.mjs", text, "-o", outFile], { env, stdio: "inherit" });
+  const script = engine === "pocket" ? "music/pocket-tts.mjs" : "music/minimax-tts.mjs";
+  execFileSync("node", [script, text, "-o", outFile], { env, stdio: "inherit" });
 }
 function ffprobeDuration(file) {
   const out = execFileSync("ffprobe", [
@@ -284,7 +311,7 @@ try {
     try {
       const persianEntries = [];
       const makePersian = (written, file) => {
-        const spoken = minimaxSpeakable(written);
+        const spoken = speakableFor(TTS_ENGINE)(written);
         ttsSynthesize(spoken, null, file);
         persianEntries.push({ written, spoken, file });
       };
@@ -430,7 +457,7 @@ try {
                 console.error("   ⚠ German lesson narration recovery: reworded text did not patch lib/narration.mjs or lib/german-a1.mjs (no unique match) — fix applies to this render only, will not persist to the next build.");
               }
               target.written = reworded;
-              target.spoken = minimaxSpeakable(reworded);
+              target.spoken = speakableFor(TTS_ENGINE)(reworded);
               return { context: {} };
             },
           });
