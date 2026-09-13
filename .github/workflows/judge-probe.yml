@@ -99,3 +99,34 @@ jobs:
               console.log("judgeRelevance ->", JSON.stringify(v));
             });
           '
+
+      # Episode 18 is blocked on images, not narration, and the lesson lane's
+      # Berlin-time gate (07:00/16:30/20:30) is shut until 07:00, so the
+      # instrumentation added in 943868e cannot report from a real build for
+      # hours. The sanctioned bypass (.german-correction-request.json) is the
+      # wrong tool: --unit never advances .german-lesson-progress.json, which
+      # still points at this very episode, so a correction send now would be
+      # sent AGAIN by the 07:00 scheduled build — a duplicate on the channel.
+      #
+      # This asks the same question without any of that. It calls the real
+      # findLessonImage() for each of episode 18's four vocabulary words with
+      # the real keys, and renders nothing, sends nothing, and writes no
+      # delivery state, marker or ledger.
+      - name: Which image layer refuses episode 18's words, and why?
+        continue-on-error: true
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          node -e '
+            Promise.all([import("./lib/german-a1.mjs"), import("./lib/lesson-image.mjs")]).then(async ([a1, img]) => {
+              const unit = a1.GERMAN_A1.find((u) => u.id === "a1-18-shopping");
+              for (const item of unit.items) {
+                console.log(`\n=== ${item.de} — ${item.fa} (search: "${item.img}") ===`);
+                const found = await img.findLessonImage(item.img, item.fa, item.de);
+                console.log(found ? `FOUND ${found.photo} (${found.sourceType})` : "NOT FOUND");
+              }
+            });
+          '
