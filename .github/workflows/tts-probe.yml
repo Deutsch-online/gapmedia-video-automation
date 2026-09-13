@@ -1,0 +1,106 @@
+# Answers one question with evidence instead of argument: can the free,
+# local pocket-tts pipeline actually replace paid MiniMax TTS for this
+# project's Persian narration, and does it need HF_TOKEN to do it?
+#
+# It exists as a separate workflow because that question could not be
+# answered from the agent sandbox: `pip install pocket-tts` succeeds there,
+# but huggingface.co answers 403 to CONNECT under the sandbox egress policy,
+# so the model weights can never be fetched and nothing can be synthesised.
+# A GitHub runner has open internet. This is the place the test can be real.
+#
+# Deliberately isolated from production:
+#   · its own concurrency group, so it never competes with daily.yml,
+#     news-scan.yml or telegram.yml for the single pending slot in
+#     "gapmedia-production"
+#   · it renders nothing, sends nothing to Telegram, and touches no
+#     delivery state, ledger or marker
+#   · it is allowed to fail. A failure here is the answer, not an incident.
+name: TTS fallback probe
+
+on:
+  push:
+    paths:
+      - ".trigger-tts-probe"
+
+concurrency:
+  group: tts-probe
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pocket-tts
+        run: |
+          python -m pip install --disable-pip-version-check --quiet pocket-tts
+          python -c "import pocket_tts; print('pocket_tts at', pocket_tts.__file__)"
+
+      # The load-bearing question. music/pocket-tts.mjs refuses to run at all
+      # without HF_TOKEN, but its own comment says the token is for the
+      # GATED kyutai weights that only the ENGLISH half needs. If the Farsi
+      # repo is ungated, Persian-only narration needs no token — and that
+      # guard is refusing a case that would have worked.
+      - name: Can the Farsi model be fetched with NO token?
+        id: fetch
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          from huggingface_hub import snapshot_download
+          import os, pathlib
+          assert not os.environ.get("HF_TOKEN"), "this step must prove the UNAUTHENTICATED case"
+          p = snapshot_download("mehdi-hf/pocket-tts-farsi")
+          print("downloaded to:", p)
+          for f in sorted(pathlib.Path(p).rglob("*")):
+              if f.is_file():
+                  print(f"  {f.relative_to(p)}  {f.stat().st_size/1e6:.1f} MB")
+          PY
+
+      - name: Synthesise one real Persian line
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          python - <<'PY'
+          from huggingface_hub import snapshot_download
+          import pathlib, subprocess, sys
+          root = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
+          cfg = next(root.rglob("farsi.yaml"), None)
+          voice = next(root.rglob("example_voice.wav"), None)
+          print("config:", cfg, "voice:", voice)
+          if not cfg or not voice:
+              sys.exit("expected farsi.yaml and example_voice.wav in the snapshot")
+          # A real line from this project's own narration, not a lorem-ipsum
+          # string: lib/narration.mjs a1-18-shopping, the sentence rewritten
+          # today. Pure Persian, so the English half is never reached.
+          text = "و با این سؤال رسمی، از فروشنده بپرس که چیزی را دارد یا نه."
+          subprocess.run([sys.executable, "-m", "pocket_tts", "generate",
+                          "--config", str(cfg), "--voice", str(voice),
+                          "--text", text, "--temperature", "0.3",
+                          "--eos-threshold", "-2", "--frames-after-eos", "0",
+                          "--output-path", "probe.wav"], check=True)
+          PY
+          echo "--- what came out ---"
+          ls -la probe.wav
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 probe.wav
+
+      - name: Verdict
+        if: always()
+        run: |
+          echo "fetch-without-token: ${{ steps.fetch.outcome }}"
+          echo
+          echo "If fetch-without-token SUCCEEDED and a probe.wav of a plausible"
+          echo "length was produced, then music/pocket-tts.mjs's unconditional"
+          echo "HF_TOKEN exit is refusing Persian-only lines that would work,"
+          echo "and TTS_ENGINE=pocket is a real free replacement for MiniMax."
+          echo "If the fetch FAILED, the Farsi repo is gated too and HF_TOKEN"
+          echo "is genuinely required before any of this can be used."
