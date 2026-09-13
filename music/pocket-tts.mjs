@@ -20,6 +20,7 @@ import { mkdirSync, existsSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import os from "node:os";
 import { pocketSpeakable } from "../lib/pronounce.mjs";
+import { segment, needsEnglishModel } from "../lib/tts-segments.mjs";
 import { trimDeadAir } from "../lib/voice-settings.mjs";
 
 const argv = process.argv.slice(2);
@@ -46,32 +47,27 @@ if (!existsSync(FARSI_CONFIG) || !existsSync(VOICE)) {
   );
   process.exit(1);
 }
-if (!process.env.HF_TOKEN) {
-  console.error(
-    "HF_TOKEN is not set. The English half of this pipeline needs it once, " +
-    "to fetch the gated kyutai/pocket-tts voice-cloning weights.",
-  );
-  process.exit(1);
-}
-
-// A run of Latin letters/digits — plus the punctuation that belongs inside a
-// label (space, ' & . -) — is one English segment; everything else is Farsi.
-function segment(s) {
-  const parts = [];
-  const re = /[A-Za-z0-9][A-Za-z0-9 .,'&-]*[A-Za-z0-9]|[A-Za-z0-9]/g;
-  let last = 0, m;
-  while ((m = re.exec(s))) {
-    if (m.index > last) parts.push({ lang: "fa", text: s.slice(last, m.index) });
-    parts.push({ lang: "en", text: m[0].trim() });
-    last = m.index + m[0].length;
-  }
-  if (last < s.length) parts.push({ lang: "fa", text: s.slice(last) });
-  return parts.filter((p) => p.text.trim().length > 0);
-}
 
 const segs = segment(pocketSpeakable(text));
 if (!segs.length) {
   console.error("pocket-tts: nothing to synthesise after cleanup.");
+  process.exit(1);
+}
+
+// Only the ENGLISH half needs the gated kyutai weights, so only a line that
+// actually contains a Latin span needs a token. This check used to run before
+// segmentation and refuse EVERY line, including pure-Persian ones that need
+// nothing gated — proven on a real runner 2026-09-13, where the Farsi model
+// downloaded unauthenticated and spoke a real narration line (see
+// lib/tts-segments.mjs and .github/workflows/tts-probe.yml).
+if (needsEnglishModel(segs) && !process.env.HF_TOKEN) {
+  console.error(
+    "HF_TOKEN is not set, and this line contains English: "
+    + segs.filter((p) => p.lang === "en").map((p) => `«${p.text}»`).join(", ")
+    + ". The English half needs the token once, to fetch the gated "
+    + "kyutai/pocket-tts voice-cloning weights. A line with no Latin text "
+    + "needs no token at all.",
+  );
   process.exit(1);
 }
 
