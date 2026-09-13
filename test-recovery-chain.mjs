@@ -84,3 +84,50 @@ console.log("ok   the chain's real contract is recorded: it hands evidence forwa
 }
 
 console.log("ok   the chained retry fires a path no other workflow races it for");
+
+// Why episode 18 never shipped, even after every real cause was fixed.
+// Measured 2026-09-13: the chain recorded «خریدِت» as the rejected word and
+// spent attempt after attempt on it. The line was then reworded to
+// «خرید خودت», so that word no longer existed anywhere in the narration — but
+// the budget kept counting, and at 2/3 the chain was one failure away from
+// standing down permanently and demanding a human review a sentence that had
+// already been fixed. A retry budget is for "the same thing kept failing";
+// once the text changes it is not the same thing.
+{
+  const { evidenceIsStale, decide, MAX_CHAIN_RETRIES } = await import("./lib/recovery-chain.mjs");
+  const spent = {
+    unit: "a1-18-shopping",
+    attempts: MAX_CHAIN_RETRIES,
+    lastReason: { faultWords: ["خریدِت"] },
+  };
+
+  // The real text after the rewrite — the word is gone.
+  const fixed = () => "اولین خرید خودت در آلمان را با همین جمله‌ها انجام بده.";
+  assert.equal(evidenceIsStale(spent, fixed), true,
+    "a recorded word that no longer appears in the narration is stale evidence");
+  assert.equal(decide(spent, fixed).chain, true,
+    "a spent budget must not stand down over a failure that has already been fixed");
+  assert.equal(decide(spent, fixed).reason, "evidence-stale");
+
+  // The diacritic the gate records is not in the source text; matching must
+  // not depend on it, or every marker would look stale.
+  assert.equal(evidenceIsStale(spent, () => "اولین خریدت در آلمان را ..."), false,
+    "«خریدِت» and «خریدت» are the same word — a kasre must not make evidence look stale");
+
+  // A genuinely persisting failure still exhausts its budget and reaches a
+  // human. This is the half that must never be weakened.
+  const live = { unit: "a1-18-shopping", attempts: MAX_CHAIN_RETRIES, lastReason: { faultWords: ["قیمت"] } };
+  assert.equal(decide(live, () => "این سؤال را برای پرسیدن قیمت به کار ببر.").chain, false,
+    "a word still present in the narration keeps failing and must still stand down for a person");
+  assert.equal(decide(live, () => "این سؤال را برای پرسیدن قیمت به کار ببر.").reason, "budget-spent");
+
+  // Degenerate inputs must not turn into a chain that never ends.
+  assert.equal(evidenceIsStale(null, fixed), false);
+  assert.equal(evidenceIsStale({ lastReason: {} }, fixed), false);
+  assert.equal(evidenceIsStale(spent, () => ""), false, "an unreadable unit is not proof of a fix");
+  assert.equal(evidenceIsStale(spent, () => { throw new Error("boom"); }), false);
+  // Without a reader the old behaviour is exactly preserved.
+  assert.equal(decide(spent).chain, false);
+}
+
+console.log("ok   a fix that lands does not get thrown away by a retry budget spent on the problem it fixed");
