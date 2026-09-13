@@ -1,16 +1,1 @@
-Pushing a new line to this file fires .github/workflows/news-scan.yml (the
-German A1 lesson pipeline) through its `push` trigger, and NOTHING ELSE.
-
-That exclusivity is the whole point. .trigger-daily-dispatch is listened to
-by BOTH daily.yml and news-scan.yml, and all three production workflows share
-the "gapmedia-production" concurrency group with cancel-in-progress: false.
-GitHub keeps only ONE pending run per group, so when a single push creates two
-runs in that group, the second one queued cancels the first — measured live
-2026-09-13: runs #223/#228 (news-scan survived, daily cancelled) and #229/#230
-(daily survived, news-scan cancelled) came from identical pushes. Which one
-lives is a coin flip.
-
-lib/recovery-chain.mjs pushes THIS file instead, so a chained Recovery Loop
-retry can never be cancelled by daily.yml before it runs.
-
-last touch: 2026-09-13T21:34:08.983Z
+read the new image-layer counters for episode 18 2026-09-13T22:13:09Z
