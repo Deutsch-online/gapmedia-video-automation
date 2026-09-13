@@ -1,1 +1,5 @@
-{"action":"rerender-feature","payload":"tts-voice","voice_mode":"on","note":"retry: stable Persian wording for rejected loanword; correction only, do not register as new content"}
+{
+  "action": "rerender-feature",
+  "payload": "green-screen",
+  "voice_mode": "on"
+}
