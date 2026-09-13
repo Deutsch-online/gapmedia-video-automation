@@ -52,8 +52,29 @@ on:
         type: string
 
 concurrency:
-  # Shared with daily/Telegram production so delivery state cannot race.
-  group: gapmedia-production
+  # Its OWN group, not the shared "gapmedia-production" one.
+  #
+  # Measured 2026-09-13, 19:16-19:27: the episode-18 rebuild was created three
+  # times and executed zero times. Runs #243 and #244 sat pending in the shared
+  # group behind daily.yml #237 (a real evening render, 30+ minutes) and were
+  # each cancelled within minutes — #243 by the hourly telegram ping, #244 by
+  # telegram.yml's own "*/5" schedule cron. GitHub keeps exactly ONE pending run
+  # per group, so while a long render holds the group, anything queued behind it
+  # is evicted by the next arrival — and with a 5-minute cron in the same group
+  # the next arrival is never more than 5 minutes away. A lesson build could
+  # therefore never start at all during an evening render.
+  #
+  # Sharing the group bought serialization of "delivery state". These two
+  # workflows do not actually share any: this one writes
+  # .german-lesson-progress.json, .german-lesson-batch-sent.json and the lib/
+  # lesson sources; daily.yml writes .daily-batch-sent.json and
+  # .daily-delivery-progress.json. The only genuinely shared resource is the git
+  # ref, and every push path here and in daily.yml already retries through
+  # `git pull --rebase --autostash` — exercised and successful twice in today's
+  # logs alone. The stale-checkout duplicate that first motivated the shared
+  # group was fixed separately and permanently by pinning `ref: main` on
+  # checkout, which a test still enforces for all three workflows.
+  group: gapmedia-lesson
   cancel-in-progress: false
 
 permissions:

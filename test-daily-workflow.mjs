@@ -132,4 +132,25 @@ for (const [name, wf] of [["daily.yml", workflow], ["news-scan.yml", germanWorkf
 assert.match(readFileSync("daily-render.mjs", "utf8"), /classifyVoiceFailure\(detail\)/,
   "voice-failure classification belongs to lib/slot-failure-report.mjs, where it is tested");
 
+// Regression guard for the starvation measured 2026-09-13 19:16-19:27: the
+// episode-18 rebuild was created three times and executed zero times. GitHub
+// keeps one pending run per concurrency group, so while daily.yml held
+// "gapmedia-production" for a 30-minute render, every queued lesson build was
+// evicted by the next arrival — and telegram.yml's own "*/5" cron guarantees an
+// arrival within five minutes. The German lesson therefore could not build at
+// all during an evening render, which is how a shipped fix still looked broken.
+//
+// The two workflows write disjoint state (.german-lesson-* and the lib/ lesson
+// sources here; .daily-* there) and both push through a pull --rebase retry, so
+// the shared group bought nothing that is not already covered.
+assert.match(germanWorkflow, /group: gapmedia-lesson/,
+  "the lesson build needs its own concurrency group — queued behind daily renders it was evicted every time");
+assert.ok(!/group: gapmedia-production/.test(germanWorkflow),
+  "sharing the production group is what starved it; that must not come back");
+// The two that genuinely do share delivery state stay serialized together.
+assert.match(workflow, /group: gapmedia-production/);
+assert.match(telegramWorkflow, /group: gapmedia-production/);
+// And the fix that actually addressed the stale-checkout duplicate stays put —
+// asserted for all three above.
+
 console.log("production workflows keep delivery state serialized and correction paths explicit");
