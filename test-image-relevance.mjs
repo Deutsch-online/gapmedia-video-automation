@@ -133,3 +133,28 @@ console.log("ok   a real green-screen slide now searches for TikTok's own Green 
 }
 
 console.log("ok   a judge outage is no longer logged as an irrelevant picture, and the candidate count means what it says");
+
+// daily.yml run #232 (2026-09-13), the first full evening render after the
+// diagnostics landed. Across the whole run the rejection counters totalled:
+//   used 23 · download 78 · badType 26 · tooSmall 366 · notRelevant 97
+//   judgeUnavailable 0
+// Two things follow. judgeUnavailable:0 proves the relevance judge answered
+// every time (the Groq fallback carried it while Gemini was returning 429 to
+// generateAIImage) — so those 97 are real verdicts, not an outage wearing a
+// content label. And tooSmall alone is 62% of every rejection, which the
+// counter cannot explain on its own: a 1200×630 Open Graph card just under the
+// area floor and a 300×200 thumbnail produce the identical number but mean
+// opposite things. The line must carry one real measurement so the next look
+// decides from evidence instead of a hypothesis.
+{
+  const src = readFileSync("lib/auto-image.mjs", "utf8");
+  assert.match(src, /largest undersized: \$\{rejected\.bestSmall\.label\}/,
+    "an undersized rejection must report a real width×height and host, not just a count");
+  assert.match(src, /area > \(rejected\.bestSmall\?\.area \|\| 0\)/,
+    "it must keep the best near-miss, not whichever candidate happened to be last");
+  // Measurement only: the floor itself is untouched.
+  assert.match(src, /Math\.max\(size\.width, size\.height\) < 1080 \|\| size\.width \* size\.height < 700000/,
+    "the 1080px / 700,000px floor must stay exactly as it is — this change measures, it does not relax");
+}
+
+console.log("ok   an undersized candidate reports its real size, so 'tooSmall' can be diagnosed instead of guessed");
