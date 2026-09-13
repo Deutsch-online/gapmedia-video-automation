@@ -1,6 +1,6 @@
 {
   "unit": "a1-18-shopping",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -8,13 +8,7 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "اولین",
-          "سؤال",
-          "قیمت",
-          "چیزی",
-          "را",
-          "میخواهی،",
-          "سؤال،"
+          "خریدِت"
         ],
         "error": {
           "status": 1,
@@ -24,7 +18,7 @@
             null,
             null
           ],
-          "pid": 4390,
+          "pid": 3964,
           "stdout": null,
           "stderr": null
         }
@@ -36,12 +30,7 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "اولین",
-          "سؤال",
-          "قیمت",
-          "جمله",
-          "وقتی",
-          "سؤال،"
+          "خریدِت"
         ],
         "error": {
           "status": 1,
@@ -51,7 +40,7 @@
             null,
             null
           ],
-          "pid": 33649,
+          "pid": 34518,
           "stdout": null,
           "stderr": null
         }
@@ -63,10 +52,7 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "سؤال",
-          "قیمت",
-          "ببر.",
-          "وقتی"
+          "خریدِت"
         ],
         "error": {
           "status": 1,
@@ -76,165 +62,7 @@
             null,
             null
           ],
-          "pid": 64140,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "سؤال",
-          "قیمِت",
-          "وقتی",
-          "سؤال،"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 94285,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "سؤال",
-          "قیمِت",
-          "زیاد",
-          "وقتی",
-          "چیزی"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 124269,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 3,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "اولین",
-          "آلمان",
-          "سؤال",
-          "ببر.",
-          "جمله",
-          "سؤال،"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 154363,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "اولین",
-          "جملهها",
-          "زیاد",
-          "جمله",
-          "سؤال،",
-          "چیزی",
-          "نه."
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 185101,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "اولین",
-          "آلمان",
-          "کاربردی",
-          "این",
-          "سؤال،"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 216312,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 3,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "جملهها",
-          "کاربردی",
-          "جمله",
-          "وقتی",
-          "سؤال،"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 247767,
+          "pid": 64636,
           "stdout": null,
           "stderr": null
         }
@@ -243,11 +71,7 @@
   ],
   "lastReason": {
     "faultWords": [
-      "جملهها",
-      "کاربردی",
-      "جمله",
-      "وقتی",
-      "سؤال،"
+      "خریدِت"
     ],
     "error": {
       "status": 1,
@@ -257,7 +81,7 @@
         null,
         null
       ],
-      "pid": 247767,
+      "pid": 64636,
       "stdout": null,
       "stderr": null
     }
