@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { unwrapResultUrl, parseLiteResults, extractPageImage, ddgSearch } from "./lib/ddg-search.mjs";
 
@@ -128,3 +129,71 @@ const LITE_HTML = `<!DOCTYPE html><html><body><form>...</form>
   globalThis.fetch = realFetch;
   console.log("ok   ddgSearch calls the keyless lite endpoint and reports a failing service as itself");
 }
+
+// daily.yml run #234 (2026-09-13) named the real blocker with real numbers:
+// 366 of 590 candidate rejections were "too small", and the sizes the new
+// diagnostic printed say what those images actually were —
+//   1024×576 www.pcworld.com · 1024×512 ph-files.imgix.net · 512×512 s3.gsm.ir
+//   1051×702 sb.kaleidousercontent.com (29 pixels under the gate's minimum)
+// — i.e. social preview cards, not the product screenshot the page shows. The
+// floor they miss is lib/visual-proof.mjs's own, the Visual Truth Gate, so the
+// answer is never to lower it; it is to look where the big real image is.
+{
+  const { extractPageImages, extractPageImage } = await import("./lib/ddg-search.mjs");
+  const page = `
+    <html><head>
+      <meta property="og:image" content="/social/card-1024x512.png">
+    </head><body>
+      <img src="/assets/logo.png">
+      <img src="data:image/png;base64,AAAA">
+      <img src="/icons/download-icon.png">
+      <img src="/img/avatar/author.jpg">
+      <img src="/media/upscayl-main-window.png"
+           srcset="/media/upscayl-main-window-600.png 600w, /media/upscayl-main-window-1600.png 1600w">
+      <img src="/diagram.svg">
+      <img src="https://cdn.example.com/screens/before-after.jpg">
+    </body></html>`;
+  const found = extractPageImages(page, "https://example.com/upscayl-review");
+
+  // The card still comes first — when the page IS the product it is usually right.
+  assert.equal(found[0], "https://example.com/social/card-1024x512.png",
+    "the social card stays the first guess, unchanged");
+  // ...and extractPageImage's own contract is untouched for every existing caller.
+  assert.equal(extractPageImage(page, "https://example.com/upscayl-review"), found[0]);
+
+  // The real screenshot is now reachable, at its LARGEST rendition.
+  assert.ok(found.includes("https://example.com/media/upscayl-main-window-1600.png"),
+    "srcset's widest entry is the one most likely to clear the size floor");
+
+  // Furniture must never become a candidate: each of these would burn a
+  // download and a relevance call to be rejected for the obvious reason.
+  for (const junk of ["logo.png", "download-icon.png", "author.jpg", "diagram.svg", "data:"]) {
+    assert.ok(!found.some((u) => u.includes(junk)), `${junk} is page furniture, not content`);
+  }
+}
+
+// One page may not monopolise the candidate budget — other results deserve a look.
+{
+  const { extractPageImages } = await import("./lib/ddg-search.mjs");
+  const many = `<html><body>${Array.from({ length: 9 }, (_, i) => `<img src="/shot-${i}.png">`).join("")}</body></html>`;
+  assert.equal(extractPageImages(many, "https://example.com/x", { limit: 2 }).length, 2);
+}
+
+// Degenerate input must not throw — this runs inside a per-candidate loop that
+// a single exception would abort for every remaining result.
+{
+  const { extractPageImages } = await import("./lib/ddg-search.mjs");
+  assert.deepEqual(extractPageImages("", "https://example.com/x"), []);
+  assert.deepEqual(extractPageImages("<img src>", "https://example.com/x"), []);
+  assert.deepEqual(extractPageImages(null, "https://example.com/x"), []);
+}
+
+// The gate is untouched: this file adds candidates and rejects nothing on its
+// behalf. The floor must still live in visual-proof.mjs at its exact values.
+{
+  const proof = readFileSync("lib/visual-proof.mjs", "utf8");
+  assert.match(proof, /Math\.max\(size\.width, size\.height\) < 1080 \|\| size\.width \* size\.height < 700000/,
+    "the Visual Truth Gate's size floor must stay exactly as it is — the fix is better candidates, never a lower bar");
+}
+
+console.log("ok   a page's real screenshot is reachable, not just its social card — and the gate's floor is untouched");
