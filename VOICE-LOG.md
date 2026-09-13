@@ -758,3 +758,50 @@ build printed its own note saying so before trying.
 **Status: still PROVISIONAL.** A file was produced in production; nobody has
 listened to it. The by-ear check at the top of this file is still owed before
 pocket-tts can be called settled.
+
+### 2026-09-13 19:12 UTC · the German word gets a real German voice, free
+
+**Why this is a voice change and not a bug fix.** Episode 18 failed every hour
+today on a single clip — «Was kostet das?» — because the German vocabulary word
+was hardwired to MiniMax and MiniMax has no credit. Every report ended at "top
+up MiniMax", which is not a fix. The owner said so plainly: «این هنوز درست
+نشده است».
+
+**The constraint was misread.** It was never "only MiniMax can speak German".
+It was: pocket-tts has a Farsi model and an English model and no German one,
+and a German word read by either is the English-accented result rejected on
+2026-09-10. Microsoft Edge's neural service has genuinely native German voices,
+needs no key and no account, and **this repo already speaks its protocol** —
+`lib/edge-tts.mjs`, used by `render-ai-education-voice.mjs` for Persian. It was
+sitting unused for exactly this problem.
+
+**Evidence before the switch, not after** (`.github/workflows/tts-probe.yml`
+run #3, on a runner, 19:11 UTC — the sandbox cannot reach
+speech.platform.bing.com, 403 "Host not in allowlist"):
+
+| voice | the exact failing line | result |
+|---|---|---|
+| `de-DE-KatjaNeural` | «Was kostet das?» | **1.296s / 21,165 bytes** |
+| `de-DE-ConradNeural` | «Was kostet das?» | **1.368s / 22,317 bytes** |
+
+Both plausible for a three-word question. No key, no credit, no quota. Both
+takes are uploaded as the run's `german-voice-audition` artifact so the choice
+can be made by ear rather than by argument.
+
+**What changed:** `GERMAN_WORD_ENGINE` (new, default `"edge"`) selects the
+German clip's engine independently of `TTS_ENGINE`. The owner's 2026-09-11
+correction — the German word read too fast and too quiet — is carried across
+rather than dropped: `GERMAN_WORD_VOICE_SETTINGS` (speed 0.85, vol 1.4) is
+converted to Edge's percentage strings by `music/edge-tts.mjs`, so the same
+intent survives the engine change.
+
+**What did not change:** the Persian narration engine, `APPROVED`,
+`GERMAN_LESSON_NARRATION_OVERRIDE`, `GERMAN_WORD_VOICE_SETTINGS` itself, and
+`music/voice-qc.mjs`. The German clip can never resolve to pocket-tts — a test
+pins that.
+
+**Status: de-DE-KatjaNeural — PROVISIONAL, pending a human listen.** Duration
+and byte size are consistent with a real German reading; nobody has heard it.
+Listen to both takes in the artifact above. Revert levers:
+`GERMAN_WORD_ENGINE=minimax` once credit returns, or `EDGE_TTS_VOICE=de-DE-ConradNeural`
+for the male voice with no code change.

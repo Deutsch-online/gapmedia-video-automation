@@ -35,9 +35,24 @@ if (!text || !output) {
 // caller wanting another language passes EDGE_TTS_VOICE.
 const voice = process.env.EDGE_TTS_VOICE || "de-DE-KatjaNeural";
 
+// The owner's 2026-09-11 correction — the German word read too fast and too
+// quiet — was expressed in MiniMax's units (speed 0.85, vol 1.4,
+// GERMAN_WORD_VOICE_SETTINGS in lib/voice-settings.mjs). Edge takes percentage
+// strings instead, so the same INTENT is carried across rather than dropped:
+// the caller passes the multipliers it already has and they are converted here.
+// Unset, both are Edge's own default, which is what the probe auditioned.
+const pct = (mult, fallback) => {
+  const n = Number(mult);
+  if (!Number.isFinite(n) || n <= 0) return fallback;
+  const delta = Math.round((n - 1) * 100);
+  return `${delta >= 0 ? "+" : ""}${delta}%`;
+};
+const rate = pct(process.env.EDGE_TTS_SPEED, "+0%");
+const volume = pct(process.env.EDGE_TTS_VOL, "+0%");
+
 let audio;
 try {
-  audio = await synthesize({ text, voice, timeoutMs: 25000 });
+  audio = await synthesize({ text, voice, rate, volume, timeoutMs: 25000 });
 } catch (e) {
   console.error(`Edge TTS failed: ${e.message}`);
   process.exit(1);
@@ -50,4 +65,4 @@ if (!audio || audio.length < 1024) {
 mkdirSync(dirname(output), { recursive: true });
 writeFileSync(output, audio);
 trimDeadAir(output);
-console.log(`  Edge voice (${voice}) -> ${output}`);
+console.log(`  Edge voice (${voice}, rate ${rate}, volume ${volume}) -> ${output}`);

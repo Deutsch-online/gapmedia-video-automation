@@ -243,16 +243,27 @@ console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}
 // is chosen PER CLIP: the Persian hook/explanations/outro follow TTS_ENGINE,
 // and the German-word clip stays on the only engine that has a German voice.
 const TTS_ENGINE = process.env.TTS_ENGINE === "pocket" ? "pocket" : "minimax";
+// The German vocabulary clip's own engine, separate from the Persian one.
+// Default "edge": Microsoft Edge's neural service has genuinely NATIVE German
+// voices, needs no key and no credit, and — unlike every other free option
+// here — is not an English model reading German, which is the result the owner
+// rejected on 2026-09-10. Proven on a runner 2026-09-13
+// (.github/workflows/tts-probe.yml run #3): «Was kostet das?» came back as a
+// 1.296s/21,165-byte mp3 from de-DE-KatjaNeural with no credentials at all.
+// Set GERMAN_WORD_ENGINE=minimax to go back the moment that credit returns.
+const GERMAN_WORD_ENGINE = process.env.GERMAN_WORD_ENGINE === "minimax" ? "minimax" : "edge";
 const speakableFor = (engine) => (engine === "pocket" ? pocketSpeakable : minimaxSpeakable);
 
 function ttsSynthesize(text, languageBoost, outFile, voiceId) {
   // languageBoost is set only for the German vocabulary clip.
-  const engine = languageBoost ? "minimax" : TTS_ENGINE;
-  if (languageBoost && TTS_ENGINE === "pocket") {
+  const engine = languageBoost ? GERMAN_WORD_ENGINE : TTS_ENGINE;
+  if (languageBoost) {
     console.error(
-      "   ℹ German word clip stays on MiniMax: pocket-tts has a Farsi and an "
-      + "English model, no German one, and a German word read by either is the "
-      + "English-accented result the owner rejected on 2026-09-10.",
+      engine === "edge"
+        ? "   ℹ German word clip on Edge's native German voice — free, keyless, "
+          + "and a real German speaker rather than the English-accented reading "
+          + "rejected on 2026-09-10. GERMAN_WORD_ENGINE=minimax reverts."
+        : "   ℹ German word clip on MiniMax, by explicit GERMAN_WORD_ENGINE.",
     );
   }
   // Persian explanatory lines must be validated before their text ever reaches
@@ -278,6 +289,13 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
   if (!voiceId) {
     env.MINIMAX_VOICE_PITCH = String(GERMAN_LESSON_NARRATION_OVERRIDE.pitch);
     env.VOICE_SPEED = String(GERMAN_LESSON_NARRATION_OVERRIDE.speed);
+  } else if (voiceId === GERMAN_WORD_VOICE_ID && engine === "edge") {
+    // Same correction, this engine's units. music/edge-tts.mjs converts these
+    // multipliers to Edge's percentage strings, so the owner's 2026-09-11
+    // "slower and louder" fix survives the engine change instead of silently
+    // reverting to a default reading.
+    env.EDGE_TTS_SPEED = String(GERMAN_WORD_VOICE_SETTINGS.speed);
+    env.EDGE_TTS_VOL = String(GERMAN_WORD_VOICE_SETTINGS.vol);
   } else if (voiceId === GERMAN_WORD_VOICE_ID) {
     // Owner report 2026-09-11: the German-word clip read too fast and too
     // quiet — see GERMAN_WORD_VOICE_SETTINGS's own comment
@@ -285,7 +303,11 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
     env.VOICE_SPEED = String(GERMAN_WORD_VOICE_SETTINGS.speed);
     env.MINIMAX_VOICE_VOL = String(GERMAN_WORD_VOICE_SETTINGS.vol);
   }
-  const script = engine === "pocket" ? "music/pocket-tts.mjs" : "music/minimax-tts.mjs";
+  const script = engine === "pocket"
+    ? "music/pocket-tts.mjs"
+    : engine === "edge"
+      ? "music/edge-tts.mjs"
+      : "music/minimax-tts.mjs";
   execFileSync("node", [script, text, "-o", outFile], { env, stdio: "inherit" });
 }
 function ffprobeDuration(file) {
