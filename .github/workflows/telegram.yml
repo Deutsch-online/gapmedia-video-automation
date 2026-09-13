@@ -329,7 +329,15 @@ jobs:
           # Telegram-triggered rebuild would still call MiniMax and die on
           # "insufficient credit" while the scheduled pipeline succeeded —
           # the two paths render the same packs and must not diverge.
-          TTS_ENGINE: "pocket"
+          # Persian narration engine. Free, and NOT pocket-tts: pocket failed
+          # every narration line of episode 18 against music/voice-qc.mjs on
+          # 2026-09-13 («جمله»→«جمعه», «وقتی»→«اختی», «سؤال»→«سهل» — different
+          # words, not spellings). Edge is free and keyless too, and is what
+          # this repo already used for Persian in render-ai-education-voice.mjs.
+          # MiniMax stays reachable with TTS_ENGINE=minimax if its credit
+          # returns; it is never the default, because its running out is what
+          # stopped delivery.
+          TTS_ENGINE: "edge"
           # The offline engine speaks Persian with no credentials at all
           # (proven on a runner, tts-probe.yml run #2, 2026-09-13). It needs
           # this FREE HuggingFace token only for spans written in Latin

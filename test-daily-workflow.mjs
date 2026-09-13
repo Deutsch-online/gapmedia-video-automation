@@ -162,3 +162,35 @@ assert.match(telegramWorkflow, /group: gapmedia-production/);
 // asserted for all three above.
 
 console.log("production workflows keep delivery state serialized and correction paths explicit");
+
+// The gap the owner named on 2026-09-13: «بجای منی مکس از سرویس های دیگر
+// استفاده کن». Switching the workflows to a free engine was not enough,
+// because music/plan-voice.mjs and music/make-voice.mjs only recognised
+// "pocket" — so TTS_ENGINE=edge on the daily path silently selected MINIMAX,
+// the dead engine, and the replacement that was supposedly already done had
+// quietly not happened there at all.
+for (const [name, src] of [
+  ["plan-voice", readFileSync("music/plan-voice.mjs", "utf8")],
+  ["make-voice", readFileSync("music/make-voice.mjs", "utf8")],
+]) {
+  assert.match(src, /\["pocket", "edge"\]\.includes\(process\.env\.TTS_ENGINE\)/,
+    `${name} must recognise every free engine — an unrecognised one falls back to the paid engine silently`);
+  assert.match(src, /ENGINE === "edge"\s*\n\s*\? "music\/edge-tts\.mjs"/,
+    `${name} must route the edge engine to its own adapter`);
+  // music/edge-tts.mjs defaults to a German voice; Persian narration must say so.
+  assert.match(src, /EDGE_TTS_VOICE: process\.env\.EDGE_PERSIAN_VOICE \|\| "fa-IR-[A-Za-z]+Neural"/,
+    `${name} must name a Persian voice — the adapter's own default is German`);
+  assert.match(src, /env: ttsEnv/,
+    `${name} must actually pass that voice to the child process`);
+}
+
+// Both must choose the SAME engine, or make-voice re-synthesises what
+// plan-voice already measured and the take's length drifts into the next slide.
+{
+  const pick = (src) => src.match(/const ENGINE = .*/)[0];
+  assert.equal(pick(readFileSync("music/plan-voice.mjs", "utf8")),
+    pick(readFileSync("music/make-voice.mjs", "utf8")),
+    "planning and synthesis must select the engine identically — the cache key depends on it");
+}
+
+console.log("ok   every narration path recognises the free engines, so none of them can fall back to the dead one by accident");

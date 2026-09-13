@@ -44,9 +44,25 @@ if (!vo) { console.log(`  no narration for ${featureId} — silent`); process.ex
 // match plan-voice.mjs's choice exactly, or the cache filename below misses
 // the file plan-voice already measured and this re-synthesises it, risking a
 // slightly different length that runs into the next slide.
-const ENGINE = process.env.TTS_ENGINE === "pocket" ? "pocket" : "minimax";
+// Free engines first; MiniMax is only the fallback. "edge" joined on
+// 2026-09-13 — and it matters that it is listed here, because until it was,
+// setting TTS_ENGINE=edge on this path silently selected MINIMAX, the engine
+// whose exhausted credit stopped delivery in the first place.
+const ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "minimax";
+// Edge is an ordinary neural engine like MiniMax, so it takes the long-standing
+// Persian transform with its tested pronunciation fixes, not pocket's.
 const speakable = ENGINE === "pocket" ? pocketSpeakable : minimaxSpeakable;
-const TTS = ENGINE === "pocket" ? "music/pocket-tts.mjs" : "music/minimax-tts.mjs";
+const TTS = ENGINE === "pocket"
+  ? "music/pocket-tts.mjs"
+  : ENGINE === "edge"
+    ? "music/edge-tts.mjs"
+    : "music/minimax-tts.mjs";
+// music/edge-tts.mjs defaults to a GERMAN voice (it was written for the German
+// lesson's vocabulary clip), so Persian narration must name its own voice or a
+// German speaker would read it.
+const ttsEnv = ENGINE === "edge"
+  ? { ...process.env, EDGE_TTS_VOICE: process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural" }
+  : process.env;
 // Match plan-voice.mjs exactly: a new speaking profile must synthesise fresh
 // lines rather than reuse a slower cached voice.
 const voiceKey = `${process.env.MINIMAX_VOICE_ID || "default"}-${process.env.TTS_PROFILE || "fa-natural-v6"}`
@@ -91,7 +107,7 @@ for (let i = 0; i < lines.length; i++) {
   const f = `music/voice/${featureId}-${voiceKey}-${ENGINE}-${copyKey}-line${i}.mp3`;
   if (!existsSync(f)) {
     execFileSync("node", [TTS, spokenLines[i], "-o", f], {
-      stdio: ["ignore", "ignore", "inherit"],
+      stdio: ["ignore", "ignore", "inherit"], env: ttsEnv,
     });
   }
   const duration = Number(execFileSync("ffprobe", [
