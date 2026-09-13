@@ -1,0 +1,101 @@
+# Answers one question with evidence instead of argument: when Gemini is out
+# of quota, does the Groq fallback in lib/auto-image.mjs's judgeRelevance()
+# actually work — and if not, what exactly does Groq say?
+#
+# The question matters because the image-relevance judge is load-bearing for
+# the Visual Truth Gate. A candidate no model has judged is REJECTED (that is
+# the point, and it does not change here), so a dead judge does not lower the
+# bar — it closes the gate completely. daily #240 (2026-09-13) rejected 40+
+# candidates across both evening formats, several strategies reporting
+# tooSmall:0 notRelevant:0 judgeUnavailable:5 — five images rejected solely
+# because nothing could look at them. Gemini was answering 429 "exceeded your
+# current quota" to every call in that run, so every verdict fell through to
+# Groq, and Groq evidently did not answer either. Its error was swallowed by a
+# bare catch, so the run could not say why.
+#
+# It cannot be answered from the agent sandbox: the Groq and Gemini keys are
+# repository secrets and are not present there. A runner has both.
+#
+# Deliberately isolated from production, same as tts-probe.yml:
+#   · its own concurrency group, so it never competes for the single pending
+#     slot in the production groups
+#   · it renders nothing, sends nothing to Telegram, and touches no delivery
+#     state, ledger or marker
+#   · it is allowed to fail. A failure here is the answer, not an incident.
+name: Image judge probe
+
+on:
+  push:
+    paths:
+      - ".trigger-judge-probe"
+
+concurrency:
+  group: judge-probe
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Which models Groq actually serves this account today. GROQ_MODEL
+      # defaults to "openai/gpt-oss-120b"; if that name is gone or not
+      # available to this key, every fallback verdict fails with a 404 that
+      # nothing was printing.
+      - name: What does Groq serve?
+        continue-on-error: true
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          node -e '
+            const key = process.env.GROQ_API_KEY || "";
+            if (!key) { console.log("GROQ_API_KEY is NOT set for this workflow"); process.exit(0); }
+            console.log("GROQ_API_KEY present, length", key.length);
+            fetch("https://api.groq.com/openai/v1/models", { headers: { authorization: `Bearer ${key}` } })
+              .then(async (r) => {
+                console.log("GET /models ->", r.status);
+                const body = await r.text();
+                if (!r.ok) { console.log(body.slice(0, 600)); return; }
+                const ids = (JSON.parse(body).data || []).map((m) => m.id).sort();
+                console.log("models served to this key:", ids.length);
+                for (const id of ids) console.log("  ", id);
+                console.log("default GROQ_MODEL openai/gpt-oss-120b served:", ids.includes("openai/gpt-oss-120b"));
+              })
+              .catch((e) => console.log("request failed:", e.message));
+          '
+
+      # The real call, through the real code path, with the real prompt shape.
+      - name: Ask each provider for one verdict
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          node -e '
+            import("./lib/auto-image.mjs").then(async (m) => {
+              const prompt = "Respond with JSON only: {\"relevant\": true, \"reason\": \"probe\"}";
+              for (const [name, fn] of [["gemini", m.askGemini], ["groq", m.askGroq]]) {
+                try {
+                  const raw = await fn(prompt);
+                  console.log(`${name}: OK ->`, String(raw).slice(0, 200));
+                } catch (e) {
+                  console.log(`${name}: FAILED ->`, e.message);
+                }
+              }
+              // And the function production actually calls, end to end.
+              const v = await m.judgeRelevance("Upscayl", ["Upscayl is a free AI image upscaler"], {
+                title: "Upscayl - Free and Open Source AI Image Upscaler",
+                url: "https://upscayl.org/",
+                snippet: "Upscayl lets you enlarge and enhance low-resolution images using AI.",
+              });
+              console.log("judgeRelevance ->", JSON.stringify(v));
+            });
+          '
