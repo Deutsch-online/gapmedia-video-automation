@@ -732,3 +732,29 @@ huggingface.co/settings/tokens), the English half works with no code change.
 **Status unchanged: pocket-tts — PROVISIONAL, pending a human listen.** As of
 this entry it has still never spoken in a delivered video. Revert lever:
 `TTS_ENGINE=minimax`.
+
+### 2026-09-13 14:08 UTC · pocket-tts spoke in production for the first time
+
+`news-scan.yml` run #236, episode 18 (`a1-18-shopping`), the real pipeline —
+not a probe:
+
+```
+pocket-tts voice -> music/voice/german-a1-18-shopping-hook.mp3 (1 segment)
+```
+
+3600 ms generated, one segment, no error. The Persian half of the narration is
+therefore no longer theoretical: it ran inside `german-lesson-build.mjs` with
+`TTS_ENGINE=pocket`, on the runner, against a real episode manifest, and
+produced a real file. `HF_TOKEN` was empty in that run's env (visible in the
+job log) and the pure-Persian line needed nothing from it, exactly as
+`lib/tts-segments.mjs` says.
+
+The episode still failed, and for the reason already documented: the German
+word clip «Was kostet das?» is correctly held on MiniMax — pocket-tts has a
+Farsi model and an English model and no German one — and MiniMax answers
+"insufficient credit". The per-clip engine split behaved as designed; the
+build printed its own note saying so before trying.
+
+**Status: still PROVISIONAL.** A file was produced in production; nobody has
+listened to it. The by-ear check at the top of this file is still owed before
+pocket-tts can be called settled.
