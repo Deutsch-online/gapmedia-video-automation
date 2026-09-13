@@ -104,3 +104,31 @@ console.log("all locked rules hold across every hook in the catalogue");
 }
 
 console.log("ok   no spoken line carries the ـت-before-«د» clitic that was heard as a different word three times");
+
+// The word-final د → ت devoicing allowance in lib/hear.mjs forgives a spelling
+// the transcriber chose, not a word that changed. That holds only while no
+// د-final word the channel speaks turns into a DIFFERENT real word of this
+// corpus when its د is read as ت — «سرد» (cold) is safe only because «سرت»
+// (your head) is not a word this channel says. Measured, not assumed: 0
+// collisions across 65 د-final words on 2026-09-13. If a future script adds
+// the other half of such a pair, this fails and the allowance must be narrowed
+// rather than the pair quietly folded together.
+{
+  const { fold } = await import("./lib/hear.mjs");
+  const corpus = ["lib/narration.mjs", "lib/german-a1.mjs"]
+    .map((f) => readFileSync(f, "utf8"))
+    .join("\n");
+  const spoken = new Set();
+  for (const m of corpus.matchAll(/[؀-ۿ‌]{2,}/g)) spoken.add(fold(m[0]));
+  const collisions = [...spoken]
+    .filter((w) => w.endsWith("د") && w.length > 1)
+    .filter((w) => spoken.has(`${w.slice(0, -1)}ت`))
+    .map((w) => `«${w}» ↔ «${w.slice(0, -1)}ت»`);
+  assert.deepEqual(
+    collisions,
+    [],
+    `a د-final word now collides with another real word of this corpus under the devoicing allowance:\n${collisions.join("\n")}`,
+  );
+}
+
+console.log("ok   no د-final spoken word collides with another corpus word under the devoicing allowance");

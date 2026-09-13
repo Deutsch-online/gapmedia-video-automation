@@ -60,6 +60,30 @@ const cases = [
     "این جمله یعنی باران می‌بارد.", "این جملة یعنی باران می‌بارد."],
   ["pass", "a word-final ع elided into the next word — real episode-17 false alarm",
     "و این دو کلمه یعنی سریع و آهسته.", "و این دو کلمه یعنی سری و آهسته."],
+  // Both of episode 18's remaining rejections, confirmed live 2026-09-13 on
+  // three full builds in a row (news-scan #249, #250, #251) with identical
+  // output each time — not synthesis noise.
+  //
+  // «جمله‌ها» loses its ZWNJ on the way to the engine and becomes «جملهها»,
+  // two ه in a row. Only one of them is a /h/: the first is the silent
+  // vowel-carrier of «جمله». The transcriber writes the single h it heard.
+  ["pass", "«جمله‌ها» heard with one ه instead of the doubled spelling",
+    "اولین خرید در آلمان را با همین جمله‌ها انجام بده.",
+    "اولین خرید در آلمان را با همین جملها انجام بده."],
+  // A word-final /d/ devoices towards [t] in connected speech. The decisive
+  // evidence: in the SAME build, the same «خرید» from the same voice was
+  // transcribed correctly in line 1 and as «خریط» in line 6.
+  ["pass", "«خرید» heard with its final د devoiced to ط",
+    "با این چهار جمله، خرید را کامل به آلمانی انجام بده.",
+    "با این چهار جمله، خریط را کامل به آلمانی انجام بده."],
+  // The devoicing allowance runs one way only. A reference ending in ت — the
+  // possessive clitic — heard without it is still a lost morpheme, which is
+  // the whole bug class fixed earlier on 2026-09-13. Kept next to the rule it
+  // constrains so loosening one fails the other.
+  ["fail", "the reverse — a reference ت heard as د — is still a fault",
+    "خریدت را انجام بده", "خرید را انجام بده"],
+  ["fail", "a word-final ه is not a licence to drop a whole syllable",
+    "این جمله را بگو", "این را بگو"],
 
   // Sounds that actually changed. Each one alters the sentence.
   ["fail", "an ezafe the grammar has no room for",
