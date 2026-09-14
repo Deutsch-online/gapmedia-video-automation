@@ -81,6 +81,43 @@ import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, ENGI
   }
 }
 
+// --- The log must distinguish "answered, unreadable" from "refused us" ---
+//
+// These need opposite fixes: a 200 with nothing parsed is a parser bug in
+// this module, while a 403 is a service turning us away. A bare engine name
+// in `tried` could not tell them apart, which is the one question the first
+// live run of the Mojeek parser has to answer.
+{
+  resetEngineCooldown();
+  const realFetch = globalThis.fetch;
+  const engines = [
+    { name: "unreadable", url: () => "https://a.test/", parse: () => [] },
+    { name: "refusing", url: () => "https://b.test/", parse: () => [] },
+    { name: "working", url: () => "https://c.test/", parse: () => [{ title: "t", url: "https://help.instagram.com/x", snippet: "s" }] },
+  ];
+  globalThis.fetch = async (url) => (String(url).includes("b.test")
+    ? { ok: false, status: 403, text: async () => "" }
+    : { ok: true, status: 200, text: async () => "<html>markup this parser does not know</html>" });
+  try {
+    const out = await webSearch("pin posts", { engines });
+    assert.equal(out.engine, "working");
+    const [unreadable, refusing, working] = out.tried;
+    assert.match(unreadable, /unreadable\(200, 0 parsed/,
+      "an index that ANSWERED but could not be read must say so — that is our parser, not a block");
+    assert.match(refusing, /refusing\(403\)/, "a refusal must report its status");
+    assert.match(working, /working\(1\)/, "the index that answered must report how many results it gave");
+
+    // A cooled engine is skipped, and the log says it was skipped rather
+    // than leaving a silent gap.
+    const again = await webSearch("schedule posts", { engines });
+    assert.ok(again.tried.some((t) => t === "refusing(cooling)"),
+      "an engine on cooldown must be visible in the log, not silently absent");
+  } finally {
+    globalThis.fetch = realFetch;
+    resetEngineCooldown();
+  }
+}
+
 // --- Every index is asked; none is silently dropped ---
 {
   const names = ENGINES.map((e) => e.name);
