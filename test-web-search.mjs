@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
-import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, engineLedger, ENGINES } from "./lib/web-search.mjs";
+import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, engineLedger, bodySignature, ENGINES } from "./lib/web-search.mjs";
 
 // daily.yml run #267 (2026-09-14) is why this exists. The judge was healthy
 // (judgeUnavailable: 0) and the size floor was not the obstacle — there was
@@ -183,14 +183,35 @@ import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, engi
   }
 
   const led = engineLedger();
-  assert.deepEqual(led, [
-    "refuser: 403",
-    "unreadable: 200, 0 parsed — markup not recognised",
-    "answers: 1 result(s)",
-  ], `the ledger must name each index's first real outcome, got ${JSON.stringify(led)}`);
+  assert.equal(led[0], "refuser: 403");
+  assert.equal(led[2], "answers: 1 result(s)");
+  // A page that parsed to nothing is described, not judged: run #275 recorded
+  // "duckduckgo: 202, 0 parsed — markup not recognised", and that verdict was
+  // an assumption — an anti-bot challenge page and changed result markup look
+  // the same from here and need opposite fixes. The ledger carries what the
+  // page actually says instead.
+  assert.match(led[1], /^unreadable: 200, 0 parsed — \d+B, page says: /,
+    `a 0-parsed page must be described by its own content, got ${JSON.stringify(led[1])}`);
 
   resetEngineCooldown();
   assert.deepEqual(engineLedger(), [], "resetEngineCooldown() clears the ledger with the cooldown");
+}
+
+// --- bodySignature reports the page, and never a guess about it ---
+{
+  const challenge = "<html><head><title>x</title><style>a{}</style></head><body>" +
+    "<script>var t=1;</script><h1>If this error persists, please let us know</h1>" +
+    "<p>unfortunately, bots use DuckDuckGo too</p></body></html>";
+  const sig = bodySignature(challenge);
+  assert.match(sig, /^\d+B, page says: /);
+  assert.ok(sig.includes("If this error persists"),
+    "the visible text must survive — that sentence is what distinguishes a challenge page");
+  assert.ok(!sig.includes("var t=1") && !sig.includes("a{}"),
+    "script and style bodies are noise and must be stripped");
+  assert.ok(sig.length < 200, "the signature must stay one short line");
+  assert.equal(bodySignature(""), "0B, page says: \"\"");
+  assert.equal(bodySignature(null), "0B, page says: \"\"");
+
 }
 
 // --- The run's final summary actually prints that ledger ---
