@@ -1,0 +1,185 @@
+{
+  "unit": "a1-19-directions",
+  "attempts": 1,
+  "history": [
+    {
+      "cycle": 0,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "مستقیم.",
+          "عبارت",
+          "عبارت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 4035,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "مستقیم.",
+          "عبارت",
+          "عبارت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 11161,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "مستقیم.",
+          "عبارت",
+          "عبارت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 18302,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "مستقیم.",
+          "عبارِت",
+          "یعنی",
+          "عبارِت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 25410,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "مستقیم.",
+          "عبارِت",
+          "یعنی",
+          "عبارِت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 32522,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "دیگر",
+          "نمیشوی.",
+          "عبارِت",
+          "یعنی",
+          "عبارِت،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 39626,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    }
+  ],
+  "lastReason": {
+    "faultWords": [
+      "دیگر",
+      "نمیشوی.",
+      "عبارِت",
+      "یعنی",
+      "عبارِت،"
+    ],
+    "error": {
+      "status": 1,
+      "signal": null,
+      "output": [
+        null,
+        null,
+        null
+      ],
+      "pid": 39626,
+      "stdout": null,
+      "stderr": null
+    }
+  }
+}
