@@ -1,6 +1,6 @@
 {
   "unit": "a1-19-directions",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -19,7 +19,7 @@
             null,
             null
           ],
-          "pid": 4092,
+          "pid": 4046,
           "stdout": null,
           "stderr": null
         }
@@ -28,109 +28,11 @@
     {
       "cycle": 0,
       "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "رفتن",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 11600,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 0,
-      "localAttempt": 3,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "رفتن",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 19155,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "واژه",
-          "مستقیم",
-          "مقصد",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 26658,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "واژه",
-          "مستقیم",
-          "مقصد",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 34154,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 3,
       "ok": false,
       "reason": {
         "faultWords": [
           "بپرس",
-          "واژه",
-          "مستقیم",
-          "مقصد",
+          "رفتن",
           "مسیری",
           "یک"
         ],
@@ -142,64 +44,20 @@
             null,
             null
           ],
-          "pid": 41646,
+          "pid": 11546,
           "stdout": null,
           "stderr": null
         }
       }
     },
     {
-      "cycle": 2,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بپرس",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 49134,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بپرس",
-          "مسیری"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 56812,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
+      "cycle": 0,
       "localAttempt": 3,
       "ok": false,
       "reason": {
         "faultWords": [
+          "بپرس",
+          "رفتن",
           "مسیری"
         ],
         "error": {
@@ -210,7 +68,7 @@
             null,
             null
           ],
-          "pid": 64491,
+          "pid": 19068,
           "stdout": null,
           "stderr": null
         }
@@ -219,6 +77,8 @@
   ],
   "lastReason": {
     "faultWords": [
+      "بپرس",
+      "رفتن",
       "مسیری"
     ],
     "error": {
@@ -229,7 +89,7 @@
         null,
         null
       ],
-      "pid": 64491,
+      "pid": 19068,
       "stdout": null,
       "stderr": null
     }
