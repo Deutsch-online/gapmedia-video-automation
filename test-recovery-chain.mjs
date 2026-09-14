@@ -130,4 +130,24 @@ console.log("ok   the chained retry fires a path no other workflow races it for"
   assert.equal(decide(spent).chain, false);
 }
 
+
+// --- The budget is per SUBJECT, not per unit id (the write side) ---
+// Measured 2026-09-14 on a1-19-directions, run #286: the episode had spent 2
+// chained attempts on «عبارت/یعنی/مستقیم./دیگر/نمیشوی.». Those lines were
+// reworded, every one of those words passed, and the build then failed on a
+// completely different set — «رفتن», «مسیری». german-lesson-build.mjs counted
+// that as attempt 3 of 3 purely because the unit id matched, and the chain
+// stood down for a human on the new subject's FIRST failure, having never
+// tried to fix either word. The rule that prevents it already lives in
+// evidenceIsStale(); the bug was that only the READER applied it, after the
+// writer had already replaced the evidence. This asserts the writer applies
+// it too — on the real file, since that is where the regression was.
+{
+  const build = readFileSync("german-lesson-build.mjs", "utf8");
+  assert.match(build, /import \{ evidenceIsStale \} from "\.\/lib\/recovery-chain\.mjs";/,
+    "the writer must use the SAME staleness rule as the reader, not a second copy of it");
+  assert.match(build, /prior\.unit === pack\.id && !evidenceIsStale\(prior, readNarration\)/,
+    "attempts may only increment when the prior evidence still describes a LIVE failure");
+}
+
 console.log("ok   a fix that lands does not get thrown away by a retry budget spent on the problem it fixed");

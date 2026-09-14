@@ -39,6 +39,7 @@ import { narrationFor } from "./lib/narration.mjs";
 import { minimaxSpeakable, pocketSpeakable } from "./lib/pronounce.mjs";
 import { GERMAN_WORD_VOICE_ID, GERMAN_LESSON_NARRATION_OVERRIDE, GERMAN_WORD_VOICE_SETTINGS, narrationLineCheck } from "./lib/voice-settings.mjs";
 import { runWithRecovery, RecoveryExhausted } from "./lib/recovery-engine.mjs";
+import { evidenceIsStale } from "./lib/recovery-chain.mjs";
 import { rewordPersistentWord, patchSourceText, proposePronunciationFix, patchPronunciationTable, persistentFaultWords, containsWord } from "./lib/narration-recovery.mjs";
 
 const projectDir = dirname(fileURLToPath(import.meta.url));
@@ -526,10 +527,33 @@ try {
             // or agent needing to notice first. attempts increments across
             // chained runs so the chain is bounded (lib/recovery-chain.mjs
             // enforces the cap), not infinite.
+            //
+            // The count belongs to ONE failing subject, not to the unit.
+            // Measured 2026-09-14 on a1-19-directions: the episode had spent
+            // 2 chained attempts on «عبارت/یعنی/مستقیم./دیگر/نمیشوی.», those
+            // lines were then reworded and every one of those words passed —
+            // but the NEXT exhaustion, on a completely different set
+            // («رفتن», «مسیری»), read attempts=2 for the same unit id, wrote
+            // 3, and the chain stood down on that new subject's very first
+            // failure, demanding a human for words the Recovery Loop had
+            // never once tried to fix. recovery-chain.mjs already carries the
+            // rule ("a retry budget is for 'we tried the same thing and it
+            // kept failing'"), but it can only apply it when READING the
+            // marker, and by then this line has already overwritten the old
+            // evidence. So the same check runs here, at write time, against
+            // the same helper: if the previously-recorded words are gone from
+            // the narration as it now stands, this is a new subject and it
+            // starts with its own full budget.
             let attempts = 1;
             try {
               const prior = JSON.parse(readFileSync(exhaustedMarker, "utf8"));
-              if (prior.unit === pack.id) attempts = (prior.attempts || 0) + 1;
+              const readNarration = (unit) => {
+                const spoken = narrationFor(unit);
+                return spoken ? [spoken.hook, ...(spoken.steps || []), spoken.outro].filter(Boolean).join(" ") : "";
+              };
+              if (prior.unit === pack.id && !evidenceIsStale(prior, readNarration)) {
+                attempts = (prior.attempts || 0) + 1;
+              }
             } catch { /* first exhaustion for this unit, or unreadable — start the chain at 1 */ }
             writeFileSync(exhaustedMarker, JSON.stringify({
               unit: pack.id, attempts, history: e.history, lastReason: e.lastReason,
