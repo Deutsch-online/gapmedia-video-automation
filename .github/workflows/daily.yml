@@ -361,9 +361,26 @@ jobs:
               return 0
             fi
             echo "▶ Producing $slot"
-            # A stuck renderer must not consume the whole 60-minute job and
-            # prevent its sibling format from being attempted.
-            if timeout --preserve-status 24m node daily-render.mjs --only "$slot"; then
+            # A stuck renderer must not consume the whole job and prevent its
+            # sibling format from being attempted. That is still the point —
+            # but 24m was cutting off renderers that were working, not stuck.
+            #
+            # Run #260 (2026-09-14) measured it: tiktok used 21m00s to exhaust
+            # all 6 topics and report a real verdict, and instagram was killed
+            # at exactly 24m00s (09:04:25 → 09:28:25) part-way through attempt
+            # 6 of 6, having reported nothing at all. A slot that is one topic
+            # from finishing is not a stuck slot, and the timeout was turning
+            # a diagnosable "6 topics tried, here is why each failed" into
+            # silence.
+            #
+            # 32m, not more: `timeout-minutes: 90` on the job above is the real
+            # ceiling, and two slots plus ~5m of setup must fit inside it with
+            # room to spare — 2 × 32 + 5 = 69m, leaving 21m of margin. The
+            # comment this replaces still said "60-minute job"; the job has
+            # been 90 minutes for some time, so the old arithmetic was stale
+            # as well as too tight. test-daily-workflow.mjs now ties the two
+            # numbers together so neither can drift out from under the other.
+            if timeout --preserve-status 32m node daily-render.mjs --only "$slot"; then
               mark_done "$slot"
               echo "✓ $slot delivered and checkpointed."
             else

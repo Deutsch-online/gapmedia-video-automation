@@ -15,7 +15,13 @@ assert.match(workflow, /id: produce/);
 assert.match(workflow, /\.daily-delivery-progress\.json/);
 assert.match(workflow, /run_slot tiktok\s+run_slot instagram/s);
 assert.match(workflow, /run_slot ai-tiktok\s+run_slot ai-instagram/s);
-assert.match(workflow, /timeout --preserve-status 24m node daily-render\.mjs --only/);
+// Each slot runs under its own `timeout`, so a stuck renderer cannot eat the
+// job and starve its sibling format. The exact number is NOT pinned here —
+// the budget check further down asserts what actually matters, that two
+// slots plus setup fit inside the job with margin. Pinning the literal here
+// as well only meant the number could not be corrected without editing two
+// places, which is how run #260's too-tight 24m survived as long as it did.
+assert.match(workflow, /timeout --preserve-status \d+m node daily-render\.mjs --only/);
 assert.match(workflow, /Mark incomplete delivery for retry/);
 
 // Regression guard for the production failure observed 2026-09-11 through
@@ -177,6 +183,26 @@ assert.match(telegramWorkflow, /group: gapmedia-telegram/,
   "the listener still serializes against ITSELF — its own ledger cache is written by its own previous run");
 // And the fix that actually addressed the stale-checkout duplicate stays put —
 // asserted for all three above.
+
+// Both slots must fit inside the job, with room to spare.
+//
+// Run #260 (2026-09-14) is why this is asserted rather than eyeballed:
+// tiktok needed 21m00s to exhaust all 6 topics and report a real verdict,
+// and instagram was killed at exactly 24m00s — the per-slot `timeout` —
+// part-way through attempt 6, reporting nothing. The slot was working, not
+// stuck. Meanwhile the comment beside that timeout still justified itself
+// against a "60-minute job" the workflow had long since raised to 90, so
+// the budget nobody rechecked was both stale and too tight.
+{
+  const slot = Number(workflow.match(/timeout --preserve-status (\d+)m node daily-render\.mjs/)[1]);
+  const job = Number(workflow.match(/timeout-minutes: (\d+)/)[1]);
+  const SLOTS = 2;      // morning: tiktok + instagram; evening: the ai- pair
+  const SETUP_MINUTES = 5;   // checkout, caches, pocket-tts, system packages
+  assert.ok(SLOTS * slot + SETUP_MINUTES <= job - 15,
+    `two ${slot}m slots plus ${SETUP_MINUTES}m of setup must leave at least 15m of margin inside the ${job}m job — got ${job - (SLOTS * slot + SETUP_MINUTES)}m`);
+  assert.ok(slot >= 30,
+    "a slot needs room for all 6 topic attempts to report a verdict — 24m killed a working instagram slot mid-attempt-6 in run #260");
+}
 
 console.log("production workflows keep delivery state serialized and correction paths explicit");
 
