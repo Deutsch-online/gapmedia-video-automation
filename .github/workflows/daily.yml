@@ -78,8 +78,14 @@ on:
 
 # Do not cancel a morning render just because a later poll begins.
 concurrency:
-  # Shared with Telegram renders. Per-workflow locks allowed a phone command
-  # and the scheduler to render from two stale editorial ledgers at once.
+  # This lane's own lock: it serializes daily renders against each other, so a
+  # later poll never starts a second render on top of one already running.
+  #
+  # It no longer serializes against telegram.yml. That file shared this group
+  # until 2026-09-14, and the sharing is what cancelled run #259 (and #239
+  # before it) while they sat queued carrying an image fix — GitHub keeps one
+  # pending run per group, and any arrival evicts it. See telegram.yml's own
+  # concurrency comment for the full reasoning and the residual risk.
   group: gapmedia-production
   cancel-in-progress: false
 

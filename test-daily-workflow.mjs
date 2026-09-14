@@ -55,7 +55,7 @@ assert.match(workflow, /ASR_MODEL: "medium"/);
 assert.match(workflow, /group: gapmedia-production/);
 
 const telegramWorkflow = readFileSync(".github/workflows/telegram.yml", "utf8");
-assert.match(telegramWorkflow, /group: gapmedia-production/);
+assert.match(telegramWorkflow, /group: gapmedia-telegram/);
 assert.match(telegramWorkflow, /rerender-feature/);
 assert.match(telegramWorkflow, /RENDER_DIAGNOSTIC_FILE/);
 assert.match(telegramWorkflow, /line: Number\.isInteger\(x\.line\) \? x\.line : null/,
@@ -155,9 +155,26 @@ assert.match(germanWorkflow, /group: gapmedia-lesson/,
   "the lesson build needs its own concurrency group — queued behind daily renders it was evicted every time");
 assert.ok(!/group: gapmedia-production/.test(germanWorkflow),
   "sharing the production group is what starved it; that must not come back");
-// The two that genuinely do share delivery state stay serialized together.
+// Each lane keeps its OWN lock, and nothing else shares the delivery queue.
+//
+// This assertion used to require the opposite — telegram.yml in
+// "gapmedia-production" alongside daily.yml — on the reasoning that the two
+// must not render from two stale editorial ledgers at once. Measurement
+// retired that reasoning rather than convenience: slowing telegram.yml's cron
+// (the previous response to the same starvation) left the hourly
+// .trigger-telegram-poll push in the group, and on 2026-09-14 08:19:58 that
+// push cancelled daily.yml #259 — carrying the image-upsize fix — 73 seconds
+// after it queued, exactly as #239 had been cancelled the day before. The
+// serialization also bought less than it looked: the two lanes restore the
+// editorial ledger from different stores (git for daily.yml, the Actions
+// cache for telegram.yml), so sharing a group never gave either a fresher
+// view of the other's picks. Owner-approved 2026-09-14. See telegram.yml's
+// concurrency comment for the residual risk and the escalation path.
 assert.match(workflow, /group: gapmedia-production/);
-assert.match(telegramWorkflow, /group: gapmedia-production/);
+assert.ok(!/group: gapmedia-production/.test(telegramWorkflow),
+  "the hourly Telegram ping must never sit in the delivery queue again — that is what cancelled #239 and #259 before either ran a step");
+assert.match(telegramWorkflow, /group: gapmedia-telegram/,
+  "the listener still serializes against ITSELF — its own ledger cache is written by its own previous run");
 // And the fix that actually addressed the stale-checkout duplicate stays put —
 // asserted for all three above.
 

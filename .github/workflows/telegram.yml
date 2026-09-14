@@ -70,9 +70,49 @@ on:
         type: string
 
 concurrency:
-  # Shared with daily.yml: only one path can render while it updates the
-  # editorial ledger, preventing a scheduler/Telegram duplicate race.
-  group: gapmedia-production
+  # Its OWN group. It used to share "gapmedia-production" with daily.yml so
+  # that only one path could render while it updated the editorial ledger.
+  # That serialization cost more than it bought, twice over, and the second
+  # time is what finally settled it:
+  #
+  #   * 2026-09-13 — daily.yml #239, carrying the image-rescue fix, was
+  #     cancelled without executing a step, together with three lesson
+  #     builds. The response then was to slow this file's cron from "*/5"
+  #     to hourly, keeping the shared group.
+  #   * 2026-09-14 08:19:58 — daily.yml #259, carrying the image-upsize fix,
+  #     was cancelled the same way, 73 seconds after being queued. The
+  #     evicting arrival was the HOURLY .trigger-telegram-poll push — the
+  #     very mechanism that replaced the cron. Slowing the cron moved the
+  #     problem; it did not remove it. GitHub keeps exactly ONE pending run
+  #     per group, and a daily render occupies the group for ~40 minutes, so
+  #     any arrival at all inside that window evicts whatever is queued.
+  #
+  # What the shared group actually protected is narrower than it looks. The
+  # two lanes do not read the editorial ledger from the same place: daily.yml
+  # has `contents: write` and reads/commits .content-history.json and
+  # .content-registry.json through git, while this workflow restores them
+  # from the Actions cache in "Restore command cursor" — which overwrites
+  # git's copy on disk, and happens on cache restore-keys regardless of what
+  # daily.yml pushed a moment earlier. Serializing the two therefore does not
+  # give this file a fresher view of daily's ledger; only a previous run of
+  # THIS workflow writes the cache it reads, and that run is still serialized,
+  # because this group still serializes telegram against telegram. Both lanes
+  # also push through a pull --rebase --autostash retry, so git contention was
+  # never the exposure either.
+  #
+  # Residual risk, stated plainly rather than hidden: if the owner sends a
+  # build command WHILE a daily render is mid-flight, the two can now render
+  # at the same time and each pick a topic the other has not recorded yet.
+  # Duplicate suppression still runs (lib/dedupe.mjs, on whatever ledger state
+  # each lane restored), and a Telegram build is an explicit numbered pick by
+  # the owner rather than an automatic rotation choice, so the overlap window
+  # is small. If a real duplicate ever does appear from this, the fix is to
+  # split this workflow into a cheap triage job plus a render job that alone
+  # joins "gapmedia-production" — NOT to put the hourly no-op ping back in
+  # front of the delivery queue.
+  #
+  # Owner-approved 2026-09-14 ("موافقم انجام بدهید"), after #259.
+  group: gapmedia-telegram
   cancel-in-progress: false
 
 permissions:
