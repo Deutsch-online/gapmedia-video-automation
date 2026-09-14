@@ -23,6 +23,7 @@ import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register, hasHistory } from "./lib/dedupe.mjs";
 import { summariseSlotFailure, classifyVoiceFailure } from "./lib/slot-failure-report.mjs";
+import { engineLedger } from "./lib/web-search.mjs";
 
 const projectDir = dirname(fileURLToPath(import.meta.url));
 process.chdir(projectDir);
@@ -580,6 +581,15 @@ for (const firstDelivery of deliveries) {
 
 writeFileSync(`${outDir}/manifest.json`, JSON.stringify({ date: iso, dayIndex: sel.dayIndex, resolution: is4k ? "2160x3840" : "1080x1920", videos: results }, null, 2));
 console.log(`\n✅ ${iso}: ${results.length} videos ready in ${outDir}\n` + results.map((r) => "   " + r.file).join("\n"));
+
+// One line naming each keyless index's FIRST outcome this run. Every earlier
+// failure line degrades to "(cooling)" after an index's first refusal, so
+// without this the end of a long log cannot say whether an index refused us
+// (their side) or answered with markup this module could not parse (ours).
+const indexes = engineLedger();
+console.log(indexes.length
+  ? `   keyless search indexes this run — ${indexes.join("; ")}`
+  : "   keyless search indexes this run — none was reached");
 
 // A Telegram-facing failure used to be caught above so the operator received
 // a useful Persian explanation, but the process still exited 0. GitHub then

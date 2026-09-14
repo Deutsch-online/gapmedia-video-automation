@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
-import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, ENGINES } from "./lib/web-search.mjs";
+import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, engineLedger, ENGINES } from "./lib/web-search.mjs";
 
 // daily.yml run #267 (2026-09-14) is why this exists. The judge was healthy
 // (judgeUnavailable: 0) and the size floor was not the obstacle — there was
@@ -145,6 +145,59 @@ import { parseMojeekResults, webSearch, resetEngineCooldown, engineRefused, ENGI
   }
   assert.ok(!auto.includes("api.pexels.com") && !auto.includes("pixabay.com"),
     "findRealImage() must not source stock photography");
+}
+
+
+// --- The end-of-run ledger keeps each index's FIRST real outcome ---
+// Run #270 (2026-09-14) failed diagnosable-only-in-principle: every line in
+// the last ~2000 of its log read "duckduckgo(cooling), duckduckgo-html(cooling),
+// mojeek(cooling)", because `tried` degrades to "(cooling)" once an index has
+// been refused once. Whether Mojeek REFUSED us or answered 200 with markup
+// this module cannot parse — opposite fixes — was not recoverable from the
+// tail of the log at all. The ledger records the first outcome per engine so
+// one line at the end of the run states it.
+{
+  resetEngineCooldown();
+  assert.deepEqual(engineLedger(), [], "a fresh run starts with an empty ledger");
+
+  const engines = [
+    { name: "refuser", url: () => "https://example.invalid/a", parse: () => [] },
+    { name: "unreadable", url: () => "https://example.invalid/b", parse: () => [] },
+    { name: "answers", url: () => "https://example.invalid/c",
+      parse: () => [{ title: "t", url: "https://example.invalid/p", snippet: "s" }] },
+  ];
+  const replies = {
+    "https://example.invalid/a": { ok: false, status: 403, text: async () => "" },
+    "https://example.invalid/b": { ok: true, status: 200, text: async () => "<html></html>" },
+    "https://example.invalid/c": { ok: true, status: 200, text: async () => "<html>ok</html>" },
+  };
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => replies[String(url)];
+  try {
+    await webSearch("first", { engines });
+    // Second call: the refuser is now cooling, and a "(cooling)" pass must NOT
+    // overwrite the real 403 already recorded for it.
+    await webSearch("second", { engines });
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+
+  const led = engineLedger();
+  assert.deepEqual(led, [
+    "refuser: 403",
+    "unreadable: 200, 0 parsed — markup not recognised",
+    "answers: 1 result(s)",
+  ], `the ledger must name each index's first real outcome, got ${JSON.stringify(led)}`);
+
+  resetEngineCooldown();
+  assert.deepEqual(engineLedger(), [], "resetEngineCooldown() clears the ledger with the cooldown");
+}
+
+// --- The run's final summary actually prints that ledger ---
+{
+  const render = readFileSync("daily-render.mjs", "utf8");
+  assert.match(render, /engineLedger\(\)/,
+    "daily-render.mjs must print the index ledger — otherwise a long run's log tail still cannot say why an index dropped out");
 }
 
 console.log("ok   a refused index no longer takes the lane down, and the gate is untouched");
