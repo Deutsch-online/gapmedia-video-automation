@@ -179,6 +179,179 @@ jobs:
           path: de-*.mp3
           if-no-files-found: warn
 
+
+      # ---------------------------------------------------------------
+      # pocket-tts-farsi v2 audition (owner request 2026-09-14)
+      #
+      # v2 is NOT a drop-in for v1 in this project, for three reasons that
+      # are facts about the model, not opinions:
+      #
+      #  1. It takes ROMANISED PHONEMES, not Persian script. Persian text
+      #     passed straight in produces silence, with no error — every
+      #     Persian character maps to the unknown token. A separate G2P
+      #     stage (mehdi-hf/Homo-GE2PE-Persian-HF, a small T5) has to run
+      #     first, so adopting v2 means adding transformers + a second
+      #     model to every narration path, not swapping a repo id.
+      #  2. Its licence is cc-by-nc-4.0 (NON-COMMERCIAL). v1 is MIT. That
+      #     is an owner decision about this channel, not a technical one.
+      #  3. The released pocket-tts package REJECTS v2's model.yaml
+      #     (`capitalize_first_letter` — Extra inputs are not permitted),
+      #     and the three flags it rejects are the ones that stop the Latin
+      #     text frontend from mangling phonemes. Measured in the agent
+      #     sandbox 2026-09-14: pocket-tts 3.1.0 from PyPI does not carry
+      #     that key; the git fork does. `pip install "pocket-tts @ git+..."`
+      #     alone is NOT enough when 3.1.0 is already present — pip treats
+      #     the requirement as satisfied and silently keeps the old package,
+      #     so --force-reinstall is load-bearing here.
+      #
+      # This step does not adopt anything and changes no approved voice
+      # setting. It produces audio the owner can judge by ear, which is what
+      # NARRATION_STANDARD.md and VOICE-LOG.md require before any change.
+      - name: pocket-tts-farsi v2 — install the fork the model needs
+        id: v2install
+        continue-on-error: true
+        run: |
+          python -m pip install --disable-pip-version-check --quiet \
+            --force-reinstall --no-deps \
+            "pocket-tts @ git+https://github.com/mallahyari/pocket-tts@main"
+          python -m pip install --disable-pip-version-check --quiet transformers sentencepiece
+          python - <<'PY'
+          import pocket_tts.utils.config as cfg
+          assert "capitalize_first_letter" in cfg.Config.model_fields, (
+              "the installed package still rejects v2's model.yaml — the fork did not take")
+          print("fork installed: model.yaml's three phoneme flags are accepted")
+          PY
+
+      - name: pocket-tts-farsi v2 — phonemise and speak real project lines
+        if: steps.v2install.outcome == 'success'
+        id: v2speak
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          python - <<'PY'
+          import pathlib, subprocess, sys, importlib.util
+          from huggingface_hub import snapshot_download
+          import torch
+          from transformers import AutoTokenizer, T5ForConditionalGeneration
+
+          v2 = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi-v2"))
+          print("v2 snapshot:", v2)
+
+          # normalize_fa.py ships INSIDE the model repo — the README is explicit
+          # that G2P has no reading for digits and drops them silently without it.
+          spec = importlib.util.spec_from_file_location("normalize_fa", v2 / "normalize_fa.py")
+          normalize_fa = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(normalize_fa)
+
+          tok = AutoTokenizer.from_pretrained("mehdi-hf/Homo-GE2PE-Persian-HF")
+          g2p = T5ForConditionalGeneration.from_pretrained("mehdi-hf/Homo-GE2PE-Persian-HF").eval()
+          TO_PHONEMES = str.maketrans({"/": "a", "a": "A", "@": "?", "$": "S", "c": "C"})
+
+          def phonemise(text):
+              text = normalize_fa.normalize_for_model(text)
+              text = text.replace("؟", "").replace("?", "")
+              enc = tok([text], add_special_tokens=False, return_tensors="pt")
+              with torch.no_grad():
+                  out = g2p.generate(**enc, num_beams=5, max_length=512, early_stopping=True)
+              raw = tok.batch_decode(out, skip_special_tokens=True)[0].strip()
+              # The "1" marks the ezafe for the repo's own chunker; driving the
+              # package directly, it must be stripped or it is read as a token.
+              return raw.translate(TO_PHONEMES).replace("1", "")
+
+          # Real lines from lib/narration.mjs, not lorem ipsum:
+          #   1. episode 19's reworded step line (plain Persian)
+          #   2. its outro — digits + ezafe chain, what v2 claims to fix
+          #   3. a mixed Persian+English line: v1 drops Latin words silently,
+          #      and v2's phoneme vocabulary has no Latin either. This is the
+          #      case music/pocket-tts.mjs splits out to the English model, so
+          #      it shows whether v2 changes that problem at all.
+          LINES = {
+              "step": "این کلمه مستقیم رفتن را نشان می‌دهد.",
+              "outro": "با همین چهار جمله، مسیرت را به آلمانی پیدا می‌کنی.",
+              "mixed": "با اپلیکیشن Second Space دو حساب داشته باش.",
+          }
+
+          # The voice prompt MUST be <= 5s: the README measures 0/4 correct
+          # first words at 6.1s against 4/4 at 5s, same recording. The package
+          # CLI has no --voice-sec (that lives in the repo's own synthesize.py),
+          # so the trim happens here.
+          v1 = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
+          prompts = {
+              # the project's OWN current pocket voice, so the comparison is on
+              # the voice these videos actually use
+              "projectvoice": next(v1.rglob("example_voice.wav")),
+              # and the model's own held-out male sample, as a control
+              "modelvoice": v2 / "samples" / "prompt_news_paragraph.wav",
+          }
+          for name, src in prompts.items():
+              cut = pathlib.Path(f"prompt-{name}.wav")
+              subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
+                              "-t", "5", "-ar", "24000", "-ac", "1", str(cut)], check=True)
+              prompts[name] = cut
+
+          for key, text in LINES.items():
+              ph = phonemise(text)
+              print(f"\n[{key}] {text}\n   -> {ph!r}")
+              if not ph:
+                  print("   G2P returned NOTHING — this line cannot be spoken by v2")
+                  continue
+              for vname, prompt in prompts.items():
+                  out = f"v2-{key}-{vname}.wav"
+                  subprocess.run([sys.executable, "-m", "pocket_tts", "generate",
+                                  "--config", str(v2 / "model.yaml"),
+                                  "--voice", str(prompt),
+                                  "--text", ph,
+                                  "--temperature", "0.3",
+                                  "--max-tokens", "18",
+                                  "--output-path", out], check=True)
+                  print("   wrote", out)
+          PY
+          echo "--- v2 output ---"
+          for f in v2-*.wav; do
+            printf "%s  " "$f"
+            ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$f"
+          done
+
+      # The same lines on v1, generated in the same job, so the owner compares
+      # like with like instead of against memory.
+      - name: The same lines on v1, for an A/B by ear
+        if: steps.v2speak.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import pathlib, subprocess, sys
+          from huggingface_hub import snapshot_download
+          v1 = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
+          cfg = next(v1.rglob("farsi.yaml"))
+          voice = next(v1.rglob("example_voice.wav"))
+          LINES = {
+              "step": "این کلمه مستقیم رفتن را نشان می‌دهد.",
+              "outro": "با همین چهار جمله، مسیرت را به آلمانی پیدا می‌کنی.",
+              "mixed": "با اپلیکیشن Second Space دو حساب داشته باش.",
+          }
+          for key, text in LINES.items():
+              subprocess.run([sys.executable, "-m", "pocket_tts", "generate",
+                              "--config", str(cfg), "--voice", str(voice),
+                              "--text", text, "--temperature", "0.3",
+                              "--eos-threshold", "-2", "--frames-after-eos", "0",
+                              "--output-path", f"v1-{key}.wav"], check=True)
+          PY
+          for f in v1-*.wav; do
+            printf "%s  " "$f"
+            ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$f"
+          done
+
+      - name: Keep every take so the owner can judge by ear
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocket-tts-v2-audition
+          path: |
+            v2-*.wav
+            v1-*.wav
+            prompt-*.wav
+          if-no-files-found: warn
+
       - name: Verdict
         if: always()
         run: |
@@ -190,3 +363,14 @@ jobs:
           echo "and TTS_ENGINE=pocket is a real free replacement for MiniMax."
           echo "If the fetch FAILED, the Farsi repo is gated too and HF_TOKEN"
           echo "is genuinely required before any of this can be used."
+          echo
+          echo "pocket-tts v2 fork install: ${{ steps.v2install.outcome }}"
+          echo "pocket-tts v2 synthesis:    ${{ steps.v2speak.outcome }}"
+          echo
+          echo "v2 is an AUDITION only. Nothing here adopts it: no approved"
+          echo "voice setting changed, and lib/, music/ and the production"
+          echo "workflows still point at v1. Adoption needs three separate"
+          echo "answers first — the owner judging these clips by ear, a"
+          echo "decision on v2's NON-COMMERCIAL licence (v1 is MIT), and a"
+          echo "G2P stage added to every narration path, since v2 is silent"
+          echo "on Persian script."
