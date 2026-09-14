@@ -4,4 +4,4 @@ this repo has "contents: write" but not "actions: write" — a plain commit
 here is what a workflow_dispatch call would otherwise be used for, and
 telegram.yml's own "*/5 * * * *" cron is confirmed unreliable for this repo.
 
-last touch: 2026-09-14T18:19:35Z
+last touch: 2026-09-14T19:19:14Z
