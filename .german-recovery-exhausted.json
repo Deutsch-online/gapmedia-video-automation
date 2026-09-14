@@ -1,6 +1,6 @@
 {
   "unit": "a1-19-directions",
-  "attempts": 2,
+  "attempts": 1,
   "history": [
     {
       "cycle": 0,
@@ -8,11 +8,8 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "مستقیم.",
-          "عبارت",
-          "عبارت،"
+          "رفتن",
+          "مسیری"
         ],
         "error": {
           "status": 1,
@@ -22,7 +19,7 @@
             null,
             null
           ],
-          "pid": 3833,
+          "pid": 4092,
           "stdout": null,
           "stderr": null
         }
@@ -34,11 +31,8 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "مستقیم.",
-          "عبارت",
-          "عبارت،"
+          "رفتن",
+          "مسیری"
         ],
         "error": {
           "status": 1,
@@ -48,7 +42,7 @@
             null,
             null
           ],
-          "pid": 28103,
+          "pid": 11600,
           "stdout": null,
           "stderr": null
         }
@@ -60,10 +54,8 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "عبارت",
-          "عبارت،"
+          "رفتن",
+          "مسیری"
         ],
         "error": {
           "status": 1,
@@ -73,7 +65,7 @@
             null,
             null
           ],
-          "pid": 52485,
+          "pid": 19155,
           "stdout": null,
           "stderr": null
         }
@@ -85,11 +77,10 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "عبارِت",
-          "یعنی",
-          "عبارِت،"
+          "واژه",
+          "مستقیم",
+          "مقصد",
+          "مسیری"
         ],
         "error": {
           "status": 1,
@@ -99,7 +90,7 @@
             null,
             null
           ],
-          "pid": 76860,
+          "pid": 26658,
           "stdout": null,
           "stderr": null
         }
@@ -111,12 +102,10 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "مستقیم.",
-          "عبارِت",
-          "یعنی",
-          "عبارِت،"
+          "واژه",
+          "مستقیم",
+          "مقصد",
+          "مسیری"
         ],
         "error": {
           "status": 1,
@@ -126,7 +115,7 @@
             null,
             null
           ],
-          "pid": 101380,
+          "pid": 34154,
           "stdout": null,
           "stderr": null
         }
@@ -138,12 +127,12 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "دیگر",
-          "نمیشوی.",
-          "مستقیم.",
-          "عبارِت",
-          "یعنی",
-          "عبارِت،"
+          "بپرس",
+          "واژه",
+          "مستقیم",
+          "مقصد",
+          "مسیری",
+          "یک"
         ],
         "error": {
           "status": 1,
@@ -153,7 +142,75 @@
             null,
             null
           ],
-          "pid": 125766,
+          "pid": 41646,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "بپرس",
+          "مسیری"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 49134,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "بپرس",
+          "مسیری"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 56812,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "مسیری"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 64491,
           "stdout": null,
           "stderr": null
         }
@@ -162,12 +219,7 @@
   ],
   "lastReason": {
     "faultWords": [
-      "دیگر",
-      "نمیشوی.",
-      "مستقیم.",
-      "عبارِت",
-      "یعنی",
-      "عبارِت،"
+      "مسیری"
     ],
     "error": {
       "status": 1,
@@ -177,7 +229,7 @@
         null,
         null
       ],
-      "pid": 125766,
+      "pid": 64491,
       "stdout": null,
       "stderr": null
     }
