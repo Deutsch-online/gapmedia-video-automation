@@ -1,0 +1,25 @@
+{
+  "_why": "Topics temporarily withheld from the daily rotation. Never a deletion: lib/features.mjs still knows every one of them, and removing an id from `paused` below puts it straight back in rotation with no other change. Each entry must say WHY and what would end the pause, so a pause can never quietly become permanent.",
+  "paused": {
+    "ask-dont-beg": {
+      "since": "2026-09-14",
+      "why": "Not an app capability. Its four steps are copywriting advice ('ask a question instead of begging for likes') and every one carries ui.screen compose/result — there is no app screen to photograph, so no screenshot can ever satisfy assertVisualProof's real-photo requirement. Confirmed by reading lib/features-demand.mjs.",
+      "until": "the topic is rewritten around a real Instagram screen, or retired"
+    },
+    "ig-insights-retention": {
+      "since": "2026-09-14",
+      "why": "No real screen sourced while every search index is down (Exa 402, DuckDuckGo 403 since ~11:56).",
+      "until": "an index answers again (lib/web-search.mjs) or the owner sends a real screenshot captioned with this id"
+    },
+    "reorder-grid": {
+      "since": "2026-09-14",
+      "why": "No real screen sourced while every search index is down (Exa 402, DuckDuckGo 403 since ~11:56).",
+      "until": "an index answers again (lib/web-search.mjs) or the owner sends a real screenshot captioned with this id"
+    },
+    "ig-schedule": {
+      "since": "2026-09-14",
+      "why": "No real screen sourced while every search index is down. The only id that failed in more than one run (#267 and #268).",
+      "until": "an index answers again (lib/web-search.mjs) or the owner sends a real screenshot captioned with this id"
+    }
+  }
+}
