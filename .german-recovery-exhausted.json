@@ -1,6 +1,6 @@
 {
   "unit": "a1-19-directions",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -9,7 +9,7 @@
       "reason": {
         "faultWords": [
           "کلمه",
-          "مستقیم"
+          "جا"
         ],
         "error": {
           "status": 1,
@@ -19,7 +19,7 @@
             null,
             null
           ],
-          "pid": 3980,
+          "pid": 4040,
           "stdout": null,
           "stderr": null
         }
@@ -32,7 +32,8 @@
       "reason": {
         "faultWords": [
           "کلمه",
-          "مستقیم"
+          "مستقیم",
+          "جا"
         ],
         "error": {
           "status": 1,
@@ -42,7 +43,7 @@
             null,
             null
           ],
-          "pid": 11670,
+          "pid": 11539,
           "stdout": null,
           "stderr": null
         }
@@ -53,7 +54,11 @@
       "localAttempt": 3,
       "ok": false,
       "reason": {
-        "faultWords": [],
+        "faultWords": [
+          "کلمه",
+          "جا",
+          "مسیرت"
+        ],
         "error": {
           "status": 1,
           "signal": null,
@@ -62,7 +67,77 @@
             null,
             null
           ],
-          "pid": 19391,
+          "pid": 19063,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "کلمه",
+          "جا"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 26577,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "کلمه",
+          "مستقیم",
+          "جا"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 34073,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "کلمه",
+          "جا"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 41558,
           "stdout": null,
           "stderr": null
         }
@@ -70,7 +145,10 @@
     }
   ],
   "lastReason": {
-    "faultWords": [],
+    "faultWords": [
+      "کلمه",
+      "جا"
+    ],
     "error": {
       "status": 1,
       "signal": null,
@@ -79,7 +157,7 @@
         null,
         null
       ],
-      "pid": 19391,
+      "pid": 41558,
       "stdout": null,
       "stderr": null
     }
