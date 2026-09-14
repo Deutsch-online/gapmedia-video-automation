@@ -1,6 +1,6 @@
 {
   "unit": "a1-19-directions",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -22,7 +22,7 @@
             null,
             null
           ],
-          "pid": 4035,
+          "pid": 3833,
           "stdout": null,
           "stderr": null
         }
@@ -48,7 +48,7 @@
             null,
             null
           ],
-          "pid": 11161,
+          "pid": 28103,
           "stdout": null,
           "stderr": null
         }
@@ -62,7 +62,6 @@
         "faultWords": [
           "دیگر",
           "نمیشوی.",
-          "مستقیم.",
           "عبارت",
           "عبارت،"
         ],
@@ -74,7 +73,7 @@
             null,
             null
           ],
-          "pid": 18302,
+          "pid": 52485,
           "stdout": null,
           "stderr": null
         }
@@ -88,7 +87,6 @@
         "faultWords": [
           "دیگر",
           "نمیشوی.",
-          "مستقیم.",
           "عبارِت",
           "یعنی",
           "عبارِت،"
@@ -101,7 +99,7 @@
             null,
             null
           ],
-          "pid": 25410,
+          "pid": 76860,
           "stdout": null,
           "stderr": null
         }
@@ -128,7 +126,7 @@
             null,
             null
           ],
-          "pid": 32522,
+          "pid": 101380,
           "stdout": null,
           "stderr": null
         }
@@ -142,6 +140,7 @@
         "faultWords": [
           "دیگر",
           "نمیشوی.",
+          "مستقیم.",
           "عبارِت",
           "یعنی",
           "عبارِت،"
@@ -154,7 +153,7 @@
             null,
             null
           ],
-          "pid": 39626,
+          "pid": 125766,
           "stdout": null,
           "stderr": null
         }
@@ -165,6 +164,7 @@
     "faultWords": [
       "دیگر",
       "نمیشوی.",
+      "مستقیم.",
       "عبارِت",
       "یعنی",
       "عبارِت،"
@@ -177,7 +177,7 @@
         null,
         null
       ],
-      "pid": 39626,
+      "pid": 125766,
       "stdout": null,
       "stderr": null
     }
