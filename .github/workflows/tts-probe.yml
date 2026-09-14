@@ -80,6 +80,14 @@ jobs:
         if: steps.install.outcome == 'success'
         id: reference
         continue-on-error: true
+        # music/edge-tts.mjs defaults to de-DE-KatjaNeural (it was written for
+        # the German-lesson word clips), so Persian text sent without this env
+        # comes back as 0 bytes — measured in run #5, where this step failed
+        # with "Edge TTS returned no usable audio (0 bytes)" and took the whole
+        # audition with it. The production Persian path sets the same variable
+        # the same way (music/make-voice.mjs, music/plan-voice.mjs).
+        env:
+          EDGE_TTS_VOICE: fa-IR-FaridNeural
         run: |
           npm ci --omit=dev --silent || npm install --silent
           node music/edge-tts.mjs "سلام. این صدای روایت گپ مدیا است و برای نمونه ضبط شده." -o ref-farid.mp3
