@@ -1,6 +1,6 @@
 {
   "unit": "a1-19-directions",
-  "attempts": 2,
+  "attempts": 1,
   "history": [
     {
       "cycle": 0,
@@ -8,8 +8,8 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "رفتن",
-          "مسیری"
+          "کلمه",
+          "مستقیم"
         ],
         "error": {
           "status": 1,
@@ -19,7 +19,7 @@
             null,
             null
           ],
-          "pid": 4046,
+          "pid": 3980,
           "stdout": null,
           "stderr": null
         }
@@ -31,10 +31,8 @@
       "ok": false,
       "reason": {
         "faultWords": [
-          "بپرس",
-          "رفتن",
-          "مسیری",
-          "یک"
+          "کلمه",
+          "مستقیم"
         ],
         "error": {
           "status": 1,
@@ -44,7 +42,7 @@
             null,
             null
           ],
-          "pid": 11546,
+          "pid": 11670,
           "stdout": null,
           "stderr": null
         }
@@ -55,11 +53,7 @@
       "localAttempt": 3,
       "ok": false,
       "reason": {
-        "faultWords": [
-          "بپرس",
-          "رفتن",
-          "مسیری"
-        ],
+        "faultWords": [],
         "error": {
           "status": 1,
           "signal": null,
@@ -68,7 +62,7 @@
             null,
             null
           ],
-          "pid": 19068,
+          "pid": 19391,
           "stdout": null,
           "stderr": null
         }
@@ -76,11 +70,7 @@
     }
   ],
   "lastReason": {
-    "faultWords": [
-      "بپرس",
-      "رفتن",
-      "مسیری"
-    ],
+    "faultWords": [],
     "error": {
       "status": 1,
       "signal": null,
@@ -89,7 +79,7 @@
         null,
         null
       ],
-      "pid": 19068,
+      "pid": 19391,
       "stdout": null,
       "stderr": null
     }
