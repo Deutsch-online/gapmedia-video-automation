@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T13:50:00Z",
+  "requestedAt": "2026-09-15T14:20:00Z",
   "source": "chat",
-  "note": "Owner confirmed the new Gemini key is set in GitHub Actions secrets — retry a1-19-directions once more to check whether this run (after the confirmation) picks it up and clears the 429 on the last slide."
+  "note": "Retry a1-19-directions after swapping generateAIImage()'s LAW 7 layer 4 from Gemini (gemini-2.5-flash-image, plan/billing-quota 429 confirmed via run #323/#324 logs) to Pollinations (no key, no billing) — commit fc196e1."
 }
