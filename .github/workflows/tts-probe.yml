@@ -546,6 +546,9 @@ jobs:
         with:
           path: ~/.cache/whisper
           key: whisper-medium-and-large-v3-v1
+      - name: Install ffmpeg — Whisper's audio loader shells out to it
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Install Whisper
         run: python -m pip install --disable-pip-version-check --quiet openai-whisper
 
