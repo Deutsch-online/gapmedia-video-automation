@@ -592,7 +592,7 @@ try {
   // which fits an app-feature video but not four different words).
   for (let i = 0; i < unit.items.length; i++) {
     const item = unit.items[i];
-    // item.de is the manifest key for LAW 7 layer 3 (our own licensed
+    // item.de is the manifest key for LAW 7 layer 5 (our own licensed
     // photos) — the vocabulary text itself is stable, unlike item.img which
     // is only a search hint and is reworded whenever a search underperforms.
     const found = await findLessonImage(item.img, item.fa, item.de);

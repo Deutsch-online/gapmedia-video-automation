@@ -10,8 +10,8 @@ import { assertVisualProof } from "./lib/visual-proof.mjs";
 // exists for, reproduced from the real 2026-09-13 logs: Exa answers 402
 // (credits exhausted) and Gemini answers 429 (quota exceeded) on every call,
 // so layers 1 and 2 are both gone. What must happen then:
-//   layer 3 -> one of OUR OWN licensed real photographs, if one covers the word
-//   layer 4 -> stop and report; never a generic icon, fake UI or stock cartoon
+//   layer 5 -> one of OUR OWN licensed real photographs, if one covers the word
+//   layer 6 -> stop and report; never a generic icon, fake UI or stock cartoon
 //
 // Both halves are tested, because a fallback that cannot say "no" is just a
 // slower way of shipping a fake.
@@ -66,7 +66,7 @@ assert.equal(geminiCalls, 1, "layer 2 must actually be attempted before any fall
   // Whitespace/case differences in the key must still resolve — the manifest
   // is maintained by hand.
   assert.ok(ownRealAsset("  was KOSTET das?  ", "", opts), "key matching must tolerate hand-editing");
-  console.log("ok   LAW 7 layer 3: Exa 402 + Gemini 429 falls back to our own licensed real photo");
+  console.log("ok   LAW 7 layer 5: Exa 402 + Gemini 429 falls back to our own licensed real photo");
 }
 
 // --- Layer 3 must refuse anything it cannot actually stand behind. ---
@@ -85,10 +85,10 @@ assert.equal(geminiCalls, 1, "layer 2 must actually be attempted before any fall
 
   write({});
   assert.equal(ownRealAsset("Ich nehme das", "", opts), null, "a word with no own asset must fall through to the hard stop");
-  console.log("ok   LAW 7 layer 3 refuses missing, unattributed, unlicensed and under-quality assets");
+  console.log("ok   LAW 7 layer 5 refuses missing, unattributed, unlicensed and under-quality assets");
 }
 
-// --- Layer 4: when layer 3 has nothing, the build STOPS. No generic stand-in. ---
+// --- Layer 6: when layer 5 has nothing, the build STOPS. No generic stand-in. ---
 {
   write({});
   const found = ownRealAsset("Haben Sie...?", "", opts);
@@ -101,7 +101,7 @@ assert.equal(geminiCalls, 1, "layer 2 must actually be attempted before any fall
     /تصویر واقعیِ همان قابلیت ندارد/,
     "with no own asset either, the gate must still stop the build",
   );
-  console.log("ok   LAW 7 layer 4: with all three lawful layers exhausted the gate still stops — no generic fake");
+  console.log("ok   LAW 7 layer 6: with every lawful layer exhausted the gate still stops — no generic fake");
 }
 
 // --- The gate itself must not have been widened by any of this. Pinned by
