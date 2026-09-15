@@ -10,7 +10,17 @@
 //   node test-diagnose.mjs
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { diagnose, shouldRetry, fingerprintOf } from "./lib/diagnose.mjs";
+import { diagnose, shouldRetry, fingerprintOf, rewordBrokeRegister } from "./lib/diagnose.mjs";
+
+// Verbatim from news-scan run #344 (episode 21, a1-21-professions), including
+// the Recovery Engine's own before/after labels.
+const REGISTER_BREAK = `   German lesson narration recovery: rewording persistent fault «جدا، زن»
+     before: این کلمه‌ها یعنی معلم؛ برای مرد و زن جدا است.
+     after:  این کلمه‌ها یعنی معلم؛ شکل مؤنث و مذکرشون با هم فرق داره!
+Narration QC line 3: wrong «مذکرشون» → «مسکرشون»`;
+
+const REWORD_EXHAUSTED = `   German lesson narration recovery: no valid reword found for «مذکرشون، زن، شغل» in "این سؤال را برای پرسیدن شغل کسی به کار ببر." — recovery strategy space exhausted.
+   ✗ episode 21 (a1-21-professions) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available`;
 
 const CASES = [
   {
@@ -71,6 +81,75 @@ for (const c of CASES) {
   assert.ok(d.fa, `${c.name}: the owner reads Persian, so every kind needs a Persian explanation`);
 }
 console.log("ok   every real failure class this pipeline produces is identified by name");
+
+// Owner directive 2026-09-15, after run #344: the diagnose stage must also
+// catch the case where the automatic reword itself is the defect.
+{
+  const d = diagnose({ exitCode: 1, output: REGISTER_BREAK });
+  assert.equal(d.kind, "narration-register-break",
+    "a reword that drags a formal lesson line into محاوره is its own defect, not just a QC failure");
+  assert.equal(d.retryable, false,
+    "the reword machinery is deterministic — another attempt re-proposes the same colloquial line");
+  assert.equal(d.detail.before, "این کلمه‌ها یعنی معلم؛ برای مرد و زن جدا است.");
+  assert.equal(d.detail.after, "این کلمه‌ها یعنی معلم؛ شکل مؤنث و مذکرشون با هم فرق داره!");
+  assert.match(d.evidence, /مذکرشون/,
+    "the evidence must be the offending sentence, which is what the owner has to read");
+}
+console.log("ok   a reword that breaks the series' formal register is caught as its own defect");
+
+// The comparison is what keeps this safe: a formal reword must NOT be flagged,
+// and a line that was ALREADY colloquial before the reword is not evidence
+// that the reword broke anything.
+{
+  const formal = `   German lesson narration recovery: rewording persistent fault «یاد بگیر»
+     before: این دو اسم کشور را یاد بگیر.
+     after:  این دو اسم کشور را حفظ کن.`;
+  assert.equal(rewordBrokeRegister(formal), null,
+    "a formal→formal reword must not be flagged — this is the fix that actually shipped episode 20");
+  assert.notEqual(diagnose({ output: formal }).kind, "narration-register-break");
+
+  const alreadyCasual = `     before: بیا اینو با هم ببینیم، باشه دیگه؟
+     after:  بیا اینو با هم ببینیم، اونم سریع!`;
+  assert.equal(rewordBrokeRegister(alreadyCasual), null,
+    "if the line was already colloquial, the reword did not introduce anything");
+
+  assert.equal(rewordBrokeRegister("no reword happened in this run at all"), null);
+}
+console.log("ok   only a reword that INTRODUCES colloquial forms is flagged, never a formal one");
+
+// The marker set is deliberately high-precision, because every false positive
+// here stops a build that was going to succeed. Three real traps:
+{
+  // «رو» is also an ordinary formal word.
+  assert.equal(rewordBrokeRegister(`     before: به سمت جلو حرکت کن.
+     after:  رو به جلو حرکت کن.`), null,
+    "«رو» must not be treated as a colloquial marker — it is an ordinary formal word too");
+
+  // Ordinary formal words that happen to end in ـتون/ـمون. Flagging these is
+  // why those two suffixes are not markers at all.
+  for (const word of ["آزمون", "مضمون", "پیرامون", "کارتون", "ستون"]) {
+    assert.equal(rewordBrokeRegister(`     before: این تمرین را انجام بده.
+     after:  ${word} را با دقت بررسی کن.`), null,
+      `«${word}» is formal Persian — it must never be read as the colloquial ـشون/ـتون/ـمون ending`);
+  }
+
+  // And the one that must still fire, proving the rule was not simply disabled.
+  assert.ok(rewordBrokeRegister(`     before: شکل آن‌ها فرق دارد.
+     after:  شکل مذکرشون فرق دارد.`),
+    "«مذکرشون» is the real colloquial ending and must still be caught");
+}
+console.log("ok   the marker set stays high-precision — formal Persian is never flagged, محاوره still is");
+
+// The Recovery Engine saying it is out of ideas, in its own words.
+{
+  const d = diagnose({ exitCode: 1, output: REWORD_EXHAUSTED });
+  assert.equal(d.kind, "narration-reword-exhausted");
+  assert.equal(d.retryable, false,
+    "the engine reports no strategy left; re-running the same deterministic search reaches the same end");
+  assert.equal(shouldRetry(d, [], { attempt: 1, maxAttempts: 3 }).again, false,
+    "the cycle must not spend a second full build on a search that reported itself exhausted");
+}
+console.log("ok   'no strategy left' stops the cycle instead of costing another full build");
 
 // Ordering: an exhausted Recovery Loop prints QC lines too. The narrower,
 // more informative diagnosis must win, or the cycle would report "a take was

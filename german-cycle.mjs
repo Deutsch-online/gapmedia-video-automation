@@ -200,6 +200,10 @@ const run = await runCycle({
     console.error(`   نوع خطا: ${d.kind}`);
     console.error(`   علت: ${d.cause}`);
     console.error(`   شاهد: ${d.evidence}`);
+    if (d.detail?.before && d.detail?.after) {
+      console.error(`   متن پیش از بازنویسی: ${d.detail.before}`);
+      console.error(`   متن پس از بازنویسی:  ${d.detail.after}`);
+    }
     console.error(`   تصمیم: ${verdict.reason} — ${verdict.fa}\n`);
   },
 });
@@ -234,6 +238,12 @@ const text = [
   "",
   `<b>تشخیص:</b> ${last?.fa || "نامشخص"}`,
   `<b>علت فنی:</b> ${last?.cause || "نامشخص"}`,
+  // Shown inline because it is the whole decision the owner has to make: a
+  // reword that broke register is a sentence they need to read, not a log to
+  // go and open.
+  ...(last?.detail?.before && last?.detail?.after
+    ? ["", `<b>متن اصلی:</b> ${last.detail.before}`, `<b>بازنویسی خودکار:</b> ${last.detail.after}`]
+    : []),
   "",
   `<b>سیر تلاش‌ها:</b>\n${trail}`,
   "",
