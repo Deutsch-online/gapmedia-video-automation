@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T13:22:00Z",
+  "requestedAt": "2026-09-15T13:50:00Z",
   "source": "chat",
-  "note": "Owner replaced the Gemini API key — retry a1-19-directions to check whether the new key clears the 429 quota block on the last slide (\"in der Nähe\" / nearby-pin image)."
+  "note": "Owner confirmed the new Gemini key is set in GitHub Actions secrets — retry a1-19-directions once more to check whether this run (after the confirmation) picks it up and clears the 429 on the last slide."
 }
