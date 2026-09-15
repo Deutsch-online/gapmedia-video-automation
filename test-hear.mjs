@@ -18,6 +18,22 @@ const cases = [
   ["pass", "«می‌خواهی» heard as the canonical colloquial spelling",
     "وقتی چیزی را می‌خواهی بخری، همین جمله کافی است.",
     "وقتی چیزی را میخوای بخری، همین جمله کافی است."],
+  // Confirmed live 2026-09-15, news-scan run #347, a1-21-professions line 3 —
+  // the only thing left blocking that episode after every other word passed.
+  // «خانم» is /xânom/, with an /o/ that is spoken and, as Persian usually does
+  // with short vowels, not written. «خانوم» writes it out. Six consecutive
+  // takes across two full build attempts produced exactly this, plural intact,
+  // every other word correct, and the Recovery Engine could not target it
+  // («persistent fault «خانمها» not found verbatim in any tracked line»).
+  ["pass", "«خانم‌ها» spelled phonetically as «خانوم‌ها» is one word, not two",
+    "این دو کلمه یعنی معلم؛ یکی برای آقایان و دیگری برای خانم‌ها به کار می‌رود.",
+    "این دو کلمه یعنی معلم یکی برای آقایان و دیگری برای خانومها به کار می رود"],
+  // And the narrow rule must stay narrow: و spelling a short /o/ is allowed
+  // for THIS word, not as a general licence. «خانه» (house) is a different
+  // word from «خانم» and must keep failing.
+  ["fail", "«خانم» heard as «خانه» is a different word, not a spelling",
+    "این کلمه برای خانم‌ها به کار می‌رود.",
+    "این کلمه برای خانه‌ها به کار می‌رود."],
   // The same episode's OTHER rejections are genuinely different words and must
   // keep blocking: «است» (is) is not «از» (from), and «خریدت» (your purchase)
   // is not «خریده» (has bought) — a real, audible final consonant is missing.
