@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T18:40:00Z",
+  "requestedAt": "2026-09-15T19:05:00Z",
   "source": "chat",
-  "note": "Owner: fix episode 20's image failure no matter what. Two real bugs found and fixed since the last attempt: (1) lib/lesson-image.mjs's Exa layer was silently swallowing every failure with zero log trace (commit 605a2d0) — the build log never showed whether Exa even ran, despite EXA_API_KEY being configured; (2) generateAIImage()'s Pollinations call died to a thrown 'terminated' connection error with no retry (commit 4fce13e) — now retries once on a dropped connection, distinct from the existing 429/503 status retry. Retrying the build to see Exa's real diagnostic output and whether the connection retry clears the instability."
+  "note": "Owner: if no photo is found for a slide, build an animated slide instead of failing. Root fix: lib/lesson-image.mjs's findLessonImage() had a hard stop after own-asset (layer 5) failed — real search (Pexels/Wikimedia/Exa) and AI generation (Pollinations) all had genuine external reasons to miss slide 1 ('Woher kommst du?'): no relevant stock coverage, Exa 402 (credit exhaustion, confirmed via the new diagnostic logging), Pollinations' hard 576x1024 resolution cap. Wired in LAW 7 layer 6: generateLocalFallbackImage() (lib/auto-image.mjs), already the proven final layer of rescuePackPhotos() and already registered as 'generated-fallback' in visual-proof.mjs's VALID_SOURCE_TYPES. Retrying the build to confirm layer 6 fires for slide 1 and episode 20 ships end-to-end (commit 425bb9c)."
 }
