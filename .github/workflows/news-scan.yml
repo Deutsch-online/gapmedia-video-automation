@@ -92,7 +92,17 @@ permissions:
 jobs:
   lesson:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 50, not 30. Owner directive 2026-09-15 runs the build inside
+    # german-cycle.mjs, which may make up to three full attempts; a single
+    # attempt measured 12-16 minutes across runs #342 and #344, so three plus
+    # setup does not fit in 30. Run #345 proved it the expensive way: killed at
+    # exactly 30m15s, mid-attempt, reported by GitHub as "cancelled", with no
+    # diagnosis written and nothing sent to the owner.
+    #
+    # This is the backstop, not the mechanism. CYCLE_DEADLINE_MINUTES below
+    # makes the cycle stop itself cleanly before this wall, so reaching this
+    # timeout at all should now mean something is genuinely stuck.
+    timeout-minutes: 50
     steps:
       # Explicit ref, not the implicit github.sha: for a schedule-triggered
       # run, github.sha is frozen at the moment GitHub queued the run, not
@@ -287,6 +297,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          # Six minutes under this job's timeout-minutes, so the cycle always
+          # has room to stop cleanly, write .german-cycle-report.json and send
+          # the diagnosis before the job is killed.
+          CYCLE_DEADLINE_MINUTES: "44"
         # german-cycle.mjs, not german-lesson-build.mjs directly. Owner
         # directive 2026-09-15: the build runs inside a cycle — the provider
         # plan is resolved first, a failed attempt goes to the diagnose stage

@@ -99,7 +99,53 @@ console.log("ok   a non-retryable failure stops on the first attempt");
 }
 console.log("ok   three different real failures spend the budget and stop with the full trail");
 
-// 6. The whole trail is what the owner is shown instead of one bare error, so
+// 6. Run #345's real lesson: a cycle that is killed by the job timeout reports
+//    NOTHING — GitHub calls it "cancelled", no report is written, no diagnosis
+//    is sent. It died at exactly 30m15s into a 30-minute job, mid-attempt. So
+//    the cycle must refuse to start an attempt it cannot finish.
+{
+  // A fake clock, so this tests the decision rather than waiting 30 minutes.
+  let clock = 0;
+  const ATTEMPT_MS = 16 * 60_000; // the longest real attempt measured (run #344)
+  const run = async (attempt) => {
+    calls.push(attempt);
+    clock += ATTEMPT_MS;
+    return { exitCode: 1, output: attempt === 1 ? QC : PREFLIGHT };
+  };
+  const calls = [];
+  const result = await runCycle({
+    runAttempt: run,
+    maxAttempts: 3,
+    now: () => clock,
+    // 44 minutes, exactly what the workflow passes. Two 16-minute attempts fit
+    // (32); a third would end at 48 and be killed.
+    deadlineAt: 44 * 60_000,
+  });
+  assert.equal(result.outcome, "failed");
+  assert.equal(result.stopped, "deadline",
+    "the cycle must stop for the deadline, not be killed by the job timeout");
+  assert.deepEqual(calls, [1, 2], "the third attempt would not have finished, so it must not be started");
+  assert.ok(result.diagnoses.at(-1).fa, "and the owner must still get a real diagnosis, which a killed job never sends");
+}
+console.log("ok   the cycle stops cleanly before the job timeout instead of being killed mid-attempt");
+
+// 7. The deadline must not cut a cycle short when there IS time — otherwise it
+//    silently becomes a one-attempt pipeline.
+{
+  let clock = 0;
+  const calls = [];
+  const run = async (attempt) => {
+    calls.push(attempt);
+    clock += 60_000; // a fast minute-long attempt
+    return attempt < 3 ? { exitCode: 1, output: attempt === 1 ? QC : PREFLIGHT } : { exitCode: 0, output: "✅ ready" };
+  };
+  const result = await runCycle({ runAttempt: run, maxAttempts: 3, now: () => clock, deadlineAt: 44 * 60_000 });
+  assert.equal(result.outcome, "success");
+  assert.deepEqual(calls, [1, 2, 3], "with time to spare, every attempt in the budget must still run");
+}
+console.log("ok   the deadline never shortens a cycle that has time left");
+
+// 8. The whole trail is what the owner is shown instead of one bare error, so
 //    it has to survive to the end of the run rather than being overwritten.
 {
   const run = scripted([

@@ -46,17 +46,40 @@ import { loadEnv, telegramConfig, sendMessage } from "./lib/telegram.mjs";
  * @returns {Promise<{outcome:"success"|"failed", attempts:number,
  *                    diagnoses:object[], stopped:string|null}>}
  */
-export async function runCycle({ runAttempt, maxAttempts, onDiagnosis }) {
+export async function runCycle({ runAttempt, maxAttempts, onDiagnosis, deadlineAt = null, now = () => Date.now() }) {
   const diagnoses = [];
+  let lastDuration = 0;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const startedAt = now();
     const result = await runAttempt(attempt);
+    lastDuration = now() - startedAt;
     // Success is the ONLY path that lets anything reach the channel, and the
     // build script owns that send — it happens after every gate has passed.
     if (result.exitCode === 0) {
       return { outcome: "success", attempts: attempt, diagnoses, stopped: null };
     }
     const d = diagnose(result);
-    const verdict = shouldRetry(d, diagnoses, { attempt, maxAttempts });
+    let verdict = shouldRetry(d, diagnoses, { attempt, maxAttempts });
+    // Never START an attempt that cannot finish.
+    //
+    // Run #345 is why this exists. The job carries timeout-minutes, and a
+    // timed-out job is killed outright: GitHub reports it as "cancelled", the
+    // final report is never written, and the diagnosis never reaches the
+    // owner — which defeats the entire point of the cycle. #345 was killed at
+    // exactly 30m15s into a 30-minute job, mid-attempt, having said nothing.
+    //
+    // The estimate is the duration of the attempt that just ran, not a
+    // hardcoded guess: attempts on this pipeline vary from ~12 to ~16 minutes
+    // depending on how much recovery each one does, and the run itself is the
+    // only honest source for that number.
+    if (verdict.again && deadlineAt && now() + lastDuration > deadlineAt) {
+      const left = Math.max(0, Math.round((deadlineAt - now()) / 60000));
+      verdict = {
+        again: false,
+        reason: "deadline",
+        fa: `تلاش بعدی حدود ${Math.round(lastDuration / 60000)} دقیقه طول می‌کشد و فقط ${left} دقیقه تا سقف زمانی این اجرا مانده است. چرخه به‌جای این‌که وسط کار کشته شود و هیچ گزارشی ندهد، همین‌جا تمیز می‌ایستد و تشخیص را می‌فرستد.`,
+      };
+    }
     diagnoses.push({ attempt, ...d, decision: verdict.reason });
     await onDiagnosis?.({ attempt, diagnosis: d, verdict });
     if (!verdict.again) {
@@ -85,6 +108,12 @@ const unit = argOf("--unit");
 // recovery-cycle budget inside german-lesson-build.mjs — not three identical
 // tries. The no-progress rule below usually stops it well before this.
 const maxAttempts = Math.max(1, Number(argOf("--max-attempts")) || 3);
+// Slightly under the workflow's own timeout-minutes, so the cycle stops itself
+// cleanly — with a written report and a sent diagnosis — instead of being
+// killed mid-attempt by the job timeout with nothing to show. See the deadline
+// check in runCycle() for what run #345 cost without this.
+const deadlineMinutes = Math.max(5, Number(process.env.CYCLE_DEADLINE_MINUTES) || 44);
+const deadlineAt = Date.now() + deadlineMinutes * 60_000;
 
 const REPORT = ".german-cycle-report.json";
 const PLAN = ".provider-plan.json";
@@ -194,6 +223,7 @@ let lastVerdict = null;
 const run = await runCycle({
   runAttempt,
   maxAttempts,
+  deadlineAt,
   onDiagnosis: ({ attempt, diagnosis: d, verdict }) => {
     lastVerdict = verdict;
     console.error(`\n=== دیاگنوز تلاش ${attempt} ===`);
