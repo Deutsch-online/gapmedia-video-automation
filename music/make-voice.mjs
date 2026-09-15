@@ -44,22 +44,11 @@ if (!vo) { console.log(`  no narration for ${featureId} — silent`); process.ex
 // match plan-voice.mjs's choice exactly, or the cache filename below misses
 // the file plan-voice already measured and this re-synthesises it, risking a
 // slightly different length that runs into the next slide.
-// Free engines first; MiniMax is only the fallback. "edge" joined on
-// 2026-09-13 — and it matters that it is listed here, because until it was,
-// setting TTS_ENGINE=edge on this path silently selected MINIMAX, the engine
-// whose exhausted credit stopped delivery in the first place.
-const ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "minimax";
-// Edge is an ordinary neural engine like MiniMax, so it takes the long-standing
-// Persian transform with its tested pronunciation fixes, not pocket's.
+// Explicit free-engine auditions remain possible.  Normal production uses the
+// Provider List: MiniMax first, then Edge automatically when it fails.
+const ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "provider";
 const speakable = ENGINE === "pocket" ? pocketSpeakable : minimaxSpeakable;
-const TTS = ENGINE === "pocket"
-  ? "music/pocket-tts.mjs"
-  : ENGINE === "edge"
-    ? "music/edge-tts.mjs"
-    : "music/minimax-tts.mjs";
-// music/edge-tts.mjs defaults to a GERMAN voice (it was written for the German
-// lesson's vocabulary clip), so Persian narration must name its own voice or a
-// German speaker would read it.
+const TTS = ENGINE === "pocket" ? "music/pocket-tts.mjs" : ENGINE === "edge" ? "music/edge-tts.mjs" : "music/provider-tts.mjs";
 const ttsEnv = ENGINE === "edge"
   ? { ...process.env, EDGE_TTS_VOICE: process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural" }
   : process.env;

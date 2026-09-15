@@ -124,6 +124,11 @@ export async function handle(text) {
     catch (e) { await say("✗ خطا: " + String(e.message).split(String.fromCharCode(10))[0]); }
     return;
   }
+  if (cmd && cmd.action === "providers") {
+    try { execSync("node provider-status.mjs", { stdio: "inherit" }); }
+    catch (e) { await say("✗ خطای Provider List: " + String(e.message).split(String.fromCharCode(10))[0]); }
+    return;
+  }
   if (cmd && cmd.action === "content-radar") {
     await say("📡 در حال رتبه‌بندی نامزدهای محتوا…");
     try { execSync("node content-radar.mjs", { stdio: "inherit" }); }

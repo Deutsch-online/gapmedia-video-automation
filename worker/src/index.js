@@ -24,6 +24,9 @@ const HELP = `🤖 <b>منوی GapMedia — اول جستجو، بعد ساخت<
 🔎 <b>رادار روزانه</b>
 <b>۲۷</b> رادار محتوا (GapMedia)
 
+📡 <b>سرویس‌ها</b>
+<b>۲۸</b> Provider List و وضعیت جایگزین‌ها
+
 ⚙️ <b>مدیریت</b>
 <b>۱۹</b> وضعیت
 <b>۲۰</b> حذف ۳ ویدیوی آموزشی آخر
@@ -49,6 +52,7 @@ const NUMBERED_ACTIONS = {
   "19": { action: "status" },
   "20": { action: "undo" },
   "27": { action: "content-radar" },
+  "28": { action: "providers" },
 };
 
 function normalize(value = "") {
@@ -74,6 +78,7 @@ function videoAction(text) {
   if (/^(وضعیت|status)$/.test(c)) return { action: "status" };
   if (any("پاک کن", "حذف کن", "پاکش کن", "delete", "undo")) return { action: "undo" };
   if (any("صداها", "صدا minimax", "minimax voice", "voice list")) return { action: "voice-list" };
+  if (any("پروایدر", "provider", "provider list", "سرویس پروایدر")) return { action: "providers" };
   if (/^(?:ادیت|ویرایش)\s*قلاب\s*[:：]/i.test(c)) return { action: "content-edit-hook", payload: cleanEdit(text, "قلاب") };
   if (/^(?:ادیت|ویرایش)\s*(?:متن|محتوا|اسلاید)\s*[:：]/i.test(c)) return { action: "content-edit-steps", payload: cleanEdit(text, "(?:متن|محتوا|اسلاید)") };
   if (/^(?:تأیید|تایید)\s*(?:محتوا|ویدیو|پیش\s*نویس)$/i.test(c)) return withAudio("content-approve");

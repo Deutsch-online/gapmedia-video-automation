@@ -186,6 +186,7 @@ jobs:
             .content-search-backlog.json
             .content-registry.json
             .content-radar.json
+            .provider-runtime-report.json
           key: tg-offset-${{ github.run_id }}
           restore-keys: tg-offset-
 
@@ -243,7 +244,7 @@ jobs:
             printf 'ACTION=%s\nPICK=1\nPAYLOAD=%s\nVOICE_ID=\nVOICE_MODE=%s\n' "$request_action" "$request_payload" "$request_voice" >> "$GITHUB_OUTPUT"
           elif [ -n "$INPUT_ACTION" ]; then
             case "$INPUT_ACTION" in
-              approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-german-lesson|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;
+              approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-german-lesson|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|providers|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;
               *) echo "ACTION=none" >> "$GITHUB_OUTPUT"; exit 0 ;;
             esac
             safe_pick=$(printf '%s' "$INPUT_PICK" | tr -cd '0-9' | cut -c1-1)
@@ -624,6 +625,21 @@ jobs:
           else
             node music/minimax-voices.mjs --telegram
           fi
+
+      - name: Provider List and last file-ready report
+        if: steps.cmd.outputs.ACTION == 'providers'
+        env:
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node provider-status.mjs
 
       - name: Real search demand for a topic
         if: steps.cmd.outputs.ACTION == 'demand-research'
