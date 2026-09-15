@@ -1,0 +1,166 @@
+{
+  "unit": "a1-21-professions",
+  "attempts": 1,
+  "history": [
+    {
+      "cycle": 0,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "جدا",
+          "زن"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 4029,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "جدا",
+          "زن"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 11169,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "مرد",
+          "جدا",
+          "زن"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 18286,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "مذکرشون",
+          "زن"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 25408,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "مذکرشون",
+          "زن",
+          "شغل"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 32708,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "مذکرشون",
+          "زن",
+          "شغل"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 40036,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    }
+  ],
+  "lastReason": {
+    "faultWords": [
+      "مذکرشون",
+      "زن",
+      "شغل"
+    ],
+    "error": {
+      "status": 1,
+      "signal": null,
+      "output": [
+        null,
+        null,
+        null
+      ],
+      "pid": 40036,
+      "stdout": null,
+      "stderr": null
+    }
+  }
+}
