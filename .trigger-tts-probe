@@ -5,4 +5,4 @@ Persian narration, and whether HF_TOKEN is actually required to do it.
 It runs in its own concurrency group, renders nothing, sends nothing, and
 touches no delivery state. It is allowed to fail — a failure is the answer.
 
-last touch: 2026-09-15T08:41:34Z
+last touch: 2026-09-15T09:00:00Z
