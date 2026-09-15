@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T12:45:00Z",
+  "requestedAt": "2026-09-15T13:22:00Z",
   "source": "chat",
-  "note": "Retry a1-19-directions after Pexels/Wikimedia tiered-search broadening (commit 45dbe04) — the full 4-word phrase found only irrelevant stock photos; a narrower tier should find a real match without needing the Gemini AI-fallback at all."
+  "note": "Owner replaced the Gemini API key — retry a1-19-directions to check whether the new key clears the 429 quota block on the last slide (\"in der Nähe\" / nearby-pin image)."
 }
