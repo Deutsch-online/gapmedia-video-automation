@@ -508,3 +508,85 @@ jobs:
           echo "decision on v2's NON-COMMERCIAL licence (v1 is MIT), and a"
           echo "G2P stage added to every narration path, since v2 is silent"
           echo "on Persian script."
+
+  # Episode-19 investigation (owner request 2026-09-15): "مستقیم" and "جا"
+  # in a1-19-directions have rejected narration QC on every take today
+  # (3/3 full recovery-chain attempts, twice), always as the same two words
+  # ("مستقیم"→"مسترین"/"مستریم", "جا"→"جان") no matter how the surrounding
+  # sentence was reworded. Before touching lib/hear.mjs on a guess, or
+  # asking the owner to spend their own time listening, get real evidence:
+  # does a stronger Whisper model actually transcribe these two words
+  # correctly, or is medium's mistake a genuine, model-independent reading?
+  #
+  # Cannot be answered from the agent sandbox — same reason as the rest of
+  # this file: Edge TTS's speech.platform.bing.com 403s under the sandbox's
+  # egress allowlist, confirmed live 2026-09-15 trying exactly this. A
+  # GitHub runner has open internet, so this is the place the test is real.
+  #
+  # Synthesises the EXACT two lines from lib/narration.mjs's current
+  # a1-19-directions with the EXACT same call the real pipeline makes
+  # (fa-IR-FaridNeural, +0%/+0%), then transcribes each with both the
+  # production model (medium) and the candidate (large-v3) and prints both
+  # transcripts. Evidence only: read-only permissions (workflow-level,
+  # above), its own concurrency group, no Telegram, no delivery state, no
+  # production file touched — nothing here changes ASR_MODEL anywhere or
+  # adopts anything. That decision is the owner's, after seeing this.
+  asr-compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/whisper
+          key: whisper-medium-and-large-v3-v1
+      - name: Install Whisper
+        run: python -m pip install --disable-pip-version-check --quiet openai-whisper
+
+      - name: Synthesize the two real failing lines (exact pipeline call)
+        env:
+          EDGE_TTS_VOICE: fa-IR-FaridNeural
+        run: |
+          node music/edge-tts.mjs "این کلمه مستقیم را نشان می‌دهد؛ بدون پیچیدن به چپ یا راست." -o /tmp/a1-19-line3.mp3
+          node music/edge-tts.mjs "و این جمله نشان می‌دهد که یک جا نزدیک است." -o /tmp/a1-19-line5.mp3
+          ls -la /tmp/a1-19-line3.mp3 /tmp/a1-19-line5.mp3
+
+      - name: Transcribe with medium — today's production model
+        run: |
+          python3 - <<'PYEOF'
+          import whisper
+          model = whisper.load_model("medium")
+          for f in ["/tmp/a1-19-line3.mp3", "/tmp/a1-19-line5.mp3"]:
+              out = model.transcribe(f, language="fa", word_timestamps=False,
+                                      condition_on_previous_text=False, fp16=False, temperature=0)
+              print(f"MEDIUM  {f}: {out['text']}")
+          PYEOF
+
+      - name: Transcribe with large-v3 — the candidate model
+        run: |
+          python3 - <<'PYEOF'
+          import whisper
+          model = whisper.load_model("large-v3")
+          for f in ["/tmp/a1-19-line3.mp3", "/tmp/a1-19-line5.mp3"]:
+              out = model.transcribe(f, language="fa", word_timestamps=False,
+                                      condition_on_previous_text=False, fp16=False, temperature=0)
+              print(f"LARGE-V3  {f}: {out['text']}")
+          PYEOF
+
+      - name: How to read this
+        if: always()
+        run: |
+          echo "Reference line 3: این کلمه مستقیم را نشان می‌دهد؛ بدون پیچیدن به چپ یا راست."
+          echo "Reference line 5: و این جمله نشان می‌دهد که یک جا نزدیک است."
+          echo
+          echo "If large-v3 transcribes «مستقیم» and «جا» correctly where medium"
+          echo "did not: the words ARE said correctly, medium's accuracy is the"
+          echo "real bottleneck, and switching ASR_MODEL is the fix — not a"
+          echo "lib/hear.mjs fold. If large-v3 makes the SAME mistake: it is not"
+          echo "a model-accuracy problem, and the words need a human ear."
