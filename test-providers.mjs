@@ -4,6 +4,7 @@ import { formatProviderReportFa, providerPlan, runWithProviderFallback } from ".
 const noKeys = {};
 assert.equal(providerPlan("text", noKeys).every((p) => !p.ready), true, "API text providers require a configured key");
 assert.equal(providerPlan("voice", noKeys).find((p) => p.id === "edge").ready, true, "free Edge fallback remains available");
+assert.equal(providerPlan("voice", { POCKET_TTS_FARSI_CONFIG: "set" }).find((p) => p.id === "pocket-farsi").production, false, "unapproved Pocket voice is visible but never auto-selected");
 
 const order = [];
 const result = await runWithProviderFallback({
