@@ -88,6 +88,28 @@ try {
   assert.equal(blocked, null, "when AI generation is also exhausted, the caller must still get null (own-asset, then a real stop) — never a fabricated result");
   assert.ok(calls.pollinations >= 1, "must actually attempt AI generation before giving up");
   console.log("ok   AI generation failing too still falls through honestly, instead of fabricating a result");
+
+  // Owner directive 2026-09-15, third round: episode 20's own log (run #335)
+  // showed generateAIImage() dying to a thrown connection-level error
+  // ("terminated") rather than a clean non-2xx status — a case withRetry()'s
+  // own 429/503 branch never sees, since the fetch call itself rejected.
+  // A single transient drop must not immediately burn the whole attempt.
+  calls.pollinations = 0;
+  globalThis.fetch = async (url) => {
+    const u = String(url);
+    if (u.includes("de.wikipedia.org")) return { ok: true, status: 200, json: async () => ({ query: { pages: {} } }) };
+    if (u.includes("image.pollinations.ai")) {
+      calls.pollinations++;
+      if (calls.pollinations === 1) throw new Error("terminated");
+      return { ok: true, status: 200, arrayBuffer: async () => toArrayBuffer(genImageBytes) };
+    }
+    throw new Error(`unexpected fetch in test: ${u}`);
+  };
+  const recovered = await findLessonImage("person asking for directions street", "... کجاست؟", "Wo ist...?");
+  assert.ok(recovered, "a single dropped connection must not be treated the same as a real failure");
+  assert.equal(recovered.sourceType, "ai-generated");
+  assert.equal(calls.pollinations, 2, "exactly one retry after the dropped connection, within the same attempt");
+  console.log("ok   a dropped connection (not just a bad status) gets one real retry before the attempt gives up");
 } finally {
   globalThis.fetch = realFetch;
   rmSync(workDir, { recursive: true, force: true });
