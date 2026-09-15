@@ -65,7 +65,7 @@ try {
 
   assert.ok(result, "must return a result instead of giving up once real search is exhausted");
   assert.equal(result.sourceType, "ai-generated", "the fallback image must be labelled exactly what it is");
-  assert.equal(calls.wikimedia, 1, "layer 2 (Wikimedia, no key needed) must actually be tried, not skipped");
+  assert.equal(calls.wikimedia, 3, "layer 2 (Wikimedia, no key needed) must be tried at every broadening tier, not just the full phrase");
   assert.equal(calls.gemini, 1, "layer 4 (Gemini) must be reached only after the real layers above it are exhausted");
   assert.ok(existsSync(result.photo), "the generated file must actually exist on disk");
   console.log("ok   findLessonImage() falls back to a labelled AI-generated image once Pexels/Wikimedia/Exa are exhausted");
