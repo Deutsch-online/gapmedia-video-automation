@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T14:45:00Z",
+  "requestedAt": "2026-09-15T15:00:00Z",
   "source": "chat",
-  "note": "Pollinations swap (fc196e1) confirmed working — run #325 found 3 of 4 real photos via Pexels and only hit Pollinations' own shared community-model rate limit (429 'Per-user limit of 300 RPM exceeded for lykon/dreamshaper-8-lcm') on the last slide, a genuine external free-tier limit, not a billing/plan block like before. Retrying once more; this class of limit resets on its own within minutes."
+  "note": "Owner requested episode 20 (a1-20-countries, progress nextIndex:19) be built now rather than waiting for the next scheduled news-scan.yml run. Narration/vocab content already authored in lib/narration.mjs and lib/german-a1.mjs, fa_lint clean, image queries are standard stock-photo phrases (map/flags/people talking)."
 }
