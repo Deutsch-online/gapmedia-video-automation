@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T21:55:00Z",
+  "requestedAt": "2026-09-15T22:40:00Z",
   "source": "chat",
-  "note": "First production run of german-cycle.mjs (commit a6995a2): provider plan resolved before the build, a failed attempt goes to lib/diagnose.mjs instead of ending the job, and nothing reaches Telegram until an attempt succeeds. Episode 21 (a1-21-professions) is the subject, which also exercises the narration preflight fix in b8b823b."
+  "note": "Episode 21 with hand-reworded lines 3-5, replacing the «مرد و زن جدا» phrase the Recovery Engine could never get past. Also the first real run with the 50-minute job timeout and the cycle's own 44-minute deadline (faf224f), and the first with the vocabulary relevance prompt (11d27eb)."
 }
