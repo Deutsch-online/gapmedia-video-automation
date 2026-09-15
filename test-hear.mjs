@@ -35,7 +35,7 @@ const cases = [
   ["pass", "«درآمد» written as two",
     "آیا ویوهایِ تیک تاکَت، اَصلَن برای درآمد، واجِدِ شَرایِط هستند؟",
     "آیا ویوهای تیک تاکت اصلن برای در آمد واجد شرایت هستند؟"],
-  ["pass", "«نمونه کارَت» run together, medial ه lost",
+  ["pass", "«نمونه کارَت» run together, medial ه لost",
     "برای همکاری تبلیغی، پروفایل و نمونه کارَت را کامل کن",
     "برای همکاری تبلیغی، پروفایل و نمونکارت را کامل کن."],
   ["pass", "final ه dropped, and واو معدوله in «بخوان»",
@@ -98,6 +98,24 @@ const cases = [
     "تعریف ویو را بخوان", "تعریف ویویه را بخان"],
   ["fail", "words missing from the line",
     "کشور، سن و شرایط، برنامه را باز کن", "کشور و شرایط را باز کن"],
+
+  // Confirmed live 2026-09-15, a1-19-directions, rejected on both real
+  // occurrences across every pre-reword take: «کلمه» naming the vocabulary
+  // word right after it («کلمهٔ مستقیم», «کلمهٔ چپ و راست») is always an
+  // ezafe construction, and Persian always realises that as an audible
+  // /je/ glide the reference text never spells out.
+  ["pass", "«کلمه» heard with the ezafe glide it names its vocabulary word with",
+    "این کلمه مستقیم را نشان می‌دهد؛ بدون پیچیدن به چپ یا راست.",
+    "این کلمهی مستقیم را نشان می‌دهد؛ بدون پیچیدن به چپ یا راست."],
+  ["pass", "the same glide on the ezafe's other real occurrence in the same unit",
+    "این دو کلمه چپ و راست هستند؛ در هر خیابانی به کارت می‌آیند.",
+    "این دو کلمهی چپ و راست هستند؛ در هر خیابانی به کارت می‌آیند."],
+  // The fix is one word, not a shape — a different word taking the same
+  // glide, or «کلمه» itself turning into an unrelated word, must still fail.
+  ["fail", "the ezafe glide on an unrelated word still fails",
+    "این جمله را بخوان", "این جملهی را بخوان"],
+  ["fail", "«کلمه» heard as a genuinely different word, glide or not",
+    "این کلمه مستقیم را نشان می‌دهد", "این کلاسی مستقیم را نشان می‌دهد"],
 ];
 
 let bad = 0;
