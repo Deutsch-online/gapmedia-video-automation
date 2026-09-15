@@ -1,6 +1,6 @@
 {
   "unit": "a1-20-countries",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -21,7 +21,7 @@
             null,
             null
           ],
-          "pid": 3958,
+          "pid": 4056,
           "stdout": null,
           "stderr": null
         }
@@ -46,7 +46,7 @@
             null,
             null
           ],
-          "pid": 11454,
+          "pid": 11554,
           "stdout": null,
           "stderr": null
         }
@@ -71,7 +71,7 @@
             null,
             null
           ],
-          "pid": 18979,
+          "pid": 19081,
           "stdout": null,
           "stderr": null
         }
@@ -94,7 +94,7 @@
             null,
             null
           ],
-          "pid": 26477,
+          "pid": 26578,
           "stdout": null,
           "stderr": null
         }
@@ -117,7 +117,7 @@
             null,
             null
           ],
-          "pid": 33991,
+          "pid": 34078,
           "stdout": null,
           "stderr": null
         }
@@ -130,7 +130,6 @@
       "reason": {
         "faultWords": [
           "الگو",
-          "کشور",
           "بگیر."
         ],
         "error": {
@@ -141,76 +140,7 @@
             null,
             null
           ],
-          "pid": 41540,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بگیر."
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 49035,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "کشور",
-          "بگیر."
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 56523,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 2,
-      "localAttempt": 3,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "پاسخ،",
-          "کشور",
-          "بگیر."
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 64017,
+          "pid": 41590,
           "stdout": null,
           "stderr": null
         }
@@ -219,8 +149,7 @@
   ],
   "lastReason": {
     "faultWords": [
-      "پاسخ،",
-      "کشور",
+      "الگو",
       "بگیر."
     ],
     "error": {
@@ -231,7 +160,7 @@
         null,
         null
       ],
-      "pid": 64017,
+      "pid": 41590,
       "stdout": null,
       "stderr": null
     }
