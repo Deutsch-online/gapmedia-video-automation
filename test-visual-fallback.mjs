@@ -112,7 +112,10 @@ assert.equal(geminiCalls, 1, "layer 2 must actually be attempted before any fall
   // "owner-supplied", which the gate already had; adding a NEW type is how a
   // generic-visual escape would most plausibly get introduced, so it has to
   // break this test and be argued for explicitly.
-  const EXPECTED_SOURCE_TYPES = ["official-ui", "official-asset", "owner-supplied", "labelled-explainer", "ai-generated"];
+  const EXPECTED_SOURCE_TYPES = [
+    "official-ui", "official-asset", "owner-supplied", "labelled-explainer",
+    "commons-licensed", "openverse-licensed", "ai-generated", "generated-fallback",
+  ];
   const gate = await import("./lib/visual-proof.mjs");
   // The gate only trusts files under public/ — which is exactly why LAW 7's
   // own assets live in public/real-german/ and not in an assets/ folder

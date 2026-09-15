@@ -1,10 +1,16 @@
-import { writeFileSync, rmSync } from "node:fs";
+import { writeFileSync, rmSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { pausedTopics, pausedTopicIds } from "./lib/paused-topics.mjs";
 import { featureFor, aiFeatureFor, featureById } from "./lib/features.mjs";
 
-const TMP = "/tmp/paused-test.json";
+// Never write to a hard-coded /tmp path: on Windows it resolves to a drive
+// root outside the project sandbox. A unique OS temp directory also prevents
+// two parallel test runs from overwriting each other.
+const TEMP_DIR = mkdtempSync(join(tmpdir(), "paused-topics-"));
+const TMP = join(TEMP_DIR, "paused-test.json");
 
 // A pause is a withholding, not a deletion. The daily lane spent 2026-09-14
 // failing for lack of any search index (Exa 402, DuckDuckGo 403), and the
@@ -55,7 +61,7 @@ const TMP = "/tmp/paused-test.json";
 
 // --- Unreadable or absent: the rotation runs in full, never blocked ---
 {
-  assert.equal(pausedTopicIds("/tmp/does-not-exist-at-all.json").size, 0);
+  assert.equal(pausedTopicIds(join(TEMP_DIR, "does-not-exist-at-all.json")).size, 0);
   writeFileSync(TMP, "{ not json");
   try {
     assert.equal(pausedTopicIds(TMP).size, 0, "a broken pause file must never block the whole rotation");
@@ -77,3 +83,4 @@ const TMP = "/tmp/paused-test.json";
 }
 
 console.log("ok   paused topics are withheld with a stated reason, still exist, and the gate is untouched");
+rmSync(TEMP_DIR, { recursive: true, force: true });
