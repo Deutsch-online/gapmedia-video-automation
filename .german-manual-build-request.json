@@ -1,4 +1,5 @@
 {
-  "requestedAt": "2026-09-15T06:31:54Z",
-  "source": "chat"
+  "requestedAt": "2026-09-15T09:24:00Z",
+  "source": "chat",
+  "note": "Retry a1-19-directions after rewording line 4 (جا→مقصد) to remove the ASR collision confirmed by the asr-compare diagnostic (commit 6eaf2ca)."
 }
