@@ -287,11 +287,18 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        # german-cycle.mjs, not german-lesson-build.mjs directly. Owner
+        # directive 2026-09-15: the build runs inside a cycle — the provider
+        # plan is resolved first, a failed attempt goes to the diagnose stage
+        # instead of ending the job, and nothing reaches Telegram until an
+        # attempt has genuinely succeeded. The build script itself is
+        # unchanged and still does every gate; the cycle only decides whether
+        # another attempt is honest work, and reports the real cause once.
         run: |
           if [ -n "${{ steps.gate.outputs.unit }}" ]; then
-            node german-lesson-build.mjs --unit "${{ steps.gate.outputs.unit }}"
+            node german-cycle.mjs --unit "${{ steps.gate.outputs.unit }}"
           else
-            node german-lesson-build.mjs
+            node german-cycle.mjs
           fi
 
       # Owner directive 2026-09-13: FAILED_ATTEMPT != FAILED_JOB. A job that

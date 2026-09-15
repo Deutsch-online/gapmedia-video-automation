@@ -49,6 +49,14 @@ const localEnv = loadEnv();
 Object.assign(process.env, localEnv);
 const tg = telegramConfig(localEnv);
 const noTelegram = process.argv.includes("--no-telegram");
+// Set by german-cycle.mjs, which runs this script as one attempt inside a
+// build → diagnose → build cycle. Owner directive 2026-09-15 («نباید تا اجرا
+// موفق نشود به تلگرام برود»): a failed ATTEMPT is not a failed job, so it must
+// not alert the channel — the cycle diagnoses it and either tries again or
+// sends one report naming the real cause. Only the success path below (the
+// finished video) still reaches Telegram from here, exactly as before, and
+// only after every gate has passed. Running this script directly is unchanged.
+const inCycle = process.env.GERMAN_CYCLE === "on";
 // --unit <id>: rebuild ONE already-taught unit by id and resend it, instead
 // of building whatever the sequential progress pointer says is next. For a
 // real defect report on an episode already sent (owner report 2026-09-11:
@@ -93,7 +101,7 @@ if (isCorrection) {
 // project fails loud, instead of silently sending recycled material.
 if (!isCorrection && idx >= GERMAN_A1.length) {
   console.error(`   ✗ curriculum exhausted: GERMAN_A1 has ${GERMAN_A1.length} units, next index is ${idx}.`);
-  if (telegramConfig(localEnv).enabled) {
+  if (telegramConfig(localEnv).enabled && !inCycle) {
     try {
       await sendMessage({
         token: telegramConfig(localEnv).token, chatId: telegramConfig(localEnv).chatId,
@@ -727,7 +735,7 @@ try {
   console.log(`\n✅ episode ${episodeNo} ready: ${resolve(final)}`);
 } catch (err) {
   console.error(`   ✗ episode ${episodeNo} (${unit.id}) failed: ${err.message}`);
-  if (tg.enabled) {
+  if (tg.enabled && !inCycle) {
     try {
       await sendMessage({
         token: tg.token, chatId: tg.chatId,
