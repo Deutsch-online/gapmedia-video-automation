@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T17:22:00Z",
+  "requestedAt": "2026-09-15T18:40:00Z",
   "source": "chat",
-  "note": "Retry a1-20-countries after retargeting slide 1's dead-end image query (commit ff77f9a): 'two people talking introduction travel' → 'two friends meeting greeting outdoors'. Narration is already fully verified fixed; this was the last blocker."
+  "note": "Owner: fix episode 20's image failure no matter what. Two real bugs found and fixed since the last attempt: (1) lib/lesson-image.mjs's Exa layer was silently swallowing every failure with zero log trace (commit 605a2d0) — the build log never showed whether Exa even ran, despite EXA_API_KEY being configured; (2) generateAIImage()'s Pollinations call died to a thrown 'terminated' connection error with no retry (commit 4fce13e) — now retries once on a dropped connection, distinct from the existing 429/503 status retry. Retrying the build to see Exa's real diagnostic output and whether the connection retry clears the instability."
 }
