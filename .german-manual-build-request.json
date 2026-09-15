@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T22:40:00Z",
+  "requestedAt": "2026-09-15T23:15:00Z",
   "source": "chat",
-  "note": "Episode 21 with hand-reworded lines 3-5, replacing the «مرد و زن جدا» phrase the Recovery Engine could never get past. Also the first real run with the 50-minute job timeout and the cycle's own 44-minute deadline (faf224f), and the first with the vocabulary relevance prompt (11d27eb)."
+  "note": "Episode 21, third round. Run #347 narrowed it to one blocker: «خانمها» heard as «خانومها», a phonetic spelling of the same word, now folded in lib/hear.mjs (singular and plural). Line 3 also reworded off its sentence-final «مؤنث.». Lines 4 and 5 already passed in #347 and are unchanged."
 }
