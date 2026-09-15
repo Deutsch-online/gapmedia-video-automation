@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T16:08:00Z",
+  "requestedAt": "2026-09-15T16:30:00Z",
   "source": "chat",
-  "note": "Retry a1-20-countries after fixing two more real narration faults found in run #329's log (commit b1981c6): «تازه»→«جدید» (coarticulation collision before «می‌پرسی») and «الگو»→«قالب» (repeatedly misheard as «الگور» in this exact context). Line 4's earlier fix (حفظ کن.) already proved clean across the whole prior run. The Recovery Loop chain (3/3) is spent and explicitly handed this off for human review — this is that review."
+  "note": "Narration is fully fixed now (run #331: 'Narration ASR QC passed: 6 exact render clips' — all three rewords held). This retry is only for a separate, unrelated hiccup: slide 1 ('Woher kommst du?') found no real photo and Pollinations degraded (one undersized 576x1024 image, one timeout) under apparent load — a transient external-service issue, not a code bug. Retrying since live search/generation results vary run to run."
 }
