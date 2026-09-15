@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T10:05:00Z",
+  "requestedAt": "2026-09-15T12:45:00Z",
   "source": "chat",
-  "note": "Retry a1-19-directions after two more rewords (commit 56661bd): line 4 restructured with the یعنی template (است/میدهد→هست mishearing), outro's مسیرت swapped for راهت (ر/ل mishearing) — both evidence-based from run #312's real failure log, not guesses."
+  "note": "Retry a1-19-directions after Pexels/Wikimedia tiered-search broadening (commit 45dbe04) — the full 4-word phrase found only irrelevant stock photos; a narrower tier should find a real match without needing the Gemini AI-fallback at all."
 }
