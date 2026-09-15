@@ -51,10 +51,12 @@ const { findLessonImage } = await import("./lib/lesson-image.mjs");
 try {
   const result = await findLessonImage("two friends meeting greeting outdoors", "اهل کجایی؟ (غیررسمی)", "Woher kommst du?");
 
-  // Real search is exhausted (Wikimedia empty, Exa 402) and no AI/own-asset
-  // is configured/available here, so the honest outcome is null — this test
-  // is about the DIAGNOSTIC TRACE Exa leaves behind, not about forcing a hit.
-  assert.equal(result, null, "with every real layer genuinely exhausted and no AI fallback configured, the caller must get null, not a fabricated result");
+  // Real search is exhausted (Wikimedia empty, Exa 402) and AI generation
+  // has nothing to reach (Pollinations unmocked here, so it fails closed),
+  // so LAW 7 layer 6's labelled local graphic stands in — this test is
+  // about the DIAGNOSTIC TRACE Exa leaves behind, not about forcing a hit.
+  assert.ok(result, "with every real/AI layer genuinely exhausted, a labelled local fallback must stand in, never a hard stop");
+  assert.equal(result.sourceType, "generated-fallback");
 
   const exaLine = errors.find((line) => line.includes("Exa("));
   assert.ok(exaLine, `Exa's failure must be logged with the same shape Pexels/Wikimedia already use — got: ${JSON.stringify(errors)}`);

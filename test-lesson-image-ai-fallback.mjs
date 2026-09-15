@@ -85,9 +85,16 @@ try {
     throw new Error(`unexpected fetch in test: ${u}`);
   };
   const blocked = await findLessonImage("some word", "معنی‌اش", "some-word");
-  assert.equal(blocked, null, "when AI generation is also exhausted, the caller must still get null (own-asset, then a real stop) — never a fabricated result");
-  assert.ok(calls.pollinations >= 1, "must actually attempt AI generation before giving up");
-  console.log("ok   AI generation failing too still falls through honestly, instead of fabricating a result");
+  // Owner directive 2026-09-15 ("اگر برای یک سلاید هیچ عکس پیدا نشد فقط یک
+  // سلاید انیمیشنی بسازید"): a hard null here is no longer the honest final
+  // answer — LAW 7 layer 6 (generateLocalFallbackImage(), already proven in
+  // rescuePackPhotos()) now stands in with an explicitly labelled local SVG
+  // rather than stopping the whole episode over one unfindable slide.
+  assert.ok(blocked, "even with every real/AI layer exhausted, a labelled local fallback must stand in — never a hard stop, and never a fabricated real/AI result");
+  assert.equal(blocked.sourceType, "generated-fallback", "must be labelled exactly what it is, distinguishable from a real or AI-generated photo");
+  assert.ok(existsSync(blocked.photo), "the fallback graphic must actually exist on disk");
+  assert.ok(calls.pollinations >= 1, "must actually attempt AI generation before falling back to a local graphic");
+  console.log("ok   AI generation failing too still falls through honestly, to a labelled local graphic — never a hard stop, never a fabricated result");
 
   // Owner directive 2026-09-15, third round: episode 20's own log (run #335)
   // showed generateAIImage() dying to a thrown connection-level error
