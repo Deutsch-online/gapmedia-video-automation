@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T09:24:00Z",
+  "requestedAt": "2026-09-15T10:05:00Z",
   "source": "chat",
-  "note": "Retry a1-19-directions after rewording line 4 (جا→مقصد) to remove the ASR collision confirmed by the asr-compare diagnostic (commit 6eaf2ca)."
+  "note": "Retry a1-19-directions after two more rewords (commit 56661bd): line 4 restructured with the یعنی template (است/میدهد→هست mishearing), outro's مسیرت swapped for راهت (ر/ل mishearing) — both evidence-based from run #312's real failure log, not guesses."
 }
