@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T15:00:00Z",
+  "requestedAt": "2026-09-15T15:40:00Z",
   "source": "chat",
-  "note": "Owner requested episode 20 (a1-20-countries, progress nextIndex:19) be built now rather than waiting for the next scheduled news-scan.yml run. Narration/vocab content already authored in lib/narration.mjs and lib/german-a1.mjs, fa_lint clean, image queries are standard stock-photo phrases (map/flags/people talking)."
+  "note": "Retry a1-20-countries after fixing the real narration fault found in run #328's log: sentence-final «یاد بگیر.» (never used that way elsewhere in the corpus) reworded to «حفظ کن.» — commit 8f20514. «الگو» left untouched (cross-episode evidence: already ships fine in a1-11-time's identical template, so its rejections were ordinary synthesis noise, not a real fault)."
 }
