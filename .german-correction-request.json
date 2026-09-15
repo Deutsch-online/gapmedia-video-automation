@@ -1,4 +1,6 @@
 {
-  "unit": "a1-17-adjectives",
-  "retry": "2026-09-13T05:45Z"
+  "unit": "a1-20-countries",
+  "requestedAt": "2026-09-15T20:40:00Z",
+  "source": "chat",
+  "note": "Owner report: episode 20's already-delivered video shows all-black images. Root cause fixed in commit 35d44fb — build-ink.mjs embedded LAW 7 layer 6's SVG fallback images as data:image/svg;base64 (not a real MIME type, so Chromium rendered nothing) instead of data:image/svg+xml;base64. Re-rendering the same unit with the fix in place."
 }
