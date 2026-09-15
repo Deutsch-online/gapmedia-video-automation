@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T16:45:00Z",
+  "requestedAt": "2026-09-15T17:22:00Z",
   "source": "chat",
-  "note": "Narration is confirmed fully fixed (2 clean passes in a row). Retrying once more for slide 1 ('Woher kommst du?' / img query 'two people talking introduction travel') — its real-search AND Pollinations AI-fallback have now failed identically twice (576x1024 undersized + timeout both times), a reproducible pattern worth one more check before treating it as needing owner input (a real photo, or a better search query for this slide)."
+  "note": "Retry a1-20-countries after retargeting slide 1's dead-end image query (commit ff77f9a): 'two people talking introduction travel' → 'two friends meeting greeting outdoors'. Narration is already fully verified fixed; this was the last blocker."
 }
