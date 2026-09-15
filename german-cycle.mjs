@@ -17,9 +17,23 @@
 // a build leaves real state behind (synthesised takes, a patched
 // lib/narration.mjs, an exhaustion marker). Re-entering it in-process would
 // have meant unpicking all of that. Running it as a fresh child process per
-// attempt gives every attempt the same clean start the current design already
-// assumes, and leaves the 739-line build path — the part that is actually
-// proven in production — untouched.
+// attempt leaves the 739-line build path — the part that is actually proven in
+// production — untouched.
+//
+// KNOWN, MEASURED LIMIT (run #345, 2026-09-15): a fresh PROCESS is not a fresh
+// WORKING TREE. german-lesson-build.mjs patches lib/narration.mjs in place via
+// patchSourceText(), and those edits survive into the next attempt of the same
+// job. In #345, attempt 1 rewrote «مرد، جدا، زن» into a line that then failed
+// on «واژه‌ها، خانم‌ها», rewrote again into one that failed on «اصطلاحات، خانم،»
+// — and attempt 2 started from that twice-degraded text and failed on those
+// same words immediately. Across JOBS this does not happen: a failed build
+// never commits the patch, so every new run restarts from the committed text
+// (verified — lib/narration.mjs on main still holds a1-21-professions'
+// original four lines). So a cycle attempt is NOT yet equivalent to a chained
+// run, which is what lib/recovery-chain.mjs's "3 more FULL Recovery Loop
+// passes" assumes. Reverting those files between attempts would make them
+// equivalent; that changes how the Recovery Engine composes with this cycle,
+// so it is the owner's call, not this file's.
 //
 // WHAT THIS DOES NOT DO: it never weakens a gate to get to green. The only two
 // decisions it can make are "attempt again" and "stop, and say exactly why".
