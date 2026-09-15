@@ -6,6 +6,8 @@ import {
 } from "./lib/auto-image.mjs";
 import { imageSize, imageType } from "./lib/media-guard.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
+import { buildInkHTML } from "./lib/build-ink.mjs";
+import { packForFeature } from "./lib/content.mjs";
 
 assert.deepEqual(
   FREE_CATALOGUE_IMAGE_SOURCES,
@@ -64,6 +66,28 @@ try {
       },
     }],
   }));
+
+  // Owner report 2026-09-15 (episode 20): every slide that fell through to
+  // this exact fallback rendered as a solid black frame. Root cause:
+  // build-ink.mjs's photoSrc() built the data URI as
+  // `data:image/${type}` straight from imageType()'s token, and that
+  // token is "svg" — not the real MIME subtype "svg+xml". Chromium (the
+  // same renderer this project's render pipeline streams frames from)
+  // does not decode "data:image/svg;base64,...", so the <img> painted
+  // nothing, indistinguishable on this composition's dark ink ground from
+  // a black slide. This proves the real buildInkHTML() — not a
+  // reimplementation — emits a browser-decodable SVG data URI for a real
+  // LAW 7 layer 6 fallback file.
+  {
+    const pack = packForFeature("tts-voice");
+    pack.tips[0].photo = found.photo;
+    pack.tips[0].photoAspect = 0.75;
+    const html = buildInkHTML(pack);
+    assert.match(html, /data:image\/svg\+xml;base64,/,
+      "an SVG fallback photo must be embedded with its real MIME subtype (svg+xml), or Chromium renders it as nothing");
+    assert.doesNotMatch(html, /data:image\/svg;base64,/,
+      "\"image/svg\" is not a real MIME type — this is exactly the bug that rendered every fallback slide black");
+  }
 } finally {
   rmSync(found.photo, { force: true });
 }
