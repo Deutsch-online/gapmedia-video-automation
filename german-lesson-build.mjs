@@ -251,7 +251,10 @@ console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}
 // neural service, already proven here for German and already used by
 // render-ai-education-voice.mjs for Persian, is the free engine that has not
 // been tried on this path.
-const TTS_ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "minimax";
+// Edge is the safe local default too. Cloud workflows set it explicitly, but
+// a manual correction must not silently fall back to paid MiniMax simply
+// because its shell omitted TTS_ENGINE.
+const TTS_ENGINE = ["pocket", "minimax"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "edge";
 // The Persian voice for that engine. Its default is GERMAN, because
 // music/edge-tts.mjs exists for the German word — so a Persian line must name
 // its own voice or it would be read by a German speaker.

@@ -71,6 +71,10 @@ console.log("all locked rules hold across every hook in the catalogue");
   // not been built yet and would have failed exactly the same way.
   assert.equal(flagged("این چند جمله، اولین سفارشت در کافهٔ آلمانی را آسان می‌کند."), true);
 
+  // Ordinary words ending in «ت» are not possessives. A broad regex once
+  // blocked the safe automatic rewrite «... تفاوت دارد» and stopped a build.
+  assert.equal(flagged("شکل گفتن آن‌ها با هم تفاوت دارد."), false);
+
   // The shipped replacements must pass.
   assert.equal(flagged("اولین خرید در آلمان را با همین جمله‌ها انجام بده."), false);
   assert.equal(flagged("با این چهار جمله، خرید را کامل به آلمانی انجام بده."), false);

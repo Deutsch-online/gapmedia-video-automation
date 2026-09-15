@@ -13,8 +13,8 @@ const src = readFileSync("german-lesson-build.mjs", "utf8");
 // when pocket-tts failed every narration line of episode 18 against
 // music/voice-qc.mjs. What matters is that the variable is honoured and that
 // the paid engine is only ever the fallback, never silently the default.
-assert.match(src, /const TTS_ENGINE = \["pocket", "edge"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "minimax";/,
-  "the German build must read TTS_ENGINE like the other two synthesis paths");
+assert.match(src, /const TTS_ENGINE = \["pocket", "minimax"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "edge";/,
+  "the German build must default safely to Edge while accepting explicit engine overrides");
 // A Persian line on Edge must name a Persian voice — the adapter's own default
 // is German, so an unset voice would have a German speaker read Persian.
 assert.match(src, /if \(engine === "edge" && !languageBoost\) env\.EDGE_TTS_VOICE = EDGE_PERSIAN_VOICE;/,
@@ -87,8 +87,8 @@ console.log("ok   the German build honours TTS_ENGINE, and the German word stays
 
   // The Persian half is chosen independently of the German one, and the paid
   // engine is only ever its fallback.
-  assert.match(src, /const TTS_ENGINE = \["pocket", "edge"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "minimax";/,
-    "the Persian engine switch stays separate from the German one");
+  assert.match(src, /const TTS_ENGINE = \["pocket", "minimax"\]\.includes\(process\.env\.TTS_ENGINE\) \? process\.env\.TTS_ENGINE : "edge";/,
+    "the Persian engine switch stays separate from the German one and defaults to Edge");
 }
 
 // The adapter converts MiniMax-shaped multipliers into Edge's percentage

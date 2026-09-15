@@ -36,4 +36,9 @@ assert.match(narrationLineCheck("بدون میکروفون ضبط کن.").join("
 assert.equal(minimaxSpeakable("اولین خریدت در آلمان را با همین جمله‌ها انجام بده."), "اولین خریدِت در آلمان را با همین جملهها انجام بده.");
 assert.equal(minimaxSpeakable("با این چهار جمله، خریدت را کامل به آلمانی انجام بده."), "با این چهار جمله، خریدِت را کامل به آلمانی انجام بده.");
 
+// Regression: the preflight once mistook every Persian word ending in «ت»
+// before «د» for a possessive and rejected the valid recovery phrase
+// «تفاوت دارد». Only the three observed possessive forms are blocked.
+assert.equal(narrationLineCheck("این دو شکل تفاوت دارد.").some((i) => i.includes("ـت")), false);
+
 console.log("Persian TTS copy keeps UI labels clear and Persian words connected");
