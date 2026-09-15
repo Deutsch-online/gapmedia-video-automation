@@ -25,7 +25,11 @@ if (!vo) { console.log(JSON.stringify({ ok: false })); process.exit(0); }
 // MiniMax — pocket-tts is a 2026-09-07 prototype, not yet load-bearing.
 const ENGINE = ["pocket", "edge"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "provider";
 const speakable = ENGINE === "pocket" ? pocketSpeakable : minimaxSpeakable;
-const TTS = ENGINE === "pocket" ? "music/pocket-tts.mjs" : ENGINE === "edge" ? "music/edge-tts.mjs" : "music/provider-tts.mjs";
+const TTS = ENGINE === "pocket"
+  ? "music/pocket-tts.mjs"
+  : ENGINE === "edge"
+    ? "music/edge-tts.mjs"
+    : "music/provider-tts.mjs";
 const ttsEnv = ENGINE === "edge"
   ? { ...process.env, EDGE_TTS_VOICE: process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural" }
   : process.env;
