@@ -10,6 +10,15 @@
 // both ran and found nothing relevant for "Wo ist...?", Exa was unconfigured,
 // no own asset existed, and the build stopped anyway.
 //
+// Owner directive 2026-09-15, second round: generateAIImage() itself then
+// moved from Gemini's gemini-2.5-flash-image to Pollinations — real evidence
+// from news-scan run #323/#324 showed the relevance judge (a separate Gemini
+// model) ran clean while the image-generation call alone 429'd with an error
+// body naming "plan and billing details", i.e. a quota tied to the Google
+// Cloud project behind the key, not the key itself; rotating the key could
+// never have cleared it. Pollinations needs no key/billing and returns image
+// bytes directly from one GET call.
+//
 // This proves the real findLessonImage() — not a reimplementation — reaches
 // generateAIImage() when every real layer above it comes back empty, and
 // that the result is correctly labelled "ai-generated".
@@ -21,39 +30,33 @@ import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-// GEMINI_KEY is read at module-load time in lib/auto-image.mjs, so it must be
-// set before that module (or anything importing it) is loaded — same reason
-// test-diagnose-board.mjs uses a dynamic import after setting its own env.
-process.env.GEMINI_API_KEY = "test-gemini-key";
 // Deliberately NOT set: PEXELS_API_KEY, EXA_API_KEY — so layers 1 and 3
 // short-circuit to null/[] exactly as they do in production when unconfigured
 // (confirmed live 2026-09-15: "Exa✗skipped (needs EXA_API_KEY...)"), and this
 // test exercises only the real gap — layer 2 (Wikimedia, needs no key) and
-// layer 4 (Gemini) — without a live network call to either.
+// layer 4 (Pollinations, also no key) — without a live network call to either.
 
 // A real image file, so imageType()/imageSize() (which read genuine bytes,
 // not a stub) accept it — same technique test-visual-fallback.mjs uses for
 // LAW 7 layer 5's own assets.
 const workDir = mkdtempSync(join(tmpdir(), "lesson-image-ai-"));
-const genImage = join(workDir, "gemini-mock.png");
+const genImage = join(workDir, "pollinations-mock.png");
 execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=slateblue:s=1200x1600", "-frames:v", "1", genImage]);
-const genImageB64 = readFileSync(genImage).toString("base64");
+const genImageBytes = readFileSync(genImage);
+const toArrayBuffer = (buf) => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
 
 const realFetch = globalThis.fetch;
-const calls = { wikimedia: 0, gemini: 0 };
-globalThis.fetch = async (url, init) => {
+const calls = { wikimedia: 0, pollinations: 0 };
+globalThis.fetch = async (url) => {
   const u = String(url);
   if (u.includes("de.wikipedia.org")) {
     calls.wikimedia++;
     // A real "no matching article" shape — an empty pages object, not an error.
     return { ok: true, status: 200, json: async () => ({ query: { pages: {} } }) };
   }
-  if (u.includes("generativelanguage.googleapis.com")) {
-    calls.gemini++;
-    return {
-      ok: true, status: 200,
-      json: async () => ({ candidates: [{ content: { parts: [{ inlineData: { data: genImageB64 } }] } }] }),
-    };
+  if (u.includes("image.pollinations.ai")) {
+    calls.pollinations++;
+    return { ok: true, status: 200, arrayBuffer: async () => toArrayBuffer(genImageBytes) };
   }
   throw new Error(`unexpected fetch in test: ${u}`);
 };
@@ -66,24 +69,24 @@ try {
   assert.ok(result, "must return a result instead of giving up once real search is exhausted");
   assert.equal(result.sourceType, "ai-generated", "the fallback image must be labelled exactly what it is");
   assert.equal(calls.wikimedia, 3, "layer 2 (Wikimedia, no key needed) must be tried at every broadening tier, not just the full phrase");
-  assert.equal(calls.gemini, 1, "layer 4 (Gemini) must be reached only after the real layers above it are exhausted");
+  assert.equal(calls.pollinations, 1, "layer 4 (Pollinations) must be reached only after the real layers above it are exhausted");
   assert.ok(existsSync(result.photo), "the generated file must actually exist on disk");
   console.log("ok   findLessonImage() falls back to a labelled AI-generated image once Pexels/Wikimedia/Exa are exhausted");
 
-  calls.gemini = 0;
+  calls.pollinations = 0;
   globalThis.fetch = async (url) => {
     const u = String(url);
     if (u.includes("de.wikipedia.org")) return { ok: true, status: 200, json: async () => ({ query: { pages: {} } }) };
-    if (u.includes("generativelanguage.googleapis.com")) {
-      calls.gemini++;
-      // A real "prompt blocked" shape — 200 OK, no image part.
-      return { ok: true, status: 200, json: async () => ({ candidates: [{ finishReason: "SAFETY" }] }) };
+    if (u.includes("image.pollinations.ai")) {
+      calls.pollinations++;
+      // A real outage/exhaustion shape — a non-2xx status, no image body.
+      return { ok: false, status: 500, text: async () => "internal error" };
     }
     throw new Error(`unexpected fetch in test: ${u}`);
   };
   const blocked = await findLessonImage("some word", "معنی‌اش", "some-word");
   assert.equal(blocked, null, "when AI generation is also exhausted, the caller must still get null (own-asset, then a real stop) — never a fabricated result");
-  assert.ok(calls.gemini >= 1, "must actually attempt AI generation before giving up");
+  assert.ok(calls.pollinations >= 1, "must actually attempt AI generation before giving up");
   console.log("ok   AI generation failing too still falls through honestly, instead of fabricating a result");
 } finally {
   globalThis.fetch = realFetch;
