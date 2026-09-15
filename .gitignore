@@ -35,5 +35,14 @@ public/broll/*.mp4
 public/screens/*.img
 .topic-rejected.json
 .topic-offered.json
+# findLessonImage()/findRealImage() write real+test fixtures here every run
+# (lesson-image.mjs, auto-image.mjs, pexels-image.mjs, wikimedia-image.mjs);
+# never committed by the pipeline itself in 340+ real runs — same "generated
+# / heavy" class as renders/ and compositions/ above. Test-run leftovers
+# (test-lesson-image-ai-fallback.mjs etc. don't all clean up after
+# themselves the way test-local-image-fallback.mjs's rmSync does) showed up
+# as untracked files here 2026-09-15 — ignoring the whole directory instead
+# of chasing each test.
+public/user-media/
 out/tune/
 out/verify/
