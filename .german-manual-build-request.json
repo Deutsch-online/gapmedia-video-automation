@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T19:05:00Z",
+  "requestedAt": "2026-09-15T21:55:00Z",
   "source": "chat",
-  "note": "Owner: if no photo is found for a slide, build an animated slide instead of failing. Root fix: lib/lesson-image.mjs's findLessonImage() had a hard stop after own-asset (layer 5) failed — real search (Pexels/Wikimedia/Exa) and AI generation (Pollinations) all had genuine external reasons to miss slide 1 ('Woher kommst du?'): no relevant stock coverage, Exa 402 (credit exhaustion, confirmed via the new diagnostic logging), Pollinations' hard 576x1024 resolution cap. Wired in LAW 7 layer 6: generateLocalFallbackImage() (lib/auto-image.mjs), already the proven final layer of rescuePackPhotos() and already registered as 'generated-fallback' in visual-proof.mjs's VALID_SOURCE_TYPES. Retrying the build to confirm layer 6 fires for slide 1 and episode 20 ships end-to-end (commit 425bb9c)."
+  "note": "First production run of german-cycle.mjs (commit a6995a2): provider plan resolved before the build, a failed attempt goes to lib/diagnose.mjs instead of ending the job, and nothing reaches Telegram until an attempt succeeds. Episode 21 (a1-21-professions) is the subject, which also exercises the narration preflight fix in b8b823b."
 }
