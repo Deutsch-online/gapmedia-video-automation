@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-09-15T14:20:00Z",
+  "requestedAt": "2026-09-15T14:45:00Z",
   "source": "chat",
-  "note": "Retry a1-19-directions after swapping generateAIImage()'s LAW 7 layer 4 from Gemini (gemini-2.5-flash-image, plan/billing-quota 429 confirmed via run #323/#324 logs) to Pollinations (no key, no billing) — commit fc196e1."
+  "note": "Pollinations swap (fc196e1) confirmed working — run #325 found 3 of 4 real photos via Pexels and only hit Pollinations' own shared community-model rate limit (429 'Per-user limit of 300 RPM exceeded for lykon/dreamshaper-8-lcm') on the last slide, a genuine external free-tier limit, not a billing/plan block like before. Retrying once more; this class of limit resets on its own within minutes."
 }
