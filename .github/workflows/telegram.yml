@@ -117,6 +117,17 @@ concurrency:
 
 permissions:
   contents: write
+  # Owner request 2026-09-15: a manual A1-lesson build reachable from
+  # Telegram. news-scan.yml's own "force" workflow_dispatch input already
+  # does exactly this — the only thing missing was a way for THIS workflow
+  # to call it. A push authenticated with this job's own GITHUB_TOKEN cannot
+  # trigger another workflow (see lib/recovery-chain.mjs's header for the
+  # same limitation elsewhere in this project), but that restriction is
+  # specifically about the push event; calling the Actions API for a
+  # dispatch, from a workflow whose own permissions grant it, is the
+  # standard, supported way one workflow starts another. Scoped to this repo
+  # only, for the lifetime of a single job run.
+  actions: write
 
 jobs:
   listen:
@@ -232,7 +243,7 @@ jobs:
             printf 'ACTION=%s\nPICK=1\nPAYLOAD=%s\nVOICE_ID=\nVOICE_MODE=%s\n' "$request_action" "$request_payload" "$request_voice" >> "$GITHUB_OUTPUT"
           elif [ -n "$INPUT_ACTION" ]; then
             case "$INPUT_ACTION" in
-              approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;
+              approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-german-lesson|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;
               *) echo "ACTION=none" >> "$GITHUB_OUTPUT"; exit 0 ;;
             esac
             safe_pick=$(printf '%s' "$INPUT_PICK" | tr -cd '0-9' | cut -c1-1)
@@ -575,6 +586,26 @@ jobs:
             git pull --rebase --autostash || true
             git push || true
           fi
+
+      # Relays a Telegram "آلمانی بساز"/"درس آلمانی" order to news-scan.yml's
+      # own manual override — the same force=true bypass daily.yml already
+      # had (owner request 2026-09-11) and news-scan.yml gained 2026-09-15.
+      # A push from this job cannot start another workflow (see the
+      # `permissions:` block above), so this calls workflow_dispatch
+      # directly instead of writing a trigger file and pushing it.
+      # news-scan.yml has its own "gapmedia-lesson" concurrency group, so
+      # this never races or competes with a daily/telegram render.
+      - name: Trigger a manual German A1 lesson build
+        if: steps.cmd.outputs.ACTION == 'build-german-lesson'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/actions/workflows/news-scan.yml/dispatches" \
+            -d '{"ref":"main","inputs":{"force":"true"}}'
 
       - name: Send MiniMax voice IDs
         if: steps.cmd.outputs.ACTION == 'voice-list'

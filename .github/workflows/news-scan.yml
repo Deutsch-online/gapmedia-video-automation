@@ -38,6 +38,15 @@ on:
       # uses it for exactly that reason — see that file's header.
       - ".trigger-lesson-dispatch"
       - ".german-correction-request.json"
+      - ".german-manual-build-request.json"
+      # Owner request 2026-09-15: a manual A1 cycle alongside the automatic
+      # one, reachable from chat and from Telegram. workflow_dispatch's own
+      # "force" input already does exactly this (see below), but a
+      # workflow's own GITHUB_TOKEN cannot call workflow_dispatch on itself
+      # without "actions: write", and pushing this file from a chat session
+      # or a local bot.mjs run (a real git credential, not GITHUB_TOKEN)
+      # fires this workflow the same way .trigger-lesson-dispatch does — see
+      # the gate step below for the bypass itself.
   workflow_dispatch:
     inputs:
       force:
@@ -136,6 +145,19 @@ jobs:
               fi
               echo "::error::Invalid correction unit in .german-correction-request.json"
               exit 1
+            fi
+            # Same "did THIS push actually touch it" check as the correction
+            # branch above, for the same reason: without it a stale request
+            # left on disk from an earlier push could be replayed by any
+            # unrelated commit. Unlike a correction this never names a unit —
+            # german-lesson-build.mjs picks the next curriculum episode the
+            # normal way, only the time/already-sent gate is bypassed.
+            if printf '%s\n' "$changed" | grep -Fxq '.german-manual-build-request.json'; then
+              echo "go=yes" >> "$GITHUB_OUTPUT"
+              echo "batch=manual-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
+              echo "date=$local_date" >> "$GITHUB_OUTPUT"
+              echo "Manual build request: building the next episode now, bypassing the time/already-sent gate."
+              exit 0
             fi
           fi
 

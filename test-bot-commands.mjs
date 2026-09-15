@@ -25,6 +25,7 @@ const CASES = [
   ["تیک‌تاک بساز", "build-tiktok"],
   ["انستا بساز", "build-instagram"],
   ["ابزار بساز", "build-tools"],
+  ["آلمانی بساز", "build-german-lesson"],
   ["تیک تاک", "plan-tiktok"],
   ["انستا", "plan-instagram"],
   ["ابزار", "plan-tools"],

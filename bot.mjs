@@ -9,7 +9,7 @@
 //   فردا            → build tomorrow's set early
 //   راهنما          → this list
 import { execSync, execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname } from "node:path";
 import { loadEnv, telegramConfig, sendMessage, getUpdates } from "./lib/telegram.mjs";
@@ -128,6 +128,27 @@ export async function handle(text) {
     await say("📡 در حال رتبه‌بندی نامزدهای محتوا…");
     try { execSync("node content-radar.mjs", { stdio: "inherit" }); }
     catch (e) { await say("✗ خطا: " + String(e.message).split(String.fromCharCode(10))[0]); }
+    return;
+  }
+  if (cmd && cmd.action === "build-german-lesson") {
+    // Owner request 2026-09-15: a manual A1 cycle alongside the automatic
+    // one. Unlike the cloud listener (cloud-listen.mjs, running inside a
+    // GitHub Actions job whose own GITHUB_TOKEN cannot trigger another
+    // workflow from a push — see news-scan.yml's push-paths comment), this
+    // runs on the owner's own machine with a real git credential, so
+    // writing and pushing the trigger file here reaches news-scan.yml the
+    // same way .trigger-lesson-dispatch already does. Never advances the
+    // curriculum or marks a batch delivered by itself — german-lesson-
+    // build.mjs's normal next-episode pick still decides what gets built.
+    await say("📚 در حال درخواست ساخت دستیِ درس بعدیِ سری A1…");
+    try {
+      writeFileSync(".german-manual-build-request.json", JSON.stringify({ requestedAt: new Date().toISOString(), source: "local-bot" }, null, 2) + "\n");
+      execSync('git add -f .german-manual-build-request.json', { stdio: "inherit" });
+      execSync('git diff --staged --quiet || git commit -m "chore: manual German A1 lesson build requested from local bot"', { stdio: "inherit" });
+      execSync('git pull --rebase --autostash', { stdio: "inherit" });
+      execSync('git push', { stdio: "inherit" });
+      await say("✅ درخواست ثبت شد. news-scan.yml درس بعدی را می‌سازد.");
+    } catch (e) { await say("✗ خطا: " + String(e.message).split(String.fromCharCode(10))[0]); }
     return;
   }
   if (cmd && cmd.action === "undo") {
