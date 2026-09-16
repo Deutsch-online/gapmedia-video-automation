@@ -1,0 +1,142 @@
+{
+  "unit": "a1-23-common-verbs",
+  "attempts": 1,
+  "history": [
+    {
+      "cycle": 0,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "این",
+          "فعل",
+          "یعنی",
+          "رفتن.",
+          "این",
+          "فعل",
+          "یعنی",
+          "آمدن.",
+          "فعل",
+          "میشوند.",
+          "دو",
+          "فعل",
+          "یعنی",
+          "دیدن",
+          "فعل،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 3916,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "این",
+          "فعل",
+          "یعنی",
+          "رفتن.",
+          "آمدن.",
+          "فعل",
+          "میشوند.",
+          "دو",
+          "فعل",
+          "یعنی",
+          "دیدن",
+          "فعل،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 29847,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "این",
+          "فعل",
+          "یعنی",
+          "رفتن.",
+          "این",
+          "فعل",
+          "یعنی",
+          "آمدن.",
+          "فعل",
+          "میشوند.",
+          "دو",
+          "فعل",
+          "یعنی",
+          "دیدن",
+          "فعل،"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 56450,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    }
+  ],
+  "lastReason": {
+    "faultWords": [
+      "این",
+      "فعل",
+      "یعنی",
+      "رفتن.",
+      "این",
+      "فعل",
+      "یعنی",
+      "آمدن.",
+      "فعل",
+      "میشوند.",
+      "دو",
+      "فعل",
+      "یعنی",
+      "دیدن",
+      "فعل،"
+    ],
+    "error": {
+      "status": 1,
+      "signal": null,
+      "output": [
+        null,
+        null,
+        null
+      ],
+      "pid": 56450,
+      "stdout": null,
+      "stderr": null
+    }
+  }
+}
