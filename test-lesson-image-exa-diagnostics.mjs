@@ -22,6 +22,11 @@ import { join } from "node:path";
 // Read at module-load time in lib/auto-image.mjs, so set before anything
 // importing it loads — same reason the sibling lesson-image tests do this.
 process.env.EXA_API_KEY = "test-exa-key";
+// Exa became opt-in on 2026-09-16 (ENABLE_EXA, owner directive: keep it, make
+// it optional), and this test is about what an ENABLED Exa logs when it fails.
+// Without the flag the layer is skipped by design and there is no failure to
+// diagnose — see test-exa-optional.mjs for the skip path itself.
+process.env.ENABLE_EXA = "true";
 process.env.GEMINI_API_KEY = "test-gemini-key";
 // Deliberately NOT set: PEXELS_API_KEY — so layer 1 short-circuits to null
 // and this test exercises only the real gap: layer 2 (Wikimedia, always
