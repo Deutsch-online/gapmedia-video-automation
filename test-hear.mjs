@@ -132,6 +132,22 @@ const cases = [
     "این جمله را بخوان", "این جملهی را بخوان"],
   ["fail", "«کلمه» heard as a genuinely different word, glide or not",
     "این کلمه مستقیم را نشان می‌دهد", "این کلاسی مستقیم را نشان می‌دهد"],
+  // Confirmed live 2026-09-16, news-scan #358 and #359: a1-22-daily-routine's
+  // hook was rejected on «عادی‌ات» on every take of four full chained attempts.
+  // Word-initial ع before ا is a glottal onset in Persian, identical to آ —
+  // «عادی» and «آدی» are the same sound — so a transcriber writing what it
+  // heard produces «آدیات».
+  ["pass", "word-initial ع before ا heard as آ is the same sound",
+    "یک روز عادی‌ات را به آلمانی تعریف کن.",
+    "یک روز آدیات را به آلمانی تعریف کن."],
+  // And the allowance stays narrow: dropping a ع that is NOT word-initial,
+  // or turning the word into a different one, must still fail.
+  ["fail", "«تعریف» losing its ع is a lost sound, not a spelling",
+    "یک روز عادی‌ات را به آلمانی تعریف کن.",
+    "یک روز عادی‌ات را به آلمانی تریف کن."],
+  ["fail", "«عادی‌ات» heard as a genuinely different word still fails",
+    "یک روز عادی‌ات را به آلمانی تعریف کن.",
+    "یک روز عالی را به آلمانی تعریف کن."],
 ];
 
 let bad = 0;
