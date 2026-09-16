@@ -39,6 +39,8 @@ const only = onlyIdx >= 0 ? args[onlyIdx + 1] : null; // e.g. --only tiktok
 const localEnv = loadEnv();
 Object.assign(process.env, localEnv);
 const tg = noTelegram ? { enabled: false } : telegramConfig(localEnv);
+// Set by daily-cycle.mjs for each attempt it runs. See the failure branch below.
+const inCycle = process.env.DAILY_CYCLE === "on";
 const dateArg = args.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a));
 const date = dateArg ? new Date(dateArg + "T12:00:00") : new Date();
 const iso = date.toISOString().slice(0, 10);
@@ -559,7 +561,13 @@ for (const firstDelivery of deliveries) {
       // used to abort that whole shell step under `set -e`, so a crash on
       // e.g. tiktok silently skipped instagram too, not just tiktok).
       console.error(`   ✗ ${platform} (${pack.id}) failed after ${attempt} attempt${attempt === 1 ? "" : "s"}, no more topics to try: ${err.message}`);
-      if (tg.enabled) {
+      // When daily-cycle.mjs owns this run (owner directive 2026-09-16, the
+      // same rule the German pipeline already follows), a failed attempt stays
+      // inside the cycle: it goes to the diagnose stage, and the owner is told
+      // once, with a diagnosis, if and only if the whole cycle gives up. One
+      // alert per failed attempt for something the next attempt may fix is
+      // what that directive was about. The success path below is untouched.
+      if (tg.enabled && !inCycle) {
         try {
           // Summarised from EVERY attempt, not just `err` (the last one) —
           // a slot that lost three topics to a missing screenshot and three

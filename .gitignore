@@ -52,3 +52,5 @@ public/user-media/
 .provider-runtime-report.json
 out/tune/
 out/verify/
+.daily-cycle-report.json
+.daily-provider-plan.json

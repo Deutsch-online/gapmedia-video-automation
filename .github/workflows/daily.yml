@@ -380,7 +380,16 @@ jobs:
             # been 90 minutes for some time, so the old arithmetic was stale
             # as well as too tight. test-daily-workflow.mjs now ties the two
             # numbers together so neither can drift out from under the other.
-            if timeout --preserve-status 32m node daily-render.mjs --only "$slot"; then
+            # daily-cycle.mjs, not daily-render.mjs directly: the cycle runs
+            # the render, and on a failure takes it to the diagnose stage
+            # (lib/diagnose.mjs) before deciding whether another attempt is
+            # honest — owner directive 2026-09-16. It also owns its own
+            # per-attempt kill at 30m and its own 31m deadline, both under the
+            # 35m below, so a slot that runs long stops itself WITH a written
+            # diagnosis instead of being killed silently by this timeout. Run
+            # #280 is why: both slots died at exactly 32m00s and bash could
+            # only say "did not complete".
+            if timeout --preserve-status 35m node daily-cycle.mjs --only "$slot"; then
               mark_done "$slot"
               echo "✓ $slot delivered and checkpointed."
             else

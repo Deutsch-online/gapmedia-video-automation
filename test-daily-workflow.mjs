@@ -21,7 +21,11 @@ assert.match(workflow, /run_slot ai-tiktok\s+run_slot ai-instagram/s);
 // slots plus setup fit inside the job with margin. Pinning the literal here
 // as well only meant the number could not be corrected without editing two
 // places, which is how run #260's too-tight 24m survived as long as it did.
-assert.match(workflow, /timeout --preserve-status \d+m node daily-render\.mjs --only/);
+// daily-cycle.mjs since 2026-09-16 — it runs daily-render.mjs itself and
+// takes a failure to the diagnose stage first. The per-slot `timeout` stays
+// as the outer belt: it must stay ABOVE the cycle's own deadline, or bash
+// kills the cycle before it can write the diagnosis it exists to produce.
+assert.match(workflow, /timeout --preserve-status \d+m node daily-cycle\.mjs --only/);
 assert.match(workflow, /Mark incomplete delivery for retry/);
 
 // Regression guard for the production failure observed 2026-09-11 through
@@ -194,7 +198,7 @@ assert.match(telegramWorkflow, /group: gapmedia-telegram/,
 // against a "60-minute job" the workflow had long since raised to 90, so
 // the budget nobody rechecked was both stale and too tight.
 {
-  const slot = Number(workflow.match(/timeout --preserve-status (\d+)m node daily-render\.mjs/)[1]);
+  const slot = Number(workflow.match(/timeout --preserve-status (\d+)m node daily-cycle\.mjs/)[1]);
   const job = Number(workflow.match(/timeout-minutes: (\d+)/)[1]);
   const SLOTS = 2;      // morning: tiktok + instagram; evening: the ai- pair
   const SETUP_MINUTES = 5;   // checkout, caches, pocket-tts, system packages
