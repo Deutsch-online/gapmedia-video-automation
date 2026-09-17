@@ -103,10 +103,10 @@ jobs:
           echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
 
           already_sent() {
-            [ -f.daily-batch-sent.json ] && grep -q "\"$1\"".daily-batch-sent.json
+            [ -f .daily-batch-sent.json ] && grep -q "\"$1\"" .daily-batch-sent.json
           }
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}"!= "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}" != "auto" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=${{ inputs.batch }}" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
@@ -115,10 +115,10 @@ jobs:
 
           morning_due=false
           evening_due=false
-          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] &&! already_sent "$local_date-morning"; then
+          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] && ! already_sent "$local_date-morning"; then
             morning_due=true
           fi
-          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] &&! already_sent "$local_date-evening"; then
+          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] && ! already_sent "$local_date-evening"; then
             evening_due=true
           fi
 
@@ -170,7 +170,7 @@ jobs:
         id: voicemode
         if: steps.gate.outputs.go == 'yes'
         run: |
-          if [ -f.silent-render ]; then
+          if [ -f .silent-render ]; then
             echo "voice=off" >> "$GITHUB_OUTPUT"
             echo "::warning::.silent-render is present — building music-only videos with no narration."
           else
@@ -203,8 +203,12 @@ jobs:
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
           VOICE: ${{ steps.voicemode.outputs.voice }}
           REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
-          NARRATION_QC: "off"
-          TTS_ENGINE: "minimax"
+          # Narrated deliveries must pass the ASR quality gate. When the
+          # owner deliberately commits .silent-render, this resolves to off.
+          NARRATION_QC: ${{ steps.voicemode.outputs.voice }}
+          # Keep the scheduled lane on a free engine; paid MiniMax credit has
+          # previously stopped a whole batch when its balance ran out.
+          TTS_ENGINE: "edge"
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
