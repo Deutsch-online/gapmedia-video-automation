@@ -636,6 +636,8 @@ jobs:
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_VEO_API_KEY: ${{ secrets.GOOGLE_VEO_API_KEY }}
+          ENABLE_GOOGLE_VEO: ${{ vars.ENABLE_GOOGLE_VEO }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}

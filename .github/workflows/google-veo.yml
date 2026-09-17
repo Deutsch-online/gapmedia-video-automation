@@ -1,0 +1,67 @@
+name: Google Flow Veo clip
+
+# Manual and opt-in only. Google Flow is the creative product; this workflow
+# uses its official programmable counterpart, Gemini API Veo. The default is
+# preflight, so merely opening/running this workflow cannot consume credits.
+on:
+  workflow_dispatch:
+    inputs:
+      generate:
+        description: "true = generate a billable Veo clip; false = configuration test only"
+        required: true
+        default: false
+        type: boolean
+      prompt:
+        description: "Video prompt (used only when generate is true)"
+        required: false
+        default: ""
+        type: string
+      aspect:
+        description: "9:16 or 16:9"
+        required: true
+        default: "9:16"
+        type: choice
+        options: ["9:16", "16:9"]
+      resolution:
+        description: "Use 720p for a first cost-controlled test"
+        required: true
+        default: "720p"
+        type: choice
+        options: ["720p", "1080p", "4k"]
+
+permissions:
+  contents: read
+
+jobs:
+  veo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GOOGLE_VEO_API_KEY: ${{ secrets.GOOGLE_VEO_API_KEY }}
+      ENABLE_GOOGLE_VEO: ${{ vars.ENABLE_GOOGLE_VEO }}
+      GOOGLE_VEO_MODEL: ${{ vars.GOOGLE_VEO_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify Google Flow / Veo configuration
+        run: node lib/google-veo.mjs --preflight
+      - name: Generate a Veo clip
+        if: inputs.generate
+        env:
+          PROMPT: ${{ inputs.prompt }}
+          ASPECT: ${{ inputs.aspect }}
+          RESOLUTION: ${{ inputs.resolution }}
+        run: |
+          test -n "$PROMPT"
+          node lib/google-veo.mjs --prompt "$PROMPT" --aspect "$ASPECT" --resolution "$RESOLUTION" --out out/google-veo-clip.mp4
+      - name: Upload generated clip
+        if: inputs.generate
+        uses: actions/upload-artifact@v4
+        with:
+          name: google-veo-clip
+          path: out/google-veo-clip.mp4
+          if-no-files-found: error

@@ -5,6 +5,8 @@ const noKeys = {};
 assert.equal(providerPlan("text", noKeys).every((p) => !p.ready), true, "API text providers require a configured key");
 assert.equal(providerPlan("voice", noKeys).find((p) => p.id === "edge").ready, true, "free Edge fallback remains available");
 assert.equal(providerPlan("voice", { POCKET_TTS_FARSI_CONFIG: "set" }).find((p) => p.id === "pocket-farsi").production, false, "unapproved Pocket voice is visible but never auto-selected");
+assert.equal(providerPlan("video", { GOOGLE_VEO_API_KEY: "set" }).find((p) => p.id === "google-veo").ready, false, "a Veo key alone must never enable billable generation");
+assert.equal(providerPlan("video", { GOOGLE_VEO_API_KEY: "set", ENABLE_GOOGLE_VEO: "true" }).find((p) => p.id === "google-veo").ready, true, "Veo becomes ready only after explicit opt-in");
 
 const order = [];
 const result = await runWithProviderFallback({

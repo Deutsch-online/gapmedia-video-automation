@@ -9,6 +9,7 @@
 | سیگنال گفتگو | 3 | Reddit | API | `REDDIT_CLIENT_ID` + `REDDIT_SECRET` |
 | ترجمه و تحلیل | 1 | Gemini | API | `GEMINI_API_KEY` یا `GOOGLE_API_KEY` |
 | ترجمه و تحلیل | 2 | Groq | API | `GROQ_API_KEY` |
+| کلیپ ویدیویی هوش مصنوعی | 1 | Google Flow / Veo | API / اختیاری | `GOOGLE_VEO_API_KEY` + متغیر `ENABLE_GOOGLE_VEO=true` |
 | نریشن فارسی | 1 | MiniMax | API | `MINIMAX_API_KEY` + `MINIMAX_VOICE_ID` |
 | نریشن فارسی | 2 | Microsoft Edge TTS | رایگان | بدون کلید |
 | آزمون نریشن فارسی | — | Pocket TTS Farsi | رایگان / محلی | `POCKET_TTS_FARSI_CONFIG` |
@@ -35,3 +36,14 @@
 5. **تلگرام** — تا وقتی یک تلاش واقعاً موفق نشده، هیچ چیزی به کانال نمی‌رود. فقط ویدیوی آمادهٔ نهایی ارسال می‌شود؛ و اگر چرخه کاملاً شکست بخورد، یک گزارش تشخیصی (نه خطای خام) با سیر کامل تلاش‌ها فرستاده می‌شود.
 
 Pocket TTS Farsi در لوکال و Cloud نصب/دریافت می‌شود، اما فعلاً فقط برای آزمون است: آزمون کیفیت تلفظ آن را برای انتشار خودکار تأیید نکرده است. بنابراین عمداً در زنجیرهٔ خودکارِ تولید قرار ندارد.
+
+## Google Flow / Veo
+
+Google Flow رابط خلاقانهٔ وب است و API مستقلی برای اتوماسیون GitHub ندارد. مسیر رسمیِ برنامه‌نویسی، **Gemini API Veo** است. این Provider به‌صورت پیش‌فرض خاموش است تا هزینهٔ ناخواسته ایجاد نکند.
+
+1. در Google AI Studio یک API Key با دسترسی Veo و Billing فعال بسازید.
+2. در GitHub → Settings → Secrets and variables → Actions، یک **Secret** به نام `GOOGLE_VEO_API_KEY` با همان کلید بسازید.
+3. در همان صفحه، بخش **Variables**، یک Variable به نام `ENABLE_GOOGLE_VEO` با مقدار دقیق `true` اضافه کنید.
+4. از Actions، Workflow **Google Flow Veo clip** را اجرا کنید. اولین بار `generate=false` را بزنید؛ فقط آماده‌بودن را می‌سنجد و هزینه ندارد. سپس برای ساخت واقعی، `generate=true`، Prompt و ترجیحاً `720p` را انتخاب کنید.
+
+این سرویس خودکار وارد ویدیوهای زمان‌بندی‌شده نشده است؛ فقط برای ساخت کلیپ‌های مستقل و تأییدشدهٔ دستی آماده است.
