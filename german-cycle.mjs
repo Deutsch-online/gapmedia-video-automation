@@ -42,6 +42,8 @@
 // narration QC gate and the duplicate ledger are never touched from here.
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { runCycle } from "./lib/cycle.mjs";
 import { providerPlan, formatProviderReportFa } from "./lib/providers.mjs";
 import { loadEnv, telegramConfig, sendMessage } from "./lib/telegram.mjs";
@@ -53,7 +55,10 @@ import { loadEnv, telegramConfig, sendMessage } from "./lib/telegram.mjs";
 // for.
 export { runCycle };
 
-const isMain = process.argv[1] && import.meta.url === `file://${process.argv[1]}`;
+// `file://${process.argv[1]}` only matches Unix paths. On Windows it becomes
+// `file://D:\...`, while import.meta.url is `file:///D:/...`; the cycle then
+// silently behaves as an import and no video is built. Normalise both paths.
+const isMain = Boolean(process.argv[1]) && resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1]);
 if (!isMain) {
   // Imported for its logic only (test-german-cycle.mjs) — do not start a build.
 } else {
@@ -141,7 +146,11 @@ function runAttempt(attempt) {
   return new Promise((resolve) => {
     const args = ["german-lesson-build.mjs", ...(unit ? ["--unit", unit] : [])];
     console.log(`\n=== تلاش ${attempt}/${maxAttempts} — node ${args.join(" ")} ===\n`);
-    const child = spawn("node", args, {
+    // Keep every attempt on the same Node runtime as the cycle. This matters
+    // for local reproduction with Node 22, and avoids silently jumping back
+    // to a different globally installed Node when this file is launched via
+    // an explicit runtime.
+    const child = spawn(process.execPath, args, {
       env: {
         ...process.env,
         // Tells german-lesson-build.mjs that a cycle owns the reporting, so a
