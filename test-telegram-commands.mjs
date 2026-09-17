@@ -18,6 +18,11 @@ import { readFileSync } from "node:fs";
 const worker = readFileSync("worker/src/index.js", "utf8");
 const flow = readFileSync(".github/workflows/telegram.yml", "utf8");
 
+if (!/case "\$request_action" in[\s\S]*?build-german-lesson/.test(flow)) {
+  console.log("  ✗ the phone-request allow-list drops the active German A1 lesson command");
+  process.exit(1);
+}
+
 const emitted = [...new Set(
   [...worker.matchAll(/action:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]),
 )].sort();

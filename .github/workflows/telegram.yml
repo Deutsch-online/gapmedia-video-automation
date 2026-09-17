@@ -239,7 +239,11 @@ jobs:
             # specific, already-known bank id (the same action a real
             # "تأیید <id>" Telegram command triggers) — no different in kind
             # from custom-content, which already builds arbitrary content.
-            case "$request_action" in custom-content|content-radar|approved-feature|rerender-feature) ;; *) request_action="none" ;; esac
+            # A phone-originated request reaches this push path through
+            # .video-request.json. Keep the allow-list narrow, but include
+            # the one active production command so a Telegram order for the
+            # next German A1 lesson can reach news-scan.yml without a PC.
+            case "$request_action" in custom-content|content-radar|approved-feature|rerender-feature|build-german-lesson) ;; *) request_action="none" ;; esac
             case "$request_voice" in on|off) ;; *) request_voice="on" ;; esac
             printf 'ACTION=%s\nPICK=1\nPAYLOAD=%s\nVOICE_ID=\nVOICE_MODE=%s\n' "$request_action" "$request_payload" "$request_voice" >> "$GITHUB_OUTPUT"
           elif [ -n "$INPUT_ACTION" ]; then
