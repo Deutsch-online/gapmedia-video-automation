@@ -1,0 +1,239 @@
+{
+  "unit": "a1-24-clothes",
+  "attempts": 1,
+  "history": [
+    {
+      "cycle": 0,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 4213,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 11380,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 0,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 18495,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکِت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 25596,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکِت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 32706,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 1,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "ژاکِت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 39806,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 1,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "واژه",
+          "کاپشن",
+          "کت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 46922,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 2,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "واژه",
+          "کاپشن",
+          "کت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 54027,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "localAttempt": 3,
+      "ok": false,
+      "reason": {
+        "faultWords": [
+          "واژه",
+          "کاپشن",
+          "کت",
+          "بگویی"
+        ],
+        "error": {
+          "status": 1,
+          "signal": null,
+          "output": [
+            null,
+            null,
+            null
+          ],
+          "pid": 61131,
+          "stdout": null,
+          "stderr": null
+        }
+      }
+    }
+  ],
+  "lastReason": {
+    "faultWords": [
+      "واژه",
+      "کاپشن",
+      "کت",
+      "بگویی"
+    ],
+    "error": {
+      "status": 1,
+      "signal": null,
+      "output": [
+        null,
+        null,
+        null
+      ],
+      "pid": 61131,
+      "stdout": null,
+      "stderr": null
+    }
+  }
+}
