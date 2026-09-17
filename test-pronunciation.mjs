@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { minimaxSpeakable } from "./lib/pronounce.mjs";
+import { minimaxSpeakable, lessonSpeakable } from "./lib/pronounce.mjs";
 import { narrationFor } from "./lib/narration.mjs";
 import { narrationLineCheck } from "./lib/voice-settings.mjs";
 
@@ -25,6 +25,8 @@ assert.equal(minimaxSpeakable("Preview را ببین."), "پیش نَمایش ر
 assert.equal(minimaxSpeakable("پرویو را ببین."), "پیش نَمایش را ببین.");
 assert.equal(minimaxSpeakable("بدون میکروفون ضبط کن."), "بدون مایک ضبط کن.");
 assert.equal(minimaxSpeakable("بدون مایک و بدون صدای خودت ضبط کن."), "بدون مایک و بدون صدای خودت ضبط کن.");
+assert.match(lessonSpeakable("می‌توانی امروز آلمانی صحبت کنی؟"), /^میتوااانی /, "lesson hook may lengthen only its opening emphasis, without breaking the sentence");
+assert.equal(lessonSpeakable("امروز یک جملهٔ کوتاه می‌آموزیم."), minimaxSpeakable("امروز یک جملهٔ کوتاه می‌آموزیم."), "ordinary lesson lines must stay natural; never stretch every sentence");
 assert.match(narrationLineCheck("Preview را ببین.").join(" "), /unsafe UI label/);
 assert.match(narrationLineCheck("بدون میکروفون ضبط کن.").join(" "), /unsafe UI label/);
 

@@ -17,8 +17,7 @@
 //
 //   node test-lesson-image-tiered-search.mjs
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -29,7 +28,19 @@ process.env.GEMINI_API_KEY = "test-gemini-key";
 
 const workDir = mkdtempSync(join(tmpdir(), "lesson-image-tier-"));
 const photoFile = join(workDir, "real-photo.jpg");
-execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=darkorange:s=1200x1600", "-frames:v", "1", photoFile]);
+// This contract test only needs a file that the project's own media guard
+// identifies as a 1200×1600 PNG; asking the host's FFmpeg to manufacture a
+// coloured JPEG made a deterministic unit test depend on Windows application
+// policy.  The PNG signature + IHDR are exactly the bytes imageType()/
+// imageSize() inspect, so this fixture tests the real admission path without
+// requiring an external encoder.
+const png = Buffer.alloc(25); // imageSize() deliberately rejects headers at the exact boundary
+png.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+png.writeUInt32BE(13, 8); // IHDR chunk length
+png.write("IHDR", 12, "ascii");
+png.writeUInt32BE(1200, 16);
+png.writeUInt32BE(1600, 20);
+writeFileSync(photoFile, png);
 const photoBytes = readFileSync(photoFile);
 const toArrayBuffer = (buf) => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
 
@@ -83,9 +94,11 @@ globalThis.fetch = async (url, init) => {
 };
 
 const { findLessonImage } = await import("./lib/lesson-image.mjs");
+let acceptedPhoto = "";
 
 try {
   const result = await findLessonImage(FULL_PHRASE, "... کجاست؟", "Wo ist...?");
+  acceptedPhoto = result?.photo || "";
 
   assert.ok(result, "a narrower tier must find a real, relevant photo instead of giving up");
   assert.equal(result.sourceType, "labelled-explainer", "must be a real sourced photo, not the AI-generated fallback");
@@ -99,4 +112,11 @@ try {
 } finally {
   globalThis.fetch = realFetch;
   rmSync(workDir, { recursive: true, force: true });
+  // The candidate verifier writes downloaded assets into public/user-media
+  // exactly as production does. This fixture is synthetic, so it must not
+  // leak into a later render's real-media directory.
+  if (acceptedPhoto) {
+    rmSync(acceptedPhoto, { force: true });
+    rmSync(acceptedPhoto.replace(/\.[^.]+$/, ".img"), { force: true });
+  }
 }

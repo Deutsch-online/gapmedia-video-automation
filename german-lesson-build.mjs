@@ -36,7 +36,7 @@ import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register } from "./lib/dedupe.mjs";
 import { narrationFor } from "./lib/narration.mjs";
-import { minimaxSpeakable, pocketSpeakable } from "./lib/pronounce.mjs";
+import { lessonSpeakable } from "./lib/pronounce.mjs";
 import { GERMAN_WORD_VOICE_ID, GERMAN_LESSON_NARRATION_OVERRIDE, GERMAN_WORD_VOICE_SETTINGS, narrationLineCheck } from "./lib/voice-settings.mjs";
 import { runWithRecovery, RecoveryExhausted } from "./lib/recovery-engine.mjs";
 import { evidenceIsStale } from "./lib/recovery-chain.mjs";
@@ -49,6 +49,13 @@ const localEnv = loadEnv();
 Object.assign(process.env, localEnv);
 const tg = telegramConfig(localEnv);
 const noTelegram = process.argv.includes("--no-telegram");
+// A German lesson is a spoken lesson, not a silent card.  A prior local test
+// disabled VOICE and then looked deceptively complete because music/text still
+// muxed into an MP4.  Refuse that mode before any image search or render work;
+// the only acceptable output is a voice-checked lesson.
+if (process.env.VOICE !== "on" || process.env.REQUIRE_VOICE !== "on") {
+  throw new Error("German lessons require approved narration: set VOICE=on and REQUIRE_VOICE=on. Silent German lessons are not publishable.");
+}
 // Set by german-cycle.mjs, which runs this script as one attempt inside a
 // build → diagnose → build cycle. Owner directive 2026-09-15 («نباید تا اجرا
 // موفق نشود به تلگرام برود»): a failed ATTEMPT is not a failed job, so it must
@@ -321,7 +328,7 @@ const EDGE_PERSIAN_VOICE = process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural"
 const GERMAN_WORD_ENGINE = process.env.GERMAN_WORD_ENGINE === "minimax" ? "minimax" : "edge";
 // Edge is an ordinary neural engine like MiniMax, so it takes the long-standing
 // Persian transform with its tested pronunciation fixes, not pocket's.
-const speakableFor = (engine) => (engine === "pocket" ? pocketSpeakable : minimaxSpeakable);
+const speakableFor = (engine) => (text) => lessonSpeakable(text, engine);
 
 function ttsSynthesize(text, languageBoost, outFile, voiceId) {
   // languageBoost is set only for the German vocabulary clip.
@@ -382,7 +389,10 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
     : engine === "edge"
       ? "music/edge-tts.mjs"
       : "music/minimax-tts.mjs";
-  execFileSync("node", [script, text, "-o", outFile], { env, stdio: "inherit" });
+  // Preserve the runtime that launched the lesson. On Windows, falling back
+  // to the globally installed `node` while the parent runs under Node 22
+  // left child TTS processes behind and stopped the render before composition.
+  execFileSync(process.execPath, [script, text, "-o", outFile], { env, stdio: "inherit" });
 }
 function ffprobeDuration(file) {
   const out = execFileSync("ffprobe", [
@@ -465,7 +475,7 @@ try {
         const exhaustedMarker = ".german-recovery-exhausted.json";
         const runQC = () => {
           writeFileSync(manifest, JSON.stringify({ featureId: pack.id, entries: persianEntries }, null, 2));
-          execFileSync("node", ["music/voice-qc.mjs", "--manifest", manifest], { stdio: "inherit" });
+          execFileSync(process.execPath, ["music/voice-qc.mjs", "--manifest", manifest], { stdio: "inherit" });
         };
         const resynthAll = () => {
           for (const entry of persianEntries) {
@@ -678,6 +688,28 @@ try {
     // frame's own object-fit:cover crops the source photo into it cleanly.
     pack.tips[i].photoAspect = 0.75;
   }
+
+  // The hook earns the viewer's attention before the first flashcard.  It
+  // therefore receives its OWN high-resolution, real scene instead of
+  // borrowing step 1's photograph or falling back to a decorative icon.
+  // The query is built from the lesson's concrete first action, so it changes
+  // with the topic and remains truthful to the lesson that follows.
+  const hookItem = unit.items[0];
+  const usedSlidePhotos = new Set(pack.tips.map((tip) => tip.photo));
+  const hookQueries = [
+    `${hookItem.img} German language learning`,
+    `German language learner ${unit.items.at(-1).img}`,
+  ];
+  let hookPhoto = null;
+  for (const query of hookQueries) {
+    const candidate = await findLessonImage(query, unit.hook, `hook-${unit.id}`);
+    if (candidate && !usedSlidePhotos.has(candidate.photo)) { hookPhoto = candidate; break; }
+    if (candidate) console.error(`   ⚠ hook visual repeated a lesson slide; trying a distinct real scene instead.`);
+  }
+  if (!hookPhoto) throw Object.assign(new Error(`هیچ تصویر واقعی، باکیفیت و غیرتکراری برای قلاب «${unit.topic}» پیدا نشد`), { kind: "visualQc" });
+  pack.hookPhoto = hookPhoto.photo;
+  pack.hookPhotoAlt = hookPhoto.alt;
+  pack.hookPhotoAspect = 0.75;
   assertVisualProof(pack);
 
   const cutTimes = (() => {
