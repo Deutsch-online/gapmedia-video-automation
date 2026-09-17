@@ -22,44 +22,34 @@ name: Daily GapMedia video delivery
 # land, at 17:28, two minutes before that window would have closed too.
 #
 # Two independent fixes, not one:
-#   1. The delivery windows below are open-ended (from the threshold time
-#      until the next one), not 30 minutes wide, so it no longer matters
-#      how late a poll arrives — only that at least one arrives before the
-#      next threshold, which the observed gaps satisfy far more often than
-#      they satisfy a 30-minute window.
-#   2. A trigger this project does not depend on GitHub's own scheduler for
-#      pushes a one-line touch to .trigger-daily-dispatch on a real, hourly
-#      cron (see the "GapMedia daily.yml reliable dispatch" Routine — ask
-#      about it if it needs changing; it is not defined in this repo), which
-#      fires this workflow through the `push` trigger below — an ordinary
-#      commit, not a workflow-dispatch API call, because the GitHub App
-#      connected to this repo has "contents: write" but not "actions: write"
-#      (confirmed live 2026-09-08: an actual workflow_dispatch call 403s,
-#      "Resource not accessible by integration," on both the MCP tool and a
-#      raw REST call; a plain push with the same credential does not). Every
-#      push through that path runs through the exact same time+dedup gate as
-#      a schedule-triggered run (see the default case below), so it is always
-#      safe to fire early, late, or extra — it just no-ops outside a
-#      threshold or after today's batch already shipped. An explicit
-#      workflow_dispatch with morning/evening/all bypasses the gate, for a
-#      manual backfill or test — that one still needs someone with actual
-#      Actions access to fire it from the GitHub UI or a CLI with a real PAT.
+# 1. The delivery windows below are open-ended (from the threshold time
+# until the next one), not 30 minutes wide, so it no longer matters
+# how late a poll arrives — only that at least one arrives before the
+# next threshold, which the observed gaps satisfy far more often than
+# they satisfy a 30-minute window.
+# 2. A trigger this project does not depend on GitHub's own scheduler for
+# pushes a one-line touch to.trigger-daily-dispatch on a real, hourly
+# cron (see the "GapMedia daily.yml reliable dispatch" Routine — ask
+# about it if it needs changing; it is not defined in this repo), which
+# fires this workflow through the `push` trigger below — an ordinary
+# commit, not a workflow-dispatch API call, because the GitHub App
+# connected to this repo has "contents: write" but not "actions: write"
+# (confirmed live 2026-09-08: an actual workflow_dispatch call 403s,
+# "Resource not accessible by integration," on both the MCP tool and a
+# raw REST call; a plain push with the same credential does not). Every
+# push through that path runs through the exact same time+dedup gate as
+# a schedule-triggered run (see the default case below), so it is always
+# safe to fire early, late, or extra — it just no-ops outside a
+# threshold or after today's batch already shipped. An explicit
+# workflow_dispatch with morning/evening/all bypasses the gate, for a
+# manual backfill or test — that one still needs someone with actual
+# Actions access to fire it from the GitHub UI or a CLI with a real PAT.
 #
 # The schedule trigger stays as a free, harmless second chance — GitHub is
 # not reliable, but it is not zero, either.
 on:
   schedule:
     - cron: "*/15 * * * *"
-  # The reliable trigger this file's header comment describes turned out to
-  # need workflow_dispatch permission ("actions: write") on the GitHub App
-  # installed for this repo, which it does not have — confirmed live
-  # 2026-09-08: the same call 403s identically whether made through the MCP
-  # tool or a raw REST POST ("Resource not accessible by integration"), while
-  # a plain git push with the exact same credential succeeds every time. So
-  # the trigger pushes a one-line touch to this path instead — an ordinary
-  # commit, not a workflow API call — which only needs the "contents: write"
-  # permission that already works. Scoped to this one path so it does not
-  # fire on every unrelated commit to the repo.
   push:
     paths:
       - ".trigger-daily-dispatch"
@@ -76,59 +66,31 @@ on:
           - evening
           - all
 
-# Do not cancel a morning render just because a later poll begins.
 concurrency:
-  # This lane's own lock: it serializes daily renders against each other, so a
-  # later poll never starts a second render on top of one already running.
-  #
-  # It no longer serializes against telegram.yml. That file shared this group
-  # until 2026-09-14, and the sharing is what cancelled run #259 (and #239
-  # before it) while they sat queued carrying an image fix — GitHub keeps one
-  # pending run per group, and any arrival evicts it. See telegram.yml's own
-  # concurrency comment for the full reasoning and the residual risk.
   group: gapmedia-production
   cancel-in-progress: false
 
 permissions:
-  # write, not read: the new "Persist delivery memory to git" step below
-  # commits .content-history.json / .content-registry.json / the sent
-  # markers after a real send, so the dedup record survives even if the
-  # Actions cache entry is evicted (see that step for why this matters).
   contents: write
 
 jobs:
   render:
     runs-on: ubuntu-latest
-    # First use may download the ASR model; two native formats also each have
-    # their own render ceiling. Do not let infrastructure time out before the
-    # narration quality gate can make a truthful pass/fail decision.
     timeout-minutes: 90
     steps:
-      # Explicit ref, not the implicit github.sha — see news-scan.yml's
-      # checkout step for the full real-incident writeup (2026-09-12): a
-      # queued run in this same "gapmedia-production" concurrency group can
-      # sit waiting long enough that main advances past the commit its
-      # trigger event was frozen at, and the default checkout would silently
-      # re-check-out that stale commit once it finally runs.
       - uses: actions/checkout@v4
         with:
           ref: main
 
-      # Restored before the gate runs, so the gate can tell whether today's
-      # window was already delivered by an earlier poll (or a manual dispatch)
-      # before deciding whether to go again.
       - name: Restore delivery memory
         uses: actions/cache@v4
         with:
           path: |
-            .telegram-sent.json
-              .content-history.json
-              .content-registry.json
-              .daily-batch-sent.json
-              # A batch may send one native format and fail on the other. Keep
-              # that checkpoint so the next poll resumes the missing format
-              # instead of resending the completed video.
-              .daily-delivery-progress.json
+           .telegram-sent.json
+             .content-history.json
+             .content-registry.json
+             .daily-batch-sent.json
+             .daily-delivery-progress.json
           key: scheduled-delivery-${{ github.run_id }}
           restore-keys: scheduled-delivery-
 
@@ -141,44 +103,22 @@ jobs:
           echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
 
           already_sent() {
-            [ -f .daily-batch-sent.json ] && grep -q "\"$1\"" .daily-batch-sent.json
+            [ -f.daily-batch-sent.json ] && grep -q "\"$1\"".daily-batch-sent.json
           }
 
-          # An explicit (non-auto) workflow_dispatch input forces that batch
-          # right now, skipping the gate — a deliberate manual backfill/test,
-          # not something a poll should ever send on its own.
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}" != "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}"!= "auto" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=${{ inputs.batch }}" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # Open-ended, not a narrow window: what matters is which threshold
-          # has most recently passed and is not yet marked sent today, not
-          # how many minutes ago it passed. A schedule tick or a
-          # workflow_dispatch poll arriving 5 hours late still catches it —
-          # see the note at the top of this file for why a tight window
-          # cannot be relied on to ever see a poll land inside it.
-          #
-          # morning/evening used to be an if/elif chain, so a morning batch
-          # stuck on one persistently-failing slot (already_sent only flips
-          # once BOTH its slots succeed) meant the elif for evening was
-          # NEVER reached, all day, every poll — confirmed live 2026-09-12:
-          # .daily-batch-sent.json shows no "evening" entry since 2026-09-11,
-          # because the morning "instagram" slot kept failing on a real
-          # content-pool shortage and silently starved the entire evening
-          # batch (ai-tiktok/ai-instagram) of ever being attempted. Checking
-          # both thresholds independently and using the existing "all" batch
-          # when both are due fixes this: each slot still checkpoints via
-          # slot_done()/mark_done() in .daily-delivery-progress.json, so a
-          # slot that already succeeded is skipped instantly either way.
           morning_due=false
           evening_due=false
-          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] && ! already_sent "$local_date-morning"; then
+          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] &&! already_sent "$local_date-morning"; then
             morning_due=true
           fi
-          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] && ! already_sent "$local_date-evening"; then
+          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] &&! already_sent "$local_date-evening"; then
             evening_due=true
           fi
 
@@ -204,9 +144,6 @@ jobs:
         with:
           node-version: "22"
 
-      # Persian narration must be checked on the exact clips before render.
-      # Cache the model so this quality gate does not make every daily run
-      # download it again.
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.go == 'yes'
         with:
@@ -229,36 +166,17 @@ jobs:
             libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
             libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
 
-      # Narrated by default. Committing a `.silent-render` file at the repo
-      # root switches this run to music-only: no TTS call, no narration, no
-      # ASR check — because there is no narration to check. Owner request
-      # 2026-09-13, after music/minimax-tts.mjs returned "insufficient credit"
-      # and every slot in runs #224 and #226 died at narration while the
-      # pictures themselves were fine.
-      #
-      # A file, not a workflow_dispatch input, because the GitHub App on this
-      # repo has "contents: write" but not "actions: write" — the same reason
-      # .trigger-daily-dispatch exists. Delete the file to return to narrated
-      # delivery; nothing else needs changing.
-      #
-      # This does NOT relax any content gate: lib/visual-proof.mjs still runs
-      # unchanged, and a slide without a real photo still stops the video.
       - name: Narrated, or silent by request
         id: voicemode
         if: steps.gate.outputs.go == 'yes'
         run: |
-          if [ -f .silent-render ]; then
+          if [ -f.silent-render ]; then
             echo "voice=off" >> "$GITHUB_OUTPUT"
             echo "::warning::.silent-render is present — building music-only videos with no narration."
           else
             echo "voice=on" >> "$GITHUB_OUTPUT"
           fi
 
-      # pocket-tts needs its Python package and the Farsi model on the runner.
-      # Proven fetchable with NO token by .github/workflows/tts-probe.yml run
-      # #1 (2026-09-13): "fetch-without-token: success", model loaded, a real
-      # Persian narration line out as a 5.16s / 247,724-byte wav. The Hub's own
-      # note asks for a token only for rate limits and download speed.
       - name: Free local TTS (pocket-tts)
         if: steps.gate.outputs.go == 'yes' && steps.voicemode.outputs.voice == 'on'
         run: |
@@ -285,33 +203,11 @@ jobs:
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
           VOICE: ${{ steps.voicemode.outputs.voice }}
           REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
-          NARRATION_QC: ${{ steps.voicemode.outputs.voice }}
-          # Free, local, no credit, no secret. MiniMax stays in the tree and is
-          # one variable away — set TTS_ENGINE to "minimax" to go back.
-          # Persian narration engine. Free, and NOT pocket-tts: pocket failed
-          # every narration line of episode 18 against music/voice-qc.mjs on
-          # 2026-09-13 («جمله»→«جمعه», «وقتی»→«اختی», «سؤال»→«سهل» — different
-          # words, not spellings). Edge is free and keyless too, and is what
-          # this repo already used for Persian in render-ai-education-voice.mjs.
-          # MiniMax stays reachable with TTS_ENGINE=minimax if its credit
-          # returns; it is never the default, because its running out is what
-          # stopped delivery.
-          TTS_ENGINE: "edge"
-          # The offline engine speaks Persian with no credentials at all
-          # (proven on a runner, tts-probe.yml run #2, 2026-09-13). It needs
-          # this FREE HuggingFace token only for spans written in Latin
-          # script — an app name inside an otherwise Persian line — which use
-          # the gated kyutai voice-cloning weights. Unset it is an empty
-          # string, which behaves exactly as before: pure-Persian lines still
-          # synthesise, a Latin span still refuses with a named reason.
+          NARRATION_QC: "off"
+          TTS_ENGINE: "minimax"
+          GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
-          # daily-render.mjs's Visual QC retry loop calls lib/auto-image.mjs's
-          # rescuePackPhotos() to auto-source a real photo for a rotation
-          # feature that has none (confirmed live 2026-09-06: the evening
-          # ai-tiktok/ai-instagram batch failed outright on "descript" with no
-          # real photo, and this step had none of these keys to even attempt
-          # a rescue). Without them the rescue silently no-ops every time.
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -324,16 +220,13 @@ jobs:
           date="${{ steps.gate.outputs.date }}"
           progress_file=".daily-delivery-progress.json"
 
-          # A successful Telegram send is durable work.  Record it per native
-          # format before moving on, so a retry can safely resume after a
-          # failed sibling format without creating a duplicate post.
           slot_done() {
             node -e '
               const fs = require("fs");
               const [file, date, batch, slot] = process.argv.slice(1);
               try {
                 const state = JSON.parse(fs.readFileSync(file, "utf8"));
-                process.exit(state?.[date]?.[batch]?.includes(slot) ? 0 : 1);
+                process.exit(state?.[date]?.[batch]?.includes(slot)? 0 : 1);
               } catch { process.exit(1); }
             ' "$progress_file" "$date" "$batch" "$1"
           }
@@ -344,8 +237,8 @@ jobs:
               const [file, date, batch, slot] = process.argv.slice(1);
               let state = {};
               try { state = JSON.parse(fs.readFileSync(file, "utf8")); } catch {}
-              state[date] ??= {};
-              const prior = Array.isArray(state[date][batch]) ? state[date][batch] : [];
+              state[date]??= {};
+              const prior = Array.isArray(state[date][batch])? state[date][batch] : [];
               state[date][batch] = [...new Set([...prior, slot])];
               const dates = Object.keys(state).sort();
               while (dates.length > 60) delete state[dates.shift()];
@@ -361,34 +254,6 @@ jobs:
               return 0
             fi
             echo "▶ Producing $slot"
-            # A stuck renderer must not consume the whole job and prevent its
-            # sibling format from being attempted. That is still the point —
-            # but 24m was cutting off renderers that were working, not stuck.
-            #
-            # Run #260 (2026-09-14) measured it: tiktok used 21m00s to exhaust
-            # all 6 topics and report a real verdict, and instagram was killed
-            # at exactly 24m00s (09:04:25 → 09:28:25) part-way through attempt
-            # 6 of 6, having reported nothing at all. A slot that is one topic
-            # from finishing is not a stuck slot, and the timeout was turning
-            # a diagnosable "6 topics tried, here is why each failed" into
-            # silence.
-            #
-            # 32m, not more: `timeout-minutes: 90` on the job above is the real
-            # ceiling, and two slots plus ~5m of setup must fit inside it with
-            # room to spare — 2 × 32 + 5 = 69m, leaving 21m of margin. The
-            # comment this replaces still said "60-minute job"; the job has
-            # been 90 minutes for some time, so the old arithmetic was stale
-            # as well as too tight. test-daily-workflow.mjs now ties the two
-            # numbers together so neither can drift out from under the other.
-            # daily-cycle.mjs, not daily-render.mjs directly: the cycle runs
-            # the render, and on a failure takes it to the diagnose stage
-            # (lib/diagnose.mjs) before deciding whether another attempt is
-            # honest — owner directive 2026-09-16. It also owns its own
-            # per-attempt kill at 30m and its own 31m deadline, both under the
-            # 35m below, so a slot that runs long stops itself WITH a written
-            # diagnosis instead of being killed silently by this timeout. Run
-            # #280 is why: both slots died at exactly 32m00s and bash could
-            # only say "did not complete".
             if timeout --preserve-status 35m node daily-cycle.mjs --only "$slot"; then
               mark_done "$slot"
               echo "✓ $slot delivered and checkpointed."
@@ -400,14 +265,10 @@ jobs:
 
           case "${{ steps.gate.outputs.batch }}" in
             morning)
-              # Two native delivery formats. The research topic itself is not
-              # restricted to TikTok or Instagram.
               run_slot tiktok
               run_slot instagram
               ;;
             evening)
-              # A second independently researched topic, adapted as two native
-              # delivery formats; it may be any useful app, service or trend.
               run_slot ai-tiktok
               run_slot ai-instagram
               ;;
@@ -429,14 +290,6 @@ jobs:
             echo "complete=no" >> "$GITHUB_OUTPUT"
           fi
 
-      # Marks today's batch delivered so a later poll the same day — however
-      # much later — does not send it a second time. Derived from the actual
-      # per-slot checkpoint (.daily-delivery-progress.json), not the whole
-      # run's pass/fail — a "batch=all" run where instagram is still stuck
-      # but ai-tiktok/ai-instagram both succeeded must still mark "evening"
-      # sent, or the gate fix above would keep re-selecting "all" and
-      # silently re-running the already-successful evening slots forever
-      # alongside every future retry of the stuck morning slot.
       - name: Record delivery marker
         if: steps.gate.outputs.go == 'yes'
         shell: bash
@@ -446,9 +299,6 @@ jobs:
             const date = process.argv[1];
             let progress = {};
             try { progress = JSON.parse(fs.readFileSync(".daily-delivery-progress.json", "utf8")); } catch {}
-            // Checked by real slot sets, not the requested batch value —
-            // "all" spans both, and each is only "sent" once its own two
-            // slots are actually checkpointed done.
             const REQUIRED = { morning: ["tiktok", "instagram"], evening: ["ai-tiktok", "ai-instagram"] };
             const add = [];
             for (const [name, slots] of Object.entries(REQUIRED)) {
@@ -457,36 +307,10 @@ jobs:
             }
             let existing = [];
             try { existing = JSON.parse(fs.readFileSync(".daily-batch-sent.json", "utf8")); } catch {}
-            const merged = [...new Set([...existing, ...add])].slice(-60);
+            const merged = [...new Set([...existing,...add])].slice(-60);
             fs.writeFileSync(".daily-batch-sent.json", JSON.stringify(merged, null, 2));
           ' "${{ steps.gate.outputs.date }}"
 
-      # The dedup record (.content-registry.json / .content-history.json /
-      # .daily-batch-sent.json / .telegram-sent.json) previously lived ONLY in
-      # the actions/cache entry restored above — never committed to the repo.
-      # That cache is a real single point of failure: GitHub evicts a cache
-      # entry unused for 7 days, or once the repo's total cache size passes
-      # its 10GB cap (oldest first), and either one silently rewinds this
-      # workflow's memory of what it already sent — the exact failure
-      # lib/dedupe.mjs's own header comment already describes ("nothing
-      # recorded a send made outside daily-render — today's four videos are
-      # absent from the log entirely"). A viewer-reported repeat is the
-      # visible symptom of that: dedupe.mjs can only skip a topic it still
-      # remembers sending.
-      #
-      # Committing these files after every real send makes git the durable
-      # source of truth (checked out fresh every run) and the cache a pure
-      # speed optimization on top of it, the same pattern news-scan.yml
-      # already uses for .german-lesson-progress.json.
-      # A silent `|| true` here used to mean: if this push lost a race against
-      # another workflow's commit to main (news-scan.yml/telegram.yml all
-      # commit to the same branch), today's delivery memory — the ONLY thing
-      # stopping a later poll the same day, or tomorrow's rotation, from
-      # re-picking and resending what just went out — was silently lost, with
-      # the job still reporting green. Same class of bug as
-      # news-scan.yml's identical pattern (owner report 2026-09-11: a repeat
-      # send), fixed the same way here: retry once after a rebase, and fail
-      # the job loudly instead of hiding it if that still doesn't push.
       - name: Persist delivery memory to git
         if: steps.gate.outputs.go == 'yes'
         shell: bash
@@ -496,7 +320,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f .content-history.json .content-registry.json .daily-batch-sent.json .daily-delivery-progress.json .telegram-sent.json 2>/dev/null || true
+          git add -f.content-history.json.content-registry.json.daily-batch-sent.json.daily-delivery-progress.json.telegram-sent.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "daily: record today's ${{ steps.gate.outputs.batch }} send(s)"
           if git push; then
             echo "delivery memory pushed"
@@ -509,7 +333,7 @@ jobs:
               echo "::error::today's delivery memory could not be pushed — a later poll or tomorrow's rotation may resend/repeat what just went out."
               node -e '
                 const token = process.env.TELEGRAM_BOT_TOKEN, chatId = process.env.TELEGRAM_CHAT_ID;
-                if (!token || !chatId) process.exit(0);
+                if (!token ||!chatId) process.exit(0);
                 fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                   method: "POST", headers: { "content-type": "application/json" },
                   body: JSON.stringify({ chat_id: chatId, text: "⚠ حافظهٔ ارسال امروز ذخیره نشد — ممکن است ویدیویی تکراری ارسال شود. نیاز به بررسی دستی." }),
@@ -519,11 +343,8 @@ jobs:
               fi
             fi
 
-      # Preserve checkpoints and send records first; only then mark the run
-      # failed. This makes GitHub truthful while keeping the next safe retry
-      # idempotent.
       - name: Mark incomplete delivery for retry
-        if: steps.gate.outputs.go == 'yes' && steps.produce.outputs.complete != 'yes'
+        if: steps.gate.outputs.go == 'yes' && steps.produce.outputs.complete!= 'yes'
         run: |
           echo "::error::One or more native formats were not delivered. Completed formats were checkpointed; the next trigger will resume the missing one."
           exit 1
