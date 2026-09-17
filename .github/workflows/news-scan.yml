@@ -7,17 +7,12 @@ name: German A1 lesson series
 # order, never skipping or repeating (lib/german-a1.mjs + german-lesson-
 # build.mjs, .german-lesson-progress.json tracks the next episode).
 #
-# Owner request 2026-09-09: two episodes a day, at fixed Berlin clock times
-# (07:00 and 16:30) instead of the original once-a-day "20h since last
-# episode" cadence. Gate logic mirrors daily.yml's own morning/evening
-# threshold gate exactly (open-ended threshold + a per-day "already sent
-# this batch" marker, not a narrow time window — see daily.yml's header for
-# why a narrow window cannot be relied on with GitHub's own scheduler) so
-# this file inherits the same already-proven behaviour instead of a new,
-# untested one.
-#
-# Owner request 2026-09-12: a third episode a day, at 20:30 Berlin — same
-# open-ended-threshold gate pattern as the two above, batch="night".
+# Owner request 2026-09-18: three episodes a day at fixed Berlin clock times:
+# 05:00, 11:00 and 17:30.  The gate deliberately uses the Europe/Berlin clock
+# rather than UTC so daylight-saving changes require no manual edit.  It is
+# open-ended with a per-day delivery marker: GitHub cron can start late, but a
+# late runner must still make the missed episode once — never skip it, and
+# never send the same slot twice.
 #
 # Fires on BOTH this file's own schedule AND a push to
 # .trigger-daily-dispatch — the same reliable, already-proven hourly
@@ -27,7 +22,9 @@ name: German A1 lesson series
 # had to be built for this.
 on:
   schedule:
-    - cron: "0 * * * *"
+    # A 15-minute poll is required for the 17:30 Berlin slot. The gate below
+    # performs the exact local-time decision and makes all other polls no-ops.
+    - cron: "*/15 * * * *"
   push:
     paths:
       - ".trigger-daily-dispatch"
@@ -120,7 +117,7 @@ jobs:
         with:
           ref: main
 
-      - name: Check the twice-daily Berlin-time gate
+      - name: Check the three daily Berlin-time slots
         id: gate
         shell: bash
         env:
@@ -176,7 +173,7 @@ jobs:
           # german-lesson-build.mjs itself never advances the curriculum or
           # marks a batch delivered for one (see that script's own --unit
           # comment). Tagged "correction-HHMM" so it can never collide with
-          # a real morning/evening marker either.
+          # a real scheduled-slot marker either.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.unit }}" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=correction-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
@@ -189,8 +186,8 @@ jobs:
           # Explicit manual override only — never the schedule or the hourly
           # push trigger, so this can never turn into a silent extra episode.
           # Tagged "manual-HHMM" (not "-morning"/"-evening"), so a forced send
-          # never marks today's real morning/evening threshold as delivered —
-          # the normal twice-daily schedule still fires its own episode later
+          # never marks today's real scheduled threshold as delivered —
+          # the normal three-slot schedule still fires its own episode later
           # untouched. Mirrors daily.yml's existing non-auto workflow_dispatch
           # bypass (owner request 2026-09-11: this file didn't have one yet).
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
@@ -201,21 +198,21 @@ jobs:
             exit 0
           fi
 
-          if [[ "$local_hm" > "07:00" || "$local_hm" == "07:00" ]] && ! already_sent "$local_date-morning"; then
+          if [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] && ! already_sent "$local_date-0500"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=morning" >> "$GITHUB_OUTPUT"
+            echo "batch=0500" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
-          elif [[ "$local_hm" > "16:30" || "$local_hm" == "16:30" ]] && ! already_sent "$local_date-evening"; then
+          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] && ! already_sent "$local_date-1100"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=evening" >> "$GITHUB_OUTPUT"
+            echo "batch=1100" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
-          elif [[ "$local_hm" > "20:30" || "$local_hm" == "20:30" ]] && ! already_sent "$local_date-night"; then
+          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=night" >> "$GITHUB_OUTPUT"
+            echo "batch=1730" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
           else
             echo "go=no" >> "$GITHUB_OUTPUT"
-            echo "Before today's next threshold (07:00/16:30/20:30 Berlin), or today's episode(s) already sent — skipping."
+            echo "Before today's next threshold (05:00/11:00/17:30 Berlin), or today's episode(s) already sent — skipping."
           fi
 
       - uses: actions/setup-node@v4
@@ -332,7 +329,7 @@ jobs:
         if: failure() && steps.gate.outputs.go == 'yes'
         run: node lib/recovery-chain.mjs
 
-      # Marks today's batch (morning/evening) delivered so a later poll the
+      # Marks today's time slot delivered so a later poll the
       # same day — however much later — does not send a second episode for
       # the same threshold. Same pattern as daily.yml's own delivery marker.
       - name: Record delivery marker
