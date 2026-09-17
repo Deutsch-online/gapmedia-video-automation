@@ -75,6 +75,11 @@ permissions:
 
 jobs:
   render:
+    # German A1 is the only active production lane for now. This repository
+    # variable is intentionally opt-in: unless the owner explicitly sets it
+    # to true, scheduled/tutorial renders remain paused without deleting the
+    # workflow or its delivery history.
+    if: ${{ vars.GAPMEDIA_TUTORIALS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:

@@ -67,6 +67,11 @@ const updates = await getUpdates({ token: tg.token, offset: stored ? stored + 1 
 
 let action = "none", label = "", highest = stored, pick = 1, payloadText = "", photoFileId = "";
 const shownRadar = radarShown();
+const PAUSED_TUTORIAL_ACTIONS = new Set([
+  "approved-feature", "rerender-feature", "content-approve", "build-tiktok",
+  "build-instagram", "build-tools", "build-all", "build-tomorrow",
+  "build-app-pair", "resend", "custom-content", "custom-content-media",
+]);
 
 const cleanPayload = (t) =>
   String(t)
@@ -124,11 +129,17 @@ if (action === "help") {
 } else if (action === "status") {
   await sendMessage({
     token: tg.token, chatId: tg.chatId,
-    text: "✅ سیستم ابری فعال است و فرمان‌های تلگرام را هر چند دقیقه اجرا می‌کند. «تیک‌تاک بساز»، «انستا بساز»، «ابزار بساز»، «بساز»، «فردا» و «بفرست» آماده‌اند.",
+    text: "✅ سیستم ابری فعال است. فعلاً فقط درس‌های آلمانی A1 ساخته می‌شوند: هر درس حداقل یک دقیقه و در دو نسخهٔ مستقل TikTok و Instagram. برای شروع بنویس: «درس آلمانی بساز».",
   });
   console.log("ACTION=none");
 } else if (action === "undo") {
   console.log("ACTION=undo");
+} else if (PAUSED_TUTORIAL_ACTIONS.has(action)) {
+  await sendMessage({
+    token: tg.token, chatId: tg.chatId,
+    text: "⏸ ویدیوهای آموزشی عمومی فعلاً متوقف هستند. در این مرحله فقط درس‌های آلمانی A1 در دو نسخهٔ TikTok و Instagram ساخته می‌شوند. برای ساخت بنویس: «درس آلمانی بساز». ",
+  });
+  console.log("ACTION=none");
 } else if (action !== "none") {
   const planning = action.startsWith("plan-") || action === "research";
   const building = action.startsWith("build-") || action === "approved-feature" || action === "resend";

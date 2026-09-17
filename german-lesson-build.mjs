@@ -137,7 +137,13 @@ const COURSE_TOTAL = 100;
 const lessonCode = `A1-${String(episodeNo).padStart(3, "0")}`;
 const lessonCounter = `A1 • ${String(episodeNo).padStart(3, "0")}/${COURSE_TOTAL}`;
 
-const HOOK_DUR = 4, TIP_DUR = 4, OUTRO_DUR = 5;
+// A complete lesson must have enough room for: the German vocabulary, a
+// native-German example sentence, a natural Persian explanation, and a short
+// visual pause to read the translation.  These are the silent-mode fallbacks;
+// narrated builds below measure the actual clips and then preserve 60 seconds
+// as a minimum instead of cutting off a real explanation to fit a short reel.
+const MIN_EPISODE_SECONDS = 60;
+const HOOK_DUR = 7, TIP_DUR = 11, OUTRO_DUR = 9;
 const pack = {
   id: unit.id,
   // `kind` is this series' own discriminator — every renderer/brief/mood
@@ -183,7 +189,11 @@ const pack = {
   // real photo's aspect ratio classifies as "panel"/"wide" (not "phone"),
   // so it renders full-frame with no iPhone chrome and no fake UI overlay —
   // exactly what MASTER SYSTEM spec sec. 3/5 requires.
-  tips: unit.items.map((it, i) => ({ head: `${colorArticle(it.de)} — ${it.fa}`, step: i + 1 })),
+  tips: unit.items.map((it, i) => ({
+    head: `${colorArticle(it.de)} — ${it.fa}`,
+    sub: it.example,
+    step: i + 1,
+  })),
   outroAsk: `قسمت بعد: ${nextUnit.topic}`,
   payoff: "واژه، مکالمه و نکتهٔ گرامری تازه یاد گرفتی — سطح A1.",
   // Hashtags in English (owner instruction, 2026-09-11) — everything else in
@@ -212,6 +222,40 @@ const pack = {
   duration: HOOK_DUR + TIP_DUR * unit.items.length + OUTRO_DUR,
 };
 
+// The same curriculum episode is delivered as two platform-native edits, not
+// as the same MP4 with a renamed caption. Both preserve the real lesson photos
+// and bilingual narration, while their palette, typography, motion pace and
+// music identity are selected for the destination platform.
+const FORMAT_VARIANTS = [
+  {
+    slug: "tiktok", label: "TikTok", platform: "tiktok",
+    design: "german-tiktok-learning", mood: "lift", bpm: 108, musicVariant: 2,
+    ink: { pair: ["#00F2EA", "#FE2C55"], paper: "#0B0E14", tint: "rgba(0,242,234,.12)" },
+    hashtags: "#LearnGerman #GermanA1 #DeutschLernen #TikTokLearn",
+  },
+  {
+    slug: "instagram", label: "Instagram", platform: "instagram",
+    design: "german-instagram-learning", mood: "warm", bpm: 96, musicVariant: 3,
+    ink: { pair: ["#833AB4", "#FD1D1D"], paper: "#FFF8FC", tint: "rgba(131,58,180,.10)" },
+    hashtags: "#LearnGerman #GermanA1 #DeutschLernen #InstagramLearning",
+  },
+];
+
+function applyMinimumLessonDuration() {
+  const current = pack.hookDuration + pack.tipDurations.reduce((sum, value) => sum + value, 0) + pack.outroDuration;
+  const extra = Math.max(0, MIN_EPISODE_SECONDS - current);
+  if (extra > 0) {
+    const share = extra / (pack.tipDurations.length + 2);
+    pack.hookDuration = +(pack.hookDuration + share).toFixed(3);
+    pack.tipDurations = pack.tipDurations.map((value) => +(value + share).toFixed(3));
+    pack.outroDuration = +(pack.outroDuration + share).toFixed(3);
+  }
+  pack.duration = +(pack.hookDuration + pack.tipDurations.reduce((sum, value) => sum + value, 0) + pack.outroDuration).toFixed(3);
+  if (pack.duration < MIN_EPISODE_SECONDS) {
+    throw new Error(`German lesson duration ${pack.duration}s is below the ${MIN_EPISODE_SECONDS}s minimum.`);
+  }
+}
+
 const compDir = `compositions/german/${iso}`;
 const outDir = `renders/german/${iso}`;
 mkdirSync(compDir, { recursive: true });
@@ -219,10 +263,9 @@ mkdirSync(outDir, { recursive: true });
 
 console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}) ===`);
 
-// Each tip scene's audio is TWO clips back to back: the German word/phrase,
-// synthesised with language_boost="German" so it is actually pronounced in
-// German (not read by the Persian voice — owner correction, 2026-09-08:
-// text-only on screen was not enough), then the Persian line explaining it.
+// Each tip scene's audio is THREE clips back to back: the German word/phrase,
+// its native-German example sentence, then the Persian line explaining it.
+// The example makes this a full lesson rather than a short vocabulary card.
 // Bypasses plan-voice.mjs/make-voice.mjs (built for one Persian line per
 // scene) with the same technique in miniature: synthesise every clip first,
 // measure it, then size the scene to fit — see make-voice.mjs's own
@@ -353,7 +396,7 @@ const GAP = 0.45; // pause between the German word and its Persian explanation
 const LEAD = 0.2; // pause before a clip starts within its scene
 const SCENE_PAD = 0.7; // breathing room after the explanation, before the next scene
 
-let voiceParts = null; // { hookFile, tips: [{deFile, faFile, deDur, faDur}], outroFile } once synthesised
+let voiceParts = null; // { hookFile, tips: [{deFile, exampleFile, faFile, deDur, exampleDur, faDur}], outroFile } once synthesised
 
 try {
   if (process.env.VOICE === "on") {
@@ -374,10 +417,14 @@ try {
       const tips = [];
       for (let i = 0; i < unit.items.length; i++) {
         const deFile = `${voiceDir}/german-${pack.id}-de${i}.mp3`;
+        const exampleFile = `${voiceDir}/german-${pack.id}-example${i}.mp3`;
         const faFile = `${voiceDir}/german-${pack.id}-fa${i}.mp3`;
+        const exampleGerman = String(unit.items[i].example || "").split(" — ")[0].trim();
         ttsSynthesize(unit.items[i].de, "German", deFile, GERMAN_WORD_VOICE_ID);
+        if (!exampleGerman) throw new Error(`missing German example for "${unit.items[i].de}"`);
+        ttsSynthesize(exampleGerman, "German", exampleFile, GERMAN_WORD_VOICE_ID);
         makePersian(vo.steps[i], faFile);
-        tips.push({ deFile, faFile });
+        tips.push({ deFile, exampleFile, faFile });
       }
 
       const outroFile = `${voiceDir}/german-${pack.id}-outro.mp3`;
@@ -578,6 +625,7 @@ try {
       const hookDur = ffprobeDuration(hookFile);
       for (const tip of tips) {
         tip.deDur = ffprobeDuration(tip.deFile);
+        tip.exampleDur = ffprobeDuration(tip.exampleFile);
         tip.faDur = ffprobeDuration(tip.faFile);
       }
       const outroDur = ffprobeDuration(outroFile);
@@ -586,7 +634,7 @@ try {
 
       const MIN_TIP = 2.5;
       pack.hookDuration = +Math.max(3.0, hookDur + LEAD + 0.8).toFixed(3);
-      pack.tipDurations = tips.map((t) => +Math.max(MIN_TIP, LEAD + t.deDur + GAP + t.faDur + SCENE_PAD).toFixed(3));
+      pack.tipDurations = tips.map((t) => +Math.max(MIN_TIP, LEAD + t.deDur + GAP + t.exampleDur + GAP + t.faDur + SCENE_PAD).toFixed(3));
       pack.outroDuration = +Math.max(3.6, outroDur + 1.0).toFixed(3);
       pack.duration = +(pack.hookDuration + pack.tipDurations.reduce((a, d) => a + d, 0) + pack.outroDuration).toFixed(3);
       pack.music = pack.music.replace(/.m4a$/, "-vo.m4a");
@@ -597,6 +645,12 @@ try {
       if (process.env.REQUIRE_VOICE === "on") throw e;
     }
   }
+
+  // The measured narration is authoritative for speech safety. If it is
+  // shorter than one minute, extend only the readable visual holds — never
+  // stretch audio, overlap sentences, or add filler narration.
+  applyMinimumLessonDuration();
+  console.log(`   lesson duration: ${pack.duration}s (minimum ${MIN_EPISODE_SECONDS}s)`);
 
   // One real photo per vocabulary item — not one shared photo for the whole
   // episode (rescuePackPhotos() reuses a single search for a whole pack,
@@ -626,9 +680,6 @@ try {
   }
   assertVisualProof(pack);
 
-  const comp = `${compDir}/${pack.id}.html`;
-  writeFileSync(comp, buildInkHTML(pack));
-
   const cutTimes = (() => {
     const lens = pack.tipDurations;
     const out = [pack.hookDuration];
@@ -636,15 +687,6 @@ try {
     for (const L of lens) { acc += L; out.push(+acc.toFixed(3)); }
     return out;
   })();
-
-  let music = pack.music;
-  if (pack.duration && pack.musicVariant) {
-    execSync(
-      `node music/make-one.mjs ${pack.duration} ${pack.musicVariant} "${pack.music}" ${pack.musicOutroBars || 4}`,
-      { stdio: "inherit", env: { ...process.env, MUSIC_CUTS: cutTimes.join(","), MUSIC_MOOD: pack.mood || "", MUSIC_BPM: String(pack.bpm || ""), MUSIC_ACCENTS: accentSpec(cutTimes, ["", "", "", "", ""]) } }
-    );
-  }
-  if (!existsSync(music)) music = "music/bed-60s-v1.m4a";
 
   let voice = null;
   if (voiceParts) {
@@ -659,7 +701,8 @@ try {
       for (let i = 0; i < voiceParts.tips.length; i++) {
         const t = voiceParts.tips[i];
         parts.push({ file: t.deFile, at: sceneStart + LEAD });
-        parts.push({ file: t.faFile, at: sceneStart + LEAD + t.deDur + GAP });
+        parts.push({ file: t.exampleFile, at: sceneStart + LEAD + t.deDur + GAP });
+        parts.push({ file: t.faFile, at: sceneStart + LEAD + t.deDur + GAP + t.exampleDur + GAP });
         sceneStart += pack.tipDurations[i];
       }
       parts.push({ file: voiceParts.outroFile, at: sceneStart + LEAD });
@@ -691,20 +734,6 @@ try {
     }
   }
 
-  const silent = `${outDir}/${pack.id}-silent.mp4`;
-  const final = `${outDir}/german-a1-${pack.id}-${iso}.mp4`;
-  execSync(`${HF} render -c "${comp}" --quality high --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
-  if (voice) {
-    execSync(
-      `ffmpeg -y -hide_banner -loglevel error -i "${silent}" -i "${music}" -i "${voice}" ` +
-      `-filter_complex "[1:a]volume=0.85[m];[m][2:a]sidechaincompress=threshold=0.02:ratio=20:attack=8:release=260:makeup=1[duck];[duck][2:a]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5[a]" ` +
-      `-map 0:v -map "[a]" -c:v copy -c:a aac -b:a 192k -shortest -movflags +faststart "${final}"`,
-      { stdio: "inherit" }
-    );
-  } else {
-    execSync(`ffmpeg -y -i "${silent}" -i "${music}" -c:v copy -c:a aac -b:a 192k -shortest -movflags +faststart "${final}"`, { stdio: "inherit" });
-  }
-
   // Same 30-day duplicate control every other daily video goes through —
   // a fixed curriculum should never actually collide, but the check is
   // cheap insurance against a progress-counter bug repeating an episode.
@@ -718,11 +747,68 @@ try {
     }
   }
 
+  // Render the two platform-native formats from the same measured narration.
+  // Audio is built once above, so both variants have identical German and
+  // Persian timing; layout, typography, animation pace, colour and music are
+  // intentionally different rather than a filename-only conversion.
+  const deliveredVideos = [];
+  for (const format of FORMAT_VARIANTS) {
+    const variantPack = {
+      ...pack,
+      platform: format.platform,
+      design: { family: format.design },
+      ink: format.ink,
+      mood: format.mood,
+      bpm: format.bpm,
+      musicVariant: format.musicVariant,
+      music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
+      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n${format.label} · حداقل ۶۰ ثانیه\n\n${format.hashtags}`,
+    };
+    const comp = `${compDir}/${pack.id}-${format.slug}.html`;
+    const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
+    const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
+    writeFileSync(comp, buildInkHTML(variantPack));
+
+    execSync(
+      `node music/make-one.mjs ${variantPack.duration} ${variantPack.musicVariant} "${variantPack.music}" ${variantPack.musicOutroBars || 4}`,
+      {
+        stdio: "inherit",
+        env: {
+          ...process.env,
+          MUSIC_CUTS: cutTimes.join(","),
+          MUSIC_MOOD: variantPack.mood,
+          MUSIC_BPM: String(variantPack.bpm),
+          MUSIC_ACCENTS: accentSpec(cutTimes, ["", "", "", "", ""]),
+        },
+      },
+    );
+    const music = existsSync(variantPack.music) ? variantPack.music : "music/bed-60s-v1.m4a";
+    execSync(`${HF} render -c "${comp}" --quality high --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
+    if (voice) {
+      execSync(
+        `ffmpeg -y -hide_banner -loglevel error -i "${silent}" -i "${music}" -i "${voice}" ` +
+        `-filter_complex "[1:a]volume=0.85[m];[m][2:a]sidechaincompress=threshold=0.02:ratio=20:attack=8:release=260:makeup=1[duck];[duck][2:a]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5[a]" ` +
+        `-map 0:v -map "[a]" -c:v copy -c:a aac -b:a 192k -shortest -movflags +faststart "${final}"`,
+        { stdio: "inherit" },
+      );
+    } else {
+      execSync(`ffmpeg -y -i "${silent}" -i "${music}" -c:v copy -c:a aac -b:a 192k -shortest -movflags +faststart "${final}"`, { stdio: "inherit" });
+    }
+    deliveredVideos.push({ ...format, final, caption: variantPack.tgTitle });
+  }
+
   if (tg.enabled) {
-    const res = await sendVideo({ token: tg.token, chatId: tg.chatId, file: final, caption: pack.tgTitle });
-    console.log("   ✈ sent to Telegram");
-    if (res && res.message_id && !isCorrection) {
-      register({ ...print, messageId: res.message_id, kind: "german-lesson", sentAt: new Date().toISOString() });
+    const sent = [];
+    for (const video of deliveredVideos) {
+      const res = await sendVideo({ token: tg.token, chatId: tg.chatId, file: video.final, caption: video.caption });
+      if (!res?.message_id) throw new Error(`${video.label} lesson video was not confirmed by Telegram.`);
+      sent.push({ ...video, messageId: res.message_id });
+      console.log(`   ✈ ${video.label} sent to Telegram`);
+    }
+    if (!isCorrection) {
+      for (const video of sent) {
+        register({ ...fingerprint({ ...pack, platform: video.platform }), messageId: video.messageId, kind: "german-lesson", sentAt: new Date().toISOString() });
+      }
       saveProgress(idx + 1);
       console.log(`   → next episode: ${idx + 2} (${germanUnitAt(idx + 1).topic})`);
     }
@@ -732,7 +818,7 @@ try {
     saveProgress(idx + 1);
   }
 
-  console.log(`\n✅ episode ${episodeNo} ready: ${resolve(final)}`);
+  console.log(`\n✅ episode ${episodeNo} ready: ${deliveredVideos.map((video) => resolve(video.final)).join(" | ")}`);
 } catch (err) {
   console.error(`   ✗ episode ${episodeNo} (${unit.id}) failed: ${err.message}`);
   if (tg.enabled && !inCycle) {

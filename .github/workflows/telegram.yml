@@ -289,7 +289,7 @@ jobs:
       # Only the actions that actually render a video need ffmpeg and a headless
       # browser. Listing news or deleting a message does not.
       - name: System packages (ffmpeg + headless Chrome libs)
-        if: contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION)
+        if: vars.GAPMEDIA_TUTORIALS_ENABLED == 'true' && contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION)
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg \
@@ -365,7 +365,7 @@ jobs:
           fi
 
       - name: Free local TTS (pocket-tts)
-        if: contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION) && steps.cmd.outputs.VOICE_MODE != 'off'
+        if: vars.GAPMEDIA_TUTORIALS_ENABLED == 'true' && contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION) && steps.cmd.outputs.VOICE_MODE != 'off'
         run: |
           python -m pip install --disable-pip-version-check --quiet pocket-tts
           python - <<'PYEOF'
@@ -383,7 +383,7 @@ jobs:
       - name: Build a requested tutorial
         id: tutorial_build
         continue-on-error: true
-        if: contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION)
+        if: vars.GAPMEDIA_TUTORIALS_ENABLED == 'true' && contains(fromJSON('["approved-feature","rerender-feature","content-approve","build-tiktok","build-instagram","build-tools","build-all","build-tomorrow","build-app-pair","resend","custom-content","custom-content-media"]'), steps.cmd.outputs.ACTION)
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

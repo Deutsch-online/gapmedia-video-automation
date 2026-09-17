@@ -47,11 +47,7 @@ export async function handle(text) {
   if (has(c, "راهنما", "help", "start", "شروع")) return say(HELP);
 
   if (has(c, "وضعیت", "status")) {
-    const mf = `renders/daily/${today()}/manifest.json`;
-    if (!existsSync(mf)) return say("امروز هنوز ویدیویی ساخته نشده. «بساز» را بفرست.");
-    const m = JSON.parse(readFileSync(mf, "utf8"));
-    const lines = m.videos.map((v) => `• ${v.platform} — ${v.packId} ${v.telegram ? "✅" : "⏳"}`);
-    return say(`📊 امروز (${m.date}):\n${lines.join("\n")}`);
+    return say("✅ فعلاً فقط سری آموزش آلمانی A1 فعال است. هر درس حداقل یک دقیقه و در دو نسخهٔ مستقل TikTok و Instagram تولید می‌شود. برای ساخت بنویس: «درس آلمانی بساز».");
   }
 
   if (has(c, "بفرست", "send", "ارسال")) {
@@ -79,9 +75,17 @@ export async function handle(text) {
   // ai-instagram), not the older 3-category ones, so "ابزار" maps to
   // ai-tiktok (the AI topic's TikTok-native package), not a literal
   // "tools" slot that no longer exists.
-  const BUILD_SLOT = { "build-tiktok": "tiktok", "build-instagram": "instagram", "build-tools": "ai-tiktok" };
-  const BUILD_LABEL = { "build-tiktok": "تیک‌تاک", "build-instagram": "اینستاگرام", "build-tools": "ابزارها" };
-  if (cmd && BUILD_SLOT[cmd.action]) {
+const BUILD_SLOT = { "build-tiktok": "tiktok", "build-instagram": "instagram", "build-tools": "ai-tiktok" };
+const BUILD_LABEL = { "build-tiktok": "تیک‌تاک", "build-instagram": "اینستاگرام", "build-tools": "ابزارها" };
+const PAUSED_TUTORIAL_ACTIONS = new Set([
+  "approved-feature", "rerender-feature", "content-approve", "build-tiktok",
+  "build-instagram", "build-tools", "build-all", "build-tomorrow",
+  "build-app-pair", "resend", "custom-content", "custom-content-media",
+]);
+if (cmd && PAUSED_TUTORIAL_ACTIONS.has(cmd.action)) {
+  return say("⏸ ویدیوهای آموزشی عمومی فعلاً متوقف هستند. فقط «درس آلمانی بساز» فعال است و همان درس در دو نسخهٔ TikTok و Instagram تولید می‌شود.");
+}
+if (cmd && BUILD_SLOT[cmd.action]) {
     const label = BUILD_LABEL[cmd.action];
     await say(`🎬 در حال ساخت ویدیوی ${label}…`);
     const r = build(`--only ${BUILD_SLOT[cmd.action]}`);
