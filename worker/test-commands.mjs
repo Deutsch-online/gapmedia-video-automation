@@ -7,6 +7,7 @@ import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, ac
 assert.equal(videoAction("تیک تاک بساز").action, "build-tiktok");
 assert.equal(videoAction("انستا بساز").action, "build-instagram");
 assert.equal(videoAction("بساز").action, "build-all");
+assert.equal(videoAction("درس آلمانی بساز").action, "build-german-lesson");
 assert.equal(videoAction("تأیید محتوا").action, "content-approve");
 assert.equal(videoAction("محتوا: یک موضوع واقعی با سه گام کامل برای ویدیوی آموزشی").action, "custom-content");
 assert.equal(videoAction("ویدیو مستقیم: یک موضوع واقعی با سه گام کامل برای ویدیوی آموزشی").action, "custom-content-media");
@@ -21,6 +22,7 @@ assert.equal(NUMBERED_ACTIONS["7"].action, "content-approve");
 assert.equal(NUMBERED_ACTIONS["8"].action, "content-radar");
 assert.equal(NUMBERED_ACTIONS["9"].pending, "demand-research");
 assert.equal(NUMBERED_ACTIONS["10"].action, "voice-list");
+assert.equal(NUMBERED_ACTIONS["11"].action, "build-german-lesson");
 assert.equal(NUMBERED_ACTIONS["26"].pending, "custom-content-media");
 assert.equal(menuCode("۶"), "6");
 assert.equal(commandFromPending({ action: "content-edit-hook" }, "قلاب تازه و روشن").action, "content-edit-hook");
@@ -91,5 +93,26 @@ assert.ok(dispatch, `captioned video dispatches the workflow; observed ${calls.m
 const inputs = JSON.parse(dispatch.init.body).inputs;
 assert.equal(inputs.action, "custom-content-media");
 assert.equal(JSON.parse(inputs.payload).videoFileId, "telegram-video-id");
+
+// A phone request for German A1 must not call the disabled Actions dispatch
+// endpoint. It updates the dedicated trigger file, whose push starts the
+// independent German-lesson workflow.
+const germanCalls = [];
+globalThis.fetch = async (url, init = {}) => {
+  germanCalls.push({ url: String(url), init });
+  if (String(url).includes(".german-manual-build-request.json") && !String(url).includes("?ref=")) return new Response(JSON.stringify({ content: {} }), { status: 201 });
+  if (String(url).includes(".german-manual-build-request.json")) return new Response(JSON.stringify({ sha: "old-sha" }), { status: 200 });
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+};
+const germanResponse = await worker.fetch(new Request("https://worker.test/", {
+  method: "POST",
+  body: JSON.stringify({ message: { chat: { id: 7 }, text: "درس آلمانی بساز" } }),
+}), { ALLOWED_CHAT_ID: "7", TELEGRAM_BOT_TOKEN: "test", GITHUB_TOKEN: "test" });
+globalThis.fetch = savedFetch;
+assert.equal(germanResponse.status, 200);
+const germanPut = germanCalls.find((c) => c.url.includes(".german-manual-build-request.json") && c.init.method === "PUT");
+assert.ok(germanPut, "German command must update the push-trigger file");
+assert.doesNotMatch(germanPut.url, /actions\/workflows/);
+assert.match(JSON.parse(germanPut.init.body).message, /German A1 lesson/);
 
 console.log("cloud Telegram command contract holds");

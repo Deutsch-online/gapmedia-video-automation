@@ -6,6 +6,10 @@ const MAX_HISTORY = 8;
 
 const HELP = `🤖 <b>منوی GapMedia — اول جستجو، بعد ساخت</b>
 
+🇩🇪 <b>درس آلمانی A1</b>
+<b>۱۱</b> ساخت درس بعدی آلمانی با صدا — هم برای TikTok و هم Instagram
+یا بنویسید: <code>درس آلمانی بساز</code>
+
 🎬 <b>ویدیوی آموزشی</b>
 <b>۱</b> جستجوی زندهٔ موضوع‌های روز
 <b>۲</b> جستجوی دقیق با عبارت خودت
@@ -45,6 +49,7 @@ const NUMBERED_ACTIONS = {
   "8": { action: "content-radar" },
   "9": { pending: "demand-research", ask: "🔎 موضوع را بفرستید تا تقاضای واقعی و سؤال‌های مردم درباره‌اش بررسی شود." },
   "10": { action: "voice-list" },
+  "11": { action: "build-german-lesson", voiceMode: "on" },
   // This must set the build action itself as pending.  The former
   // `direct-media-help` value was only a label, not a workflow action, so a
   // photo sent after choosing ۲۶ was acknowledged but never built.
@@ -81,6 +86,7 @@ function videoAction(text) {
   if (any("پروایدر", "provider", "provider list", "سرویس پروایدر")) return { action: "providers" };
   if (/^(?:ادیت|ویرایش)\s*قلاب\s*[:：]/i.test(c)) return { action: "content-edit-hook", payload: cleanEdit(text, "قلاب") };
   if (/^(?:ادیت|ویرایش)\s*(?:متن|محتوا|اسلاید)\s*[:：]/i.test(c)) return { action: "content-edit-steps", payload: cleanEdit(text, "(?:متن|محتوا|اسلاید)") };
+  if (any("درس آلمانی", "آلمانی بساز", "german lesson", "german a1") && any("بساز", "ساخت", "ویدیو", "make", "build")) return withAudio("build-german-lesson");
   if (/^(?:تأیید|تایید)\s*(?:محتوا|ویدیو|پیش\s*نویس)$/i.test(c)) return withAudio("content-approve");
   if (/^(?:پیش\s*نویس|نمایش محتوا|دیدن محتوا)$/i.test(c)) return { action: "content-preview" };
   if (/^(?:ویدیو مستقیم|ساخت مستقیم|direct video)\s*[:：]/i.test(c)) {
@@ -191,6 +197,44 @@ async function dispatchWorkflow(env, command) {
   if (!env.GITHUB_TOKEN) throw new Error("Missing GITHUB_TOKEN");
   const owner = env.GITHUB_OWNER || "takrun00-hue";
   const repo = env.GITHUB_REPO || "afghanfollower-videos";
+  // GitHub has disabled workflow_dispatch for this account. A normal Git
+  // push still triggers the dedicated German A1 workflow, so make a tiny,
+  // uniquely-versioned request file through the Contents API instead.
+  // This uses only repository Contents permission; it never needs Actions
+  // permission and works while the creator's computer is offline.
+  if (command.action === "build-german-lesson") {
+    const path = ".german-manual-build-request.json";
+    const base = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const headers = {
+      authorization: `Bearer ${env.GITHUB_TOKEN}`,
+      accept: "application/vnd.github+json",
+      "user-agent": "GapMedia-Telegram-Worker",
+      "content-type": "application/json",
+    };
+    const current = await fetch(`${base}?ref=main`, { headers });
+    let sha = "";
+    if (current.ok) sha = String((await current.json()).sha || "");
+    else if (current.status !== 404) throw new Error(`GitHub request file read failed: ${current.status}`);
+    const request = JSON.stringify({
+      requestedAt: new Date().toISOString(),
+      source: "telegram-cloud-worker",
+      requestId: crypto.randomUUID(),
+      voiceMode: command.voiceMode || "on",
+    }, null, 2) + "\n";
+    const content = btoa(unescape(encodeURIComponent(request)));
+    const saved = await fetch(base, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        message: "chore: request German A1 lesson from Telegram",
+        content,
+        branch: "main",
+        ...(sha ? { sha } : {}),
+      }),
+    });
+    if (!saved.ok) throw new Error(`GitHub lesson request failed: ${saved.status}`);
+    return;
+  }
   const workflow = env.GITHUB_WORKFLOW || "telegram.yml";
   const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, {
     method: "POST",
@@ -215,6 +259,9 @@ function acknowledgementFor(command) {
   }
   if (["content-approve", "approved-feature", "custom-content", "custom-content-media", "build-tiktok", "build-instagram", "build-tools", "build-all", "build-tomorrow", "resend"].includes(action)) {
     return "✅ ساخت واقعی با صدا در فضای ابری شروع شد؛ ویدیوی نهایی پس از موفق‌شدن رندر همین‌جا فرستاده می‌شود.";
+  }
+  if (action === "build-german-lesson") {
+    return "✅ ساخت درس بعدی آلمانی با صدا شروع شد. نسخه‌های مستقل TikTok و Instagram پس از رندر، همین‌جا ارسال می‌شوند.";
   }
   return "✅ دستور دریافت شد و در فضای ابری اجرا می‌شود؛ نتیجه همین‌جا ارسال خواهد شد.";
 }

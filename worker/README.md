@@ -15,7 +15,7 @@ npx wrangler secret put ALLOWED_CHAT_ID
 npx wrangler secret put GITHUB_TOKEN
 ```
 
-`GITHUB_TOKEN` باید یک Fine-grained Personal Access Token با دسترسی **Actions: Read and write** برای همین repository باشد. چت از سهمیهٔ رایگان روزانهٔ Workers AI استفاده می‌کند؛ MiniMax برای پاسخ‌گویی این بات لازم نیست.
+`GITHUB_TOKEN` باید یک Fine-grained Personal Access Token با دسترسی **Contents: Read and write** برای همین repository باشد. بات با یک Push امن، ساخت درس آلمانی را آغاز می‌کند؛ بنابراین به دسترسی Actions وابسته نیست. چت از سهمیهٔ رایگان روزانهٔ Workers AI استفاده می‌کند؛ MiniMax برای پاسخ‌گویی این بات لازم نیست.
 
 4. اجرا کنید: `npm run deploy`
 5. URL نمایش‌داده‌شده را برای webhook ثبت کنید (SECRET همان مقدار `TELEGRAM_WEBHOOK_SECRET`):
