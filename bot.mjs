@@ -51,17 +51,11 @@ export async function handle(text) {
   }
 
   if (has(c, "بفرست", "send", "ارسال")) {
-    await say("✈ در حال ارسال ویدیوهای امروز…");
-    try { execSync("node send-telegram.mjs", { stdio: "inherit" }); }
-    catch (e) { await say("✗ خطا: " + String(e.message).split(String.fromCharCode(10))[0]); }
-    return;
+    return say("⏸ ارسال دوبارهٔ ویدیوهای عمومی فعلاً متوقف است. برای ساخت درس بعدی در دو نسخهٔ TikTok و Instagram بنویس: «درس آلمانی بساز».");
   }
 
   if (has(c, "فردا", "tomorrow")) {
-    const d = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-    await say(`🎬 در حال ساخت ویدیوهای فردا (${d})…`);
-    const r = build(d);
-    return say(r.ok ? `✅ ویدیوهای ${d} آماده و ارسال شد.` : "✗ خطا: " + r.err);
+    return say("⏸ برنامهٔ ویدیوهای عمومی فردا فعلاً متوقف است. فقط سری آموزش آلمانی A1 فعال است؛ بنویس: «درس آلمانی بساز».");
   }
 
   const cmd = parseCommand(text);
