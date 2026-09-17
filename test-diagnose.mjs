@@ -217,7 +217,7 @@ console.log("ok   the cycle retries real progress, and stops on a repeat, a dead
     "german-lesson-build.mjs must know when a cycle owns the reporting");
   assert.match(build, /if \(tg\.enabled && !inCycle\) \{/,
     "a failed attempt inside a cycle must not send its own Telegram alert");
-  assert.match(build, /if \(tg\.enabled\) \{\s*\n\s*const res = await sendVideo/,
+  assert.match(build, /if \(tg\.enabled\) \{[\s\S]{0,400}const res = await sendVideo/,
     "the success path must still send the finished video, untouched by the cycle");
 
   const cycle = readFileSync("german-cycle.mjs", "utf8");

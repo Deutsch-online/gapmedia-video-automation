@@ -56,6 +56,16 @@ on:
         required: false
         default: ""
         type: string
+      retry_date:
+        description: "Internal Auto Fix only: Berlin date of a failed scheduled slot"
+        required: false
+        default: ""
+        type: string
+      retry_batch:
+        description: "Internal Auto Fix only: failed scheduled batch (0500, 1100 or 1730)"
+        required: false
+        default: ""
+        type: string
 
 concurrency:
   # Its OWN group, not the shared "gapmedia-production" one.
@@ -183,6 +193,29 @@ jobs:
             exit 0
           fi
 
+          # German A1 Auto Fix retries the *same* failed scheduled slot on a
+          # fresh runner. It may never turn an arbitrary failure into an extra
+          # manual episode: both the date and one of the three owner-approved
+          # batches are validated, and an already-delivered slot is a no-op.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.retry_batch }}" ]; then
+            retry_date="${{ inputs.retry_date }}"
+            retry_batch="${{ inputs.retry_batch }}"
+            if [[ "$retry_date" != "$local_date" || ! "$retry_batch" =~ ^(0500|1100|1730)$ ]]; then
+              echo "::error::Auto Fix retry parameters are invalid or stale. No video was built."
+              exit 1
+            fi
+            if already_sent "$local_date-$retry_batch"; then
+              echo "go=no" >> "$GITHUB_OUTPUT"
+              echo "Auto Fix found that $local_date-$retry_batch was already delivered — no duplicate retry."
+              exit 0
+            fi
+            echo "go=yes" >> "$GITHUB_OUTPUT"
+            echo "batch=$retry_batch" >> "$GITHUB_OUTPUT"
+            echo "date=$local_date" >> "$GITHUB_OUTPUT"
+            echo "Selected scheduled slot: $local_date-$retry_batch (Auto Fix retry)"
+            exit 0
+          fi
+
           # Explicit manual override only — never the schedule or the hourly
           # push trigger, so this can never turn into a silent extra episode.
           # Tagged "manual-HHMM" (not "-morning"/"-evening"), so a forced send
@@ -202,14 +235,17 @@ jobs:
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=0500" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
+            echo "Selected scheduled slot: $local_date-0500"
           elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] && ! already_sent "$local_date-1100"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=1100" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
+            echo "Selected scheduled slot: $local_date-1100"
           elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=1730" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
+            echo "Selected scheduled slot: $local_date-1730"
           else
             echo "go=no" >> "$GITHUB_OUTPUT"
             echo "Before today's next threshold (05:00/11:00/17:30 Berlin), or today's episode(s) already sent — skipping."

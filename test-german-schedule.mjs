@@ -20,5 +20,9 @@ for (const [time, batch] of [["05:00", "0500"], ["11:00", "1100"], ["17:30", "17
 }
 assert.doesNotMatch(workflow, /07:00\/16:30\/20:30 Berlin/,
   "the retired three-slot schedule must not remain in the gate");
+assert.match(workflow, /retry_batch:/,
+  "Auto Fix needs an explicit, validated route for retrying the same scheduled slot");
+assert.match(workflow, /Selected scheduled slot:/,
+  "a failed run must carry its slot identity into the Auto Fix diagnostic");
 
 console.log("German A1 scheduling is locked to 05:00, 11:00 and 17:30 Europe/Berlin");

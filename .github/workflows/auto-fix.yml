@@ -1,0 +1,83 @@
+name: German A1 Auto Fix
+
+# A separate, post-failure repair controller. It reads only failed logs, asks
+# AI for a *classified* second opinion on unknown faults, and can re-dispatch
+# the same scheduled slot only for bounded, known-transient faults. It never
+# lets AI write arbitrary source code, lowers no quality gate, and never sends
+# a video itself.
+on:
+  workflow_run:
+    workflows: ["German A1 lesson series"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Optional failed German lesson run id to analyse"
+        required: false
+        default: ""
+        type: string
+
+concurrency:
+  group: gapmedia-lesson-autofix
+  cancel-in-progress: false
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  repair:
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Download the failed log, without secrets
+        id: log
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          RUN_ID="${INPUT_RUN_ID:-$EVENT_RUN_ID}"
+          test -n "$RUN_ID"
+          gh run view "$RUN_ID" --repo "$REPO" --log-failed > .autofix-failed.log || true
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+      - name: Diagnose and choose a safe repair
+        id: fix
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: node lib/auto-fix.mjs --log .autofix-failed.log --state .german-autofix-state.json --run-id "${{ steps.log.outputs.run_id }}"
+      - name: Persist the repair diagnosis
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f .german-autofix-state.json
+          git diff --staged --quiet || git commit -m "diagnostic: record German A1 Auto Fix result"
+          if ! git push; then
+            git pull --rebase --autostash origin main
+            git push
+          fi
+      - name: Retry this exact scheduled slot once on a fresh runner
+        if: steps.fix.outputs.retry == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RETRY_DATE: ${{ steps.fix.outputs.retry_date }}
+          RETRY_BATCH: ${{ steps.fix.outputs.retry_batch }}
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/actions/workflows/news-scan.yml/dispatches" \
+            -d "{\"ref\":\"main\",\"inputs\":{\"force\":\"false\",\"retry_date\":\"$RETRY_DATE\",\"retry_batch\":\"$RETRY_BATCH\"}}"
