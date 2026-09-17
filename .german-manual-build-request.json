@@ -1,5 +1,6 @@
 {
-  "requestedAt": "2026-09-15T23:15:00Z",
-  "source": "chat",
-  "note": "Episode 21, third round. Run #347 narrowed it to one blocker: «خانمها» heard as «خانومها», a phonetic spelling of the same word, now folded in lib/hear.mjs (singular and plural). Line 3 also reworded off its sentence-final «مؤنث.». Lines 4 and 5 already passed in #347 and are unchanged."
+  "requestedAt": "2026-09-17T21:35:00Z",
+  "source": "operator-test",
+  "requestId": "german-a1-telegram-test-20260917",
+  "voiceMode": "on"
 }
