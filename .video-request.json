@@ -1,5 +1,5 @@
 {
-  "action": "rerender-feature",
-  "payload": "green-screen",
+  "action": "build-german-lesson",
+  "payload": "",
   "voice_mode": "on"
 }
