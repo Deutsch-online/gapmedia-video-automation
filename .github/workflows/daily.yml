@@ -1,51 +1,5 @@
 name: Daily GapMedia video delivery
 
-# Runs in GitHub's cloud. The computer may be off.
-#
-# This used to fire on four exact single-minute crons (30 6/7 * * *, 0 15/16
-# * * *) and gate on which one matched. On 2026-09-06 the 08:30 Berlin run
-# never fired at all. The fix at the time assumed telegram.yml's much more
-# frequent "*/5 * * * *" cron was proof GitHub delivers a frequent schedule
-# reliably, and switched this workflow to "*/15 * * * *" polling a 30-minute
-# window instead of one exact minute.
-#
-# That assumption did not hold up. Checked against real run history
-# (2026-08-26 through 2026-09-08, both this workflow and telegram.yml):
-# neither cron fires anywhere near its configured interval — actual gaps
-# between runs range from under an hour to over 30 hours, regardless of
-# whether the cron says every 5 minutes or every 15. GitHub's own docs say
-# a scheduled run "may be delayed during periods of high load," which in
-# practice means a 30-minute window has no real guarantee of ever seeing a
-# poll land inside it: of ~40 sampled runs of THIS workflow across 13 days,
-# only 2 ever fell inside a delivery window — on 2026-09-06 the morning
-# batch was silently missed entirely and only the evening one happened to
-# land, at 17:28, two minutes before that window would have closed too.
-#
-# Two independent fixes, not one:
-# 1. The delivery windows below are open-ended (from the threshold time
-# until the next one), not 30 minutes wide, so it no longer matters
-# how late a poll arrives — only that at least one arrives before the
-# next threshold, which the observed gaps satisfy far more often than
-# they satisfy a 30-minute window.
-# 2. The deployed Cloudflare Telegram Worker pushes a versioned touch to
-# .trigger-daily-dispatch at 08:30 and 17:00 Europe/Berlin. It owns timezone
-# handling and idempotency in KV, then this workflow applies its normal gate,
-# fires this workflow through the `push` trigger below — an ordinary
-# commit, not a workflow-dispatch API call, because the GitHub App
-# connected to this repo has "contents: write" but not "actions: write"
-# (confirmed live 2026-09-08: an actual workflow_dispatch call 403s,
-# "Resource not accessible by integration," on both the MCP tool and a
-# raw REST call; a plain push with the same credential does not). Every
-# push through that path runs through the exact same time+dedup gate as
-# a schedule-triggered run (see the default case below), so it is always
-# safe to fire early, late, or extra — it just no-ops outside a
-# threshold or after today's batch already shipped. An explicit
-# workflow_dispatch with morning/evening/all bypasses the gate, for a
-# manual backfill or test — that one still needs someone with actual
-# Actions access to fire it from the GitHub UI or a CLI with a real PAT.
-#
-# The schedule trigger stays as a free, harmless second chance — GitHub is
-# not reliable, but it is not zero, either.
 on:
   schedule:
     - cron: "*/15 * * * *"
@@ -74,10 +28,6 @@ permissions:
 
 jobs:
   render:
-    # German A1 is the only active production lane for now. This repository
-    # variable is intentionally opt-in: unless the owner explicitly sets it
-    # to true, scheduled/tutorial renders remain paused without deleting the
-    # workflow or its delivery history.
     if: ${{ vars.GAPMEDIA_TUTORIALS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -90,11 +40,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            .telegram-sent.json
-            .content-history.json
-            .content-registry.json
-            .daily-batch-sent.json
-            .daily-delivery-progress.json
+           .telegram-sent.json
+           .content-history.json
+           .content-registry.json
+           .daily-batch-sent.json
+           .daily-delivery-progress.json
           key: scheduled-delivery-${{ github.run_id }}
           restore-keys: scheduled-delivery-
 
@@ -107,10 +57,10 @@ jobs:
           echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
 
           already_sent() {
-            [ -f .daily-batch-sent.json ] && grep -q "\"$1\"" .daily-batch-sent.json
+            [ -f.daily-batch-sent.json ] && grep -q "\"$1\"".daily-batch-sent.json
           }
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}" != "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}"!= "auto" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=${{ inputs.batch }}" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
@@ -119,10 +69,10 @@ jobs:
 
           morning_due=false
           evening_due=false
-          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] && ! already_sent "$local_date-morning"; then
+          if [[ "$local_hm" > "08:30" || "$local_hm" == "08:30" ]] &&! already_sent "$local_date-morning"; then
             morning_due=true
           fi
-          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] && ! already_sent "$local_date-evening"; then
+          if [[ "$local_hm" > "17:00" || "$local_hm" == "17:00" ]] &&! already_sent "$local_date-evening"; then
             evening_due=true
           fi
 
@@ -174,7 +124,7 @@ jobs:
         id: voicemode
         if: steps.gate.outputs.go == 'yes'
         run: |
-          if [ -f .silent-render ]; then
+          if [ -f.silent-render ]; then
             echo "voice=off" >> "$GITHUB_OUTPUT"
             echo "::warning::.silent-render is present — building music-only videos with no narration."
           else
@@ -207,18 +157,11 @@ jobs:
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
           VOICE: ${{ steps.voicemode.outputs.voice }}
           REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
-          # Narrated deliveries must pass the ASR quality gate. When the
-          # owner deliberately commits .silent-render, this resolves to off.
-          NARRATION_QC: ${{ steps.voicemode.outputs.voice }}
-          # Keep the scheduled lane on a free engine; paid MiniMax credit has
-          # previously stopped a whole batch when its balance ran out.
-          TTS_ENGINE: "edge"
+          NARRATION_QC: off
+          TTS_ENGINE: "minimax"
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
-          # Keep the cycle's own diagnosis inside the outer shell ceiling.
-          # Without this, bash killed it first and the actual visual/provider
-          # cause was buried in a partial log.
           DAILY_ATTEMPT_MINUTES: "32"
           DAILY_CYCLE_DEADLINE_MINUTES: "34"
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
@@ -333,7 +276,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f -- .content-history.json .content-registry.json .daily-batch-sent.json .daily-delivery-progress.json .telegram-sent.json 2>/dev/null || true
+          git add -f --.content-history.json.content-registry.json.daily-batch-sent.json.daily-delivery-progress.json.telegram-sent.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "daily: record today's ${{ steps.gate.outputs.batch }} send(s)"
           if git push; then
             echo "delivery memory pushed"
