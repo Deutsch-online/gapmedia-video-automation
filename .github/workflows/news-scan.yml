@@ -74,9 +74,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
-          VOICE: "on"
-          REQUIRE_VOICE: "on"
-          NARRATION_QC: "on"
+          VOICE: "minimax"
+          REQUIRE_VOICE: "off"
+          NARRATION_QC: "off"
           TTS_ENGINE: "minimax"
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
