@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T13:35:21.518Z",
+  "updatedAt": "2026-09-18T14:11:12.129Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
-      "kind": "unknown",
-      "fingerprint": "unknown:781bf1352ce0",
-      "evidence": "lesson Build and send the next episode 2026-09-18T13:35:02.7309196Z ##[error]Process completed with exit code 1."
+      "kind": "narration-reword-exhausted",
+      "fingerprint": "narration-reword-exhausted:f4829ac1e91e",
+      "evidence": "lesson Build and send the next episode 2026-09-18T14:10:55.3932873Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
     },
     "plan": {
-      "action": "needs-code-review",
-      "reason": "هوش مصنوعی پاسخ معتبر نداد؛ اصلاح حدسی انجام نشد."
+      "action": "stand-down",
+      "reason": "این مشکل با اجرای دوباره حل نمی‌شود؛ برای جلوگیری از تولید اشتباه، فقط گزارش می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35350749136"
+    "runId": "35352927805"
   }
 }
