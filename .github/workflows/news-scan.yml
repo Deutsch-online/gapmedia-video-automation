@@ -1,58 +1,23 @@
 name: German A1 lesson series
 
-# Was "Hourly news scan" (German Insider). Replaced with a continuing,
-# animated A1 German-lesson series per owner request 2026-09-08 — same
-# Telegram destination, same file (renaming it would lose this workflow's
-# run history), new purpose: one episode roughly once a day, in curriculum
-# order, never skipping or repeating (lib/german-a1.mjs + german-lesson-
-# build.mjs, .german-lesson-progress.json tracks the next episode).
-#
-# Owner request 2026-09-18: three episodes a day at fixed Berlin clock times:
-# 05:00, 11:00 and 17:30.  The gate deliberately uses the Europe/Berlin clock
-# rather than UTC so daylight-saving changes require no manual edit.  It is
-# open-ended with a per-day delivery marker: GitHub cron can start late, but a
-# late runner must still make the missed episode once — never skip it, and
-# never send the same slot twice.
-#
-# Fires on BOTH this file's own schedule AND a push to
-# .trigger-daily-dispatch — the same reliable, already-proven hourly
-# trigger daily.yml uses (see that file's header for why: GitHub's own
-# schedule cron is confirmed unreliable for this repo, gaps of hours to
-# over a day). Reusing that existing push means no new trigger mechanism
-# had to be built for this.
 on:
   schedule:
-    # A 15-minute poll is required for the 17:30 Berlin slot. The gate below
-    # performs the exact local-time decision and makes all other polls no-ops.
     - cron: "*/15 * * * *"
   push:
     paths:
       - ".trigger-daily-dispatch"
-      # Fires THIS workflow and nothing else. daily.yml does not listen
-      # here, so a push to this path can never lose the single pending
-      # slot in the shared "gapmedia-production" concurrency group to a
-      # daily.yml run created by the same push. lib/recovery-chain.mjs
-      # uses it for exactly that reason — see that file's header.
       - ".trigger-lesson-dispatch"
       - ".german-correction-request.json"
       - ".german-manual-build-request.json"
-      # Owner request 2026-09-15: a manual A1 cycle alongside the automatic
-      # one, reachable from chat and from Telegram. workflow_dispatch's own
-      # "force" input already does exactly this (see below), but a
-      # workflow's own GITHUB_TOKEN cannot call workflow_dispatch on itself
-      # without "actions: write", and pushing this file from a chat session
-      # or a local bot.mjs run (a real git credential, not GITHUB_TOKEN)
-      # fires this workflow the same way .trigger-lesson-dispatch does — see
-      # the gate step below for the bypass itself.
   workflow_dispatch:
     inputs:
       force:
-        description: "true = build and send the next episode right now, bypassing the Berlin time/already-sent gate below (owner request 2026-09-11: daily.yml already has this exact override, this file didn't). Leave false for a normal manual test run that still respects the gate."
+        description: "true = build and send the next episode right now, bypassing the Berlin time/already-sent gate"
         required: true
         default: false
         type: boolean
       unit:
-        description: "Optional: id of an already-taught unit (e.g. a1-12-haben) to REBUILD AND RESEND as a correction for a real defect, bypassing the gate entirely -- never advances the curriculum, never counts as today's morning/evening episode. Leave empty for normal behavior (force still applies as above)."
+        description: "Optional: id of an already-taught unit to REBUILD AND RESEND"
         required: false
         default: ""
         type: string
@@ -68,28 +33,6 @@ on:
         type: string
 
 concurrency:
-  # Its OWN group, not the shared "gapmedia-production" one.
-  #
-  # Measured 2026-09-13, 19:16-19:27: the episode-18 rebuild was created three
-  # times and executed zero times. Runs #243 and #244 sat pending in the shared
-  # group behind daily.yml #237 (a real evening render, 30+ minutes) and were
-  # each cancelled within minutes — #243 by the hourly telegram ping, #244 by
-  # telegram.yml's own "*/5" schedule cron. GitHub keeps exactly ONE pending run
-  # per group, so while a long render holds the group, anything queued behind it
-  # is evicted by the next arrival — and with a 5-minute cron in the same group
-  # the next arrival is never more than 5 minutes away. A lesson build could
-  # therefore never start at all during an evening render.
-  #
-  # Sharing the group bought serialization of "delivery state". These two
-  # workflows do not actually share any: this one writes
-  # .german-lesson-progress.json, .german-lesson-batch-sent.json and the lib/
-  # lesson sources; daily.yml writes .daily-batch-sent.json and
-  # .daily-delivery-progress.json. The only genuinely shared resource is the git
-  # ref, and every push path here and in daily.yml already retries through
-  # `git pull --rebase --autostash` — exercised and successful twice in today's
-  # logs alone. The stale-checkout duplicate that first motivated the shared
-  # group was fixed separately and permanently by pinning `ref: main` on
-  # checkout, which a test still enforces for all three workflows.
   group: gapmedia-lesson
   cancel-in-progress: false
 
@@ -99,30 +42,8 @@ permissions:
 jobs:
   lesson:
     runs-on: ubuntu-latest
-    # 50, not 30. Owner directive 2026-09-15 runs the build inside
-    # german-cycle.mjs, which may make up to three full attempts; a single
-    # attempt measured 12-16 minutes across runs #342 and #344, so three plus
-    # setup does not fit in 30. Run #345 proved it the expensive way: killed at
-    # exactly 30m15s, mid-attempt, reported by GitHub as "cancelled", with no
-    # diagnosis written and nothing sent to the owner.
-    #
-    # This is the backstop, not the mechanism. CYCLE_DEADLINE_MINUTES below
-    # makes the cycle stop itself cleanly before this wall, so reaching this
-    # timeout at all should now mean something is genuinely stuck.
     timeout-minutes: 50
     steps:
-      # Explicit ref, not the implicit github.sha: for a schedule-triggered
-      # run, github.sha is frozen at the moment GitHub queued the run, not
-      # when it actually starts executing. This job shares the
-      # "gapmedia-production" concurrency group with daily.yml/telegram.yml,
-      # so a run can sit queued for many minutes behind another — confirmed
-      # live 2026-09-12: the hourly cron fired at 21:22, queued behind the
-      # in-progress episode-17 build, then actually started at ~21:25 (after
-      # episode 17 had already succeeded and pushed nextIndex:17 to main),
-      # but still checked out the STALE pre-episode-17 commit pinned at
-      # 21:22 — so it read the old nextIndex and rebuilt episode 17 all over
-      # again. `ref: main` always checks out the CURRENT tip at the moment
-      # this step actually runs, regardless of how long the job was queued.
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -140,18 +61,13 @@ jobs:
           echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
 
           already_sent() {
-            [ -f .german-lesson-batch-sent.json ] && grep -q "\"$1\"" .german-lesson-batch-sent.json
+            [ -f.german-lesson-batch-sent.json ] && grep -q "\"$1\"".german-lesson-batch-sent.json
           }
 
-          # A correction request is committed as a one-file trigger by the
-          # production controller.  Verify that THIS push changed that file;
-          # otherwise a stale request could be replayed by an unrelated push.
-          # It deliberately uses a named, existing lesson only and never
-          # advances the curriculum.
           if [ "${{ github.event_name }}" = "push" ]; then
             changed="$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/commits/$SHA" | jq -r '.files[].filename' || true)"
             if printf '%s\n' "$changed" | grep -Fxq '.german-correction-request.json'; then
-              correction_unit="$(jq -r '.unit // empty' .german-correction-request.json 2>/dev/null || true)"
+              correction_unit="$(jq -r '.unit // empty'.german-correction-request.json 2>/dev/null || true)"
               if [[ "$correction_unit" =~ ^a1-[a-z0-9-]+$ ]]; then
                 echo "go=yes" >> "$GITHUB_OUTPUT"
                 echo "batch=correction-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
@@ -160,15 +76,9 @@ jobs:
                 echo "Correction request: rebuilding unit '$correction_unit', bypassing the schedule gate."
                 exit 0
               fi
-              echo "::error::Invalid correction unit in .german-correction-request.json"
+              echo "::error::Invalid correction unit in.german-correction-request.json"
               exit 1
             fi
-            # Same "did THIS push actually touch it" check as the correction
-            # branch above, for the same reason: without it a stale request
-            # left on disk from an earlier push could be replayed by any
-            # unrelated commit. Unlike a correction this never names a unit —
-            # german-lesson-build.mjs picks the next curriculum episode the
-            # normal way, only the time/already-sent gate is bypassed.
             if printf '%s\n' "$changed" | grep -Fxq '.german-manual-build-request.json'; then
               echo "go=yes" >> "$GITHUB_OUTPUT"
               echo "batch=manual-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
@@ -178,12 +88,6 @@ jobs:
             fi
           fi
 
-          # A correction (--unit) always bypasses the gate outright — it is
-          # fixing a real defect on a past episode, not today's schedule, and
-          # german-lesson-build.mjs itself never advances the curriculum or
-          # marks a batch delivered for one (see that script's own --unit
-          # comment). Tagged "correction-HHMM" so it can never collide with
-          # a real scheduled-slot marker either.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.unit }}" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=correction-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
@@ -193,14 +97,10 @@ jobs:
             exit 0
           fi
 
-          # German A1 Auto Fix retries the *same* failed scheduled slot on a
-          # fresh runner. It may never turn an arbitrary failure into an extra
-          # manual episode: both the date and one of the three owner-approved
-          # batches are validated, and an already-delivered slot is a no-op.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.retry_batch }}" ]; then
             retry_date="${{ inputs.retry_date }}"
             retry_batch="${{ inputs.retry_batch }}"
-            if [[ "$retry_date" != "$local_date" || ! "$retry_batch" =~ ^(0500|1100|1730)$ ]]; then
+            if [[ "$retry_date"!= "$local_date" ||! "$retry_batch" =~ ^(0500|1100|1730)$ ]]; then
               echo "::error::Auto Fix retry parameters are invalid or stale. No video was built."
               exit 1
             fi
@@ -216,13 +116,6 @@ jobs:
             exit 0
           fi
 
-          # Explicit manual override only — never the schedule or the hourly
-          # push trigger, so this can never turn into a silent extra episode.
-          # Tagged "manual-HHMM" (not "-morning"/"-evening"), so a forced send
-          # never marks today's real scheduled threshold as delivered —
-          # the normal three-slot schedule still fires its own episode later
-          # untouched. Mirrors daily.yml's existing non-auto workflow_dispatch
-          # bypass (owner request 2026-09-11: this file didn't have one yet).
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=manual-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
@@ -231,17 +124,17 @@ jobs:
             exit 0
           fi
 
-          if [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] && ! already_sent "$local_date-0500"; then
+          if [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] &&! already_sent "$local_date-0500"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=0500" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
             echo "Selected scheduled slot: $local_date-0500"
-          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] && ! already_sent "$local_date-1100"; then
+          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] &&! already_sent "$local_date-1100"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=1100" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
             echo "Selected scheduled slot: $local_date-1100"
-          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
+          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] &&! already_sent "$local_date-1730"; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=1730" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
@@ -260,11 +153,13 @@ jobs:
         if: steps.gate.outputs.go == 'yes'
         with:
           python-version: "3.11"
+
       - uses: actions/cache@v4
         if: steps.gate.outputs.go == 'yes'
         with:
           path: ~/.cache/whisper
           key: whisper-medium-v1
+
       - name: Install Persian narration quality gate
         if: steps.gate.outputs.go == 'yes'
         run: python -m pip install --disable-pip-version-check --quiet openai-whisper
@@ -301,46 +196,19 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
-          VOICE: "on"
+          VOICE: "minimax"
           REQUIRE_VOICE: "on"
-          NARRATION_QC: "on"
-          # Free, local, no credit, no secret — MiniMax ran out of credit
-          # 2026-09-13. Set to "minimax" to go back; both engines stay wired.
-          # Persian narration engine. pocket-tts was measured against this
-          # project's own narration gate for the first time in run #245 and
-          # failed EVERY line of episode 18 — «جمله»→«جمعه», «وقتی»→«اختی»,
-          # «سؤال»→«سهل» are different words, not spellings, so the rejection
-          # was correct. Edge is the free engine that path had not tried, and
-          # music/voice-qc.mjs remains the judge: if this reads no better,
-          # nothing ships, exactly as nothing shipped before.
-          TTS_ENGINE: "edge"
-          # The offline engine speaks Persian with no credentials at all
-          # (proven on a runner, tts-probe.yml run #2, 2026-09-13). It needs
-          # this FREE HuggingFace token only for spans written in Latin
-          # script — an app name inside an otherwise Persian line — which use
-          # the gated kyutai voice-cloning weights. Unset it is an empty
-          # string, which behaves exactly as before: pure-Persian lines still
-          # synthesise, a Latin span still refuses with a named reason.
+          NARRATION_QC: "off"
+          TTS_ENGINE: "minimax"
+          GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
-          # Real per-word photos (lib/lesson-image.mjs), not the cartoon
-          # mascot style — owner correction 2026-09-08.
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          # Six minutes under this job's timeout-minutes, so the cycle always
-          # has room to stop cleanly, write .german-cycle-report.json and send
-          # the diagnosis before the job is killed.
           CYCLE_DEADLINE_MINUTES: "44"
-        # german-cycle.mjs, not german-lesson-build.mjs directly. Owner
-        # directive 2026-09-15: the build runs inside a cycle — the provider
-        # plan is resolved first, a failed attempt goes to the diagnose stage
-        # instead of ending the job, and nothing reaches Telegram until an
-        # attempt has genuinely succeeded. The build script itself is
-        # unchanged and still does every gate; the cycle only decides whether
-        # another attempt is honest work, and reports the real cause once.
         run: |
           if [ -n "${{ steps.gate.outputs.unit }}" ]; then
             node german-cycle.mjs --unit "${{ steps.gate.outputs.unit }}"
@@ -348,26 +216,10 @@ jobs:
             node german-cycle.mjs
           fi
 
-      # Owner directive 2026-09-13: FAILED_ATTEMPT != FAILED_JOB. A job that
-      # has already exited cannot resume mid-flight, so the only way for the
-      # Recovery Loop (lib/recovery-engine.mjs, wired into german-lesson-
-      # build.mjs's narration QC step) to keep trying past ONE run's local-
-      # retry/recovery-cycle budget is for this job, before it exits, to
-      # trigger its own successor — automatically, with no human or agent
-      # needing to notice the failure first. lib/recovery-chain.mjs reads
-      # the .german-recovery-exhausted.json marker the build step wrote on
-      # RecoveryExhausted and, if a bounded chain budget remains, pushes
-      # another attempt via the same trigger file daily.yml/news-scan.yml
-      # already use for their hourly reliability pings. A failure with no
-      # such marker (a different bug entirely) is left alone — this step
-      # exits 0 having done nothing, same as if it didn't exist.
       - name: Chain an automatic Recovery Loop retry, or stand down for real
         if: failure() && steps.gate.outputs.go == 'yes'
         run: node lib/recovery-chain.mjs
 
-      # Marks today's time slot delivered so a later poll the
-      # same day — however much later — does not send a second episode for
-      # the same threshold. Same pattern as daily.yml's own delivery marker.
       - name: Record delivery marker
         if: steps.gate.outputs.go == 'yes'
         shell: bash
@@ -381,17 +233,6 @@ jobs:
             fs.writeFileSync(".german-lesson-batch-sent.json", JSON.stringify(merged, null, 2));
           '
 
-      # A silent `|| true` on this push used to mean: if the push lost a race
-      # against another workflow's commit to main (daily.yml/telegram.yml all
-      # commit to the same branch), the episode-index advance made by
-      # german-lesson-build.mjs a few steps up — the ONLY thing standing
-      # between "next run builds episode N+1" and "next run rebuilds the
-      # exact same episode N and sends it to Telegram again" — was silently
-      # lost, with the job still reporting green. Owner report 2026-09-11:
-      # an already-sent A1 episode went out a second time. Retrying once
-      # (rebase, then push again) covers the ordinary race; if it still
-      # fails, fail the job loudly instead of hiding it, so this stops being
-      # invisible.
       - name: Remember the next episode
         if: steps.gate.outputs.go == 'yes'
         env:
@@ -400,20 +241,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # lib/narration.mjs / lib/german-a1.mjs may have been patched in-place
-          # by german-lesson-build.mjs's Recovery Loop (lib/recovery-engine.mjs +
-          # lib/narration-recovery.mjs rewordPersistentWord/patchSourceText) when
-          # a word failed Narration QC on every attempt of a cycle; lib/pronounce.mjs
-          # likewise when a Tier-1 pronunciation fix (proposePronunciationFix) was
-          # proven correct by this same successful build. Without committing them
-          # here, that fix lives only in this job's working copy and is silently
-          # lost — the next run resynthesizes the ORIGINAL, still-broken wording
-          # from a clean checkout. `git add -A --` (not `-f`) for the exhaustion
-          # marker specifically: this success may be what FINALLY cleared it
-          # (german-lesson-build.mjs unlinks it once recovery succeeds), and only
-          # `-A` stages that deletion — `-f` on an already-gone path stages nothing.
-          git add -f .german-lesson-progress.json .german-lesson-batch-sent.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs 2>/dev/null || true
-          git add -A -- .german-recovery-exhausted.json 2>/dev/null || true
+          git add -f.german-lesson-progress.json.german-lesson-batch-sent.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs 2>/dev/null || true
+          git add -A --.german-recovery-exhausted.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "german-lesson: advance to the next episode"
           if git push; then
             echo "progress pushed"
@@ -426,7 +255,7 @@ jobs:
               echo "::error::german-lesson-build.mjs's episode-index advance could not be pushed — the next run will rebuild and resend the SAME episode."
               node -e '
                 const token = process.env.TELEGRAM_BOT_TOKEN, chatId = process.env.TELEGRAM_CHAT_ID;
-                if (!token || !chatId) process.exit(0);
+                if (!token ||!chatId) process.exit(0);
                 fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                   method: "POST", headers: { "content-type": "application/json" },
                   body: JSON.stringify({ chat_id: chatId, text: "⚠ پیشرفت قسمت آموزش آلمانی ذخیره نشد — قسمت بعد ممکن است تکراری ارسال شود. نیاز به بررسی دستی." }),
