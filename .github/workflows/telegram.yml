@@ -243,9 +243,14 @@ jobs:
             # .video-request.json. Keep the allow-list narrow, but include
             # the one active production command so a Telegram order for the
             # next German A1 lesson can reach news-scan.yml without a PC.
-            case "$request_action" in custom-content|content-radar|approved-feature|rerender-feature|build-german-lesson) ;; *) request_action="none" ;; esac
+            case "$request_action" in
+              approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-german-lesson|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|providers|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;
+              *) request_action="none" ;;
+            esac
+            request_pick=$(jq -r '.pick // "1"' .video-request.json | tr -cd '0-9' | cut -c1-1)
             case "$request_voice" in on|off) ;; *) request_voice="on" ;; esac
-            printf 'ACTION=%s\nPICK=1\nPAYLOAD=%s\nVOICE_ID=\nVOICE_MODE=%s\n' "$request_action" "$request_payload" "$request_voice" >> "$GITHUB_OUTPUT"
+            request_voice_id=$(jq -r '.voice_id // ""' .video-request.json | tr -cd 'A-Za-z0-9_.-' | cut -c1-120)
+            printf 'ACTION=%s\nPICK=%s\nPAYLOAD=%s\nVOICE_ID=%s\nVOICE_MODE=%s\n' "$request_action" "${request_pick:-1}" "$request_payload" "$request_voice_id" "$request_voice" >> "$GITHUB_OUTPUT"
           elif [ -n "$INPUT_ACTION" ]; then
             case "$INPUT_ACTION" in
               approved-feature|rerender-feature|approved-screen|user-photo|topic-pick|topic-reject|topic-unreject|topic-rejected-list|search-topic-pick|content-preview|content-edit-hook|content-edit-steps|content-approve|content-source-pick|content-topic-preview|build-tiktok|build-instagram|build-tools|build-german-lesson|build-all|build-tomorrow|build-app-pair|resend|research|content-radar|demand-research|content-search|content-search-live|custom-content|custom-content-media|voice-list|providers|undo|plan-today|plan-tomorrow|plan-week|plan-tiktok|plan-instagram|plan-tools) ;;

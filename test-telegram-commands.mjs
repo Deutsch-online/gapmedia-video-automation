@@ -63,7 +63,12 @@ if (!guard.length) {
 // (build-tiktok, resend, plan-week, …). If everything extracted also appears
 // in that narrow list, the extraction landed on the wrong `case` — whether it
 // grabbed all four or, as in 2026-09-12, a two-action fragment of them.
-if (pushPathGuard.length && guard.every((a) => pushPathGuard.includes(a))) {
+// The push path now deliberately accepts the same allow-listed commands as
+// the explicit dispatch path: the Cloudflare Worker writes .video-request.json
+// because this account's token cannot call workflow_dispatch. It is only a
+// problem when that push list is a *proper, shorter* subset (the 2026-09-12
+// regression), not when both gateways intentionally share one contract.
+if (pushPathGuard.length && pushPathGuard.length < guard.length && guard.every((a) => pushPathGuard.includes(a))) {
   console.log(`  ✗ the guard read here (${guard.join("|")}) is the narrow $request_action push-path list, not the $INPUT_ACTION dispatch guard — the 2026-09-12 false-positive bug is back. Fix the extraction here, not the commands.`);
   process.exit(1);
 }

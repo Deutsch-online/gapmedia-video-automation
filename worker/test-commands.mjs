@@ -2,7 +2,7 @@
 // local-PC bot test: the phone uses worker/src/index.js, so it needs its own
 // regression test for the exact commands the creator actually types.
 import assert from "node:assert/strict";
-import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent } from "./src/index.js";
+import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch } from "./src/index.js";
 
 assert.equal(videoAction("تیک تاک بساز").action, "build-tiktok");
 assert.equal(videoAction("انستا بساز").action, "build-instagram");
@@ -75,7 +75,7 @@ const savedFetch = globalThis.fetch;
 const calls = [];
 globalThis.fetch = async (url, init = {}) => {
   calls.push({ url: String(url), init });
-  if (String(url).includes("api.github.com/")) return new Response(null, { status: 204 });
+  if (String(url).includes("api.github.com/")) return new Response(JSON.stringify({ sha: "prior" }), { status: init.method === "PUT" ? 201 : 200 });
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };
 const response = await worker.fetch(new Request("https://worker.test/", {
@@ -88,11 +88,11 @@ const response = await worker.fetch(new Request("https://worker.test/", {
 }), { ALLOWED_CHAT_ID: "7", TELEGRAM_BOT_TOKEN: "test", GITHUB_TOKEN: "test" });
 globalThis.fetch = savedFetch;
 assert.equal(response.status, 200);
-const dispatch = calls.find((c) => c.url.includes("api.github.com/"));
+const dispatch = calls.find((c) => c.url.includes("api.github.com/") && c.init.method === "PUT");
 assert.ok(dispatch, `captioned video dispatches the workflow; observed ${calls.map((c) => c.url).join(", ")}`);
-const inputs = JSON.parse(dispatch.init.body).inputs;
-assert.equal(inputs.action, "custom-content-media");
-assert.equal(JSON.parse(inputs.payload).videoFileId, "telegram-video-id");
+const request = JSON.parse(decodeURIComponent(escape(atob(JSON.parse(dispatch.init.body).content))));
+assert.equal(request.action, "custom-content-media");
+assert.equal(JSON.parse(request.payload).videoFileId, "telegram-video-id");
 
 // A phone request for German A1 must not call the disabled Actions dispatch
 // endpoint. It updates the dedicated trigger file, whose push starts the
@@ -114,5 +114,21 @@ const germanPut = germanCalls.find((c) => c.url.includes(".german-manual-build-r
 assert.ok(germanPut, "German command must update the push-trigger file");
 assert.doesNotMatch(germanPut.url, /actions\/workflows/);
 assert.match(JSON.parse(germanPut.init.body).message, /German A1 lesson/);
+
+// The external scheduler is timezone-aware, writes the ordinary Git trigger,
+// and records one idempotency key so a five-minute cron cannot double-send.
+const scheduleCalls = [];
+const kv = new Map();
+globalThis.fetch = async (url, init = {}) => {
+  scheduleCalls.push({ url: String(url), init });
+  if (String(url).includes("api.github.com/")) return new Response(JSON.stringify({ sha: "prior" }), { status: init.method === "PUT" ? 201 : 200 });
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+};
+const state = { get: async (key) => kv.get(key), put: async (key, value) => kv.set(key, value) };
+assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, new Date("2026-09-18T06:30:00Z")), true);
+assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, new Date("2026-09-18T06:30:00Z")), false);
+assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, new Date("2026-09-18T06:34:00Z")), false);
+assert.equal(scheduleCalls.filter((c) => c.url.includes(".trigger-daily-dispatch") && c.init.method === "PUT").length, 1);
+globalThis.fetch = savedFetch;
 
 console.log("cloud Telegram command contract holds");
