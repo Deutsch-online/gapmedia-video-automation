@@ -22,13 +22,20 @@ assert.equal(
 );
 console.log("ok   findRealImage() tries", REAL_IMAGE_SEARCH_STRATEGIES.length, "genuinely distinct search strategies before giving up");
 
-// Neither function may be reachable without real credentials — confirming
-// the missing-key path still short-circuits safely (no network attempt,
-// no crash) rather than silently proceeding to a fake/guessed result.
+// The real-photo search needs a relevance judge and therefore short-circuits
+// with no text-model credentials. Pollinations generation is intentionally
+// keyless, so test its failure path by making the provider unreachable rather
+// than incorrectly treating a successful free provider response as a bug.
 delete process.env.EXA_API_KEY;
 delete process.env.GEMINI_API_KEY;
 delete process.env.GOOGLE_API_KEY;
 delete process.env.GROQ_API_KEY;
 assert.equal(await findRealImage("test topic", []), null, "findRealImage() must return null, not fabricate anything, with no API keys configured");
-assert.equal(await generateAIImage("test topic", "test slide"), null, "generateAIImage() must return null, not fabricate anything, with no API key configured");
-console.log("ok   both functions fail closed (return null) rather than fabricate a result when unconfigured");
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async () => { throw new Error("provider offline in regression test"); };
+try {
+  assert.equal(await generateAIImage("test topic", "test slide"), null, "generateAIImage() must return null when its free provider cannot be reached");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+console.log("ok   both functions fail closed (return null) when their required provider is unavailable");

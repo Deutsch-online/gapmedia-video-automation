@@ -90,11 +90,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-           .telegram-sent.json
-             .content-history.json
-             .content-registry.json
-             .daily-batch-sent.json
-             .daily-delivery-progress.json
+            .telegram-sent.json
+            .content-history.json
+            .content-registry.json
+            .daily-batch-sent.json
+            .daily-delivery-progress.json
           key: scheduled-delivery-${{ github.run_id }}
           restore-keys: scheduled-delivery-
 
@@ -333,7 +333,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f.content-history.json.content-registry.json.daily-batch-sent.json.daily-delivery-progress.json.telegram-sent.json 2>/dev/null || true
+          git add -f -- .content-history.json .content-registry.json .daily-batch-sent.json .daily-delivery-progress.json .telegram-sent.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "daily: record today's ${{ steps.gate.outputs.batch }} send(s)"
           if git push; then
             echo "delivery memory pushed"
