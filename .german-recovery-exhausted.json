@@ -1,6 +1,6 @@
 {
   "unit": "a1-25-modal-verbs",
-  "attempts": 1,
+  "attempts": 2,
   "history": [
     {
       "cycle": 0,
@@ -10,10 +10,9 @@
         "faultWords": [
           "بگویی",
           "اینجا",
-          "میگویی",
+          "می‌گویی",
           "توانایی",
-          "ی",
-          "تواناییهایت"
+          "توانایی‌هایت"
         ],
         "error": {
           "status": 1,
@@ -23,7 +22,7 @@
             null,
             null
           ],
-          "pid": 4177,
+          "pid": 3945,
           "stdout": null,
           "stderr": null
         }
@@ -37,10 +36,9 @@
         "faultWords": [
           "بگویی",
           "اینجا",
-          "میگویی",
+          "می‌گویی",
           "توانایی",
-          "ی",
-          "تواناییهایت"
+          "توانایی‌هایت"
         ],
         "error": {
           "status": 1,
@@ -50,7 +48,7 @@
             null,
             null
           ],
-          "pid": 11299,
+          "pid": 30959,
           "stdout": null,
           "stderr": null
         }
@@ -64,10 +62,9 @@
         "faultWords": [
           "بگویی",
           "اینجا",
-          "میگویی",
+          "می‌گویی",
           "توانایی",
-          "ی",
-          "تواناییهایت"
+          "توانایی‌هایت"
         ],
         "error": {
           "status": 1,
@@ -77,88 +74,7 @@
             null,
             null
           ],
-          "pid": 18416,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 1,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بگویی",
-          "اینجا",
-          "میگویی",
-          "توانایی",
-          "ی",
-          "حرف"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 25526,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 2,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بگویی",
-          "اینجا",
-          "میگویی",
-          "توانایی",
-          "ی",
-          "حرف"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 32825,
-          "stdout": null,
-          "stderr": null
-        }
-      }
-    },
-    {
-      "cycle": 1,
-      "localAttempt": 3,
-      "ok": false,
-      "reason": {
-        "faultWords": [
-          "بگویی",
-          "اینجا",
-          "میگویی",
-          "توانایی",
-          "ی",
-          "حرف"
-        ],
-        "error": {
-          "status": 1,
-          "signal": null,
-          "output": [
-            null,
-            null,
-            null
-          ],
-          "pid": 40133,
+          "pid": 58001,
           "stdout": null,
           "stderr": null
         }
@@ -169,10 +85,9 @@
     "faultWords": [
       "بگویی",
       "اینجا",
-      "میگویی",
+      "می‌گویی",
       "توانایی",
-      "ی",
-      "حرف"
+      "توانایی‌هایت"
     ],
     "error": {
       "status": 1,
@@ -182,7 +97,7 @@
         null,
         null
       ],
-      "pid": 40133,
+      "pid": 58001,
       "stdout": null,
       "stderr": null
     }
