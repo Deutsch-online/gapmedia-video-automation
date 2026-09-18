@@ -2,7 +2,7 @@
 // local-PC bot test: the phone uses worker/src/index.js, so it needs its own
 // regression test for the exact commands the creator actually types.
 import assert from "node:assert/strict";
-import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch } from "./src/index.js";
+import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch, dueGermanLessonDispatch } from "./src/index.js";
 
 assert.equal(videoAction("تیک تاک بساز").action, "build-tiktok");
 assert.equal(videoAction("انستا بساز").action, "build-instagram");
@@ -129,6 +129,26 @@ assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, 
 assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, new Date("2026-09-18T06:30:00Z")), false);
 assert.equal(await dueDailyDispatch({ GITHUB_TOKEN: "test", BOT_STATE: state }, new Date("2026-09-18T06:34:00Z")), false);
 assert.equal(scheduleCalls.filter((c) => c.url.includes(".trigger-daily-dispatch") && c.init.method === "PUT").length, 1);
+globalThis.fetch = savedFetch;
+
+// The independent German curriculum must retain all three Berlin slots.  Its
+// trigger deliberately goes through news-scan.yml's normal schedule gate; it
+// must never use the manual lesson request, which would skip curriculum-slot
+// accounting.
+const lessonScheduleCalls = [];
+const lessonKv = new Map();
+globalThis.fetch = async (url, init = {}) => {
+  lessonScheduleCalls.push({ url: String(url), init });
+  if (String(url).includes("api.github.com/")) return new Response(JSON.stringify({ sha: "prior" }), { status: init.method === "PUT" ? 201 : 200 });
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+};
+const lessonState = { get: async (key) => lessonKv.get(key), put: async (key, value) => lessonKv.set(key, value) };
+for (const instant of ["2026-09-18T03:00:00Z", "2026-09-18T09:00:00Z", "2026-09-18T15:30:00Z"]) {
+  assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date(instant)), true);
+}
+assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date("2026-09-18T03:01:00Z")), false);
+assert.equal(lessonScheduleCalls.filter((c) => c.url.includes(".trigger-lesson-dispatch") && c.init.method === "PUT").length, 3);
+assert.equal(lessonScheduleCalls.some((c) => c.url.includes(".german-manual-build-request.json")), false);
 globalThis.fetch = savedFetch;
 
 console.log("cloud Telegram command contract holds");
