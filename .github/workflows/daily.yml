@@ -40,11 +40,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-           .telegram-sent.json
-           .content-history.json
-           .content-registry.json
-           .daily-batch-sent.json
-           .daily-delivery-progress.json
+          .telegram-sent.json
+          .content-history.json
+          .content-registry.json
+          .daily-batch-sent.json
+          .daily-delivery-progress.json
           key: scheduled-delivery-${{ github.run_id }}
           restore-keys: scheduled-delivery-
 
@@ -157,7 +157,7 @@ jobs:
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
           VOICE: ${{ steps.voicemode.outputs.voice }}
           REQUIRE_VOICE: ${{ steps.voicemode.outputs.voice }}
-          NARRATION_QC: off
+          NARRATION_QC: "off"
           TTS_ENGINE: "minimax"
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
