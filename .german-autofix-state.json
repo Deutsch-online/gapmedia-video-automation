@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T15:32:34.004Z",
+  "updatedAt": "2026-09-18T16:13:21.987Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "narration-recovery-exhausted",
       "fingerprint": "narration-recovery-exhausted:f4829ac1e91e",
-      "evidence": "lesson Build and send the next episode 2026-09-18T15:15:45.7241168Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
+      "evidence": "lesson Build and send the next episode 2026-09-18T15:53:51.8273807Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
     },
     "plan": {
       "action": "internal-narration-recovery",
       "reason": "بازیابی نریشن در همان چرخهٔ ساخت مالک اصلاح متن و تلفظ است؛ Auto Fix آن را دور نمی‌زند."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35359384188"
+    "runId": "35362833943"
   }
 }
