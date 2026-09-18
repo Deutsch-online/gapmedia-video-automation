@@ -73,3 +73,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Narration ASR QC passed: ${entries.length} exact render clips (${model}).`);
+ 
