@@ -40,13 +40,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-          .telegram-sent.json
-          .content-history.json
-          .content-registry.json
-          .daily-batch-sent.json
-          .daily-delivery-progress.json
+           .telegram-sent.json
+           .content-history.json
+           .content-registry.json
+           .daily-batch-sent.json
+           .daily-delivery-progress.json
           key: scheduled-delivery-${{ github.run_id }}
-          restore-keys: scheduled-delivery-
+          restore-keys: |
+            scheduled-delivery-
 
       - name: Check the Berlin delivery gate
         id: gate
@@ -102,11 +103,13 @@ jobs:
         if: steps.gate.outputs.go == 'yes'
         with:
           python-version: "3.11"
+
       - uses: actions/cache@v4
         if: steps.gate.outputs.go == 'yes'
         with:
           path: ~/.cache/whisper
           key: whisper-medium-v1
+
       - name: Install Persian narration quality gate
         if: steps.gate.outputs.go == 'yes'
         run: python -m pip install --disable-pip-version-check --quiet openai-whisper
@@ -214,7 +217,7 @@ jobs:
               mark_done "$slot"
               echo "✓ $slot delivered and checkpointed."
             else
-              echo "::error::$slot did not complete. Its sibling format will still be attempted; a later run will resume only this missing format."
+              echo "::error::$slot did not complete. Its sibling format will still be attempted; a later run will resume only the missing format."
               failed=1
             fi
           }
