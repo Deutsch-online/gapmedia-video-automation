@@ -13,6 +13,8 @@ assert.match(workflow, /^ {4}runs-on: ubuntu-latest\r?\n(?: {4}#.*\r?\n)* {4}tim
 // failure in the first native format used to stop the second one entirely.
 assert.match(workflow, /id: produce/);
 assert.match(workflow, /\.daily-delivery-progress\.json/);
+assert.match(workflow, /git add -f -- \.content-history\.json \.content-registry\.json \.daily-batch-sent\.json \.daily-delivery-progress\.json \.telegram-sent\.json/,
+  "delivery state must be staged as five separate paths — a malformed git add silently loses the sent marker and invites duplicate delivery");
 assert.match(workflow, /run_slot tiktok\s+run_slot instagram/s);
 assert.match(workflow, /run_slot ai-tiktok\s+run_slot ai-instagram/s);
 // Each slot runs under its own `timeout`, so a stuck renderer cannot eat the

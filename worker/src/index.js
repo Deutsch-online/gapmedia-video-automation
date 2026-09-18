@@ -281,6 +281,32 @@ async function dueDailyDispatch(env, now = new Date()) {
   return true;
 }
 
+// German lessons have their own owner-approved three-slot programme.  GitHub
+// cron remains the primary gate, while this Worker writes the existing lesson
+// trigger at each Berlin slot so a delayed GitHub scheduler cannot silently
+// lose an episode.  The lesson workflow still owns curriculum order and its
+// delivery marker, so this helper can never create a duplicate lesson.
+async function dueGermanLessonDispatch(env, now = new Date()) {
+  const { date, hm } = berlinClock(now);
+  const [hour, minute] = hm.split(":").map(Number);
+  const batch = hour === 5 && minute < 5 ? "0500"
+    : hour === 11 && minute < 5 ? "1100"
+      : hour === 17 && minute >= 30 && minute < 35 ? "1730" : "";
+  if (!batch) return false;
+
+  const key = `german-lesson-dispatch:${date}:${batch}`;
+  if (env.BOT_STATE && await env.BOT_STATE.get(key)) return false;
+  await writeGithubRequest(env, ".trigger-lesson-dispatch", {
+    requestedAt: now.toISOString(),
+    source: "cloudflare-scheduled",
+    requestId: crypto.randomUUID(),
+    date,
+    batch,
+  }, `chore: trigger German lesson ${date}-${batch}`);
+  if (env.BOT_STATE) await env.BOT_STATE.put(key, "sent", { expirationTtl: 3 * 24 * 60 * 60 });
+  return true;
+}
+
 // Telegram must tell the creator exactly what has started. A proposal is not a
 // render, and describing it as one was the main reason commands looked like
 // they were merely saved or silently ignored.
@@ -514,7 +540,12 @@ async function chat(env, chatId, userText) {
 
 export default {
   async scheduled(_event, env, ctx) {
-    ctx.waitUntil(dueDailyDispatch(env));
+    // Keep tutorial delivery and the independent three-slot German curriculum
+    // isolated: one failed hand-off must not suppress the other.
+    ctx.waitUntil(Promise.allSettled([
+      dueDailyDispatch(env),
+      dueGermanLessonDispatch(env),
+    ]));
   },
   async fetch(request, env) {
     // Non-sensitive operational health check.  It never returns a token,
@@ -659,4 +690,4 @@ export default {
 };
 
 // Kept outside the HTTP handler solely for deterministic local command tests.
-export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch };
+export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch };
