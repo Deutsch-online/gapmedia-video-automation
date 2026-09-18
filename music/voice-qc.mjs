@@ -1,6 +1,6 @@
 // Word-level release gate for the exact TTS clips that the video will use.
 // A level meter can prove that audio exists; it cannot prove that «صِفر» or a
-// bound suffix was pronounced correctly.  Whisper is imperfect, so comparison
+// bound suffix was pronounced correctly. Whisper is imperfect, so comparison
 // is deliberately phonetic (lib/hear.mjs), but an added syllable, missing word
 // or changed word blocks the release.
 //
@@ -10,17 +10,12 @@ import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { faults } from "../lib/hear.mjs";
 
-// The cloud keeps diagnostics intentionally small: a fixed category and a
-// line number are enough to repair a TTS failure without committing spoken
-// copy, ASR output, paths, or credentials.
 const diagnosticFile = process.env.RENDER_DIAGNOSTIC_FILE || "";
 function diagnostic(reason, line = null, fault = null) {
   if (!diagnosticFile) return;
   try {
     writeFileSync(diagnosticFile, JSON.stringify({
       stage: "narration-planning", reason, line,
-      // A type and ordinal identify the defective word without committing
-      // written copy or ASR output to the repository.
       faultKind: fault?.kind || null,
       wordIndex: Number.isInteger(fault?.wantIndex) ? fault.wantIndex + 1 : null,
       at: new Date().toISOString(),
@@ -61,9 +56,10 @@ try {
 
 const report = entries.map((entry, index) => {
   const heard = results[index] || { text: "", words: [] };
-  const found = faults({ expected: entry.spoken, heard: heard.text, words: heard.words });
-  // A one-letter standalone ASR insertion is frequently punctuation/noise;
-  // every changed or missing word, and every longer insertion, remains fatal.
+  // The spoken copy may contain phonetic markers used only by TTS. ASR
+  // naturally returns the authored Persian spelling, so the release gate
+  // compares audio with written text and avoids false retry loops.
+  const found = faults({ expected: entry.written, heard: heard.text, words: heard.words });
   const blocking = found.filter((f) => f.kind !== "extra" || String(f.got || "").length > 1);
   return { line: index + 1, written: entry.written, spoken: entry.spoken, heard: heard.text, faults: blocking };
 });
