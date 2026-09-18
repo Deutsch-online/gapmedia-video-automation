@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T21:33:37.901Z",
+  "updatedAt": "2026-09-18T21:55:48.448Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "unknown",
       "fingerprint": "unknown:6615cd191c78",
-      "evidence": "lesson Preserve recovery evidence for the next automatic attempt 2026-09-18T21:33:04.2367683Z ##[error]Process completed with exit code 1."
+      "evidence": "lesson Preserve recovery evidence for the next automatic attempt 2026-09-18T21:55:26.6401312Z ##[error]Process completed with exit code 1."
     },
     "plan": {
       "action": "needs-code-review",
-      "reason": "خطا در اجرای اسکریپت ساخت درس، نیاز به بررسی کد دارد"
+      "reason": "خطای ناشناخته در اسکریپت ساخت درس، نیاز به بررسی کد دارد"
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35397181946"
+    "runId": "35398976128"
   }
 }
