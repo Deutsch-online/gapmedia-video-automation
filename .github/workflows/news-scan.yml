@@ -5,32 +5,10 @@ on:
     - cron: "*/15 * * * *"
   push:
     paths:
-      - ".trigger-daily-dispatch"
       - ".trigger-lesson-dispatch"
       - ".german-correction-request.json"
       - ".german-manual-build-request.json"
   workflow_dispatch:
-    inputs:
-      force:
-        description: "true = build and send the next episode right now, bypassing the Berlin time/already-sent gate"
-        required: true
-        default: false
-        type: boolean
-      unit:
-        description: "Optional: id of an already-taught unit to REBUILD AND RESEND"
-        required: false
-        default: ""
-        type: string
-      retry_date:
-        description: "Internal Auto Fix only: Berlin date of a failed scheduled slot"
-        required: false
-        default: ""
-        type: string
-      retry_batch:
-        description: "Internal Auto Fix only: failed scheduled batch (0500, 1100 or 1730)"
-        required: false
-        default: ""
-        type: string
 
 concurrency:
   group: gapmedia-lesson
@@ -47,158 +25,58 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-
-      - name: Check the three daily Berlin-time slots
+      - name: Select one valid Berlin lesson slot
         id: gate
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          SHA: ${{ github.sha }}
         run: |
+          set -euo pipefail
           local_date="$(TZ=Europe/Berlin date '+%Y-%m-%d')"
           local_hm="$(TZ=Europe/Berlin date '+%H:%M')"
-          echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
-
           already_sent() {
-            [ -f.german-lesson-batch-sent.json ] && grep -q "\"$1\"".german-lesson-batch-sent.json
+            test -f .german-lesson-batch-sent.json && grep -Fq "\"$1\"" .german-lesson-batch-sent.json
           }
-
-          if [ "${{ github.event_name }}" = "push" ]; then
-            changed="$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/commits/$SHA" | jq -r '.files[].filename' || true)"
-            if printf '%s\n' "$changed" | grep -Fxq '.german-correction-request.json'; then
-              correction_unit="$(jq -r '.unit // empty'.german-correction-request.json 2>/dev/null || true)"
-              if [[ "$correction_unit" =~ ^a1-[a-z0-9-]+$ ]]; then
-                echo "go=yes" >> "$GITHUB_OUTPUT"
-                echo "batch=correction-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
-                echo "date=$local_date" >> "$GITHUB_OUTPUT"
-                echo "unit=$correction_unit" >> "$GITHUB_OUTPUT"
-                echo "Correction request: rebuilding unit '$correction_unit', bypassing the schedule gate."
-                exit 0
-              fi
-              echo "::error::Invalid correction unit in.german-correction-request.json"
-              exit 1
-            fi
-            if printf '%s\n' "$changed" | grep -Fxq '.german-manual-build-request.json'; then
-              echo "go=yes" >> "$GITHUB_OUTPUT"
-              echo "batch=manual-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
-              echo "date=$local_date" >> "$GITHUB_OUTPUT"
-              echo "Manual build request: building the next episode now, bypassing the time/already-sent gate."
-              exit 0
-            fi
+          go=no
+          batch=""
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" || "$GITHUB_EVENT_NAME" == "push" ]]; then
+            go=yes
+            batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
+          elif [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] && ! already_sent "$local_date-0500"; then
+            go=yes; batch=0500
+          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] && ! already_sent "$local_date-1100"; then
+            go=yes; batch=1100
+          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
+            go=yes; batch=1730
           fi
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.unit }}" ]; then
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=correction-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "unit=${{ inputs.unit }}" >> "$GITHUB_OUTPUT"
-            echo "Manual correction: rebuilding unit '${{ inputs.unit }}', bypassing the gate."
-            exit 0
-          fi
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.retry_batch }}" ]; then
-            retry_date="${{ inputs.retry_date }}"
-            retry_batch="${{ inputs.retry_batch }}"
-            if [[ "$retry_date"!= "$local_date" ||! "$retry_batch" =~ ^(0500|1100|1730)$ ]]; then
-              echo "::error::Auto Fix retry parameters are invalid or stale. No video was built."
-              exit 1
-            fi
-            if already_sent "$local_date-$retry_batch"; then
-              echo "go=no" >> "$GITHUB_OUTPUT"
-              echo "Auto Fix found that $local_date-$retry_batch was already delivered — no duplicate retry."
-              exit 0
-            fi
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=$retry_batch" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "Selected scheduled slot: $local_date-$retry_batch (Auto Fix retry)"
-            exit 0
-          fi
-
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force }}" = "true" ]; then
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=manual-$(TZ=Europe/Berlin date '+%H%M')" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "Manual override: forcing an episode now, bypassing the time/already-sent gate."
-            exit 0
-          fi
-
-          if [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] &&! already_sent "$local_date-0500"; then
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=0500" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "Selected scheduled slot: $local_date-0500"
-          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] &&! already_sent "$local_date-1100"; then
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=1100" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "Selected scheduled slot: $local_date-1100"
-          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] &&! already_sent "$local_date-1730"; then
-            echo "go=yes" >> "$GITHUB_OUTPUT"
-            echo "batch=1730" >> "$GITHUB_OUTPUT"
-            echo "date=$local_date" >> "$GITHUB_OUTPUT"
-            echo "Selected scheduled slot: $local_date-1730"
-          else
-            echo "go=no" >> "$GITHUB_OUTPUT"
-            echo "Before today's next threshold (05:00/11:00/17:30 Berlin), or today's episode(s) already sent — skipping."
-          fi
-
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+          echo "date=$local_date" >> "$GITHUB_OUTPUT"
+          echo "batch=$batch" >> "$GITHUB_OUTPUT"
+          echo "LESSON_MARKER=$local_date-$batch" >> "$GITHUB_ENV"
+          echo "Berlin slot decision: $go $local_date $batch"
       - uses: actions/setup-node@v4
         if: steps.gate.outputs.go == 'yes'
         with:
           node-version: "22"
-
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.go == 'yes'
         with:
           python-version: "3.11"
-
-      - uses: actions/cache@v4
-        if: steps.gate.outputs.go == 'yes'
-        with:
-          path: ~/.cache/whisper
-          key: whisper-medium-v1
-
-      - name: Install Persian narration quality gate
-        if: steps.gate.outputs.go == 'yes'
-        run: python -m pip install --disable-pip-version-check --quiet openai-whisper
-
-      - name: System packages for video rendering
+      - name: Install video and narration dependencies
         if: steps.gate.outputs.go == 'yes'
         run: |
+          npm ci
+          python -m pip install --disable-pip-version-check --quiet openai-whisper pocket-tts
           sudo apt-get update
-          sudo apt-get install -y ffmpeg \
-            libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 \
-            libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
-            libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
-
-      - name: Free local TTS (pocket-tts)
-        if: steps.gate.outputs.go == 'yes'
-        run: |
-          python -m pip install --disable-pip-version-check --quiet pocket-tts
-          python - <<'PYEOF'
-          import os, pathlib
-          from huggingface_hub import snapshot_download
-          root = pathlib.Path(snapshot_download("mehdi-hf/pocket-tts-farsi"))
-          cfg = next(root.rglob("farsi.yaml"))
-          voice = next(root.rglob("example_voice.wav"))
-          with open(os.environ["GITHUB_ENV"], "a") as fh:
-              fh.write(f"POCKET_TTS_FARSI_CONFIG={cfg}\n")
-              fh.write(f"POCKET_TTS_VOICE={voice}\n")
-          print("pocket-tts model ready:", cfg)
-          PYEOF
-
-      - name: Build and send the next episode
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Build, quality-check and deliver one lesson
         if: steps.gate.outputs.go == 'yes'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
-          VOICE: "minimax"
+          VOICE: "on"
           REQUIRE_VOICE: "on"
-          NARRATION_QC: "off"
+          NARRATION_QC: "on"
           TTS_ENGINE: "minimax"
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -209,58 +87,18 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CYCLE_DEADLINE_MINUTES: "44"
-        run: |
-          if [ -n "${{ steps.gate.outputs.unit }}" ]; then
-            node german-cycle.mjs --unit "${{ steps.gate.outputs.unit }}"
-          else
-            node german-cycle.mjs
-          fi
-
-      - name: Chain an automatic Recovery Loop retry, or stand down for real
+        run: node german-cycle.mjs
+      - name: Preserve recovery evidence for the next automatic attempt
         if: failure() && steps.gate.outputs.go == 'yes'
         run: node lib/recovery-chain.mjs
-
-      - name: Record delivery marker
-        if: steps.gate.outputs.go == 'yes'
-        shell: bash
+      - name: Record successful delivery and advance lesson state
+        if: success() && steps.gate.outputs.go == 'yes'
         run: |
-          node -e '
-            const fs = require("fs");
-            let existing = [];
-            try { existing = JSON.parse(fs.readFileSync(".german-lesson-batch-sent.json", "utf8")); } catch {}
-            const marker = "${{ steps.gate.outputs.date }}-${{ steps.gate.outputs.batch }}";
-            const merged = [...new Set([...existing, marker])].slice(-60);
-            fs.writeFileSync(".german-lesson-batch-sent.json", JSON.stringify(merged, null, 2));
-          '
-
-      - name: Remember the next episode
-        if: steps.gate.outputs.go == 'yes'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
+          node -e 'const fs=require("fs");let x=[];try{x=JSON.parse(fs.readFileSync(".german-lesson-batch-sent.json","utf8"))}catch{};const m=process.env.LESSON_MARKER;fs.writeFileSync(".german-lesson-batch-sent.json",JSON.stringify([...new Set([...x,m])].slice(-60),null,2))'
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f.german-lesson-progress.json.german-lesson-batch-sent.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs 2>/dev/null || true
-          git add -A --.german-recovery-exhausted.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "german-lesson: advance to the next episode"
-          if git push; then
-            echo "progress pushed"
-          else
-            echo "push rejected, retrying once after rebase"
-            git pull --rebase --autostash
-            if git push; then
-              echo "progress pushed after retry"
-            else
-              echo "::error::german-lesson-build.mjs's episode-index advance could not be pushed — the next run will rebuild and resend the SAME episode."
-              node -e '
-                const token = process.env.TELEGRAM_BOT_TOKEN, chatId = process.env.TELEGRAM_CHAT_ID;
-                if (!token ||!chatId) process.exit(0);
-                fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                  method: "POST", headers: { "content-type": "application/json" },
-                  body: JSON.stringify({ chat_id: chatId, text: "⚠ پیشرفت قسمت آموزش آلمانی ذخیره نشد — قسمت بعد ممکن است تکراری ارسال شود. نیاز به بررسی دستی." }),
-                }).catch(() => {});
-              '
-              exit 1
-            fi
-          fi
+          git add -A .german-lesson-progress.json .german-lesson-batch-sent.json .german-recovery-exhausted.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs
+          git diff --staged --quiet || git commit -m "german-lesson: record delivered episode"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+ 
