@@ -208,8 +208,8 @@ function githubHeaders(env) {
 // replay-safe record instead of silently failing with workflow_dispatch 403.
 async function writeGithubRequest(env, path, value, message) {
   if (!env.GITHUB_TOKEN) throw new Error("Missing GITHUB_TOKEN");
-  const owner = env.GITHUB_OWNER || "takrun00-hue";
-  const repo = env.GITHUB_REPO || "afghanfollower-videos";
+  const owner = env.GITHUB_OWNER || "Deutsch-online";
+  const repo = env.GITHUB_REPO || "gapmedia-video-automation";
   const base = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const headers = githubHeaders(env);
   const bodyText = JSON.stringify(value, null, 2) + "\n";

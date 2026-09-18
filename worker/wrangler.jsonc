@@ -3,8 +3,8 @@
   "main": "src/index.js",
   "compatibility_date": "2026-08-28",
   "vars": {
-    "GITHUB_OWNER": "takrun00-hue",
-    "GITHUB_REPO": "afghanfollower-videos",
+    "GITHUB_OWNER": "Deutsch-online",
+    "GITHUB_REPO": "gapmedia-video-automation",
     "GITHUB_WORKFLOW": "telegram.yml"
   },
   "ai": {
