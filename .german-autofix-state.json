@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T19:39:18.870Z",
+  "updatedAt": "2026-09-18T19:39:36.799Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
-      "kind": "narration-reword-exhausted",
-      "fingerprint": "narration-reword-exhausted:f4829ac1e91e",
-      "evidence": "lesson Build and send the next episode 2026-09-18T19:39:01.9876277Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
+      "kind": "unknown",
+      "fingerprint": "unknown:26216e364dc6",
+      "evidence": "lesson Check the three daily Berlin-time slots 2026-09-18T19:39:12.5722461Z ##[error]Process completed with exit code 2."
     },
     "plan": {
-      "action": "stand-down",
-      "reason": "این مشکل با اجرای دوباره حل نمی‌شود؛ برای جلوگیری از تولید اشتباه، فقط گزارش می‌شود."
+      "action": "needs-code-review",
+      "reason": "خطای اسکریپت زمان‌بندی"
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35340624590"
+    "runId": "35387116608"
   }
 }
