@@ -193,60 +193,92 @@ async function reply(env, chatId, text) {
   return telegram(env, "sendMessage", { chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true });
 }
 
-async function dispatchWorkflow(env, command) {
+function githubHeaders(env) {
+  return {
+    authorization: `Bearer ${env.GITHUB_TOKEN}`,
+    accept: "application/vnd.github+json",
+    "user-agent": "GapMedia-Telegram-Worker",
+    "content-type": "application/json",
+  };
+}
+
+// The repository token has Contents write permission but not Actions write.
+// A versioned request-file commit is therefore the one reliable hand-off from
+// Worker to GitHub Actions.  It also gives each phone command an auditable,
+// replay-safe record instead of silently failing with workflow_dispatch 403.
+async function writeGithubRequest(env, path, value, message) {
   if (!env.GITHUB_TOKEN) throw new Error("Missing GITHUB_TOKEN");
   const owner = env.GITHUB_OWNER || "takrun00-hue";
   const repo = env.GITHUB_REPO || "afghanfollower-videos";
-  // GitHub has disabled workflow_dispatch for this account. A normal Git
-  // push still triggers the dedicated German A1 workflow, so make a tiny,
-  // uniquely-versioned request file through the Contents API instead.
-  // This uses only repository Contents permission; it never needs Actions
-  // permission and works while the creator's computer is offline.
-  if (command.action === "build-german-lesson") {
-    const path = ".german-manual-build-request.json";
-    const base = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-    const headers = {
-      authorization: `Bearer ${env.GITHUB_TOKEN}`,
-      accept: "application/vnd.github+json",
-      "user-agent": "GapMedia-Telegram-Worker",
-      "content-type": "application/json",
-    };
+  const base = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const headers = githubHeaders(env);
+  const bodyText = JSON.stringify(value, null, 2) + "\n";
+  const content = btoa(unescape(encodeURIComponent(bodyText)));
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
     const current = await fetch(`${base}?ref=main`, { headers });
     let sha = "";
     if (current.ok) sha = String((await current.json()).sha || "");
-    else if (current.status !== 404) throw new Error(`GitHub request file read failed: ${current.status}`);
-    const request = JSON.stringify({
+    else if (current.status !== 404) throw new Error(`GitHub request read failed: ${current.status}`);
+    const saved = await fetch(base, {
+      method: "PUT", headers,
+      body: JSON.stringify({ message, content, branch: "main", ...(sha ? { sha } : {}) }),
+    });
+    if (saved.ok) return;
+    // A concurrent Worker tick may have updated the same small request file.
+    // Re-read the SHA once; never overwrite an unknown revision blindly.
+    if (saved.status !== 409 || attempt === 1) throw new Error(`GitHub request write failed: ${saved.status}`);
+  }
+}
+
+async function dispatchWorkflow(env, command) {
+  // Actions workflow_dispatch is unavailable for this token (403). Every
+  // command therefore uses the same Contents-API hand-off, which triggers
+  // telegram.yml by a normal Git push and works while the PC is off.
+  if (command.action === "build-german-lesson") {
+    await writeGithubRequest(env, ".german-manual-build-request.json", {
       requestedAt: new Date().toISOString(),
       source: "telegram-cloud-worker",
       requestId: crypto.randomUUID(),
       voiceMode: command.voiceMode || "on",
-    }, null, 2) + "\n";
-    const content = btoa(unescape(encodeURIComponent(request)));
-    const saved = await fetch(base, {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({
-        message: "chore: request German A1 lesson from Telegram",
-        content,
-        branch: "main",
-        ...(sha ? { sha } : {}),
-      }),
-    });
-    if (!saved.ok) throw new Error(`GitHub lesson request failed: ${saved.status}`);
+    }, "chore: request German A1 lesson from Telegram");
     return;
   }
-  const workflow = env.GITHUB_WORKFLOW || "telegram.yml";
-  const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${env.GITHUB_TOKEN}`,
-      accept: "application/vnd.github+json",
-      "user-agent": "GapMedia-Telegram-Worker",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({ ref: "main", inputs: { action: command.action, pick: command.pick || "1", payload: command.payload || "", voice_id: command.voiceId || "", voice_mode: command.voiceMode || "on" } }),
-  });
-  if (!response.ok) throw new Error(`GitHub dispatch failed: ${response.status}`);
+  await writeGithubRequest(env, ".video-request.json", {
+    requestedAt: new Date().toISOString(),
+    source: "telegram-cloud-worker",
+    requestId: crypto.randomUUID(),
+    action: command.action,
+    pick: command.pick || "1",
+    payload: command.payload || "",
+    voice_id: command.voiceId || "",
+    voice_mode: command.voiceMode || "on",
+  }, `chore: request ${command.action} from Telegram`);
+}
+
+function berlinClock(now = new Date()) {
+  const values = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).formatToParts(now).reduce((out, part) => ({ ...out, [part.type]: part.value }), {});
+  return { date: `${values.year}-${values.month}-${values.day}`, hm: `${values.hour}:${values.minute}` };
+}
+
+async function dueDailyDispatch(env, now = new Date()) {
+  const { date, hm } = berlinClock(now);
+  // Cron delivery is normally exact, but a Worker may start a few minutes
+  // late. A short local-time window preserves the requested Berlin schedule;
+  // KV below makes every extra tick a no-op.
+  const [hour, minute] = hm.split(":").map(Number);
+  const batch = hour === 8 && minute >= 30 && minute < 35 ? "morning"
+    : hour === 17 && minute >= 0 && minute < 5 ? "evening" : "";
+  if (!batch) return false;
+  const key = `daily-dispatch:${date}:${batch}`;
+  if (env.BOT_STATE && await env.BOT_STATE.get(key)) return false;
+  await writeGithubRequest(env, ".trigger-daily-dispatch", {
+    requestedAt: now.toISOString(), source: "cloudflare-scheduled", requestId: crypto.randomUUID(), date, batch,
+  }, `chore: trigger ${batch} GapMedia delivery`);
+  if (env.BOT_STATE) await env.BOT_STATE.put(key, "sent", { expirationTtl: 3 * 24 * 60 * 60 });
+  return true;
 }
 
 // Telegram must tell the creator exactly what has started. A proposal is not a
@@ -481,6 +513,9 @@ async function chat(env, chatId, userText) {
 }
 
 export default {
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(dueDailyDispatch(env));
+  },
   async fetch(request, env) {
     // Non-sensitive operational health check.  It never returns a token,
     // username, chat id, or Telegram error body; it only lets us distinguish
@@ -498,6 +533,7 @@ export default {
           const data = await hook.json();
           webhookConfigured = Boolean(data?.result?.url);
         }
+
       } catch { /* report the safe false values below */ }
       return Response.json({ worker: true, telegramTokenValid: tokenValid, webhookConfigured });
     }
@@ -623,4 +659,4 @@ export default {
 };
 
 // Kept outside the HTTP handler solely for deterministic local command tests.
-export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent };
+export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch };

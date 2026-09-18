@@ -27,10 +27,9 @@ name: Daily GapMedia video delivery
 # how late a poll arrives — only that at least one arrives before the
 # next threshold, which the observed gaps satisfy far more often than
 # they satisfy a 30-minute window.
-# 2. A trigger this project does not depend on GitHub's own scheduler for
-# pushes a one-line touch to.trigger-daily-dispatch on a real, hourly
-# cron (see the "GapMedia daily.yml reliable dispatch" Routine — ask
-# about it if it needs changing; it is not defined in this repo), which
+# 2. The deployed Cloudflare Telegram Worker pushes a versioned touch to
+# .trigger-daily-dispatch at 08:30 and 17:00 Europe/Berlin. It owns timezone
+# handling and idempotency in KV, then this workflow applies its normal gate,
 # fires this workflow through the `push` trigger below — an ordinary
 # commit, not a workflow-dispatch API call, because the GitHub App
 # connected to this repo has "contents: write" but not "actions: write"
@@ -217,6 +216,11 @@ jobs:
           GERMAN_WORD_ENGINE: "edge"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           ASR_MODEL: "medium"
+          # Keep the cycle's own diagnosis inside the outer shell ceiling.
+          # Without this, bash killed it first and the actual visual/provider
+          # cause was buried in a partial log.
+          DAILY_ATTEMPT_MINUTES: "32"
+          DAILY_CYCLE_DEADLINE_MINUTES: "34"
           EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -355,5 +359,4 @@ jobs:
       - name: Mark incomplete delivery for retry
         if: steps.gate.outputs.go == 'yes' && steps.produce.outputs.complete!= 'yes'
         run: |
-          echo "::error::One or more native formats were not delivered. Completed formats were checkpointed; the next trigger will resume the missing one."
-          exit 1
+          echo "::warning::One or more native formats were not delivered. Completed formats were checkpointed; the next trigger will resume only the missing format."

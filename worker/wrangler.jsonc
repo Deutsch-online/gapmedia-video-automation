@@ -12,5 +12,8 @@
   },
   "kv_namespaces": [
     { "binding": "BOT_STATE", "id": "b9d8cdbf80af49b7987f59b7a9b09c01" }
-  ]
+  ],
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  }
 }
