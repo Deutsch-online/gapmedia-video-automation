@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T17:18:20.070Z",
+  "updatedAt": "2026-09-18T18:07:26.559Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "narration-reword-exhausted",
       "fingerprint": "narration-reword-exhausted:f4829ac1e91e",
-      "evidence": "lesson Build and send the next episode 2026-09-18T17:18:03.1922467Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
+      "evidence": "lesson Build and send the next episode 2026-09-18T18:06:56.2587136Z ✗ episode 25 (a1-25-modal-verbs) failed: recovery exhausted: local retries and every proposed new strategy failed, or no new strategy was available"
     },
     "plan": {
       "action": "stand-down",
       "reason": "این مشکل با اجرای دوباره حل نمی‌شود؛ برای جلوگیری از تولید اشتباه، فقط گزارش می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35372803087"
+    "runId": "35340624590"
   }
 }
