@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-18T13:17:10.454Z",
+  "updatedAt": "2026-09-18T13:35:21.518Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "unknown",
       "fingerprint": "unknown:781bf1352ce0",
-      "evidence": "lesson Build and send the next episode 2026-09-18T13:16:45.1667054Z ##[error]Process completed with exit code 1."
+      "evidence": "lesson Build and send the next episode 2026-09-18T13:35:02.7309196Z ##[error]Process completed with exit code 1."
     },
     "plan": {
       "action": "needs-code-review",
       "reason": "هوش مصنوعی پاسخ معتبر نداد؛ اصلاح حدسی انجام نشد."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35349108150"
+    "runId": "35350749136"
   }
 }
