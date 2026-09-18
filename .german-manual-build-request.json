@@ -1,6 +1,6 @@
 {
-  "requestedAt": "2026-09-17T21:35:00Z",
-  "source": "operator-test",
-  "requestId": "german-a1-telegram-test-20260917",
+  "requestedAt": "2026-09-18T09:23:05.226Z",
+  "source": "telegram-cloud-worker",
+  "requestId": "5bffd1d5-049c-4caa-90d5-0b52fb7d03c2",
   "voiceMode": "on"
 }
