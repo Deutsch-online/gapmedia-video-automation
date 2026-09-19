@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T21:16:32.043Z",
+  "updatedAt": "2026-09-19T21:32:14.759Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "unknown",
       "fingerprint": "unknown:f4a6fbbb79fe",
-      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T21:16:18.1649875Z ##[error]Process completed with exit code 1."
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T21:31:53.7524229Z ##[error]Process completed with exit code 1."
     },
     "plan": {
       "action": "needs-code-review",
-      "reason": "خطا در اجرای اسکریپت node german-cycle.mjs با کد خروجی ۱ متوقف شده است و نیاز به بررسی کد دارد."
+      "reason": "خطای ناشناخته در اجرای اسکریپت چرخه درس آلمانی رخ داده است و نیاز به بررسی دقیق کدهای منبع دارد."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35469792787"
+    "runId": "35470573755"
   }
 }
