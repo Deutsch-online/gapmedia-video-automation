@@ -30,7 +30,7 @@ if (!process.env.VOICE || process.env.VOICE === "off") {
 }
 const inCycle = process.env.GERMAN_CYCLE === "on";
 const unitArgIdx = process.argv.indexOf("--unit");
-const correctionUnitId = unitArgIdx >= 0? process.argv[unitArgIdx + 1] : null;
+const correctionUnitId = unitArgIdx >= 0 ? process.argv[unitArgIdx + 1] : null;
 const isCorrection =!!correctionUnitId;
 
 const HF = "npx --yes hyperframes@0.8.16";
@@ -56,7 +56,7 @@ if (isCorrection) {
 }
 if (!isCorrection && idx >= GERMAN_A1.length) {
   console.error(` ✗ curriculum exhausted: GERMAN_A1 has ${GERMAN_A1.length} units, next index is ${idx}.`);
-  if (telegramConfig(localEnv).enabled &&!inCycle) {
+  if (telegramConfig(localEnv).enabled && !inCycle) {
     try {
       await sendMessage({
         token: telegramConfig(localEnv).token, chatId: telegramConfig(localEnv).chatId,
@@ -104,7 +104,7 @@ const pack = {
   })),
   outroAsk: `قسمت بعد: ${nextUnit.topic}`,
   payoff: "واژه، مکالمه و نکتهٔ گرامری تازه یاد گرفتی — سطح A1.",
-  tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${isCorrection? " (اصلاح‌شده)" : ""}\n\n#German #A1 #LearnGerman #GermanLessons #Vocabulary #Grammar`,
+  tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${isCorrection ? " (اصلاح‌شده)" : ""}\n\n#German #A1 #LearnGerman #GermanLessons #Vocabulary #Grammar`,
   noCharacters: true,
   ink: { pair: ["#E53935", "#111111"], paper: "#F7F6F2", tint: "rgba(229,57,53,.08)" },
   outro: { tag: "هر روز یک قدم به آلمانی بهتر —<br/>ما را دنبال کن.", follow: "دنبال کنید +" },
@@ -161,13 +161,13 @@ mkdirSync(outDir, { recursive: true });
 
 console.log(`\n=== german-lesson episode ${episodeNo}: ${unit.topic} (${unit.id}) ===`);
 
-const TTS_ENGINE = ["pocket", "minimax"].includes(process.env.TTS_ENGINE)? process.env.TTS_ENGINE : "edge";
+const TTS_ENGINE = ["pocket", "minimax"].includes(process.env.TTS_ENGINE) ? process.env.TTS_ENGINE : "edge";
 const EDGE_PERSIAN_VOICE = process.env.EDGE_PERSIAN_VOICE || "fa-IR-FaridNeural";
-const GERMAN_WORD_ENGINE = process.env.GERMAN_WORD_ENGINE === "minimax"? "minimax" : "edge";
+const GERMAN_WORD_ENGINE = process.env.GERMAN_WORD_ENGINE === "minimax" ? "minimax" : "edge";
 const speakableFor = (engine) => (text) => lessonSpeakable(text, engine);
 
 function ttsSynthesize(text, languageBoost, outFile, voiceId) {
-  const engine = languageBoost? GERMAN_WORD_ENGINE : TTS_ENGINE;
+  const engine = languageBoost ? GERMAN_WORD_ENGINE : TTS_ENGINE;
   if (languageBoost) {
     console.error(
       engine === "edge"
@@ -186,7 +186,7 @@ function ttsSynthesize(text, languageBoost, outFile, voiceId) {
     env.MINIMAX_VOICE_PITCH = String(GERMAN_LESSON_NARRATION_OVERRIDE.pitch);
     env.VOICE_SPEED = String(GERMAN_LESSON_NARRATION_OVERRIDE.speed);
   }
-  if (engine === "edge" &&!languageBoost) env.EDGE_TTS_VOICE = EDGE_PERSIAN_VOICE;
+  if (engine === "edge" && !languageBoost) env.EDGE_TTS_VOICE = EDGE_PERSIAN_VOICE;
   if (voiceId === GERMAN_WORD_VOICE_ID && engine === "edge") {
     env.EDGE_TTS_SPEED = String(GERMAN_WORD_VOICE_SETTINGS.speed);
     env.EDGE_TTS_VOL = String(GERMAN_WORD_VOICE_SETTINGS.vol);
@@ -248,7 +248,7 @@ try {
       const outroFile = `${voiceDir}/german-${pack.id}-outro.mp3`;
       makePersian(vo.outro, outroFile);
 
-      if (process.env.NARRATION_QC!== "off") {
+      if (process.env.NARRATION_QC !== "off") {
         const manifest = `${voiceDir}/german-${pack.id}-persian-qc.json`;
         const reportFile = resolve(dirname(manifest), "voice-qc-report.json");
         const exhaustedMarker = ".german-recovery-exhausted.json";
@@ -283,7 +283,7 @@ try {
             },
             recover: async (history) => {
               const lastCycle = history[history.length - 1].cycle;
-              const cycleFailures = history.filter((h) => h.cycle === lastCycle &&!h.ok);
+              const cycleFailures = history.filter((h) => h.cycle === lastCycle && !h.ok);
               const persistent = persistentFaultWords(cycleFailures);
               if (!persistent.length) return null;
               for (const word of persistent) {
@@ -323,9 +323,9 @@ try {
               const prior = JSON.parse(readFileSync(exhaustedMarker, "utf8"));
               const readNarration = (unit) => {
                 const spoken = narrationFor(unit);
-                return spoken? [spoken.hook,...(spoken.steps || []), spoken.outro].filter(Boolean).join(" ") : "";
+                return spoken ? [spoken.hook, ...(spoken.steps || []), spoken.outro].filter(Boolean).join(" ") : "";
               };
-              if (prior.unit === pack.id &&!evidenceIsStale(prior, readNarration)) {
+              if (prior.unit === pack.id && !evidenceIsStale(prior, readNarration)) {
                 attempts = (prior.attempts || 0) + 1;
               }
             } catch {}
@@ -388,7 +388,7 @@ try {
   let hookPhoto = null;
   for (const query of hookQueries) {
     const candidate = await findLessonImage(query, unit.hook, `hook-${unit.id}`);
-    if (candidate &&!usedSlidePhotos.has(candidate.photo)) { hookPhoto = candidate; break; }
+    if (candidate && !usedSlidePhotos.has(candidate.photo)) { hookPhoto = candidate; break; }
   }
   if (!hookPhoto) throw Object.assign(new Error(`هیچ تصویر واقعی، باکیفیت و غیرتکراری برای قلاب «${unit.topic}» پیدا نشد`), { kind: "visualQc" });
   pack.hookPhoto = hookPhoto.photo;
@@ -464,7 +464,7 @@ try {
       mood: format.mood,
       bpm: format.bpm,
       musicVariant: format.musicVariant,
-      music: `music/auto/german-${pack.id}-${format.slug}${voice? "-vo" : ""}.m4a`,
+      music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
       tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n${format.label} · حداقل ۶۰ ثانیه\n\n${format.hashtags}`,
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
@@ -485,7 +485,7 @@ try {
         },
       },
     );
-    const music = existsSync(variantPack.music)? variantPack.music : "music/bed-60s-v1.m4a";
+    const music = existsSync(variantPack.music) ? variantPack.music : "music/bed-60s-v1.m4a";
     execSync(`${HF} render -c "${comp}" --quality high --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
     if (voice) {
       execSync(
@@ -524,7 +524,7 @@ try {
   console.log(`\n✅ episode ${episodeNo} ready: ${deliveredVideos.map((video) => resolve(video.final)).join(" | ")}`);
 } catch (err) {
   console.error(` ✗ episode ${episodeNo} (${unit.id}) failed: ${err.message}`);
-  if (tg.enabled &&!inCycle) {
+  if (tg.enabled && !inCycle) {
     try {
       await sendMessage({
         token: tg.token, chatId: tg.chatId,
