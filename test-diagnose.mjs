@@ -48,6 +48,25 @@ const CASES = [
     retryable: true,
   },
   {
+    // Run #109 (2026-09-19). The log carries the image layer's own wording
+    // too, which is exactly what used to win and send the owner to the Visual
+    // Truth Gate for a chat-id problem. The delivery failure is terminal, so
+    // it must win over anything earlier in the log.
+    name: "Telegram refused the destination (run #109), not an image problem",
+    output: "   ✗ تصویر اسلاید 3 در a1-25-modal-verbs برای قاب عمودی باکیفیت کافی ندارد\n ✗ episode 25 (a1-25-modal-verbs) failed: Telegram sendVideo failed (403): Forbidden: the bot can't send messages to the bot",
+    kind: "telegram-rejected",
+    retryable: false,
+  },
+  {
+    // A genuine Telegram outage is a different thing from a refused
+    // destination: 5xx must stay retryable, so the non-retryable rule above
+    // is deliberately 4xx-only.
+    name: "Telegram outage stays retryable",
+    output: "   ✗ episode 25 failed: Telegram sendVideo failed (502): Bad Gateway",
+    kind: "unknown",
+    retryable: true,
+  },
+  {
     name: "duplicate ledger verdict",
     output: "   ✗ episode 11 (a1-11-time) failed: تکراری (0.92) — قسمت «a1-03» قبلاً رفته است",
     kind: "duplicate",

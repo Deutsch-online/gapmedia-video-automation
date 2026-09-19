@@ -46,7 +46,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCycle } from "./lib/cycle.mjs";
 import { providerPlan, formatProviderReportFa } from "./lib/providers.mjs";
-import { loadEnv, telegramConfig, sendMessage } from "./lib/telegram.mjs";
+import { loadEnv, telegramConfig, sendMessage, verifyDelivery } from "./lib/telegram.mjs";
 
 // runCycle now lives in lib/cycle.mjs so the daily (income) pipeline runs the
 // exact same loop — same diagnose stage, same no-progress rule, same deadline
@@ -190,6 +190,36 @@ if (missing.length) {
   writeFileSync(REPORT, JSON.stringify({ at: new Date().toISOString(), unit: unit || null, stopped: "provider-plan-incomplete", missing: missing.map((m) => m.capability), plan }, null, 2));
   if (tg.enabled) { try { await sendMessage({ token: tg.token, chatId: tg.chatId, text }); } catch {} }
   process.exit(1);
+}
+
+// A ready delivery provider only means both secrets are SET. It cannot mean
+// the chat id is one this bot may actually send to — isReady() in
+// lib/providers.mjs checks presence, not permission. Run #109 (2026-09-19)
+// rendered a full 60s episode three times over and lost every one of them at
+// sendVideo to «Forbidden: the bot can't send messages to the bot».
+//
+// Same reasoning as the provider-plan block above: stopping here costs
+// seconds, and discovering it mid-build costs a render first and still fails.
+// A network blip returns ok with a warning, so this can never block a build
+// for a reason that is not the configuration itself.
+if (tg.enabled) {
+  const delivery = await verifyDelivery({ token: tg.token, chatId: tg.chatId });
+  if (delivery.warning) console.warn(`⚠ ${delivery.warning}`);
+  if (!delivery.ok) {
+    // Deliberately no Telegram alert here: the destination is the very thing
+    // that does not work, so the job log — and the failure e-mail GitHub sends
+    // from it — is the only channel that actually reaches the owner.
+    console.error(`✗ delivery preflight failed — ${delivery.reason}`);
+    console.error("✗ چرخهٔ ساخت آلمانی شروع نشد: مقصد تلگرام قابل ارسال نیست، پس ساختِ ویدیو فقط وقت تلف می‌کند.");
+    writeFileSync(REPORT, JSON.stringify({
+      at: new Date().toISOString(),
+      unit: unit || null,
+      stopped: "delivery-unreachable",
+      reason: delivery.reason,
+      plan,
+    }, null, 2));
+    process.exit(1);
+  }
 }
 
 let lastVerdict = null;
