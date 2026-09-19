@@ -203,7 +203,9 @@ if (missing.length) {
 // A network blip returns ok with a warning, so this can never block a build
 // for a reason that is not the configuration itself.
 if (tg.enabled) {
-  const delivery = await verifyDelivery({ token: tg.token, chatId: tg.chatId });
+  // Check the destination the VIDEO will actually use, and hold it to the
+  // owner's rule: the bot chat, not the channel.
+  const delivery = await verifyDelivery({ token: tg.token, chatId: tg.reviewChatId, requirePrivate: true });
   if (delivery.warning) console.warn(`⚠ ${delivery.warning}`);
   if (!delivery.ok) {
     // Deliberately no Telegram alert here: the destination is the very thing

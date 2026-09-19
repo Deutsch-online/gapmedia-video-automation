@@ -519,7 +519,10 @@ try {
   if (tg.enabled) {
     const sent = [];
     for (const video of deliveredVideos) {
-      const res = await sendVideo({ token: tg.token, chatId: tg.chatId, file: video.final, caption: video.caption });
+      // The finished video goes to the review chat (the bot), never to the
+      // channel TELEGRAM_CHAT_ID may point at. Reports below keep using
+      // tg.chatId, which is unchanged.
+      const res = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file: video.final, caption: video.caption });
       if (!res?.message_id) throw new Error(`${video.label} lesson video was not confirmed by Telegram.`);
       sent.push({...video, messageId: res.message_id });
       console.log(` ✈ ${video.label} sent to Telegram`);
