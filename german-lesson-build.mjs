@@ -80,9 +80,14 @@ function colorArticle(de) {
 
 const COURSE_TOTAL = 100;
 const lessonCode = `A1-${String(episodeNo).padStart(3, "0")}`;
-const lessonCounter = `A1 • ${String(episodeNo).padStart(3, "0")}/${COURSE_TOTAL}`;
+const lessonCounter = `A1 • ${String(episodeNo).padStart(3, "0")}/${COURSE_TOTAL}`;const MIN_EPISODE_SECONDS = 60;
+// AAC/MP4 timestamps are quantised. A timeline calculated at exactly 60.000s
+// can be reported as 59.998s after its per-scene values are rounded, which
+// caused a valid lesson to be rejected before rendering. Keep the published
+// requirement at one minute, but build a small, readable hold beyond it.
+const LESSON_DURATION_HEADROOM_SECONDS = 0.5;
+const TARGET_EPISODE_SECONDS = MIN_EPISODE_SECONDS + LESSON_DURATION_HEADROOM_SECONDS;
 
-const MIN_EPISODE_SECONDS = 60;
 const HOOK_DUR = 7, TIP_DUR = 11, OUTRO_DUR = 9;
 const pack = {
   id: unit.id,
@@ -131,7 +136,7 @@ const FORMAT_VARIANTS = [
 
 function applyMinimumLessonDuration() {
   const current = pack.hookDuration + pack.tipDurations.reduce((sum, value) => sum + value, 0) + pack.outroDuration;
-  const extra = Math.max(0, MIN_EPISODE_SECONDS - current);
+  const extra = Math.max(0, TARGET_EPISODE_SECONDS - current);
   if (extra > 0) {
     const share = extra / (pack.tipDurations.length + 2);
     pack.hookDuration = +(pack.hookDuration + share).toFixed(3);
@@ -139,6 +144,11 @@ function applyMinimumLessonDuration() {
     pack.outroDuration = +(pack.outroDuration + share).toFixed(3);
   }
   pack.duration = +(pack.hookDuration + pack.tipDurations.reduce((sum, value) => sum + value, 0) + pack.outroDuration).toFixed(3);
+  // Per-scene rounding can lose milliseconds. Add the remainder only to the final reading hold.
+  if (pack.duration < TARGET_EPISODE_SECONDS) {
+    pack.outroDuration = +(pack.outroDuration + (TARGET_EPISODE_SECONDS - pack.duration)).toFixed(3);
+    pack.duration = +(pack.hookDuration + pack.tipDurations.reduce((sum, value) => sum + value, 0) + pack.outroDuration).toFixed(3);
+  }
   if (pack.duration < MIN_EPISODE_SECONDS) {
     throw new Error(`German lesson duration ${pack.duration}s is below the ${MIN_EPISODE_SECONDS}s minimum.`);
   }
