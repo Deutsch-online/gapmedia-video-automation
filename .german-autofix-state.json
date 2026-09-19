@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T05:57:11.137Z",
+  "updatedAt": "2026-09-19T06:37:19.530Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "image-generator-down",
       "fingerprint": "image-generator-down:e334580f3137",
-      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T05:39:04.4130083Z ✗ episode 25 (a1-25-modal-verbs) failed: Telegram sendVideo failed (403): Forbidden: the bot can't send messages to the bot"
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T06:19:22.1199727Z ✗ episode 25 (a1-25-modal-verbs) failed: Telegram sendVideo failed (403): Forbidden: the bot can't send messages to the bot"
     },
     "plan": {
       "action": "fresh-retry",
       "reason": "خطای بیرونی یا موقت تشخیص داده شد؛ یک اجرای تازه با همان گیت‌های کیفیت برنامه‌ریزی می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35423379353"
+    "runId": "35425290540"
   }
 }
