@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T03:02:34.881Z",
+  "updatedAt": "2026-09-19T03:44:13.394Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
-      "kind": "unknown",
-      "fingerprint": "unknown:6615cd191c78",
-      "evidence": "lesson Preserve recovery evidence for the next automatic attempt 2026-09-19T03:02:18.8942583Z ##[error]Process completed with exit code 1."
+      "kind": "visual-proof",
+      "fingerprint": "visual-proof:fc97885392ee",
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T03:17:20.6763673Z ✗ episode 25 (a1-25-modal-verbs) failed: German lesson duration 59.999s is below the 60s minimum."
     },
     "plan": {
       "action": "fresh-retry",
-      "reason": "خطای ناشناخته در اجرای اسکریپت آلمانی، احتمالاً ناشی از یک قطعی موقت در سرور یا سرویس رندر."
+      "reason": "خطای بیرونی یا موقت تشخیص داده شد؛ یک اجرای تازه با همان گیت‌های کیفیت برنامه‌ریزی می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35417305805"
+    "runId": "35418004385"
   }
 }
