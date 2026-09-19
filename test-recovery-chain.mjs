@@ -75,11 +75,25 @@ console.log("ok   the chain's real contract is recorded: it hands evidence forwa
     ["news-scan.yml"],
     `the chain's trigger path must fire the lesson workflow and nothing else, or a retry can lose the one pending concurrency slot — currently listened to by: ${listeners.join(", ")}`,
   );
-  assert.ok(existsSync(TRIGGER), `${TRIGGER} must exist in the repo — the chain rewrites its "last touch:" line in place and cannot create it`);
-  assert.match(
-    readFileSync(TRIGGER, "utf8"),
-    /^last touch: /m,
-    "the trigger file needs the 'last touch:' line the chain rewrites, or its push would be a no-op diff",
+  // Dispatch moved to the Cloudflare scheduled worker (worker/src/index.js)
+  // and this file is JSON now. The chain used to rewrite a plain-text
+  // "last touch:" line here; against JSON that regex matched nothing, the
+  // rewrite came out byte-identical, and because the marker is only read and
+  // never written, `git commit` aborted with "nothing to commit" and failed
+  // the whole failure() step (run #109, 2026-09-19). The chain no longer
+  // touches this file, so guard both halves of that: the worker's format,
+  // and the absence of the retired rewrite.
+  assert.ok(existsSync(TRIGGER), `${TRIGGER} must exist in the repo — the worker rewrites it in place and news-scan.yml triggers on the path`);
+  const dispatch = JSON.parse(readFileSync(TRIGGER, "utf8"));
+  assert.equal(
+    typeof dispatch.requestedAt,
+    "string",
+    `${TRIGGER} must stay the worker's JSON dispatch record, not the retired plain-text ping`,
+  );
+  assert.doesNotMatch(
+    readFileSync("lib/recovery-chain.mjs", "utf8"),
+    /last touch:/,
+    "the chain must not rewrite the retired 'last touch:' ping — against the worker's JSON it is a no-op that leaves an empty commit and crashes the step",
   );
 }
 
