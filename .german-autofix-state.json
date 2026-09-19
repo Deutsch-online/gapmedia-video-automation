@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T08:36:41.333Z",
+  "updatedAt": "2026-09-19T08:59:07.749Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
-      "kind": "unknown",
-      "fingerprint": "unknown:fc97885392ee",
-      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T08:36:08.6358400Z ✗ episode 25 (a1-25-modal-verbs) failed: German lesson duration 59.999s is below the 60s minimum."
+      "kind": "visual-proof",
+      "fingerprint": "visual-proof:fc97885392ee",
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T08:43:46.7982730Z ✗ episode 25 (a1-25-modal-verbs) failed: German lesson duration 59.999s is below the 60s minimum."
     },
     "plan": {
-      "action": "needs-code-review",
-      "reason": "مدت زمان ویدیو ۵۹.۹۹۹ ثانیه است و کمتر از حداقل مجاز ۶۰ ثانیه می‌باشد که نیازمند بازبینی کد تولید یا تنظیم زمان است."
+      "action": "fresh-retry",
+      "reason": "خطای بیرونی یا موقت تشخیص داده شد؛ یک اجرای تازه با همان گیت‌های کیفیت برنامه‌ریزی می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35431547889"
+    "runId": "35432695355"
   }
 }
