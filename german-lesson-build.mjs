@@ -6,7 +6,7 @@ import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
-import { GERMAN_A1, germanUnitAt } from "./lib/german-a1.mjs";
+import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
 import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register } from "./lib/dedupe.mjs";
@@ -99,7 +99,10 @@ const pack = {
   kicker: lessonCounter,
   tips: unit.items.map((it, i) => ({
     head: `${colorArticle(it.de)} — ${it.fa}`,
-    sub: it.example,
+    // Empty when the example only repeats the head — build-ink renders no
+    // caption for a falsy sub, which is what stops the slide printing the
+    // same sentence twice.
+    sub: exampleGermanFor(it) ? it.example : "",
     step: i + 1,
   })),
   outroAsk: `قسمت بعد: ${nextUnit.topic}`,
@@ -237,12 +240,17 @@ try {
         const deFile = `${voiceDir}/german-${pack.id}-de${i}.mp3`;
         const exampleFile = `${voiceDir}/german-${pack.id}-example${i}.mp3`;
         const faFile = `${voiceDir}/german-${pack.id}-fa${i}.mp3`;
-        const exampleGerman = String(unit.items[i].example || "").split(" — ")[0].trim();
+        // A missing example is still a content error. An example that merely
+        // repeats the headword is not spoken a second time: same sentence,
+        // same voice, back to back, is the duplicate the owner heard.
+        if (!String(unit.items[i].example || "").split(" — ")[0].trim()) {
+          throw new Error(`missing German example for "${unit.items[i].de}"`);
+        }
+        const exampleGerman = exampleGermanFor(unit.items[i]);
         ttsSynthesize(unit.items[i].de, "German", deFile, GERMAN_WORD_VOICE_ID);
-        if (!exampleGerman) throw new Error(`missing German example for "${unit.items[i].de}"`);
-        ttsSynthesize(exampleGerman, "German", exampleFile, GERMAN_WORD_VOICE_ID);
+        if (exampleGerman) ttsSynthesize(exampleGerman, "German", exampleFile, GERMAN_WORD_VOICE_ID);
         makePersian(vo.steps[i], faFile);
-        tips.push({ deFile, exampleFile, faFile });
+        tips.push({ deFile, exampleFile: exampleGerman ? exampleFile : null, faFile });
       }
 
       const outroFile = `${voiceDir}/german-${pack.id}-outro.mp3`;
@@ -340,7 +348,7 @@ try {
       const hookDur = ffprobeDuration(hookFile);
       for (const tip of tips) {
         tip.deDur = ffprobeDuration(tip.deFile);
-        tip.exampleDur = ffprobeDuration(tip.exampleFile);
+        tip.exampleDur = tip.exampleFile ? ffprobeDuration(tip.exampleFile) : 0;
         tip.faDur = ffprobeDuration(tip.faFile);
       }
       const outroDur = ffprobeDuration(outroFile);
@@ -349,7 +357,12 @@ try {
 
       const MIN_TIP = 2.5;
       pack.hookDuration = +Math.max(3.0, hookDur + LEAD + 0.8).toFixed(3);
-      pack.tipDurations = tips.map((t) => +Math.max(MIN_TIP, LEAD + t.deDur + GAP + t.exampleDur + GAP + t.faDur + SCENE_PAD).toFixed(3));
+      // One gap per spoken clip, so a tip without an example does not hold a
+      // silent gap where the repeated sentence used to be.
+      pack.tipDurations = tips.map((t) => +Math.max(
+        MIN_TIP,
+        LEAD + t.deDur + GAP + (t.exampleFile ? t.exampleDur + GAP : 0) + t.faDur + SCENE_PAD,
+      ).toFixed(3));
       pack.outroDuration = +Math.max(3.6, outroDur + 1.0).toFixed(3);
       pack.duration = +(pack.hookDuration + pack.tipDurations.reduce((a, d) => a + d, 0) + pack.outroDuration).toFixed(3);
       pack.music = pack.music.replace(/.m4a$/, "-vo.m4a");
@@ -413,8 +426,11 @@ try {
       for (let i = 0; i < voiceParts.tips.length; i++) {
         const t = voiceParts.tips[i];
         parts.push({ file: t.deFile, at: sceneStart + LEAD });
-        parts.push({ file: t.exampleFile, at: sceneStart + LEAD + t.deDur + GAP });
-        parts.push({ file: t.faFile, at: sceneStart + LEAD + t.deDur + GAP + t.exampleDur + GAP });
+        if (t.exampleFile) parts.push({ file: t.exampleFile, at: sceneStart + LEAD + t.deDur + GAP });
+        const faAt = t.exampleFile
+          ? sceneStart + LEAD + t.deDur + GAP + t.exampleDur + GAP
+          : sceneStart + LEAD + t.deDur + GAP;
+        parts.push({ file: t.faFile, at: faAt });
         sceneStart += pack.tipDurations[i];
       }
       parts.push({ file: voiceParts.outroFile, at: sceneStart + LEAD });
