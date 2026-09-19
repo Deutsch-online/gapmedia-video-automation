@@ -203,9 +203,18 @@ if (missing.length) {
 // A network blip returns ok with a warning, so this can never block a build
 // for a reason that is not the configuration itself.
 if (tg.enabled) {
-  // Check the destination the VIDEO will actually use, and hold it to the
-  // owner's rule: the bot chat, not the channel.
-  const delivery = await verifyDelivery({ token: tg.token, chatId: tg.reviewChatId, requirePrivate: true });
+  // Owner directive, 2026-09-19: ALL traffic runs through the bot — both what
+  // it sends and what it receives. So every destination this cycle can write
+  // to is held to the same rule, not just the one the video uses: the report
+  // channel and the video channel are checked alike, and both must be the
+  // one-to-one chat with the bot.
+  const destinations = [...new Set([tg.reviewChatId, tg.chatId].filter(Boolean))];
+  let delivery = { ok: true };
+  for (const target of destinations) {
+    const result = await verifyDelivery({ token: tg.token, chatId: target, requirePrivate: true });
+    if (result.warning) console.warn(`⚠ ${result.warning}`);
+    if (!result.ok) { delivery = result; break; }
+  }
   if (delivery.warning) console.warn(`⚠ ${delivery.warning}`);
   if (!delivery.ok) {
     // Deliberately no Telegram alert here: the destination is the very thing
