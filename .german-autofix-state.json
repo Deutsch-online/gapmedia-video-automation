@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T09:58:07.296Z",
+  "updatedAt": "2026-09-19T10:00:31.550Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
-      "kind": "visual-proof",
-      "fingerprint": "visual-proof:e334580f3137",
-      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T09:43:39.7895640Z ✗ episode 25 (a1-25-modal-verbs) failed: Telegram sendVideo failed (403): Forbidden: the bot can't send messages to the bot"
+      "kind": "unknown",
+      "fingerprint": "unknown:fc97885392ee",
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T10:00:01.2388720Z ✗ episode 25 (a1-25-modal-verbs) failed: German lesson duration 59.998s is below the 60s minimum."
     },
     "plan": {
-      "action": "fresh-retry",
-      "reason": "خطای بیرونی یا موقت تشخیص داده شد؛ یک اجرای تازه با همان گیت‌های کیفیت برنامه‌ریزی می‌شود."
+      "action": "needs-code-review",
+      "reason": "مدت زمان درس کمتر از حد مجاز ۶۰ ثانیه است و نیاز به بازبینی کد یا محتوا دارد."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35434181496"
+    "runId": "35435939956"
   }
 }
