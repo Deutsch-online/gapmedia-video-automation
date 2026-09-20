@@ -481,7 +481,7 @@ try {
       bpm: format.bpm,
       musicVariant: format.musicVariant,
       music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
-      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n${format.label} · حداقل ۶۰ ثانیه\n\n${format.hashtags}`,
+      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n\n${format.hashtags}`,
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
