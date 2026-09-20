@@ -21,7 +21,8 @@ for (const p of CATEGORIES) {
   const file = `renders/daily/${iso}/gapmedia-${p}-${iso}.mp4`;
   if (!existsSync(file)) { console.error(`  skip ${p}: not found (${file})`); continue; }
   process.stdout.write(`  sending ${p}... `);
-  try { await sendVideo({ token: tg.token, chatId: tg.chatId, file, caption: sel[p].tgTitle }); console.log("✈ ok"); n++; }
+  // A video goes to the bot chat, never to whatever TELEGRAM_CHAT_ID points at.
+  try { await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, caption: sel[p].tgTitle }); console.log("✈ ok"); n++; }
   catch (e) { console.log("✗ " + e.message); }
 }
 console.log(`\nDone — ${n}/3 sent for ${iso}.`);

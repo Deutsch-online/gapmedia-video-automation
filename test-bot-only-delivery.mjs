@@ -6,7 +6,7 @@
 // with the bot. A channel or a group is refused before the build starts,
 // because a video that reaches a channel cannot be recalled.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { telegramConfig, verifyDelivery } from "./lib/telegram.mjs";
 import { readBotChat } from "./lib/bot-chat.mjs";
 
@@ -62,3 +62,28 @@ const build = readFileSync("german-lesson-build.mjs", "utf8");
 assert.match(build, /sendVideo\(\{ token: tg\.token, chatId: tg\.reviewChatId/,
   "the finished video must go to the review chat, never to tg.chatId directly");
 console.log("ok   the finished video is addressed to the bot review chat");
+
+// ── NO video sender anywhere may address the configured chat ─────────────
+// Owner directive repeated 2026-09-20: "تلگرام ایدی تایید است ولی ویدیو ها به
+// بات فرستاده شود" — TELEGRAM_CHAT_ID stays as it is and still carries the
+// reports, but a video only ever goes to the bot. Checking one file was not
+// enough: daily-render.mjs and send-telegram.mjs still posted a video to
+// tg.chatId, which is the channel.
+const senders = readdirSync(".")
+  .filter((name) => name.endsWith(".mjs"))
+  .concat(readdirSync("lib").map((name) => `lib/${name}`).filter((name) => name.endsWith(".mjs")));
+const offenders = [];
+for (const file of senders) {
+  const text = readFileSync(file, "utf8");
+  for (const [i, line] of text.split("\n").entries()) {
+    if (/\bsendVideo\(\{/.test(line) && /chatId:\s*tg\.chatId\b/.test(line)) {
+      offenders.push(`${file}:${i + 1}`);
+    }
+  }
+}
+assert.deepEqual(offenders, [],
+  `a video must never be addressed to tg.chatId — found at ${offenders.join(", ")}`);
+// A delivered video can only be recalled from the chat it was sent to.
+assert.match(readFileSync("undo-send.mjs", "utf8"), /deleteMessage\(\{ token: tg\.token, chatId: tg\.reviewChatId/,
+  "undo must delete from the chat the video was actually sent to");
+console.log(`ok   ${senders.length} scripts checked: no sendVideo addresses tg.chatId`);

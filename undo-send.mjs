@@ -32,7 +32,9 @@ let removed = 0, tooOld = 0, failed = [];
 
 for (const item of batch) {
   if (Date.now() - item.at > DAY2) { tooOld++; continue; }
-  const r = await deleteMessage({ token: tg.token, chatId: tg.chatId, messageId: item.messageId });
+  // Delete where the video actually went: every sendVideo in this project
+  // addresses tg.reviewChatId, so tg.chatId would delete nothing.
+  const r = await deleteMessage({ token: tg.token, chatId: tg.reviewChatId, messageId: item.messageId });
   if (r.ok) removed++;
   else failed.push(`${item.platform}: ${r.error}`);
 }
