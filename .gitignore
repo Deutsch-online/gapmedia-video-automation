@@ -54,3 +54,4 @@ out/tune/
 out/verify/
 .daily-cycle-report.json
 .daily-provider-plan.json
+.test-bot-chat.json

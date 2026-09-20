@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { loadEnv, telegramConfig, sendMessage, getUpdates } from "./lib/telegram.mjs";
+import { rememberBotChat, readBotChat } from "./lib/bot-chat.mjs";
 import { parseCommand, HELP_TEXT } from "./lib/commands.mjs";
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
@@ -83,7 +84,19 @@ const cleanPayload = (t) =>
 for (const u of updates) {
   highest = Math.max(highest, u.update_id);
   const msg = u.message || u.channel_post;
-  if (!msg || String(msg.chat.id) !== String(tg.chatId)) continue;
+  if (!msg) continue;
+  // The bot only ever listened to TELEGRAM_CHAT_ID, which is the channel — so a
+  // message written in the one-to-one chat with the bot was dropped without a
+  // trace. The owner asked for both directions to run through the bot
+  // (2026-09-20), so the first private chat that writes is learned here and
+  // accepted from then on. First writer wins; TELEGRAM_REVIEW_CHAT_ID overrides
+  // it if that is ever the wrong chat.
+  if (msg.chat?.type === "private") {
+    const learned = rememberBotChat(msg.chat);
+    if (learned) console.log(`bot chat learned: ${learned.name || learned.id} (${learned.id})`);
+  }
+  const accepted = new Set([String(tg.chatId), String(tg.reviewChatId), String(readBotChat()?.id ?? "")]);
+  if (!accepted.has(String(msg.chat.id))) continue;
   // A real screenshot sent straight from the phone, caption = the feature
   // id it belongs to — the direct route PROJECT_RULES §14-د/14-ه already
   // calls for once no official source has the image. Telegram sends one

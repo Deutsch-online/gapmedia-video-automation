@@ -47,6 +47,7 @@ import { fileURLToPath } from "node:url";
 import { runCycle } from "./lib/cycle.mjs";
 import { providerPlan, formatProviderReportFa } from "./lib/providers.mjs";
 import { loadEnv, telegramConfig, sendMessage, verifyDelivery } from "./lib/telegram.mjs";
+import { readBotChat, discoverBotChat } from "./lib/bot-chat.mjs";
 
 // runCycle now lives in lib/cycle.mjs so the daily (income) pipeline runs the
 // exact same loop — same diagnose stage, same no-progress rule, same deadline
@@ -188,7 +189,7 @@ if (missing.length) {
   const text = `⚠ چرخهٔ ساخت آلمانی شروع نشد.\n\nهیچ Provider آماده‌ای برای «${names}» وجود ندارد، و بدون آن قسمت قابل‌انتشار ساخته نمی‌شود.\n\n${formatProviderReportFa()}`;
   console.error(`✗ provider plan incomplete — no ready production provider for: ${names}`);
   writeFileSync(REPORT, JSON.stringify({ at: new Date().toISOString(), unit: unit || null, stopped: "provider-plan-incomplete", missing: missing.map((m) => m.capability), plan }, null, 2));
-  if (tg.enabled) { try { await sendMessage({ token: tg.token, chatId: tg.chatId, text }); } catch {} }
+  if (tg.enabled) { try { await sendMessage({ token: tg.token, chatId: tg.reviewChatId, text }); } catch {} }
   process.exit(1);
 }
 
@@ -208,7 +209,31 @@ if (tg.enabled) {
   // to is held to the same rule, not just the one the video uses: the report
   // channel and the video channel are checked alike, and both must be the
   // one-to-one chat with the bot.
-  const destinations = [...new Set([tg.reviewChatId, tg.chatId].filter(Boolean))];
+  // The owner asked not to add another secret: use what is already there, and
+  // just connect to the bot (2026-09-20). TELEGRAM_CHAT_ID is a channel, and no
+  // code can derive the private chat id from it — but the bot can learn it from
+  // anyone who writes to it. If nothing is learned yet, look in the pending
+  // update queue once before giving up.
+  let botChat = readBotChat();
+  if (!botChat) {
+    const found = await discoverBotChat({ token: tg.token });
+    if (found.chat) {
+      botChat = found.chat;
+      console.log(`bot chat learned from the update queue: ${botChat.name || botChat.id} (${botChat.id})`);
+    } else if (found.candidates?.length) {
+      console.warn(`⚠ چند گفت‌وگوی خصوصی منتظرند (${found.candidates.map((c) => c.id).join("، ")}) — کدام‌یک شماست؟ TELEGRAM_REVIEW_CHAT_ID را روی همان بگذارید.`);
+    } else if (found.reason) {
+      console.warn(`⚠ ${found.reason}`);
+    }
+  }
+
+  // Once the bot chat is known it is the ONLY destination: the channel stops
+  // being somewhere this project writes at all, rather than somewhere it keeps
+  // checking and refusing. Until then the configured ids are checked, so a
+  // channel is reported instead of published to.
+  const destinations = botChat?.id
+    ? [String(botChat.id)]
+    : [...new Set([tg.reviewChatId, tg.chatId].filter(Boolean))];
   let delivery = { ok: true };
   for (const target of destinations) {
     const result = await verifyDelivery({ token: tg.token, chatId: target, requirePrivate: true });
@@ -297,7 +322,7 @@ const text = [
 ].join("\n");
 
 console.error(`\n✗ چرخه متوقف شد: ${run.stopped} پس از ${history.length} تلاش.`);
-if (tg.enabled) { try { await sendMessage({ token: tg.token, chatId: tg.chatId, text }); } catch {} }
+if (tg.enabled) { try { await sendMessage({ token: tg.token, chatId: tg.reviewChatId, text }); } catch {} }
 process.exit(1);
 
 }
