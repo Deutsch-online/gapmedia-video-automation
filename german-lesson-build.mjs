@@ -59,7 +59,7 @@ if (!isCorrection && idx >= GERMAN_A1.length) {
   if (telegramConfig(localEnv).enabled && !inCycle) {
     try {
       await sendMessage({
-        token: telegramConfig(localEnv).token, chatId: telegramConfig(localEnv).chatId,
+        token: telegramConfig(localEnv).token, chatId: telegramConfig(localEnv).reviewChatId,
         text: `⚠ دورهٔ آلمانی به آخر بانک محتوای فعلی رسید (${GERMAN_A1.length} قسمت). قسمت تازه ساخته نشد تا از تکرار جلوگیری شود — به lib/german-a1.mjs واحدهای بیشتر اضافه کن.`,
       });
     } catch {}
@@ -546,7 +546,7 @@ try {
   if (tg.enabled && !inCycle) {
     try {
       await sendMessage({
-        token: tg.token, chatId: tg.chatId,
+        token: tg.token, chatId: tg.reviewChatId,
         text: `⚠ قسمت ${episodeNo} آموزش آلمانی ساخته نشد.\n\nعلت: ${err.message}`,
       });
     } catch {}

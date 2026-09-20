@@ -295,6 +295,20 @@ jobs:
             fi
           fi
 
+      - name: Remember the bot chat the poll learned
+        if: always()
+        run: |
+          # getUpdates is a queue and this job confirms offsets as it polls, so
+          # an update seen once is gone. The learned chat has to outlive the run.
+          if [ -f .telegram-bot-chat.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -f .telegram-bot-chat.json
+            git diff --staged --quiet || git commit -m "telegram: remember the bot chat"
+            git pull --rebase --autostash || true
+            git push || true
+          fi
+
       # Only the actions that actually render a video need ffmpeg and a headless
       # browser. Listing news or deleting a message does not.
       - name: System packages (ffmpeg + headless Chrome libs)
