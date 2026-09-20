@@ -576,6 +576,30 @@ export default {
     if (!input || !message?.chat?.id) return new Response("ok");
     const chatId = String(message.chat.id);
     if (env.ALLOWED_CHAT_ID && chatId !== String(env.ALLOWED_CHAT_ID)) return new Response("ok");
+    // The bot's updates arrive HERE, by webhook — which is exactly why the
+    // repo cannot discover this chat for itself: Telegram answers getUpdates
+    // with «Conflict: can't use getUpdates method while webhook is active»
+    // while a webhook is set (news-scan run #138, 2026-09-20). This worker is
+    // the only place that ever sees the owner's private chat, so it is the
+    // only place that can record it.
+    //
+    // Written once per chat and then remembered in KV, so an ordinary message
+    // does not cost a commit. The repo reads the file to address the bot
+    // instead of the channel.
+    if (message.chat?.type === "private" && env.BOT_STATE) {
+      const seenKey = `bot-chat-recorded:${chatId}`;
+      if (!(await env.BOT_STATE.get(seenKey))) {
+        try {
+          await writeGithubRequest(env, ".telegram-bot-chat.json", {
+            id: chatId,
+            type: "private",
+            name: [message.chat.first_name, message.chat.last_name].filter(Boolean).join(" ") || message.chat.username || null,
+            learnedAt: new Date().toISOString(),
+          }, "telegram: remember the bot chat");
+          await env.BOT_STATE.put(seenKey, "1", { expirationTtl: 30 * 24 * 60 * 60 });
+        } catch { /* recording is best effort; never block the reply */ }
+      }
+    }
     try {
       // A standalone number picks a just-offered content-search topic when
       // one is active (rule 12); otherwise it belongs to the fixed numbered
