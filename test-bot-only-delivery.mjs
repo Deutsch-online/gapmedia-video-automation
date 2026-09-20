@@ -8,13 +8,24 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { telegramConfig, verifyDelivery } from "./lib/telegram.mjs";
+import { readBotChat } from "./lib/bot-chat.mjs";
 
 // ── the destination resolves to the bot chat ─────────────────────────────
 const withReview = telegramConfig({ TELEGRAM_BOT_TOKEN: "t", TELEGRAM_CHAT_ID: "555", TELEGRAM_REVIEW_CHAT_ID: "777" });
 assert.equal(withReview.reviewChatId, "777", "an explicit review chat wins for the video");
+
+// Without an override the destination is the chat the bot has LEARNED, and
+// only the configured id when nothing has been learned yet. Asserting a
+// literal here made this test depend on whether the repo happens to carry a
+// learned chat, so it broke the moment one was recorded. Read the same source
+// the code reads instead.
+const learned = readBotChat()?.id ?? null;
 const withoutReview = telegramConfig({ TELEGRAM_BOT_TOKEN: "t", TELEGRAM_CHAT_ID: "555" });
-assert.equal(withoutReview.reviewChatId, "555", "without one, the video uses the single bot chat");
-console.log("ok   the video destination resolves to a bot chat either way");
+assert.equal(withoutReview.reviewChatId, learned ?? "555",
+  learned
+    ? "with a chat learned, the video must go there rather than to the configured id"
+    : "with nothing learned, the video falls back to the configured id");
+console.log(`ok   the video destination resolves to a bot chat either way${learned ? " (a chat is learned)" : " (none learned yet)"}`);
 
 // ── only a private chat passes ───────────────────────────────────────────
 const ME = { ok: true, result: { id: 80123, username: "GapMediaBot" } };
