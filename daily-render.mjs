@@ -481,7 +481,10 @@ for (const firstDelivery of deliveries) {
   if (tg.enabled) {
     try {
       checkpoint("telegram-delivery");
-      const res = await sendVideo({ token: tg.token, chatId: tg.chatId, file: final, caption: pack.tgTitle });
+      // Owner directive, repeated 2026-09-20: TELEGRAM_CHAT_ID stays as it
+      // is for reports, but a finished VIDEO only ever goes to the bot
+      // chat. A video that reaches a channel cannot be recalled.
+      const res = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file: final, caption: pack.tgTitle });
       console.log(`   ✈ sent to Telegram`);
       sent = true;
       // remember the message so it can be taken back; Telegram allows a bot to

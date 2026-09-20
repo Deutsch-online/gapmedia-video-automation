@@ -281,17 +281,18 @@ async function dueDailyDispatch(env, now = new Date()) {
   return true;
 }
 
-// German lessons have their own owner-approved three-slot programme.  GitHub
-// cron remains the primary gate, while this Worker writes the existing lesson
-// trigger at each Berlin slot so a delayed GitHub scheduler cannot silently
-// lose an episode.  The lesson workflow still owns curriculum order and its
-// delivery marker, so this helper can never create a duplicate lesson.
+// German lessons have their own owner-approved two-slot programme: 05:00 and
+// 17:30 Europe/Berlin.  GitHub cron remains the primary gate, while this
+// Worker writes the existing lesson trigger at each Berlin slot so a delayed
+// GitHub scheduler cannot silently lose an episode.  The lesson workflow still
+// owns curriculum order and its delivery marker, and its gate lets a due slot
+// claim the run whatever woke it, so this helper can never create a duplicate
+// lesson.
 async function dueGermanLessonDispatch(env, now = new Date()) {
   const { date, hm } = berlinClock(now);
   const [hour, minute] = hm.split(":").map(Number);
   const batch = hour === 5 && minute < 5 ? "0500"
-    : hour === 11 && minute < 5 ? "1100"
-      : hour === 17 && minute >= 30 && minute < 35 ? "1730" : "";
+    : hour === 17 && minute >= 30 && minute < 35 ? "1730" : "";
   if (!batch) return false;
 
   const key = `german-lesson-dispatch:${date}:${batch}`;

@@ -64,7 +64,7 @@ const newsYml = readFileSync(".github/workflows/news-scan.yml", "utf8");
 if (!/\.german-manual-build-request\.json/.test(newsYml.split("jobs:")[0])) {
   problems.push("news-scan.yml: .german-manual-build-request.json is missing from on.push.paths");
 }
-if (!/grep -Fxq '\.german-manual-build-request\.json'/.test(newsYml)) {
+if (!/pushed "\.german-manual-build-request\.json"/.test(newsYml) || !/grep -Fxq "\$1"/.test(newsYml)) {
   problems.push("news-scan.yml: the gate step does not verify THIS push changed .german-manual-build-request.json");
 }
 if (!/Manual build request: building the next episode now/.test(newsYml)) {
