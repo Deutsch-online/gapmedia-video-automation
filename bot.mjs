@@ -13,6 +13,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname } from "node:path";
 import { loadEnv, telegramConfig, sendMessage, getUpdates } from "./lib/telegram.mjs";
+import { rememberBotChat, readBotChat } from "./lib/bot-chat.mjs";
 import { parseCommand, normalize, HELP_TEXT } from "./lib/commands.mjs";
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
@@ -200,7 +201,12 @@ if (isMain) {
       for (const u of await getUpdates({ token: tg.token, offset, timeout: 50 })) {
         offset = u.update_id + 1;
         const msg = u.message || u.channel_post;
-        if (!msg || String(msg.chat.id) !== String(tg.chatId)) continue;  // owner only
+        if (!msg) continue;
+        // Same rule as cloud-listen.mjs: the one-to-one chat with the bot is
+        // heard too, not only the configured id (owner directive 2026-09-20).
+        if (msg.chat?.type === "private") rememberBotChat(msg.chat);
+        const allowed = new Set([String(tg.chatId), String(tg.reviewChatId), String(readBotChat()?.id ?? "")]);
+        if (!allowed.has(String(msg.chat.id))) continue;  // owner only
         if (msg.text) await handle(msg.text);
       }
     } catch (e) {
