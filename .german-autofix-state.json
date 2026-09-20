@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-09-19T21:57:52.185Z",
+  "updatedAt": "2026-09-20T03:03:07.645Z",
   "attempts": {},
   "last": {
     "slot": null,
     "diagnosis": {
       "kind": "unknown",
       "fingerprint": "unknown:f4a6fbbb79fe",
-      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-19T21:57:37.8619639Z ##[error]Process completed with exit code 1."
+      "evidence": "lesson Build, quality-check and deliver one lesson 2026-09-20T03:02:51.1208499Z ##[error]Process completed with exit code 1."
     },
     "plan": {
-      "action": "needs-code-review",
-      "reason": "خطای ناشناخته در اجرای اسکریھت نود و نیاز به بررسی کد دارد."
+      "action": "fresh-retry",
+      "reason": "خطای ناشناخته در اجرای اسکریپت ساخت درس ممکن است ناشی از یک اختلال موقت در سیستم باشد و تلاش مجدد توصیه می‌شود."
     },
     "decision": "not-a-scheduled-slot",
-    "runId": "35471859806"
+    "runId": "35485446128"
   }
 }
