@@ -31,9 +31,35 @@ assert.match(readFileSync("lib/lesson-image.mjs", "utf8"), /Pexels → Openverse
   "lesson photos must have multiple free-source fallbacks, not one provider");
 assert.match(lesson, /german-a1-\$\{pack\.id\}-\$\{iso\}-\$\{format\.slug\}/,
   "the two output files must stay distinct");
+
+// Owner request 2026-09-20: two Berlin slots a day, one lesson per slot, and
+// that one lesson goes out in both formats.  Rendering two files is not the
+// contract — both files reaching the bot is.
+assert.match(lesson, /for \(const video of deliveredVideos\)[\s\S]{0,400}sendVideo\(/,
+  "every rendered format must be sent, not just the last one built");
+assert.match(lesson, /deliveredVideos\.push\(/,
+  "each format variant must be collected for delivery");
+assert.match(lesson, /if \(!res\?\.message_id\) throw new Error/,
+  "a format Telegram did not confirm must fail the episode, not pass silently");
+// Different design family per format: without this both files are the same
+// film recoloured, which is one format delivered twice.
+assert.match(lesson, /design: \{ family: format\.design \}/,
+  "each format must carry its own design family into the renderer");
+assert.match(readFileSync("lib/build-ink.mjs", "utf8"), /const DESIGN = pack\.design\?\.family \|\|/,
+  "the renderer must honour the per-format design family");
+for (const family of ["german-tiktok-learning", "german-instagram-learning"]) {
+  assert.match(readFileSync("lib/build-ink.mjs", "utf8"), new RegExp(`\\.design-${family} `),
+    `${family} must have its own stylesheet, not fall back to the flash-card design`);
+}
+// One lesson per slot: the curriculum pointer advances by exactly one, so a
+// slot can never consume two episodes.
+assert.equal((lesson.match(/saveProgress\(idx \+ 1\)/g) || []).length, 2,
+  "a successful run must advance the curriculum by exactly one episode");
+assert.doesNotMatch(lesson, /saveProgress\(idx \+ 2\)/,
+  "no run may skip or consume a second episode");
 assert.match(daily, /vars\.GAPMEDIA_TUTORIALS_ENABLED == 'true'/,
   "general daily tutorials must be opt-in while German A1 is active");
 assert.match(telegram, /vars\.GAPMEDIA_TUTORIALS_ENABLED == 'true'/,
   "Telegram must not bypass the paused general-tutorial lane");
 
-console.log("German lessons are 60s+, dual-format, example-led, and the other tutorial lane is paused");
+console.log("German lessons are 60s+, one episode per slot, delivered in both formats, example-led, and the other tutorial lane is paused");
