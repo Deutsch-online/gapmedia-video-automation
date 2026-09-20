@@ -9,6 +9,22 @@ on:
       - ".german-correction-request.json"
       - ".german-manual-build-request.json"
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Build one episode now, outside the two Berlin slots"
+        required: false
+        default: "false"
+        type: string
+      retry_date:
+        description: "Berlin date of the scheduled slot to retry (YYYY-MM-DD)"
+        required: false
+        default: ""
+        type: string
+      retry_batch:
+        description: "Scheduled slot to retry: 0500 or 1730"
+        required: false
+        default: ""
+        type: string
 
 concurrency:
   group: gapmedia-lesson
@@ -28,6 +44,10 @@ jobs:
       - name: Select one valid Berlin lesson slot
         id: gate
         shell: bash
+        env:
+          INPUT_FORCE: ${{ inputs.force }}
+          INPUT_RETRY_DATE: ${{ inputs.retry_date }}
+          INPUT_RETRY_BATCH: ${{ inputs.retry_batch }}
         run: |
           set -euo pipefail
           local_date="$(TZ=Europe/Berlin date '+%Y-%m-%d')"
@@ -35,22 +55,48 @@ jobs:
           already_sent() {
             test -f .german-lesson-batch-sent.json && grep -Fq "\"$1\"" .german-lesson-batch-sent.json
           }
+          # Only the files THIS push carried may start a build.  A request left
+          # on disk from an earlier cycle must never be replayed by an
+          # unrelated commit.
+          changed=""
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            changed="$(jq -r '[.commits[]? | .added[]?, .modified[]?] | unique[]?' "$GITHUB_EVENT_PATH" || true)"
+          fi
+          pushed() { printf '%s\n' "$changed" | grep -Fxq "$1"; }
           go=no
           batch=""
-          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" || "$GITHUB_EVENT_NAME" == "push" ]]; then
-            go=yes
-            batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
+          scheduled=no
+          # The owner-approved programme is two Berlin slots a day: 05:00 and
+          # 17:30.  A due slot claims the run whatever woke the workflow, so a
+          # Worker trigger push and the */15 cron can never both deliver it.
+          if [[ "${INPUT_RETRY_BATCH:-}" == "0500" || "${INPUT_RETRY_BATCH:-}" == "1730" ]]; then
+            local_date="${INPUT_RETRY_DATE:-$local_date}"
+            go=yes; batch="$INPUT_RETRY_BATCH"; scheduled=yes
+            echo "Auto Fix is retrying one scheduled slot"
+          elif pushed ".german-correction-request.json"; then
+            go=yes; batch="correction-$(TZ=Europe/Berlin date '+%H%M')"
+            echo "Correction request: rebuilding the episode now"
+          elif pushed ".german-manual-build-request.json"; then
+            go=yes; batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
+            echo "Manual build request: building the next episode now"
           elif [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] && ! already_sent "$local_date-0500"; then
-            go=yes; batch=0500
-          elif [[ "$local_hm" > "11:00" || "$local_hm" == "11:00" ]] && ! already_sent "$local_date-1100"; then
-            go=yes; batch=1100
+            go=yes; batch=0500; scheduled=yes
           elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
-            go=yes; batch=1730
+            go=yes; batch=1730; scheduled=yes
+          elif [[ "${INPUT_FORCE:-false}" == "true" ]]; then
+            go=yes; batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
+            echo "Forced build outside the two Berlin slots"
           fi
           echo "go=$go" >> "$GITHUB_OUTPUT"
           echo "date=$local_date" >> "$GITHUB_OUTPUT"
           echo "batch=$batch" >> "$GITHUB_OUTPUT"
           echo "LESSON_MARKER=$local_date-$batch" >> "$GITHUB_ENV"
+          echo "Berlin local time: $local_date $local_hm"
+          # Auto Fix may only re-dispatch a real slot, never a manual or
+          # correction build, so it reads this one line and nothing else.
+          if [[ "$scheduled" == "yes" ]]; then
+            echo "Selected scheduled slot: $local_date-$batch"
+          fi
           echo "Berlin slot decision: $go $local_date $batch"
       - uses: actions/setup-node@v4
         if: steps.gate.outputs.go == 'yes'

@@ -143,11 +143,14 @@ globalThis.fetch = async (url, init = {}) => {
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };
 const lessonState = { get: async (key) => lessonKv.get(key), put: async (key, value) => lessonKv.set(key, value) };
-for (const instant of ["2026-09-18T03:00:00Z", "2026-09-18T09:00:00Z", "2026-09-18T15:30:00Z"]) {
+// The owner-approved programme is two Berlin slots: 05:00 and 17:30.
+for (const instant of ["2026-09-18T03:00:00Z", "2026-09-18T15:30:00Z"]) {
   assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date(instant)), true);
 }
+// 11:00 Berlin is a retired slot and must never dispatch again.
+assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date("2026-09-18T09:00:00Z")), false);
 assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date("2026-09-18T03:01:00Z")), false);
-assert.equal(lessonScheduleCalls.filter((c) => c.url.includes(".trigger-lesson-dispatch") && c.init.method === "PUT").length, 3);
+assert.equal(lessonScheduleCalls.filter((c) => c.url.includes(".trigger-lesson-dispatch") && c.init.method === "PUT").length, 2);
 assert.equal(lessonScheduleCalls.some((c) => c.url.includes(".german-manual-build-request.json")), false);
 globalThis.fetch = savedFetch;
 

@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { aiTriage, MAX_AUTO_RETRIES_PER_SLOT, recordDecision, repairPlan, retryDecision, scheduledSlotFromLog } from "./lib/auto-fix.mjs";
 
-const slot = scheduledSlotFromLog("Berlin local time: 2026-09-18 11:04 CEST\nSelected scheduled slot: 2026-09-18-1100");
-assert.deepEqual(slot, { date: "2026-09-18", batch: "1100" });
+const slot = scheduledSlotFromLog("Berlin local time: 2026-09-18 17:34 CEST\nSelected scheduled slot: 2026-09-18-1730");
+assert.deepEqual(slot, { date: "2026-09-18", batch: "1730" });
+// 11:00 is a retired slot: Auto Fix must never re-dispatch it.
+assert.equal(scheduledSlotFromLog("Selected scheduled slot: 2026-09-18-1100"), null);
 assert.equal(scheduledSlotFromLog("Manual override"), null, "manual builds may never be retried as scheduled slots");
 
 const transient = { kind: "render", fingerprint: "render:a1", cause: "render failed", evidence: "Render failed" };
