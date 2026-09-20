@@ -63,8 +63,18 @@ function matchRadarPick(text, shown) {
 
 const stored = existsSync(STATE) ? Number(readFileSync(STATE, "utf8").trim()) || 0 : 0;
 
-// timeout=0 → return immediately; a scheduled job must not sit and wait
-const updates = await getUpdates({ token: tg.token, offset: stored ? stored + 1 : 0, timeout: 0 });
+// timeout=0 → return immediately; a scheduled job must not sit and wait.
+// getUpdates now throws when Telegram rejects the call, so that a caller can
+// tell a refusal from an empty queue. This poll must not die of one: a bad
+// minute at Telegram is not a reason to fail the scheduled job.
+let updates = [];
+try {
+  updates = await getUpdates({ token: tg.token, offset: stored ? stored + 1 : 0, timeout: 0 });
+} catch (e) {
+  console.error(`poll skipped: ${e.message}`);
+  console.log("ACTION=none");
+  process.exit(0);
+}
 
 let action = "none", label = "", highest = stored, pick = 1, payloadText = "", photoFileId = "";
 const shownRadar = radarShown();

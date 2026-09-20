@@ -66,6 +66,30 @@ assert.match(blip.reason, /getUpdates failed/, "a network failure says so instea
 console.log("ok   discovery finds the one chat, refuses to guess between several, and survives an outage");
 reset();
 
+// ── the queue is actually read ───────────────────────────────────────────
+// Run #137 (2026-09-20) reported "no private chat has written to the bot yet"
+// for a chat that HAD written: discovery omits the offset on purpose, but
+// getUpdates interpolated it anyway and sent «offset=undefined», which Telegram
+// rejects. The rejection came back as [] — indistinguishable from an empty
+// queue, so discovery never really looked.
+{
+  const urls = [];
+  globalThis.fetch = async (url) => { urls.push(String(url)); return { json: async () => ({ ok: true, result: [] }) }; };
+  await discoverBotChat({ token: "t", file: F });
+  assert.equal(urls.length, 1, "discovery must actually call getUpdates");
+  assert.doesNotMatch(urls[0], /offset=undefined/,
+    "an omitted offset must be left out of the query, not sent as the string 'undefined'");
+  assert.doesNotMatch(urls[0], /offset=/,
+    "discovery must not confirm anything, so the real poller keeps its place");
+
+  // A refusal must not read as an empty queue.
+  globalThis.fetch = async () => ({ json: async () => ({ ok: false, description: "Bad Request: bad offset" }) });
+  const refused = await discoverBotChat({ token: "t", file: F });
+  assert.equal(refused.chat, null);
+  assert.match(refused.reason, /getUpdates failed/, "a refused call must say so, not look like nobody wrote");
+}
+console.log("ok   discovery reads the queue without confirming it, and tells a refusal from an empty queue");
+
 // ── both directions actually use it ──────────────────────────────────────
 const listener = readFileSync("cloud-listen.mjs", "utf8");
 assert.match(listener, /if \(msg\.chat\?\.type === "private"\) \{/,
