@@ -1,11 +1,11 @@
 name: Daily GapMedia video delivery
 
+# Owner directive 2026-09-21: "فعلا فقط درس المانی را ادامه می دهیم بقیه ساخت
+# متوقف شود". This lane was already disabled from the Actions tab, but the
+# cron and the Worker's trigger push both stayed live in the file and would
+# resume the moment anyone re-enabled it. Both are removed. The lane still
+# runs by hand, and restoring it is putting these two blocks back.
 on:
-  schedule:
-    - cron: "*/15 * * * *"
-  push:
-    paths:
-      - ".trigger-daily-dispatch"
   workflow_dispatch:
     inputs:
       batch:
