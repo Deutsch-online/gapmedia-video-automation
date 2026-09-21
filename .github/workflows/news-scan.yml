@@ -65,6 +65,7 @@ jobs:
           pushed() { printf '%s\n' "$changed" | grep -Fxq "$1"; }
           go=no
           batch=""
+          unit=""
           scheduled=no
           # The owner-approved programme is two Berlin slots a day: 05:00 and
           # 17:30.  A due slot claims the run whatever woke the workflow, so a
@@ -75,7 +76,17 @@ jobs:
             echo "Auto Fix is retrying one scheduled slot"
           elif pushed ".german-correction-request.json"; then
             go=yes; batch="correction-$(TZ=Europe/Berlin date '+%H%M')"
-            echo "Correction request: rebuilding the episode now"
+            # The request names the unit to re-render. Without passing it on,
+            # german-lesson-build.mjs never sets isCorrection: it would build
+            # the NEXT episode instead of the broken one, run the duplicate
+            # check against it, and advance the curriculum pointer — burning
+            # an episode while the defective one stayed unfixed.
+            unit="$(jq -r '.unit // empty' .german-correction-request.json 2>/dev/null || true)"
+            if [ -n "$unit" ]; then
+              echo "Correction request: re-rendering unit $unit"
+            else
+              echo "::warning::correction request named no unit — building the next episode instead"
+            fi
           elif pushed ".german-manual-build-request.json"; then
             go=yes; batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
             echo "Manual build request: building the next episode now"
@@ -90,6 +101,7 @@ jobs:
           echo "go=$go" >> "$GITHUB_OUTPUT"
           echo "date=$local_date" >> "$GITHUB_OUTPUT"
           echo "batch=$batch" >> "$GITHUB_OUTPUT"
+          echo "unit=$unit" >> "$GITHUB_OUTPUT"
           echo "LESSON_MARKER=$local_date-$batch" >> "$GITHUB_ENV"
           echo "Berlin local time: $local_date $local_hm"
           # Auto Fix may only re-dispatch a real slot, never a manual or
@@ -142,7 +154,15 @@ jobs:
           # An unset secret arrives empty and the judge chain simply skips it.
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
           CYCLE_DEADLINE_MINUTES: "44"
-        run: node german-cycle.mjs
+          LESSON_UNIT: ${{ steps.gate.outputs.unit }}
+        run: |
+          # Passed through an env var, never interpolated into the command
+          # line: the value comes from a file in the repository.
+          if [ -n "${LESSON_UNIT:-}" ]; then
+            node german-cycle.mjs --unit "$LESSON_UNIT"
+          else
+            node german-cycle.mjs
+          fi
       - name: Remember the bot chat the preflight learned
         if: always() && steps.gate.outputs.go == 'yes'
         run: |
