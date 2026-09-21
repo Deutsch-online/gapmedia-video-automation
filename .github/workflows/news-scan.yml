@@ -121,7 +121,13 @@ jobs:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
           VOICE: "minimax"
-          REQUIRE_VOICE: "off"
+          # Owner directive 2026-09-21: "نریشن نباید هیچگاه خاموش باشد".
+          # With "off", german-lesson-build.mjs swallowed a TTS failure and
+          # shipped the episode music-only — a silent lesson, delivered as if
+          # it were finished. german-cycle.mjs's own comment already said this
+          # workflow runs with REQUIRE_VOICE=on, and PROJECT_RULES already
+          # calls a missing audio file a build error. Now it actually is one.
+          REQUIRE_VOICE: "on"
           NARRATION_QC: "off"
           TTS_ENGINE: "minimax"
           GERMAN_WORD_ENGINE: "edge"
