@@ -31,3 +31,8 @@ jobs:
         env:
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
         run: node test-jev-image-qc.mjs
+      - name: Judge this project's own hooks against its own rules
+        if: always()
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+        run: node test-jev-hook-gate.mjs
