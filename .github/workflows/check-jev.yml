@@ -2,7 +2,7 @@ name: Check the Jev API key
 
 # Manual only. It never builds or sends a video, and it never prints the key.
 # Run it from the Actions tab to find out whether the stored TypeSafe key
-# authenticates. Nothing in the German lesson path uses this provider.
+# authenticates and whether Jev can tell a matching image from a wrong one.
 on:
   workflow_dispatch:
 
@@ -18,12 +18,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Ask the API whether the key works
+      - name: Install the TypeSafe SDK
+        run: npm install --no-save @typesafe-ai/sdk@0.6.0
+      - name: Ask Jev two image-relevance questions
         env:
-          # Whichever of these the repository actually holds is the one used.
-          # An unset secret arrives as an empty string, which the script skips.
+          # The SDK's own default variable name, and the secret this
+          # repository already holds.
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
-          JEV_API_KEY: ${{ secrets.JEV_API_KEY }}
-          TS_API_KEY: ${{ secrets.TS_API_KEY }}
-          TYPESAFE_KEY: ${{ secrets.TYPESAFE_KEY }}
         run: node check-jev.mjs
