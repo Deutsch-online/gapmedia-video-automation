@@ -26,3 +26,8 @@ jobs:
           # repository already holds.
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
         run: node check-jev.mjs
+      - name: Measure Jev on this project's own A1 items
+        if: always()
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+        run: node test-jev-image-qc.mjs
