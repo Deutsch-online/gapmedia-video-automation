@@ -846,3 +846,42 @@ next candidate put in front of the same examiner.
 **Status: fa-IR-FaridNeural — UNPROVEN on this path.** The next lesson run is
 its first exam. pocket-tts remains available (`TTS_ENGINE=pocket`) but is now
 known to fail QC on this content; MiniMax remains the paid fallback.
+
+---
+
+## 2026-09-21 — word endings after ه: «مانده‌ای» reported swallowed
+
+**Owner report:** the end of Persian words is mispronounced; «مانده‌ای» was
+named, «the ای sound gets taken low».
+
+**Located, not yet fixed.** Nothing about the voice settings is changed by this
+entry. The cause is upstream of the engine, in `lib/pronounce.mjs`.
+
+`JOIN_AFTER` glues a bound suffix back onto its stem after the ZWNJ is stripped.
+For a stem ending in ه that produces letter pairs Persian already uses for
+something else:
+
+| source | what is sent to MiniMax | why it is suspect |
+| --- | --- | --- |
+| «مانده‌ای» | «ماندهای» | ه+ا spells «ها», the PLURAL suffix |
+| «غریبه‌ها» | «غریبهها» | a double ه |
+| «گرسنه‌ایم» | «گرسنه ایم» | split in two — «ایم» is not in `JOIN_AFTER` |
+
+The same morpheme therefore gets three different treatments, decided by what
+character happens to follow it.
+
+**This was already known here.** The 2026-08-31 entry above records that making
+`JOIN_AFTER` fire glued «بیننده‌های» into «بینندههای» — "a double-ه that was
+never heard by anyone. Reverted unheard rather than shipped." On 2026-09-07 the
+regex was re-anchored so it does fire, and «ای» was added to it, to stop
+«حرفه‌ای» being read as two words. That fixed the split and reintroduced the
+double-ه and the false plural, which is what the owner is now hearing.
+
+**Method, per the rule at the top of this file:** no setting is touched until a
+sample decides it. `voice-ending-probe.mjs` (manual workflow "Audition Persian
+word endings") synthesises ONE sentence per group in each real spelling —
+joined, ZWNJ kept, split, and the ئ form — and sends them to the bot numbered.
+The owner listens and names the winner per group. Only then does one rule
+change, and the result is written here.
+
+**Status: OPEN — awaiting the listening test.**

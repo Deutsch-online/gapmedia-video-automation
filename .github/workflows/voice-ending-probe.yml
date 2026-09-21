@@ -1,0 +1,41 @@
+name: Audition Persian word endings
+
+# Manual only. It builds no video and delivers no episode: it synthesises one
+# short sentence in several real Persian spellings of the same ending and sends
+# them to the bot, numbered, so the owner can judge them by ear.
+#
+# CLAUDE.md forbids changing an approved voice setting on a guess, and
+# VOICE-LOG.md's method is: one variable, the same sample, a human ear, then a
+# written record. This workflow only produces the samples.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - name: Install ffmpeg for the dead-air trim
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Synthesise each spelling and send it to the bot
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_VOICE_ID: ${{ secrets.MINIMAX_VOICE_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node voice-ending-probe.mjs
+      - name: Keep the samples on the run
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: persian-ending-samples
+          path: renders/voice-probe/
+          if-no-files-found: ignore
