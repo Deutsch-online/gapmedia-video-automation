@@ -3,11 +3,12 @@ name: Weekly content research
 # Looks for platform updates that the content bank does not cover yet and sends
 # a short Persian digest to Telegram. Costs nothing to run when EXA_API_KEY is
 # absent — research.mjs exits immediately in that case.
+# Owner directive 2026-09-21: "فعلا فقط درس المانی را ادامه می دهیم بقیه ساخت
+# متوقف شود". This digest is for the Persian content bank, not the German A1
+# series, so its Saturday cron is removed. Nothing here runs on its own any
+# more; it stays runnable by hand from the Actions tab, and restoring the
+# schedule is putting the two cron lines back.
 on:
-  schedule:
-    # Saturdays; the guard below keeps it to 09:00 Europe/Berlin year-round.
-    - cron: "0 7 * * 6"
-    - cron: "0 8 * * 6"
   workflow_dispatch:
     inputs:
       days:
