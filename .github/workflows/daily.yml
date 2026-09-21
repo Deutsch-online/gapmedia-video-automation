@@ -58,10 +58,10 @@ jobs:
           echo "Berlin local time: $(TZ=Europe/Berlin date '+%Y-%m-%d %H:%M %Z')"
 
           already_sent() {
-            [ -f.daily-batch-sent.json ] && grep -q "\"$1\"".daily-batch-sent.json
+            [ -f .daily-batch-sent.json ] && grep -q "\"$1\"" .daily-batch-sent.json
           }
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}"!= "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.batch }}" != "auto" ]; then
             echo "go=yes" >> "$GITHUB_OUTPUT"
             echo "batch=${{ inputs.batch }}" >> "$GITHUB_OUTPUT"
             echo "date=$local_date" >> "$GITHUB_OUTPUT"
@@ -127,7 +127,7 @@ jobs:
         id: voicemode
         if: steps.gate.outputs.go == 'yes'
         run: |
-          if [ -f.silent-render ]; then
+          if [ -f .silent-render ]; then
             echo "voice=off" >> "$GITHUB_OUTPUT"
             echo "::warning::.silent-render is present — building music-only videos with no narration."
           else
@@ -279,7 +279,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f --.content-history.json.content-registry.json.daily-batch-sent.json.daily-delivery-progress.json.telegram-sent.json 2>/dev/null || true
+          git add -f -- .content-history.json .content-registry.json .daily-batch-sent.json .daily-delivery-progress.json .telegram-sent.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "daily: record today's ${{ steps.gate.outputs.batch }} send(s)"
           if git push; then
             echo "delivery memory pushed"
