@@ -35,7 +35,12 @@ assert.match(narrationLineCheck("بدون میکروفون ضبط کن.").join("
 // every one of 6 independent MiniMax takes across two builds. Same fault as
 // every other unmarked possessive-ـت case in PERSIAN_TTS_FIXES: mark the
 // connecting vowel, do not touch the word.
-assert.equal(minimaxSpeakable("اولین خریدت در آلمان را با همین جمله‌ها انجام بده."), "اولین خریدِت در آلمان را با همین جملهها انجام بده.");
+// The subject of this assertion is «خریدِت» and it is unchanged. «جمله‌ها» in
+// the same sentence moved from «جملهها» to «جمله ها» on 2026-09-21: the
+// owner's listening test ruled that a suffix after a stem ending in ه is
+// spoken as its own word (VOICE-LOG.md; test-he-stem-endings.mjs). The
+// possessive-ـت marking this line exists to guard is untouched.
+assert.equal(minimaxSpeakable("اولین خریدت در آلمان را با همین جمله‌ها انجام بده."), "اولین خریدِت در آلمان را با همین جمله ها انجام بده.");
 assert.equal(minimaxSpeakable("با این چهار جمله، خریدت را کامل به آلمانی انجام بده."), "با این چهار جمله، خریدِت را کامل به آلمانی انجام بده.");
 
 // Regression: the preflight once mistook every Persian word ending in «ت»

@@ -884,4 +884,33 @@ joined, ZWNJ kept, split, and the ئ form — and sends them to the bot numbered
 The owner listens and names the winner per group. Only then does one rule
 change, and the result is written here.
 
-**Status: OPEN — awaiting the listening test.**
+**Listening test, 2026-09-21 — RESOLVED.** Ten samples, three groups, one
+sentence per group with only the ending's spelling changed. The owner's verdict:
+
+| group | sentence | chosen | reading |
+| --- | --- | --- | --- |
+| 1 | «جلوی دستگاه بلیت مانده‌ای؟» | **C** | «مانده ای» — split |
+| 2 | «با غریبه‌ها رسمی حرف بزن.» | **C** | «غریبه ها» — split |
+| 3 | «ما گرسنه‌ایم.» | **A** | «گرسنه ایم» — split (already the behaviour) |
+
+Split in every group. Neither the joined form nor the ئ spelling was chosen.
+
+**One variable changed.** `JOIN_AFTER` gained a negative lookbehind, `(?<!ه)`,
+so a stem ending in ه no longer takes the join and its ZWNJ falls through to
+the general ZWNJ→space rule. Nothing else was touched — not the voice, the
+speed, the pitch, the emotion, or any other rule in the file.
+
+**Measured, not assumed:** every line of the A1 curriculum was rendered through
+both the old and the new `sayable()`. 13 lines changed, all 13 of them ه-stem
+suffixes, and nothing else changed at all. `رنگ‌ها`→`رنگها`, `عکس‌ها`→`عکسها`
+and `بزرگ‌تر`→`بزرگتر` keep their joins, because the ear ruled on ه, not on
+every stem.
+
+**This overrules the 2026-09-07 change.** That one added «ای» to `JOIN_AFTER`
+to stop «حرفه‌ای» being read as two words. Two words is now the approved
+reading for a ه-stem, so «حرفه‌ای» is spoken «حرفه ای» on purpose.
+
+`test-he-stem-endings.mjs` pins the three verdicts, the rejected double-ه form,
+and the three non-ه joins that must NOT move. It fails on the old code.
+
+**Status: CLOSED.**
