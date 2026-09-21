@@ -1,0 +1,29 @@
+name: Check the Jev API key
+
+# Manual only. It never builds or sends a video, and it never prints the key.
+# Run it from the Actions tab to find out whether the stored TypeSafe key
+# authenticates. Nothing in the German lesson path uses this provider.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Ask the API whether the key works
+        env:
+          # Whichever of these the repository actually holds is the one used.
+          # An unset secret arrives as an empty string, which the script skips.
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          JEV_API_KEY: ${{ secrets.JEV_API_KEY }}
+          TS_API_KEY: ${{ secrets.TS_API_KEY }}
+          TYPESAFE_KEY: ${{ secrets.TYPESAFE_KEY }}
+        run: node check-jev.mjs
