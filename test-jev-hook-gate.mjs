@@ -60,12 +60,18 @@ async function judge({ hook, topic }) {
         "`hook_text` already hands the viewer the answer, so there is no reason to keep watching.",
         { true: "The German phrase or the full solution is in the hook itself", false: "It opens a question the video still has to answer" },
       ),
+      // The first run of this test put two rule-breaking hooks in `weak`
+      // instead of `reject`, and the fault was in these labels, not in the
+      // model: "breaks no rule but the promise is thin" and "promises nothing
+      // at all" overlap, so a hook that promises nothing fits both. The three
+      // options are now disjoint — `weak` is explicitly a hook that DOES make
+      // a real promise.
       verdict: choice(
         "Judging `hook_text` against `rule_reminder`, may this hook ship?",
         {
-          pass: "It promises something concrete, keeps the answer back, and claims nothing it cannot deliver",
-          weak: "It breaks no rule, but the promise is too thin to stop a scroll",
-          reject: "It breaks a rule: it guarantees a result, invents a number, gives the answer away, or promises nothing at all",
+          pass: "It names a concrete situation or result, keeps the answer back, and claims nothing it cannot deliver",
+          weak: "It DOES name something concrete and breaks no rule, but too mildly to stop a scroll. Do not use this for a hook that names nothing.",
+          reject: "It breaks a rule. Any one of these is enough: it guarantees an outcome or a timeframe; it cites a number it cannot prove; it hands over the German phrase or the whole answer; or it names no benefit, pain or result at all, including pure curiosity bait.",
         },
       ),
     },
