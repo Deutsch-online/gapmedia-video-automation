@@ -132,6 +132,9 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          # Owner directive 2026-09-21: Jev judges vocabulary images first.
+          # An unset secret arrives empty and the judge chain simply skips it.
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
           CYCLE_DEADLINE_MINUTES: "44"
         run: node german-cycle.mjs
       - name: Remember the bot chat the preflight learned
