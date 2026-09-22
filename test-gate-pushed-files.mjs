@@ -41,4 +41,16 @@ for (const request of [".german-correction-request.json", ".german-manual-build-
     `${request} must still be verified against this push before it starts a build`);
 }
 
-console.log("the gate reads the pushed file list from git, and the replay guard still holds");
+// Deleting a spent request must not build anything. git lists a deletion in
+// --name-only, so once the gate reads git (above) a push that CLEARS
+// .german-correction-request.json carries that path too. Under the old branch
+// shape that push entered the correction branch, found no unit, and built the
+// NEXT episode on its own — burning a lesson to tidy up a file. The unit is
+// therefore part of the branch condition, not a read after the branch is taken.
+const correction = workflow.slice(workflow.indexOf('pushed ".german-correction-request.json"'));
+assert.match(correction.slice(0, 400), /&&\s*correction_unit="\$\(jq -r '\.unit \/\/ empty'[\s\S]{0,200}&&\s*\[ -n "\$correction_unit" \]/,
+  "a correction request with no unit is not a request — the unit must gate the branch itself");
+assert.doesNotMatch(workflow, /correction request named no unit — building the next episode instead/,
+  "a malformed or cleared correction request must never fall through to building the next episode");
+
+console.log("the gate reads the pushed file list from git, and a unit-less request builds nothing");

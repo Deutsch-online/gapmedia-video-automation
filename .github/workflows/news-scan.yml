@@ -96,19 +96,25 @@ jobs:
             local_date="${INPUT_RETRY_DATE:-$local_date}"
             go=yes; batch="$INPUT_RETRY_BATCH"; scheduled=yes
             echo "Auto Fix is retrying one scheduled slot"
-          elif pushed ".german-correction-request.json"; then
+          # The request names the unit to re-render. Without passing it on,
+          # german-lesson-build.mjs never sets isCorrection: it would build the
+          # NEXT episode instead of the broken one, run the duplicate check
+          # against it, and advance the curriculum pointer — burning an episode
+          # while the defective one stayed unfixed.
+          #
+          # So the unit is part of what makes this a request, not an extra read
+          # after the branch is already taken. A push that DELETES the file
+          # carries its path too (git lists a deletion), and clearing a spent
+          # request is the normal way this file ends its life — under the old
+          # shape that deletion would have entered this branch, found no unit,
+          # and built the next episode on its own. A request with no unit is not
+          # a request: fall through and let the slot branches decide.
+          elif pushed ".german-correction-request.json" \
+               && correction_unit="$(jq -r '.unit // empty' .german-correction-request.json 2>/dev/null)" \
+               && [ -n "$correction_unit" ]; then
             go=yes; batch="correction-$(TZ=Europe/Berlin date '+%H%M')"
-            # The request names the unit to re-render. Without passing it on,
-            # german-lesson-build.mjs never sets isCorrection: it would build
-            # the NEXT episode instead of the broken one, run the duplicate
-            # check against it, and advance the curriculum pointer — burning
-            # an episode while the defective one stayed unfixed.
-            unit="$(jq -r '.unit // empty' .german-correction-request.json 2>/dev/null || true)"
-            if [ -n "$unit" ]; then
-              echo "Correction request: re-rendering unit $unit"
-            else
-              echo "::warning::correction request named no unit — building the next episode instead"
-            fi
+            unit="$correction_unit"
+            echo "Correction request: re-rendering unit $unit"
           elif pushed ".german-manual-build-request.json"; then
             go=yes; batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
             echo "Manual build request: building the next episode now"
