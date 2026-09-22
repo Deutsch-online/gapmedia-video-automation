@@ -68,6 +68,9 @@ jobs:
           # request produced go=no with no trace of why). The gate already prints
           # the decision it made; this prints what it decided ON.
           echo "Push carried: ${changed:-<nothing>}"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            echo "payload probe: commits=$(jq -r '.commits | length' "$GITHUB_EVENT_PATH" 2>&1 | head -1) keys=$(jq -rc '.commits[0] // {} | keys' "$GITHUB_EVENT_PATH" 2>&1 | head -1) head_mod=$(jq -rc '.head_commit.modified // "absent"' "$GITHUB_EVENT_PATH" 2>&1 | head -1)"
+          fi
           go=no
           batch=""
           unit=""
