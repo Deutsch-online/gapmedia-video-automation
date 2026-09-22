@@ -63,6 +63,11 @@ jobs:
             changed="$(jq -r '[.commits[]? | .added[]?, .modified[]?] | unique[]?' "$GITHUB_EVENT_PATH" || true)"
           fi
           pushed() { printf '%s\n' "$changed" | grep -Fxq "$1"; }
+          # A correction request that silently does not fire is indistinguishable
+          # from one that was never pushed (2026-09-22: episode 31's re-render
+          # request produced go=no with no trace of why). The gate already prints
+          # the decision it made; this prints what it decided ON.
+          echo "Push carried: ${changed:-<nothing>}"
           go=no
           batch=""
           unit=""
