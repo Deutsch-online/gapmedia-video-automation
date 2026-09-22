@@ -41,6 +41,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          # The gate diffs the pushed commit against its parent to learn which
+          # files the push carried, so the parent has to be in the clone.
+          fetch-depth: 2
       - name: Select one valid Berlin lesson slot
         id: gate
         shell: bash
@@ -60,7 +63,21 @@ jobs:
           # unrelated commit.
           changed=""
           if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-            changed="$(jq -r '[.commits[]? | .added[]?, .modified[]?] | unique[]?' "$GITHUB_EVENT_PATH" || true)"
+            # Measured live 2026-09-22, twice: the push payload's commit objects
+            # carry NO added/modified/removed keys at all — the only keys are
+            # author, committer, distinct, id, message, timestamp, tree_id, url —
+            # and .head_commit.modified is absent too. So this jq has always
+            # returned nothing, pushed() has always been false, and every
+            # correction and manual-build request since the guard landed was
+            # silently dropped (episode 31's re-render request, twice).
+            #
+            # git is the authority the payload was only standing in for. The jq
+            # stays first so the gate starts working again on its own if GitHub
+            # ever restores those keys.
+            changed="$(jq -r '[.commits[]? | .added[]?, .modified[]?] | unique[]?' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
+            if [[ -z "$changed" ]] && git rev-parse --verify --quiet HEAD~1 >/dev/null 2>&1; then
+              changed="$(git diff --name-only HEAD~1 HEAD || true)"
+            fi
           fi
           pushed() { printf '%s\n' "$changed" | grep -Fxq "$1"; }
           # A correction request that silently does not fire is indistinguishable
@@ -68,9 +85,6 @@ jobs:
           # request produced go=no with no trace of why). The gate already prints
           # the decision it made; this prints what it decided ON.
           echo "Push carried: ${changed:-<nothing>}"
-          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-            echo "payload probe: commits=$(jq -r '.commits | length' "$GITHUB_EVENT_PATH" 2>&1 | head -1) keys=$(jq -rc '.commits[0] // {} | keys' "$GITHUB_EVENT_PATH" 2>&1 | head -1) head_mod=$(jq -rc '.head_commit.modified // "absent"' "$GITHUB_EVENT_PATH" 2>&1 | head -1)"
-          fi
           go=no
           batch=""
           unit=""

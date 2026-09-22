@@ -1,5 +1,5 @@
 {
   "unit": "a1-31-small-talk",
   "reason": "owner report 2026-09-22: «گفت‌وگو» in the hook was spoken as «گفت» + «وگو». Fixed in lib/pronounce.mjs (CONJUNCTION_COMPOUNDS); this re-renders and re-sends episode 31 with the corrected narration.",
-  "requestedAt": "2026-09-22T16:11:07Z"
+  "requestedAt": "2026-09-22T16:12:30Z"
 }
