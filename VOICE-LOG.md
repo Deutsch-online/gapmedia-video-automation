@@ -914,3 +914,64 @@ reading for a ه-stem, so «حرفه‌ای» is spoken «حرفه ای» on pur
 and the three non-ه joins that must NOT move. It fails on the old code.
 
 **Status: CLOSED.**
+
+---
+
+## 2026-09-22 — «گفت‌وگو» was spoken as two words
+
+**Reported by the owner**, on episode 31 (`a1-31-small-talk`), whose hook is
+«اولین گفت‌وگو را با این جمله‌های کوتاه گرم کن.»
+
+**Root cause, verified in code, not guessed.** `normalise()` replaces every
+zero-width non-joiner with a space. «گفت‌وگو» therefore reached MiniMax as
+«گفت وگو» — two words. The «و» then stood at the start of a word, where it is
+the consonant /v/, so the engine said *goft va-gu* instead of /gof.to.gu/.
+
+In this compound the «و» is not a letter opening a second word: it is the
+enclitic conjunction, pronounced /o/ and bound to the word before it. The word
+is one phonological unit, and the space destroyed it.
+
+**The fix is a spelling, not a respelling.** «گفتگو» is ordinary Persian
+orthography for the same word — the project already writes it that way in
+`lib/content.mjs:751` — and it is read only one way. No vowel marks were added,
+which keeps the rule this file records for MiniMax: normal Persian orthography
+beats phonetic spelling for a Persian-boosted voice. Only the spoken copy is
+rewritten; the on-screen text keeps «گفت‌وگو».
+
+Applied to the three compounds of this class whose joined spelling is itself
+standard: گفت‌وگو→گفتگو، جست‌وجو→جستجو، شست‌وشو→شستشو.
+
+**Deliberately not touched.** «هیچ‌وقت»، «آن‌وقت»، «قابل‌وفا»، «وام‌واژه» — their
+«و» really is the first letter of a second word (وقت، وفا، واژه), so the split
+they already get is correct. The test pins them so a later pass cannot join
+them by accident.
+
+**Left OPEN, on purpose.** «کسب‌وکار»، «حال‌وهوا»، «رفت‌وآمد»، «پرس‌وجو» are the
+same /o/ case, but no joined spelling of them is standard Persian. Fixing them
+needs a respelling that has to be chosen by ear first. Guessing one here is
+exactly what this file exists to prevent. None of them appears in the A1
+curriculum, so no lesson is waiting on it.
+
+**Measured, not assumed.** Every line of the A1 curriculum — 368 of them,
+topics, hooks, meanings and examples — was rendered through both the old and
+the new `lessonSpeakable()`. Exactly **one** line changed: the reported hook.
+Nothing else in the curriculum moved.
+
+**One variable changed.** A `CONJUNCTION_COMPOUNDS` table runs before the
+general ZWNJ→space rule in `normalise()`. The voice, speed, pitch, emotion and
+every other rule in `lib/pronounce.mjs` are untouched, including the ه-stem
+lookbehind the 2026-09-21 listening test decided.
+
+**Found while testing, reported not fixed:** `sayable()`'s `FIXES` table
+replaces bare substrings, so its «تگ» entry puts a fatha inside «گفتگو»
+(«گفتَگو»). `sayable()` is not on the voice path — the note at the «پست» entry
+in this repo already records that the pipeline calls `minimaxSpeakable()`
+instead, and `voice-ending-probe.mjs` is its only caller. No delivered video
+is affected. Fixing that table is a separate change with its own audition.
+
+`test-conjunction-compounds.mjs` pins the joined class, the split controls, and
+the 2026-09-21 ه-stem verdicts. It fails on the old code.
+
+**Status: fix shipped, awaiting the owner's ear on the re-sent episode 31.**
+No MiniMax key is available in the session container, so no sample could be
+auditioned here.
