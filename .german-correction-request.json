@@ -1,6 +1,5 @@
 {
-  "unit": "a1-20-countries",
-  "requestedAt": "2026-09-15T20:40:00Z",
-  "source": "chat",
-  "note": "Owner report: episode 20's already-delivered video shows all-black images. Root cause fixed in commit 35d44fb — build-ink.mjs embedded LAW 7 layer 6's SVG fallback images as data:image/svg;base64 (not a real MIME type, so Chromium rendered nothing) instead of data:image/svg+xml;base64. Re-rendering the same unit with the fix in place."
+  "unit": "a1-31-small-talk",
+  "reason": "owner report 2026-09-22: «گفت‌وگو» in the hook was spoken as «گفت» + «وگو». Fixed in lib/pronounce.mjs (CONJUNCTION_COMPOUNDS); this re-renders and re-sends episode 31 with the corrected narration.",
+  "requestedAt": "2026-09-22"
 }
