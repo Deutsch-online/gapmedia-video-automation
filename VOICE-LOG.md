@@ -975,3 +975,59 @@ the 2026-09-21 ه-stem verdicts. It fails on the old code.
 **Status: fix shipped, awaiting the owner's ear on the re-sent episode 31.**
 No MiniMax key is available in the session container, so no sample could be
 auditioned here.
+
+---
+
+## 2026-09-23 — «بی‌اشتباه» and «هجی» in episode 32
+
+**Reported by the owner**, two faults in one narration (`a1-32-spelling-contact`).
+
+### 1. «بی‌اشتباه» was spoken as «بیا…»
+
+Hook: «نام و ایمیلت را بی‌اشتباه به آلمانی بده.»
+
+**Root cause, verified in code.** `JOIN_BEFORE` joined the prefix
+unconditionally, so the engine received **«بیاشتباه»** — and «بیا» is a word,
+the imperative «come». The voice read the syllable it saw. This is the same
+failure class as the ه-stem join settled on 2026-09-21: *a join that spells
+something else*.
+
+**Fix.** The join is skipped when the stem begins with a **plain alef**
+(U+0627), and the pair is marked with NBSP instead — the marker this file
+already uses for «several words said as one». `minimaxSpeakable()` restores a
+plain space at the very end, so the engine receives «بی اشتباه».
+
+Restricted to the plain alef on purpose. «آ» (U+0622) carries its own long
+vowel and cannot form the /yâ/ digraph, so the ten «می‌آید»/«می‌آیم» joins in
+the curriculum are untouched — and they are the reason the join exists at all.
+
+The same rule also repairs **«بی‌ادبانه»** in a unit that has not aired yet:
+«بیادبانه» opens with the same «بیا».
+
+### 2. «هجی» had no entry at all
+
+«لطفاً می‌توانید آن را هجی کنید؟» — nothing in `PERSIAN_TTS_FIXES` covered it,
+so the bare spelling went to an Arabic-native voice to guess the vowel at.
+
+**Fix.** The same minimal treatment as «صفر»→«صِفر» directly above it in that
+table: the spoken copy carries only the missing kasra, «هِجی». The card on
+screen keeps «هجی».
+
+**Not tried:** the geminated «هِجّی». One variable at a time, and the vowel is
+what a bare spelling leaves the voice to invent. If the kasra alone is still
+not right by ear, the shadda is the next thing to audition — not both at once.
+
+**Measured, not assumed.** All 368 A1 curriculum lines were rendered through
+the old and the new `lessonSpeakable()`. **Exactly four** changed: the reported
+hook, the «هجی» line and its example, and «بی‌ادبانه». Nothing else moved.
+
+**One rule, one table entry.** The voice, speed, pitch, emotion and every other
+rule are untouched, including the 2026-09-21 ه-stem lookbehind and the
+2026-09-22 conjunction compounds, which the new test re-pins.
+
+`test-bi-alef-and-heji.mjs` pins both fixes and, just as importantly, the
+controls that must not move: «می‌آید»، «نمی‌آید»، «می‌کند»، «بی‌صدا».
+
+**Status: fix shipped, awaiting the owner's ear on the re-sent episode 32.**
+No MiniMax key is available in the session container, so no sample could be
+auditioned here.
