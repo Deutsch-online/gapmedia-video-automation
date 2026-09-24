@@ -410,9 +410,18 @@ try {
     `German language learner ${unit.items.at(-1).img}`,
   ];
   let hookPhoto = null;
+  let hookQueryUsed = "";
   for (const query of hookQueries) {
     const candidate = await findLessonImage(query, unit.hook, `hook-${unit.id}`);
-    if (candidate && !usedSlidePhotos.has(candidate.photo)) { hookPhoto = candidate; break; }
+    if (candidate && !usedSlidePhotos.has(candidate.photo)) { hookPhoto = candidate; hookQueryUsed = query; break; }
+  }
+  // When the owner reported 2026-09-24 that every recent hook showed the same
+  // photo, the build log could not confirm or refute it: nothing recorded which
+  // picture the hook ended up with. The filename is a hash of the source URL,
+  // so printing it makes "same photo as last time" a thing two runs can be
+  // compared on instead of argued about.
+  if (hookPhoto) {
+    console.error(`   ▣ hook photo for ${unit.id}: ${hookPhoto.photo} (${hookPhoto.sourceType}) via «${hookQueryUsed}» ← ${hookPhoto.sourceUrl}`);
   }
   if (!hookPhoto) throw Object.assign(new Error(`هیچ تصویر واقعی، باکیفیت و غیرتکراری برای قلاب «${unit.topic}» پیدا نشد`), { kind: "visualQc" });
   pack.hookPhoto = hookPhoto.photo;
