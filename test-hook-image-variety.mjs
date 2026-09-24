@@ -60,6 +60,15 @@ for (const [i, t] of templates.entries()) {
     `hook query ${i + 1} gives only ${two.size} distinct two-word tiers for ${GERMAN_A1.length} episodes`);
 }
 
+// Which photo the hook actually got must be in the log. The owner's report of
+// 2026-09-24 could be neither confirmed nor refuted from a build log, because
+// nothing recorded it. The filename is a hash of the source URL, so printing it
+// makes "the same photo as last time" comparable between two runs.
+assert.match(build, /hook photo for \$\{unit\.id\}: \$\{hookPhoto\.photo\}/,
+  "the build must record which photo the hook chose, by its content-hashed filename");
+assert.match(build, /via «\$\{hookQueryUsed\}»/,
+  "and which of the hook queries won, so a repeat can be traced to the query that produced it");
+
 // The hook photo must still be refused if it repeats a slide photo in the same
 // episode — the check that was already there and is not what broke.
 assert.match(build, /usedSlidePhotos\.has\(candidate\.photo\)/,
