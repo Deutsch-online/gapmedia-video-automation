@@ -394,8 +394,19 @@ try {
 
   const hookItem = unit.items[0];
   const usedSlidePhotos = new Set(pack.tips.map((tip) => tip.photo));
+  // The owner reported 2026-09-24 that every recent episode's hook showed the
+  // same photo. Cause: findLessonImage() broadens a query that finds nothing to
+  // its last two words, then its last word. With the generic phrase at the END,
+  // EVERY episode broadened to the identical "language learning", then
+  // "learning" — one search, one top result, the same picture each time. The
+  // second query never had this problem because its generic part is already at
+  // the front; the first one is now built the same way.
+  //
+  // Keeping the generic phrase in the full-length tier keeps the learning
+  // context for the search that runs first; moving it to the front means every
+  // broadened tier falls back to THIS episode's own subject instead.
   const hookQueries = [
-    `${hookItem.img} German language learning`,
+    `German language learning ${hookItem.img}`,
     `German language learner ${unit.items.at(-1).img}`,
   ];
   let hookPhoto = null;
