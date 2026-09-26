@@ -4,6 +4,7 @@ import { writeFileSync, existsSync, readFileSync, mkdirSync, unlinkSync, rmSync 
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
+import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
 import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
@@ -33,7 +34,7 @@ const unitArgIdx = process.argv.indexOf("--unit");
 const correctionUnitId = unitArgIdx >= 0 ? process.argv[unitArgIdx + 1] : null;
 const isCorrection =!!correctionUnitId;
 
-const HF = "npx --yes hyperframes@0.8.16";
+const HF = "npx --yes hyperframes@0.8.79";
 const iso = new Date().toISOString().slice(0, 10);
 
 const PROGRESS = ".german-lesson-progress.json";
@@ -507,6 +508,8 @@ try {
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
     const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
     writeFileSync(comp, buildInkHTML(variantPack));
+    // The framework's own validator, before a single frame is rendered.
+    assertComposition(comp, { cli: HF });
 
     execSync(
       `node music/make-one.mjs ${variantPack.duration} ${variantPack.musicVariant} "${variantPack.music}" ${variantPack.musicOutroBars || 4}`,

@@ -45,7 +45,7 @@ const dateArg = args.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a));
 const date = dateArg ? new Date(dateArg + "T12:00:00") : new Date();
 const iso = date.toISOString().slice(0, 10);
 
-const HF = "npx --yes hyperframes@0.8.16";
+const HF = "npx --yes hyperframes@0.8.79";
 const resFlag = is4k ? "--resolution portrait-4k" : "";
 
 // --feature <id> publishes one named feature immediately, whatever the rotation
