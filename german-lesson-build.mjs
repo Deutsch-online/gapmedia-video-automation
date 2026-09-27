@@ -454,7 +454,7 @@ try {
     ? voiceParts.tips.map((t) => {
         const ex = LEAD + t.deDur + GAP;
         const fa = t.exampleFile ? ex + t.exampleDur + GAP : ex;
-        return { de: LEAD, ex, fa };
+        return { de: LEAD, deDur: t.deDur, ex, exDur: t.exampleFile ? t.exampleDur : 0, fa };
       })
     : null;
 

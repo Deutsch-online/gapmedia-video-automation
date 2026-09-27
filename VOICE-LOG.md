@@ -1031,3 +1031,46 @@ controls that must not move: «می‌آید»، «نمی‌آید»، «می‌
 **Status: fix shipped, awaiting the owner's ear on the re-sent episode 32.**
 No MiniMax key is available in the session container, so no sample could be
 auditioned here.
+
+## 2026-09-27 — «ماندن» and «دردسر» reported misread (episode 40)
+
+**Owner report:** in the animated re-send of episode 40 («در ادارهٔ دولتی»),
+«ماندن» and «دردسر» are pronounced wrong.
+
+| Line | Written | Sent to TTS before | Sent to TTS now |
+|---|---|---|---|
+| hook | «پشت باجهٔ اداره، ساکت ماندن گران تمام می‌شود.» | «… ساکت ماندن …» | «… ساکت ماندَن …» |
+| outro | «نفهمیدن عیب نیست؛ نپرسیدن دردسر می‌سازد.» | «… نپرسیدن دردسر …» | «… نپرسیدن دردِسر …» |
+
+**General cause.** The same as «صفر» and «هجی»: a short vowel that the bare
+spelling does not write, left for an Arabic-native voice to guess.
+«دردسر» is /dard-e-sar/. Its linking «ـِ» is never written, so a bare reading
+either runs «درد» straight into «سر» or breaks the word in two. «ماندن» is
+/mān-dan/. Only the «ـَ» of its last syllable is unwritten.
+
+**Fix.** Two entries in `PERSIAN_TTS_FIXES`, one mark each, on the spoken copy
+only: «ماندَن» and «دردِسر». The cards on screen do not change. The voice,
+speed, pitch and every other rule are untouched.
+
+**Measured, not assumed.** Of all 605 narration lines in the A1 curriculum, the
+new entries change **exactly two**: the two reported lines.
+
+**Audition.** `voice-word-probe.mjs` (workflow «Audition reported Persian
+words») sends A/B/C for each word to the bot. It uses the lesson's own pitch and
+speed override, the same path `german-lesson-build.mjs` uses:
+A = no mark (what was sent), B = the fix above, C = a heavier marking
+(«مانْدَن» / «دَردِسَر»). If B is not right by ear, the owner's choice replaces it.
+Only one variable changes per word.
+
+**Status: fix shipped in the re-sent episode 40; awaiting the owner's ear on
+the audition samples.** No MiniMax key is available in the session container,
+so no sample could be heard here.
+
+**Owner verdict (2026-09-27, by ear):** «ماندن» → **B** («ماندَن»);
+«دردسر» → **A** (no mark). The «دردِسر» entry is removed from
+`PERSIAN_TTS_FIXES`. Only «ماندَن» stays. The build that was running with
+«دردِسر» (run 679) was cancelled before it sent anything, and episode 40 is
+re-rendered with the verdict. `test-ep40-words.mjs` pins both choices:
+«ماندَن» marked, «دردسر» bare.
+
+**Status: closed by ear.**

@@ -26,10 +26,15 @@ for (const [v, h] of Object.entries(html)) {
   ok(!/font-family="Baloo"|font-family:"Baloo"/.test(h), `${v}: no Latin text set in the Arabic-only Baloo subset`);
   ok(/data-duration="61\.8"/.test(h), `${v}: root duration is the sum of the scenes`);
   ok(h.includes('window.__timelines["main"] = tl'), `${v}: one timeline registered as "main"`);
-  ok(/immediateRender:false/.test(h), `${v}: repeated cut tweens do not paint over the first frames`);
+  ok(/immediateRender:false/.test(h), `${v}: tweens that repeat a target do not paint over the first frames`);
 }
-ok(html.tiktok !== html.instagram && /shutter/.test(html.tiktok) && /sheet/.test(html.instagram),
+ok(html.tiktok !== html.instagram && /scaleY:0,transformOrigin:"50% 0%"},\{scaleY:1/.test(html.tiktok) && /\{x:120,opacity:0\}/.test(html.instagram),
   "the two formats are different designs, not one recoloured");
+for (const [v, h] of Object.entries(html)) {
+  ok(/class="v-thN"/.test(h) && /class="v-uN"/.test(h) && /class="c-head"/.test(h), `${v}: the characters are jointed rigs (thigh, arm, head bones)`);
+  ok(/\.v-m\.m-A/.test(h) && /\.v-m\.m-O/.test(h), `${v}: the visitor's mouth moves with the German vowels`);
+  ok(/\.v-lid/.test(h), `${v}: the characters blink`);
+}
 
 const build = readFileSync("german-lesson-build.mjs", "utf8");
 ok(/if \(request\.unit === correctionUnitId && request\.style === "anim"\) lessonStyle = "anim";/.test(build),
