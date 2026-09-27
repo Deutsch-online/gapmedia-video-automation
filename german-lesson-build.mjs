@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
 import { buildAnimHTML } from "./lib/build-anim.mjs";
+import { buildSceneHTML } from "./lib/build-scene.mjs";
+import { sceneImage, scenePrompt } from "./lib/lesson-scenes.mjs";
 import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
@@ -42,11 +44,15 @@ let lessonStyle = "ink";
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
-    if (request.unit === correctionUnitId && request.style === "anim") lessonStyle = "anim";
+    if (request.unit === correctionUnitId && ["anim", "scene"].includes(request.style)) lessonStyle = request.style;
   } catch {}
 }
-if (isCorrection && process.env.GERMAN_LESSON_STYLE === "anim") lessonStyle = "anim";
+if (isCorrection && ["anim", "scene"].includes(process.env.GERMAN_LESSON_STYLE)) lessonStyle = process.env.GERMAN_LESSON_STYLE;
 const isAnim = lessonStyle === "anim";
+// "scene": painted storybook scenes after the owner's reference reel (2026-09-27).
+const isScene = lessonStyle === "scene";
+// Both drawn styles make their own pictures; neither searches for photos.
+const drawsOwnScenes = isAnim || isScene;
 
 const HF = "npx --yes hyperframes@0.8.79";
 const iso = new Date().toISOString().slice(0, 10);
@@ -394,7 +400,7 @@ try {
 
   // The animated re-telling draws every scene itself, so it neither searches
   // for nor proves photos; the ink layout below still requires both.
-  if (!isAnim) {
+  if (!drawsOwnScenes) {
   for (let i = 0; i < unit.items.length; i++) {
     const item = unit.items[i];
     const found = await findLessonImage(item.img, item.fa, item.de);
@@ -533,7 +539,23 @@ try {
     },
   ];
   const vo = narrationFor(pack.id);
-  for (const format of isAnim ? ANIM_FORMATS : FORMAT_VARIANTS) {
+  let sceneImages = null;
+  if (isScene) {
+    const setting = `${unit.items[0].img}, somewhere in Germany`;
+    const beatsToDraw = [
+      { action: "the main character hesitates, unsure what to say, a friendly local person waits for him to speak" },
+      ...unit.items.map((it) => ({ action: `${it.img}; the main character is taking part in this moment` })),
+      { action: "the main character smiles and waves goodbye, relaxed and happy, the local person smiles back" },
+    ];
+    const got = [];
+    for (let i = 0; i < beatsToDraw.length; i++) {
+      const img = await sceneImage({ unitId: unit.id, index: i, prompt: scenePrompt({ setting, action: beatsToDraw[i].action }) });
+      if (!img) throw Object.assign(new Error(`AI scene ${i} for «${unit.topic}» could not be generated`), { kind: "visualQc" });
+      got.push(img);
+    }
+    sceneImages = { hook: got[0], items: got.slice(1, -1), outro: got.at(-1) };
+  }
+  for (const format of drawsOwnScenes ? ANIM_FORMATS : FORMAT_VARIANTS) {
     const variantPack = {
      ...pack,
       platform: format.platform,
@@ -543,12 +565,25 @@ try {
       bpm: format.bpm,
       musicVariant: format.musicVariant,
       music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
-      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${isAnim ? " (نسخهٔ انیمیشنی)" : ""}\n\n${format.hashtags}`,
+      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${drawsOwnScenes ? " (نسخهٔ انیمیشنی)" : ""}\n\n${format.hashtags}`,
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
     const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
-    writeFileSync(comp, isAnim
+    const sceneItems = unit.items.map((it) => {
+      const [exDe, exFa] = String(it.example || "").split(" — ");
+      return { de: it.de, fa: it.fa, exDe: exampleGermanFor(it) ? exDe : "", exFa: exampleGermanFor(it) ? exFa : "" };
+    });
+    writeFileSync(comp, isScene
+      ? buildSceneHTML({
+          variant: format.variant, episodeNo, total: COURSE_TOTAL, topic: unit.topic,
+          hook: unit.hook, loopLine: `${["", "یک", "دو", "سه", "چهار", "پنج", "شش"][unit.items.length] || "چند"} جملهٔ کوتاه؛ تا آخر ببین`,
+          nextTopic: nextUnit.topic, outroLine: vo?.outro || "",
+          items: sceneItems, images: sceneImages, beats: voiceBeats,
+          hookDuration: variantPack.hookDuration, tipDurations: variantPack.tipDurations,
+          outroDuration: variantPack.outroDuration,
+        })
+      : isAnim
       ? buildAnimHTML({
           variant: format.variant,
           episodeNo, total: COURSE_TOTAL, topic: unit.topic,
@@ -580,7 +615,11 @@ try {
       },
     );
     const music = existsSync(variantPack.music) ? variantPack.music : "music/bed-60s-v1.m4a";
-    execSync(`${HF} render -c "${comp}" --quality high --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
+    // Full-frame paintings under a moving camera encode large: at the default
+    // "high" quality a 60 s scene film measured 43 MB, near Telegram's 50 MB
+    // bot limit. A fixed bitrate keeps it well under (4 Mb/s ≈ 30 MB).
+    const renderQuality = isScene ? "--video-bitrate 4M" : "--quality high";
+    execSync(`${HF} render -c "${comp}" ${renderQuality} --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
     if (voice) {
       execSync(
         `ffmpeg -y -hide_banner -loglevel error -i "${silent}" -i "${music}" -i "${voice}" ` +
