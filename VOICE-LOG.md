@@ -1065,3 +1065,12 @@ Only one variable changes per word.
 **Status: fix shipped in the re-sent episode 40; awaiting the owner's ear on
 the audition samples.** No MiniMax key is available in the session container,
 so no sample could be heard here.
+
+**Owner verdict (2026-09-27, by ear):** «ماندن» → **B** («ماندَن»);
+«دردسر» → **A** (no mark). The «دردِسر» entry is removed from
+`PERSIAN_TTS_FIXES`. Only «ماندَن» stays. The build that was running with
+«دردِسر» (run 679) was cancelled before it sent anything, and episode 40 is
+re-rendered with the verdict. `test-ep40-words.mjs` pins both choices:
+«ماندَن» marked, «دردسر» bare.
+
+**Status: closed by ear.**
