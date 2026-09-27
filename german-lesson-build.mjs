@@ -5,8 +5,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
 import { buildAnimHTML } from "./lib/build-anim.mjs";
-import { buildSceneHTML } from "./lib/build-scene.mjs";
-import { sceneImage, scenePrompt } from "./lib/lesson-scenes.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
 import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
@@ -43,15 +41,14 @@ let lessonStyle = "ink";
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
-    if (request.unit === correctionUnitId && ["anim", "scene"].includes(request.style)) lessonStyle = request.style;
+    if (request.unit === correctionUnitId && request.style === "anim") lessonStyle = "anim";
   } catch {}
 }
-if (isCorrection && ["anim", "scene"].includes(process.env.GERMAN_LESSON_STYLE)) lessonStyle = process.env.GERMAN_LESSON_STYLE;
+if (isCorrection && process.env.GERMAN_LESSON_STYLE === "anim") lessonStyle = "anim";
 const isAnim = lessonStyle === "anim";
-// "scene": painted storybook scenes after the owner's reference reel (2026-09-27).
-const isScene = lessonStyle === "scene";
-// Both drawn styles make their own pictures; neither searches for photos.
-const drawsOwnScenes = isAnim || isScene;
+// The owner tried a still-image "scene" style on 2026-09-27 and rejected it
+// ("pictures are useless — it must be moving animation"); it was removed.
+const drawsOwnScenes = isAnim;
 
 const HF = "npx --yes hyperframes@0.8.16";
 const iso = new Date().toISOString().slice(0, 10);
@@ -538,22 +535,6 @@ try {
     },
   ];
   const vo = narrationFor(pack.id);
-  let sceneImages = null;
-  if (isScene) {
-    const setting = `${unit.items[0].img}, somewhere in Germany`;
-    const beatsToDraw = [
-      { action: "the main character hesitates, unsure what to say, a friendly local person waits for him to speak" },
-      ...unit.items.map((it) => ({ action: `${it.img}; the main character is taking part in this moment` })),
-      { action: "the main character smiles and waves goodbye, relaxed and happy, the local person smiles back" },
-    ];
-    const got = [];
-    for (let i = 0; i < beatsToDraw.length; i++) {
-      const img = await sceneImage({ unitId: unit.id, index: i, prompt: scenePrompt({ setting, action: beatsToDraw[i].action }) });
-      if (!img) throw Object.assign(new Error(`AI scene ${i} for «${unit.topic}» could not be generated`), { kind: "visualQc" });
-      got.push(img);
-    }
-    sceneImages = { hook: got[0], items: got.slice(1, -1), outro: got.at(-1) };
-  }
   for (const format of drawsOwnScenes ? ANIM_FORMATS : FORMAT_VARIANTS) {
     const variantPack = {
      ...pack,
@@ -569,20 +550,7 @@ try {
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
     const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
-    const sceneItems = unit.items.map((it) => {
-      const [exDe, exFa] = String(it.example || "").split(" — ");
-      return { de: it.de, fa: it.fa, exDe: exampleGermanFor(it) ? exDe : "", exFa: exampleGermanFor(it) ? exFa : "" };
-    });
-    writeFileSync(comp, isScene
-      ? buildSceneHTML({
-          variant: format.variant, episodeNo, total: COURSE_TOTAL, topic: unit.topic,
-          hook: unit.hook, loopLine: `${["", "یک", "دو", "سه", "چهار", "پنج", "شش"][unit.items.length] || "چند"} جملهٔ کوتاه؛ تا آخر ببین`,
-          nextTopic: nextUnit.topic, outroLine: vo?.outro || "",
-          items: sceneItems, images: sceneImages, beats: voiceBeats,
-          hookDuration: variantPack.hookDuration, tipDurations: variantPack.tipDurations,
-          outroDuration: variantPack.outroDuration,
-        })
-      : isAnim
+    writeFileSync(comp, isAnim
       ? buildAnimHTML({
           variant: format.variant,
           episodeNo, total: COURSE_TOTAL, topic: unit.topic,
@@ -615,7 +583,7 @@ try {
     // Full-frame paintings under a moving camera encode large: at the default
     // "high" quality a 60 s scene film measured 43 MB, near Telegram's 50 MB
     // bot limit. A fixed bitrate keeps it well under (4 Mb/s ≈ 30 MB).
-    const renderQuality = isScene ? "--video-bitrate 4M" : "--quality high";
+    const renderQuality = "--quality high";
     execSync(`${HF} render -c "${comp}" ${renderQuality} --fps 30 --skill=faceless-explainer -o "${silent}"`, { stdio: "inherit" });
     if (voice) {
       execSync(
@@ -639,7 +607,9 @@ try {
       const res = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file: video.final, caption: video.caption });
       if (!res?.message_id) throw new Error(`${video.label} lesson video was not confirmed by Telegram.`);
       sent.push({...video, messageId: res.message_id });
-      console.log(` ✈ ${video.label} sent to Telegram`);
+      // The message id is what a bot needs to withdraw a video later
+      // (deleteMessage); log it for every send, corrections included.
+      console.log(` ✈ ${video.label} sent to Telegram (message ${res.message_id})`);
     }
     if (!isCorrection) {
       for (const video of sent) {
