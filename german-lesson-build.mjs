@@ -4,6 +4,7 @@ import { writeFileSync, existsSync, readFileSync, mkdirSync, unlinkSync, rmSync 
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
+import { buildAnimHTML } from "./lib/build-anim.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
 import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
@@ -32,6 +33,19 @@ const inCycle = process.env.GERMAN_CYCLE === "on";
 const unitArgIdx = process.argv.indexOf("--unit");
 const correctionUnitId = unitArgIdx >= 0 ? process.argv[unitArgIdx + 1] : null;
 const isCorrection =!!correctionUnitId;
+// A correction request may ask for the lesson re-told as an illustrated
+// animation ("style": "anim") instead of the photo-led ink layout — the owner's
+// request of 2026-09-27. Only a request that names this very unit can switch
+// the style; the scheduled 05:00/17:30 episodes always stay on ink.
+let lessonStyle = "ink";
+if (isCorrection) {
+  try {
+    const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
+    if (request.unit === correctionUnitId && request.style === "anim") lessonStyle = "anim";
+  } catch {}
+}
+if (isCorrection && process.env.GERMAN_LESSON_STYLE === "anim") lessonStyle = "anim";
+const isAnim = lessonStyle === "anim";
 
 const HF = "npx --yes hyperframes@0.8.16";
 const iso = new Date().toISOString().slice(0, 10);
@@ -377,6 +391,9 @@ try {
   applyMinimumLessonDuration();
   console.log(` lesson duration: ${pack.duration}s (minimum ${MIN_EPISODE_SECONDS}s)`);
 
+  // The animated re-telling draws every scene itself, so it neither searches
+  // for nor proves photos; the ink layout below still requires both.
+  if (!isAnim) {
   for (let i = 0; i < unit.items.length; i++) {
     const item = unit.items[i];
     const found = await findLessonImage(item.img, item.fa, item.de);
@@ -428,6 +445,17 @@ try {
   pack.hookPhotoAlt = hookPhoto.alt;
   pack.hookPhotoAspect = 0.75;
   assertVisualProof(pack);
+  }
+
+  // Where each spoken clip starts inside its scene, so the animation can show
+  // the German phrase, the example and the Persian line as each is said.
+  const voiceBeats = voiceParts
+    ? voiceParts.tips.map((t) => {
+        const ex = LEAD + t.deDur + GAP;
+        const fa = t.exampleFile ? ex + t.exampleDur + GAP : ex;
+        return { de: LEAD, ex, fa };
+      })
+    : null;
 
   const cutTimes = (() => {
     const lens = pack.tipDurations;
@@ -491,7 +519,20 @@ try {
   }
 
   const deliveredVideos = [];
-  for (const format of FORMAT_VARIANTS) {
+  const ANIM_FORMATS = [
+    {
+      slug: "tiktok-anim", label: "TikTok (انیمیشن)", platform: "tiktok", variant: "tiktok",
+      mood: "play", bpm: 130, musicVariant: 1,
+      hashtags: "#LearnGerman #GermanA1 #DeutschLernen #Animation #viral",
+    },
+    {
+      slug: "instagram-anim", label: "Instagram (انیمیشن)", platform: "instagram", variant: "instagram",
+      mood: "craft", bpm: 124, musicVariant: 3,
+      hashtags: "#LearnGerman #GermanA1 #DeutschLernen #Animation #viral",
+    },
+  ];
+  const vo = narrationFor(pack.id);
+  for (const format of isAnim ? ANIM_FORMATS : FORMAT_VARIANTS) {
     const variantPack = {
      ...pack,
       platform: format.platform,
@@ -501,12 +542,26 @@ try {
       bpm: format.bpm,
       musicVariant: format.musicVariant,
       music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
-      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n\n${format.hashtags}`,
+      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${isAnim ? " (نسخهٔ انیمیشنی)" : ""}\n\n${format.hashtags}`,
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
     const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
-    writeFileSync(comp, buildInkHTML(variantPack));
+    writeFileSync(comp, isAnim
+      ? buildAnimHTML({
+          variant: format.variant,
+          episodeNo, total: COURSE_TOTAL, topic: unit.topic,
+          hook: unit.hook, loopLine: `${["", "یک", "دو", "سه", "چهار", "پنج", "شش"][unit.items.length] || "چند"} جملهٔ کوتاه؛ تا آخر ببین`,
+          nextTopic: nextUnit.topic, outroLine: vo?.outro || "",
+          items: unit.items.map((it) => {
+            const [exDe, exFa] = String(it.example || "").split(" — ");
+            return { de: it.de, fa: it.fa, exDe: exampleGermanFor(it) ? exDe : "", exFa: exampleGermanFor(it) ? exFa : "" };
+          }),
+          beats: voiceBeats,
+          hookDuration: variantPack.hookDuration, tipDurations: variantPack.tipDurations,
+          outroDuration: variantPack.outroDuration, duration: variantPack.duration,
+        })
+      : buildInkHTML(variantPack));
 
     execSync(
       `node music/make-one.mjs ${variantPack.duration} ${variantPack.musicVariant} "${variantPack.music}" ${variantPack.musicOutroBars || 4}`,
