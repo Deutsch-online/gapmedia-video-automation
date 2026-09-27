@@ -37,8 +37,8 @@ for (const [v, h] of Object.entries(html)) {
 }
 
 const build = readFileSync("german-lesson-build.mjs", "utf8");
-ok(/if \(request\.unit === correctionUnitId && \["anim", "scene"\]\.includes\(request\.style\)\) lessonStyle = request\.style;/.test(build),
-  "only a correction request naming this unit can select a drawn style");
+ok(/if \(request\.unit === correctionUnitId && request\.style === "anim"\) lessonStyle = "anim";/.test(build),
+  "only a correction request naming this unit can select the animated style");
 ok(/let lessonStyle = "ink";/.test(build), "the scheduled episodes default to ink");
 
 console.log(failed ? `\n🔴 ${failed} check(s) failed` : "\n✅ animated lesson builder is sound");
