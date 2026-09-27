@@ -39,7 +39,7 @@ const force = args.includes("--force");
 const inputAt = args.indexOf("--input");
 const inputText = inputAt >= 0 ? args[inputAt + 1] || "" : "";
 const previewOnly = args.includes("--preview");
-const HF = "npx --yes hyperframes@0.8.16";
+const HF = "npx --yes hyperframes@0.8.79";
 const resFlag = is4k ? "--resolution portrait-4k" : "";
 
 if (!inputText) {

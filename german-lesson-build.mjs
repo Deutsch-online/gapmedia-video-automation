@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
 import { buildAnimHTML } from "./lib/build-anim.mjs";
+import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
 import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
@@ -50,7 +51,7 @@ const isAnim = lessonStyle === "anim";
 // ("pictures are useless — it must be moving animation"); it was removed.
 const drawsOwnScenes = isAnim;
 
-const HF = "npx --yes hyperframes@0.8.16";
+const HF = "npx --yes hyperframes@0.8.79";
 const iso = new Date().toISOString().slice(0, 10);
 
 const PROGRESS = ".german-lesson-progress.json";
@@ -565,6 +566,8 @@ try {
           outroDuration: variantPack.outroDuration, duration: variantPack.duration,
         })
       : buildInkHTML(variantPack));
+    // The framework's own validator, before a single frame is rendered.
+    assertComposition(comp, { cli: HF });
 
     execSync(
       `node music/make-one.mjs ${variantPack.duration} ${variantPack.musicVariant} "${variantPack.music}" ${variantPack.musicOutroBars || 4}`,

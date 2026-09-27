@@ -19,7 +19,7 @@ const args = process.argv.slice(2);
 const is4k = args.includes("--4k");
 const noMusic = args.includes("--no-music");
 const voiceArg = args.find((a) => a.startsWith("--voice="));
-const HF = "npx --yes hyperframes@0.8.16";
+const HF = "npx --yes hyperframes@0.8.79";
 const resFlag = is4k ? "--resolution portrait-4k" : "";
 
 const pack = aiEducationPack();
