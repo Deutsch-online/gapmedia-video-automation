@@ -1,0 +1,59 @@
+name: Gemini cartoon still
+
+# Manual only. Checks whether the Gemini API image models work with the Google
+# key (Veo has no quota on it) and sends the still to the owner's bot chat.
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Image prompt"
+        required: true
+        type: string
+      model:
+        description: "Gemini image model"
+        required: false
+        default: "gemini-2.5-flash-image"
+        type: string
+      caption:
+        description: "Caption for the bot message"
+        required: false
+        default: "EasyDeutsch — Gemini cartoon still test"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  still:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate the still
+        env:
+          GOOGLE_VEO_API_KEY: ${{ secrets.GOOGLE_VEO_API_KEY }}
+          PROMPT: ${{ inputs.prompt }}
+          MODEL: ${{ inputs.model }}
+        run: node lib/gemini-image.mjs --prompt "$PROMPT" --model "$MODEL" --out out/gemini-still.png
+      - name: Send the still to the bot chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CAPTION: ${{ inputs.caption }}
+        run: |
+          node --input-type=module -e '
+            import { telegramConfig, sendPhoto } from "./lib/telegram.mjs";
+            const tg = telegramConfig(process.env);
+            if (!tg.enabled) throw new Error("Telegram is not configured");
+            const res = await sendPhoto({ token: tg.token, chatId: tg.reviewChatId, file: "out/gemini-still.png", caption: process.env.CAPTION });
+            console.log(` ✈ still sent to Telegram (message ${res.message_id})`);
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gemini-still
+          path: out/gemini-still.png
