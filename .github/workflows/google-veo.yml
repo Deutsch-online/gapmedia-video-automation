@@ -28,6 +28,16 @@ on:
         default: "720p"
         type: choice
         options: ["720p", "1080p", "4k"]
+      send_to_bot:
+        description: "true = send the generated clip to the owner's Telegram bot chat (never the channel)"
+        required: true
+        default: false
+        type: boolean
+      caption:
+        description: "Caption for the bot message (used only when send_to_bot is true)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -58,6 +68,20 @@ jobs:
         run: |
           test -n "$PROMPT"
           node lib/google-veo.mjs --prompt "$PROMPT" --aspect "$ASPECT" --resolution "$RESOLUTION" --out out/google-veo-clip.mp4
+      - name: Send the clip to the bot chat
+        if: inputs.generate && inputs.send_to_bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CAPTION: ${{ inputs.caption }}
+        run: |
+          node --input-type=module -e '
+            import { telegramConfig, sendVideo } from "./lib/telegram.mjs";
+            const tg = telegramConfig(process.env);
+            if (!tg.enabled) throw new Error("Telegram is not configured");
+            const res = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file: "out/google-veo-clip.mp4", caption: process.env.CAPTION || "Veo test clip" });
+            console.log(` ✈ Veo clip sent to Telegram (message ${res.message_id})`);
+          '
       - name: Upload generated clip
         if: inputs.generate
         uses: actions/upload-artifact@v4
