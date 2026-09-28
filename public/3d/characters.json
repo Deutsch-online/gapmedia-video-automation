@@ -1,0 +1,7 @@
+{
+  "note": "EasyDeutsch character looks for the 3D lessons. Made with tools/character-editor/index.html (the 'Save to project' button). 1 = the original size.",
+  "looks": {
+    "lena": { "head": 1, "body": 1, "height": 1, "tint": "#ffffff", "tintAmt": 0 },
+    "braun": { "head": 1, "body": 1, "height": 1, "tint": "#ffffff", "tintAmt": 0 }
+  }
+}

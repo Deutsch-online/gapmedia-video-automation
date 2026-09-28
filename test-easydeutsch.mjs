@@ -61,4 +61,16 @@ for (const k of ["cafe", "home", "station", "shop", "doctor", "school", "work", 
 import { EASY_TEXT, EASY_TITLE_COUNT } from "./lib/easy-titles.mjs";
 assert.equal(EASY_TITLE_COUNT, GERMAN_A1.length); assert.equal(Object.keys(EASY_TEXT).length, GERMAN_A1.length);
 assert.match(build, /let lessonStyle = "easy";/); assert.match(build, /let easyLook = "cartoon3d";/);
+// the character editor (tools/character-editor) saves the looks; every lesson reads them
+import { characterLooks } from "./lib/easydeutsch.mjs";
+const looks = characterLooks();
+for (const w of ["lena", "braun"]) for (const k of ["head", "body", "height", "tintAmt"]) assert.equal(typeof looks[w][k], "number", `${w}.${k}`);
+assert.equal(characterLooks("no-such-file.json"), null, "no file: the original characters");
+const filmLooks = buildEasyCartoonHTML({ episodeNo: 43, title: "x", hookDur: 3, outroAt: 10, total: 13, three: true, looks, lines: [] });
+assert.match(filmLooks, /"looks":\{"lena":\{"head":/);
+assert.match(easy, /looks: characterLooks\(\)/);
+assert.match(toon, /function applyLook\(P, look\)/); assert.match(toon, /SCENES\.studio = /); assert.match(toon, /SCENES\.none = /);
+const editor = readFileSync("tools/character-editor/index.html", "utf8");
+for (const id of ["head", "body", "height", "tintAmt", "zin", "zout", "save", "reset", "export", "toproject", "strip"]) assert.match(editor, new RegExp(`id="${id}"`), id);
+assert.doesNotMatch(editor, /fetch\(["']https?:/, "the editor keeps edits in the browser");
 console.log("easydeutsch: ok");

@@ -12,11 +12,12 @@ import * as THREE from "three";
 const CFG = window.__toon;
 const W = 1080, H = 1080;
 const canvas = document.getElementById("three-stage");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+const CLEAR = CFG.setting === "none";          // the character editor: no set, a transparent picture
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, alpha: CLEAR });
 renderer.setSize(W, H, false); renderer.setPixelRatio(1);
 renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.NoToneMapping;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf4e2be);
+scene.background = CLEAR ? null : new THREE.Color(0xf4e2be);
 const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 40);
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -384,6 +385,9 @@ const SCENES = {
   },
 };
 SCENES.office = SCENES.bureau;
+// a seamless studio sweep (character reference pictures) and no set at all (transparent)
+SCENES.studio = () => { scene.background = new THREE.Color(0xf3efe8); M(new THREE.CircleGeometry(6, 48), 0xf3efe8, { r: [-Math.PI / 2, 0, 0], parent: scene, ink: 0 }); return { lamps: [], update() {} }; };
+SCENES.none = () => ({ lamps: [], update() {} });
 const SETTING = SCENES[CFG.setting] ? CFG.setting : "cafe";
 const OPEN = new Set(["home", "park", "school"]);
 const LAY = OPEN.has(SETTING) ? { lena: [-0.9, 0.3], braun: [0.9, -0.1] } : { lena: [-0.85, 0.45], braun: [1.3, -0.75] };
@@ -394,10 +398,27 @@ const sun = new THREE.DirectionalLight(0xfff2d6, 2.4); sun.position.set(2.5, 4, 
 const cafe = SCENES[SETTING]();
 const lena = makeLena(LAY.lena), braun = makeBraun(LAY.braun);
 // a soft blob under each person, so they stand on the floor
-for (const P of [lena, braun]) { const sh = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })); sh.rotation.x = -Math.PI / 2; sh.position.set(P.root.position.x, 0.06, P.root.position.z); scene.add(sh); }
+if (!CLEAR) for (const P of [lena, braun]) { const sh = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })); sh.rotation.x = -Math.PI / 2; sh.position.set(P.root.position.x, 0.06, P.root.position.z); scene.add(sh); }
 // confetti for the goodbye: a fixed set of pieces, positions are pure functions of time
 const CONF = []; for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.06, 0.1), new THREE.MeshBasicMaterial({ color: [0xffce00, 0xdd0000, 0x2b1d16, 0xffffff, 0x3ac0c8][i % 5], side: THREE.DoubleSide })); m.visible = false; scene.add(m); CONF.push(m); }
 const PEOPLE = { lena, braun };
+
+// the approved looks (public/3d/characters.json, made with tools/character-editor): head size,
+// body shape, height, and a colour light that keeps the toon shading (a multiply on each colour)
+const LOOK_DEFAULT = { head: 1, body: 1, height: 1, tint: "#ffffff", tintAmt: 0 };
+function applyLook(P, look) {
+  const k = { ...LOOK_DEFAULT, ...(look || {}) };
+  const hd = clamp(+k.head, 0.8, 1.35), bd = clamp(+k.body, 0.8, 1.25), ht = clamp(+k.height, 0.85, 1.15);
+  P.root.scale.set(bd, ht, bd);
+  P.head.scale.set(hd / bd, hd / ht, hd / bd);
+  const light = new THREE.Color(1, 1, 1).lerp(new THREE.Color(k.tint), clamp(+k.tintAmt, 0, 0.6));
+  P.root.traverse((o) => {
+    const m = o.material; if (!m || !m.isMeshToonMaterial) return;
+    if (!m.userData.base) m.userData.base = m.color.clone();
+    m.color.copy(m.userData.base).multiply(light);
+  });
+}
+for (const w of ["lena", "braun"]) if (CFG.looks && CFG.looks[w]) applyLook(PEOPLE[w], CFG.looks[w]);
 
 // ------------------------------------------------------------------ the lesson as time windows
 const L = CFG.lines, HOOK = CFG.hookDur, OUTRO = CFG.outroAt, TOTAL = CFG.total;
@@ -487,7 +508,13 @@ const SH = {
   braun: { p: [LAY.braun[0] - 0.5, 1.6, 2.5], l: [LAY.braun[0], 1.5, LAY.braun[1]] },
 };
 const mix = (A, B, k) => ({ p: A.p.map((v, i) => v + (B.p[i] - v) * k), l: A.l.map((v, i) => v + (B.l[i] - v) * k) });
+let VIEW = null;                              // the editor: a fixed full-body shot of one person
 function cameraAt(t) {
+  if (VIEW) {
+    const who = VIEW.who === "braun" ? LAY.braun : VIEW.who === "lena" ? LAY.lena : null, z = VIEW.zoom || 1;
+    const at = who ? [who[0], 1.08, who[1]] : [0.2, 1.08, 0];
+    camera.position.set(at[0] + (who ? 0.15 : 0.1), 1.25, at[2] + (who ? 4.9 : 6.2) / z); camera.lookAt(...at); return;
+  }
   let c = SH.wide;
   for (const l of L) c = mix(c, SH[l.who], ss(l.t - 0.5, l.t + 0.1, t));
   c = mix(c, SH.wide, ss(OUTRO, OUTRO + 0.6, t));
@@ -514,4 +541,6 @@ function renderAt(t) {
 window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
 window.__hf.buildReady.toon = Promise.resolve();
 window.addEventListener("hf-seek", (ev) => renderAt(ev.detail.time));
+// hooks for tools/character-editor (never used by a lesson render)
+window.__toonEditor = { applyLook: (w, look) => applyLook(PEOPLE[w], look), view: (v) => { VIEW = v; }, render: renderAt };
 renderAt(window.__hfThreeTime || 0);

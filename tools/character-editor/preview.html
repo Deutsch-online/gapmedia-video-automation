@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EasyDeutsch 3D preview</title>
+<style>html,body{margin:0;background:transparent;overflow:hidden}canvas{display:block;width:100vw;height:100vh;object-fit:contain}</style>
+</head>
+<body>
+<canvas id="three-stage" width="1080" height="1080"></canvas>
+<script>
+  // The real lesson stage (public/3d/toon-stage.js) with a short hello, so the editor
+  // shows the characters exactly as the lesson renders them.
+  // ?base= the path to the repo root (the editor finds it), ?setting= the set.
+  const q = new URLSearchParams(location.search);
+  const base = q.get("base") || "";
+  window.__toon = {
+    lines: [{ who: "lena", de: "Hallo, ich bin Lena.", action: "chest", t: 3, dur: 1.8, item: 0 },
+            { who: "braun", de: "Guten Tag, ich bin Herr Braun.", action: "none", t: 5.4, dur: 2, item: 0 }],
+    hookDur: 2.6, outroAt: 8, total: 11, setting: q.get("setting") || "studio", looks: null,
+  };
+  const map = document.createElement("script");
+  map.type = "importmap";
+  map.textContent = JSON.stringify({ imports: { three: base + "public/3d/vendor/three.module.js" } });
+  document.head.appendChild(map);
+  const stage = document.createElement("script");
+  stage.type = "module";
+  stage.src = base + "public/3d/toon-stage.js";
+  stage.onload = () => parent.postMessage({ toonReady: true }, "*");
+  document.body.appendChild(stage);
+</script>
+</body>
+</html>
