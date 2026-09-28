@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character Editor</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#f7f7f8; --line:#e6e6ea; --ink:#18181b; --muted:#71717a; --accent:#dd0000; --accent-ink:#ffffff;
+  --checker-a:#ffffff; --checker-b:#ececf0; --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#111113; --panel:#1a1a1d; --line:#2a2a2f; --ink:#f4f4f5; --muted:#a1a1aa; --checker-a:#1f1f23; --checker-b:#2a2a30; --shadow:none; }
+}
+:root[data-theme="dark"]{ --bg:#111113; --panel:#1a1a1d; --line:#2a2a2f; --ink:#f4f4f5; --muted:#a1a1aa; --checker-a:#1f1f23; --checker-b:#2a2a30; --shadow:none; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:15px;margin:0 8px 0 0;font-weight:650;letter-spacing:.01em}
+.tabs{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px}
+.tabs button{border:0;background:none;color:var(--muted);padding:6px 12px;border-radius:7px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--bg);color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+.spacer{flex:1}
+main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:0;min-height:calc(100vh - 57px)}
+.stage{position:relative;display:flex;flex-direction:column;min-width:0}
+.view{flex:1;overflow:auto;display:grid;place-items:center;padding:20px 16px}
+.frame{position:relative;aspect-ratio:4/5;height:min(72vh,calc((100vw - 380px)*1.25));max-width:100%;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);
+  background-color:var(--checker-a);background-image:linear-gradient(45deg,var(--checker-b) 25%,transparent 25%,transparent 75%,var(--checker-b) 75%),linear-gradient(45deg,var(--checker-b) 25%,transparent 25%,transparent 75%,var(--checker-b) 75%);background-size:22px 22px;background-position:0 0,11px 11px;transform-origin:center center;transition:transform .15s}
+.frame canvas,.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.frame.three{aspect-ratio:1/1}
+.drop{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px;cursor:pointer}
+.drop b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:center;padding:0 16px 12px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:9px;font:inherit;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.red{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.zoomv{min-width:44px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+aside{border-left:1px solid var(--line);padding:16px;background:var(--panel);overflow:auto}
+.group{margin-bottom:18px}
+.group h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;font-weight:650}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;margin-bottom:12px}
+.row label{font-weight:550}
+.row output{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px}
+.row input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.row .ends{grid-column:1/-1;display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:-2px}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw button{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0;position:relative}
+.sw button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--bg) inset}
+.sw.bg button{border-radius:8px;width:44px;height:55px}
+.sw .none{background-color:#fff;background-image:linear-gradient(45deg,#ddd 25%,transparent 25%,transparent 75%,#ddd 75%),linear-gradient(45deg,#ddd 25%,transparent 25%,transparent 75%,#ddd 75%);background-size:10px 10px;background-position:0 0,5px 5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.versions{border-top:1px solid var(--line);padding:10px 16px 14px}
+.versions h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:650}
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;min-height:92px}
+.strip .empty{color:var(--muted);font-size:13px;align-self:center}
+.ver{position:relative;flex:0 0 auto;width:72px;cursor:pointer}
+.ver img{width:72px;height:90px;object-fit:contain;border-radius:8px;border:1px solid var(--line);background:var(--checker-a);display:block}
+.ver.sq img{height:72px}
+.ver span{display:block;font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
+.ver .x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px;line-height:17px;text-align:center;cursor:pointer;padding:0}
+.note{color:var(--muted);font-size:12px;margin:6px 0 0}
+pre{white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:11px;max-height:160px;overflow:auto}
+.hidden{display:none!important}
+@media (max-width:820px){
+  main{grid-template-columns:1fr}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  .frame{height:auto;width:min(100%,520px)}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Character Editor</h1>
+  <div class="tabs" role="tablist">
+    <button id="tab3d" class="on" role="tab">EasyDeutsch 3D</button>
+    <button id="tabpng" role="tab">PNG character</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="upload">Upload PNG</button>
+  <input type="file" id="file" accept="image/png,image/webp" class="hidden">
+</header>
+<main>
+  <section class="stage">
+    <div class="view" id="view">
+      <div class="frame three" id="frame">
+        <iframe id="preview" title="3D preview"></iframe>
+        <canvas id="canvas" class="hidden" width="800" height="1000"></canvas>
+        <div class="drop hidden" id="drop"><div><b>Drop a transparent PNG here</b>or click to choose a file. It stays in your browser.</div></div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="zout" aria-label="Zoom out">−</button><span class="zoomv" id="zv">100%</span><button class="btn" id="zin" aria-label="Zoom in">+</button>
+      <button class="btn" id="play">Pause</button>
+      <button class="btn" id="save">Save version</button>
+      <button class="btn" id="reset">Back to original</button>
+      <button class="btn primary" id="export">Export PNG</button>
+      <button class="btn red" id="toproject">Save to project</button>
+    </div>
+    <div class="versions">
+      <h2>Saved versions</h2>
+      <div class="strip" id="strip"></div>
+    </div>
+  </section>
+  <aside>
+    <div class="group" id="whoGroup">
+      <h2>Character</h2>
+      <div class="chips" id="who"><button data-v="lena" class="on">Lena</button><button data-v="braun">Herr Braun</button><button data-v="both">Both</button></div>
+    </div>
+    <div class="group">
+      <h2>Shape</h2>
+      <div class="row"><label for="head">Head size</label><output id="headO"></output><input type="range" id="head" min="0.8" max="1.35" step="0.01" value="1"><div class="ends"><span>smaller</span><span>bigger</span></div></div>
+      <div class="row"><label for="body">Body shape</label><output id="bodyO"></output><input type="range" id="body" min="0.8" max="1.25" step="0.01" value="1"><div class="ends"><span>lean</span><span>sturdy</span></div></div>
+      <div class="row"><label for="height">Height</label><output id="heightO"></output><input type="range" id="height" min="0.85" max="1.15" step="0.01" value="1"><div class="ends"><span>shorter</span><span>taller</span></div></div>
+      <div class="row hidden" id="neckRow"><label for="neck">Neck line</label><output id="neckO"></output><input type="range" id="neck" min="0.12" max="0.5" step="0.005" value="0.3"><div class="ends"><span>higher</span><span>lower</span></div></div>
+    </div>
+    <div class="group">
+      <h2>Colour lighting</h2>
+      <div class="sw" id="tints"></div>
+      <div class="row" style="margin-top:12px"><label for="tintAmt">Strength</label><output id="tintAmtO"></output><input type="range" id="tintAmt" min="0" max="0.6" step="0.01" value="0"></div>
+    </div>
+    <div class="group">
+      <h2>Background</h2>
+      <div class="sw bg" id="bgs"></div>
+      <div class="chips hidden" id="sets"></div>
+    </div>
+    <div class="group hidden" id="projGroup">
+      <h2>Project file</h2>
+      <p class="note">“Save to project” downloads <b>characters.json</b>. Put it in <b>public/3d/</b> (or send it to Claude); every next lesson uses these looks.</p>
+      <pre id="json"></pre>
+    </div>
+  </aside>
+</main>
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+  };
+  const TINTS = [["#ffffff", "None"], ["#ff8a3d", "Orange"], ["#ffc93c", "Gold"], ["#ff6fa3", "Rose"], ["#9b6bff", "Violet"], ["#2f7bff", "Electric blue"], ["#27c4b5", "Teal"]];
+  const BGS = [["none", "Transparent"], ["#f3efe8", "Off-white"], ["#e4dcf7", "Lilac"], ["#fbe8a6", "Yellow"], ["#cfe3f7", "Powder blue"], ["#d6f0e0", "Mint"], ["grad", "Soft gradient"]];
+  const SETS = ["studio", "none", "cafe", "home", "station", "shop", "doctor", "school", "work", "park", "bureau"];
+  const DEF = { head: 1, body: 1, height: 1, tint: "#ffffff", tintAmt: 0 };
+
+  let mode = "3d", zoom = 1, playing = true;
+  // 3D state: one look per character, the set, who is framed
+  let looks = { lena: { ...DEF }, braun: { ...DEF } }, orig3d = null, who = "lena", setting = "studio";
+  // PNG state
+  let png = { ...DEF, neck: 0.3, bg: "none" }, srcImg = null, bbox = null;
+
+  // ---------------------------------------------------------------- the repo root (for the 3D preview)
+  let BASE = null;
+  async function findBase() {
+    for (const b of ["", "../../"]) { try { const r = await fetch(b + "public/3d/toon-stage.js", { method: "HEAD" }); if (r.ok) return b; } catch {} }
+    return null;
+  }
+
+  // ---------------------------------------------------------------- controls
+  const sliders = ["head", "body", "height", "tintAmt", "neck"];
+  const cur = () => (mode === "3d" ? looks[who === "both" ? "lena" : who] : png);
+  function showValues() {
+    const c = cur();
+    for (const k of sliders) { if (c[k] === undefined) continue; $(k).value = c[k]; $(k + "O").textContent = k === "tintAmt" ? Math.round(c[k] * 100) + "%" : k === "neck" ? Math.round(c[k] * 100) + "%" : "×" + (+c[k]).toFixed(2); }
+    document.querySelectorAll("#tints button").forEach((b) => b.classList.toggle("on", b.dataset.v === c.tint));
+    document.querySelectorAll("#bgs button").forEach((b) => b.classList.toggle("on", b.dataset.v === png.bg));
+    document.querySelectorAll("#sets button").forEach((b) => b.classList.toggle("on", b.dataset.v === setting));
+    document.querySelectorAll("#who button").forEach((b) => b.classList.toggle("on", b.dataset.v === who));
+    $("json").textContent = projectJSON();
+  }
+  function setVal(k, v) {
+    if (mode === "3d") { const targets = who === "both" ? ["lena", "braun"] : [who]; targets.forEach((w) => { looks[w][k] = v; }); }
+    else png[k] = v;
+    showValues(); redraw();
+  }
+  for (const k of sliders) $(k).addEventListener("input", (e) => setVal(k, +e.target.value));
+  TINTS.forEach(([c, n]) => { const b = document.createElement("button"); b.dataset.v = c; b.title = n; b.setAttribute("aria-label", n); b.style.background = c; b.onclick = () => { setVal("tint", c); if (c !== "#ffffff" && !cur().tintAmt) setVal("tintAmt", 0.3); }; $("tints").appendChild(b); });
+  BGS.forEach(([c, n]) => { const b = document.createElement("button"); b.dataset.v = c; b.title = n; b.setAttribute("aria-label", n); if (c === "none") b.className = "none"; else b.style.background = c === "grad" ? "linear-gradient(160deg,#fde2ce,#e4dcf7 55%,#cfe3f7)" : c; b.onclick = () => { png.bg = c; showValues(); redraw(); }; $("bgs").appendChild(b); });
+  SETS.forEach((s) => { const b = document.createElement("button"); b.dataset.v = s; b.textContent = s === "none" ? "transparent" : s; b.onclick = () => { setting = s; showValues(); loadPreview(); }; $("sets").appendChild(b); });
+  document.querySelectorAll("#who button").forEach((b) => (b.onclick = () => { who = b.dataset.v; showValues(); applyAll(); }));
+
+  // ---------------------------------------------------------------- zoom
+  function setZoom(z) { zoom = Math.max(0.5, Math.min(3, z)); $("frame").style.transform = `scale(${zoom})`; $("zv").textContent = Math.round(zoom * 100) + "%"; if (mode === "3d") applyAll(); }
+  $("zin").onclick = () => setZoom(zoom + 0.15); $("zout").onclick = () => setZoom(zoom - 0.15);
+
+  // ---------------------------------------------------------------- 3D mode: the real lesson stage in a frame
+  let ed = null, t0 = performance.now(), tFrozen = 1.2;
+  function loadPreview() {
+    ed = null;
+    if (BASE === null) { $("preview").srcdoc = `<p style="font:14px system-ui;color:#71717a;padding:24px">The 3D stage was not found. Open this editor from the repository (tools/character-editor/).</p>`; return; }
+    $("preview").src = `preview.html?base=${encodeURIComponent(BASE === "" ? "" : BASE)}&setting=${setting}`;
+  }
+  // preview.html sits next to this page; when the page is served from the repo root, it is under tools/character-editor/
+  window.addEventListener("message", (e) => {
+    if (!e.data || !e.data.toonReady) return;
+    try { ed = $("preview").contentWindow.__toonEditor; applyAll(); } catch { ed = null; }
+  });
+  function applyAll() {
+    if (!ed) return;
+    ed.applyLook("lena", looks.lena); ed.applyLook("braun", looks.braun);
+    ed.view({ who: who === "both" ? null : who, zoom: zoom > 1 ? 1 : zoom });
+    ed.render(playing ? ((performance.now() - t0) / 1000) % 11 : tFrozen);
+  }
+  function tick() { if (mode === "3d" && ed && playing) applyAll(); requestAnimationFrame(tick); }
+  $("play").onclick = () => { playing = !playing; if (!playing) tFrozen = ((performance.now() - t0) / 1000) % 11; $("play").textContent = playing ? "Pause" : "Play"; applyAll(); };
+
+  // ---------------------------------------------------------------- PNG mode: a warp that never touches the source
+  const cv = $("canvas"), cx = cv.getContext("2d");
+  function trim(img) {
+    const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+    const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(img, 0, 0);
+    const d = g.getImageData(0, 0, c.width, c.height).data; let x0 = c.width, y0 = c.height, x1 = -1, y1 = -1;
+    for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    return x1 < 0 ? { x: 0, y: 0, w: c.width, h: c.height } : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+  }
+  const smooth = (a, b, v) => { const x = Math.max(0, Math.min(1, (v - a) / (b - a))); return x * x * (3 - 2 * x); };
+  // the character, warped: head rows scaled by `head`, body rows by `body` (width) and `height` (length)
+  function warp(p, scale) {
+    const { x, y, w, h } = bbox, neck = p.neck * h, band = h * 0.04;
+    const rows = []; let outH = 0, maxW = 0;
+    for (let sy = 0; sy < h; sy++) {
+      const k = smooth(neck - band, neck + band, sy);
+      const v = (p.head * (1 - k) + p.height * k) * scale, hs = (p.head * (1 - k) + p.body * k) * scale;
+      rows.push([sy, outH, v, hs]); outH += v; maxW = Math.max(maxW, w * hs);
+    }
+    const c = document.createElement("canvas"); c.width = Math.ceil(maxW); c.height = Math.ceil(outH);
+    const g = c.getContext("2d"); g.imageSmoothingQuality = "high";
+    for (const [sy, oy, v, hs] of rows) g.drawImage(srcImg, x, y + sy, w, 1, (c.width - w * hs) / 2, oy, w * hs, v + 0.75);
+    return c;
+  }
+  // colour lighting: a multiply of the tint (keeps shading and texture) plus a soft light from the side
+  function light(c, p) {
+    if (!p.tintAmt || p.tint === "#ffffff") return c;
+    const t = document.createElement("canvas"); t.width = c.width; t.height = c.height; const g = t.getContext("2d");
+    g.drawImage(c, 0, 0); g.globalCompositeOperation = "multiply"; g.fillStyle = p.tint; g.fillRect(0, 0, t.width, t.height);
+    g.globalCompositeOperation = "screen"; const gr = g.createLinearGradient(0, 0, t.width, 0); gr.addColorStop(0, p.tint + "66"); gr.addColorStop(0.6, p.tint + "00"); g.fillStyle = gr; g.fillRect(0, 0, t.width, t.height);
+    g.globalCompositeOperation = "destination-in"; g.drawImage(c, 0, 0);
+    const o = document.createElement("canvas"); o.width = c.width; o.height = c.height; const og = o.getContext("2d");
+    og.drawImage(c, 0, 0); og.globalAlpha = Math.min(1, p.tintAmt * 1.6); og.drawImage(t, 0, 0); return o;
+  }
+  function paintBg(g, W, H, bg) {
+    if (bg === "none") return;
+    if (bg === "grad") { const gr = g.createLinearGradient(0, 0, W * 0.4, H); gr.addColorStop(0, "#fde2ce"); gr.addColorStop(0.55, "#e4dcf7"); gr.addColorStop(1, "#cfe3f7"); g.fillStyle = gr; }
+    else g.fillStyle = bg;
+    g.fillRect(0, 0, W, H);
+    // a soft oval floor shadow under the feet
+    g.save(); g.translate(W / 2, H * 0.935); g.scale(1, 0.16);
+    const fl = g.createRadialGradient(0, 0, 0, 0, 0, W * 0.3); fl.addColorStop(0, "rgba(0,0,0,.18)"); fl.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = fl; g.beginPath(); g.arc(0, 0, W * 0.3, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  // the 4:5 picture: the character fits 86% of the height, stands at 94%
+  function compose(g, W, H, p) {
+    g.clearRect(0, 0, W, H); paintBg(g, W, H, p.bg);
+    if (!srcImg) return;
+    const base = Math.min((H * 0.86) / bbox.h, (W * 0.8) / bbox.w);
+    const ch = light(warp(p, base), p);
+    const s = Math.min(1, (W * 0.94) / ch.width, (H * 0.92) / ch.height);
+    const dw = ch.width * s, dh = ch.height * s;
+    g.drawImage(ch, (W - dw) / 2, H * 0.94 - dh, dw, dh);
+  }
+  let raf = 0;
+  function redraw() {
+    if (mode === "3d") { applyAll(); return; }
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => compose(cx, cv.width, cv.height, png));
+  }
+  function loadFile(f) {
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { setSource(r.result, true); };
+    r.readAsDataURL(f);
+  }
+  function setSource(url, remember) {
+    const img = new Image();
+    img.onload = () => {
+      srcImg = img; bbox = trim(img);
+      $("drop").classList.add("hidden");
+      if (remember) idbPut("source", url);
+      if (remember && mode !== "png") switchMode("png"); else redraw();
+    };
+    img.src = url;
+  }
+  $("upload").onclick = () => $("file").click(); $("drop").onclick = () => $("file").click();
+  $("file").onchange = (e) => loadFile(e.target.files[0]);
+  ["dragover", "drop"].forEach((ev) => $("view").addEventListener(ev, (e) => { e.preventDefault(); if (ev === "drop") loadFile(e.dataTransfer.files[0]); }));
+
+  // the uploaded source is kept (unchanged) in IndexedDB, so a reload keeps it
+  function idb() { return new Promise((res, rej) => { try { const q = indexedDB.open("character-editor", 1); q.onupgradeneeded = () => q.result.createObjectStore("kv"); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); } catch (e) { rej(e); } }); }
+  async function idbPut(k, v) { try { const db = await idb(); db.transaction("kv", "readwrite").objectStore("kv").put(v, k); } catch {} }
+  async function idbGet(k) { try { const db = await idb(); return await new Promise((res) => { const q = db.transaction("kv").objectStore("kv").get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }); } catch { return null; } }
+
+  // ---------------------------------------------------------------- versions
+  function thumb() {
+    const c = document.createElement("canvas");
+    if (mode === "3d") { try { const src = $("preview").contentDocument.getElementById("three-stage"); c.width = c.height = 144; c.getContext("2d").drawImage(src, 0, 0, 144, 144); } catch { return ""; } }
+    else { c.width = 144; c.height = 180; compose(c.getContext("2d"), 144, 180, png); }
+    return c.toDataURL("image/png");
+  }
+  function renderStrip() {
+    const list = store.get("ce-versions", []).filter((v) => v.mode === mode), s = $("strip"); s.innerHTML = "";
+    if (!list.length) { s.innerHTML = `<span class="empty">No saved versions yet.</span>`; return; }
+    list.forEach((v, i) => {
+      const d = document.createElement("div"); d.className = "ver" + (v.mode === "3d" ? " sq" : "");
+      d.innerHTML = `<img alt="" src="${v.thumb}"><span>v${i + 1}</span><button class="x" title="Delete" aria-label="Delete version">×</button>`;
+      d.querySelector("img").onclick = () => { if (v.mode === "3d") { looks = JSON.parse(JSON.stringify(v.looks)); if (v.setting !== setting) { setting = v.setting; loadPreview(); } } else png = { ...v.png }; showValues(); redraw(); };
+      d.querySelector(".x").onclick = (e) => { e.stopPropagation(); store.set("ce-versions", store.get("ce-versions", []).filter((x) => x.id !== v.id)); renderStrip(); };
+      s.appendChild(d);
+    });
+  }
+  $("save").onclick = () => {
+    const all = store.get("ce-versions", []);
+    const v = { id: all.reduce((m, x) => Math.max(m, x.id), 0) + 1, mode, thumb: thumb(), looks: JSON.parse(JSON.stringify(looks)), setting, png: { ...png } };
+    all.push(v); if (!store.set("ce-versions", all.slice(-24))) alert("This browser does not allow saving here.");
+    renderStrip();
+  };
+  $("reset").onclick = () => {
+    if (mode === "3d") looks = JSON.parse(JSON.stringify(orig3d || { lena: DEF, braun: DEF }));
+    else png = { ...DEF, neck: 0.3, bg: png.bg };
+    showValues(); redraw();
+  };
+
+  // ---------------------------------------------------------------- export
+  function download(name, url) { const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $("export").onclick = () => {
+    if (mode === "3d") {
+      try { applyAll(); download(`easydeutsch-${who}-${setting}.png`, $("preview").contentDocument.getElementById("three-stage").toDataURL("image/png")); } catch { alert("The 3D picture cannot be read here."); }
+      return;
+    }
+    if (!srcImg) { $("file").click(); return; }
+    // full quality: 4:5 at the source's own resolution (at least 1600 × 2000, at most 2400 × 3000)
+    const H = Math.max(2000, Math.min(3000, Math.round(bbox.h / 0.86))), W = Math.round(H * 0.8);
+    const c = document.createElement("canvas"); c.width = W; c.height = H; compose(c.getContext("2d"), W, H, png);
+    c.toBlob((b) => { const u = URL.createObjectURL(b); download("character-edit.png", u); setTimeout(() => URL.revokeObjectURL(u), 4000); }, "image/png");
+  };
+  function projectJSON() {
+    const r = (o) => ({ head: +(+o.head).toFixed(2), body: +(+o.body).toFixed(2), height: +(+o.height).toFixed(2), tint: o.tint, tintAmt: +(+o.tintAmt).toFixed(2) });
+    return JSON.stringify({ note: "EasyDeutsch character looks for the 3D lessons. Made with tools/character-editor/index.html (the 'Save to project' button). 1 = the original size.", looks: { lena: r(looks.lena), braun: r(looks.braun) } }, null, 2) + "\n";
+  }
+  $("toproject").onclick = () => download("characters.json", "data:application/json;charset=utf-8," + encodeURIComponent(projectJSON()));
+
+  // ---------------------------------------------------------------- modes
+  function switchMode(m) {
+    mode = m;
+    $("tab3d").classList.toggle("on", m === "3d"); $("tabpng").classList.toggle("on", m === "png");
+    $("frame").classList.toggle("three", m === "3d");
+    $("preview").classList.toggle("hidden", m !== "3d"); $("canvas").classList.toggle("hidden", m !== "png");
+    $("drop").classList.toggle("hidden", m !== "png" || !!srcImg);
+    for (const id of ["whoGroup", "projGroup", "sets", "toproject", "play"]) $(id).classList.toggle("hidden", m !== "3d");
+    $("bgs").classList.toggle("hidden", m === "3d"); $("neckRow").classList.toggle("hidden", m === "3d");
+    showValues(); renderStrip(); redraw();
+  }
+  $("tab3d").onclick = () => switchMode("3d"); $("tabpng").onclick = () => switchMode("png");
+
+  (async () => {
+    BASE = await findBase();
+    if (BASE !== null) { try { const r = await fetch(BASE + "public/3d/characters.json"); if (r.ok) { const j = await r.json(); if (j.looks) for (const w of ["lena", "braun"]) looks[w] = { ...DEF, ...j.looks[w] }; } } catch {} }
+    orig3d = JSON.parse(JSON.stringify(looks));
+    loadPreview(); switchMode("3d"); requestAnimationFrame(tick);
+    const saved = await idbGet("source"); if (saved) setSource(saved, false);
+  })();
+})();
+</script>
+</body>
+</html>
