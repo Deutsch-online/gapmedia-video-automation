@@ -4,7 +4,7 @@ import { writeFileSync, existsSync, readFileSync, mkdirSync, unlinkSync, rmSync 
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
-import { buildAnimHTML } from "./lib/build-anim.mjs";
+import { buildAnimHTML, animSettingFor } from "./lib/build-anim.mjs";
 import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
@@ -34,18 +34,18 @@ const inCycle = process.env.GERMAN_CYCLE === "on";
 const unitArgIdx = process.argv.indexOf("--unit");
 const correctionUnitId = unitArgIdx >= 0 ? process.argv[unitArgIdx + 1] : null;
 const isCorrection =!!correctionUnitId;
-// A correction request may ask for the lesson re-told as an illustrated
-// animation ("style": "anim") instead of the photo-led ink layout — the owner's
-// request of 2026-09-27. Only a request that names this very unit can switch
-// the style; the scheduled 05:00/17:30 episodes always stay on ink.
-let lessonStyle = "ink";
+// Every episode is the animated character film (lib/build-anim.mjs) — the
+// owner, 2026-09-28: "videos must be made with the new design, not the old
+// one". The photo-led ink layout stays only as a fallback a correction request
+// naming its unit can ask for with "style": "ink".
+let lessonStyle = "anim";
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
-    if (request.unit === correctionUnitId && request.style === "anim") lessonStyle = "anim";
+    if (request.unit === correctionUnitId && ["anim", "ink"].includes(request.style)) lessonStyle = request.style;
   } catch {}
 }
-if (isCorrection && process.env.GERMAN_LESSON_STYLE === "anim") lessonStyle = "anim";
+if (isCorrection && ["anim", "ink"].includes(process.env.GERMAN_LESSON_STYLE)) lessonStyle = process.env.GERMAN_LESSON_STYLE;
 const isAnim = lessonStyle === "anim";
 // The owner tried a still-image "scene" style on 2026-09-27 and rejected it
 // ("pictures are useless — it must be moving animation"); it was removed.
@@ -546,14 +546,14 @@ try {
       bpm: format.bpm,
       musicVariant: format.musicVariant,
       music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
-      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${drawsOwnScenes ? " (نسخهٔ انیمیشنی)" : ""}\n\n${format.hashtags}`,
+      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n\n${format.hashtags}`,
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
     const final = `${outDir}/german-a1-${pack.id}-${iso}-${format.slug}.mp4`;
     writeFileSync(comp, isAnim
       ? buildAnimHTML({
-          variant: format.variant,
+          variant: format.variant, setting: animSettingFor(unit.id),
           episodeNo, total: COURSE_TOTAL, topic: unit.topic,
           hook: unit.hook, loopLine: `${["", "یک", "دو", "سه", "چهار", "پنج", "شش"][unit.items.length] || "چند"} جملهٔ کوتاه؛ تا آخر ببین`,
           nextTopic: nextUnit.topic, outroLine: vo?.outro || "",
