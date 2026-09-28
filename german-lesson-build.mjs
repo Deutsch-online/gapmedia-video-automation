@@ -46,7 +46,7 @@ let easyLook = "cartoon";   // EasyDeutsch: "cartoon" (drawn) or "3d" (human 3D 
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
-    if (request.unit === correctionUnitId && request.look === "3d") easyLook = "3d";
+    if (request.unit === correctionUnitId && ["3d", "cartoon3d"].includes(request.look)) easyLook = request.look;
     if (request.unit === correctionUnitId && ["anim", "ink", "easy"].includes(request.style)) lessonStyle = request.style;
   } catch {}
 }

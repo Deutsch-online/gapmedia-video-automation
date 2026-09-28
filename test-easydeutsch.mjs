@@ -47,4 +47,14 @@ assert.match(film, /class="lena-m1"/); assert.match(film, /class="braun-m2"/);
 assert.match(film, /tl\.set\("\.lena-m1"/, "the mouth changes shape on the syllables");
 assert.match(film, /<span class="verb">habe<\/span>/);
 assert.match(easy, /buildEasyCartoonHTML/); assert.match(build, /look: easyLook/);
+// the same film with 3D toon characters
+const film3d = buildEasyCartoonHTML({ episodeNo: 43, title: "Nein sagen", hookDur: 3, outroAt: 10, total: 13, three: true,
+  lines: [{ who: "lena", de: "Ich habe kein Geld.", action: "wallet", t: 3.4, dur: 1.8, again: { dur: 1.8, gap: 0.8 }, item: 0 }] });
+assert.match(film3d, /<canvas id="three-stage"/); assert.match(film3d, /window\.__toon = /);
+assert.match(film3d, /<script type="module" src="public\/3d\/toon-stage\.js">/);
+assert.doesNotMatch(film3d, /class="lena-body"/, "no drawn characters in the 3D film");
+assert.match(film3d, /id="cap0"/, "the caption card stays under the picture");
+const toon = readFileSync("public/3d/toon-stage.js", "utf8");
+assert.match(toon, /addEventListener\("hf-seek"/); assert.doesNotMatch(toon, /Math\.random|Date\.now|requestAnimationFrame/);
+assert.match(easy, /three: look === "cartoon3d"/);
 console.log("easydeutsch: ok");
