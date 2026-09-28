@@ -10,15 +10,15 @@
 import * as THREE from "three";
 
 const CFG = window.__toon;
-const W = 1080, H = 1080;
 const canvas = document.getElementById("three-stage");
+const W = canvas.width || 1080, H = canvas.height || 1080;   // lessons: 1080 × 1080; the showcase: 1920 × 1080
 const CLEAR = CFG.setting === "none";          // the character editor: no set, a transparent picture
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, alpha: CLEAR });
 renderer.setSize(W, H, false); renderer.setPixelRatio(1);
 renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.NoToneMapping;
 const scene = new THREE.Scene();
 scene.background = CLEAR ? null : new THREE.Color(0xf4e2be);
-const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 40);
+const camera = new THREE.PerspectiveCamera(34, W / H, 0.1, 40);
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const ss = (a, b, t) => { const x = clamp((t - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
@@ -540,7 +540,9 @@ function renderAt(t) {
 }
 window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
 window.__hf.buildReady.toon = Promise.resolve();
-window.addEventListener("hf-seek", (ev) => renderAt(ev.detail.time));
+// a film with its own acting (public/3d/toon-showcase.js) sets window.__toonDriver
+window.addEventListener("hf-seek", (ev) => (window.__toonDriver || renderAt)(ev.detail.time));
+window.__toonKit = { THREE, scene, camera, renderer, PEOPLE, LAY, applyLook, poseHand, rot, M, G, sph, cap, clamp, ss, win, D, blinkAmt };
 // hooks for tools/character-editor (never used by a lesson render)
 window.__toonEditor = { applyLook: (w, look) => applyLook(PEOPLE[w], look), view: (v) => { VIEW = v; }, render: renderAt };
 renderAt(window.__hfThreeTime || 0);

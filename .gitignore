@@ -60,3 +60,4 @@ out/verify/
 # film is a per-episode build file like renders/.
 public/3d/models/
 public/3d/stage/
+compositions/showcase/
