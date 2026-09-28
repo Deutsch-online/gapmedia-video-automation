@@ -311,7 +311,8 @@ const P = CFG.phrases.map((x) => ({ ...x, de0: x.t0 + x.de, de1: x.t0 + x.de + x
 const G1 = Math.min(WALK * 0.6, HOOK - 3.6);                   // his greeting starts while she arrives
 const G2 = OUTRO_AT + 0.3;                                      // and again to say goodbye
 // who speaks when: she says the phrase, he answers with the example
-const herLines = P.map((x) => [x.de0, x.de1]);
+// EasyDeutsch says each sentence twice (listen, then repeat): she says it both times
+const herLines = P.flatMap((x) => (x.again != null ? [[x.de0, x.de1], [x.t0 + x.again, x.t0 + x.again + x.deDur]] : [[x.de0, x.de1]]));
 const hisLines = P.filter((x) => x.hasEx).map((x) => [x.ex0, x.ex1]);
 
 // camera: shots eased one into the next
