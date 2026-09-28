@@ -42,9 +42,11 @@ const isCorrection =!!correctionUnitId;
 // one". The photo-led ink layout stays only as a fallback a correction request
 // naming its unit can ask for with "style": "ink".
 let lessonStyle = "anim";
+let easyLook = "cartoon";   // EasyDeutsch: "cartoon" (drawn) or "3d" (human 3D characters)
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
+    if (request.unit === correctionUnitId && request.look === "3d") easyLook = "3d";
     if (request.unit === correctionUnitId && ["anim", "ink", "easy"].includes(request.style)) lessonStyle = request.style;
   } catch {}
 }
@@ -97,7 +99,7 @@ if (lessonStyle === "easy") {
   try {
     await runEasyDeutsch({
       unit, nextUnit, episodeNo, idx, isCorrection, tg, noTelegram,
-      HF: "npx --yes hyperframes@0.8.79", iso: new Date().toISOString().slice(0, 10), saveProgress,
+      HF: "npx --yes hyperframes@0.8.79", iso: new Date().toISOString().slice(0, 10), saveProgress, look: easyLook,
     });
     process.exit(0);
   } catch (err) {
