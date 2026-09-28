@@ -57,4 +57,8 @@ assert.match(film3d, /id="cap0"/, "the caption card stays under the picture");
 const toon = readFileSync("public/3d/toon-stage.js", "utf8");
 assert.match(toon, /addEventListener\("hf-seek"/); assert.doesNotMatch(toon, /Math\.random|Date\.now|requestAnimationFrame/);
 assert.match(easy, /three: look === "cartoon3d"/);
+for (const k of ["cafe", "home", "station", "shop", "doctor", "school", "work", "park", "bureau"]) assert.ok(new RegExp(`(SCENES\\.${k}\\b|cafeScene)`).test(toon), `scene ${k}`);
+import { EASY_TEXT, EASY_TITLE_COUNT } from "./lib/easy-titles.mjs";
+assert.equal(EASY_TITLE_COUNT, GERMAN_A1.length); assert.equal(Object.keys(EASY_TEXT).length, GERMAN_A1.length);
+assert.match(build, /let lessonStyle = "easy";/); assert.match(build, /let easyLook = "cartoon3d";/);
 console.log("easydeutsch: ok");

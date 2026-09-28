@@ -153,9 +153,9 @@ function person(o) {
   return P;
 }
 
-function makeLena() {
+function makeLena([lx, lz]) {
   return person({
-    x: -0.85, z: 0.45, yaw: Math.PI / 2 - 0.95, near: -1, skin: 0xf4c9a4, iris: 0x6b4a2a, browColor: 0x5e3620,
+    x: lx, z: lz, yaw: Math.PI / 2 - 0.95, near: -1, skin: 0xf4c9a4, iris: 0x6b4a2a, browColor: 0x5e3620,
     top: 0xa9d1ee, sleeve: 0xa9d1ee, pants: 0x3d5a80, shoe: 0xffffff,
     decorate(P) {
       const { head, body } = P, hair = 0x7a4a2a;
@@ -184,9 +184,9 @@ function makeLena() {
     },
   });
 }
-function makeBraun() {
+function makeBraun([bx, bz]) {
   return person({
-    x: 1.3, z: -0.75, yaw: -Math.PI / 2 + 0.95, near: 1, skin: 0xf0c29a, iris: 0x3e5a7a, browColor: 0x9a9a9a,
+    x: bx, z: bz, yaw: -Math.PI / 2 + 0.95, near: 1, skin: 0xf0c29a, iris: 0x3e5a7a, browColor: 0x9a9a9a,
     top: 0xffffff, sleeve: 0xffffff, pants: 0x2f3a48, shoe: 0x2f3a48,
     decorate(P) {
       const { head, body } = P, grey = 0xbdbdbd;
@@ -212,7 +212,7 @@ function panelTex(w, h, draw) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 const box = (w, h, d, color, p, o = {}) => M(new THREE.BoxGeometry(w, h, d), color, { p, parent: scene, ink: 0.014, ...o });
-function buildCafe() {
+function cafeScene() {
   box(20, 0.05, 12, 0xd29a5e, [0, 0, 0], { ink: 0 });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 12), toon(0xffffff, { map: panelTex(512, 256, (g, w, h) => { g.fillStyle = "#D29A5E"; g.fillRect(0, 0, w, h); g.strokeStyle = "#A8703F"; g.lineWidth = 5; for (let x = 0; x < w; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } }) }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = 0.03; scene.add(floor);
@@ -260,14 +260,143 @@ function buildCafe() {
   const bird = G(scene, [0, 2.6, -2.05]);
   const wing = (sx) => { const w = G(bird); M(sph(0.05), INK, { s: [2, 0.25, 0.7], p: [sx * 0.09, 0, 0], parent: w, ink: 0 }); return w; };
   const wl = wing(-1), wr = wing(1);
-  return { lamps, hh, mh, bird, wl, wr, clock };
+  return {
+    lamps,
+    update(t) {
+      mh.parent.rotation.z = -(t / 60) * Math.PI * 2 * 12; hh.parent.rotation.z = -(t / 60) * Math.PI * 2;
+      bird.position.x = -3.1 + ((t / 7) % 1) * 2.4; wl.rotation.z = Math.sin(t * 22) * 0.6; wr.rotation.z = -Math.sin(t * 22) * 0.6;
+    },
+  };
 }
+
+// ------------------------------------------------------------------ the other sets (one per lesson topic)
+const cyl = (rt, rb, h, color, p, o = {}) => M(new THREE.CylinderGeometry(rt, rb, h, 20), color, { p, parent: scene, ink: 0.012, ...o });
+const ball = (r, color, p, sc = [1, 1, 1], o = {}) => M(sph(r), color, { p, s: sc, parent: scene, ink: 0.01, ...o });
+const flat = (w, h, p, tex, ry = 0) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex })); m.position.set(...p); m.rotation.y = ry; scene.add(m); return m; };
+const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };   // deterministic
+function shell({ wall, floor, line, wain = null, wainTop = null, sky = null }) {
+  box(20, 0.05, 12, floor, [0, 0, 0], { ink: 0 });
+  const fl = new THREE.Mesh(new THREE.PlaneGeometry(20, 12), toon(0xffffff, { map: panelTex(512, 256, (g, w, h) => { g.fillStyle = "#" + floor.toString(16).padStart(6, "0"); g.fillRect(0, 0, w, h); g.strokeStyle = "#" + line.toString(16).padStart(6, "0"); g.lineWidth = 5; for (let x = 0; x < w; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } for (let y = 0; y < h; y += 64) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); } }) }));
+  fl.rotation.x = -Math.PI / 2; fl.position.y = 0.03; scene.add(fl);
+  box(20, 6, 0.1, wall, [0, 3, -2.2], { ink: 0 });
+  if (wain) { box(20, 1.0, 0.14, wain, [0, 0.5, -2.12], { ink: 0.01 }); box(20, 0.09, 0.2, wainTop || wain, [0, 1.02, -2.1], { ink: 0.01 }); }
+}
+function counterUnit({ front, top, sign }) {
+  box(2.3, 0.9, 0.62, front, [1.3, 0.45, -0.1]);
+  box(2.5, 0.09, 0.78, top, [1.3, 0.94, -0.1], { ink: 0.012 });
+  if (sign) flat(1.0, 0.3, [1.3, 0.5, 0.216], panelTex(400, 120, (g, w, h) => { g.fillStyle = sign.bg; g.fillRect(0, 0, w, h); g.fillStyle = sign.fg; g.font = "bold 70px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(sign.text, w / 2, h / 2 + 4); }));
+}
+const plant = (x, z, sc = 1) => { cyl(0.13 * sc, 0.1 * sc, 0.22 * sc, 0xd96b4a, [x, 0.15 * sc, z]); for (let i = 0; i < 6; i++) { const a = i * 1.1; ball(0.11 * sc, 0x5fa35a, [x + Math.cos(a) * 0.1 * sc, (0.42 + (i % 3) * 0.1) * sc, z + Math.sin(a) * 0.08 * sc], [0.5, 1.5, 0.35], { ink: 0.008 }); } };
+const frame = (x, y, z, w, h, c1, c2) => { box(w + 0.1, h + 0.1, 0.05, 0x8e5a33, [x, y, z], { ink: 0.008 }); box(w, h, 0.06, c1, [x, y, z + 0.01], { ink: 0 }); box(w, h * 0.35, 0.07, c2, [x, y - h * 0.32, z + 0.02], { ink: 0 }); };
+const hangLamp = (x, z, c = 0xe8783a) => { const g = G(scene, [x, 2.55, z]); M(new THREE.CylinderGeometry(0.01, 0.01, 1.6, 6), INK, { p: [0, 0.8, 0], parent: g, ink: 0 }); M(new THREE.ConeGeometry(0.26, 0.24, 28, 1, true), c, { parent: g, ink: 0.012, mat: toon(c, { side: THREE.DoubleSide }) }); M(sph(0.07), 0xfff3c4, { p: [0, -0.1, 0], parent: g, ink: 0, mat: new THREE.MeshBasicMaterial({ color: 0xfff3c4 }) }); return g; };
+const tree = (x, z, sc = 1, c = 0x3e8a4f) => { cyl(0.1 * sc, 0.14 * sc, 1.6 * sc, 0x6b4a33, [x, 0.8 * sc, z]); [[0, 1.9, 0, 0.75], [0.35, 1.7, 0.1, 0.55], [-0.3, 1.75, -0.1, 0.55], [0.05, 2.35, 0, 0.5]].forEach(([dx, y, dz, r]) => ball(r * sc, c, [x + dx * sc, y * sc, z + dz * sc], [1, 1, 1], { ink: 0.014 })); };
+const wallClock = (x, y) => { const g = G(scene, [x, y, -2.12]); M(new THREE.CylinderGeometry(0.24, 0.24, 0.05, 32), 0xffffff, { r: [Math.PI / 2, 0, 0], parent: g }); const h = M(new THREE.BoxGeometry(0.03, 0.13, 0.02), INK, { p: [0, 0.06, 0.04], parent: G(g), ink: 0 }); const m = M(new THREE.BoxGeometry(0.02, 0.19, 0.02), INK, { p: [0, 0.09, 0.055], parent: G(g), ink: 0 }); return (t) => { m.parent.rotation.z = -(t / 60) * Math.PI * 2 * 12; h.parent.rotation.z = -(t / 60) * Math.PI * 2; }; };
+
+const SCENES = {
+  cafe: cafeScene,
+  home() {
+    shell({ wall: 0xeadfcc, floor: 0xb98556, line: 0x9e6f45, wain: 0xd8c7a6, wainTop: 0xb98556 });
+    box(1.8, 1.4, 0.06, 0xcdebfa, [-1.6, 1.95, -2.15], { ink: 0.01 }); box(0.08, 1.4, 0.1, 0xffffff, [-1.6, 1.95, -2.1], { ink: 0.008 }); box(1.8, 0.08, 0.1, 0xffffff, [-1.6, 1.95, -2.1], { ink: 0.008 });
+    box(0.35, 1.7, 0.1, 0xe7a78c, [-2.7, 1.9, -2.08], { ink: 0.01 }); box(0.35, 1.7, 0.1, 0xe7a78c, [-0.5, 1.9, -2.08], { ink: 0.01 });
+    box(2.3, 0.45, 0.85, 0x5e9e8c, [2.0, 0.3, -1.5]); box(2.3, 0.75, 0.22, 0x4c8373, [2.0, 0.75, -1.9]); box(0.22, 0.6, 0.85, 0x4c8373, [0.9, 0.5, -1.5]); box(0.22, 0.6, 0.85, 0x4c8373, [3.1, 0.5, -1.5]);
+    [0xe0b25a, 0xe7a78c, 0xffffff].forEach((c, i) => box(0.42, 0.4, 0.14, c, [1.4 + i * 0.6, 0.72, -1.6], { r: [0, 0, 0.15 * (i - 1)], ink: 0.008 }));
+    const rug = new THREE.Mesh(new THREE.CircleGeometry(1.7, 48), toon(0xe7a78c)); rug.rotation.x = -Math.PI / 2; rug.position.set(0.1, 0.045, 0.3); scene.add(rug);
+    frame(2.0, 2.4, -2.15, 1.0, 0.7, 0xbfe3f2, 0x7cb36a); frame(0.9, 2.6, -2.15, 0.5, 0.6, 0xfff3c4, 0xe0b25a);
+    cyl(0.03, 0.03, 1.5, 0x4a3a2c, [-2.9, 0.8, -1.2]); M(new THREE.ConeGeometry(0.3, 0.35, 24, 1, true), 0xe0b25a, { p: [-2.9, 1.65, -1.2], parent: scene, mat: toon(0xe0b25a, { side: THREE.DoubleSide }), ink: 0.01 });
+    box(1.4, 0.05, 0.3, 0x9e6f45, [-1.6, 1.0, -1.95], { ink: 0.008 }); [0xdd0000, 0x3a7fd0, 0xf2c14e, 0x4f9e5a, 0x833ab4].forEach((c, i) => box(0.1, 0.32, 0.22, c, [-2.1 + i * 0.16, 1.2, -1.95], { ink: 0.006 }));
+    plant(3.0, -0.6, 1.3);
+    return { lamps: [], update() {} };
+  },
+  station() {
+    shell({ wall: 0xcfd6dc, floor: 0x8a8d90, line: 0x72767a });
+    box(20, 0.02, 0.16, 0xffce00, [0, 0.06, 1.4], { ink: 0 });
+    box(9, 2.2, 0.9, 0xdd0000, [-0.3, 1.2, -1.55]); box(9, 0.28, 0.92, 0xffffff, [-0.3, 1.55, -1.55], { ink: 0.008 });
+    for (let i = 0; i < 6; i++) box(0.9, 0.62, 0.03, 0x9fd8e8, [-3.4 + i * 1.5, 1.95, -1.09], { ink: 0.008 });
+    box(1.0, 1.6, 0.04, 0x9c1a1a, [-1.6, 0.9, -1.09], { ink: 0.008 });
+    box(2.4, 0.9, 0.16, 0x10161f, [-1.4, 2.95, -1.0]); cyl(0.02, 0.02, 1.2, 0x39424f, [-2.4, 3.6, -1.0], { ink: 0 }); cyl(0.02, 0.02, 1.2, 0x39424f, [-0.4, 3.6, -1.0], { ink: 0 });
+    flat(2.3, 0.8, [-1.4, 2.95, -0.91], panelTex(920, 320, (g, w, h) => { g.fillStyle = "#10161F"; g.fillRect(0, 0, w, h); g.fillStyle = "#FFE9A8"; g.font = "bold 56px monospace"; g.textAlign = "left"; [["10:15 Berlin", "Gl. 3"], ["10:32 München", "Gl. 5"], ["10:48 Hamburg", "Gl. 1"]].forEach(([a, b], i) => { g.fillText(a, 40, 90 + i * 90); g.fillStyle = "#9FE3FF"; g.fillText(b, 640, 90 + i * 90); g.fillStyle = "#FFE9A8"; }); }));
+    counterUnit({ front: 0x2f4f7a, top: 0x1d2c44, sign: { text: "Fahrkarten", bg: "#1d2c44", fg: "#ffffff" } });
+    box(0.5, 0.4, 0.3, 0x39424f, [1.9, 1.2, -0.2], { ink: 0.008 });
+    const clk = wallClock(1.9, 3.3);
+    return { lamps: [], update: clk };
+  },
+  shop() {
+    shell({ wall: 0xf2ead8, floor: 0xd8c9a8, line: 0xbfa67f, wain: 0xe0503a, wainTop: 0xb03a2a });
+    const cols = [0xe0503a, 0x3a7fd0, 0xf2c14e, 0x4f9e5a, 0x833ab4, 0xf77737, 0x3ac0c8];
+    for (let sh = 0; sh < 4; sh++) { box(3.2, 0.05, 0.4, 0x9e6f45, [-1.3, 0.75 + sh * 0.55, -1.95], { ink: 0.008 }); for (let k = 0; k < 11; k++) { const h = 0.22 + rnd(sh * 11 + k) * 0.16; box(0.2, h, 0.22, cols[(k + sh * 3) % 7], [-2.75 + k * 0.29, 0.775 + sh * 0.55 + h / 2, -1.95], { ink: 0.006 }); } }
+    flat(1.6, 0.5, [1.5, 2.75, -2.09], panelTex(640, 200, (g, w, h) => { g.fillStyle = "#E0503A"; g.fillRect(0, 0, w, h); g.fillStyle = "#fff"; g.font = "bold 84px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("SUPERMARKT", w / 2, h / 2); }));
+    counterUnit({ front: 0xb98556, top: 0x7a5a3a, sign: { text: "Kasse", bg: "#7a5a3a", fg: "#ffffff" } });
+    box(0.45, 0.32, 0.36, 0x2a2433, [0.75, 1.15, -0.1], { ink: 0.008 }); box(0.4, 0.2, 0.02, 0x8fe3a8, [0.75, 1.22, 0.09], { ink: 0 });
+    box(0.5, 0.22, 0.36, 0xe0503a, [2.0, 1.07, 0.05], { ink: 0.01 }); [0xf2c14e, 0x4f9e5a].forEach((c, i) => ball(0.09, c, [1.9 + i * 0.16, 1.24, 0.05]));
+    return { lamps: [hangLamp(-1.4, -0.3, 0xe0503a), hangLamp(1.6, -0.3, 0xe0503a)], update() {} };
+  },
+  doctor() {
+    shell({ wall: 0xe3f4f2, floor: 0xd8dfe3, line: 0xbcc8ce, wain: 0xb7ddd6, wainTop: 0x8fc4bb });
+    box(0.95, 0.95, 0.06, 0xffffff, [-0.6, 2.3, -2.12]); box(0.24, 0.74, 0.07, 0x1fa971, [-0.6, 2.3, -2.08], { ink: 0 }); box(0.74, 0.24, 0.07, 0x1fa971, [-0.6, 2.3, -2.08], { ink: 0 });
+    frame(-2.3, 2.3, -2.15, 0.9, 0.7, 0xfff0f0, 0xf29a9a); frame(0.7, 2.4, -2.15, 0.7, 0.5, 0xe3f4f2, 0x7cb3d0);
+    box(1.9, 0.45, 0.75, 0xdfe6ea, [-2.3, 0.45, -1.4]); box(0.5, 0.12, 0.4, 0xffffff, [-2.85, 0.75, -1.4], { ink: 0.008 });
+    counterUnit({ front: 0xffffff, top: 0x9ab0b6, sign: { text: "Anmeldung", bg: "#1fa971", fg: "#ffffff" } });
+    box(0.55, 0.36, 0.05, 0x1a1f26, [1.8, 1.32, -0.15], { ink: 0.008 }); box(0.08, 0.2, 0.08, 0x1a1f26, [1.8, 1.05, -0.15], { ink: 0.005 });
+    plant(-0.3, -1.7, 1.4);
+    return { lamps: [], update() {} };
+  },
+  school() {
+    shell({ wall: 0xf1e6c8, floor: 0xa98a62, line: 0x8e7350, wain: 0xc9a86a, wainTop: 0x8e5a33 });
+    box(3.5, 1.6, 0.06, 0x8e5a33, [-0.1, 2.1, -2.13]);
+    flat(3.3, 1.4, [-0.1, 2.1, -2.095], panelTex(990, 420, (g, w, h) => { g.fillStyle = "#2F4A3A"; g.fillRect(0, 0, w, h); g.fillStyle = "#F6F1E4"; g.font = "bold 120px Arial"; g.textAlign = "left"; g.fillText("Deutsch A1", 60, 150); g.font = "bold 80px Arial"; g.fillStyle = "#FFCE00"; g.fillText("der · die · das", 60, 270); g.fillStyle = "#9FE3FF"; g.fillText("ich bin · du bist", 60, 370); }));
+    for (const x of [-2.5, -1.5]) { box(0.9, 0.06, 0.55, 0xd9b27a, [x, 0.8, -1.0], { ink: 0.01 }); cyl(0.03, 0.03, 0.78, 0x6b4a33, [x - 0.38, 0.4, -0.85], { ink: 0.006 }); cyl(0.03, 0.03, 0.78, 0x6b4a33, [x + 0.38, 0.4, -1.15], { ink: 0.006 }); box(0.45, 0.06, 0.4, 0x3a7fd0, [x, 0.5, -0.5], { ink: 0.01 }); box(0.45, 0.4, 0.05, 0x3a7fd0, [x, 0.75, -0.28], { ink: 0.01 }); box(0.35, 0.05, 0.25, 0xdd0000, [x, 0.85, -1.0], { ink: 0.006 }); }
+    box(1.6, 0.85, 0.7, 0x8e5a3a, [2.3, 0.43, -1.4]); box(1.8, 0.07, 0.8, 0x6b4a33, [2.3, 0.9, -1.4], { ink: 0.01 });
+    cyl(0.03, 0.03, 0.2, 0x6b4a33, [2.0, 1.03, -1.4], { ink: 0.004 }); ball(0.17, 0x3a7fd0, [2.0, 1.28, -1.4]);
+    [0xdd0000, 0xf2c14e, 0x4f9e5a].forEach((c, i) => box(0.4, 0.06, 0.28, c, [2.7, 0.96 + i * 0.06, -1.4], { ink: 0.005 }));
+    wallClock(-2.9, 3.0);
+    return { lamps: [], update() {} };
+  },
+  work() {
+    shell({ wall: 0xd8dde3, floor: 0x6f7b87, line: 0x5e6975 });
+    box(2.4, 1.7, 0.05, 0xbfe3f2, [-1.6, 2.2, -2.15], { ink: 0.01 }); for (let i = 0; i < 9; i++) box(2.4, 0.07, 0.07, 0xf0f3f6, [-1.6, 1.45 + i * 0.19, -2.08], { ink: 0 });
+    for (let sh = 0; sh < 3; sh++) { box(1.6, 0.05, 0.35, 0x4a5561, [2.0, 1.2 + sh * 0.62, -1.95], { ink: 0.008 }); for (let k = 0; k < 8; k++) box(0.14, 0.4, 0.26, [0xdd0000, 0x3a7fd0, 0xf2c14e, 0x4f9e5a][(k + sh) % 4], [1.4 + k * 0.17, 1.42 + sh * 0.62, -1.95], { ink: 0.006 }); }
+    counterUnit({ front: 0xe7ebef, top: 0x3a4552 });
+    box(0.62, 0.4, 0.04, 0x1a1f26, [1.7, 1.42, -0.2], { ink: 0.008 }); box(0.1, 0.2, 0.1, 0x1a1f26, [1.7, 1.12, -0.2], { ink: 0.005 }); box(0.5, 0.03, 0.18, 0x39424f, [1.7, 1.0, 0.05], { ink: 0.005 });
+    plant(-2.9, -1.4, 1.3); const clk = wallClock(0.3, 3.1);
+    return { lamps: [hangLamp(-0.6, -0.4, 0x8fa4b8)], update: clk };
+  },
+  park() {
+    scene.background = new THREE.Color(0x9fd3f2); scene.fog = new THREE.Fog(0x9fd3f2, 12, 26);
+    box(30, 0.05, 20, 0x6fb35a, [0, 0, -4], { ink: 0 });
+    box(30, 0.03, 1.6, 0xd9c193, [0, 0.055, 0.2], { ink: 0 });
+    ball(4, 0x5fa35a, [-5, -0.6, -8], [2, 0.6, 0.6], { ink: 0 }); ball(4, 0x4f9a55, [4, -0.8, -9], [2.4, 0.6, 0.6], { ink: 0 });
+    tree(-2.7, -2.0, 1.2); tree(2.9, -2.4, 1.4, 0x4f9e5a); tree(0.2, -3.6, 1.1, 0x5fae5a); tree(-4.2, -3.2, 1.0); tree(4.6, -1.6, 0.9);
+    box(1.5, 0.07, 0.42, 0x8a5a3a, [2.5, 0.5, -0.9]); box(1.5, 0.45, 0.06, 0x8a5a3a, [2.5, 0.8, -1.1]); cyl(0.04, 0.04, 0.5, 0x39424f, [1.85, 0.25, -0.9], { ink: 0.005 }); cyl(0.04, 0.04, 0.5, 0x39424f, [3.15, 0.25, -0.9], { ink: 0.005 });
+    cyl(0.04, 0.05, 2.4, 0x39424f, [-2.9, 1.2, -0.9]); ball(0.16, 0xfff3c4, [-2.9, 2.5, -0.9], [1, 1, 1], { mat: new THREE.MeshBasicMaterial({ color: 0xfff3c4 }) });
+    const clouds = []; [[-3, 4.6], [1, 5.2], [4, 4.3]].forEach(([x, y], i) => { const c = G(scene, [x, y, -7]); [[0, 0, 1], [0.7, -0.1, 0.8], [-0.7, -0.1, 0.75]].forEach(([dx, dy, r]) => ball(0.8 * r, 0xffffff, [dx, dy, 0], [1.4, 0.8, 0.8], { parent: c, ink: 0.01 })); c.position.set(x, y, -7); clouds.push(c); });
+    ball(0.5, 0xfff3a0, [3.8, 5.6, -8], [1, 1, 0.3], { mat: new THREE.MeshBasicMaterial({ color: 0xfff3a0 }), ink: 0.02 });
+    for (let i = 0; i < 26; i++) ball(0.055, [0xff6f8a, 0xffce00, 0xffffff, 0xb46bd6][i % 4], [-3.5 + rnd(i) * 7, 0.08, -1.4 - rnd(i + 40) * 1.4], [1, 1, 1], { ink: 0.005 });
+    return { lamps: [], update(t) { clouds.forEach((c, i) => { c.position.x += 0; c.position.y = [4.6, 5.2, 4.3][i] + Math.sin(t * 0.4 + i) * 0.08; }); } };
+  },
+  bureau() {
+    shell({ wall: 0xe6e2d6, floor: 0x9aa3ab, line: 0x858e96, wain: 0xb9b3a3, wainTop: 0x8e8878 });
+    flat(1.9, 0.5, [-2.1, 2.85, -2.09], panelTex(760, 200, (g, w, h) => { g.fillStyle = "#1D2C44"; g.fillRect(0, 0, w, h); g.fillStyle = "#fff"; g.font = "bold 96px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("Bürgeramt", w / 2, h / 2 + 6); }));
+    box(1.0, 0.5, 0.08, 0x111111, [-2.1, 2.05, -2.12]); flat(0.9, 0.4, [-2.1, 2.05, -2.07], panelTex(360, 160, (g, w, h) => { g.fillStyle = "#111"; g.fillRect(0, 0, w, h); g.fillStyle = "#FF4D3A"; g.font = "bold 120px monospace"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("042", w / 2, h / 2 + 6); }));
+    counterUnit({ front: 0x5c6670, top: 0x3a4552, sign: { text: "Schalter 3", bg: "#3a4552", fg: "#ffffff" } });
+    for (const x of [-2.6, -2.05, -1.5]) { box(0.45, 0.06, 0.42, 0x39424f, [x, 0.5, -1.4], { ink: 0.01 }); box(0.45, 0.42, 0.05, 0x39424f, [x, 0.75, -1.6], { ink: 0.01 }); cyl(0.03, 0.03, 0.46, 0x9aa3ab, [x, 0.25, -1.4], { ink: 0.005 }); }
+    box(0.3, 1.1, 0.3, 0xd0d4d8, [-0.2, 0.6, -1.85]); plant(2.9, -1.4, 1.3); const clk = wallClock(0.5, 3.1);
+    return { lamps: [], update: clk };
+  },
+};
+SCENES.office = SCENES.bureau;
+const SETTING = SCENES[CFG.setting] ? CFG.setting : "cafe";
+const OPEN = new Set(["home", "park", "school"]);
+const LAY = OPEN.has(SETTING) ? { lena: [-0.9, 0.3], braun: [0.9, -0.1] } : { lena: [-0.85, 0.45], braun: [1.3, -0.75] };
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0xd9b48a, 1.25));
 const sun = new THREE.DirectionalLight(0xfff2d6, 2.4); sun.position.set(2.5, 4, 3.5); scene.add(sun);
 
-const cafe = buildCafe();
-const lena = makeLena(), braun = makeBraun();
+const cafe = SCENES[SETTING]();
+const lena = makeLena(LAY.lena), braun = makeBraun(LAY.braun);
+// a soft blob under each person, so they stand on the floor
+for (const P of [lena, braun]) { const sh = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })); sh.rotation.x = -Math.PI / 2; sh.position.set(P.root.position.x, 0.06, P.root.position.z); scene.add(sh); }
+// confetti for the goodbye: a fixed set of pieces, positions are pure functions of time
+const CONF = []; for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.06, 0.1), new THREE.MeshBasicMaterial({ color: [0xffce00, 0xdd0000, 0x2b1d16, 0xffffff, 0x3ac0c8][i % 5], side: THREE.DoubleSide })); m.visible = false; scene.add(m); CONF.push(m); }
 const PEOPLE = { lena, braun };
 
 // ------------------------------------------------------------------ the lesson as time windows
@@ -354,14 +483,17 @@ function act(w, P, t) {
 // camera: wide in the hook, then each speaker framed in turn, wide again for the goodbye
 const SH = {
   wide: { p: [0.3, 1.5, 5.4], l: [0.2, 1.1, 0] },
-  lena: { p: [-0.1, 1.6, 2.7], l: [-0.8, 1.42, 0.45] },
-  braun: { p: [0.8, 1.6, 2.5], l: [1.3, 1.5, -0.7] },
+  lena: { p: [LAY.lena[0] + 0.75, 1.6, 2.7], l: [LAY.lena[0] + 0.05, 1.42, LAY.lena[1]] },
+  braun: { p: [LAY.braun[0] - 0.5, 1.6, 2.5], l: [LAY.braun[0], 1.5, LAY.braun[1]] },
 };
 const mix = (A, B, k) => ({ p: A.p.map((v, i) => v + (B.p[i] - v) * k), l: A.l.map((v, i) => v + (B.l[i] - v) * k) });
 function cameraAt(t) {
   let c = SH.wide;
   for (const l of L) c = mix(c, SH[l.who], ss(l.t - 0.5, l.t + 0.1, t));
   c = mix(c, SH.wide, ss(OUTRO, OUTRO + 0.6, t));
+  // a slow push in while a sentence is spoken
+  let push = 0; for (const l of L) { const end = l.t + l.dur + (l.again ? l.again.gap + l.again.dur : 0) + 0.4; push = Math.max(push, ss(l.t - 0.3, end, t) * (1 - ss(end, end + 0.35, t))); }
+  c = { p: [c.p[0], c.p[1], c.p[2] - 0.32 * push], l: c.l };
   camera.position.set(c.p[0] + Math.sin(t * 0.5) * 0.03, c.p[1] + Math.sin(t * 0.37) * 0.02, c.p[2]);
   camera.lookAt(c.l[0], c.l[1], c.l[2]);
 }
@@ -369,9 +501,13 @@ function cameraAt(t) {
 function renderAt(t) {
   act("lena", lena, t); act("braun", braun, t);
   cafe.lamps.forEach((g, i) => { g.rotation.z = Math.sin(t * 0.9 + i) * 0.03; });
-  cafe.mh.parent.rotation.z = -(t / 60) * Math.PI * 2 * 12; cafe.hh.parent.rotation.z = -(t / 60) * Math.PI * 2;
-  cafe.bird.position.x = -3.1 + ((t / 7) % 1) * 2.4;
-  cafe.wl.rotation.z = Math.sin(t * 22) * 0.6; cafe.wr.rotation.z = -Math.sin(t * 22) * 0.6;
+  cafe.update(t);
+  const ct = t - (OUTRO + 0.3);
+  CONF.forEach((m, i) => {
+    const on = ct > 0 && ct < 3.2; m.visible = on; if (!on) return;
+    const sp = 0.9 + rnd(i) * 0.7; m.position.set(-2.6 + rnd(i + 90) * 5.6 + Math.sin(ct * 2 + i) * 0.15, 3.9 - ct * sp - rnd(i + 200) * 0.6, -0.4 + rnd(i + 300) * 2.2);
+    m.rotation.set(ct * (2 + rnd(i + 5) * 3), ct * (1 + rnd(i + 9) * 2), 0);
+  });
   cameraAt(t);
   renderer.render(scene, camera);
 }

@@ -41,8 +41,8 @@ const isCorrection =!!correctionUnitId;
 // owner, 2026-09-28: "videos must be made with the new design, not the old
 // one". The photo-led ink layout stays only as a fallback a correction request
 // naming its unit can ask for with "style": "ink".
-let lessonStyle = "anim";
-let easyLook = "cartoon";   // EasyDeutsch: "cartoon" (drawn) or "3d" (human 3D characters)
+let lessonStyle = "easy";
+let easyLook = "cartoon3d";   // EasyDeutsch: "cartoon" (drawn) or "3d" (human 3D characters)
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
