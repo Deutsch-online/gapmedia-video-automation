@@ -490,13 +490,23 @@ function act(w, P, t) {
   rot(P.head, nod / D, neg * 16 * Math.sin(t * 9), (wts.chest ? -6 * wts.chest : 0) + neg * 3 * Math.sin(t * 9));
   P.body.rotation.y = 0.05 * Math.sin(t * 1.3 + (w === "lena" ? 0 : 2)) * 1 + 0.07 * tw * Math.sin(t * 2.6);
   P.body.rotation.x = 0.035 * tw + 0.05 * neg;
-  // brows raise while talking or listening
+  // brows raise while talking or listening; one brow goes up on a question (the showcase face)
   P.brows.position.y = 0.012 * Math.max(tw, react * 0.6);
+  let q = 0; for (const x of talk[w]) if (/\?\s*$/.test(x.text)) q = Math.max(q, win(t, x.t0, x.t0 + x.dur + 0.3, 0.2));
+  if (!P.brow0) P.brow0 = P.brows.children.map((b) => b.position.y);
+  P.brows.children.forEach((b, i) => { b.position.y = P.brow0[i] + (i === 1 ? 0.03 * q : -0.004 * q) - 0.008 * neg; });
+  // a side glance at the speaker while listening
+  if (!P.iris0) P.iris0 = P.irises.map((ir) => ir.position.x);
+  let listen = 0; for (const x of talk[other]) listen = Math.max(listen, win(t, x.t0 - 0.1, x.t0 + x.dur + 0.2, 0.25));
+  P.irises.forEach((ir, i) => { ir.position.x = P.iris0[i] + (w === "lena" ? 0.012 : -0.012) * listen * (1 - tw); });
   // face: blink, mouth
   const b = blinkAmt(t, w === "lena" ? 0 : 1.1);
   for (const lid of P.lids) lid.scale.y = Math.max(0.001, b);
   const shape = mouthShape(w, t);
   P.mouth[0].visible = shape === 0; P.mouth[1].visible = shape === 1; P.mouth[2].visible = shape === 2;
+  // a small smirk right after each own sentence
+  let smirk = 0; for (const x of talk[w]) smirk = Math.max(smirk, win(t, x.t0 + x.dur + 0.05, x.t0 + x.dur + 0.9, 0.2));
+  P.mouth[0].rotation.z = Math.PI - 0.24 * smirk; P.mouth[0].position.x = 0.014 * smirk;
   P.body.position.y = 0.006 * Math.sin((t * 2 * Math.PI) / (w === "lena" ? 1.7 : 2.1));
   if (P.extra.pony) P.extra.pony.rotation.x = (0.5 + 0.12 * Math.sin(t * 2.4)) ;
 }
