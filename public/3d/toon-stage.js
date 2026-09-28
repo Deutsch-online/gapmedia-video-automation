@@ -54,6 +54,54 @@ const G = (parent, p = [0, 0, 0], r = [0, 0, 0]) => { const g = new THREE.Group(
 const cap = (r, l) => new THREE.CapsuleGeometry(r, l, 6, 14);
 const sph = (r) => new THREE.SphereGeometry(r, 28, 20);
 
+// ------------------------------------------------------------------ hands
+// Hand poses are finger curls in radians (0 = straight, 1.5 = fist) plus a thumb
+// angle: inward-positive, or straight up. Hands hang down the arm, so a curl is
+// a rotation about z toward the palm side (toward the body: -sx).
+function buildHand(parent, skin, sx, cuffColor) {
+  const h = G(parent, [0, -0.3, 0]);
+  M(new THREE.CylinderGeometry(0.056, 0.058, 0.035, 16), cuffColor, { p: [0, 0.01, 0], parent: h, ink: 0.006 });
+  M(sph(0.055), skin, { s: [0.95, 1.05, 0.6], p: [0, -0.05, 0], parent: h, ink: 0.006 });
+  const fingers = [];
+  [[-0.03, 0.05], [-0.01, 0.06], [0.01, 0.055], [0.03, 0.042]].forEach(([x, len]) => {
+    const f1 = G(h, [x, -0.09, 0]);
+    M(cap(0.0125, len * 0.5), skin, { p: [0, -len * 0.3, 0], parent: f1, ink: 0.004 });
+    const f2 = G(f1, [0, -len * 0.6, 0]);
+    M(cap(0.0115, len * 0.4), skin, { p: [0, -len * 0.25, 0], parent: f2, ink: 0.004 });
+    fingers.push({ f1, f2 });
+  });
+  const t1 = G(h, [-sx * 0.05, -0.05, 0.014]);
+  M(cap(0.015, 0.03), skin, { p: [0, -0.03, 0], parent: t1, ink: 0.004 });
+  const t2 = G(t1, [0, -0.06, 0]);
+  M(cap(0.013, 0.026), skin, { p: [0, -0.02, 0], parent: t2, ink: 0.004 });
+  return { h, fingers, t1, t2, sx };
+}
+const inward = (a) => (sx) => -sx * a;
+const HAND = {
+  relaxed: { c: [0.3, 0.38, 0.46, 0.55], thumb: inward(0.5), t2: 0.3 },
+  open: { c: [0.04, 0.04, 0.07, 0.1], thumb: inward(0.9), t2: 0.05 },
+  flat: { c: [0.1, 0.1, 0.12, 0.15], thumb: inward(0.35), t2: 0.1 },
+  grip: { c: [0.85, 0.9, 0.95, 1.0], thumb: inward(1.0), t2: 0.5 },
+  fist: { c: [1.45, 1.5, 1.55, 1.6], thumb: inward(1.1), t2: 0.7 },
+  point: { c: [0.04, 1.5, 1.55, 1.6], thumb: inward(1.0), t2: 0.6 },
+  thumbs: { c: [1.45, 1.5, 1.55, 1.6], thumb: () => Math.PI * 0.97, t2: 0.05 },
+  beat: { c: [0.12, 0.18, 0.24, 0.3], thumb: inward(0.6), t2: 0.15 },
+};
+function poseHand(rig, parts, t, flutter = 0) {
+  // parts: [[poseName, weight], ...] blended over "relaxed"
+  const base = HAND.relaxed, sx = rig.sx, c = base.c.slice(), th = base.thumb(sx); let t2 = base.t2, thv = th;
+  for (const [name, w] of parts) {
+    const p = HAND[name]; if (!p || w <= 0) continue;
+    p.c.forEach((v, i) => { c[i] += (v - base.c[i]) * w; });
+    thv += (p.thumb(sx) - th) * w; t2 += (p.t2 - base.t2) * w;
+  }
+  rig.fingers.forEach((f, i) => {
+    const cv = c[i] + flutter * 0.18 * Math.sin(t * 15 + i * 0.9);
+    f.f1.rotation.z = -sx * cv; f.f2.rotation.z = -sx * cv * 0.95;
+  });
+  rig.t1.rotation.z = thv; rig.t2.rotation.z = -sx * t2;
+}
+
 // ------------------------------------------------------------------ people
 function person(o) {
   const root = G(scene, [o.x, 0, o.z], [0, o.yaw, 0]);
@@ -68,10 +116,12 @@ function person(o) {
   const arms = {};
   for (const sx of [-1, 1]) {
     const sh = G(body, [sx * 0.235, 1.33, 0]);
+    M(sph(0.068), o.sleeve, { parent: sh, ink: 0.008 });
     M(cap(0.058, 0.2), o.sleeve, { p: [0, -0.16, 0], parent: sh });
     const el = G(sh, [0, -0.32, 0]);
+    M(sph(0.056), o.sleeve, { parent: el, ink: 0.008 });
     M(cap(0.052, 0.18), o.sleeve, { p: [0, -0.14, 0], parent: el });
-    const hand = M(sph(0.065), o.skin, { p: [0, -0.31, 0], parent: el });
+    const hand = buildHand(el, o.skin, sx, o.sleeve);
     arms[sx] = { sh, el, hand };
   }
   const head = G(body, [0, 1.46, 0]);
@@ -152,8 +202,6 @@ function makeBraun() {
       M(new THREE.CylinderGeometry(0.06, 0.06, 0.035, 20), 0x2f3a48, { parent: watch, ink: 0.005 });
       M(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 20), 0xffffff, { parent: watch, ink: 0 });
       watch.visible = false; P.extra.watch = watch;
-      const thumb = M(cap(0.02, 0.05), 0xf0c29a, { p: [0.05, -0.33, 0.04], r: [0, 0, -0.4], parent: el, ink: 0.004 });
-      thumb.visible = false; P.extra.thumb = thumb;
     },
   });
 }
@@ -225,7 +273,7 @@ const PEOPLE = { lena, braun };
 // ------------------------------------------------------------------ the lesson as time windows
 const L = CFG.lines, HOOK = CFG.hookDur, OUTRO = CFG.outroAt, TOTAL = CFG.total;
 const NEAR_POSE = {                         // degrees: shoulder x / z, elbow x / z (x forward = negative)
-  wallet: { sx: -62, sz: 0, ex: -72, ez: 0 }, watch: { sx: -32, sz: 0, ex: -128, ez: 0 }, thumbs: { sx: -28, sz: 0, ex: -98, ez: 0 },
+  wallet: { sx: -48, sz: 0, ex: -40, ez: 0 }, watch: { sx: -32, sz: 0, ex: -128, ez: 0 }, thumbs: { sx: -28, sz: 0, ex: -98, ez: 0 },
   chest: { sx: -22, sz: 0, ex: -140, ez: 0 }, point: { sx: -78, sz: 0, ex: -10, ez: 0 },
 };
 const talk = { lena: [], braun: [] }, acts = { lena: [], braun: [] };
@@ -272,18 +320,26 @@ function act(w, P, t) {
   if (wts.wallet) sz += Math.sin(t * 7) * 4 * wts.wallet;
   const near = P.arms[s];
   rot(near.sh, sx, 0, sz + s * 3); rot(near.el, ex, 0, ez);
+  const HANDOF = { wallet: "grip", watch: "flat", thumbs: "thumbs", chest: "flat", point: "point" };
+  poseHand(near.hand, [...Object.entries(wts).map(([k, v]) => [HANDOF[k], v]), ["open", wave]], t, wave);
+  rot(near.hand.h, wts.watch ? -25 * wts.watch : 0, 0, wave ? s * 10 * Math.sin(t * 13 + 1) * wave : 0);
   // far arm: explains along with the words
   const tw = isTalking(w, t) ? Math.max(...talk[w].map((x) => win(t, x.t0 - 0.1, x.t0 + x.dur + 0.15, 0.25))) : 0;
   const far = P.arms[-s];
   rot(far.sh, -(20 + 14 * Math.sin(t * 7.4)) * tw, 0, -s * (3 + 5 * tw)); rot(far.el, -(14 + 10 * Math.sin(t * 7.4 + 1)) * tw, 0, 0);
+  poseHand(far.hand, [["beat", tw]], t);
+  rot(far.hand.h, -22 * tw * (0.5 + 0.5 * Math.sin(t * 7.4 + 2)), 0, 0);
   if (P.extra.wallet) { P.extra.wallet.visible = (wts.wallet || 0) > 0.5; }
   if (P.extra.watch) { P.extra.watch.visible = (wts.watch || 0) > 0.5; }
-  if (P.extra.thumb) { P.extra.thumb.visible = (wts.thumbs || 0) > 0.5; }
   // head: nods on the beat of the words; nods once when the other one finishes a sentence
   let nod = 0, react = 0;
   for (const x of talk[other]) react = Math.max(react, win(t, x.t0 + x.dur * 0.5, x.t0 + x.dur * 0.5 + 0.6, 0.25));
   nod = 0.035 * Math.sin(t * 8) * tw + 0.09 * react + (wts.chest ? 0.08 * wts.chest : 0);
-  rot(P.head, nod / D, 0, (wts.chest ? -6 * wts.chest : 0));
+  // "kein / nicht": a small shake of the head and a shrug while the sentence is said
+  let neg = 0; for (const x of talk[w]) if (/\b(kein|keine|nicht)\b/i.test(x.text)) neg = Math.max(neg, win(t, x.t0 + 0.3, x.t0 + x.dur + 0.1, 0.25));
+  rot(P.head, nod / D, neg * 16 * Math.sin(t * 9), (wts.chest ? -6 * wts.chest : 0) + neg * 3 * Math.sin(t * 9));
+  P.body.rotation.y = 0.05 * Math.sin(t * 1.3 + (w === "lena" ? 0 : 2)) * 1 + 0.07 * tw * Math.sin(t * 2.6);
+  P.body.rotation.x = 0.035 * tw + 0.05 * neg;
   // brows raise while talking or listening
   P.brows.position.y = 0.012 * Math.max(tw, react * 0.6);
   // face: blink, mouth
