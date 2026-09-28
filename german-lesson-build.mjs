@@ -7,6 +7,7 @@ import { buildInkHTML } from "./lib/build-ink.mjs";
 import { buildAnimHTML, animSettingFor } from "./lib/build-anim.mjs";
 import { build3DStageHTML } from "./lib/build-3d.mjs";
 import { ensure3DAssets } from "./lib/fetch-3d-assets.mjs";
+import { runEasyDeutsch } from "./lib/easydeutsch.mjs";
 import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
@@ -44,10 +45,10 @@ let lessonStyle = "anim";
 if (isCorrection) {
   try {
     const request = JSON.parse(readFileSync(".german-correction-request.json", "utf8"));
-    if (request.unit === correctionUnitId && ["anim", "ink"].includes(request.style)) lessonStyle = request.style;
+    if (request.unit === correctionUnitId && ["anim", "ink", "easy"].includes(request.style)) lessonStyle = request.style;
   } catch {}
 }
-if (isCorrection && ["anim", "ink"].includes(process.env.GERMAN_LESSON_STYLE)) lessonStyle = process.env.GERMAN_LESSON_STYLE;
+if (isCorrection && ["anim", "ink", "easy"].includes(process.env.GERMAN_LESSON_STYLE)) lessonStyle = process.env.GERMAN_LESSON_STYLE;
 const isAnim = lessonStyle === "anim";
 // The owner tried a still-image "scene" style on 2026-09-27 and rejected it
 // ("pictures are useless — it must be moving animation"); it was removed.
@@ -89,6 +90,21 @@ if (!isCorrection && idx >= GERMAN_A1.length) {
 const unit = germanUnitAt(idx);
 const episodeNo = idx + 1;
 const nextUnit = germanUnitAt(idx + 1);
+
+// EasyDeutsch (owner, 2026-09-28): German only, its own builder — none of the
+// Persian narration, QC or captions below apply to it.
+if (lessonStyle === "easy") {
+  try {
+    await runEasyDeutsch({
+      unit, nextUnit, episodeNo, idx, isCorrection, tg, noTelegram,
+      HF: "npx --yes hyperframes@0.8.79", iso: new Date().toISOString().slice(0, 10), saveProgress,
+    });
+    process.exit(0);
+  } catch (err) {
+    console.error(` ✗ EasyDeutsch episode ${episodeNo} (${unit.id}) failed: ${err.message}`);
+    process.exit(1);
+  }
+}
 
 const ARTICLE_COLOR = { der: "#3B82F6", die: "#EF4444", das: "#22C55E" };
 function colorArticle(de) {

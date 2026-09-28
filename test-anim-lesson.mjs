@@ -64,7 +64,7 @@ ok(n0.kind === "none" && n0.question, "no noun, no picture: gestures only");
 
 const build = readFileSync("german-lesson-build.mjs", "utf8");
 ok(/let lessonStyle = "anim";/.test(build), "every episode is the character film by default (owner, 2026-09-28)");
-ok(/request\.unit === correctionUnitId && \["anim", "ink"\]\.includes\(request\.style\)/.test(build),
+ok(/request\.unit === correctionUnitId && \["anim", "ink", "easy"\]\.includes\(request\.style\)/.test(build),
   "only a correction request naming this unit can switch the style");
 ok(/setting: animSettingFor\(unit\.id\)/.test(build), "the build picks the scene from the unit");
 
