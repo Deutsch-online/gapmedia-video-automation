@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { buildInkHTML } from "./lib/build-ink.mjs";
 import { buildAnimHTML, animSettingFor } from "./lib/build-anim.mjs";
+import { build3DStageHTML } from "./lib/build-3d.mjs";
+import { ensure3DAssets } from "./lib/fetch-3d-assets.mjs";
 import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
@@ -536,6 +538,28 @@ try {
     },
   ];
   const vo = narrationFor(pack.id);
+  const animItems = unit.items.map((it) => {
+    const [exDe, exFa] = String(it.example || "").split(" — ");
+    return { de: it.de, fa: it.fa, exDe: exampleGermanFor(it) ? exDe : "", exFa: exampleGermanFor(it) ? exFa : "" };
+  });
+  // Owner, 2026-09-28: the animated lessons show two human characters (a
+  // well-dressed woman and a classy receptionist) moving with motion-captured
+  // clips, in a 3D set that fits the topic. The stage is rendered once per
+  // episode and both formats play it under their own cards (lib/build-3d.mjs).
+  let stageVideo = null;
+  if (isAnim) {
+    ensure3DAssets();
+    mkdirSync("public/3d/stage", { recursive: true });
+    const stageComp = `${compDir}/${pack.id}-stage3d.html`;
+    stageVideo = `public/3d/stage/${pack.id}-${iso}.mp4`;
+    writeFileSync(stageComp, build3DStageHTML({
+      setting: animSettingFor(unit.id), items: animItems, beats: voiceBeats,
+      hookDuration: pack.hookDuration, tipDurations: pack.tipDurations, outroDuration: pack.outroDuration,
+    }));
+    assertComposition(stageComp, { cli: HF });
+    execSync(`${HF} render -c "${stageComp}" --quality high --fps 30 -o "${stageVideo}"`, { stdio: "inherit" });
+    if (!existsSync(stageVideo)) throw new Error(`3D stage did not render for "${pack.id}"`);
+  }
   for (const format of drawsOwnScenes ? ANIM_FORMATS : FORMAT_VARIANTS) {
     const variantPack = {
      ...pack,
@@ -557,10 +581,7 @@ try {
           episodeNo, total: COURSE_TOTAL, topic: unit.topic,
           hook: unit.hook, loopLine: `${["", "یک", "دو", "سه", "چهار", "پنج", "شش"][unit.items.length] || "چند"} جملهٔ کوتاه؛ تا آخر ببین`,
           nextTopic: nextUnit.topic, outroLine: vo?.outro || "",
-          items: unit.items.map((it) => {
-            const [exDe, exFa] = String(it.example || "").split(" — ");
-            return { de: it.de, fa: it.fa, exDe: exampleGermanFor(it) ? exDe : "", exFa: exampleGermanFor(it) ? exFa : "" };
-          }),
+          items: animItems, stageVideo,
           beats: voiceBeats,
           hookDuration: variantPack.hookDuration, tipDurations: variantPack.tipDurations,
           outroDuration: variantPack.outroDuration, duration: variantPack.duration,

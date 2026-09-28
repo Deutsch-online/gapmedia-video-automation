@@ -36,7 +36,9 @@ permissions:
 jobs:
   lesson:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # The 3D lesson stage renders WebGL on the CPU (about 1 s a frame, ~30 min
+    # for a 60 s episode, once for both formats) — lib/build-3d.mjs.
+    timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
         with:
@@ -181,7 +183,7 @@ jobs:
           # Owner directive 2026-09-21: Jev judges vocabulary images first.
           # An unset secret arrives empty and the judge chain simply skips it.
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
-          CYCLE_DEADLINE_MINUTES: "44"
+          CYCLE_DEADLINE_MINUTES: "104"
           LESSON_UNIT: ${{ steps.gate.outputs.unit }}
         run: |
           # Passed through an env var, never interpolated into the command

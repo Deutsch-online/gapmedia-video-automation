@@ -55,3 +55,8 @@ out/verify/
 .daily-cycle-report.json
 .daily-provider-plan.json
 .test-bot-chat.json
+# 3D lesson stage: people and mocap are downloaded every build (their terms
+# allow use, not redistribution — lib/fetch-3d-assets.mjs); the rendered stage
+# film is a per-episode build file like renders/.
+public/3d/models/
+public/3d/stage/
