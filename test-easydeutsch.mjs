@@ -73,4 +73,12 @@ assert.match(toon, /function applyLook\(P, look\)/); assert.match(toon, /SCENES\
 const editor = readFileSync("tools/character-editor/index.html", "utf8");
 for (const id of ["head", "body", "height", "tintAmt", "zin", "zout", "save", "reset", "export", "toproject", "strip"]) assert.match(editor, new RegExp(`id="${id}"`), id);
 assert.doesNotMatch(editor, /fetch\(["']https?:/, "the editor keeps edits in the browser");
+// a photo card of the word while it is taught (owner, 2026-09-29)
+const withPic = buildEasyCartoonHTML({ episodeNo: 44, title: "Möbel", hookDur: 3, outroAt: 10, total: 13, three: true, lines: [],
+  pics: [{ src: "data:image/jpeg;base64,AAAA", label: "der Tisch", t0: 3.3, t1: 8 }] });
+assert.match(withPic, /<div id="pic0" class="pic"><img src="data:image\/jpeg;base64,AAAA" alt="der Tisch"\/><div class="pl">der Tisch<\/div><\/div>/);
+assert.match(withPic, /tl\.fromTo\("#pic0"/, "the card pops in on the timeline");
+assert.match(easy, /findLessonImage\(it\.img, it\.de\)/, "the same real-photo search and relevance gate as the older lessons");
+assert.match(easy, /sourceType === "generated-fallback"/, "no placeholder graphic on a card");
+for (const u of GERMAN_A1) for (const it of u.items) assert.ok(it.img, `${u.id}: "${it.de}" has a picture query`);
 console.log("easydeutsch: ok");
