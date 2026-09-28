@@ -38,11 +38,20 @@ for (const [v, h] of Object.entries(html)) {
 }
 
 // Every other lesson plays in the everyday room, acted only with what its words name.
-ok(animSettingFor("a1-40-authorities") === "office" && animSettingFor("a1-42-possession") === "room", "the office is for the authorities lesson; every other lesson gets the room");
+ok(animSettingFor("a1-40-authorities") === "office" && animSettingFor("a1-42-possession") === "home", "the office is for the authorities lesson; possession plays at home");
+// Owner, 2026-09-28: each topic looks different and fits its subject.
+ok(animSettingFor("a1-27-train-station") === "station" && animSettingFor("a1-14-cafe") === "cafe" && animSettingFor("a1-30-health") === "doctor"
+  && animSettingFor("a1-18-shopping") === "shop" && animSettingFor("a1-78-school-course") === "school" && animSettingFor("a1-99-work-day") === "work"
+  && animSettingFor("a1-16-weather") === "park" && animSettingFor("a1-74-bank") === "bureau", "every kind of topic has its own place");
+ok(GERMAN_A1.every((u) => animSettingFor(u.id) !== undefined) && new Set(GERMAN_A1.map((u) => animSettingFor(u.id))).size >= 9, "all 100 units are placed, across at least nine scenes");
+const u27 = GERMAN_A1.find((u) => u.id === "a1-27-train-station");
+const i27 = u27.items.map((it) => { const [exDe, exFa] = it.example.split(" — "); return { de: it.de, fa: it.fa, exDe, exFa }; });
+const h27 = buildAnimHTML({ ...base, topic: u27.topic, hook: u27.hook, items: i27, setting: "station", variant: "tiktok" });
+ok(/class="train"/.test(h27) && /\.ring-bahnhof/.test(h27) && /\.ring-zug/.test(h27) && !/class="obj-sofa"/.test(h27), "the station lesson points at the station sign and the train, not at a sofa");
 const r42 = GERMAN_A1.find((u) => u.id === "a1-42-possession");
 const items42 = r42.items.map((it) => { const [exDe, exFa] = it.example.split(" — "); return { de: it.de, fa: it.fa, exDe, exFa }; });
 for (const v of Object.keys(ANIM_VARIANTS)) {
-  const h = buildAnimHTML({ ...base, topic: r42.topic, hook: r42.hook, items: items42, setting: "room", variant: v });
+  const h = buildAnimHTML({ ...base, topic: r42.topic, hook: r42.hook, items: items42, setting: "home", variant: v });
   ok(/class="obj-tisch"/.test(h) && !/SCHALTER/.test(h) && !/TERMIN/.test(h), `${v}: the room has no office props`);
   ok(/class="ic-schluessel"/.test(h) && /class="ic-buch"/.test(h), `${v}: the key and the book the phrases name are the props`);
   ok(/\.ring-tisch/.test(h), `${v}: "auf dem Tisch" points at the table in the room`);
