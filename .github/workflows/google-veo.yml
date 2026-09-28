@@ -38,6 +38,11 @@ on:
         required: false
         default: ""
         type: string
+      model:
+        description: "Veo model id for this run (empty = the GOOGLE_VEO_MODEL variable, else veo-3.1-fast-generate-preview)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -49,7 +54,7 @@ jobs:
     env:
       GOOGLE_VEO_API_KEY: ${{ secrets.GOOGLE_VEO_API_KEY }}
       ENABLE_GOOGLE_VEO: ${{ vars.ENABLE_GOOGLE_VEO }}
-      GOOGLE_VEO_MODEL: ${{ vars.GOOGLE_VEO_MODEL }}
+      GOOGLE_VEO_MODEL: ${{ inputs.model || vars.GOOGLE_VEO_MODEL }}
     steps:
       - uses: actions/checkout@v4
         with:
