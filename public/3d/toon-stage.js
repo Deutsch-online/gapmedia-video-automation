@@ -10,12 +10,17 @@
 import * as THREE from "three";
 
 const CFG = window.__toon;
+// every episode looks different (owner, 2026-09-29): staging, light, camera and outfits are
+// picked from the episode number; neighbours always differ on every axis (k is coprime to n)
+const SEED = Math.abs(Math.round(+((CFG.vary && CFG.vary.seed) || 0)));
+const pick = (list, k) => list[(SEED * k) % list.length];
 const canvas = document.getElementById("three-stage");
 const W = canvas.width || 1080, H = canvas.height || 1080;   // lessons: 1080 × 1080; the showcase: 1920 × 1080
 const CLEAR = CFG.setting === "none";          // the character editor: no set, a transparent picture
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, alpha: CLEAR });
 renderer.setSize(W, H, false); renderer.setPixelRatio(1);
 renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.NoToneMapping;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;   // real cast shadows
 const scene = new THREE.Scene();
 scene.background = CLEAR ? null : new THREE.Color(0xf4e2be);
 const camera = new THREE.PerspectiveCamera(34, W / H, 0.1, 40);
@@ -47,6 +52,7 @@ function inkMat(w) {
 function M(geo, color, { s = [1, 1, 1], p = [0, 0, 0], r = [0, 0, 0], ink = 0.012, mat = null, parent = null } = {}) {
   const m = new THREE.Mesh(geo, mat || toon(color));
   m.scale.set(...s); m.position.set(...p); m.rotation.set(...r);
+  if (!mat || mat.isMeshToonMaterial) { m.castShadow = true; m.receiveShadow = true; }
   if (ink) { const avg = (s[0] + s[1] + s[2]) / 3; m.add(new THREE.Mesh(geo, inkMat(ink / avg))); }
   if (parent) parent.add(m);
   return m;
@@ -104,13 +110,25 @@ function poseHand(rig, parts, t, flutter = 0) {
 }
 
 // ------------------------------------------------------------------ people
+// outfits: Lena [top, trousers], Herr Braun [shirt, apron]
+const OUTFIT = {
+  lena: pick([[0xa9d1ee, 0x3d5a80], [0xf2b6c6, 0x2f3a48], [0xf6e3a1, 0x3d5a80], [0xb9e0c4, 0x5a4a3a], [0xffffff, 0x2a4a6a], [0xd9c2f0, 0x3a3a4a]], 7),
+  braun: pick([[0xffffff, 0x3e8a5a], [0xdcebf7, 0x2f4f7a], [0xffffff, 0x8e2f3a], [0xf3ead8, 0x6b4a33], [0xe8f2e4, 0x2b3a4a]], 3),
+};
 function person(o) {
   const root = G(scene, [o.x, 0, o.z], [0, o.yaw, 0]);
   const body = G(root);
   const s = o.near;                               // the arm nearest the camera: -1 right, +1 left
-  if (!o.seated) for (const sx of [-1, 1]) {
-    M(new THREE.CylinderGeometry(0.075, 0.065, 0.78, 16), o.pants, { p: [sx * 0.1, 0.4, 0], parent: body });
-    M(sph(0.085), o.shoe, { s: [1, 0.6, 1.5], p: [sx * 0.1, 0.045, 0.06], parent: body });
+  // legs on hip and knee joints, so people can walk, sit and shift their weight
+  const legs = {};
+  for (const sx of [-1, 1]) {
+    const hip = G(body, [sx * 0.1, 0.8, 0]);
+    M(cap(0.075, 0.26), o.pants, { p: [0, -0.2, 0], parent: hip });
+    const knee = G(hip, [0, -0.4, 0]);
+    M(cap(0.066, 0.24), o.pants, { p: [0, -0.18, 0], parent: knee });
+    const ankle = G(knee, [0, -0.355, 0]);
+    M(sph(0.085), o.shoe, { s: [1, 0.6, 1.5], p: [0, 0, 0.06], parent: ankle });
+    legs[sx] = { hip, knee, ankle };
   }
   M(cap(0.18, 0.34), o.top, { s: [1, 1, 0.78], p: [0, 1.08, 0], parent: body });
   M(new THREE.CylinderGeometry(0.06, 0.07, 0.1, 12), o.skin, { p: [0, 1.42, 0], parent: body });
@@ -149,7 +167,7 @@ function person(o) {
   const m1 = M(sph(0.045), 0x8e2f2f, { s: [1, 0.85, 0.45], parent: mouth, ink: 0.005 });
   const m2 = M(sph(0.03), 0x8e2f2f, { s: [1, 1.25, 0.45], p: [0, -0.005, 0], parent: mouth, ink: 0.005 });
   m1.visible = m2.visible = false;
-  const P = { root, body, head, arms, lids, irises, brows, mouth: [m0, m1, m2], s, extra: {}, o };
+  const P = { root, body, head, arms, legs, lids, irises, brows, mouth: [m0, m1, m2], s, extra: {}, o };
   if (o.decorate) o.decorate(P);
   return P;
 }
@@ -157,7 +175,7 @@ function person(o) {
 function makeLena([lx, lz]) {
   return person({
     x: lx, z: lz, yaw: Math.PI / 2 - 0.95, near: -1, skin: 0xf4c9a4, iris: 0x6b4a2a, browColor: 0x5e3620,
-    top: 0xa9d1ee, sleeve: 0xa9d1ee, pants: 0x3d5a80, shoe: 0xffffff,
+    top: OUTFIT.lena[0], sleeve: OUTFIT.lena[0], pants: OUTFIT.lena[1], shoe: 0xffffff,
     decorate(P) {
       const { head, body } = P, hair = 0x7a4a2a;
       M(new THREE.SphereGeometry(0.275, 30, 20, 0, Math.PI * 2, 0, Math.PI * 0.5), hair, { p: [0, 0.3, -0.035], r: [-0.55, 0, 0], parent: head });
@@ -188,15 +206,15 @@ function makeLena([lx, lz]) {
 function makeBraun([bx, bz]) {
   return person({
     x: bx, z: bz, yaw: -Math.PI / 2 + 0.95, near: 1, skin: 0xf0c29a, iris: 0x3e5a7a, browColor: 0x9a9a9a,
-    top: 0xffffff, sleeve: 0xffffff, pants: 0x2f3a48, shoe: 0x2f3a48,
+    top: OUTFIT.braun[0], sleeve: OUTFIT.braun[0], pants: 0x2f3a48, shoe: 0x2f3a48,
     decorate(P) {
       const { head, body } = P, grey = 0xbdbdbd;
       for (const sx of [-1, 1]) M(sph(0.06), grey, { s: [0.7, 1.2, 0.8], p: [sx * 0.245, 0.33, -0.03], parent: head });
       M(cap(0.026, 0.09), grey, { r: [0, 0, Math.PI / 2], p: [0, 0.19, 0.245], parent: head, ink: 0.006 });
       for (const sx of [-1, 1]) M(new THREE.TorusGeometry(0.068, 0.011, 8, 24), 0x2b1d16, { p: [sx * 0.095, 0.31, 0.268], parent: head, ink: 0 });
       M(new THREE.BoxGeometry(0.03, 0.012, 0.012), 0x2b1d16, { p: [0, 0.315, 0.272], parent: head, ink: 0 });
-      M(new THREE.BoxGeometry(0.36, 0.5, 0.03), 0x3e8a5a, { p: [0, 1.0, 0.145], parent: body, ink: 0.008 });
-      M(new THREE.BoxGeometry(0.2, 0.16, 0.03), 0x3e8a5a, { p: [0, 1.28, 0.145], parent: body, ink: 0.008 });
+      M(new THREE.BoxGeometry(0.36, 0.5, 0.03), OUTFIT.braun[1], { p: [0, 1.0, 0.145], parent: body, ink: 0.008 });
+      M(new THREE.BoxGeometry(0.2, 0.16, 0.03), OUTFIT.braun[1], { p: [0, 1.28, 0.145], parent: body, ink: 0.008 });
       M(new THREE.BoxGeometry(0.09, 0.05, 0.03), 0xc23b3b, { p: [0, 1.41, 0.15], parent: body, ink: 0.004 });
       const el = P.arms[P.s].el;
       const watch = G(el, [0, -0.27, 0]);
@@ -390,15 +408,57 @@ SCENES.studio = () => { scene.background = new THREE.Color(0xf3efe8); M(new THRE
 SCENES.none = () => ({ lamps: [], update() {} });
 const SETTING = SCENES[CFG.setting] ? CFG.setting : "cafe";
 const OPEN = new Set(["home", "park", "school"]);
-const LAY = OPEN.has(SETTING) ? { lena: [-0.9, 0.3], braun: [0.9, -0.1] } : { lena: [-0.85, 0.45], braun: [1.3, -0.75] };
+const LESSON = !(SETTING === "none" || SETTING === "studio");
+// staging: standing and talking, Lena walking in, both seated at a table, or side by side
+const STAGINGS = ["cafe", "home", "park", "school"].includes(SETTING) ? ["stand", "arrive", "sit", "side"] : ["stand", "arrive", "side"];
+const STAGING = LESSON && CFG.vary ? pick(STAGINGS, 7) : "stand";
+const SEATED = STAGING === "sit";
+const LAY = STAGING === "sit" ? { lena: [-0.78, 0.85], braun: [0.78, 0.85] }
+  : STAGING === "side" ? { lena: [-0.5, 0.75], braun: [0.52, 0.7] }
+  : OPEN.has(SETTING) ? { lena: [-0.9, 0.3], braun: [0.9, -0.1] } : { lena: [-0.85, 0.45], braun: [1.3, -0.75] };
+const YAW = STAGING === "sit" ? { lena: Math.PI / 2 - 0.7, braun: -Math.PI / 2 + 0.7 }
+  : STAGING === "side" ? { lena: 0.32, braun: -0.32 } : { lena: Math.PI / 2 - 0.95, braun: -Math.PI / 2 + 0.95 };
+const HY = SEATED ? -0.33 : 0;                         // head height offset for the camera
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0xd9b48a, 1.25));
-const sun = new THREE.DirectionalLight(0xfff2d6, 2.4); sun.position.set(2.5, 4, 3.5); scene.add(sun);
+// the light of the day: key, fill from the sky, and a rim light that lifts people off the set
+const TODS = SETTING === "park" ? ["day", "evening", "morning", "night"] : ["day", "evening", "morning"];
+const TOD = LESSON && CFG.vary ? pick(TODS, 5) : "day";
+const LIGHT = {
+  day: { sky: 0xffffff, ground: 0xd9b48a, hemi: 1.15, sun: 0xfff2d6, sunI: 2.3, pos: [2.5, 4, 3.5], rim: 0xffffff, bg: 0x9fd3f2 },
+  morning: { sky: 0xfff6ea, ground: 0xc9ad8a, hemi: 1.1, sun: 0xffe8cc, sunI: 2.2, pos: [-3.2, 2.6, 3.2], rim: 0xffe2b8, bg: 0xbfe0f0 },
+  evening: { sky: 0xffe2cc, ground: 0x9a7a6a, hemi: 1.0, sun: 0xffb87a, sunI: 2.0, pos: [4, 1.9, 2.6], rim: 0xffb070, bg: 0xf2a66f },
+  night: { sky: 0x9fb4ff, ground: 0x3a3050, hemi: 0.75, sun: 0xbcd0ff, sunI: 1.1, pos: [-2, 4, 3], rim: 0xffc070, bg: 0x1d2b52 },
+}[TOD];
+scene.add(new THREE.HemisphereLight(LIGHT.sky, LIGHT.ground, LIGHT.hemi));
+const sun = new THREE.DirectionalLight(LIGHT.sun, LIGHT.sunI); sun.position.set(...LIGHT.pos); scene.add(sun);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4;
+Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -2.5, near: 0.5, far: 20 });
+const rim = new THREE.DirectionalLight(LIGHT.rim, 0.9); rim.position.set(-1.5, 3, -4); scene.add(rim);
+if (TOD === "evening" || TOD === "night") { const lampLight = new THREE.PointLight(0xffc070, TOD === "night" ? 2.2 : 1.2, 7, 1.6); lampLight.position.set(0, 2.4, 0.6); scene.add(lampLight); }
 
 const cafe = SCENES[SETTING]();
+if (SETTING === "park") { scene.background = new THREE.Color(LIGHT.bg); scene.fog = new THREE.Fog(LIGHT.bg, 12, 26); }
 const lena = makeLena(LAY.lena), braun = makeBraun(LAY.braun);
+lena.root.rotation.y = YAW.lena; braun.root.rotation.y = YAW.braun;
+// people cast shadows on the set but take none on themselves (no dark blotches on faces)
+for (const P of [lena, braun]) P.root.traverse((o) => { if (o.isMesh) o.receiveShadow = false; });
+// seated: a chair under each, a small round table between them
+if (SEATED) {
+  for (const P of [lena, braun]) {
+    const c = G(scene, [P.root.position.x, 0, P.root.position.z], [0, P.root.rotation.y, 0]);
+    M(new THREE.BoxGeometry(0.46, 0.06, 0.44), 0x8e5a33, { p: [0, 0.46, 0.05], parent: c, ink: 0.008 });
+    M(new THREE.BoxGeometry(0.46, 0.5, 0.05), 0x8e5a33, { p: [0, 0.74, -0.18], parent: c, ink: 0.008 });
+    for (const [x, z] of [[-0.19, -0.13], [0.19, -0.13], [-0.19, 0.22], [0.19, 0.22]]) M(new THREE.CylinderGeometry(0.02, 0.02, 0.44, 8), 0x6b4226, { p: [x, 0.22, z], parent: c, ink: 0.004 });
+  }
+  const tx = (LAY.lena[0] + LAY.braun[0]) / 2, tz = LAY.lena[1] + 0.12;
+  M(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 32), 0xf3ead8, { p: [tx, 0.74, tz], parent: scene, ink: 0.01 });
+  M(new THREE.CylinderGeometry(0.04, 0.05, 0.72, 12), 0x39424f, { p: [tx, 0.37, tz], parent: scene, ink: 0.006 });
+  M(new THREE.CylinderGeometry(0.22, 0.22, 0.03, 20), 0x39424f, { p: [tx, 0.015, tz], parent: scene, ink: 0.006 });
+  M(new THREE.CylinderGeometry(0.05, 0.04, 0.09, 14), 0xffffff, { p: [tx - 0.15, 0.81, tz + 0.05], parent: scene, ink: 0.005 });
+  M(new THREE.CylinderGeometry(0.05, 0.04, 0.09, 14), 0xffffff, { p: [tx + 0.16, 0.81, tz - 0.02], parent: scene, ink: 0.005 });
+}
 // a soft blob under each person, so they stand on the floor
-if (!CLEAR) for (const P of [lena, braun]) { const sh = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })); sh.rotation.x = -Math.PI / 2; sh.position.set(P.root.position.x, 0.06, P.root.position.z); scene.add(sh); }
+if (!CLEAR && !SEATED && STAGING !== "arrive") for (const P of [lena, braun]) { const sh = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22 })); sh.rotation.x = -Math.PI / 2; sh.position.set(P.root.position.x, 0.06, P.root.position.z); scene.add(sh); }
 // confetti for the goodbye: a fixed set of pieces, positions are pure functions of time
 const CONF = []; for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.06, 0.1), new THREE.MeshBasicMaterial({ color: [0xffce00, 0xdd0000, 0x2b1d16, 0xffffff, 0x3ac0c8][i % 5], side: THREE.DoubleSide })); m.visible = false; scene.add(m); CONF.push(m); }
 const PEOPLE = { lena, braun };
@@ -433,10 +493,11 @@ L.forEach((l) => {
   if (l.again) talk[l.who].push({ t0: l.t + l.dur + l.again.gap, dur: l.again.dur, text: l.de });
   if (NEAR_POSE[l.action]) acts[l.who].push({ t0: l.t - 0.2, t1: l.t + l.dur + again + 0.5, type: l.action });
 });
-const HELLO = { braun: [0.6, HOOK - 0.2], lena: [1.0, HOOK] }, BYE = { lena: [OUTRO + 0.3, TOTAL - 0.4], braun: [OUTRO + 0.5, TOTAL - 0.4] };
+const ARRIVE = STAGING === "arrive" ? [0.15, Math.min(2.3, HOOK - 1.2)] : null;   // Lena walks in
+const HELLO = { braun: [0.6, HOOK - 0.2], lena: ARRIVE ? [ARRIVE[1] + 0.1, HOOK + 0.4] : [1.0, HOOK] }, BYE = { lena: [OUTRO + 0.3, TOTAL - 0.4], braun: [OUTRO + 0.5, TOTAL - 0.4] };
 for (const w of ["lena", "braun"]) { acts[w].push({ t0: HELLO[w][0], t1: HELLO[w][1], type: "wave" }, { t0: BYE[w][0], t1: BYE[w][1], type: "wave" }); }
 talk.braun.push({ t0: 0.9, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 1.0, dur: 0.8, text: "Tschüss" });
-talk.lena.push({ t0: 1.5, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 0.5, dur: 0.8, text: "Tschüss" });
+talk.lena.push({ t0: ARRIVE ? ARRIVE[1] + 0.3 : 1.5, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 0.5, dur: 0.8, text: "Tschüss" });
 
 function blinkAmt(t, off) {
   let b = 0.8 + off, v = 0;
@@ -455,8 +516,41 @@ function mouthShape(w, t) {
 const isTalking = (w, t) => talk[w].some((x) => t >= x.t0 - 0.05 && t <= x.t0 + x.dur);
 const rot = (o, x, y, z) => o.rotation.set(x * D, y * D, z * D);
 
+// Lena's walk in: position along the path, and how much she is walking (0..1)
+function walkState(t) {
+  if (!ARRIVE) return { k: 1, wk: 0 };
+  const k = ss(ARRIVE[0], ARRIVE[1], t);
+  return { k, wk: win(t, ARRIVE[0] - 0.05, ARRIVE[1] + 0.05, 0.25) };
+}
+function legs(w, P, t, wk, walkedDist) {
+  const off = w === "lena" ? 0 : 1.7;
+  for (const sx of [-1, 1]) {
+    const L2 = P.legs[sx];
+    if (SEATED) { rot(L2.hip, -86, sx * 4, sx * 3); rot(L2.knee, 84, 0, 0); rot(L2.ankle, 0, 0, 0); continue; }
+    // standing: the weight moves slowly from one leg to the other, the free knee softens
+    const shift = Math.sin(t * 0.45 + off);
+    const free = Math.max(0, sx * shift);
+    let hx = -3 * free, kx = 9 * free;
+    // walking: the legs swing in opposite phase, the knee bends on the swing
+    const ph = walkedDist * 5.4 + (sx > 0 ? Math.PI : 0);
+    hx = hx * (1 - wk) + (-24 * Math.sin(ph)) * wk;
+    kx = kx * (1 - wk) + (Math.max(0, Math.cos(ph)) * 42 + 4) * wk;
+    rot(L2.hip, hx, 0, 0); rot(L2.knee, kx, 0, 0); rot(L2.ankle, -kx * 0.35, 0, 0);
+  }
+  if (!SEATED) P.body.position.x = 0.012 * Math.sin(t * 0.45 + off) * (1 - wk);
+}
 function act(w, P, t) {
   const other = w === "lena" ? "braun" : "lena", s = P.s;
+  // where she is: the walk in (Lena, "arrive"), or seated
+  let wk = 0, walked = 0;
+  if (w === "lena" && ARRIVE) {
+    const st = walkState(t), from = [LAY.lena[0] - 2.7, LAY.lena[1] + 0.35];
+    P.root.position.x = from[0] + (LAY.lena[0] - from[0]) * st.k; P.root.position.z = from[1] + (LAY.lena[1] - from[1]) * st.k;
+    wk = st.wk; walked = st.k * 2.72;
+    P.root.rotation.y = YAW.lena + (Math.PI / 2 - 0.12 - YAW.lena) * (1 - ss(ARRIVE[1] - 0.35, ARRIVE[1] + 0.25, t));
+  }
+  P.root.position.y = SEATED ? -0.33 : 0;
+  legs(w, P, t, wk, walked);
   // near arm: the gesture of the sentence, or a wave
   let sx = 0, sz = 0, ex = 0, ez = 0, wave = 0;
   const wts = {};
@@ -469,14 +563,15 @@ function act(w, P, t) {
   if (wts.thumbs) ex += Math.sin(t * 9) * 6 * wts.thumbs;
   if (wts.wallet) sz += Math.sin(t * 7) * 4 * wts.wallet;
   const near = P.arms[s];
-  rot(near.sh, sx, 0, sz + s * 3); rot(near.el, ex, 0, ez);
+  const swing = 22 * wk * Math.sin(walked * 5.4);                  // arms swing against the legs
+  rot(near.sh, sx + swing * s, 0, sz + s * 3); rot(near.el, ex - 12 * wk, 0, ez);
   const HANDOF = { wallet: "grip", watch: "flat", thumbs: "thumbs", chest: "flat", point: "point" };
   poseHand(near.hand, [...Object.entries(wts).map(([k, v]) => [HANDOF[k], v]), ["open", wave]], t, wave);
   rot(near.hand.h, wts.watch ? -25 * wts.watch : 0, 0, wave ? s * 10 * Math.sin(t * 13 + 1) * wave : 0);
   // far arm: explains along with the words
   const tw = isTalking(w, t) ? Math.max(...talk[w].map((x) => win(t, x.t0 - 0.1, x.t0 + x.dur + 0.15, 0.25))) : 0;
   const far = P.arms[-s];
-  rot(far.sh, -(20 + 14 * Math.sin(t * 7.4)) * tw, 0, -s * (3 + 5 * tw)); rot(far.el, -(14 + 10 * Math.sin(t * 7.4 + 1)) * tw, 0, 0);
+  rot(far.sh, -(20 + 14 * Math.sin(t * 7.4)) * tw - swing * s + (SEATED ? -18 : 0), 0, -s * (3 + 5 * tw)); rot(far.el, -(14 + 10 * Math.sin(t * 7.4 + 1)) * tw - 12 * wk + (SEATED ? -40 : 0), 0, 0);
   poseHand(far.hand, [["beat", tw]], t);
   rot(far.hand.h, -22 * tw * (0.5 + 0.5 * Math.sin(t * 7.4 + 2)), 0, 0);
   if (P.extra.wallet) { P.extra.wallet.visible = (wts.wallet || 0) > 0.5; }
@@ -487,7 +582,10 @@ function act(w, P, t) {
   nod = 0.035 * Math.sin(t * 8) * tw + 0.09 * react + (wts.chest ? 0.08 * wts.chest : 0);
   // "kein / nicht": a small shake of the head and a shrug while the sentence is said
   let neg = 0; for (const x of talk[w]) if (/\b(kein|keine|nicht)\b/i.test(x.text)) neg = Math.max(neg, win(t, x.t0 + 0.3, x.t0 + x.dur + 0.1, 0.25));
-  rot(P.head, nod / D, neg * 16 * Math.sin(t * 9), (wts.chest ? -6 * wts.chest : 0) + neg * 3 * Math.sin(t * 9));
+  // side by side: heads turn to whoever is talking; a slow drift keeps the head alive
+  const turn = STAGING === "side" ? (w === "lena" ? 24 : -24) * Math.max(0, Math.max(...talk[other].map((x) => win(t, x.t0 - 0.2, x.t0 + x.dur + 0.3, 0.3))), 0) : 0;
+  const drift = 2.5 * Math.sin(t * 0.63 + (w === "lena" ? 0 : 1.4)) + 1.5 * Math.sin(t * 1.37);
+  rot(P.head, nod / D + 1.2 * Math.sin(t * 0.8), neg * 16 * Math.sin(t * 9) + turn + drift, (wts.chest ? -6 * wts.chest : 0) + neg * 3 * Math.sin(t * 9) + 1.5 * Math.sin(t * 0.52));
   P.body.rotation.y = 0.05 * Math.sin(t * 1.3 + (w === "lena" ? 0 : 2)) * 1 + 0.07 * tw * Math.sin(t * 2.6);
   P.body.rotation.x = 0.035 * tw + 0.05 * neg;
   // brows raise while talking or listening; one brow goes up on a question (the showcase face)
@@ -498,7 +596,9 @@ function act(w, P, t) {
   // a side glance at the speaker while listening
   if (!P.iris0) P.iris0 = P.irises.map((ir) => ir.position.x);
   let listen = 0; for (const x of talk[other]) listen = Math.max(listen, win(t, x.t0 - 0.1, x.t0 + x.dur + 0.2, 0.25));
-  P.irises.forEach((ir, i) => { ir.position.x = P.iris0[i] + (w === "lena" ? 0.012 : -0.012) * listen * (1 - tw); });
+  // small eye jumps (saccades) every second or two, like a real gaze
+  const beat = Math.floor((t + (w === "lena" ? 0 : 0.7)) / 1.35), sac = [rnd(beat * 3 + 1) - 0.5, rnd(beat * 3 + 2) - 0.5];
+  P.irises.forEach((ir, i) => { ir.position.x = P.iris0[i] + (w === "lena" ? 0.012 : -0.012) * listen * (1 - tw) + 0.008 * sac[0]; ir.position.y = 0.31 + 0.006 * sac[1]; });
   // face: blink, mouth
   const b = blinkAmt(t, w === "lena" ? 0 : 1.1);
   for (const lid of P.lids) lid.scale.y = Math.max(0.001, b);
@@ -507,16 +607,25 @@ function act(w, P, t) {
   // a small smirk right after each own sentence
   let smirk = 0; for (const x of talk[w]) smirk = Math.max(smirk, win(t, x.t0 + x.dur + 0.05, x.t0 + x.dur + 0.9, 0.2));
   P.mouth[0].rotation.z = Math.PI - 0.24 * smirk; P.mouth[0].position.x = 0.014 * smirk;
-  P.body.position.y = 0.006 * Math.sin((t * 2 * Math.PI) / (w === "lena" ? 1.7 : 2.1));
+  P.body.position.y = 0.006 * Math.sin((t * 2 * Math.PI) / (w === "lena" ? 1.7 : 2.1)) + 0.022 * wk * Math.abs(Math.sin(walked * 5.4));
   if (P.extra.pony) P.extra.pony.rotation.x = (0.5 + 0.12 * Math.sin(t * 2.4)) ;
 }
 
 // camera: wide in the hook, then each speaker framed in turn, wide again for the goodbye
-const SH = {
-  wide: { p: [0.3, 1.5, 5.4], l: [0.2, 1.1, 0] },
-  lena: { p: [LAY.lena[0] + 0.75, 1.6, 2.7], l: [LAY.lena[0] + 0.05, 1.42, LAY.lena[1]] },
-  braun: { p: [LAY.braun[0] - 0.5, 1.6, 2.5], l: [LAY.braun[0], 1.5, LAY.braun[1]] },
+// camera language: classic (moves between speakers), over the shoulder, hard cuts, or a slow dolly
+const CAM = LESSON && CFG.vary ? pick(["classic", "ots", "cuts", "dolly"], 3) : "classic";
+const over = (sp, li) => {                               // behind the listener's shoulder, looking at the speaker
+  const dx = li[0] - sp[0], dz = li[1] - sp[1], n = Math.hypot(dx, dz) || 1;
+  return { p: [li[0] + (dx / n) * 0.75 + (dz / n) * 0.3, 1.62 + HY, li[1] + (dz / n) * 0.75 + 1.1], l: [sp[0], 1.5 + HY, sp[1]] };
 };
+const SH = CAM === "ots"
+  ? { wide: { p: [0.3, 1.5 + HY, 5.4], l: [0.2, 1.1 + HY, 0] }, lena: over(LAY.lena, LAY.braun), braun: over(LAY.braun, LAY.lena) }
+  : {
+    wide: { p: [0.3, 1.5 + HY, 5.4], l: [0.2, 1.1 + HY, 0] },
+    lena: { p: [LAY.lena[0] + 0.75, 1.6 + HY, LAY.lena[1] + 2.25], l: [LAY.lena[0] + 0.05, 1.42 + HY, LAY.lena[1]] },
+    braun: { p: [LAY.braun[0] - 0.5, 1.6 + HY, Math.max(LAY.braun[1] + 2.4, 1.7)], l: [LAY.braun[0], 1.5 + HY, LAY.braun[1]] },
+  };
+const EASE = CAM === "cuts" ? 0.04 : 0.6;
 const mix = (A, B, k) => ({ p: A.p.map((v, i) => v + (B.p[i] - v) * k), l: A.l.map((v, i) => v + (B.l[i] - v) * k) });
 let VIEW = null;                              // the editor: a fixed full-body shot of one person
 function cameraAt(t) {
@@ -526,8 +635,9 @@ function cameraAt(t) {
     camera.position.set(at[0] + (who ? 0.15 : 0.1), 1.25, at[2] + (who ? 4.9 : 6.2) / z); camera.lookAt(...at); return;
   }
   let c = SH.wide;
-  for (const l of L) c = mix(c, SH[l.who], ss(l.t - 0.5, l.t + 0.1, t));
-  c = mix(c, SH.wide, ss(OUTRO, OUTRO + 0.6, t));
+  for (const l of L) c = mix(c, SH[l.who], ss(l.t - EASE + 0.1, l.t + 0.1, t));
+  c = mix(c, SH.wide, ss(OUTRO, OUTRO + EASE, t));
+  if (CAM === "dolly") c = { p: [c.p[0] + 0.45 * Math.sin(t * 0.22), c.p[1] + 0.08 * Math.sin(t * 0.17), c.p[2] + 0.2 * Math.cos(t * 0.22)], l: c.l };
   // a slow push in while a sentence is spoken
   let push = 0; for (const l of L) { const end = l.t + l.dur + (l.again ? l.again.gap + l.again.dur : 0) + 0.4; push = Math.max(push, ss(l.t - 0.3, end, t) * (1 - ss(end, end + 0.35, t))); }
   c = { p: [c.p[0], c.p[1], c.p[2] - 0.32 * push], l: c.l };

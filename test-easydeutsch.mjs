@@ -81,4 +81,8 @@ assert.match(withPic, /tl\.fromTo\("#pic0"/, "the card pops in on the timeline")
 assert.match(easy, /findLessonImage\(it\.img, it\.de\)/, "the same real-photo search and relevance gate as the older lessons");
 assert.match(easy, /sourceType === "generated-fallback"/, "no placeholder graphic on a card");
 for (const u of GERMAN_A1) for (const it of u.items) assert.ok(it.img, `${u.id}: "${it.de}" has a picture query`);
+// every episode looks different (owner, 2026-09-29): staging, light, camera, outfits from the episode number
+assert.match(film3d, /"vary":\{"seed":43\}/);
+for (const re of [/const STAGING = LESSON && CFG\.vary \? pick\(STAGINGS, 7\)/, /const TOD = LESSON && CFG\.vary \? pick\(TODS, 5\)/, /const CAM = LESSON && CFG\.vary \? pick\(\["classic", "ots", "cuts", "dolly"\], 3\)/, /lena: pick\(\[/, /renderer\.shadowMap\.enabled = true/, /function walkState\(t\)/])
+  assert.match(toon, re);
 console.log("easydeutsch: ok");
