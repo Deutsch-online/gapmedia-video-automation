@@ -32,14 +32,16 @@ const D = Math.PI / 180;
 
 // ------------------------------------------------------------------ toon look
 const ramp = (() => {
-  const t = new THREE.DataTexture(new Uint8Array([150, 150, 150, 255, 215, 215, 215, 255, 255, 255, 255, 255]), 3, 1, THREE.RGBAFormat);
-  t.minFilter = t.magFilter = THREE.NearestFilter; t.generateMipmaps = false; t.needsUpdate = true; return t;
+  // six soft bands, blended: a modern animated-film look rather than a flat three-tone cartoon
+  const v = [128, 160, 192, 220, 242, 255], d = new Uint8Array(v.flatMap((x) => [x, x, x, 255]));
+  const t = new THREE.DataTexture(d, v.length, 1, THREE.RGBAFormat);
+  t.minFilter = t.magFilter = THREE.LinearFilter; t.generateMipmaps = false; t.needsUpdate = true; return t;
 })();
 const INK = 0x2b1d16;
 const toon = (color, o = {}) => new THREE.MeshToonMaterial({ color, gradientMap: ramp, ...o });
 const inkCache = {};
 function inkMat(w) {
-  const k = w.toFixed(4);
+  const k = (w * 0.72).toFixed(4);                // thinner outlines (owner, 2026-10-03: more real)
   if (!inkCache[k]) {
     const m = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
     m.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace("#include <begin_vertex>", `#include <begin_vertex>\n transformed += normalize(normal) * ${k};`); };
@@ -115,6 +117,11 @@ const OUTFIT = {
   lena: pick([[0xa9d1ee, 0x3d5a80], [0xf2b6c6, 0x2f3a48], [0xf6e3a1, 0x3d5a80], [0xb9e0c4, 0x5a4a3a], [0xffffff, 0x2a4a6a], [0xd9c2f0, 0x3a3a4a]], 7),
   braun: pick([[0xffffff, 0x3e8a5a], [0xdcebf7, 0x2f4f7a], [0xffffff, 0x8e2f3a], [0xf3ead8, 0x6b4a33], [0xe8f2e4, 0x2b3a4a]], 3),
 };
+// a torso turned from a profile (hips, waist, chest, shoulders), flattened front to back
+function torso(points, color, parent) {
+  const g = new THREE.LatheGeometry(points.map(([r, y]) => new THREE.Vector2(r, y)), 28);
+  return M(g, color, { s: [1, 1, 0.72], parent, ink: 0.01 });
+}
 function person(o) {
   const root = G(scene, [o.x, 0, o.z], [0, o.yaw, 0]);
   const body = G(root);
@@ -122,50 +129,67 @@ function person(o) {
   // legs on hip and knee joints, so people can walk, sit and shift their weight
   const legs = {};
   for (const sx of [-1, 1]) {
-    const hip = G(body, [sx * 0.1, 0.8, 0]);
-    M(cap(0.075, 0.26), o.pants, { p: [0, -0.2, 0], parent: hip });
+    const hip = G(body, [sx * 0.095, 0.8, 0]);
+    M(cap(0.074, 0.26), o.pants, { p: [0, -0.2, 0], parent: hip });
     const knee = G(hip, [0, -0.4, 0]);
-    M(cap(0.066, 0.24), o.pants, { p: [0, -0.18, 0], parent: knee });
+    M(cap(0.062, 0.25), o.pants, { p: [0, -0.18, 0], parent: knee });
     const ankle = G(knee, [0, -0.355, 0]);
-    M(sph(0.085), o.shoe, { s: [1, 0.6, 1.5], p: [0, 0, 0.06], parent: ankle });
+    M(sph(0.075), o.shoe, { s: [1, 0.62, 1.55], p: [0, 0.005, 0.055], parent: ankle });
+    M(new THREE.BoxGeometry(0.13, 0.025, 0.24), 0x3a2e28, { p: [0, -0.035, 0.055], parent: ankle, ink: 0.004 });
     legs[sx] = { hip, knee, ankle };
   }
-  M(cap(0.18, 0.34), o.top, { s: [1, 1, 0.78], p: [0, 1.08, 0], parent: body });
-  M(new THREE.CylinderGeometry(0.06, 0.07, 0.1, 12), o.skin, { p: [0, 1.42, 0], parent: body });
+  torso(o.torso, o.top, body);
+  M(new THREE.CylinderGeometry(0.052, 0.06, 0.14, 14), o.skin, { p: [0, 1.43, 0], parent: body, ink: 0.006 });
   const arms = {};
   for (const sx of [-1, 1]) {
-    const sh = G(body, [sx * 0.235, 1.33, 0]);
-    M(sph(0.068), o.sleeve, { parent: sh, ink: 0.008 });
-    M(cap(0.058, 0.2), o.sleeve, { p: [0, -0.16, 0], parent: sh });
+    const sh = G(body, [sx * 0.225, 1.32, 0]);
+    M(sph(0.07), o.sleeve, { s: [1, 0.9, 0.95], parent: sh, ink: 0.008 });
+    M(cap(0.056, 0.2), o.sleeve, { p: [0, -0.16, 0], parent: sh });
     const el = G(sh, [0, -0.32, 0]);
-    M(sph(0.056), o.sleeve, { parent: el, ink: 0.008 });
-    M(cap(0.052, 0.18), o.sleeve, { p: [0, -0.14, 0], parent: el });
+    M(sph(0.052), o.sleeve, { parent: el, ink: 0.006 });
+    M(cap(0.047, 0.18), o.sleeve, { p: [0, -0.14, 0], parent: el });
     const hand = buildHand(el, o.skin, sx, o.sleeve);
     arms[sx] = { sh, el, hand };
   }
-  const head = G(body, [0, 1.46, 0]);
-  const skull = M(sph(0.26), o.skin, { s: [1, 1.05, 0.97], p: [0, 0.28, 0], parent: head });
-  for (const sx of [-1, 1]) M(sph(0.045), o.skin, { s: [0.6, 1, 0.8], p: [sx * 0.255, 0.28, 0], parent: head });
-  M(sph(0.028), o.skin, { s: [1, 0.9, 1.1], p: [0.0, 0.245, 0.255], parent: head, ink: 0.006 });
+  // the head: an oval skull with a jaw and chin, eyes set into it, a nose, lips, ears
+  const head = G(body, [0, 1.47, 0]);
+  M(sph(0.25), o.skin, { s: [0.93, 1.06, 0.98], p: [0, 0.3, 0], parent: head });
+  M(sph(0.2), o.skin, { s: [0.92, 0.82, 0.96], p: [0, 0.19, 0.045], parent: head, ink: 0.008 });
+  for (const sx of [-1, 1]) M(sph(0.05), o.skin, { s: [0.42, 1, 0.75], p: [sx * 0.228, 0.27, -0.01], parent: head, ink: 0.006 });
+  // nose: bridge, tip, wings
+  M(cap(0.017, 0.05), o.skin, { p: [0, 0.275, 0.232], r: [-0.42, 0, 0], parent: head, ink: 0.004 });
+  M(sph(0.025), o.skin, { s: [1.1, 0.85, 1], p: [0, 0.238, 0.252], parent: head, ink: 0.005 });
+  for (const sx of [-1, 1]) M(sph(0.014), o.skin, { p: [sx * 0.022, 0.23, 0.24], parent: head, ink: 0.003 });
   const lids = [], irises = [], brows = G(head);
   for (const sx of [-1, 1]) {
-    const ex = sx * 0.095, ey = 0.31;
-    M(sph(0.05), 0xffffff, { s: [1, 1.25, 0.5], p: [ex, ey, 0.238], parent: head, ink: 0.006 });
-    const ir = M(sph(0.028), o.iris, { s: [1, 1, 0.5], p: [ex, ey, 0.262], parent: head, ink: 0 });
-    M(sph(0.013), 0x1c1410, { p: [0, 0, 0.012], parent: ir, ink: 0 });
-    M(sph(0.006), 0xffffff, { p: [0.008, 0.01, 0.024], parent: ir, ink: 0 });
+    const ex = sx * 0.088, ey = 0.31;
+    M(sph(0.042), 0xfaf7f2, { s: [1, 1.12, 0.6], p: [ex, ey, 0.215], parent: head, ink: 0.004 });
+    const ir = M(sph(0.023), o.iris, { s: [1, 1, 0.45], p: [ex, ey, 0.236], parent: head, ink: 0 });
+    M(sph(0.011), 0x16100c, { p: [0, 0, 0.008], parent: ir, ink: 0 });
+    M(sph(0.005), 0xffffff, { p: [0.007, 0.008, 0.02], parent: ir, ink: 0 });
     irises.push(ir);
-    const lid = G(head, [ex, ey + 0.062, 0.243]);
-    M(sph(0.056), o.skin, { s: [1, 1.15, 0.6], p: [0, -0.062, 0], parent: lid, ink: 0.004 });
+    // upper lid line and a soft crease above it
+    M(new THREE.TorusGeometry(0.043, 0.0052, 6, 18, Math.PI * 0.86), 0x2a1d16, { r: [0, 0, Math.PI * 0.07], p: [ex, ey, 0.222], s: [1, 1.05, 0.6], parent: head, ink: 0 });
+    M(new THREE.TorusGeometry(0.05, 0.003, 6, 16, Math.PI * 0.6), o.crease || 0xd9a684, { r: [0, 0, Math.PI * 0.2], p: [ex, ey + 0.006, 0.226], s: [1, 1.1, 0.5], parent: head, ink: 0 });
+    const lid = G(head, [ex, ey + 0.05, 0.22]);
+    M(sph(0.046), o.skin, { s: [1, 1.1, 0.62], p: [0, -0.05, 0], parent: lid, ink: 0.003 });
     lid.scale.y = 0.001; lids.push(lid);
-    M(cap(0.011, 0.07), o.browColor, { r: [0, 0, Math.PI / 2 + sx * 0.12], p: [ex, ey + 0.085, 0.243], parent: brows, ink: 0 });
-    const blush = new THREE.Mesh(new THREE.CircleGeometry(0.036, 20), new THREE.MeshBasicMaterial({ color: 0xf29a9a, transparent: true, opacity: 0.55 }));
-    blush.position.set(sx * 0.155, 0.21, 0.222); blush.rotation.y = sx * 0.6; head.add(blush);
+    M(cap(0.0135, 0.072), o.browColor, { r: [0, 0, Math.PI / 2 + sx * 0.2], s: [1, 1, 0.6], p: [ex + sx * 0.004, ey + 0.075, 0.226], parent: brows, ink: 0 });
+    const blush = new THREE.Mesh(new THREE.CircleGeometry(0.04, 20), new THREE.MeshBasicMaterial({ color: 0xf29a9a, transparent: true, opacity: 0.32 }));
+    blush.position.set(sx * 0.14, 0.215, 0.205); blush.rotation.y = sx * 0.6; head.add(blush);
   }
-  const mouth = G(head, [0, 0.155, 0.243]);
-  const m0 = M(new THREE.TorusGeometry(0.048, 0.009, 8, 20, Math.PI), INK, { r: [0, 0, Math.PI], p: [0, 0.015, 0], parent: mouth, ink: 0 });
-  const m1 = M(sph(0.045), 0x8e2f2f, { s: [1, 0.85, 0.45], parent: mouth, ink: 0.005 });
-  const m2 = M(sph(0.03), 0x8e2f2f, { s: [1, 1.25, 0.45], p: [0, -0.005, 0], parent: mouth, ink: 0.005 });
+  // mouth: closed lips (turned upside down by the smirk rotation, so drawn mirrored), open, round
+  const mouth = G(head, [0, 0.168, 0.228]);
+  const m0 = G(mouth, [0, 0, 0], [0, 0, Math.PI]);
+  M(cap(0.011, 0.05), o.lip, { r: [0, 0, Math.PI / 2], s: [1, 1, 0.55], p: [0, -0.006, 0], parent: m0, ink: 0.003 });
+  M(cap(0.013, 0.04), o.lip, { r: [0, 0, Math.PI / 2], s: [1, 1, 0.6], p: [0, 0.012, -0.002], parent: m0, ink: 0.003 });
+  const m1 = G(mouth);
+  M(sph(0.036), 0x5a1e1e, { s: [1.15, 0.78, 0.4], parent: m1, ink: 0.004 });
+  M(new THREE.BoxGeometry(0.05, 0.012, 0.01), 0xffffff, { p: [0, 0.019, 0.009], parent: m1, ink: 0 });
+  M(cap(0.011, 0.05), o.lip, { r: [0, 0, Math.PI / 2], s: [1, 1, 0.55], p: [0, 0.03, 0.004], parent: m1, ink: 0.002 });
+  const m2 = G(mouth);
+  M(sph(0.024), 0x5a1e1e, { s: [1, 1.2, 0.4], parent: m2, ink: 0.004 });
+  M(new THREE.TorusGeometry(0.025, 0.008, 6, 16), o.lip, { s: [1, 1.2, 0.6], parent: m2, ink: 0 });
   m1.visible = m2.visible = false;
   const P = { root, body, head, arms, legs, lids, irises, brows, mouth: [m0, m1, m2], s, extra: {}, o };
   if (o.decorate) o.decorate(P);
@@ -174,27 +198,33 @@ function person(o) {
 
 function makeLena([lx, lz]) {
   return person({
-    x: lx, z: lz, yaw: Math.PI / 2 - 0.95, near: -1, skin: 0xf4c9a4, iris: 0x6b4a2a, browColor: 0x5e3620,
+    x: lx, z: lz, yaw: Math.PI / 2 - 0.95, near: -1, skin: 0xf4c9a4, iris: 0x6b4a2a, browColor: 0x5e3620, lip: 0xd4777a, crease: 0xe0ab8a,
     top: OUTFIT.lena[0], sleeve: OUTFIT.lena[0], pants: OUTFIT.lena[1], shoe: 0xffffff,
+    torso: [[0, 0.76], [0.15, 0.79], [0.162, 0.88], [0.138, 1.0], [0.15, 1.1], [0.172, 1.2], [0.18, 1.29], [0.15, 1.38], [0.06, 1.43], [0, 1.44]],
     decorate(P) {
-      const { head, body } = P, hair = 0x7a4a2a;
-      M(new THREE.SphereGeometry(0.275, 30, 20, 0, Math.PI * 2, 0, Math.PI * 0.5), hair, { p: [0, 0.3, -0.035], r: [-0.55, 0, 0], parent: head });
-      M(sph(0.11), hair, { s: [1.7, 0.42, 0.7], p: [0, 0.535, 0.13], r: [0.5, 0, 0], parent: head });
-      // long side locks, a pink clip, lashes: she reads as a young woman from the front too
+      const { head, body } = P, hair = 0x7a4a2a, hairDark = 0x5e3820;
+      // hair: a full cap, a side-swept fringe, volume at the back, long side locks, a ponytail
+      M(new THREE.SphereGeometry(0.266, 30, 20, 0, Math.PI * 2, 0, Math.PI * 0.55), hair, { s: [0.95, 1.06, 1], p: [0, 0.305, -0.02], r: [-0.5, 0, 0], parent: head });
+      M(sph(0.13), hair, { s: [1.55, 0.5, 0.72], p: [0.045, 0.468, 0.152], r: [0.62, 0, -0.22], parent: head });
+      M(sph(0.2), hairDark, { s: [1.12, 1.15, 0.78], p: [0, 0.26, -0.11], parent: head, ink: 0.01 });
       for (const sx of [-1, 1]) {
-        M(cap(0.055, 0.32), hair, { s: [1, 1, 0.9], p: [sx * 0.235, 0.12, -0.02], r: [0, 0, sx * 0.08], parent: head });
-        M(cap(0.007, 0.032), 0x1c1410, { p: [sx * 0.135, 0.335, 0.262], r: [0, 0, sx * -0.9], parent: head, ink: 0 });
-        M(cap(0.007, 0.03), 0x1c1410, { p: [sx * 0.14, 0.31, 0.262], r: [0, 0, sx * -1.3], parent: head, ink: 0 });
+        M(cap(0.05, 0.34), hair, { s: [1, 1, 0.85], p: [sx * 0.222, 0.13, -0.01], r: [0.05, 0, sx * 0.07], parent: head });
+        // lashes on the outer corner of each eye
+        M(cap(0.006, 0.026), 0x1c1410, { p: [sx * 0.126, 0.33, 0.232], r: [0, 0, sx * -0.9], parent: head, ink: 0 });
+        M(cap(0.006, 0.024), 0x1c1410, { p: [sx * 0.13, 0.312, 0.23], r: [0, 0, sx * -1.3], parent: head, ink: 0 });
       }
-      M(sph(0.04), 0xe86a7a, { s: [1.3, 0.8, 0.5], p: [0.17, 0.5, 0.15], r: [0, 0, -0.5], parent: head, ink: 0.005 });
-      const pony = G(head, [0, 0.42, -0.25]);
-      M(sph(0.045), 0xe86a7a, { parent: pony });
+      M(sph(0.036), 0xe86a7a, { s: [1.3, 0.8, 0.5], p: [0.16, 0.5, 0.14], r: [0, 0, -0.5], parent: head, ink: 0.004 });
+      const pony = G(head, [0, 0.42, -0.24]);
+      M(sph(0.042), 0xe86a7a, { parent: pony });
       const tail = G(pony, [0, -0.02, -0.02], [0.5, 0, 0]);
-      M(cap(0.075, 0.3), hair, { s: [1, 1, 0.8], p: [0, -0.2, 0], parent: tail });
+      M(cap(0.07, 0.32), hair, { s: [1, 1, 0.8], p: [0, -0.21, 0], parent: tail });
       P.extra.pony = tail;
-      for (const y of [1.2, 1.1, 1.0, 0.9]) M(sph(0.014), 0xffffff, { p: [0, y, 0.145], parent: body, ink: 0 });
-      M(new THREE.BoxGeometry(0.05, 0.85, 0.02), 0x8e4a2a, { p: [0.03, 1.05, 0.14], r: [0, 0, 0.55], parent: body, ink: 0.006 });
-      M(new THREE.BoxGeometry(0.2, 0.16, 0.07), 0x8e4a2a, { p: [-0.26, 0.82, 0.0], parent: body, ink: 0.008 });
+      // blouse: a collar, buttons, a belt; the bag on its strap
+      for (const sx of [-1, 1]) M(new THREE.BoxGeometry(0.075, 0.014, 0.06), 0xffffff, { p: [sx * 0.04, 1.405, 0.07], r: [0.35, 0, sx * -0.5], parent: body, ink: 0.003 });
+      for (const y of [1.3, 1.2, 1.1]) M(sph(0.011), 0xffffff, { p: [0, y, 0.123], parent: body, ink: 0 });
+      M(new THREE.CylinderGeometry(0.152, 0.152, 0.035, 28, 1, true), 0x5a3a24, { s: [1, 1, 0.74], p: [0, 0.8, 0], parent: body, ink: 0.004, mat: toon(0x5a3a24, { side: THREE.DoubleSide }) });
+      M(new THREE.BoxGeometry(0.045, 0.85, 0.015), 0x8e4a2a, { p: [0.03, 1.07, 0.128], r: [0, 0, 0.55], parent: body, ink: 0.005 });
+      M(new THREE.BoxGeometry(0.19, 0.15, 0.07), 0x8e4a2a, { p: [-0.24, 0.84, 0.0], parent: body, ink: 0.006 });
       // her wallet, in the near hand
       const w = G(P.arms[P.s].el, [0, -0.36, 0.06]);
       M(new THREE.BoxGeometry(0.15, 0.1, 0.03), 0x8e4a2a, { parent: w, ink: 0.006 });
@@ -205,21 +235,32 @@ function makeLena([lx, lz]) {
 }
 function makeBraun([bx, bz]) {
   return person({
-    x: bx, z: bz, yaw: -Math.PI / 2 + 0.95, near: 1, skin: 0xf0c29a, iris: 0x3e5a7a, browColor: 0x9a9a9a,
-    top: OUTFIT.braun[0], sleeve: OUTFIT.braun[0], pants: 0x2f3a48, shoe: 0x2f3a48,
+    x: bx, z: bz, yaw: -Math.PI / 2 + 0.95, near: 1, skin: 0xf0c29a, iris: 0x3e5a7a, browColor: 0x8e8e8e, lip: 0xb9786a, crease: 0xd9a27e,
+    top: OUTFIT.braun[0], sleeve: OUTFIT.braun[0], pants: 0x2f3a48, shoe: 0x3a2e28,
+    torso: [[0, 0.76], [0.16, 0.79], [0.175, 0.9], [0.18, 1.02], [0.188, 1.12], [0.19, 1.22], [0.19, 1.3], [0.16, 1.38], [0.065, 1.43], [0, 1.44]],
     decorate(P) {
       const { head, body } = P, grey = 0xbdbdbd;
-      for (const sx of [-1, 1]) M(sph(0.06), grey, { s: [0.7, 1.2, 0.8], p: [sx * 0.245, 0.33, -0.03], parent: head });
-      M(cap(0.026, 0.09), grey, { r: [0, 0, Math.PI / 2], p: [0, 0.19, 0.245], parent: head, ink: 0.006 });
-      for (const sx of [-1, 1]) M(new THREE.TorusGeometry(0.068, 0.011, 8, 24), 0x2b1d16, { p: [sx * 0.095, 0.31, 0.268], parent: head, ink: 0 });
-      M(new THREE.BoxGeometry(0.03, 0.012, 0.012), 0x2b1d16, { p: [0, 0.315, 0.272], parent: head, ink: 0 });
-      M(new THREE.BoxGeometry(0.36, 0.5, 0.03), OUTFIT.braun[1], { p: [0, 1.0, 0.145], parent: body, ink: 0.008 });
-      M(new THREE.BoxGeometry(0.2, 0.16, 0.03), OUTFIT.braun[1], { p: [0, 1.28, 0.145], parent: body, ink: 0.008 });
-      M(new THREE.BoxGeometry(0.09, 0.05, 0.03), 0xc23b3b, { p: [0, 1.41, 0.15], parent: body, ink: 0.004 });
+      // grey hair round the back and sides, a moustache, thin round glasses
+      for (const sx of [-1, 1]) M(sph(0.06), grey, { s: [0.65, 1.15, 0.85], p: [sx * 0.222, 0.33, -0.04], parent: head });
+      M(sph(0.12), grey, { s: [1.75, 0.65, 0.7], p: [0, 0.26, -0.16], parent: head, ink: 0.008 });
+      for (const sx of [-1, 1]) M(cap(0.019, 0.05), grey, { p: [sx * 0.03, 0.205, 0.245], r: [0, 0, Math.PI / 2 - sx * 0.35], parent: head, ink: 0.004 });
+      for (const sx of [-1, 1]) {
+        M(new THREE.TorusGeometry(0.054, 0.0065, 8, 24), 0x2b1d16, { p: [sx * 0.088, 0.31, 0.25], parent: head, ink: 0 });
+        M(new THREE.BoxGeometry(0.16, 0.007, 0.007), 0x2b1d16, { p: [sx * 0.168, 0.318, 0.155], r: [0, sx * 1.3, 0], parent: head, ink: 0 });
+      }
+      M(new THREE.BoxGeometry(0.035, 0.008, 0.008), 0x2b1d16, { p: [0, 0.318, 0.255], parent: head, ink: 0 });
+      // shirt collar, bow tie, an apron round the front with a bib and a neck strap
+      for (const sx of [-1, 1]) M(new THREE.BoxGeometry(0.08, 0.014, 0.06), 0xffffff, { p: [sx * 0.045, 1.405, 0.075], r: [0.35, 0, sx * -0.5], parent: body, ink: 0.003 });
+      M(new THREE.BoxGeometry(0.08, 0.04, 0.025), 0xc23b3b, { p: [0, 1.395, 0.11], parent: body, ink: 0.003 });
+      const apronMat = toon(OUTFIT.braun[1], { side: THREE.DoubleSide });
+      M(new THREE.CylinderGeometry(0.198, 0.205, 0.5, 24, 1, true, -1.15, 2.3), OUTFIT.braun[1], { s: [1, 1, 0.75], p: [0, 0.98, 0], parent: body, ink: 0.006, mat: apronMat });
+      M(new THREE.BoxGeometry(0.2, 0.17, 0.02), OUTFIT.braun[1], { p: [0, 1.29, 0.135], r: [-0.08, 0, 0], parent: body, ink: 0.005, mat: apronMat });
+      M(new THREE.BoxGeometry(0.1, 0.07, 0.01), OUTFIT.braun[1], { p: [0, 1.05, 0.158], parent: body, ink: 0.004 });
+      for (const sx of [-1, 1]) M(new THREE.BoxGeometry(0.018, 0.12, 0.01), OUTFIT.braun[1], { p: [sx * 0.072, 1.4, 0.112], r: [-0.4, 0, sx * -0.28], parent: body, ink: 0.003 });
       const el = P.arms[P.s].el;
       const watch = G(el, [0, -0.27, 0]);
-      M(new THREE.CylinderGeometry(0.06, 0.06, 0.035, 20), 0x2f3a48, { parent: watch, ink: 0.005 });
-      M(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 20), 0xffffff, { parent: watch, ink: 0 });
+      M(new THREE.CylinderGeometry(0.055, 0.055, 0.035, 20), 0x2f3a48, { parent: watch, ink: 0.005 });
+      M(new THREE.CylinderGeometry(0.042, 0.042, 0.04, 20), 0xffffff, { parent: watch, ink: 0 });
       watch.visible = false; P.extra.watch = watch;
     },
   });
@@ -470,7 +511,8 @@ function applyLook(P, look) {
   const k = { ...LOOK_DEFAULT, ...(look || {}) };
   const hd = clamp(+k.head, 0.8, 1.35), bd = clamp(+k.body, 0.8, 1.25), ht = clamp(+k.height, 0.85, 1.15);
   P.root.scale.set(bd, ht, bd);
-  P.head.scale.set(hd / bd, hd / ht, hd / bd);
+  const HB = 0.9;                                 // a little smaller head: more adult proportions
+  P.head.scale.set(HB * hd / bd, HB * hd / ht, HB * hd / bd);
   const light = new THREE.Color(1, 1, 1).lerp(new THREE.Color(k.tint), clamp(+k.tintAmt, 0, 0.6));
   P.root.traverse((o) => {
     const m = o.material; if (!m || !m.isMeshToonMaterial) return;
@@ -478,7 +520,7 @@ function applyLook(P, look) {
     m.color.copy(m.userData.base).multiply(light);
   });
 }
-for (const w of ["lena", "braun"]) if (CFG.looks && CFG.looks[w]) applyLook(PEOPLE[w], CFG.looks[w]);
+for (const w of ["lena", "braun"]) applyLook(PEOPLE[w], CFG.looks && CFG.looks[w]);
 
 // ------------------------------------------------------------------ the lesson as time windows
 const L = CFG.lines, HOOK = CFG.hookDur, OUTRO = CFG.outroAt, TOTAL = CFG.total;
@@ -634,6 +676,7 @@ let VIEW = null;                              // the editor: a fixed full-body s
 function cameraAt(t) {
   if (VIEW) {
     const who = VIEW.who === "braun" ? LAY.braun : VIEW.who === "lena" ? LAY.lena : null, z = VIEW.zoom || 1;
+    if (VIEW.face && who) { const P = VIEW.who === "braun" ? braun : lena; const hp = new THREE.Vector3(); P.head.getWorldPosition(hp); camera.position.set(hp.x + 0.12, hp.y + 0.3, hp.z + 1.35); camera.lookAt(hp.x, hp.y + 0.22, hp.z); return; }
     const at = who ? [who[0], 1.08, who[1]] : [0.2, 1.08, 0];
     camera.position.set(at[0] + (who ? 0.15 : 0.1), 1.25, at[2] + (who ? 4.9 : 6.2) / z); camera.lookAt(...at); return;
   }

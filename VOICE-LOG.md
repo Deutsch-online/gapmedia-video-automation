@@ -1092,3 +1092,18 @@ Conrad uses the approved German settings. Ava uses the engine default speed.
 
 **Audition.** No sample could be heard in the session container. The first CI
 sample is the audition. **Status: awaiting the owner's ear.**
+
+### 2026-10-03 (later) — owner verdict on the dialogue sample (unit 54), by ear
+
+**Owner:** the English narrator pronounces the German words wrongly, and speaks too fast.
+
+**Fix 1 (pronunciation).** In an explanation, German words in "double quotes" are now spoken by
+Lena's approved German voice (`de-DE-KatjaNeural`, its approved settings). The English parts
+are spoken by the narrator. The parts are joined into one clip with a 0.12 s breath between them
+(`explainParts`, `sayExplain` in `lib/easydeutsch.mjs`). English glosses are written in
+‘single quotes’, so they stay with the English voice.
+
+**Fix 2 (speed).** One variable only: narrator speed 1.0 → **0.88** (`NARRATOR_SPEED`).
+Voice, volume and pitch are not changed.
+
+**Status: awaiting the owner's ear** on the next sample.
