@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { build3DStageHTML, stageTimes } from "./lib/build-3d.mjs";
 import { buildAnimHTML } from "./lib/build-anim.mjs";
-import { MODELS, HIS_CLIPS } from "./lib/fetch-3d-assets.mjs";
+import { MODELS, CLIPS } from "./lib/fetch-3d-assets.mjs";
 
 const items = [
   { de: "Ich habe kein Geld.", fa: "من پول ندارم.", exDe: "Tut mir leid, ich habe kein Geld.", exFa: "متأسفم، پول ندارم." },
@@ -43,8 +43,14 @@ assert.match(js, /addEventListener\("hf-seek"/);
 assert.match(js, /__hfThreeTime/);
 assert.match(js, /buildReady/);
 assert.doesNotMatch(js, /Math\.random|Date\.now|performance\.now|requestAnimationFrame|\.play\(\)\s*;?\s*$/m);
-for (const f of Object.keys(MODELS)) assert.ok(js.includes(f), `stage loads ${f}`);
-for (const c of Object.values(HIS_CLIPS)) assert.ok(js.includes(c.split("/").pop()), `stage loads ${c}`);
+const human = readFileSync("public/3d/human-stage.js", "utf8");
+for (const f of Object.keys(MODELS)) assert.ok(js.includes(f) || human.includes(f), `a stage loads ${f}`);
+for (const c of CLIPS) assert.ok((js + human).includes(c.split("/").pop().replace(".glb", "")), `a stage loads ${c}`);
+// the dialogue people: Ready Player Me avatars only, each on its own Ready Player Me mocap (the library's licence)
+assert.match(human, /load\("brunette\.glb"\), load\("readyplayer\.me\.glb"\)/);
+assert.match(human, /anim\/fem\/\$\{n\}\.glb/); assert.match(human, /anim\/masc\/\$\{n\}\.glb/);
+assert.doesNotMatch(human, /Math\.random|Date\.now|performance\.now|requestAnimationFrame/);
+assert.match(human, /addEventListener\("hf-seek"/); assert.match(human, /buildReady\.people/);
 // every scene the lessons use has a 3D set
 for (const s of ["home", "cafe", "station", "shop", "doctor", "school", "work", "park", "bureau", "office"]) assert.match(js, new RegExp(`\\b${s}\\(\\)`), `3D set for ${s}`);
 // the old over-the-head wave is gone: he greets with a hand on the chest

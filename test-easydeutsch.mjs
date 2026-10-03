@@ -106,6 +106,8 @@ assert.match(dfilm, /class="cap sub en"/, "the English explanation card");
 assert.match(dfilm, /"dialogue":true/); assert.doesNotMatch(dfilm.match(/window\.__toon = (.*);/)[1], /narrator/, "the narrator is not a character on stage");
 assert.match(easy, /if \(look === "cartoon3d" && dialogueFor\(unit\.id\)\) return runDialogueLesson\(args\)/);
 assert.match(easy, /braun: "de-DE-ConradNeural", narrator: "en-US-AvaNeural"/);
+assert.match(easy, /dialogue: true, cast: "human"/, "dialogue lessons use the real-looking people");
+assert.match(buildEasyCartoonHTML({ episodeNo: 1, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, cast: "human", lines: [] }), /src="public\/3d\/human-stage\.js"/);
 // German words in an explanation are spoken by the German voice (owner, 2026-10-03)
 const { explainParts, NARRATOR_SPEED } = await import("./lib/easydeutsch.mjs");
 assert.deepEqual(explainParts("\"Das passt mir\" means ‘that works for me’."), [{ who: "lena", text: "Das passt mir" }, { who: "narrator", text: "means ‘that works for me’." }]);

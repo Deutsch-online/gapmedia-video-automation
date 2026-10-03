@@ -254,7 +254,7 @@ const load = (u) => loader.loadAsync(M + u);
 window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
 window.__hf.buildReady.people = Promise.all([
   load("Xbot.glb"), load("avaturn.glb"), load("readyplayer.me.glb"),
-  load("anim/M_Standing_Idle_001.glb"), load("anim/M_Standing_Expressions_011.glb"), load("anim/M_Talking_Variations_005.glb"),
+  load("anim/masc/M_Standing_Idle_001.glb"), load("anim/masc/M_Standing_Expressions_011.glb"), load("anim/masc/M_Talking_Variations_005.glb"),
 ]).then(([xb, av, rp, idle, greet, talk]) => {
   // her: the retargeted mocap
   const src = SkeletonUtils.clone(xb.scene);
