@@ -1074,3 +1074,21 @@ re-rendered with the verdict. `test-ep40-words.mjs` pins both choices:
 «ماندَن» marked, «دردسر» bare.
 
 **Status: closed by ear.**
+
+## 2026-10-03 — EasyDeutsch dialogue lessons: two new voices
+
+**Request (owner, 2026-10-03).** The lessons become a two-person conversation in
+German, with a spoken English explanation and Persian subtitles.
+
+**What changed.** Only voices were added. The approved German voice and its settings stay the same.
+- Lena: `de-DE-KatjaNeural` with `GERMAN_WORD_VOICE_SETTINGS` (speed 0.85, vol 1.4). Unchanged.
+- Herr Braun: `de-DE-ConradNeural`, same speed and volume as Lena. **New.** A man
+  cannot speak with Lena's voice in a dialogue.
+- English narrator: `en-US-AvaNeural`, speed 1.0, same volume. **New.**
+
+**Source.** Both voices are standard Microsoft Edge neural voices. They use the same engine
+(`music/edge-tts.mjs`) as the approved voice. Speed and volume were not tuned by guess.
+Conrad uses the approved German settings. Ava uses the engine default speed.
+
+**Audition.** No sample could be heard in the session container. The first CI
+sample is the audition. **Status: awaiting the owner's ear.**

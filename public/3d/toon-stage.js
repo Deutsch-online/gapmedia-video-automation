@@ -496,8 +496,11 @@ L.forEach((l) => {
 const ARRIVE = STAGING === "arrive" ? [0.15, Math.min(2.3, HOOK - 1.2)] : null;   // Lena walks in
 const HELLO = { braun: [0.6, HOOK - 0.2], lena: ARRIVE ? [ARRIVE[1] + 0.1, HOOK + 0.4] : [1.0, HOOK] }, BYE = { lena: [OUTRO + 0.3, TOTAL - 0.4], braun: [OUTRO + 0.5, TOTAL - 0.4] };
 for (const w of ["lena", "braun"]) { acts[w].push({ t0: HELLO[w][0], t1: HELLO[w][1], type: "wave" }, { t0: BYE[w][0], t1: BYE[w][1], type: "wave" }); }
-talk.braun.push({ t0: 0.9, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 1.0, dur: 0.8, text: "Tschüss" });
-talk.lena.push({ t0: ARRIVE ? ARRIVE[1] + 0.3 : 1.5, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 0.5, dur: 0.8, text: "Tschüss" });
+// the drill lessons say a silent hello; a dialogue lesson's first line is its own hello
+if (!CFG.dialogue) {
+  talk.braun.push({ t0: 0.9, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 1.0, dur: 0.8, text: "Tschüss" });
+  talk.lena.push({ t0: ARRIVE ? ARRIVE[1] + 0.3 : 1.5, dur: 0.7, text: "Hallo" }, { t0: OUTRO + 0.5, dur: 0.8, text: "Tschüss" });
+} else talk.lena.push({ t0: OUTRO + 0.4, dur: 1.4, text: "Bis morgen tschüss" });
 
 function blinkAmt(t, off) {
   let b = 0.8 + off, v = 0;

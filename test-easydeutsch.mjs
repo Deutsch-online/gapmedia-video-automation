@@ -85,4 +85,25 @@ for (const u of GERMAN_A1) for (const it of u.items) assert.ok(it.img, `${u.id}:
 assert.match(film3d, /"vary":\{"seed":43\}/);
 for (const re of [/const STAGING = LESSON && CFG\.vary \? pick\(STAGINGS, 7\)/, /const TOD = LESSON && CFG\.vary \? pick\(TODS, 5\)/, /const CAM = LESSON && CFG\.vary \? pick\(\["classic", "ots", "cuts", "dolly"\], 3\)/, /lena: pick\(\[/, /renderer\.shadowMap\.enabled = true/, /function walkState\(t\)/])
   assert.match(toon, re);
+// dialogue lessons (owner, 2026-10-03): German dialogue, English explanation, Persian subtitles
+import { DIALOGUES } from "./lib/easy-dialogues.mjs";
+const norm = (x) => x.toLowerCase().replace(/[.,!?]/g, "").trim();
+for (const [id, d] of Object.entries(DIALOGUES)) {
+  const u = GERMAN_A1.find((x) => x.id === id); assert.ok(u, id); assert.equal(d.scenes.length, u.items.length, id);
+  assert.ok(d.hook.de && /[\u0600-\u06FF]/.test(d.hook.fa), `${id} hook`);
+  d.scenes.forEach((sc, i) => {
+    assert.equal(norm(sc.say), norm(u.items[i].de), `${id}#${i} teaches the curriculum phrase`);
+    assert.ok(sc.lines.some((l) => norm(l.de).includes(norm(sc.say))), `${id}#${i} the phrase is used in the dialogue`);
+    for (const l of sc.lines) { assert.ok(["lena", "braun"].includes(l.who)); assert.match(l.fa, /[\u0600-\u06FF]/, `${id}#${i} Persian subtitle`); assert.doesNotMatch(l.de, /[\u0600-\u06FF]/); }
+    assert.doesNotMatch(sc.en, /[\u0600-\u06FF]/, `${id}#${i} English explanation`); assert.match(sc.enFa, /[\u0600-\u06FF]/);
+  });
+}
+const dfilm = buildEasyCartoonHTML({ episodeNo: 52, title: "x", hookDur: 3, outroAt: 10, total: 13, three: true, dialogue: true, outroFa: "تا فردا",
+  lines: [{ who: "lena", de: "Wir brauchen das Brot.", fa: "ما نان لازم داریم.", hl: "das Brot", t: 3, dur: 1.5, item: 0 }, { who: "narrator", en: "\"Das Brot\" is bread.", fa: "یعنی نان", t: 5, dur: 3, item: 0 }, { who: "lena", de: "das Brot", fa: "نان", t: 8.5, dur: 1, pause: 1.9, item: 0, key: true }] });
+assert.match(dfilm, /Wir brauchen <span class="verb">das Brot<\/span>\./, "the lesson phrase is marked");
+assert.match(dfilm, /<div class="fa" dir="rtl">ما نان لازم داریم\.<\/div>/, "Persian subtitle under the German line");
+assert.match(dfilm, /class="cap sub en"/, "the English explanation card");
+assert.match(dfilm, /"dialogue":true/); assert.doesNotMatch(dfilm.match(/window\.__toon = (.*);/)[1], /narrator/, "the narrator is not a character on stage");
+assert.match(easy, /if \(look === "cartoon3d" && dialogueFor\(unit\.id\)\) return runDialogueLesson\(args\)/);
+assert.match(easy, /braun: "de-DE-ConradNeural", narrator: "en-US-AvaNeural"/);
 console.log("easydeutsch: ok");
