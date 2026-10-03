@@ -1,4 +1,187 @@
 {
-  "at": "2026-10-01T00:32:34.412Z",
-  "rows": []
+  "at": "2026-10-03T01:22:28.893Z",
+  "rows": [
+    {
+      "cat": "instagram",
+      "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
+      "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/",
+      "date": "2026-10-01",
+      "sources": 7,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram’s Edits app gets an AI assistant that reads your Reels data",
+      "url": "https://thenextweb.com/news/instagram-edits-assistant-ai-creators-reels",
+      "date": "2026-10-01",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
+      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/",
+      "date": "2026-10-02",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "Nest Commerce and TikTok partner to launch AI creative platform Hummingbird on TikTok - UK Tech News",
+      "url": "https://uktechnews.co.uk/2026/10/02/nest-commerce-and-tiktok-partner-to-launch-ai-creative-platform-hummingbird-on-tiktok/",
+      "date": "2026-10-02",
+      "sources": 6,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Kling 4.0 First Look: What Kuaishou's New Video Model Actually Does | MindStudio",
+      "url": "https://www.mindstudio.ai/blog/kling-4-0-first-look",
+      "date": "2026-10-02",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Claude Opus 5.5 and the editing breakthrough",
+      "url": "https://absolutelyagentic.com/p/claude-opus-5-5-and-the-editing-breakthrough",
+      "date": "2026-10-02",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
+      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/",
+      "date": "2026-10-01",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "HappyHorse 1.0 Review: Product Video AI | Flami",
+      "url": "https://flami.pro/en/blog/happyhorse-1-0-review",
+      "date": "2026-10-01",
+      "sources": 6,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Manus 2.0 launches video editing, and I tested it on a 30-second ad",
+      "url": "https://searchenginewatch.com/manus-2-0-adds-video-editing-and-event-triggered-workflows/",
+      "date": "2026-09-30",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram rolls out an AI video assistant for creators | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/30/instagram-rolls-out-an-ai-video-assistant-for-creators/",
+      "date": "2026-09-30",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram is adding an AI ‘assistant’ to tell you how to post | The Verge",
+      "url": "https://www.theverge.com/tech/1002402/instagram-ai-edits-assistant-creators-analytics-youtube",
+      "date": "2026-09-30",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok wants creators to see green: Its latest fintech feature will pay them for brand deals within 30 days - Tubefilter",
+      "url": "https://www.tubefilter.com/2026/09/29/tiktok-one-pay-creator-brand-deal-compensation/",
+      "date": "2026-09-30",
+      "sources": 8,
+      "clear": false,
+      "score": 24
+    },
+    {
+      "cat": "tools",
+      "title": "Sogni Launches Multi-Keyframe MiniMax Generations",
+      "url": "https://blog.sogni.ai/blogs/minimax-h3-keyframes/",
+      "date": "2026-09-27",
+      "sources": 6,
+      "clear": true,
+      "score": 24
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok introduces AI Alive to turn photos into animated videos",
+      "url": "https://mashable.com/article/tiktok-ai-video-photo-voice-test",
+      "date": "",
+      "sources": 8,
+      "clear": true,
+      "score": 23
+    }
+  ],
+  "shown": [
+    {
+      "n": 1,
+      "cat": "instagram",
+      "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
+      "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/"
+    },
+    {
+      "n": 2,
+      "cat": "instagram",
+      "title": "Instagram’s Edits app gets an AI assistant that reads your Reels data",
+      "url": "https://thenextweb.com/news/instagram-edits-assistant-ai-creators-reels"
+    },
+    {
+      "n": 3,
+      "cat": "instagram",
+      "title": "Instagram rolls out an AI video assistant for creators | TechCrunch",
+      "url": "https://techcrunch.com/2026/09/30/instagram-rolls-out-an-ai-video-assistant-for-creators/"
+    },
+    {
+      "n": 4,
+      "cat": "tiktok",
+      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
+      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/"
+    },
+    {
+      "n": 5,
+      "cat": "tiktok",
+      "title": "Nest Commerce and TikTok partner to launch AI creative platform Hummingbird on TikTok - UK Tech News",
+      "url": "https://uktechnews.co.uk/2026/10/02/nest-commerce-and-tiktok-partner-to-launch-ai-creative-platform-hummingbird-on-tiktok/"
+    },
+    {
+      "n": 6,
+      "cat": "tiktok",
+      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
+      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/"
+    },
+    {
+      "n": 7,
+      "cat": "tools",
+      "title": "Kling 4.0 First Look: What Kuaishou's New Video Model Actually Does | MindStudio",
+      "url": "https://www.mindstudio.ai/blog/kling-4-0-first-look"
+    },
+    {
+      "n": 8,
+      "cat": "tools",
+      "title": "Claude Opus 5.5 and the editing breakthrough",
+      "url": "https://absolutelyagentic.com/p/claude-opus-5-5-and-the-editing-breakthrough"
+    },
+    {
+      "n": 9,
+      "cat": "tools",
+      "title": "HappyHorse 1.0 Review: Product Video AI | Flami",
+      "url": "https://flami.pro/en/blog/happyhorse-1-0-review"
+    }
+  ]
 }
