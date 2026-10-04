@@ -20,5 +20,5 @@ printf "file 'part1-n.mp4'\nfile 'part2-portrait.mp4'\nfile 'part3-portrait.mp4'
 BLACK="between(t,35.6333,35.7)+between(t,35.7667,35.8333)+between(t,35.9333,36)+between(t,36.1333,36.5333)+between(t,36.6,36.6667)+between(t,36.7333,36.8333)+between(t,36.9,37.0333)"
 ffmpeg -y -loglevel error -f concat -safe 0 -i list.txt \
   -filter_complex "[0:v]select='not(${BLACK})',fps=30,split[a][b];[b]crop=700:320:190:1270,boxblur=40:3[bl];[a][bl]overlay=190:1270:enable='between(t,21.6,24.1)'[v];[0:a]loudnorm=I=-16:TP=-1.5:LRA=9[aud]" \
-  -map "[v]" -map "[aud]" -c:v libx264 -crf 18 -preset medium -c:a aac -b:a 192k -movflags +faststart film.mp4
+  -map "[v]" -map "[aud]" -t 65.0 -c:v libx264 -crf 18 -preset medium -c:a aac -b:a 192k -movflags +faststart film.mp4
 ffprobe -v error -show_entries format=duration -of csv=p=0 film.mp4

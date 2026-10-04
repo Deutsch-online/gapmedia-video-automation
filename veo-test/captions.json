@@ -203,17 +203,48 @@
   },
   {
    "t0": 52.3,
-   "t1": 54.3,
+   "t1": 55.4,
    "de": "Das ist egal.",
    "fa": "مهم نیست.",
    "hl": "egal",
    "who": "pfeiffer",
    "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 55.8,
+   "t1": 56.6,
+   "de": "Frau Lena!",
+   "fa": "خانم لینا!",
+   "hl": "Lena",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 56.6,
+   "t1": 58.7,
+   "de": "Noch eine Kleinigkeit.",
+   "fa": "یک چیز کوچک دیگر.",
+   "hl": "Kleinigkeit",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 58.9,
+   "t1": 62.5,
+   "de": "Ihr Termin für die Rundfunk-Anmeldung ist in sechs Wochen.",
+   "fa": "وقت شما برای ثبت عوارض رادیو و تلویزیون شش هفته دیگر است.",
+   "hl": "sechs Wochen",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 62.7,
+   "t1": 65.0,
+   "de": "Sechs Wochen. Willkommen in Deutschland.",
+   "fa": "شش هفته. به آلمان خوش آمدید.",
+   "hl": "Deutschland",
+   "who": "lena",
+   "whoName": "Lena"
   }
- ],
- "end": {
-  "t0": 54.4,
-  "de": "Fortsetzung folgt …",
-  "fa": "ادامه دارد …"
- }
+ ]
 }
