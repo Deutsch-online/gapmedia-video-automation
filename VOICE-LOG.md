@@ -1123,3 +1123,22 @@ when the story needs them. German is spoken by the characters; there is no Engli
 
 **Audition.** No sample could be heard in the session container. The first series sample is the
 audition. **Status: awaiting the owner's ear.**
+
+### 2026-10-04 — Herr Pfeiffer and the family series «خانواده در غربت»
+
+**Request (owner, 2026-10-04).** A second daily series with the four supplied cartoon characters:
+an Afghan family abroad (father, mother, daughter, toddler son). A fourth German character, Herr
+Pfeiffer (Ordnungsamt), joins «Die Nachbarn».
+
+**What changed.** Voices were added. No approved setting was changed.
+- Herr Pfeiffer: `de-DE-KillianNeural`, same engine, speed and volume as the approved German voice. **New.**
+- Father (Baba): `fa-IR-FaridNeural`; mother (Madar): `fa-IR-DilaraNeural`; speed 1.0, volume of
+  `GERMAN_WORD_VOICE_SETTINGS`. **New.**
+- Mina (8 years): Dilara, pitch `+30Hz`, speed 1.05. Sami (3 years): Dilara, pitch `+60Hz`,
+  speed 1.05. **New.** `EDGE_TTS_PITCH` was added to `music/edge-tts.mjs`; unset, nothing changes.
+
+**Limit.** These are Iranian-accent Persian voices, not Afghan Dari. No Dari voice was found in
+the Edge catalogue. The child voices are an adult voice with a higher pitch.
+
+**Audition.** No sample could be heard in the session container. **Status: awaiting the owner's
+ear.** If a voice is wrong, change one variable and log it here.

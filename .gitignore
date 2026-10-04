@@ -64,3 +64,4 @@ public/3d/stage/
 public/ai-cast/stage/
 compositions/showcase/
 music/sfx/
+__pycache__/

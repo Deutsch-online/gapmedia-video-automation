@@ -91,8 +91,7 @@ jobs:
           batch=""
           unit=""
           scheduled=no
-          # The owner-approved programme is two Berlin slots a day: 05:00 and
-          # 17:30.  A due slot claims the run whatever woke the workflow, so a
+          # The programme: one German episode a day at 05:00 Berlin (owner 2026-10-04); the family series has its own workflow.
           # Worker trigger push and the */15 cron can never both deliver it.
           if [[ "${INPUT_RETRY_BATCH:-}" == "0500" || "${INPUT_RETRY_BATCH:-}" == "1730" ]]; then
             local_date="${INPUT_RETRY_DATE:-$local_date}"
@@ -122,8 +121,6 @@ jobs:
             echo "Manual build request: building the next episode now"
           elif [[ "$local_hm" > "05:00" || "$local_hm" == "05:00" ]] && ! already_sent "$local_date-0500"; then
             go=yes; batch=0500; scheduled=yes
-          elif [[ "$local_hm" > "17:30" || "$local_hm" == "17:30" ]] && ! already_sent "$local_date-1730"; then
-            go=yes; batch=1730; scheduled=yes
           elif [[ "${INPUT_FORCE:-false}" == "true" ]]; then
             go=yes; batch="manual-$(TZ=Europe/Berlin date '+%H%M')"
             echo "Forced build outside the two Berlin slots"
@@ -155,17 +152,18 @@ jobs:
           python -m pip install --disable-pip-version-check --quiet openai-whisper pocket-tts gradio_client pillow
           sudo apt-get update
           sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
-      # The AI shots of a series episode cost GPU time. They are kept between runs (the key holds the
-      # hash of the story and of the shot generator, so a changed story never reuses old shots),
-      # and a re-render with a new look or caption does not pay for them again.
+      # The AI shots of a series episode cost GPU time. They are kept between runs; every shot carries
+      # the signature of its prompt, so a changed story never reuses an old picture (ai-cast/shots.py).
+      # The older key (series-shots-<hash>-<run>) is adopted too, so the shots paid for earlier are not lost.
       - name: Restore the series shots
         if: steps.gate.outputs.go == 'yes'
         uses: actions/cache/restore@v4
         with:
           path: renders/series-shots
-          key: series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-${{ github.run_id }}
+          key: series-shots-de-${{ github.run_id }}
           restore-keys: |
-            series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-
+            series-shots-de-
+            series-shots-
       - name: Build, quality-check and deliver one lesson
         if: steps.gate.outputs.go == 'yes'
         env:
@@ -194,6 +192,8 @@ jobs:
           # Owner directive 2026-09-21: Jev judges vocabulary images first.
           # An unset secret arrives empty and the judge chain simply skips it.
           TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          # owner 2026-10-04: only series episodes are made; a unit without one fails instead of making the old lesson
+          SERIES_ONLY: "on"
           CYCLE_DEADLINE_MINUTES: "104"
           LESSON_UNIT: ${{ steps.gate.outputs.unit }}
         run: |
@@ -209,7 +209,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: renders/series-shots
-          key: series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-${{ github.run_id }}
+          key: series-shots-de-${{ github.run_id }}
 
       - name: Remember the bot chat the preflight learned
         if: always() && steps.gate.outputs.go == 'yes'
@@ -232,7 +232,7 @@ jobs:
           node -e 'const fs=require("fs");let x=[];try{x=JSON.parse(fs.readFileSync(".german-lesson-batch-sent.json","utf8"))}catch{};const m=process.env.LESSON_MARKER;fs.writeFileSync(".german-lesson-batch-sent.json",JSON.stringify([...new Set([...x,m])].slice(-60),null,2))'
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A .german-lesson-progress.json .german-lesson-batch-sent.json .german-recovery-exhausted.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs
+          git add -A ai-cast/contact .german-lesson-progress.json .german-lesson-batch-sent.json .german-recovery-exhausted.json lib/narration.mjs lib/german-a1.mjs lib/pronounce.mjs
           git diff --staged --quiet || git commit -m "german-lesson: record delivered episode"
           git pull --rebase --autostash origin main
           git push origin HEAD:main

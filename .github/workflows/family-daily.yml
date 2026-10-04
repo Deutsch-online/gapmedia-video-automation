@@ -1,0 +1,111 @@
+name: Family series (daily)
+
+# «خانواده در غربت»: one episode a day at 17:30 Berlin, in three formats, to the owner's bot chat.
+# Shares the concurrency group with the German series so the two never fight for the GPU quota.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  push:
+    paths:
+      - ".family-build-request.json"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Build the next episode now"
+        required: false
+        default: "false"
+        type: string
+      episode:
+        description: "Re-render one episode (id), pointer unchanged"
+        required: false
+        default: ""
+        type: string
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  family:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - name: Select the daily slot
+        id: gate
+        shell: bash
+        env:
+          INPUT_FORCE: ${{ inputs.force }}
+          INPUT_EPISODE: ${{ inputs.episode }}
+        run: |
+          set -euo pipefail
+          local_date="$(TZ=Europe/Berlin date '+%Y-%m-%d')"
+          local_hm="$(TZ=Europe/Berlin date '+%H:%M')"
+          already_sent() { test -f .family-batch-sent.json && grep -Fq "\"$1\"" .family-batch-sent.json; }
+          go=no; marker="$local_date-1730"; episode=""
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]] && git diff --name-only HEAD~1 HEAD | grep -Fxq ".family-build-request.json"; then
+            episode="$(jq -r '.episode // empty' .family-build-request.json 2>/dev/null || true)"
+            go=yes; marker="$local_date-manual-$(date +%H%M)"
+          elif [[ "${INPUT_FORCE:-false}" == "true" || -n "${INPUT_EPISODE:-}" ]]; then
+            episode="${INPUT_EPISODE:-}"; go=yes; marker="$local_date-manual-$(date +%H%M)"
+          elif [[ ( "$local_hm" > "17:30" || "$local_hm" == "17:30" ) ]] && ! already_sent "$marker"; then
+            go=yes
+          fi
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+          echo "episode=$episode" >> "$GITHUB_OUTPUT"
+          echo "FAMILY_MARKER=$marker" >> "$GITHUB_ENV"
+          echo "Family slot decision: $go $marker ${episode:-<next>}"
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.go == 'yes'
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.go == 'yes'
+        with:
+          python-version: "3.11"
+      - name: Install video dependencies
+        if: steps.gate.outputs.go == 'yes'
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check --quiet gradio_client pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Restore the family shots
+        if: steps.gate.outputs.go == 'yes'
+        uses: actions/cache/restore@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-fa-${{ github.run_id }}
+          restore-keys: |
+            series-shots-fa-
+      - name: Build and deliver one episode
+        if: steps.gate.outputs.go == 'yes'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          EPISODE: ${{ steps.gate.outputs.episode }}
+        run: |
+          if [ -n "${EPISODE:-}" ]; then node family-build.mjs --episode "$EPISODE"; else node family-build.mjs; fi
+      - name: Keep the family shots for the next render
+        if: always() && steps.gate.outputs.go == 'yes'
+        uses: actions/cache/save@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-fa-${{ github.run_id }}
+      - name: Record the delivery
+        if: success() && steps.gate.outputs.go == 'yes'
+        run: |
+          node -e 'const fs=require("fs");let x=[];try{x=JSON.parse(fs.readFileSync(".family-batch-sent.json","utf8"))}catch{};fs.writeFileSync(".family-batch-sent.json",JSON.stringify([...new Set([...x,process.env.FAMILY_MARKER])].slice(-60),null,2))'
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A ai-cast/contact .family-progress.json .family-batch-sent.json
+          git diff --staged --quiet || git commit -m "family: record delivered episode"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

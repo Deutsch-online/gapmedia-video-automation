@@ -48,11 +48,14 @@ const pct = (mult, fallback) => {
   return `${delta >= 0 ? "+" : ""}${delta}%`;
 };
 const rate = pct(process.env.EDGE_TTS_SPEED, "+0%");
+// An optional pitch, e.g. "+30%" or "-10%" (the family series gives its children a higher voice
+// than Dilara's). Unset, it is Edge's own default, so every approved reading is unchanged.
+const pitch = /^[+-]\d+(\.\d+)?(%|Hz)$/.test(process.env.EDGE_TTS_PITCH || "") ? process.env.EDGE_TTS_PITCH : "+0Hz";
 const volume = pct(process.env.EDGE_TTS_VOL, "+0%");
 
 let audio;
 try {
-  audio = await synthesize({ text, voice, rate, volume, timeoutMs: 25000 });
+  audio = await synthesize({ text, voice, rate, pitch, volume, timeoutMs: 25000 });
 } catch (e) {
   console.error(`Edge TTS failed: ${e.message}`);
   process.exit(1);
