@@ -1,0 +1,20 @@
+{
+  "made": [],
+  "log": [
+    "lena-cu: stopped \u2014 RuntimeError",
+    "braun-cu: stopped \u2014 RuntimeError",
+    "lena-talk: waits for lena-cu"
+  ],
+  "left": [
+    "lena-cu",
+    "braun-cu",
+    "lena-talk",
+    "braun-talk",
+    "two-shot",
+    "two-talk",
+    "lena-laugh",
+    "braun-laugh",
+    "lena-listen",
+    "braun-listen"
+  ]
+}
