@@ -2,17 +2,20 @@
   "made": [
     "lena-cu",
     "braun-cu",
-    "lena-talk"
-  ],
-  "log": [
-    "lena-cu: built in 8s",
-    "braun-cu: built in 8s",
-    "lena-talk: built in 38s"
-  ],
-  "left": [
+    "lena-talk",
     "braun-talk",
     "two-shot",
-    "two-talk",
+    "two-talk"
+  ],
+  "log": [
+    "lena-cu: built in 7s",
+    "braun-cu: built in 7s",
+    "lena-talk: built in 37s",
+    "braun-talk: built in 36s",
+    "two-shot: built in 8s",
+    "two-talk: built in 37s"
+  ],
+  "left": [
     "lena-laugh",
     "braun-laugh",
     "lena-listen",
