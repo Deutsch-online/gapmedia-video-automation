@@ -63,3 +63,4 @@ public/3d/stage/
 # the AI-cast stage film is a per-episode build file too (lib/ai-stage.mjs)
 public/ai-cast/stage/
 compositions/showcase/
+music/sfx/

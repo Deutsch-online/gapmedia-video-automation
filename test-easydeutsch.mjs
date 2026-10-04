@@ -138,3 +138,12 @@ assert.ok(NARRATOR_SPEED < 1, "the narrator speaks slower than the default");
 for (const d of Object.values(DIALOGUES)) for (const sc of d.scenes) for (const p of explainParts(sc.en)) if (p.who === "lena") assert.doesNotMatch(p.text, /^(on|do|that|deal|excuse|I'm)\b/, `English gloss in German quotes: ${p.text}`);
 assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en">/, "the Persian sits apart from the English card");
 console.log("easydeutsch: ok");
+// fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
+const { SFX_KINDS } = await import("./lib/sfx.mjs");
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "tada"]);
+assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); assert.match(easy, /Quick quiz! How do you say this in German\?/);
+assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
+const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
+  teaser: "آخر ویدیو یک کوییز داری!", quiz: { t0: 9, tc: 11, ta: 14, t1: 15, ask: "به آلمانی چه می‌شود؟", fa: "به گشت می‌رویم", de: "Wir machen einen Ausflug." } });
+assert.match(fun, /id="fun1" class="haha">HA HA!/); assert.match(fun, /id="qn3" class="qn">3/); assert.match(fun, /id="qa" class="qa">Wir machen einen Ausflug\./);
+assert.match(fun, /tl\.[a-zA-Z]+\("#fun0"/, "the burst is animated on the timeline"); assert.match(fun, /scale:1\.12/, "a camera punch-in on the joke");
