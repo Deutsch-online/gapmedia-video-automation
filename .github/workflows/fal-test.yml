@@ -1,0 +1,43 @@
+name: fal.ai lip-sync test
+
+# One manual, cheap test (about 3 s of video, under 1 USD): a family character + one line of our voice
+# -> a talking video, sent to the owner's bot chat. Needs the GitHub secret FAL_KEY. Nothing is scheduled.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "kling (Kling AI Avatar v2 Pro) or fabric (VEED Fabric 1.0)"
+        required: false
+        default: "kling"
+        type: choice
+        options: ["kling", "fabric"]
+      character:
+        description: "baba, madar, mina or sami"
+        required: false
+        default: "baba"
+        type: choice
+        options: ["baba", "madar", "mina", "sami"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npm install --no-save @fal-ai/client
+      - name: One lip-sync clip
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node ai-cast/fal-test.mjs "${{ inputs.model }}" "${{ inputs.character }}"
