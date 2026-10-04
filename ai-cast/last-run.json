@@ -1,5 +1,27 @@
 {
-  "made": [],
-  "log": [],
+  "made": [
+    "lena-cu",
+    "braun-cu",
+    "lena-talk",
+    "braun-talk",
+    "two-shot",
+    "two-talk",
+    "lena-laugh",
+    "braun-laugh",
+    "lena-listen",
+    "braun-listen"
+  ],
+  "log": [
+    "lena-cu: built in 5s",
+    "braun-cu: built in 5s",
+    "lena-talk: built in 37s",
+    "braun-talk: built in 38s",
+    "two-shot: built in 5s",
+    "two-talk: built in 38s",
+    "lena-laugh: built in 50s",
+    "braun-laugh: built in 38s",
+    "lena-listen: built in 38s",
+    "braun-listen: built in 58s"
+  ],
   "left": []
 }
