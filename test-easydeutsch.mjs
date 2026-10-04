@@ -241,3 +241,8 @@ assert.match(easy, /const shotDir = `renders\/series-shots\/\$\{id\}`/, "the sho
 const wf = readFileSync(".github/workflows/news-scan.yml", "utf8");
 assert.match(wf, /actions\/cache\/restore@v4[\s\S]*?path: renders\/series-shots[\s\S]*?hashFiles\('lib\/easy-series\.mjs', 'ai-cast\/shots\.py', 'ai-cast\/build\.py'\)/, "the shots are restored by the hash of the story and the generator");
 assert.match(wf, /if: always\(\) && steps\.gate\.outputs\.go == 'yes'\n\s+uses: actions\/cache\/save@v4/, "the shots are saved even when a later step fails");
+// a series episode never falls back to the older English lesson (owner, 2026-10-04); an incomplete one fails and keeps its shots
+assert.doesNotMatch(easy, /building the dialogue lesson instead|series episode failed/, "no fallback to the older lesson");
+assert.match(easy, /if \(look === "cartoon3d" && EPISODES\[unit\.id\]\) return runSeriesLesson\(args\);/);
+assert.match(easy, /series shot\(s\) are missing[\s\S]*Nothing was delivered\./, "an incomplete episode fails and delivers nothing");
+assert.match(easy, /!existsSync\(j\.png\) \|\| !existsSync\(j\.mp4\)/, "every shot needs its still and its motion");
