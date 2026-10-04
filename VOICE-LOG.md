@@ -1164,3 +1164,28 @@ stairs, basement, hall, supermarket) get a light echo on the voices. The music r
 **Not verified.** No sample could be heard in the session container (the TTS host is not reachable
 from it). The speech-rate claim is the Edge `rate` semantics (relative to the voice default) and the
 CI log. **Status: awaiting the owner's ear.** If the pace is still wrong, change only the speed.
+
+### 2026-10-04 — Family series «Chai & Chaos»: English voices with emotion (owner: Persian voice bad, no feeling)
+
+**Request (owner, 2026-10-04).** The Afghan family series is made in English, with the Persian as the
+subtitle under the picture, because the Persian voices were bad and lacked emotion.
+
+**What changed.** The Edge Persian voices (Farid, Dilara and pitched Dilara) are no longer used by the
+family series. Each of the four characters now has:
+- a MiniMax English voice (`music/minimax-line.mjs`, model `speech-2.8-hd`, an `emotion` for every
+  line: happy / sad / angry / fearful / surprised / disgusted / neutral). The first voice of the list
+  that the account offers is used (the list is checked with MiniMax `get_voice`):
+  Baba `English_Trustworth_Man`, Mama `English_Graceful_Lady`, Mina `English_PlayfulGirl` (speed 1.05),
+  Sami `English_Strong-WilledBoy` (speed 1.05, pitch +3) — each with two spare ids.
+- an Edge English fallback voice, used only when MiniMax cannot read a line (the build log says
+  "MiniMax did not read …"): Baba `en-US-GuyNeural`, Mama `en-US-JennyNeural`, Mina `en-US-AnaNeural`
+  (a child voice), Sami `en-US-AnaNeural` with pitch +18Hz. The emotion becomes a small change of
+  speed and pitch (guess, not measured).
+
+**Not changed.** `music/minimax-tts.mjs` and the approved Persian narration reading are untouched; the
+new script is separate. The MiniMax voice ids are from memory of the public voice list, so the
+check against the account's list decides which voice is really used.
+
+**Not verified.** No sample could be heard in the session container (TTS hosts are not reachable
+from it). **Status: awaiting the owner's ear.** Cost: MiniMax bills by characters; one episode is
+about 700 characters (price not read from the account).

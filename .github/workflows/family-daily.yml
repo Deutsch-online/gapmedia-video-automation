@@ -90,6 +90,8 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          # the English family voices are read by MiniMax (an emotion for every line); Edge is the fallback
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           EPISODE: ${{ steps.gate.outputs.episode }}
         run: |
           if [ -n "${EPISODE:-}" ]; then node family-build.mjs --episode "$EPISODE"; else node family-build.mjs; fi

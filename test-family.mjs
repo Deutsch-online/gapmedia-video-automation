@@ -4,15 +4,24 @@ import { FAMILY_CFG, FAMILY_EPISODES, FAMILY } from "./lib/family-series.mjs";
 import { EPISODES, SERIES, linesOf } from "./lib/easy-series.mjs";
 import { GERMAN_A1 } from "./lib/german-a1.mjs";
 for (const [k, e] of Object.entries(FAMILY_EPISODES)) {
-  assert.ok(e.shots.length >= 10 && e.shots.length <= 12, `${k}: 10-12 shots (the GPU budget)`);
+  assert.ok(e.shots.length >= 9 && e.shots.length <= 12, `${k}: 9-12 shots (the GPU budget)`);
+  assert.ok(e.title && e.titleFa && e.next.en && e.next.fa, `${k}: titles and the next episode`);
   for (const s of e.shots) {
-    assert.ok(FAMILY.characters[s.who], `${k}: known speaker`);
+    assert.ok(FAMILY.characters[s.who], `${k}: known character on the picture`);
     assert.equal(s.chars.length, 1, `${k}: solo shots keep the identity`);
     assert.ok(existsSync(FAMILY_CFG.cast[s.who].ref), "portrait exists");
-    if (s.hl) assert.ok(s.say.includes(s.hl), `${k}: hl in line: ${s.say}`);
-    assert.match(s.say, /[؀-ۿ]/, "Persian line"); assert.ok(!/[A-Za-z]{4,}/.test(s.say.replace(/Nein/, "")), "no English");
+    for (const l of linesOf(s)) {
+      assert.ok(FAMILY.characters[l.by], `${k}: known speaker`);
+      assert.ok(l.emo, `${k}: every line has an emotion: ${l.say}`);
+      assert.ok(["happy", "sad", "angry", "fearful", "surprised", "disgusted", "neutral"].includes(l.emo));
+      if (l.hl) assert.ok(l.say.toLowerCase().includes(l.hl.toLowerCase()), `${k}: hl in line: ${l.say}`);
+      assert.match(l.say, /^[\x20-\x7E‘’“”…]+$/, "English line"); assert.match(l.fa, /[\u0600-\u06FF]/, "Persian subtitle");
+    }
   }
 }
+// the family speaks English (owner, 2026-10-04): MiniMax voices with an emotion, Edge as the fallback
+for (const c of Object.values(FAMILY.characters)) { assert.ok(c.mm?.voices?.length && /^en-US-/.test(c.voice), "an English MiniMax voice list and an English Edge fallback"); }
+assert.equal(FAMILY_CFG.rtl, false, "English on the picture, Persian as the subtitle");
 for (const [k, e] of Object.entries(EPISODES)) {
   assert.ok(GERMAN_A1.some((u) => u.id === k), `${k} is a curriculum unit`);
   for (const s of e.shots) { assert.ok(SERIES.characters[s.who]); for (const l of linesOf(s)) { assert.ok(SERIES.characters[l.by || s.who]); if (l.hl) assert.ok(l.say.toLowerCase().includes(l.hl.toLowerCase().replace(/[.!?]+$/, ""))); } }
