@@ -9,6 +9,7 @@ Usage: python ai-cast/shots.py job.json
   (a plain list of jobs still works: the German series cast of ai-cast/build.py is used)"""
 import hashlib, json, math, os, shutil, sys, time
 sys.path.insert(0, os.path.dirname(__file__))
+import build
 from build import call, path_of, first_working, LENA, BRAUN, KRAUSE, PFEIFFER, MOTION_NEG, VIDEO_SPACES
 from gradio_client import handle_file
 from PIL import Image
@@ -77,7 +78,27 @@ def make_clip(j):
 PAID_ON = os.environ.get("PAID_FALLBACK", "on").lower() != "off" and bool(os.environ.get("HF_TOKEN"))
 PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24"))
 PAID_USED = 0
-QUOTA_SPENT = False   # once the free quota says no, the rest of the run goes straight to the credits
+# The order (owner, 2026-10-04): 1. the anonymous free ZeroGPU quota, 2. the PRO quota of HF_TOKEN
+# (the daily allowance should be spent here), 3. only then the paid credits. A tier that says
+# "quota" is left for the rest of the run.
+HF_TOKEN = os.environ.get("HF_TOKEN") or None
+TIER = 0 if (HF_TOKEN and os.environ.get("FREE_FIRST", "on").lower() != "off") else 1
+QUOTA_SPENT = False
+
+
+def run_free(fn, *a):
+    global TIER, QUOTA_SPENT
+    while TIER < 2:
+        build.TOKEN = None if TIER == 0 else HF_TOKEN
+        try:
+            return fn(*a)
+        except Exception as e:
+            if not is_quota(e):
+                raise
+            print(f"  {'free' if TIER == 0 else 'PRO'} GPU quota spent", flush=True)
+            TIER += 1
+    QUOTA_SPENT = True
+    raise RuntimeError("quota")
 
 
 def is_quota(e):
@@ -153,7 +174,7 @@ def migrate(path, jobs, style):
 
 
 def main(path):
-    global PAID_USED, PAID_LEFT, QUOTA_SPENT
+    global PAID_USED, PAID_LEFT
     data = json.load(open(path))
     jobs = data if isinstance(data, list) else data["jobs"]
     cast = {**DEFAULT_CAST, **({} if isinstance(data, list) else data.get("cast", {}))}
@@ -173,22 +194,18 @@ def main(path):
                 os.remove(j["mp4"])
             if not os.path.exists(j["png"]):
                 try:
-                    if QUOTA_SPENT and PAID_ON and PAID_LEFT > 0: raise RuntimeError("quota")
-                    engine = make_still(j, shot_dir, cast, style)
+                    engine = run_free(make_still, j, shot_dir, cast, style)
                 except Exception as e:
                     if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
-                    QUOTA_SPENT = True
-                    print("  free GPU quota spent: this still uses the paid credits", flush=True)
+                    print("  GPU quotas spent: this still uses the paid credits", flush=True)
                     engine = paid_still(j, shot_dir, cast, style); PAID_USED += 1
                 write_sig(j["png"], still_sig)
             if not os.path.exists(j["mp4"]):
                 try:
-                    if QUOTA_SPENT and PAID_ON and PAID_LEFT > 0: raise RuntimeError("quota")
-                    make_clip(j)
+                    run_free(make_clip, j)
                 except Exception as e:
                     if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
-                    QUOTA_SPENT = True
-                    print("  free GPU quota spent: this clip uses the paid credits", flush=True)
+                    print("  GPU quotas spent: this clip uses the paid credits", flush=True)
                     paid_clip(j); engine += "+paid-clip"; PAID_USED += 1
                 write_sig(j["mp4"], clip_sig)
             PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24")) - PAID_USED
