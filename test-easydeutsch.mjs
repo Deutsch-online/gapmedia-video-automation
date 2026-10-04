@@ -119,7 +119,9 @@ assert.equal(shots[0].t0, 0); assert.equal(shots.at(-1).t1, 23);
 for (let i = 1; i < shots.length; i++) assert.ok(Math.abs(shots[i].t0 - shots[i - 1].t1) < 0.01, "no gap between shots");
 assert.ok(shots.some((s) => s.clip === "lena-talk" && s.t0 <= 3 && s.t1 >= 4.5));
 assert.ok(shots.some((s) => s.clip === "lena-laugh" && s.t0 >= 6.4 && s.t0 < 7), "Lena laughs at Braun's joke");
-assert.ok(shots.some((s) => /-listen$/.test(s.clip) && s.t0 < 10 && s.t1 > 11), "a quiet shot under the explanation");
+assert.ok(shots.some((s) => s.clip === "still-two" && s.t0 < 10 && s.t1 > 11), "a still picture under the explanation: nothing moves when nobody speaks");
+assert.equal(shots[0].clip, "still-two", "the opening before the first line is still");
+assert.ok(shots.every((s) => /-(talk|laugh)$|^still-/.test(s.clip)), "only talking, the joke's laugh and stills");
 assert.ok(shots.every((s) => s.t1 - s.t0 >= 0.5 || s === shots.at(-1)), "no flash cuts");
 const aiv = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, cast: "aiclips", stageVideo: "public/ai-cast/stage/x.mp4", lines: [] });
 assert.match(aiv, /<video id="ai-stage" class="clip" src="public\/ai-cast\/stage\/x\.mp4" muted playsinline data-start="0"/);
@@ -141,7 +143,7 @@ console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
 assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "tada"]);
-assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); assert.match(easy, /Quick quiz! How do you say this in German\?/);
+assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
   teaser: "آخر ویدیو یک کوییز داری!", quiz: { t0: 9, tc: 11, ta: 14, t1: 15, ask: "به آلمانی چه می‌شود؟", fa: "به گشت می‌رویم", de: "Wir machen einen Ausflug." } });
@@ -169,3 +171,15 @@ const tt = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt
 assert.match(tt, /#25F4EE/); assert.match(tt, /#FE2C55/); assert.match(tt, /\.cap\{left:40px;right:150px/);
 assert.doesNotMatch(buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, lines: [] }), /#25F4EE/, "Instagram keeps the EasyDeutsch look");
 assert.match(easy, /for \(const theme of \["easy", "tiktok"\]\)/); assert.match(easy, /f\.slug\.startsWith\("tiktok"\) && silentFor\.tiktok/, "the TikTok file is cut from the TikTok-coloured film");
+// English and German lead, Persian is the subtitle (owner, 2026-10-04)
+assert.match(easy, /Learn German with Lena and Herr Braun! Today: /, "the narrator opens in English");
+assert.match(easy, /Quick quiz! How do you say: /, "the quiz question is spoken in English");
+assert.match(easy, /const qe = clip\("narrator", qEn\)/, "the English meaning follows the quiz answer");
+assert.match(easy, /teaser: \{ en: "Stay for the quiz at the end!", fa:/);
+const enq = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, lines: [], outroText: "Bis morgen – tschüss!", outroEn: "See you tomorrow – bye!", outroFa: "تا فردا",
+  teaser: { en: "Stay for the quiz at the end!", fa: "آخر ویدیو یک کوییز داری!" }, quiz: { t0: 9, tc: 11, ta: 14, t1: 15, ask: "How do you say it in German?", en: "We're going on a trip!", fa: "به گشت می‌رویم", de: "Wir machen einen Ausflug." } });
+assert.match(enq, /class="qq">How do you say it in German\?<\/div><div class="qen">“We&#39;re going on a trip!”|class="qq">How do you say it in German\?<\/div><div class="qen">“We're going on a trip!”/);
+assert.match(enq, /<div class="ten">Stay for the quiz at the end!<\/div><div class="tfa" dir="rtl">/);
+assert.match(enq, /<div class="en2">See you tomorrow – bye!<\/div>/);
+const { DIALOGUES: DD } = await import("./lib/easy-dialogues.mjs");
+for (const [uid, d] of Object.entries(DD)) { assert.ok(d.topicEn, `${uid} has an English topic`); for (const sc of d.scenes) assert.ok(sc.gloss, `${uid}: ${sc.say} has an English gloss`); }
