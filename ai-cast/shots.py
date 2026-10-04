@@ -74,9 +74,15 @@ def make_clip(j):
 # Paid fallback (owner, 2026-10-04: "if the daily quota is not enough, use the credits"). The free
 # ZeroGPU quota is used first. When it is spent, the same shot is made with Hugging Face Inference
 # Providers, which bill the credits of the HF_TOKEN account. PAID_FALLBACK=off turns it off;
-# PAID_MAX_SHOTS (default 24 calls a run: a still or a clip each) is the spending guard; PAID_PROVIDER defaults to fal-ai.
+# PAID_BUDGET_USD (default 0.50 a run) is the spending guard; PAID_PROVIDER defaults to fal-ai.
 PAID_ON = os.environ.get("PAID_FALLBACK", "on").lower() != "off" and bool(os.environ.get("HF_TOKEN"))
-PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24"))
+# Spending guard in dollars (owner, 2026-10-04: about 1 USD a day at most; two runs a day, so 0.50 each).
+# The prices are my own conservative ESTIMATES, not read from the provider: set PAID_STILL_USD and
+# PAID_CLIP_USD when the real prices are known. A call that would pass the budget is not made.
+PAID_BUDGET = float(os.environ.get("PAID_BUDGET_USD", "0.50"))
+PAID_STILL_USD = float(os.environ.get("PAID_STILL_USD", "0.04"))
+PAID_CLIP_USD = float(os.environ.get("PAID_CLIP_USD", "0.40"))
+PAID_SPENT = 0.0
 PAID_USED = 0
 # The order (owner, 2026-10-04): 1. the anonymous free ZeroGPU quota, 2. the PRO quota of HF_TOKEN
 # (the daily allowance should be spent here), 3. only then the paid credits. A tier that says
@@ -174,7 +180,7 @@ def migrate(path, jobs, style):
 
 
 def main(path):
-    global PAID_USED, PAID_LEFT
+    global PAID_USED, PAID_SPENT
     data = json.load(open(path))
     jobs = data if isinstance(data, list) else data["jobs"]
     cast = {**DEFAULT_CAST, **({} if isinstance(data, list) else data.get("cast", {}))}
@@ -196,24 +202,25 @@ def main(path):
                 try:
                     engine = run_free(make_still, j, shot_dir, cast, style)
                 except Exception as e:
-                    if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
-                    print("  GPU quotas spent: this still uses the paid credits", flush=True)
-                    engine = paid_still(j, shot_dir, cast, style); PAID_USED += 1
+                    if not (is_quota(e) and PAID_ON): raise
+                    if PAID_SPENT + PAID_STILL_USD > PAID_BUDGET: raise RuntimeError(f"quota: paid budget {PAID_BUDGET:.2f} USD reached")
+                    print(f"  GPU quotas spent: this still uses the paid credits (about {PAID_STILL_USD:.2f} USD)", flush=True)
+                    engine = paid_still(j, shot_dir, cast, style); PAID_USED += 1; PAID_SPENT += PAID_STILL_USD
                 write_sig(j["png"], still_sig)
             if not os.path.exists(j["mp4"]):
                 try:
                     run_free(make_clip, j)
                 except Exception as e:
-                    if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
-                    print("  GPU quotas spent: this clip uses the paid credits", flush=True)
-                    paid_clip(j); engine += "+paid-clip"; PAID_USED += 1
+                    if not (is_quota(e) and PAID_ON): raise
+                    if PAID_SPENT + PAID_CLIP_USD > PAID_BUDGET: raise RuntimeError(f"quota: paid budget {PAID_BUDGET:.2f} USD reached")
+                    print(f"  GPU quotas spent: this clip uses the paid credits (about {PAID_CLIP_USD:.2f} USD)", flush=True)
+                    paid_clip(j); engine += "+paid-clip"; PAID_USED += 1; PAID_SPENT += PAID_CLIP_USD
                 write_sig(j["mp4"], clip_sig)
-            PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24")) - PAID_USED
             print(f"shot {j['id']} ({engine}) in {time.time() - t0:.0f}s", flush=True)
         except Exception as e:
             msg = str(e)[:300]
             print(f"shot FAILED {j['id']}: {msg}", flush=True)
-            if "quota" in msg.lower() and not (PAID_ON and PAID_LEFT > 0):
+            if "quota" in msg.lower():
                 break
 
 
