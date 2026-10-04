@@ -183,3 +183,18 @@ assert.match(enq, /<div class="ten">Stay for the quiz at the end!<\/div><div cla
 assert.match(enq, /<div class="en2">See you tomorrow – bye!<\/div>/);
 const { DIALOGUES: DD } = await import("./lib/easy-dialogues.mjs");
 for (const [uid, d] of Object.entries(DD)) { assert.ok(d.topicEn, `${uid} has an English topic`); for (const sc of d.scenes) assert.ok(sc.gloss, `${uid}: ${sc.say} has an English gloss`); }
+// reels (owner, 2026-10-04, with two reference shorts): full-screen AI shots, captions on the picture
+const { REELS } = await import("./lib/easy-dialogues.mjs");
+const { buildEasyReelHTML } = await import("./lib/easy-reel.mjs");
+for (const [rid, r] of Object.entries(REELS)) {
+  for (const s of [r.hook, ...r.shots]) { assert.ok(s.scene && s.motion && s.en && s.de !== "" && s.fa, `${rid}: every shot has a scene, a motion and its captions`); assert.match(s.fa, /[؀-ۿ]/); assert.doesNotMatch(s.en, /[؀-ۿ]/); }
+  for (const s of r.shots) assert.ok(["lena", "braun"].includes(s.who) && s.say);
+}
+const reel = buildEasyReelHTML({ episodeNo: 54, title: "x", total: 10, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
+  caps: [{ t0: 0.2, t1: 3, en: "We're going on a trip!", de: "Wir machen einen Ausflug.", fa: "ما به گشت می‌رویم" }], rep: [{ t0: 2, t1: 3 }],
+  quiz: { t0: 5, tc: 6, ta: 9, t1: 10, en: "We're going on a trip!", de: "Wir machen einen Ausflug.", fa: "ما به گشت می‌رویم" } });
+assert.match(reel, /<video id="bg" class="clip" src="public\/ai-cast\/stage\/r\.mp4" muted playsinline data-start="0"/, "the shots fill the frame");
+assert.match(reel, /<div class="en">We&#39;re going on a <span class="k">trip!<\/span><\/div><div class="de">Wir machen einen Ausflug\.<\/div><div class="fa" dir="rtl">|<div class="en">We're going on a <span class="k">trip!<\/span><\/div><div class="de">Wir machen einen Ausflug\.<\/div><div class="fa" dir="rtl">/, "English, then German, then the small Persian");
+assert.match(reel, /#25F4EE/); assert.match(reel, /Sprich nach! · Say it!/);
+assert.match(easy, /if \(look === "cartoon3d" && REELS\[unit\.id\]\)/, "a unit with a reel plan is built as a reel");
+assert.match(easy, /building the dialogue lesson instead/, "a failed reel falls back to the dialogue lesson");
