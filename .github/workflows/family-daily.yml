@@ -1,6 +1,6 @@
 name: Family series (daily)
 
-# «خانواده در غربت»: one episode a day at 17:30 Berlin, in three formats, to the owner's bot chat.
+# «خانواده در غربت»: one episode a day at 06:00 Berlin, in three formats, to the owner's bot chat.
 # Shares the concurrency group with the German series so the two never fight for the GPU quota.
 on:
   schedule:
@@ -48,13 +48,13 @@ jobs:
           local_date="$(TZ=Europe/Berlin date '+%Y-%m-%d')"
           local_hm="$(TZ=Europe/Berlin date '+%H:%M')"
           already_sent() { test -f .family-batch-sent.json && grep -Fq "\"$1\"" .family-batch-sent.json; }
-          go=no; marker="$local_date-1730"; episode=""
+          go=no; marker="$local_date-0600"; episode=""
           if [[ "$GITHUB_EVENT_NAME" == "push" ]] && git diff --name-only HEAD~1 HEAD | grep -Fxq ".family-build-request.json"; then
             episode="$(jq -r '.episode // empty' .family-build-request.json 2>/dev/null || true)"
             go=yes; marker="$local_date-manual-$(date +%H%M)"
           elif [[ "${INPUT_FORCE:-false}" == "true" || -n "${INPUT_EPISODE:-}" ]]; then
             episode="${INPUT_EPISODE:-}"; go=yes; marker="$local_date-manual-$(date +%H%M)"
-          elif [[ ( "$local_hm" > "17:30" || "$local_hm" == "17:30" ) ]] && ! already_sent "$marker"; then
+          elif [[ ( "$local_hm" > "06:00" || "$local_hm" == "06:00" ) ]] && ! already_sent "$marker"; then
             go=yes
           fi
           echo "go=$go" >> "$GITHUB_OUTPUT"
