@@ -70,22 +70,28 @@
   // ------------------------------------------------------------------ a character
   // Built in local coordinates: the origin is the middle of the shoulders; y grows down.
   // f = +1 faces right, -1 faces left (the face turns three-quarter towards the other person).
+  // The two people are drawn from the owner's reference portraits (2026-10-04): Lena with long
+  // wavy dark hair, big lashed eyes, hoop earrings and a pink hoodie; Herr Braun with short
+  // dark hair, a broad face, a small chin beard and a blue crew-neck sweatshirt.
+  const FACE_SOFT = "M -58 -100 C -62 -168 -30 -196 0 -196 C 30 -196 62 -168 58 -100 C 58 -60 36 -26 0 -20 C -36 -26 -58 -60 -58 -100 Z";
+  const FACE_BROAD = "M -63 -102 C -66 -170 -32 -198 0 -198 C 32 -198 66 -170 63 -102 C 63 -62 48 -30 22 -20 C 8 -15 -8 -15 -22 -20 C -48 -30 -63 -62 -63 -102 Z";
   function makePerson(o) {
     const root = g(people), body = g(root), headPivot = g(body, { transform: "translate(0,-14)" }), head = g(headPivot);
     const arms = {};
     // torso and clothes
     P(body, "M -74 12 C -86 60 -88 150 -80 260 L 80 260 C 88 150 86 60 74 12 C 40 -6 -40 -6 -74 12 Z", o.top, stroke(3));
     P(body, "M -74 12 C -64 40 -60 80 -62 120", "none", { ...stroke(2, "rgba(0,0,0,.18)") });
-    o.clothes(body);
+    P(body, "M 74 12 C 64 40 60 80 62 120", "none", { ...stroke(2, "rgba(0,0,0,.12)") });
     // neck
     P(body, "M -18 -22 L -20 6 C -8 16 8 16 20 6 L 18 -22 Z", o.skinShade, stroke(3));
+    o.clothes(body);
     // arms: shoulder → upper arm → elbow → forearm → hand
     for (const s of [-1, 1]) {
       const sh = g(body, { transform: `translate(${s * 66},22)` }), shR = g(sh);
-      el("rect", { x: -19, y: -14, width: 38, height: 122, rx: 19, fill: o.sleeve, ...stroke(3) }, shR);
+      el("rect", { x: -19, y: -14, width: 38, height: 122, rx: 19, fill: o.top, ...stroke(3) }, shR);
       const el1 = g(shR, { transform: "translate(0,98)" }), elR = g(el1);
-      el("rect", { x: -16, y: -10, width: 32, height: 100, rx: 16, fill: o.sleeve2 || o.sleeve, ...stroke(3) }, elR);
-      el("rect", { x: -15, y: 70, width: 30, height: 12, rx: 5, fill: o.cuff || o.sleeve, ...stroke(2) }, elR);
+      el("rect", { x: -16, y: -10, width: 32, height: 100, rx: 16, fill: o.top, ...stroke(3) }, elR);
+      el("rect", { x: -16, y: 66, width: 32, height: 16, rx: 6, fill: o.cuff, ...stroke(2) }, elR);
       const hw = g(elR, { transform: "translate(0,84)" }), hR = g(hw);
       const hands = {};
       hands.open = g(hR); E(hands.open, 0, 18, 17, 20, o.skin, stroke(3)); for (let i = 0; i < 4; i++) el("rect", { x: -15 + i * 8, y: 26, width: 8, height: 22 - Math.abs(i - 1.5) * 3, rx: 4, fill: o.skin, ...stroke(2) }, hands.open); E(hands.open, s * -17, 14, 6, 11, o.skin, { ...stroke(2), transform: `rotate(${s * 30} ${s * -17} 14)` });
@@ -97,89 +103,74 @@
     // head (origin at the top of the neck)
     const hairBack = g(head); o.hairBack(hairBack);
     const ear = E(head, 0, -86, 11, 18, o.skin, stroke(3));
-    P(head, "M -58 -100 C -62 -168 -30 -196 0 -196 C 30 -196 62 -168 58 -100 C 58 -60 36 -26 0 -20 C -36 -26 -58 -60 -58 -100 Z", o.skin, stroke(3));
+    P(head, o.face, o.skin, stroke(3));
     const shade = P(head, "", o.skinShade, { opacity: 0.55 });
+    const stubble = o.stubble ? P(head, "", o.stubble, { opacity: 0.16 }) : null;
     const blushL = E(head, 0, 0, 12, 6, "#f0a0a0", { opacity: 0.35 }), blushR = E(head, 0, 0, 12, 6, "#f0a0a0", { opacity: 0.35 });
     const face = g(head);
+    const ew = o.eyeW || 13, eh = o.eyeH || 10, ir = o.irisR || 6.5;
     const eyes = [-1, 1].map(() => {
       const eg = g(face);
-      const white = E(eg, 0, 0, 13, 10, "#ffffff", stroke(2.5));
-      const iris = g(eg); C(iris, 0, 1, 6.5, o.iris); C(iris, 0, 1, 3.6, "#1a1210"); C(iris, 2, -1.5, 1.6, "#ffffff");
+      const white = E(eg, 0, 0, ew, eh, "#ffffff", stroke(2.5));
+      const iris = g(eg); C(iris, 0, 1, ir, o.iris); C(iris, 0, 1, ir * 0.55, "#1a1210"); C(iris, ir * 0.32, -ir * 0.25, ir * 0.26, "#ffffff");
       const lid = P(eg, "", o.skin, {});
-      const lash = P(eg, "", "none", stroke(3.2));
-      const happy = P(eg, "M -12 3 Q 0 -9 12 3", "none", { ...stroke(4), opacity: 0 });
-      return { eg, white, iris, lid, lash, happy };
+      const lash = P(eg, "", "none", stroke(o.lashW || 3.2));
+      const wing = P(eg, "", "none", stroke(3, INK));
+      const happy = P(eg, `M ${-ew + 1} 3 Q 0 -9 ${ew - 1} 3`, "none", { ...stroke(4), opacity: 0 });
+      return { eg, white, iris, lid, lash, wing, happy };
     });
-    const brows = [-1, 1].map(() => P(face, "", "none", { ...stroke(7, o.brow) }));
+    const brows = [-1, 1].map(() => P(face, "", "none", { ...stroke(o.browW || 7, o.brow) }));
     const nose = P(face, "", "none", stroke(3));
+    const chin = o.chinBeard ? P(face, "", o.hair, stroke(1.5, o.hair)) : null;
     const mouth = g(face);
-    const mOuter = P(mouth, "", "#5a1d1d", stroke(3)), mTeeth = P(mouth, "", "#ffffff", {}), mTongue = P(mouth, "", "#d9696f", {}), mLine = P(mouth, "", "none", stroke(3.4));
+    const mOuter = P(mouth, "", "#5a1d1d", stroke(3)), mTeeth = P(mouth, "", "#ffffff", {}), mTongue = P(mouth, "", "#d9696f", {}), mLine = P(mouth, "", "none", stroke(3.4, o.lip || INK));
     const hairFront = g(head); o.hairFront(hairFront);
-    const extra = g(face); if (o.faceExtra) o.faceExtra(extra);
+    const hoops = o.hoops ? [C(head, 0, 0, 8, "none", stroke(2.6, "#c9ccd2"))] : [];
     body.appendChild(headPivot);                   // the head is drawn over the torso
-    return { o, root, body, headPivot, head, arms, ear, shade, blushL, blushR, eyes, brows, nose, mouth, mOuter, mTeeth, mTongue, mLine, hairFront, extra, face };
+    return { o, root, body, headPivot, head, arms, ear, shade, stubble, blushL, blushR, eyes, brows, nose, chin, mouth, mOuter, mTeeth, mTongue, mLine, hairFront, hoops, face };
   }
 
   const LENA = makePerson({
-    skin: "#f3c9a6", skinShade: "#e2ab86", iris: "#5b3a22", brow: "#4a2e1e",
-    top: pick(["#4f7cb5", "#c95a6a", "#3e8a6a", "#8a5ab0", "#d98c3a"], 7), sleeve: null,
-    clothes(b) { P(b, "M -30 -2 L 0 52 L 30 -2", "#f7f2ea", stroke(3)); P(b, "M -30 -2 L -8 40 M 30 -2 L 8 40", "none", stroke(2)); C(b, 0, 80, 4, "#ffffff", stroke(1.5)); C(b, 0, 120, 4, "#ffffff", stroke(1.5)); },
-    hairBack(h) { P(h, "M -70 -120 C -84 -70 -82 -20 -74 6 C -66 22 -50 26 -40 18 L 40 18 C 50 26 66 22 74 6 C 82 -20 84 -70 70 -120 C 62 -190 -62 -190 -70 -120 Z", "#4a2c1d", stroke(3)); },
-    hairFront(h) {
-      P(h, "M -64 -104 C -72 -170 -36 -210 6 -208 C 52 -206 74 -170 66 -104 C 60 -134 46 -150 30 -158 C 20 -140 -6 -128 -36 -124 C -46 -122 -56 -114 -64 -104 Z", "#5a3524", stroke(3));
-      P(h, "M -64 -104 C -70 -70 -68 -36 -58 -14 C -66 -40 -66 -76 -58 -104 Z", "#5a3524", stroke(2.5));
-      P(h, "M 66 -104 C 72 -70 70 -36 60 -14 C 68 -40 68 -76 60 -104 Z", "#5a3524", stroke(2.5));
-      for (const d of ["M 30 -158 C 10 -150 -14 -140 -36 -126", "M 22 -190 C 40 -184 54 -168 60 -146", "M -10 -200 C -34 -190 -52 -168 -58 -140"]) P(h, d, "none", { ...stroke(2.5, "#7a4a32") });
+    skin: "#f6d3bd", skinShade: "#e8b49a", iris: "#6b4630", brow: "#3a2418", hair: "#2e1d16", lip: "#c4566a",
+    face: FACE_SOFT, eyeW: 15, eyeH: 12.5, irisR: 8.5, lashW: 4.2, lashes: true, browW: 5.5, browUp: 6, lidBase: 0.02, smileBase: 0.38, hoops: true,
+    top: "#f4b9c9", cuff: "#eaa5b8",
+    clothes(b) {
+      // the hood lies round the neck, two drawstrings and a small heart
+      P(b, "M -58 8 C -50 -14 -24 -22 0 -22 C 24 -22 50 -14 58 8 C 40 28 -40 28 -58 8 Z", "#eaa5b8", stroke(3));
+      P(b, "M -34 2 C -20 14 20 14 34 2", "none", stroke(2.5));
+      for (const x of [-14, 14]) { P(b, `M ${x} 12 L ${x * 1.2} 96`, "none", stroke(3, "#f9e6ec")); P(b, `M ${x} 12 L ${x * 1.2} 96`, "none", stroke(1, "rgba(0,0,0,.25)")); E(b, x * 1.2, 100, 3.5, 6, "#f9e6ec", stroke(1.5)); }
+      P(b, "M 40 150 C 40 142 50 140 52 148 C 54 140 64 142 64 150 C 64 158 56 162 52 168 C 48 162 40 158 40 150 Z", "none", stroke(2, "#ffffff"));
     },
-    faceExtra(x) { C(x, 0, 0, 0, "none"); },
+    hairBack(h) {
+      // long, full and wavy, past the shoulders
+      P(h, "M -64 -140 C -92 -110 -100 -70 -90 -40 C -110 -14 -96 14 -108 40 C -124 70 -100 96 -114 124 C -110 150 -82 164 -60 150 C -70 128 -52 110 -60 86 C -66 60 -46 40 -50 16 C -44 -4 -38 -20 -30 -30 L 30 -30 C 38 -20 44 -4 50 16 C 46 40 66 60 60 86 C 52 110 70 128 60 150 C 82 164 110 150 114 124 C 100 96 124 70 108 40 C 96 14 110 -14 90 -40 C 100 -70 92 -110 64 -140 C 50 -206 -50 -206 -64 -140 Z", "#2e1d16", stroke(3));
+      for (const d of ["M -84 -30 C -98 0 -86 30 -100 60 C -110 84 -96 104 -104 128", "M 84 -30 C 98 0 86 30 100 60 C 110 84 96 104 104 128", "M -60 30 C -70 60 -56 90 -72 120", "M 60 30 C 70 60 56 90 72 120"]) P(h, d, "none", { ...stroke(2.4, "#5e3e2e") });
+    },
+    hairFront(h) {
+      // a middle part; soft waves frame the face down to the cheeks
+      P(h, "M 0 -206 C -44 -206 -74 -176 -74 -128 C -76 -100 -66 -78 -72 -56 C -60 -70 -60 -96 -56 -112 C -46 -150 -24 -180 0 -190 Z", "#2e1d16", stroke(3));
+      P(h, "M 0 -206 C 44 -206 74 -176 74 -128 C 76 -100 66 -78 72 -56 C 60 -70 60 -96 56 -112 C 46 -150 24 -180 0 -190 Z", "#2e1d16", stroke(3));
+      for (const d of ["M -6 -198 C -34 -190 -54 -166 -62 -132", "M 6 -198 C 34 -190 54 -166 62 -132", "M -66 -120 C -70 -100 -64 -84 -68 -66"]) P(h, d, "none", { ...stroke(2.2, "#6a4634") });
+    },
   });
-  LENA.o.sleeve = LENA.o.top;
-  LENA.arms[-1].sh.querySelector("rect").setAttribute("fill", LENA.o.top); LENA.arms[1].sh.querySelector("rect").setAttribute("fill", LENA.o.top);
-  for (const s of [-1, 1]) { LENA.arms[s].el.querySelectorAll("rect")[0].setAttribute("fill", LENA.o.top); LENA.arms[s].el.querySelectorAll("rect")[1].setAttribute("fill", LENA.o.top); }
-  const earrings = [C(LENA.head, 0, 0, 5, "#f2c14e", stroke(1.5))];
-
   const BRAUN = makePerson({
-    skin: "#e8b48c", skinShade: "#cf9670", iris: "#3e5a7a", brow: "#6b5a4a",
-    top: "#f4f1ea", sleeve: pick(["#7a5a3a", "#3f5a7a", "#5a6b4a", "#7a3f3f"], 3),
-    clothes(b) { const v = BRAUN_VEST; P(b, "M -74 12 C -86 60 -88 150 -80 260 L -14 260 L -14 60 L -34 -2 C -50 0 -64 4 -74 12 Z", v, stroke(3)); P(b, "M 74 12 C 86 60 88 150 80 260 L 14 260 L 14 60 L 34 -2 C 50 0 64 4 74 12 Z", v, stroke(3)); P(b, "M -26 -4 L 0 40 L 26 -4", "none", stroke(3)); for (const y of [90, 140, 190]) C(b, 0, y, 5, "#d9d2c4", stroke(1.5)); },
+    skin: "#efc3a0", skinShade: "#d9a27e", iris: "#4a3020", brow: "#1f1612", hair: "#1f1713", lip: "#a8574e", stubble: "#3a2a22",
+    face: FACE_BROAD, eyeW: 12, eyeH: 8.5, irisR: 6, lashW: 3, browW: 8.5, chinBeard: true,
+    top: "#4e78b4", cuff: "#41679d",
+    clothes(b) {
+      // a ribbed crew neck
+      P(b, "M -40 -6 C -26 18 26 18 40 -6 C 34 -12 28 -14 22 -14 C 12 0 -12 0 -22 -14 C -28 -14 -34 -12 -40 -6 Z", "#41679d", stroke(3));
+      P(b, "M -34 -4 C -20 12 20 12 34 -4", "none", stroke(1.5, "rgba(0,0,0,.25)"));
+      P(b, "M -70 40 C -40 50 -20 46 -10 40", "none", stroke(2, "rgba(0,0,0,.14)")); P(b, "M 70 40 C 40 50 20 46 10 40", "none", stroke(2, "rgba(0,0,0,.14)"));
+    },
     hairBack(h) { },
-    hairFront(h) { P(h, "M -60 -98 C -64 -130 -58 -150 -48 -160 C -44 -140 -42 -120 -40 -104 Z", "#7d6a5a", stroke(2.5)); P(h, "M 60 -98 C 64 -130 58 -150 48 -160 C 44 -140 42 -120 40 -104 Z", "#7d6a5a", stroke(2.5)); P(h, "M -30 -190 C -10 -198 14 -198 30 -190", "none", { ...stroke(3, "rgba(255,255,255,.55)") }); },
-    faceExtra(x) { },
+    hairFront(h) {
+      // short dark hair, a little higher at the temples, textured on top
+      P(h, "M -63 -110 C -70 -160 -48 -210 -2 -212 C 46 -214 72 -164 63 -110 C 60 -128 56 -144 48 -150 C 34 -156 18 -150 4 -156 C -12 -162 -32 -154 -48 -150 C -56 -140 -60 -128 -63 -110 Z", "#1f1713", stroke(3));
+      for (const d of ["M -40 -196 L -30 -206", "M -16 -204 L -4 -212", "M 12 -206 L 24 -212", "M 34 -196 L 46 -200", "M -50 -170 L -40 -180"]) P(h, d, "none", { ...stroke(3, "#3a2c24") });
+      for (const s of [-1, 1]) P(h, `M ${s * 62} -122 L ${s * 63} -92 L ${s * 57} -92 L ${s * 56} -118 Z`, "#1f1713", stroke(2));
+    },
   });
-  var BRAUN_VEST;
-  // (the vest colour is picked once; set after the fact because clothes() ran inside makePerson)
-  BRAUN_VEST = BRAUN.o.sleeve;
-  BRAUN.body.innerHTML = ""; // rebuild his torso with the vest colour known
-  // a tiny rebuild: torso, vest, neck, arms are drawn again in the right order
-  (function rebuildBraun() {
-    const o = BRAUN.o, b = BRAUN.body;
-    P(b, "M -74 12 C -86 60 -88 150 -80 260 L 80 260 C 88 150 86 60 74 12 C 40 -6 -40 -6 -74 12 Z", o.top, stroke(3));
-    o.clothes(b);
-    P(b, "M -18 -22 L -20 6 C -8 16 8 16 20 6 L 18 -22 Z", o.skinShade, stroke(3));
-    for (const s of [-1, 1]) {
-      const sh = g(b, { transform: `translate(${s * 66},22)` }), shR = g(sh);
-      el("rect", { x: -19, y: -14, width: 38, height: 122, rx: 19, fill: o.sleeve, ...stroke(3) }, shR);
-      const el1 = g(shR, { transform: "translate(0,98)" }), elR = g(el1);
-      el("rect", { x: -16, y: -10, width: 32, height: 100, rx: 16, fill: o.sleeve, ...stroke(3) }, elR);
-      el("rect", { x: -15, y: 70, width: 30, height: 12, rx: 5, fill: "#f4f1ea", ...stroke(2) }, elR);
-      const hw = g(elR, { transform: "translate(0,84)" }), hR = g(hw);
-      const hands = {};
-      hands.open = g(hR); E(hands.open, 0, 18, 17, 20, o.skin, stroke(3)); for (let i = 0; i < 4; i++) el("rect", { x: -15 + i * 8, y: 26, width: 8, height: 22 - Math.abs(i - 1.5) * 3, rx: 4, fill: o.skin, ...stroke(2) }, hands.open); E(hands.open, s * -17, 14, 6, 11, o.skin, { ...stroke(2), transform: `rotate(${s * 30} ${s * -17} 14)` });
-      hands.fist = g(hR); el("rect", { x: -17, y: 2, width: 34, height: 34, rx: 13, fill: o.skin, ...stroke(3) }, hands.fist); P(hands.fist, "M -12 24 L 12 24 M -12 15 L 12 15", "none", stroke(1.6));
-      hands.point = g(hR); el("rect", { x: -17, y: 2, width: 34, height: 30, rx: 12, fill: o.skin, ...stroke(3) }, hands.point); el("rect", { x: s * 6 - 4, y: 26, width: 9, height: 30, rx: 4.5, fill: o.skin, ...stroke(2) }, hands.point);
-      hands.thumbs = g(hR); el("rect", { x: -17, y: 6, width: 34, height: 30, rx: 12, fill: o.skin, ...stroke(3) }, hands.thumbs); el("rect", { x: s * -14 - 5, y: -18, width: 10, height: 30, rx: 5, fill: o.skin, ...stroke(2) }, hands.thumbs);
-      BRAUN.arms[s] = { sh: shR, el: elR, hand: hR, hands };
-    }
-    b.appendChild(BRAUN.headPivot);
-  })();
-  // his beard, moustache and glasses sit on the face
-  const beard = P(BRAUN.head, "", "#7d6a5a", { ...stroke(2.5), opacity: 0.95 });
-  BRAUN.head.insertBefore(beard, BRAUN.face);     // the beard sits under the eyes, nose and mouth
-  const stache = P(BRAUN.face, "", "#6b5848", stroke(2.5));
-  const glasses = g(BRAUN.face);
-  BRAUN.face.appendChild(BRAUN.mouth);           // the mouth draws over the beard
-  BRAUN.face.appendChild(stache); BRAUN.face.appendChild(glasses);
-
   // ------------------------------------------------------------------ the foreground: table or counter
   if (COUNTER) {
     R(front, 0, 760, 1080, 320, "#8e5a3a", stroke(4)); R(front, 0, 740, 1080, 36, "#6b4226", stroke(4));
@@ -250,19 +241,22 @@
       const ex0 = fx + side * 24 * (1 - Math.abs(f) * 0.12), ey0 = -112;
       e.eg.setAttribute("transform", `translate(${ex0},${ey0}) scale(${far},1)`);
       const wide = 1 + 0.25 * ex.wide;
-      e.white.setAttribute("ry", 10 * wide);
+      const ew = p.o.eyeW || 13, eh = p.o.eyeH || 10;
+      e.white.setAttribute("ry", eh * wide);
       e.iris.setAttribute("transform", `translate(${ex.look * 4 + f * 2},${ex.lookY * 2})`);
       const close = clamp(Math.max(ex.blink, ex.lid), 0, 1);          // 0 open, 1 closed
-      const top = -10 * wide, yl = lerp(top - 1, 10, close);
-      e.lid.setAttribute("d", `M -15 ${top - 6} L 15 ${top - 6} L 15 ${yl} Q 0 ${yl + 3 - close * 2} -15 ${yl} Z`);
-      e.lash.setAttribute("d", `M -14 ${yl + 0.5} Q 0 ${yl - 5 + close * 6} 14 ${yl + 0.5}`);
+      const top = -eh * wide, yl = lerp(top - 1, eh, close), lw = ew + 2;
+      e.lid.setAttribute("d", `M ${-lw} ${top - 6} L ${lw} ${top - 6} L ${lw} ${yl} Q 0 ${yl + 3 - close * 2} ${-lw} ${yl} Z`);
+      e.lash.setAttribute("d", `M ${-lw + 1} ${yl + 0.5} Q 0 ${yl - 5 + close * 6} ${lw - 1} ${yl + 0.5}`);
+      e.wing.setAttribute("d", p.o.lashes ? `M ${side * (lw - 2)} ${yl + 1} L ${side * (lw + 5)} ${yl - 5}` : "");
+      if (p.o.lashes) e.wing.setAttribute("opacity", 1 - ex.happy);
       const happy = ex.happy;
       e.white.setAttribute("opacity", 1 - happy); e.iris.setAttribute("opacity", 1 - happy); e.lid.setAttribute("opacity", 1 - happy); e.lash.setAttribute("opacity", 1 - happy);
       e.happy.setAttribute("opacity", happy);
     });
     // brows: raise, angry (inner down), worried (inner up)
     p.brows.forEach((b, i) => {
-      const side = i === 0 ? -1 : 1, bx = fx + side * 24, by = -136 - 7 * ex.raise + 3 * ex.angry;
+      const side = i === 0 ? -1 : 1, bx = fx + side * 25, by = -136 - (p.o.browUp || 0) - 7 * ex.raise + 3 * ex.angry;
       const inner = -side * 15, outer = side * 15;
       const yi = by + 7 * ex.angry - 8 * ex.worry, yo = by - 3 * ex.angry + 2 * ex.worry;
       b.setAttribute("d", `M ${bx + inner} ${yi} Q ${bx} ${by - 6} ${bx + outer} ${yo}`);
@@ -282,16 +276,13 @@
       p.mTeeth.setAttribute("d", o > 0.25 ? `M ${cx - w / 2 + 6} ${yc + 1} C ${cx - w / 4} ${top + 3} ${cx + w / 4} ${top + 3} ${cx + w / 2 - 6} ${yc + 1} L ${cx + w / 2 - 8} ${tb} L ${cx - w / 2 + 8} ${tb} Z` : "");
       p.mTongue.setAttribute("d", o > 0.4 ? `M ${cx - w / 4} ${bot - 4} Q ${cx} ${bot - 14 * o} ${cx + w / 4} ${bot - 4} Z` : "");
     }
-    if (p === BRAUN) {
-      // a short beard along the jaw and round the chin, below the mouth
-      beard.setAttribute("d", `M ${-55 + fx * 0.2} -88 C ${-56 + fx * 0.2} -54 ${-36 + fx * 0.4} -16 ${fx * 0.6} -12 C ${36 + fx * 0.4} -16 ${56 + fx * 0.2} -54 ${55 + fx * 0.2} -88 C ${47 + fx * 0.6} -66 ${34 + fx} ${-36 + o * 16} ${fx} ${-32 + o * 20} C ${-34 + fx} ${-36 + o * 16} ${-47 + fx * 0.6} -66 ${-55 + fx * 0.2} -88 Z`);
-      stache.setAttribute("d", `M ${cx - 24} ${yc - 4} C ${cx - 14} ${-70} ${cx + 14} ${-70} ${cx + 24} ${yc - 4} C ${cx + 12} ${yc - 10} ${cx - 12} ${yc - 10} ${cx - 24} ${yc - 4} Z`);
-      glasses.innerHTML = "";
-      for (const side of [-1, 1]) el("rect", { x: fx + side * 24 - 19, y: -126, width: 38, height: 28, rx: 9, fill: "rgba(255,255,255,.12)", ...stroke(4, "#2a2220") }, glasses);
-      el("path", { d: `M ${fx - 5} -114 Q ${fx} -118 ${fx + 5} -114`, fill: "none", ...stroke(4, "#2a2220") }, glasses);
-    } else {
-      earrings[0].setAttribute("cx", -f * 56); earrings[0].setAttribute("cy", -70);
+    if (p.chin) {
+      // a small beard under the lower lip, and a light shadow of stubble on the jaw
+      const y0 = (o < 0.06 ? cy + 7 : bot + 3) - sm * 2;
+      p.chin.setAttribute("d", `M ${cx - 6} ${y0} C ${cx - 4} ${y0 + 14} ${cx + 4} ${y0 + 14} ${cx + 6} ${y0} C ${cx + 2} ${y0 + 2} ${cx - 2} ${y0 + 2} ${cx - 6} ${y0} Z`);
     }
+    if (p.stubble) p.stubble.setAttribute("d", `M ${-60 + fx * 0.2} -84 C ${-58 + fx * 0.2} -50 ${-40 + fx * 0.4} -24 ${fx * 0.6} -17 C ${40 + fx * 0.4} -24 ${58 + fx * 0.2} -50 ${60 + fx * 0.2} -84 C ${46 + fx * 0.5} -60 ${30 + fx} -64 ${fx} -64 C ${-30 + fx} -64 ${-46 + fx * 0.5} -60 ${-60 + fx * 0.2} -84 Z`);
+    for (const h of p.hoops) { h.setAttribute("cx", -f * 58); h.setAttribute("cy", -62); }
   }
 
   // ------------------------------------------------------------------ acting
@@ -348,9 +339,9 @@
     const blink = blinkAt(t, who === "lena" ? 0.4 : 1.7);
     const happy = laugh * 0.95;
     drawFace(p, who, t, {
-      facing, blink, lid: 0.12 + 0.25 * smirk * 0 + 0.1 * listening, wide: q * 0.6 + bang * 0.4, look: s * 0.6 * listening + s * 0.3 * speaking, lookY: 0,
+      facing, blink, lid: (p.o.lidBase ?? 0.12) + 0.1 * listening, wide: q * 0.6 + bang * 0.4, look: s * 0.6 * listening + s * 0.3 * speaking, lookY: 0,
       raise: q + bang * 0.6 + laugh * 0.3, angry: 0, worry: neg * 0.9,
-      smile: Math.max(0.15, smirk * 0.8, laugh * 0.9, hello * 0.7, bye * 0.8, listening * 0.25) * (1 - neg * 0.7), frown: neg * 0.5,
+      smile: Math.max(p.o.smileBase || 0.15, smirk * 0.8, laugh * 0.9, hello * 0.7, bye * 0.8, listening * 0.25) * (1 - neg * 0.7), frown: neg * 0.5,
       happy,
       mw: lerp(lerp(36, shape[0], amt), 44, laugh), mo: Math.max(amt * shape[1] * 1.1, laugh * (0.55 + 0.25 * Math.abs(Math.sin(t * 19)))), round: shape[2],
     });
