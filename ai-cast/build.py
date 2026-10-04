@@ -15,11 +15,11 @@ from gradio_client import Client, handle_file
 OUT = Path("public/ai-cast")
 OUT.mkdir(parents=True, exist_ok=True)
 TOKEN = os.environ.get("HF_TOKEN") or None
-MAX_STEPS = int(os.environ.get("AI_CAST_MAX", "6"))
+MAX_STEPS = int(os.environ.get("AI_CAST_MAX", "10"))
 
 STYLE = ("high-end 3D animated feature film still in the style of a modern Pixar or Disney movie, "
          "soft global illumination, warm cinematic lighting, shallow depth of field, rich detailed textures, "
-         "expressive appealing faces with natural skin-tone noses, cozy German cafe interior with a window and a chalkboard in the blurred background")
+         "expressive appealing faces; each nose is small and exactly the same pale skin colour as the cheeks, cozy German cafe interior with a window and a chalkboard in the blurred background")
 LENA = ("a young woman in her twenties with long wavy dark-brown hair parted in the middle, big warm brown eyes "
         "with long lashes, small silver hoop earrings, a soft pink hoodie with white drawstrings, gentle friendly smile")
 BRAUN = ("a man in his thirties with short dark-brown hair, a broad friendly face, light stubble and a small beard tuft "
@@ -43,7 +43,7 @@ PLAN = [
 ]
 
 
-IMAGE_SPACES = ["mrfakename/Z-Image-Turbo", "black-forest-labs/FLUX.1-schnell", "mcp-tools/Qwen-Image"]
+IMAGE_SPACES = ["mcp-tools/Qwen-Image", "mrfakename/Z-Image-Turbo", "black-forest-labs/FLUX.1-schnell"]
 VIDEO_SPACES = ["zerogpu-aoti/wan2-2-fp8da-aoti-faster"]
 
 
