@@ -17,9 +17,10 @@ OUT.mkdir(parents=True, exist_ok=True)
 TOKEN = os.environ.get("HF_TOKEN") or None
 MAX_STEPS = int(os.environ.get("AI_CAST_MAX", "10"))
 
-STYLE = ("high-end 3D animated feature film still, stylised but natural human proportions, "
-         "soft global illumination, warm cinematic lighting, shallow depth of field, rich detailed textures, "
-         "expressive appealing faces with even, natural skin tone on the nose, cheeks and forehead, no makeup, no blush, "
+# chosen by a four-way style probe (2026-10-04): FLUX.1-schnell with this wording gives
+# natural noses and skin; Z-Image-Turbo gave every face a red, clown-like nose
+STYLE = ("High-end 3D animated feature film still, stylised human, natural daylight, shallow depth of field, "
+         "rich detailed textures, expressive appealing faces, "
          "cozy German cafe interior with a window and a chalkboard in the blurred background")
 LENA = ("a young woman in her twenties with long wavy dark-brown hair parted in the middle, big warm brown eyes "
         "with long lashes, small silver hoop earrings, a soft pink hoodie with white drawstrings, gentle friendly smile")
@@ -44,7 +45,7 @@ PLAN = [
 ]
 
 
-IMAGE_SPACES = ["mcp-tools/Qwen-Image", "mrfakename/Z-Image-Turbo", "black-forest-labs/FLUX.1-schnell"]
+IMAGE_SPACES = ["black-forest-labs/FLUX.1-schnell", "mcp-tools/Qwen-Image"]
 VIDEO_SPACES = ["zerogpu-aoti/wan2-2-fp8da-aoti-faster"]
 
 
