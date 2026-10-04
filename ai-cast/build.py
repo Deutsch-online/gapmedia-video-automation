@@ -7,7 +7,7 @@ Both run on free Hugging Face ZeroGPU Spaces. The free daily GPU quota is small,
 job makes what fits, keeps every finished file in public/ai-cast/, and continues the
 next day. A quota refusal is the normal end of a day's run, not a failure.
 """
-import json, os, shutil, sys, time
+import json, os, shutil, sys, time, traceback
 from pathlib import Path
 
 from gradio_client import Client, handle_file
@@ -43,6 +43,10 @@ PLAN = [
 ]
 
 
+IMAGE_SPACES = ["mrfakename/Z-Image-Turbo", "black-forest-labs/FLUX.1-schnell", "mcp-tools/Qwen-Image"]
+VIDEO_SPACES = ["zerogpu-aoti/wan2-2-fp8da-aoti-faster"]
+
+
 def client(space):
     try:
         return Client(space, token=TOKEN, verbose=False)
@@ -54,24 +58,46 @@ def path_of(result):
     if isinstance(result, (list, tuple)):
         result = result[0]
     if isinstance(result, dict):
-        result = result.get("video") or result.get("path") or result.get("value")
+        result = result.get("video") or result.get("path") or result.get("value") or result.get("url")
     return result
+
+
+def call(space, values, prefer=("generate", "infer", "predict", "run")):
+    """Calls a Space's main endpoint with named values; only parameters it has are sent."""
+    c = client(space)
+    eps = c.view_api(return_format="dict", print_info=False)["named_endpoints"]
+    name = next((n for n in eps if any(k in n for k in prefer)), next(iter(eps)))
+    have = {p["parameter_name"]: p for p in eps[name]["parameters"]}
+    kw = {k: v for k, v in values.items() if k in have}
+    print(f"  {space}{name} with {sorted(kw)} (has {sorted(have)})")
+    return c.predict(api_name=name, **kw)
+
+
+def first_working(spaces, values, label):
+    errors = []
+    for sp in spaces:
+        try:
+            return path_of(call(sp, values))
+        except Exception as e:
+            msg = f"{sp}: {type(e).__name__}: {str(e)[:400]}"
+            print("  ", msg); traceback.print_exc(limit=2); errors.append(msg)
+    raise RuntimeError(f"{label} failed on every Space — " + " | ".join(errors))
 
 
 def make_still(job):
     from PIL import Image
-    res = client("mcp-tools/Qwen-Image").predict(
-        job["prompt"], job["seed"], False, "1:1", NEG, 4.0, 20, api_name="/generate_image")
-    Image.open(path_of(res)).convert("RGB").save(OUT / f"{job['id']}.png")
+    v = {"prompt": job["prompt"], "seed": job["seed"], "randomize_seed": False, "aspect_ratio": "1:1",
+         "width": 1024, "height": 1024, "negative_prompt": NEG}
+    Image.open(first_working(IMAGE_SPACES, v, "still")).convert("RGB").save(OUT / f"{job['id']}.png")
 
 
 def make_clip(job):
     src = OUT / f"{job['from']}.png"
     if not src.exists():
         raise RuntimeError(f"still {src} is not built yet")
-    res = client("zerogpu-aoti/wan2-2-fp8da-aoti-faster").predict(
-        handle_file(str(src)), job["prompt"], 6, MOTION_NEG, 3.5, 1, 1, 42, False, api_name="/generate_video")
-    shutil.copy(path_of(res), OUT / f"{job['id']}.mp4")
+    v = {"input_image": handle_file(str(src)), "prompt": job["prompt"], "steps": 6, "negative_prompt": MOTION_NEG,
+         "duration_seconds": 3.5, "guidance_scale": 1, "guidance_scale_2": 1, "seed": 42, "randomize_seed": False}
+    shutil.copy(first_working(VIDEO_SPACES, v, "clip"), OUT / f"{job['id']}.mp4")
 
 
 def main():
@@ -86,7 +112,7 @@ def main():
             (make_still if job["kind"] == "still" else make_clip)(job)
             made.append(job["id"]); log.append(f"{job['id']}: built in {time.time() - t0:.0f}s")
         except Exception as e:  # quota or Space errors end the day's run
-            msg = str(e).splitlines()[0][:300]
+            msg = str(e)[:700]
             log.append(f"{job['id']}: stopped — {msg}")
             print(log[-1])
             if "quota" in msg.lower() or "exceeded" in msg.lower():
