@@ -1,0 +1,54 @@
+name: EasyDeutsch AI cast
+
+# Builds a library of real animated clips of Lena and Herr Braun (owner, 2026-10-04:
+# "I want a real animation"). Free Hugging Face ZeroGPU Spaces: Qwen-Image for the
+# character stills, Wan 2.2 I2V for 3.5-second motion clips. The free GPU quota is a few
+# minutes a day, so each run builds what fits, commits it to public/ai-cast/, sends it to
+# the owner's bot chat. It runs only when the owner triggers it; nothing is scheduled.
+# Isolated from production: own concurrency group, renders no lesson, touches no ledger.
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".trigger-ai-cast"
+  workflow_dispatch:
+
+concurrency:
+  group: ai-cast
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  cast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: pip install --quiet gradio_client pillow
+      - name: Build what today's free GPU quota allows
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python ai-cast/build.py
+      - name: Send today's clips to the bot chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node ai-cast/send.mjs
+      - name: Keep the library
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/ai-cast ai-cast/last-run.json
+          git diff --staged --quiet || git commit -m "ai-cast: add today's animated clips"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
