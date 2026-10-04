@@ -142,7 +142,7 @@ assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en
 console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
-assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "tada"]);
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "tada"]);
 assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
@@ -183,42 +183,46 @@ assert.match(enq, /<div class="ten">Stay for the quiz at the end!<\/div><div cla
 assert.match(enq, /<div class="en2">See you tomorrow – bye!<\/div>/);
 const { DIALOGUES: DD } = await import("./lib/easy-dialogues.mjs");
 for (const [uid, d] of Object.entries(DD)) { assert.ok(d.topicEn, `${uid} has an English topic`); for (const sc of d.scenes) assert.ok(sc.gloss, `${uid}: ${sc.say} has an English gloss`); }
-// the series (owner, 2026-10-04, after four reference shorts): a drama-comedy that continues,
-// German on the picture, Persian only as a small subtitle, no English
+// the comedy series (owner, 2026-10-04, after four reference shorts): not a lesson; a funny
+// everyday story that continues; German on the picture, Persian only as a small subtitle, no English
 const { EPISODES, SERIES } = await import("./lib/easy-series.mjs");
 const { buildEasyReelHTML, lineHTML } = await import("./lib/easy-reel.mjs");
-const { A1_UNITS } = await import("./lib/german-a1.mjs").then((m) => ({ A1_UNITS: Object.values(m).find((v) => Array.isArray(v) && v[0]?.items) }));
 const nz = (x) => String(x).toLowerCase().replace(/[^a-zäöüß ]/g, "").trim();
 for (const [uid, ep] of Object.entries(EPISODES)) {
-  const u = A1_UNITS.find((x) => x.id === uid); assert.ok(u, `${uid} is a curriculum unit`);
   assert.ok(ep.shots.length >= 12 && ep.shots.length <= 20, `${uid}: a story of 12–20 shots`);
-  assert.ok(ep.shots.some((x) => x.finale) && ep.shots.some((x) => !x.finale), `${uid}: a story and a cliffhanger after the recap`);
   assert.ok(new Set(ep.shots.map((x) => x.loc)).size >= 4, `${uid}: the scene changes`);
-  assert.ok(ep.shots.some((x) => x.joke), `${uid}: it has jokes`); assert.ok(ep.next.de && ep.next.fa, `${uid}: it points to the next episode`);
+  assert.ok(ep.shots.filter((x) => x.joke).length >= 2, `${uid}: it has jokes`);
+  assert.ok(ep.next.de && ep.next.fa && ep.title && ep.titleFa, `${uid}: a title and a pointer to the next episode`);
+  assert.ok(ep.shots.some((x) => x.sfx), `${uid}: everyday noises`);
+  assert.ok(ep.shots.filter((x) => x.who === "krause").length >= 3 && ep.shots.some((x) => x.who === "lena") && ep.shots.some((x) => x.who === "braun"), `${uid}: the three neighbours`);
   for (const sh of ep.shots) {
     assert.ok(SERIES.characters[sh.who] && sh.chars.every((c) => SERIES.characters[c]), `${uid}: known characters`);
     assert.ok(sh.scene && sh.motion && sh.say && sh.fa && sh.loc);
     assert.match(sh.fa, /[\u0600-\u06FF]/); assert.doesNotMatch(sh.say, /[\u0600-\u06FF]/);
     assert.ok(sh.say.split(/\s+/).length <= 9, `${uid}: a line is short enough for one shot: ${sh.say}`);
-    if (sh.hl) assert.ok(nz(sh.say).includes(nz(sh.hl)), `${uid}: the lit-up phrase is in its line`);
+    if (sh.hl) assert.ok(nz(sh.say).includes(nz(sh.hl)), `${uid}: the red word is in its line: ${sh.say}`);
+    if (sh.sfx) assert.ok(SFX_KINDS.includes(sh.sfx));
   }
-  for (const it of u.items) assert.ok(ep.shots.some((x) => !x.finale && nz(x.say).includes(nz(it.de))), `${uid}: the story says "${it.de}"`);
 }
-const ser = buildEasyReelHTML({ episodeNo: 54, seriesTitle: "Die Nachbarn", title: "x", total: 20, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
-  caps: [{ t0: 0.2, t1: 3, de: "Wir machen einen Ausflug. Überraschung!", fa: "ما به گشت می‌رویم. سورپرایز!", hl: "Wir machen einen Ausflug" }],
-  recap: { t0: 5, t1: 12, title: "Heute gelernt", titleFa: "امروز یاد گرفتیم", items: [{ t0: 6, de: "Wann fahren wir los?", fa: "کی حرکت می‌کنیم؟" }] },
-  end: { t0: 16, de: "Fortsetzung folgt …", fa: "ادامه دارد …", small: "Nächste Folge: Wer ist die Frau?", smallFa: "قسمت بعد: آن خانم کیست؟" } });
+const ser = buildEasyReelHTML({ episodeNo: 54, seriesTitle: "Die Nachbarn", title: "Die Ruhezeit", total: 20, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
+  caps: [{ t0: 0.2, t1: 3, de: "Am Sonntag schweigt Deutschland.", fa: "یکشنبه‌ها آلمان ساکت می‌شود.", hl: "schweigt", who: "krause", whoName: "Frau Krause" }],
+  end: { t0: 16, de: "Fortsetzung folgt …", fa: "ادامه دارد …", small: "Nächste Folge: Wer hat den Müll falsch getrennt?", smallFa: "قسمت بعد: ..." } });
 assert.match(ser, /<video id="bg" class="clip" src="public\/ai-cast\/stage\/r\.mp4" muted playsinline data-start="0"/, "the shots fill the frame");
-assert.match(ser, /<span class="hl">Wir machen einen Ausflug<\/span>\. Überraschung!/, "the lesson phrase is lit up");
-assert.match(ser, /<div class="fa" dir="rtl">ما به گشت می‌رویم\. سورپرایز!<\/div>/, "Persian is the subtitle under the German");
-assert.match(ser, /Heute gelernt/); assert.match(ser, /Fortsetzung folgt/); assert.match(ser, /#25F4EE/);
+assert.match(ser, /<b class="who krause">Frau Krause<\/b><div class="de">Am Sonntag <span class="hl">schweigt<\/span> Deutschland\.<\/div><div class="fa" dir="rtl">یکشنبه‌ها آلمان ساکت می‌شود\.<\/div>/, "who speaks, the German with its red word, the Persian under it");
+assert.match(ser, /\.cap\{position:absolute;left:44px;right:150px;top:1220px;/, "the card sits low, clear of TikTok's buttons");
+assert.match(ser, /border-radius:38px;box-shadow:-6px 6px 0 #25F4EE, 6px 10px 0 #FE2C55/, "the card of the earlier videos, in TikTok colours");
+assert.match(buildEasyReelHTML({ episodeNo: 1, total: 5, video: "v.mp4", theme: "easy", caps: [] }), /box-shadow:0 10px 0 #FFCE00/, "Instagram keeps the yellow-shadow card");
+assert.match(ser, /Fortsetzung folgt/);
+assert.doesNotMatch(ser, /Heute gelernt|recap/, "no \"what you learned\" card");
 assert.doesNotMatch(ser.replace(/<script>[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, ""), /\b(the|and|you|quiz|today|how)\b/i, "no English on the film");
 assert.equal(lineHTML("Wann fahren wir los?", "wann fahren wir los?"), '<span class="hl">Wann fahren wir los</span>?', "the match ignores case and final punctuation");
-assert.match(easy, /if \(look === "cartoon3d" && EPISODES\[unit\.id\]\)/, "a unit with a series episode is built as an episode");
+const seriesSrc2 = easy.slice(easy.indexOf("async function runSeriesLesson"), easy.indexOf("// both formats (TikTok, Instagram)"));
+assert.doesNotMatch(seriesSrc2, /Heute gelernt|recap|unit\.items|items\b/, "a series episode teaches nothing and uses no lesson items");
+assert.match(easy, /if \(look === "cartoon3d" && EPISODES\[unit\.id\]\)/, "a unit slot with a series episode is built as an episode");
 assert.match(easy, /krause: "de-DE-AmalaNeural"/, "Frau Krause has her own voice");
 assert.match(easy, /sfx\("sting"/, "the cliffhanger has its sting");
-assert.match(easy, /Heute gelernt/, "the learned-today card");
-assert.doesNotMatch(readFileSync("lib/easy-series.mjs", "utf8").replace(/\/\/.*$/gm, "").replace(/scene: "[^"]*"|motion: "[^"]*"/g, ""), /\b(Quick quiz|Learn German)\b/, "no English lesson text in the series");
+assert.match(easy, /caption: customCaption/, "the episode brings its own caption");
+assert.doesNotMatch(readFileSync("lib/easy-series.mjs", "utf8").replace(/\/\/.*$/gm, "").replace(/scene: "[^"]*"|motion: "[^"]*"/g, ""), /\b(Quick quiz|Learn German|Heute gelernt)\b/, "no lesson text in the series");
 // no photo cards (owner, 2026-10-04): the series never fetches pictures, the older lessons skip them
 const { PHOTO_CARDS } = await import("./lib/easydeutsch.mjs");
 assert.equal(PHOTO_CARDS, false, "photo cards are off");
