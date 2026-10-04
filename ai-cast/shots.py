@@ -137,13 +137,37 @@ def paid_clip(j):
     open(j["mp4"], "wb").write(data)
 
 
+LIPSYNC_SPACE = os.environ.get("LIPSYNC_SPACE", "victor/LongCat-Video-Avatar-1.5")
+
+
+def make_lipsync(j, cast):
+    """A shot whose visible character speaks: LongCat-Video-Avatar makes a video of that still saying exactly the
+    audio of the shot (owner, 2026-10-04: the lips did not match the voice). 480p, about 5 s, native speed."""
+    look = (cast.get((j.get("chars") or [""])[0]) or {}).get("look", "a person")
+    prompt = f"{look}, talking to someone off-screen, natural lip movement that matches the speech, expressive face, small head movement."
+    c = client(LIPSYNC_SPACE)
+    r = c.predict(handle_file(j["png"]), handle_file(j["audio"]), prompt, "480p", 42, "Clean speech (fast)", "DBCache faster", api_name="/generate")
+    r = r[0] if isinstance(r, (list, tuple)) else r
+    r = (r.get("video") or r.get("path")) if isinstance(r, dict) else r
+    shutil.copy(r, j["mp4"])
+    open(j["mp4"] + ".ls", "w").write("1")
+
+
+def file_sig(path):
+    try:
+        return hashlib.sha1(open(path, "rb").read()).hexdigest()[:12]
+    except OSError:
+        return ""
+
+
 def sigs(j, style):
     """What a shot depends on. A kept picture or clip is only reused when this still matches, so a
     cache that is shared between runs never gives a changed story an old picture."""
     still = json.dumps([j["prompt"], j["chars"], j["seed"], style if len(j["chars"]) != 1 else ""], sort_keys=True)
     d = math.ceil(min(5.0, max(3.0, float(j.get("dur", 3.5)))))
     h = lambda x: hashlib.sha1(x.encode()).hexdigest()[:16]
-    return h(still), h(still + json.dumps([j["motion"], d]))
+    lip = file_sig(j["audio"]) if j.get("audio") else ""
+    return h(still), h(still + json.dumps([j["motion"], d, lip]))
 
 
 def read_sig(path):
@@ -198,6 +222,7 @@ def main(path):
                 if os.path.exists(j["mp4"]): os.remove(j["mp4"])
             if os.path.exists(j["mp4"]) and read_sig(j["mp4"]) != clip_sig:
                 os.remove(j["mp4"])
+                if os.path.exists(j["mp4"] + ".ls"): os.remove(j["mp4"] + ".ls")
             if not os.path.exists(j["png"]):
                 try:
                     engine = run_free(make_still, j, shot_dir, cast, style)
@@ -207,6 +232,17 @@ def main(path):
                     print(f"  GPU quotas spent: this still uses the paid credits (about {PAID_STILL_USD:.2f} USD)", flush=True)
                     engine = paid_still(j, shot_dir, cast, style); PAID_USED += 1; PAID_SPENT += PAID_STILL_USD
                 write_sig(j["png"], still_sig)
+            if not os.path.exists(j["mp4"]) and j.get("audio") and os.environ.get("LIPSYNC", "off") == "on":
+                t1 = time.time()
+                try:
+                    run_free(make_lipsync, j, cast)
+                    write_sig(j["mp4"], clip_sig)
+                    engine += "+lipsync"
+                    print(f"  lipsync {j['id']} in {time.time() - t1:.0f}s", flush=True)
+                except Exception as e:
+                    for f in (j["mp4"], j["mp4"] + ".ls"):
+                        if os.path.exists(f): os.remove(f)
+                    print(f"  lipsync FAILED {j['id']}: {type(e).__name__}: {str(e)[:200]} -> the generic motion clip instead", flush=True)
             if not os.path.exists(j["mp4"]):
                 try:
                     run_free(make_clip, j)

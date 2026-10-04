@@ -1,0 +1,52 @@
+name: Comedy music beds
+
+# Makes the comedy music beds with ACE-Step on a free Hugging Face ZeroGPU Space (owner, 2026-10-04:
+# "the music has nothing to do with comedy"), commits them to public/music/ and sends them to the bot
+# chat to listen to. Runs only on request (.trigger-ai-music or manually); a bed that exists is kept.
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".trigger-ai-music"
+  workflow_dispatch:
+
+concurrency:
+  group: ai-music
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  music:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pip install --quiet gradio_client pillow
+      - name: Make the beds
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python ai-cast/music.py
+      - name: Send them to the bot chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node ai-cast/send-music.mjs
+      - name: Keep the beds
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/music
+          git diff --staged --quiet || git commit -m "music: comedy beds"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

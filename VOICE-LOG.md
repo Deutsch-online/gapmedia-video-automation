@@ -1233,3 +1233,25 @@ Pfeiffer: pitch +8Hz, speed 1.04 (brisk, clipped).
 variants for TikTok, Instagram and YouTube; 120 bpm). **Sounds.** A punchline without a sound of its
 own gets a cartoon sound by its feeling (slide whistle, trombone "womp", boing, bonk), at most four
 an episode. **Status: awaiting the owner's ear.** None of this could be heard in the session container.
+
+### 2026-10-04 — One voice per character for the whole episode (owner: the boy and the man change; the girl is awful)
+
+**Finding.** The CI log of the last family build shows every line of a character used the same
+MiniMax voice id. What changed from line to line was my own doing: the emotion moved the pitch by up to
+±3 semitones, the characters carried a `voice_modify` (Mina +40, Sami +75), and the German Edge lines
+moved pitch with punctuation. Those made one voice sound like several, and the strong pitch change
+made the children's voices bad.
+
+**Changes (to keep a voice steady).**
+- No pitch change per emotion (MiniMax and Edge): an emotion now changes speed and volume only, and the
+  `emotion` parameter itself (MiniMax).
+- No `voice_modify` for any character.
+- The first line of a character fixes its model and voice for the whole episode (a cache file per
+  character); a failed line is tried again with the same settings; if MiniMax still fails for a
+  character that it has already read, the build fails instead of giving that character a second voice.
+- New voices, chosen from the list the account actually offers (it is in the build log): Baba
+  `English_Jovialman`, Mama `English_Upbeat_Woman`, Mina `English_radiant_girl`, Sami
+  `English_AnimeCharacter` (spare voices behind each).
+
+**Status: awaiting the owner's ear.** I cannot hear these voices; the children's voices are the
+hardest case (no toddler voice exists in the list).

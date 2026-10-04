@@ -30,10 +30,17 @@ try {
     voice = hit;
   }
 } catch { /* the list is only a check: the first candidate is tried */ }
+import { readFileSync, existsSync } from "node:fs";
+// the first line of a character decides model and voice; every later line of that character uses the same
+// (a voice must stay the same voice through the episode: owner, 2026-10-04, "the man's voice changes")
+const cachePath = process.env.MM_CACHE || "";
+let pinned = null;
+try { if (cachePath && existsSync(cachePath)) pinned = JSON.parse(readFileSync(cachePath, "utf8")); } catch { /* none */ }
+if (pinned?.voice) voice = pinned.voice;
 const emo = process.env.MM_EMO || "neutral";
 // speech-2.8 chooses the feeling from the text and does not take `emotion`: models that take it come first
 // (owner, 2026-10-04: every line of a character sounded the same). If one fails the next is tried.
-const models = String(process.env.MM_MODELS || "speech-2.6-hd,speech-02-hd,speech-2.8-hd").split(",").map((x) => x.trim()).filter(Boolean);
+const models = pinned?.model ? [pinned.model] : String(process.env.MM_MODELS || "speech-2.6-hd,speech-02-hd,speech-2.8-hd").split(",").map((x) => x.trim()).filter(Boolean);
 let mod = {}; try { mod = JSON.parse(process.env.MM_MOD || "{}"); } catch { /* none */ }
 const make = (model, withMod) => ({
   model, text, stream: false, language_boost: process.env.MM_LANG || "English", output_format: "hex",
@@ -53,6 +60,7 @@ for (const model of models) {
   if (used) break;
 }
 if (!used) { console.error("MiniMax line failed on every model"); process.exit(1); }
+if (cachePath && !pinned) { try { writeFileSync(cachePath, JSON.stringify({ voice, model: used.replace("+modify", "") })); } catch { /* the cache only keeps the voice steady */ } }
 mkdirSync(dirname(output), { recursive: true });
 writeFileSync(output, Buffer.from(data.data.audio, "hex"));
 trimDeadAir(output);
