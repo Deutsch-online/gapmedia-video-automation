@@ -1,11 +1,5 @@
 {
-  "made": [
-    "two-shot",
-    "two-talk"
-  ],
-  "log": [
-    "two-shot: built in 5s",
-    "two-talk: built in 36s"
-  ],
+  "made": [],
+  "log": [],
   "left": []
 }
