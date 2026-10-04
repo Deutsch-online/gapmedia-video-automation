@@ -24,10 +24,10 @@ assert.doesNotMatch(de, /"17:30"/, "German: one slot a day"); assert.match(de, /
 console.log("family: ok");
 // owner, 2026-10-04: one minute, at most 65 s (estimate from the line length; the build also checks the real timing)
 const easy = readFileSync("lib/easydeutsch.mjs", "utf8");
-assert.match(easy, /SERIES_TARGET = 60, SERIES_MAX = 65/); assert.match(easy, /duration > SERIES_MAX\) throw/);
+assert.match(easy, /SERIES_TARGET = 61\.5, SERIES_MIN = 60, SERIES_MAX = 65/); assert.match(easy, /duration > SERIES_MAX\) throw/);
 for (const E of [...Object.values(EPISODES), ...Object.values(FAMILY_EPISODES)]) {
-  const floor = Math.min(5, Math.max(3, (60 - 3.7) / E.shots.length)); let t = 0.3;
+  const floor = Math.min(6.5, Math.max(3, (61.5 - 3.7) / E.shots.length)); let t = 0.3;
   for (const s of E.shots) t += Math.max(floor, s.say.length * 0.075 + 0.57 + (s.joke ? 0.5 : 0));
-  assert.ok(t + 3.4 <= 65, `${E.title}: about ${(t + 3.4).toFixed(0)} s`);
+  assert.ok(Math.max(t + 3.4, 60) >= 60 && t + 3.4 <= 65 && t + 3.4 >= 59.5, `${E.title}: about ${(t + 3.4).toFixed(0)} s`);
 }
 console.log("family durations: ok");
