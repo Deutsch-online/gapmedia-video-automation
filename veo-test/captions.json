@@ -1,0 +1,219 @@
+{
+ "title": "Die Nachbarn · Der Termin",
+ "challenge": "Anmeldung beim Bürgeramt",
+ "episodeNo": 55,
+ "caps": [
+  {
+   "t0": 0.0,
+   "t1": 2.3,
+   "de": "Ich muss mich anmelden. In 14 Tagen!",
+   "fa": "باید اقامتم را ثبت کنم. ظرف ۱۴ روز!",
+   "hl": "14 Tagen",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 2.4,
+   "t1": 4.5,
+   "de": "Sechs Wochen?! Das Gesetz sagt 14 Tage!",
+   "fa": "شش هفته؟! قانون می‌گوید ۱۴ روز!",
+   "hl": "Gesetz",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 4.6,
+   "t1": 6.3,
+   "de": "Das ist die Frist. Früher gibt's keinen Termin.",
+   "fa": "این مهلت است. زودتر وقتی نیست.",
+   "hl": "Termin",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 6.3,
+   "t1": 7.6,
+   "de": "Reg dich nicht auf, Kind.",
+   "fa": "عصبانی نشو، دخترم.",
+   "hl": "Kind",
+   "who": "krause",
+   "whoName": "Frau Krause"
+  },
+  {
+   "t0": 7.7,
+   "t1": 9.4,
+   "de": "Willkommen in Berlin. Hier dauert alles ewig.",
+   "fa": "به برلین خوش آمدی. اینجا همه‌چیز طول می‌کشد.",
+   "hl": "ewig",
+   "who": "krause",
+   "whoName": "Frau Krause"
+  },
+  {
+   "t0": 10.1,
+   "t1": 12.6,
+   "de": "Dann stehst du um fünf Uhr morgens an.",
+   "fa": "پس ساعت پنج صبح باید توی صف بایستی.",
+   "hl": "fünf Uhr",
+   "who": "krause",
+   "whoName": "Frau Krause"
+  },
+  {
+   "t0": 12.7,
+   "t1": 13.8,
+   "de": "Um fünf Uhr?",
+   "fa": "ساعت پنج؟",
+   "hl": "fünf",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 13.9,
+   "t1": 17.0,
+   "de": "Bring einen Stuhl mit. Und Brötchen.",
+   "fa": "یک صندلی بیاور. و نان.",
+   "hl": "Stuhl",
+   "who": "krause",
+   "whoName": "Frau Krause"
+  },
+  {
+   "t0": 17.3,
+   "t1": 18.3,
+   "de": "Immer dasselbe hier.",
+   "fa": "اینجا همیشه همین است.",
+   "hl": "dasselbe",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 18.3,
+   "t1": 19.6,
+   "de": "Meine Nummer ist 347.",
+   "fa": "شمارهٔ من ۳۴۷ است.",
+   "hl": "347",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 19.7,
+   "t1": 21.0,
+   "de": "Wir sind bei Nummer 12.",
+   "fa": "ما روی شمارهٔ ۱۲ هستیم.",
+   "hl": "12",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 21.4,
+   "t1": 24.0,
+   "de": "Haben Sie die Wohnungsgeberbestätigung?",
+   "fa": "تأییدیهٔ موجر را دارید؟",
+   "hl": "Wohnungsgeberbestätigung",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 24.8,
+   "t1": 27.0,
+   "de": "Ohne die kann ich gar nichts für Sie tun.",
+   "fa": "بدون آن کاری از دست من برنمی‌آید.",
+   "hl": "gar nichts",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 28.1,
+   "t1": 30.7,
+   "de": "Unterschrift? Heute nicht. Ich bin im Urlaub.",
+   "fa": "امضا؟ امروز نه. من مرخصی‌ام.",
+   "hl": "Urlaub",
+   "who": "braun",
+   "whoName": "Herr Braun"
+  },
+  {
+   "t0": 30.9,
+   "t1": 34.0,
+   "de": "Sie stehen direkt vor mir.",
+   "fa": "شما درست جلوی من ایستاده‌اید.",
+   "hl": "direkt",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 34.3,
+   "t1": 35.7,
+   "de": "Das ist mein Zwillingsbruder.",
+   "fa": "این برادر دوقلوی من است.",
+   "hl": "Zwillingsbruder",
+   "who": "braun",
+   "whoName": "Herr Braun"
+  },
+  {
+   "t0": 36.4,
+   "t1": 39.7,
+   "de": "Pass, Unterschrift und Stempel.",
+   "fa": "گذرنامه، امضا و مهر.",
+   "hl": "Stempel",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 40.0,
+   "t1": 41.0,
+   "de": "Hm, dauert das wieder.",
+   "fa": "هوم، باز هم طول می‌کشد.",
+   "hl": "wieder",
+   "who": "braun",
+   "whoName": "Herr Braun"
+  },
+  {
+   "t0": 41.0,
+   "t1": 42.4,
+   "de": "Was ist denn da los?",
+   "fa": "آنجا چه خبر است؟",
+   "hl": "los",
+   "who": "braun",
+   "whoName": "Herr Braun"
+  },
+  {
+   "t0": 43.1,
+   "t1": 45.7,
+   "de": "Endlich! Ich existiere offiziell!",
+   "fa": "بالاخره! رسماً وجود دارم!",
+   "hl": "existiere",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 46.4,
+   "t1": 49.0,
+   "de": "Noch etwas: der Rundfunkbeitrag.",
+   "fa": "یک چیز دیگر: عوارض رادیو و تلویزیون.",
+   "hl": "Rundfunkbeitrag",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  },
+  {
+   "t0": 49.8,
+   "t1": 52.2,
+   "de": "Ich habe weder Radio noch Fernseher!",
+   "fa": "من نه رادیو دارم نه تلویزیون!",
+   "hl": "weder",
+   "who": "lena",
+   "whoName": "Lena"
+  },
+  {
+   "t0": 52.3,
+   "t1": 54.3,
+   "de": "Das ist egal.",
+   "fa": "مهم نیست.",
+   "hl": "egal",
+   "who": "pfeiffer",
+   "whoName": "Herr Pfeiffer"
+  }
+ ],
+ "end": {
+  "t0": 54.4,
+  "de": "Fortsetzung folgt …",
+  "fa": "ادامه دارد …"
+ }
+}
