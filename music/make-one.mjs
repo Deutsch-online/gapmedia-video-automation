@@ -19,7 +19,7 @@ if (!dur || !outM4a) {
 mkdirSync("music/auto", { recursive: true });
 const wav = outM4a.replace(/\.m4a$/, ".wav");
 
-execFileSync("node", ["music/synth.mjs", String(dur), String(variant), wav], {
+execFileSync("node", [process.env.MUSIC_STYLE === "comedy" ? "music/synth-comedy.mjs" : "music/synth.mjs", String(dur), String(variant), wav], {
   stdio: "inherit",
   env: { ...process.env, MUSIC_OUTRO_BARS: String(outroBars) },  // MUSIC_MOOD/BPM/ACCENTS pass through
 });

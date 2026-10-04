@@ -1215,3 +1215,21 @@ watching: the CI renders cannot be seen from the session. **Status: awaiting the
   from the real list.
 
 **Status: awaiting the owner's ear.**
+
+### 2026-10-04 — German series: Lena and Frau Krause shared one voice; comedy music and cartoon sounds
+
+**Request (owner, 2026-10-04).** In the German series one voice is used for both women; the feelings
+and the music are still not comic.
+
+**Voices (delivery, no approved setting touched).** Frau Krause (old, nosy neighbour) now reads with
+a list of Edge voices (`de-DE-ElkeNeural`, then `de-DE-KlarissaNeural`, then `de-DE-AmalaNeural`:
+the first one the service reads) at pitch −20Hz and speed 0.94, so she is lower and slower than Lena
+(`de-DE-KatjaNeural`, speed 1.0). I do not know how Elke and Klarissa sound; the pitch and speed make
+the difference even if the voice falls back to Amala. Herr Braun: pitch −12Hz, speed 0.96. Herr
+Pfeiffer: pitch +8Hz, speed 1.04 (brisk, clipped).
+
+**Music.** The series no longer uses the EDM bed: `music/synth-comedy.mjs` writes a comedy underscore
+(pizzicato walking bass, marimba, tuba and clarinet-like lines, woodblock accents on the cuts; three
+variants for TikTok, Instagram and YouTube; 120 bpm). **Sounds.** A punchline without a sound of its
+own gets a cartoon sound by its feeling (slide whistle, trombone "womp", boing, bonk), at most four
+an episode. **Status: awaiting the owner's ear.** None of this could be heard in the session container.

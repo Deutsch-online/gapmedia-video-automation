@@ -142,7 +142,7 @@ assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en
 console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
-assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "stamp", "tada"]);
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "stamp", "womp", "slidewhistle", "boing", "bonk", "tada"]);
 assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
@@ -209,7 +209,9 @@ for (const [uid, ep] of Object.entries(EPISODES)) {
   }
 }
 // natural dialogue (owner, 2026-10-04: "not natural"): the series voices run at normal speed (-15% was the lesson-word pace)
-assert.ok(Object.values(SERIES.characters).every((c) => c.speed === 1.0), "dialogue voices at normal speed");
+assert.ok(Object.values(SERIES.characters).every((c) => c.speed >= 0.9 && c.speed <= 1.1), "dialogue voices near normal speed");
+assert.notEqual(SERIES.characters.krause.voices[0], SERIES.characters.lena.voice, "the two women do not share a voice");
+assert.ok(SERIES.characters.krause.pitch && SERIES.characters.krause.speed < 1, "Frau Krause is lower and slower than Lena");
 assert.match(easy, /const BEAT = 0\.5;/, "every cut lands on a beat (120 bpm)");
 assert.match(easy, /bpm: 120, musicVariant: 1[\s\S]*bpm: 120, musicVariant: 3[\s\S]*bpm: 120, musicVariant: 2/, "all three formats run at the same tempo");
 assert.match(easy, /const REVERB = new Set\(/, "rooms with an echo");
