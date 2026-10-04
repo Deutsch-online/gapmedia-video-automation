@@ -1198,3 +1198,20 @@ Edge) sit at the same level. In the picture, the motion clip of a shot plays onc
 the shot (it was played forward and then backward in a loop: the mouth ran backwards), and a slow
 push-in/pull-out alternates from shot to shot (`lib/reel-stage.mjs`). Not verified by listening or
 watching: the CI renders cannot be seen from the session. **Status: awaiting the owner's eye and ear.**
+
+### 2026-10-04 — Every character read every line the same way (owner: "the voices are the same")
+
+**Changes (delivery, not new voices).**
+- MiniMax family voices: the model order is now `speech-2.6-hd`, `speech-02-hd`, `speech-2.8-hd`. My
+  reading of MiniMax's notes is that speech-2.8 picks the feeling itself and ignores `emotion`
+  (not confirmed from the account), so the 2.8 model, used before, may have read every line neutrally.
+- Each emotion also changes speed, pitch and volume (angry: faster and louder, sad: slower and
+  quieter, fearful: fast and thin, and so on; `MM_EMO` in `lib/easydeutsch.mjs`).
+- Each character has its own `voice_modify` (pitch / intensity / timbre): Baba lower, Mama warm,
+  Mina higher, Sami highest. If the account rejects it, the line is read without it.
+- The German series (Edge): a line with no emotion gets one from its punctuation (`!` happy, `?!`
+  surprised, `...` sad), as a small change of speed and pitch. A guess, not measured.
+- The log of the next build lists the English voices the account offers, so the voices can be chosen
+  from the real list.
+
+**Status: awaiting the owner's ear.**
