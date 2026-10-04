@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { FAMILY_CFG, FAMILY_EPISODES, FAMILY } from "./lib/family-series.mjs";
-import { EPISODES, SERIES } from "./lib/easy-series.mjs";
+import { EPISODES, SERIES, linesOf } from "./lib/easy-series.mjs";
 import { GERMAN_A1 } from "./lib/german-a1.mjs";
 for (const [k, e] of Object.entries(FAMILY_EPISODES)) {
   assert.ok(e.shots.length >= 10 && e.shots.length <= 12, `${k}: 10-12 shots (the GPU budget)`);
@@ -15,7 +15,7 @@ for (const [k, e] of Object.entries(FAMILY_EPISODES)) {
 }
 for (const [k, e] of Object.entries(EPISODES)) {
   assert.ok(GERMAN_A1.some((u) => u.id === k), `${k} is a curriculum unit`);
-  for (const s of e.shots) { assert.ok(SERIES.characters[s.who]); if (s.hl) assert.ok(s.say.toLowerCase().includes(s.hl.toLowerCase().replace(/[.!?]+$/, ""))); }
+  for (const s of e.shots) { assert.ok(SERIES.characters[s.who]); for (const l of linesOf(s)) { assert.ok(SERIES.characters[l.by || s.who]); if (l.hl) assert.ok(l.say.toLowerCase().includes(l.hl.toLowerCase().replace(/[.!?]+$/, ""))); } }
 }
 const wf = readFileSync(".github/workflows/family-daily.yml", "utf8");
 assert.match(wf, /group: gapmedia-lesson/); assert.match(wf, /series-shots-fa-/); assert.match(wf, /node family-build\.mjs/);
@@ -25,9 +25,11 @@ console.log("family: ok");
 // owner, 2026-10-04: one minute, at most 65 s (estimate from the line length; the build also checks the real timing)
 const easy = readFileSync("lib/easydeutsch.mjs", "utf8");
 assert.match(easy, /SERIES_TARGET = 61\.5, SERIES_MIN = 60, SERIES_MAX = 65/); assert.match(easy, /duration > SERIES_MAX\) throw/);
+const q = (x) => Math.ceil(x / 0.5 - 1e-6) * 0.5;
 for (const E of [...Object.values(EPISODES), ...Object.values(FAMILY_EPISODES)]) {
-  const floor = Math.min(6.5, Math.max(3, (61.5 - 3.7) / E.shots.length)); let t = 0.3;
-  for (const s of E.shots) t += Math.max(floor, s.say.length * 0.075 + 0.57 + (s.joke ? 0.5 : 0));
-  assert.ok(Math.max(t + 3.4, 60) >= 60 && t + 3.4 <= 65 && t + 3.4 >= 59.5, `${E.title}: about ${(t + 3.4).toFixed(0)} s`);
+  // natural pace estimate (0.055 s a character at normal speed); the build stretches a short story to 60 s
+  // and tightens a long one, and refuses one that still passes 65 s before any GPU time is spent
+  let t = 0; for (const s of E.shots) { let cur = t + 0.1; linesOf(s).forEach((l, i) => { cur += (i ? (l.joke ? 0.5 : l.cut ? -0.2 : 0.22) * 0.6 : 0) + l.say.length * 0.055; }); t += q(cur - t + 0.15); }
+  assert.ok(t + 3.5 <= 65, `${E.title}: even with tight breaths about ${(t + 3.5).toFixed(0)} s`);
 }
 console.log("family durations: ok");

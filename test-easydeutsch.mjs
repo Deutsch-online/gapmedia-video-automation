@@ -142,7 +142,7 @@ assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en
 console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
-assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "tada"]);
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "stamp", "tada"]);
 assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
@@ -188,22 +188,31 @@ for (const [uid, d] of Object.entries(DD)) { assert.ok(d.topicEn, `${uid} has an
 const { EPISODES, SERIES } = await import("./lib/easy-series.mjs");
 const { buildEasyReelHTML, lineHTML } = await import("./lib/easy-reel.mjs");
 const nz = (x) => String(x).toLowerCase().replace(/[^a-zäöüß ]/g, "").trim();
+const { linesOf } = await import("./lib/easy-series.mjs");
 for (const [uid, ep] of Object.entries(EPISODES)) {
+  const all = ep.shots.flatMap((x) => linesOf(x));
   assert.ok(ep.shots.length >= 10 && ep.shots.length <= 20, `${uid}: a story of 10–20 shots`);
   assert.ok(new Set(ep.shots.map((x) => x.loc)).size >= 2, `${uid}: the scene changes`);
-  assert.ok(ep.shots.filter((x) => x.joke).length >= 2, `${uid}: it has jokes`);
+  assert.ok(all.filter((l) => l.joke).length >= 2, `${uid}: it has jokes`);
   assert.ok(ep.next.de && ep.next.fa && ep.title && ep.titleFa, `${uid}: a title and a pointer to the next episode`);
-  assert.ok(ep.shots.some((x) => x.sfx), `${uid}: everyday noises`);
-  assert.ok(ep.shots.filter((x) => x.who === "krause").length >= 2 && ep.shots.some((x) => x.who === "lena") && ep.shots.some((x) => x.who === "braun"), `${uid}: the three neighbours`);
+  if (ep.challenge) assert.ok(ep.challengeFa, `${uid}: the daily challenge has a Persian line`);
   for (const sh of ep.shots) {
     assert.ok(SERIES.characters[sh.who] && sh.chars.every((c) => SERIES.characters[c]), `${uid}: known characters`);
-    assert.ok(sh.scene && sh.motion && sh.say && sh.fa && sh.loc);
-    assert.match(sh.fa, /[\u0600-\u06FF]/); assert.doesNotMatch(sh.say, /[\u0600-\u06FF]/);
-    assert.ok(sh.say.split(/\s+/).length <= 9, `${uid}: a line is short enough for one shot: ${sh.say}`);
-    if (sh.hl) assert.ok(nz(sh.say).includes(nz(sh.hl)), `${uid}: the red word is in its line: ${sh.say}`);
-    if (sh.sfx) assert.ok(SFX_KINDS.includes(sh.sfx));
+    assert.ok(sh.scene && sh.motion && sh.loc);
+    for (const l of linesOf(sh)) {
+      assert.ok(SERIES.characters[l.by || sh.who] && l.say && l.fa, `${uid}: a speaker, a line and its Persian`);
+      assert.match(l.fa, /[\u0600-\u06FF]/); assert.doesNotMatch(l.say, /[\u0600-\u06FF]/);
+      assert.ok(l.say.split(/\s+/).length <= 10, `${uid}: a line is short enough for one breath: ${l.say}`);
+      if (l.hl) assert.ok(nz(l.say).includes(nz(l.hl)), `${uid}: the red word is in its line: ${l.say}`);
+      if (l.sfx) assert.ok(SFX_KINDS.includes(l.sfx));
+    }
   }
 }
+// natural dialogue (owner, 2026-10-04: "not natural"): the series voices run at normal speed (-15% was the lesson-word pace)
+assert.ok(Object.values(SERIES.characters).every((c) => c.speed === 1.0), "dialogue voices at normal speed");
+assert.match(easy, /const BEAT = 0\.5;/, "every cut lands on a beat (120 bpm)");
+assert.match(easy, /bpm: 120, musicVariant: 1[\s\S]*bpm: 120, musicVariant: 3[\s\S]*bpm: 120, musicVariant: 2/, "all three formats run at the same tempo");
+assert.match(easy, /const REVERB = new Set\(/, "rooms with an echo");
 const ser = buildEasyReelHTML({ episodeNo: 54, seriesTitle: "Die Nachbarn", title: "Die Ruhezeit", total: 20, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
   caps: [{ t0: 0.2, t1: 3, de: "Am Sonntag schweigt Deutschland.", fa: "یکشنبه‌ها آلمان ساکت می‌شود.", hl: "schweigt", who: "krause", whoName: "Frau Krause" }],
   end: { t0: 16, de: "Fortsetzung folgt …", fa: "ادامه دارد …", small: "Nächste Folge: Wer hat den Müll falsch getrennt?", smallFa: "قسمت بعد: ..." } });

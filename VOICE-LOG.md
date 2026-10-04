@@ -1142,3 +1142,25 @@ the Edge catalogue. The child voices are an adult voice with a higher pitch.
 
 **Audition.** No sample could be heard in the session container. **Status: awaiting the owner's
 ear.** If a voice is wrong, change one variable and log it here.
+
+### 2026-10-04 — Series dialogue: speed −15% → normal (owner: "not natural")
+
+**Request (owner, 2026-10-04).** The German episode is "not very natural"; voices and music do not
+fit together.
+
+**Finding.** The CI log of episode 54 shows every series line was read at `rate -15%` (Edge). That
+was the pace of the lesson-word clips (`GERMAN_WORD_VOICE_SETTINGS.speed = 0.85`), which the series
+inherited by default. Dialogue between native speakers at −15% sounds dragging.
+
+**Change (one variable).** Series voices Lena, Herr Braun, Frau Krause, Herr Pfeiffer: speed
+0.85 → **1.0** (`speed` in `SERIES.characters`, `lib/easy-series.mjs`). Voice, volume (+40%) and pitch
+unchanged. The approved lesson-word settings are not touched.
+
+**Staging, not voice settings (same change set).** Lines now follow each other with a short breath,
+a longer pause before a punchline and an overlap when a line cuts in. Rooms with an echo (hallway,
+stairs, basement, hall, supermarket) get a light echo on the voices. The music runs at one tempo
+(120 bpm) so every cut is on a beat, sits lower, and steps back for a punchline.
+
+**Not verified.** No sample could be heard in the session container (the TTS host is not reachable
+from it). The speech-rate claim is the Edge `rate` semantics (relative to the voice default) and the
+CI log. **Status: awaiting the owner's ear.** If the pace is still wrong, change only the speed.
