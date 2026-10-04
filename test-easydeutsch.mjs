@@ -106,7 +106,24 @@ assert.match(dfilm, /class="cap sub en"/, "the English explanation card");
 assert.match(dfilm, /"dialogue":true/); assert.doesNotMatch(dfilm.match(/window\.__toon = (.*);/)[1], /narrator/, "the narrator is not a character on stage");
 assert.match(easy, /if \(look === "cartoon3d" && dialogueFor\(unit\.id\)\) return runDialogueLesson\(args\)/);
 assert.match(easy, /braun: "de-DE-ConradNeural", narrator: "en-US-AvaNeural"/);
-assert.match(easy, /dialogue: true, cast: "cartoon2d"/, "dialogue lessons use the flat 2D cartoon people");
+assert.match(easy, /dialogue: true, cast, stageVideo/, "dialogue lessons pick their cast");
+assert.match(easy, /let cast = "cartoon2d"/, "the flat 2D cartoon is the fallback cast");
+assert.match(easy, /if \(aiCastReady\(\)\)/, "the AI-animated cast is used when its clip library is complete");
+// the AI-cast stage: every moment of the lesson has a shot, the speaker talks on their line,
+// the listener laughs at the joke that closes a scene, nobody talks under an explanation
+const { planAIShots } = await import("./lib/ai-stage.mjs");
+const shots = planAIShots({ outroAt: 20, total: 23, lines: [
+  { who: "lena", t: 3, dur: 1.5, item: 0 }, { who: "braun", t: 5, dur: 1.5, item: 0 },
+  { who: "narrator", t: 7, dur: 4, item: 0 }, { who: "lena", t: 12, dur: 1, item: 0, key: true, pause: 2 } ] });
+assert.equal(shots[0].t0, 0); assert.equal(shots.at(-1).t1, 23);
+for (let i = 1; i < shots.length; i++) assert.ok(Math.abs(shots[i].t0 - shots[i - 1].t1) < 0.01, "no gap between shots");
+assert.ok(shots.some((s) => s.clip === "lena-talk" && s.t0 <= 3 && s.t1 >= 4.5));
+assert.ok(shots.some((s) => s.clip === "lena-laugh" && s.t0 >= 6.4 && s.t0 < 7), "Lena laughs at Braun's joke");
+assert.ok(shots.some((s) => /-listen$/.test(s.clip) && s.t0 < 10 && s.t1 > 11), "a quiet shot under the explanation");
+assert.ok(shots.every((s) => s.t1 - s.t0 >= 0.5 || s === shots.at(-1)), "no flash cuts");
+const aiv = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, cast: "aiclips", stageVideo: "public/ai-cast/stage/x.mp4", lines: [] });
+assert.match(aiv, /<video id="ai-stage" class="clip" src="public\/ai-cast\/stage\/x\.mp4" muted playsinline data-start="0"/);
+assert.doesNotMatch(aiv, /cartoon-stage\.js|three-stage|importmap/, "the AI-cast film loads no drawn stage");
 const c2d = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, cast: "cartoon2d", lines: [] });
 assert.match(c2d, /<svg id="cartoon-stage"/); assert.match(c2d, /src="public\/2d\/cartoon-stage\.js"/); assert.match(c2d, /__cartoonDraw\(tl\.time\(\)\)/);
 assert.doesNotMatch(c2d, /importmap|three-stage/, "the 2D cartoon loads no 3D code");
