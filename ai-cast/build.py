@@ -15,16 +15,16 @@ from gradio_client import Client, handle_file
 OUT = Path("public/ai-cast")
 OUT.mkdir(parents=True, exist_ok=True)
 TOKEN = os.environ.get("HF_TOKEN") or None
-MAX_STEPS = int(os.environ.get("AI_CAST_MAX", "3"))
+MAX_STEPS = int(os.environ.get("AI_CAST_MAX", "6"))
 
 STYLE = ("high-end 3D animated feature film still in the style of a modern Pixar or Disney movie, "
          "soft global illumination, warm cinematic lighting, shallow depth of field, rich detailed textures, "
-         "expressive appealing faces, cozy German cafe interior with a window and a chalkboard in the blurred background")
+         "expressive appealing faces with natural skin-tone noses, cozy German cafe interior with a window and a chalkboard in the blurred background")
 LENA = ("a young woman in her twenties with long wavy dark-brown hair parted in the middle, big warm brown eyes "
         "with long lashes, small silver hoop earrings, a soft pink hoodie with white drawstrings, gentle friendly smile")
 BRAUN = ("a man in his thirties with short dark-brown hair, a broad friendly face, light stubble and a small beard tuft "
-         "under the lower lip, dark brown eyes, a blue crew-neck sweatshirt, warm confident smile")
-NEG = "text, letters, watermark, logo, caption, blurry, low resolution, extra fingers, deformed hands, extra people"
+         "under the lower lip that is clearly visible, dark brown eyes, a blue crew-neck sweatshirt, warm confident smile")
+NEG = "red nose, clown nose, sunburn, text, letters, watermark, logo, caption, blurry, low resolution, extra fingers, deformed hands, extra people"
 MOTION_NEG = ("static, frozen, blurry details, subtitles, text, worst quality, low quality, jpeg artifacts, ugly, "
               "deformed, extra fingers, bad hands, bad face, morphing face, extra people, walking away")
 
