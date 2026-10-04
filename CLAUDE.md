@@ -238,3 +238,20 @@ Before proposing, scripting, rendering, or revising any social video, read and e
 4. Videos use `muted` with a separate `<audio>` element for the audio track
 5. Sub-compositions use `data-composition-src="compositions/file.html"` to reference other HTML files
 6. Only deterministic logic — no `Date.now()`, no `Math.random()`, no network fetches
+
+## Agent Reach and Motion Video Kit (installed 2026-10-04, owner request)
+
+Both are in `.claude/skills/` (MIT, source commit in each `SOURCE.txt`):
+
+- **`agent-reach`** (https://github.com/Panniantong/Agent-Reach): gives the agent internet reading (web pages, YouTube
+  subtitles, RSS, Exa search, GitHub). The command line is installed with `bash scripts/install-agent-reach.sh`
+  (own virtual environment `~/.agent-reach-venv`, pinned to the reviewed commit; `agent-reach doctor` lists the channels).
+  **Limits that this project adds, because `CONTENT_RULES.md` and the account-review rules come first:**
+  use only channels that need no login (web, YouTube, RSS, search, GitHub public). Never run `--system`, never run
+  `agent-reach configure …` with cookies, never read browser cookies, never log in for the owner (Twitter, Reddit,
+  Instagram, Xiaohongshu, LinkedIn). TikTok is not a channel of the tool. A result is a signal to check, not a fact:
+  keep the link and the date (the live-research rule of this file still applies). The tool never posts or comments.
+- **`business-motion-film`** (https://github.com/echris6/motion-video-kit): a review loop (the builder never grades its
+  own work), motion rules, a quality bar and measuring scripts (`scripts/frozen-time.sh`, `loudness.sh`,
+  `contact-sheet.sh`). It is written for business commercials; here use its checks and its critic prompts, not its
+  business-offer playbook. Its rules on honesty (never present AI imagery as a real customer or result) apply here too.
