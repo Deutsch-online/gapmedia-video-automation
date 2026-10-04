@@ -164,3 +164,8 @@ assert.match(easy, /makeLipsync\(\{ lines/, "lessons with the AI cast get real l
 const { planAIShots: plan2 } = await import("./lib/ai-stage.mjs");
 const ls = plan2({ outroAt: 6, total: 7, lines: [{ who: "lena", t: 1, dur: 1, item: 0, lipsync: { file: "x.mp4", off: 0.3 } }] });
 assert.deepEqual(ls.find((s) => s.src).src, { file: "x.mp4", at: 0.15 }, "the shot plays the lip-synced clip from the right moment");
+// the TikTok cut has TikTok's colours and keeps clear of the player's buttons (owner, 2026-10-04)
+const tt = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, theme: "tiktok", lines: [] });
+assert.match(tt, /#25F4EE/); assert.match(tt, /#FE2C55/); assert.match(tt, /\.cap\{left:40px;right:150px/);
+assert.doesNotMatch(buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, lines: [] }), /#25F4EE/, "Instagram keeps the EasyDeutsch look");
+assert.match(easy, /for \(const theme of \["easy", "tiktok"\]\)/); assert.match(easy, /f\.slug\.startsWith\("tiktok"\) && silentFor\.tiktok/, "the TikTok file is cut from the TikTok-coloured film");
