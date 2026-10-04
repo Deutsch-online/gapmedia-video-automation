@@ -147,3 +147,8 @@ const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroA
   teaser: "آخر ویدیو یک کوییز داری!", quiz: { t0: 9, tc: 11, ta: 14, t1: 15, ask: "به آلمانی چه می‌شود؟", fa: "به گشت می‌رویم", de: "Wir machen einen Ausflug." } });
 assert.match(fun, /id="fun1" class="haha">HA HA!/); assert.match(fun, /id="qn3" class="qn">3/); assert.match(fun, /id="qa" class="qa">Wir machen einen Ausflug\./);
 assert.match(fun, /tl\.[a-zA-Z]+\("#fun0"/, "the burst is animated on the timeline"); assert.match(fun, /scale:1\.12/, "a camera punch-in on the joke");
+// story first, then a recap (owner, 2026-10-04): no narrator between the story's scenes
+assert.match(easy, /sayExplain\(sc\.gloss \|\| sc\.en, ef\)/, "the recap uses the short English gloss when a unit has one");
+assert.ok(easy.indexOf('sfx("rimshot"') < easy.indexOf("sayExplain(sc.gloss"), "the story plays before the recap");
+for (const d of Object.values(DIALOGUES)) for (const sc of d.scenes) if (sc.gloss) { assert.doesNotMatch(sc.gloss, /[؀-ۿ"]/); assert.ok(sc.gloss.split(/\s+/).length <= 8, "a gloss is short"); }
+assert.ok(DIALOGUES["a1-54-day-trip"].scenes.every((sc) => sc.gloss), "unit 54 has the new recap glosses");
