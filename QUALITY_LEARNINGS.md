@@ -52,3 +52,23 @@
 اگر یکی از این بخش‌ها ناقص باشد، ویدیو ارسال نمی‌شود. گزارش باید دقیقاً بگوید
 کدام اسلاید، کدام مدرک یا کدام خط نریشن رد شده است؛ هیچ‌وقت با تغییر رنگ، آیکن
 اضافی یا موسیقی بلند، نقص پنهان نمی‌شود.
+
+## 2026-10-04 — The owner's two reference shorts (measured, not guessed)
+
+The owner sent two German TikTok comedy shorts in the same 3D animated style (an office scene and a
+living-room scene, 65-68 s). What they show, measured with ffmpeg:
+
+- **No music bed at all.** In every pause the level is −47 to −91 dB; there is no underscore, no
+  whoosh and no sting. The funny comes from the acting and the pace.
+- **Dense dialogue.** A pause of 0.25 s or more only every 2-5 s. Integrated loudness −20 to −26 LUFS.
+- **Two editing styles.** The office scene cuts about every 1.2 s (close-ups of faces, reaction
+  shots); the living-room scene holds 3-7 s takes with continuous acting.
+- **Captions.** One keyword at a time, large, neon-glowing, at chest height, a different colour per word.
+- The voices, lips and feelings are one performance: that is how a video model with native audio
+  (such as Veo 3.x) works. A separate TTS voice on a silent clip cannot reach it.
+- The owner's Gemini key lists Veo 3.1 (full, fast, lite) but the one test (2026-10-03) answered
+  429 RESOURCE_EXHAUSTED: Veo needs billing on that key.
+
+What was changed in the pipeline: the series (`cfg.natural`) now has no music bed, no whoosh, no
+cartoon sounds and no sting; only the sounds of the story stay. Not changed (needs the owner's
+decision): the caption look, the cut rate (more shots = more GPU), Veo.
