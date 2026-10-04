@@ -1,14 +1,15 @@
 {
-  "made": [],
-  "log": [
-    "lena-cu: stopped \u2014 RuntimeError",
-    "braun-cu: stopped \u2014 RuntimeError",
-    "lena-talk: waits for lena-cu"
-  ],
-  "left": [
+  "made": [
     "lena-cu",
     "braun-cu",
-    "lena-talk",
+    "lena-talk"
+  ],
+  "log": [
+    "lena-cu: built in 8s",
+    "braun-cu: built in 8s",
+    "lena-talk: built in 38s"
+  ],
+  "left": [
     "braun-talk",
     "two-shot",
     "two-talk",
