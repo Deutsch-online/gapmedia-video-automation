@@ -219,3 +219,9 @@ assert.match(easy, /krause: "de-DE-AmalaNeural"/, "Frau Krause has her own voice
 assert.match(easy, /sfx\("sting"/, "the cliffhanger has its sting");
 assert.match(easy, /Heute gelernt/, "the learned-today card");
 assert.doesNotMatch(readFileSync("lib/easy-series.mjs", "utf8").replace(/\/\/.*$/gm, "").replace(/scene: "[^"]*"|motion: "[^"]*"/g, ""), /\b(Quick quiz|Learn German)\b/, "no English lesson text in the series");
+// no photo cards (owner, 2026-10-04): the series never fetches pictures, the older lessons skip them
+const { PHOTO_CARDS } = await import("./lib/easydeutsch.mjs");
+assert.equal(PHOTO_CARDS, false, "photo cards are off");
+assert.match(easy, /if \(!PHOTO_CARDS \|\| !it\.img\) return null;/);
+const seriesSrc = easy.slice(easy.indexOf("async function runSeriesLesson"), easy.indexOf("// both formats (TikTok, Instagram)"));
+assert.doesNotMatch(seriesSrc, /itemPicture|findLessonImage|pics\b/, "a series episode fetches no pictures");
