@@ -229,3 +229,15 @@ assert.equal(PHOTO_CARDS, false, "photo cards are off");
 assert.match(easy, /if \(!PHOTO_CARDS \|\| !it\.img\) return null;/);
 const seriesSrc = easy.slice(easy.indexOf("async function runSeriesLesson"), easy.indexOf("// both formats (TikTok, Instagram)"));
 assert.doesNotMatch(seriesSrc, /itemPicture|findLessonImage|pics\b/, "a series episode fetches no pictures");
+// a YouTube Shorts version (owner, 2026-10-04): the same film in YouTube's white and red, and the AI shots are kept between CI runs
+const yt = buildEasyReelHTML({ episodeNo: 54, title: "x", total: 6, video: "v.mp4", theme: "youtube", caps: [{ t0: 0.2, t1: 3, de: "Das ist ... Kultur!", fa: "این ... فرهنگ است!", hl: "Kultur", who: "krause", whoName: "Frau Krause" }] });
+assert.match(yt, /box-shadow:0 10px 0 #FF0000/, "the YouTube card has the red shadow"); assert.match(yt, /\.hl\{color:#FF0000\}/);
+assert.doesNotMatch(yt, /#25F4EE|#FE2C55/, "YouTube has no TikTok colours");
+assert.match(yt, /\.cap\{position:absolute;left:44px;right:150px;top:1220px;/, "the card is clear of the Shorts buttons");
+assert.match(easy, /for \(const theme of \["easy", "tiktok", "youtube"\]\)/, "three films: Instagram, TikTok, YouTube");
+assert.match(easy, /slug: "youtube-easy", label: "YouTube Shorts \(EasyDeutsch\)"/); assert.match(easy, /silentFor\.youtube \? \[/, "only the series episodes get a YouTube cut");
+assert.match(easy, /v\.slug\.startsWith\("youtube"\) \? `\$\{caption\} #Shorts`/, "the YouTube post carries #Shorts");
+assert.match(easy, /const shotDir = `renders\/series-shots\/\$\{id\}`/, "the shots live in a stable folder");
+const wf = readFileSync(".github/workflows/news-scan.yml", "utf8");
+assert.match(wf, /actions\/cache\/restore@v4[\s\S]*?path: renders\/series-shots[\s\S]*?hashFiles\('lib\/easy-series\.mjs', 'ai-cast\/shots\.py', 'ai-cast\/build\.py'\)/, "the shots are restored by the hash of the story and the generator");
+assert.match(wf, /if: always\(\) && steps\.gate\.outputs\.go == 'yes'\n\s+uses: actions\/cache\/save@v4/, "the shots are saved even when a later step fails");

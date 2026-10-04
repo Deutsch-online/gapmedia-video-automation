@@ -155,6 +155,17 @@ jobs:
           python -m pip install --disable-pip-version-check --quiet openai-whisper pocket-tts gradio_client pillow
           sudo apt-get update
           sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      # The AI shots of a series episode cost GPU time. They are kept between runs (the key holds the
+      # hash of the story and of the shot generator, so a changed story never reuses old shots),
+      # and a re-render with a new look or caption does not pay for them again.
+      - name: Restore the series shots
+        if: steps.gate.outputs.go == 'yes'
+        uses: actions/cache/restore@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-${{ github.run_id }}
+          restore-keys: |
+            series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-
       - name: Build, quality-check and deliver one lesson
         if: steps.gate.outputs.go == 'yes'
         env:
@@ -193,6 +204,13 @@ jobs:
           else
             node german-cycle.mjs
           fi
+      - name: Keep the series shots for the next render
+        if: always() && steps.gate.outputs.go == 'yes'
+        uses: actions/cache/save@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-${{ hashFiles('lib/easy-series.mjs', 'ai-cast/shots.py', 'ai-cast/build.py') }}-${{ github.run_id }}
+
       - name: Remember the bot chat the preflight learned
         if: always() && steps.gate.outputs.go == 'yes'
         run: |
