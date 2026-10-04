@@ -42,3 +42,4 @@ for (const E of [...Object.values(EPISODES), ...Object.values(FAMILY_EPISODES)])
   assert.ok(t + 3.5 <= 65, `${E.title}: even with tight breaths about ${(t + 3.5).toFixed(0)} s`);
 }
 console.log("family durations: ok");
+assert.ok(existsSync("public/sfx/whoosh-short.mp3"), "the scene-change whoosh is in the repository (music/sfx is git-ignored)");
