@@ -105,7 +105,7 @@ assert.match(dfilm, /<div class="fa" dir="rtl">ما نان لازم داریم\.
 assert.match(dfilm, /class="cap sub en"/, "the English explanation card");
 assert.match(dfilm, /"dialogue":true/); assert.doesNotMatch(dfilm.match(/window\.__toon = (.*);/)[1], /narrator/, "the narrator is not a character on stage");
 assert.match(easy, /if \(look === "cartoon3d" && dialogueFor\(unit\.id\)\) return runDialogueLesson\(args\)/);
-assert.match(easy, /braun: "de-DE-ConradNeural", narrator: "en-US-AvaNeural"/);
+assert.match(easy, /braun: "de-DE-ConradNeural", krause: "de-DE-AmalaNeural", narrator: "en-US-AvaNeural"/);
 assert.match(easy, /dialogue: true, cast, stageVideo/, "dialogue lessons pick their cast");
 assert.match(easy, /let cast = "cartoon2d"/, "the flat 2D cartoon is the fallback cast");
 assert.match(easy, /if \(aiCastReady\(\)\)/, "the AI-animated cast is used when its clip library is complete");
@@ -142,7 +142,7 @@ assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en
 console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
-assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "tada"]);
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "tada"]);
 assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
@@ -183,18 +183,39 @@ assert.match(enq, /<div class="ten">Stay for the quiz at the end!<\/div><div cla
 assert.match(enq, /<div class="en2">See you tomorrow – bye!<\/div>/);
 const { DIALOGUES: DD } = await import("./lib/easy-dialogues.mjs");
 for (const [uid, d] of Object.entries(DD)) { assert.ok(d.topicEn, `${uid} has an English topic`); for (const sc of d.scenes) assert.ok(sc.gloss, `${uid}: ${sc.say} has an English gloss`); }
-// reels (owner, 2026-10-04, with two reference shorts): full-screen AI shots, captions on the picture
-const { REELS } = await import("./lib/easy-dialogues.mjs");
-const { buildEasyReelHTML } = await import("./lib/easy-reel.mjs");
-for (const [rid, r] of Object.entries(REELS)) {
-  for (const s of [r.hook, ...r.shots]) { assert.ok(s.scene && s.motion && s.en && s.de !== "" && s.fa, `${rid}: every shot has a scene, a motion and its captions`); assert.match(s.fa, /[؀-ۿ]/); assert.doesNotMatch(s.en, /[؀-ۿ]/); }
-  for (const s of r.shots) assert.ok(["lena", "braun"].includes(s.who) && s.say);
+// the series (owner, 2026-10-04, after four reference shorts): a drama-comedy that continues,
+// German on the picture, Persian only as a small subtitle, no English
+const { EPISODES, SERIES } = await import("./lib/easy-series.mjs");
+const { buildEasyReelHTML, lineHTML } = await import("./lib/easy-reel.mjs");
+const { A1_UNITS } = await import("./lib/german-a1.mjs").then((m) => ({ A1_UNITS: Object.values(m).find((v) => Array.isArray(v) && v[0]?.items) }));
+const nz = (x) => String(x).toLowerCase().replace(/[^a-zäöüß ]/g, "").trim();
+for (const [uid, ep] of Object.entries(EPISODES)) {
+  const u = A1_UNITS.find((x) => x.id === uid); assert.ok(u, `${uid} is a curriculum unit`);
+  assert.ok(ep.shots.length >= 12 && ep.shots.length <= 20, `${uid}: a story of 12–20 shots`);
+  assert.ok(ep.shots.some((x) => x.finale) && ep.shots.some((x) => !x.finale), `${uid}: a story and a cliffhanger after the recap`);
+  assert.ok(new Set(ep.shots.map((x) => x.loc)).size >= 4, `${uid}: the scene changes`);
+  assert.ok(ep.shots.some((x) => x.joke), `${uid}: it has jokes`); assert.ok(ep.next.de && ep.next.fa, `${uid}: it points to the next episode`);
+  for (const sh of ep.shots) {
+    assert.ok(SERIES.characters[sh.who] && sh.chars.every((c) => SERIES.characters[c]), `${uid}: known characters`);
+    assert.ok(sh.scene && sh.motion && sh.say && sh.fa && sh.loc);
+    assert.match(sh.fa, /[\u0600-\u06FF]/); assert.doesNotMatch(sh.say, /[\u0600-\u06FF]/);
+    assert.ok(sh.say.split(/\s+/).length <= 9, `${uid}: a line is short enough for one shot: ${sh.say}`);
+    if (sh.hl) assert.ok(nz(sh.say).includes(nz(sh.hl)), `${uid}: the lit-up phrase is in its line`);
+  }
+  for (const it of u.items) assert.ok(ep.shots.some((x) => !x.finale && nz(x.say).includes(nz(it.de))), `${uid}: the story says "${it.de}"`);
 }
-const reel = buildEasyReelHTML({ episodeNo: 54, title: "x", total: 10, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
-  caps: [{ t0: 0.2, t1: 3, en: "We're going on a trip!", de: "Wir machen einen Ausflug.", fa: "ما به گشت می‌رویم" }], rep: [{ t0: 2, t1: 3 }],
-  quiz: { t0: 5, tc: 6, ta: 9, t1: 10, en: "We're going on a trip!", de: "Wir machen einen Ausflug.", fa: "ما به گشت می‌رویم" } });
-assert.match(reel, /<video id="bg" class="clip" src="public\/ai-cast\/stage\/r\.mp4" muted playsinline data-start="0"/, "the shots fill the frame");
-assert.match(reel, /<div class="en">We&#39;re going on a <span class="k">trip!<\/span><\/div><div class="de">Wir machen einen Ausflug\.<\/div><div class="fa" dir="rtl">|<div class="en">We're going on a <span class="k">trip!<\/span><\/div><div class="de">Wir machen einen Ausflug\.<\/div><div class="fa" dir="rtl">/, "English, then German, then the small Persian");
-assert.match(reel, /#25F4EE/); assert.match(reel, /Sprich nach! · Say it!/);
-assert.match(easy, /if \(look === "cartoon3d" && REELS\[unit\.id\]\)/, "a unit with a reel plan is built as a reel");
-assert.match(easy, /building the dialogue lesson instead/, "a failed reel falls back to the dialogue lesson");
+const ser = buildEasyReelHTML({ episodeNo: 54, seriesTitle: "Die Nachbarn", title: "x", total: 20, video: "public/ai-cast/stage/r.mp4", theme: "tiktok",
+  caps: [{ t0: 0.2, t1: 3, de: "Wir machen einen Ausflug. Überraschung!", fa: "ما به گشت می‌رویم. سورپرایز!", hl: "Wir machen einen Ausflug" }],
+  recap: { t0: 5, t1: 12, title: "Heute gelernt", titleFa: "امروز یاد گرفتیم", items: [{ t0: 6, de: "Wann fahren wir los?", fa: "کی حرکت می‌کنیم؟" }] },
+  end: { t0: 16, de: "Fortsetzung folgt …", fa: "ادامه دارد …", small: "Nächste Folge: Wer ist die Frau?", smallFa: "قسمت بعد: آن خانم کیست؟" } });
+assert.match(ser, /<video id="bg" class="clip" src="public\/ai-cast\/stage\/r\.mp4" muted playsinline data-start="0"/, "the shots fill the frame");
+assert.match(ser, /<span class="hl">Wir machen einen Ausflug<\/span>\. Überraschung!/, "the lesson phrase is lit up");
+assert.match(ser, /<div class="fa" dir="rtl">ما به گشت می‌رویم\. سورپرایز!<\/div>/, "Persian is the subtitle under the German");
+assert.match(ser, /Heute gelernt/); assert.match(ser, /Fortsetzung folgt/); assert.match(ser, /#25F4EE/);
+assert.doesNotMatch(ser.replace(/<script>[\s\S]*?<\/script>/g, "").replace(/<style>[\s\S]*?<\/style>/g, ""), /\b(the|and|you|quiz|today|how)\b/i, "no English on the film");
+assert.equal(lineHTML("Wann fahren wir los?", "wann fahren wir los?"), '<span class="hl">Wann fahren wir los</span>?', "the match ignores case and final punctuation");
+assert.match(easy, /if \(look === "cartoon3d" && EPISODES\[unit\.id\]\)/, "a unit with a series episode is built as an episode");
+assert.match(easy, /krause: "de-DE-AmalaNeural"/, "Frau Krause has her own voice");
+assert.match(easy, /sfx\("sting"/, "the cliffhanger has its sting");
+assert.match(easy, /Heute gelernt/, "the learned-today card");
+assert.doesNotMatch(readFileSync("lib/easy-series.mjs", "utf8").replace(/\/\/.*$/gm, "").replace(/scene: "[^"]*"|motion: "[^"]*"/g, ""), /\b(Quick quiz|Learn German)\b/, "no English lesson text in the series");

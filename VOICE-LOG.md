@@ -1107,3 +1107,19 @@ are spoken by the narrator. The parts are joined into one clip with a 0.12 s bre
 Voice, volume and pitch are not changed.
 
 **Status: awaiting the owner's ear** on the next sample.
+
+### 2026-10-04 — Frau Krause (third character of the series «Die Nachbarn»)
+
+**Request (owner, 2026-10-04).** The lessons become a drama-comedy series; characters are added
+when the story needs them. German is spoken by the characters; there is no English narrator.
+
+**What changed.** One voice was added. The approved German voice and its settings stay the same.
+- Frau Krause (an elderly, nosy neighbour): `de-DE-AmalaNeural`, same engine
+  (`music/edge-tts.mjs`), same speed and volume as the approved German voice
+  (`GERMAN_WORD_VOICE_SETTINGS`). **New.** A third person cannot share Lena's or Herr Braun's voice.
+- Lena (`de-DE-KatjaNeural`) and Herr Braun (`de-DE-ConradNeural`): unchanged.
+
+**Source.** A standard Microsoft Edge neural voice. Speed and volume were not tuned by guess.
+
+**Audition.** No sample could be heard in the session container. The first series sample is the
+audition. **Status: awaiting the owner's ear.**
