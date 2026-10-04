@@ -4,6 +4,13 @@ name: Veo film (captions)
 # transcript and sends it to the bot chat; with captions.json it renders the captioned film in the three looks.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "transcribe (Whisper transcript, no captions) or render (captioned film)"
+        required: false
+        default: "render"
+        type: choice
+        options: ["render", "transcribe"]
 
 permissions:
   contents: write
@@ -31,6 +38,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MODE: ${{ inputs.mode }}
         run: node veo-test/build-film.mjs
       - name: Keep the transcript
         run: |

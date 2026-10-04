@@ -15,7 +15,7 @@ const film = "veo-test/film.mp4";
 const dur = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", film]).toString().trim());
 console.log(`film ${dur.toFixed(2)} s`);
 
-if (!existsSync("veo-test/captions.json")) {
+if (process.env.MODE === "transcribe" || !existsSync("veo-test/captions.json")) {
   execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", film, "-vn", "-ac", "1", "-ar", "16000", "veo-test/film.wav"]);
   const py = `import whisper, json\nm = whisper.load_model("medium")\nr = m.transcribe("veo-test/film.wav", language="de", word_timestamps=True, condition_on_previous_text=False)\nout = [{"start": s["start"], "end": s["end"], "text": s["text"].strip(), "words": [{"w": w["word"].strip(), "t0": w["start"], "t1": w["end"]} for w in s.get("words", [])]} for s in r["segments"]]\njson.dump(out, open("veo-test/transcript.json", "w"), ensure_ascii=False, indent=1)\nprint("\\n".join(f'{s["start"]:.1f}-{s["end"]:.1f} {s["text"]}' for s in out))\n`;
   execFileSync("python3", ["-c", py], { stdio: "inherit" });
