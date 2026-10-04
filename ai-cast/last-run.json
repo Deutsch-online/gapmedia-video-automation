@@ -1,14 +1,7 @@
 {
   "made": [
     "lena-cu",
-    "braun-cu"
-  ],
-  "log": [
-    "lena-cu: built in 15s",
-    "braun-cu: built in 14s",
-    "lena-talk: stopped \u2014 clip failed on every Space \u2014 zerogpu-aoti/wan2-2-fp8da-aoti-faster: AppError: You have exceeded your ZeroGPU runs limit. Subscribe to Hugging Face PRO to get 40 min of ZeroGPU quota a day - https://huggingface.co/subscribe/pro?from=ZeroGPU"
-  ],
-  "left": [
+    "braun-cu",
     "lena-talk",
     "braun-talk",
     "two-shot",
@@ -17,5 +10,18 @@
     "braun-laugh",
     "lena-listen",
     "braun-listen"
-  ]
+  ],
+  "log": [
+    "lena-cu: built in 14s",
+    "braun-cu: built in 12s",
+    "lena-talk: built in 38s",
+    "braun-talk: built in 38s",
+    "two-shot: built in 16s",
+    "two-talk: built in 42s",
+    "lena-laugh: built in 37s",
+    "braun-laugh: built in 38s",
+    "lena-listen: built in 37s",
+    "braun-listen: built in 38s"
+  ],
+  "left": []
 }
