@@ -1189,3 +1189,12 @@ check against the account's list decides which voice is really used.
 **Not verified.** No sample could be heard in the session container (TTS hosts are not reachable
 from it). **Status: awaiting the owner's ear.** Cost: MiniMax bills by characters; one episode is
 about 700 characters (price not read from the account).
+
+### 2026-10-04 — Series mix: every line levelled; picture motion in time with the voice (owner: "not in order")
+
+No voice setting changed. Every dialogue line is now measured (ffmpeg `volumedetect`) and brought to
+a mean level of −21 dB (gain limited to −8…+10 dB) before the mix, so characters and engines (MiniMax,
+Edge) sit at the same level. In the picture, the motion clip of a shot plays once, forward, stretched to
+the shot (it was played forward and then backward in a loop: the mouth ran backwards), and a slow
+push-in/pull-out alternates from shot to shot (`lib/reel-stage.mjs`). Not verified by listening or
+watching: the CI renders cannot be seen from the session. **Status: awaiting the owner's eye and ear.**
