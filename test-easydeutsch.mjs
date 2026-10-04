@@ -106,7 +106,13 @@ assert.match(dfilm, /class="cap sub en"/, "the English explanation card");
 assert.match(dfilm, /"dialogue":true/); assert.doesNotMatch(dfilm.match(/window\.__toon = (.*);/)[1], /narrator/, "the narrator is not a character on stage");
 assert.match(easy, /if \(look === "cartoon3d" && dialogueFor\(unit\.id\)\) return runDialogueLesson\(args\)/);
 assert.match(easy, /braun: "de-DE-ConradNeural", narrator: "en-US-AvaNeural"/);
-assert.match(easy, /dialogue: true, cast: "human"/, "dialogue lessons use the real-looking people");
+assert.match(easy, /dialogue: true, cast: "cartoon2d"/, "dialogue lessons use the flat 2D cartoon people");
+const c2d = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, dialogue: true, cast: "cartoon2d", lines: [] });
+assert.match(c2d, /<svg id="cartoon-stage"/); assert.match(c2d, /src="public\/2d\/cartoon-stage\.js"/); assert.match(c2d, /__cartoonDraw\(tl\.time\(\)\)/);
+assert.doesNotMatch(c2d, /importmap|three-stage/, "the 2D cartoon loads no 3D code");
+const stage2d = readFileSync("public/2d/cartoon-stage.js", "utf8");
+assert.doesNotMatch(stage2d, /Math\.random|Date\.now|performance\.now|fetch\(/, "the 2D stage is deterministic");
+assert.match(stage2d, /window\.__cartoonDraw = /); assert.match(stage2d, /"hf-seek"/);
 assert.match(buildEasyCartoonHTML({ episodeNo: 1, title: "x", hookDur: 3, outroAt: 5, total: 6, three: true, cast: "human", lines: [] }), /src="public\/3d\/human-stage\.js"/);
 // German words in an explanation are spoken by the German voice (owner, 2026-10-03)
 const { explainParts, NARRATOR_SPEED } = await import("./lib/easydeutsch.mjs");
