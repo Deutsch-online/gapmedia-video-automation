@@ -152,3 +152,15 @@ assert.match(easy, /sayExplain\(sc\.gloss \|\| sc\.en, ef\)/, "the recap uses th
 assert.ok(easy.indexOf('sfx("rimshot"') < easy.indexOf("sayExplain(sc.gloss"), "the story plays before the recap");
 for (const d of Object.values(DIALOGUES)) for (const sc of d.scenes) if (sc.gloss) { assert.doesNotMatch(sc.gloss, /[؀-ۿ"]/); assert.ok(sc.gloss.split(/\s+/).length <= 8, "a gloss is short"); }
 assert.ok(DIALOGUES["a1-54-day-trip"].scenes.every((sc) => sc.gloss), "unit 54 has the new recap glosses");
+// real lip-sync (owner, 2026-10-04): lines are packed per speaker into ~5-second requests
+const { packLipsync } = await import("./lib/ai-lipsync.mjs");
+const packed = packLipsync([
+  { who: "lena", t: 1, dur: 1.5, file: "a" }, { who: "braun", t: 3, dur: 2, file: "b" }, { who: "lena", t: 5, dur: 1.8, file: "c" },
+  { who: "lena", t: 8, dur: 2.2, file: "d" }, { who: "lena", t: 11, dur: 6, file: "long" }, { who: "narrator", t: 13, dur: 2, file: "n" } ]);
+assert.deepEqual(packed.map((c) => [c.who, c.items.map((x) => x.line.file)]), [["lena", ["a", "c"]], ["lena", ["d"]], ["braun", ["b"]]], "packed per speaker, a too-long line is left out");
+assert.ok(packed.every((c) => c.len <= 4.7));
+assert.equal(packed[0].items[1].off, 0.3 + 1.5 + 0.3, "each line's place inside its clip");
+assert.match(easy, /makeLipsync\(\{ lines/, "lessons with the AI cast get real lip-sync");
+const { planAIShots: plan2 } = await import("./lib/ai-stage.mjs");
+const ls = plan2({ outroAt: 6, total: 7, lines: [{ who: "lena", t: 1, dur: 1, item: 0, lipsync: { file: "x.mp4", off: 0.3 } }] });
+assert.deepEqual(ls.find((s) => s.src).src, { file: "x.mp4", at: 0.15 }, "the shot plays the lip-synced clip from the right moment");

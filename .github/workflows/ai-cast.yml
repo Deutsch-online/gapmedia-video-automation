@@ -34,13 +34,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: pip install --quiet gradio_client pillow edge-tts
+      - run: pip install --quiet gradio_client pillow
       - name: Build what today's free GPU quota allows
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          if [ -f ai-cast/lipsync_probe.py ]; then python ai-cast/lipsync_probe.py || true; fi
-          python ai-cast/build.py
+        run: python ai-cast/build.py
       - name: Send today's clips to the bot chat
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -50,7 +48,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/ai-cast ai-cast/last-run.json; [ -d ai-cast/probe ] && git add ai-cast/probe || true
+          git add public/ai-cast ai-cast/last-run.json
           git diff --staged --quiet || git commit -m "ai-cast: add today's animated clips"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
