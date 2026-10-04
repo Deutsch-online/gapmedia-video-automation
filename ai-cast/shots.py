@@ -70,6 +70,46 @@ def make_clip(j):
     shutil.copy(first_working(VIDEO_SPACES, v, "clip"), j["mp4"])
 
 
+# Paid fallback (owner, 2026-10-04: "if the daily quota is not enough, use the credits"). The free
+# ZeroGPU quota is used first. When it is spent, the same shot is made with Hugging Face Inference
+# Providers, which bill the credits of the HF_TOKEN account. PAID_FALLBACK=off turns it off;
+# PAID_MAX_SHOTS (default 24 calls a run: a still or a clip each) is the spending guard; PAID_PROVIDER defaults to fal-ai.
+PAID_ON = os.environ.get("PAID_FALLBACK", "on").lower() != "off" and bool(os.environ.get("HF_TOKEN"))
+PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24"))
+PAID_USED = 0
+QUOTA_SPENT = False   # once the free quota says no, the rest of the run goes straight to the credits
+
+
+def is_quota(e):
+    return "quota" in str(e).lower()
+
+
+def paid_client():
+    from huggingface_hub import InferenceClient
+    return InferenceClient(provider=os.environ.get("PAID_PROVIDER", "fal-ai"), api_key=os.environ["HF_TOKEN"])
+
+
+def paid_still(j, shot_dir, cast, style):
+    chars = j["chars"]
+    ref = vertical_ref(chars[0], cast, shot_dir) if len(chars) == 1 else None
+    c = paid_client()
+    if ref:
+        prompt = (f"Keep the same character: identical face, hairstyle, skin tone and age. Put this character {j['prompt']}. "
+                  "Vertical 9:16 cinematic composition, high-end 3D animated feature film still, warm light, no text.")
+        img = c.image_to_image(open(ref, "rb").read(), prompt=prompt, model="black-forest-labs/FLUX.1-Kontext-dev")
+    else:
+        who = " ".join(f"Character {i + 1}: {(cast.get(x) or {}).get('look', x)}." for i, x in enumerate(chars))
+        img = c.text_to_image(f"{style}. {who} Scene: {j['prompt']}.", model="black-forest-labs/FLUX.1-schnell", width=576, height=1024)
+    img.convert("RGB").save(j["png"])
+    return "paid-kontext" if ref else "paid-schnell"
+
+
+def paid_clip(j):
+    data = paid_client().image_to_video(j["png"], prompt=f"{j['motion']}. The camera is still. Smooth natural animation.",
+                                        model="Wan-AI/Wan2.2-I2V-A14B", negative_prompt=MOTION_NEG)
+    open(j["mp4"], "wb").write(data)
+
+
 def sigs(j, style):
     """What a shot depends on. A kept picture or clip is only reused when this still matches, so a
     cache that is shared between runs never gives a changed story an old picture."""
@@ -113,6 +153,7 @@ def migrate(path, jobs, style):
 
 
 def main(path):
+    global PAID_USED, PAID_LEFT, QUOTA_SPENT
     data = json.load(open(path))
     jobs = data if isinstance(data, list) else data["jobs"]
     cast = {**DEFAULT_CAST, **({} if isinstance(data, list) else data.get("cast", {}))}
@@ -131,16 +172,31 @@ def main(path):
             if os.path.exists(j["mp4"]) and read_sig(j["mp4"]) != clip_sig:
                 os.remove(j["mp4"])
             if not os.path.exists(j["png"]):
-                engine = make_still(j, shot_dir, cast, style)
+                try:
+                    if QUOTA_SPENT and PAID_ON and PAID_LEFT > 0: raise RuntimeError("quota")
+                    engine = make_still(j, shot_dir, cast, style)
+                except Exception as e:
+                    if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
+                    QUOTA_SPENT = True
+                    print("  free GPU quota spent: this still uses the paid credits", flush=True)
+                    engine = paid_still(j, shot_dir, cast, style); PAID_USED += 1
                 write_sig(j["png"], still_sig)
             if not os.path.exists(j["mp4"]):
-                make_clip(j)
+                try:
+                    if QUOTA_SPENT and PAID_ON and PAID_LEFT > 0: raise RuntimeError("quota")
+                    make_clip(j)
+                except Exception as e:
+                    if not (is_quota(e) and PAID_ON and PAID_LEFT > 0): raise
+                    QUOTA_SPENT = True
+                    print("  free GPU quota spent: this clip uses the paid credits", flush=True)
+                    paid_clip(j); engine += "+paid-clip"; PAID_USED += 1
                 write_sig(j["mp4"], clip_sig)
+            PAID_LEFT = int(os.environ.get("PAID_MAX_SHOTS", "24")) - PAID_USED
             print(f"shot {j['id']} ({engine}) in {time.time() - t0:.0f}s", flush=True)
         except Exception as e:
             msg = str(e)[:300]
             print(f"shot FAILED {j['id']}: {msg}", flush=True)
-            if "quota" in msg.lower():
+            if "quota" in msg.lower() and not (PAID_ON and PAID_LEFT > 0):
                 break
 
 
