@@ -1,0 +1,42 @@
+name: Veo film (captions)
+
+# The owner's Veo clips (veo-test/) -> one portrait film. Without veo-test/captions.json it makes a Whisper
+# transcript and sends it to the bot chat; with captions.json it renders the captioned film in the three looks.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          npm ci
+          python -m pip install --disable-pip-version-check --quiet openai-whisper
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Build
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node veo-test/build-film.mjs
+      - name: Keep the transcript
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add veo-test/transcript.json
+          git diff --staged --quiet || git commit -m "veo-test: transcript"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
