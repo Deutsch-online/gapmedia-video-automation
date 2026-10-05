@@ -22,7 +22,7 @@ DEFAULT_STYLE = ("High-end 3D animated feature film still, stylised human, warm 
                  "of the frame and calm background above them, clean image with no text, no letters and no watermark")
 # owner, 2026-10-05: the characters were zoomed in and the picture was not happy: a wide shot, the whole body, the place around, bright
 WIDE = ("WIDE medium shot, camera far away: the whole body is visible from head to shoes with free space around the character, "
-        "the place clearly visible in the background, bright cheerful colours, soft sunny light, cute Pixar-style 3D animated film still, "
+        "the place clearly visible in the background, bright cheerful colours, soft sunny light, in exactly the same illustration style as the reference picture, "
         "vertical 9:16, no close-up, no text, no watermark.")
 KONTEXT = ["mcp-tools/FLUX.1-Kontext-Dev", "black-forest-labs/FLUX.1-Kontext-Dev"]
 
