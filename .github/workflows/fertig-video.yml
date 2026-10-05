@@ -1,0 +1,76 @@
+name: Lena macht sich fertig (one episode, manual)
+
+# Owner request 2026-10-05: build the "Lena macht sich fertig" short on Hugging Face. Manual only (no cron):
+# it spends the daily ZeroGPU quota first, the PRO quota second and at most PAID_BUDGET_USD of paid
+# credits last. The result goes to the owner's bot chat only, in three formats.
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: "Paid-credit guard in USD for this run (the free and PRO GPU quotas are used first)"
+        required: false
+        default: "1.00"
+        type: string
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fertig:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install video dependencies
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check --quiet gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Restore the Fertig shots
+        uses: actions/cache/restore@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-fe-${{ github.run_id }}
+          restore-keys: |
+            series-shots-fe-
+      - name: Build and deliver the episode
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PAID_BUDGET_USD: ${{ inputs.budget }}
+          # real lip-sync for the shots where the visible character speaks (LongCat-Video-Avatar on a ZeroGPU Space)
+          LIPSYNC: "on"
+        run: node fertig-build.mjs
+      - name: Keep the Fertig shots for the next render
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: renders/series-shots
+          key: series-shots-fe-${{ github.run_id }}
+      - name: Measure the finished videos (QC report with numbers and a contact sheet)
+        if: success()
+        run: bash scripts/qc-renders.sh "renders/fertig/$(date -u +%F)"
+      - name: Keep the contact sheet
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A ai-cast/contact qc
+          git diff --staged --quiet || git commit -m "fertig: contact sheet"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
