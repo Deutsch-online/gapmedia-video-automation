@@ -20,5 +20,5 @@ for (const E of Object.values(KOCHEN_EPISODES)) {
   assert.equal(E.shots.length, 12, "six scenes: a wide shot and a close-up each");
 }
 const wf = readFileSync(".github/workflows/kochen-video.yml", "utf8");
-assert.doesNotMatch(wf, /schedule:/, "manual only"); assert.match(wf, /node kochen-build\.mjs/); assert.match(wf, /group: gapmedia-lesson/);
+assert.ok(!/schedule:/.test(wf) || /cron: "40 9 6 10 \*"/.test(wf), "manual, plus at most the one automatic retry after the quota reset"); assert.match(wf, /node kochen-build\.mjs/); assert.match(wf, /group: gapmedia-lesson/);
 console.log("kochen: ok");

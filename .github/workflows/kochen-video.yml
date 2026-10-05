@@ -4,6 +4,10 @@ name: Ich koche (one episode, manual)
 # it spends the daily ZeroGPU quota first, the PRO quota second and at most PAID_BUDGET_USD of paid
 # credits last. The result goes to the owner's bot chat only, in three formats.
 on:
+  # one automatic try after the Hugging Face PRO GPU quota resets (it ran out on 2026-10-05 with 9 of 12 shots done and cached);
+  # remove this schedule once the video is delivered
+  schedule:
+    - cron: "40 9 6 10 *"
   workflow_dispatch:
     inputs:
       budget:
