@@ -1,14 +1,14 @@
 {
-  "at": "2026-10-03T01:22:28.893Z",
+  "at": "2026-10-05T01:24:21.311Z",
   "rows": [
     {
       "cat": "instagram",
       "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
       "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/",
       "date": "2026-10-01",
-      "sources": 7,
+      "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "instagram",
@@ -17,25 +17,16 @@
       "date": "2026-10-01",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tiktok",
-      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
-      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/",
+      "title": "TikTok One AI Creator Search & One Plus: What They Do (2026) | Storika",
+      "url": "https://www.storika.ai/guides/tiktok-one-ai-creator-search-2026",
       "date": "2026-10-02",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tiktok",
-      "title": "Nest Commerce and TikTok partner to launch AI creative platform Hummingbird on TikTok - UK Tech News",
-      "url": "https://uktechnews.co.uk/2026/10/02/nest-commerce-and-tiktok-partner-to-launch-ai-creative-platform-hummingbird-on-tiktok/",
-      "date": "2026-10-02",
-      "sources": 6,
-      "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tools",
@@ -44,7 +35,7 @@
       "date": "2026-10-02",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tools",
@@ -53,7 +44,25 @@
       "date": "2026-10-02",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "Two Weeks with Kling 4.0: Physical Continuity, Camera Control, and Pitfalls Still Worth Avoiding - DEV Community",
+      "url": "https://dev.to/kling4ai-production/two-weeks-with-kling-40-physical-continuity-camera-control-and-pitfalls-still-worth-avoiding-ii4",
+      "date": "2026-10-04",
+      "sources": 5,
+      "clear": false,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
+      "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively",
+      "date": "2026-10-01",
+      "sources": 7,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -62,25 +71,16 @@
       "date": "2026-10-01",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tools",
-      "title": "HappyHorse 1.0 Review: Product Video AI | Flami",
-      "url": "https://flami.pro/en/blog/happyhorse-1-0-review",
+      "title": "Trumbone 1.1 Indigo | Trumbone Blog",
+      "url": "https://trumbone.com/blog/trumbone-1-1-indigo",
       "date": "2026-10-01",
-      "sources": 6,
+      "sources": 5,
       "clear": true,
-      "score": 28
-    },
-    {
-      "cat": "tools",
-      "title": "Manus 2.0 launches video editing, and I tested it on a 30-second ad",
-      "url": "https://searchenginewatch.com/manus-2-0-adds-video-editing-and-event-triggered-workflows/",
-      "date": "2026-09-30",
-      "sources": 8,
-      "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "instagram",
@@ -89,16 +89,43 @@
       "date": "2026-09-30",
       "sources": 7,
       "clear": true,
-      "score": 27
+      "score": 25
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
+      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/",
+      "date": "2026-09-30",
+      "sources": 7,
+      "clear": true,
+      "score": 25
     },
     {
       "cat": "instagram",
-      "title": "Instagram is adding an AI ‘assistant’ to tell you how to post | The Verge",
+      "title": "Instagram is adding an AI 'assistant' to tell you how to post",
       "url": "https://www.theverge.com/tech/1002402/instagram-ai-edits-assistant-creators-analytics-youtube",
-      "date": "2026-09-30",
+      "date": "",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 23
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok reportedly launching 'Stories' feature similar to Snapchat",
+      "url": "https://mashable.com/article/tiktok-launching-stories",
+      "date": "",
+      "sources": 8,
+      "clear": true,
+      "score": 23
+    },
+    {
+      "cat": "tools",
+      "title": "Gemini Apps' release updates & improvements",
+      "url": "https://gemini.google/release-notes/",
+      "date": "",
+      "sources": 5,
+      "clear": true,
+      "score": 23
     },
     {
       "cat": "tiktok",
@@ -107,25 +134,7 @@
       "date": "2026-09-30",
       "sources": 8,
       "clear": false,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "Sogni Launches Multi-Keyframe MiniMax Generations",
-      "url": "https://blog.sogni.ai/blogs/minimax-h3-keyframes/",
-      "date": "2026-09-27",
-      "sources": 6,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok introduces AI Alive to turn photos into animated videos",
-      "url": "https://mashable.com/article/tiktok-ai-video-photo-voice-test",
-      "date": "",
-      "sources": 8,
-      "clear": true,
-      "score": 23
+      "score": 22
     }
   ],
   "shown": [
@@ -144,26 +153,26 @@
     {
       "n": 3,
       "cat": "instagram",
-      "title": "Instagram rolls out an AI video assistant for creators | TechCrunch",
-      "url": "https://techcrunch.com/2026/09/30/instagram-rolls-out-an-ai-video-assistant-for-creators/"
+      "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
+      "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively"
     },
     {
       "n": 4,
       "cat": "tiktok",
-      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
-      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/"
+      "title": "TikTok One AI Creator Search & One Plus: What They Do (2026) | Storika",
+      "url": "https://www.storika.ai/guides/tiktok-one-ai-creator-search-2026"
     },
     {
       "n": 5,
       "cat": "tiktok",
-      "title": "Nest Commerce and TikTok partner to launch AI creative platform Hummingbird on TikTok - UK Tech News",
-      "url": "https://uktechnews.co.uk/2026/10/02/nest-commerce-and-tiktok-partner-to-launch-ai-creative-platform-hummingbird-on-tiktok/"
+      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
+      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/"
     },
     {
       "n": 6,
       "cat": "tiktok",
-      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
-      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/"
+      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
+      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/"
     },
     {
       "n": 7,
@@ -180,8 +189,8 @@
     {
       "n": 9,
       "cat": "tools",
-      "title": "HappyHorse 1.0 Review: Product Video AI | Flami",
-      "url": "https://flami.pro/en/blog/happyhorse-1-0-review"
+      "title": "Two Weeks with Kling 4.0: Physical Continuity, Camera Control, and Pitfalls Still Worth Avoiding - DEV Community",
+      "url": "https://dev.to/kling4ai-production/two-weeks-with-kling-40-physical-continuity-camera-control-and-pitfalls-still-worth-avoiding-ii4"
     }
   ]
 }
