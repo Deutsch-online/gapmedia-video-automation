@@ -1,0 +1,62 @@
+name: Cast design sheet (Hugging Face, manual)
+
+# Owner request 2026-10-05: attractive, bright, happy characters, not zoomed. Makes four full-body candidates for
+# Lena, Herr Braun and Frau Krause with FLUX.1-schnell (free and PRO GPU quota only, no paid credits), sends the
+# sheet to the owner's bot chat and keeps it in the repository so the choice can be made from the picture.
+on:
+  workflow_dispatch:
+    inputs:
+      seeds:
+        description: "Candidates per character"
+        required: false
+        default: "4"
+        type: string
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  design:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --disable-pip-version-check --quiet gradio_client pillow 'huggingface_hub>=0.34'
+      - name: Make the candidates
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PAID_FALLBACK: "off"
+          SEEDS: ${{ inputs.seeds }}
+        run: python ai-cast/design-cast.py ai-cast/design "${SEEDS:-4}"
+      - name: Send the sheet to the bot chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node --input-type=module -e '
+            import { telegramConfig, sendPhoto } from "./lib/telegram.mjs";
+            const tg = telegramConfig(process.env);
+            if (!tg.enabled) throw new Error("Telegram is not configured");
+            const res = await sendPhoto({ token: tg.token, chatId: tg.reviewChatId, file: "ai-cast/design/sheet.jpg", caption: "Cast design: Lena, Herr Braun, Frau Krause, four candidates each" });
+            console.log(` ✈ sheet sent (message ${res.message_id})`);
+          '
+      - name: Keep the candidates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A ai-cast/design
+          git diff --staged --quiet || git commit -m "cast design: candidates"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

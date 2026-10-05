@@ -52,7 +52,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          PAID_BUDGET_USD: ${{ inputs.budget }}
+          PAID_FALLBACK: "off"      # owner, 2026-10-05: no extra cost, only the free and the PRO GPU quota
           # real lip-sync for the shots where the visible character speaks (LongCat-Video-Avatar on a ZeroGPU Space)
           LIPSYNC: "on"
         run: node befiehlt-build.mjs
