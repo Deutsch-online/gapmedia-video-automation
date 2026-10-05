@@ -10,15 +10,17 @@ import build, shots
 from build import first_working
 from PIL import Image, ImageDraw
 
-STYLE = ("cute adorable 3D animated family-movie character design, Pixar and Disney style, FULL BODY standing, head to shoes visible, "
-         "facing the camera, friendly smile, bright cheerful pastel colours, soft warm studio lighting, plain light cream background, "
-         "highly detailed, attractive, beautiful, happy, no text, no watermark")
+STYLE = ("semi-realistic 2D animation character illustration in the style of a modern Disney 2D film or a children's storybook, "
+         "handsome slim adult with realistic body proportions, normal-sized head, long legs, NOT chibi, NOT chubby, NOT a baby face, "
+         "clean outlines, soft flat shading, warm bright cheerful colours, FULL BODY standing, head to shoes visible, facing the camera "
+         "with a friendly smile, plain light cream background, highly detailed, attractive, no text, no watermark")
 CHARS = {
-    "lena": "a lovely young woman in her twenties with long wavy dark-brown hair, big sparkling brown eyes, rosy cheeks, a warm smile, a soft pink hoodie, light blue jeans and white sneakers, small silver hoop earrings",
-    "braun": "a friendly handsome man in his thirties with short dark-brown hair, light stubble and a small beard tuft under the lower lip, a kind dry smile, a blue sweatshirt, dark trousers and brown shoes",
-    "krause": "a sweet funny elderly woman in her late sixties with short curly silver hair in pink hair curlers, round glasses on a chain, rosy cheeks, a bossy but lovable smile, a floral pink bathrobe and fluffy slippers",
+    "lena": "a beautiful slim young woman in her twenties with long wavy dark-brown hair, warm brown eyes, a warm smile, a soft pink hoodie, light blue jeans and white sneakers, small silver hoop earrings",
+    "braun": "a handsome slim man in his thirties with short dark-brown hair, light stubble, a kind smile, a blue sweater, dark trousers and brown shoes",
+    "krause": "a lovely slim elderly woman in her late sixties with short curly silver hair in pink hair curlers, round glasses on a chain, a warm lovable smile, a floral pink bathrobe and fluffy slippers",
 }
 out = sys.argv[1]; n = int(sys.argv[2]) if len(sys.argv) > 2 else 4
+SEED0 = int(os.environ.get("SEED0", "1"))   # candidate seeds SEED0 .. SEED0+n-1: a new round does not repeat the old pictures
 os.makedirs(out, exist_ok=True)
 
 def one(char, seed):
@@ -26,7 +28,7 @@ def one(char, seed):
     Image.open(r).convert("RGB").save(f"{out}/{char}-{seed}.jpg", quality=88)
 
 for char in CHARS:
-    for seed in range(1, n + 1):
+    for seed in range(SEED0, SEED0 + n):
         if os.path.exists(f"{out}/{char}-{seed}.jpg"): continue
         try:
             shots.run_free(one, char, seed)
@@ -41,10 +43,10 @@ if files:
     sheet = Image.new("RGB", (cols * W, rows * H), "#222")
     d = ImageDraw.Draw(sheet)
     for i, c in enumerate(CHARS):
-        for s in range(1, n + 1):
+        for s in range(SEED0, SEED0 + n):
             p = f"{out}/{c}-{s}.jpg"
             if os.path.exists(p):
-                sheet.paste(Image.open(p).resize((W, H)), ((s - 1) * W, i * H))
-                d.text(((s - 1) * W + 8, i * H + 8), f"{c}-{s}", fill="#000")
-    sheet.save(f"{out}/sheet.jpg", quality=85)
+                sheet.paste(Image.open(p).resize((W, H)), ((s - SEED0) * W, i * H))
+                d.text(((s - SEED0) * W + 8, i * H + 8), f"{c}-{s}", fill="#000")
+    sheet.save(f"{out}/sheet-{SEED0}.jpg", quality=85)
     print("sheet written")

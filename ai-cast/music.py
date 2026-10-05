@@ -14,6 +14,8 @@ SPACES = ["ACE-Step/ACE-Step", "ACE-Step/Ace-Step-v1.5", "Reubencf/Kiku-ACE-Step
 BEDS = [
     {"id": "comedy-1", "seed": 1101, "prompt": "quirky comedy underscore, pizzicato strings, staccato bassoon, marimba, playful sneaking cartoon sitcom music, light and bouncy, instrumental, 120 bpm, major key, no vocals, no singing"},
     {"id": "comedy-2", "seed": 2202, "prompt": "oompah march, tuba, clarinet, accordion, cheerful slapstick silent film comedy music, instrumental, 120 bpm, no vocals, no singing"},
+    {"id": "kitchen-1", "seed": 4404, "prompt": "cheerful happy cooking show background music, bright acoustic guitar, ukulele, light hand percussion, whistling, upbeat sunny kitchen mood, warm and fun, 108 bpm, major key, instrumental, no vocals, no singing"},
+    {"id": "kitchen-2", "seed": 5505, "prompt": "light bouncy happy bossa nova, nylon guitar, soft marimba, finger snaps, cheerful morning kitchen, charming and playful, 104 bpm, major key, instrumental, no vocals, no singing"},
     {"id": "comedy-3", "seed": 3303, "prompt": "bouncy ukulele, whistling, hand claps, upbeat quirky indie sitcom theme, funny and warm, instrumental, 120 bpm, no vocals, no singing"},
 ]
 DURATION = 75

@@ -1,0 +1,33 @@
+name: Voice audition (manual)
+
+# Sends the same sentences in several German Edge voices to the owner's bot chat as audio (VOICE-LOG.md: the ear decides).
+on:
+  workflow_dispatch:
+    inputs:
+      who:
+        description: "male or female voices"
+        required: false
+        default: "male"
+        type: choice
+        options: ["male", "female"]
+
+permissions:
+  contents: read
+
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Make and send the samples
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WHO: ${{ inputs.who }}
+        run: node scripts/voice-audition.mjs "$WHO"
