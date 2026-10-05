@@ -50,15 +50,15 @@
 ۱۰ درس با روش ۲ (۵۵–۶۴). از صاحب کانال تصویر Insights می‌خواهیم: نگه‌داشتن بیننده (Retention)،
 ذخیره، اشتراک، دیدن دوباره. با درس‌های قدیم مقایسه می‌کنیم. بدون این داده، «بهتر» ادعا نمی‌شود.
 
-## Dazu: Einnahmen (Monetarisierung) und die Animation — Ergänzung 2026-10-05
+## درآمد (Monetization) و انیمیشن — افزودهٔ 2026-10-05
 
-Auftrag des Kanalinhabers: «Es muss Animation sein, damit das Video Einnahmen bringen kann.» Was die Suche zeigte (nur Zusammenfassungen gelesen):
+درخواست صاحب کانال: «باید انیمیشن باشد تا ویدیو قابل درآمد باشد.» آنچه جستجو نشان داد (فقط خلاصه‌ها را خواندم):
 
-- **YouTube (ab 15. Juli 2025):** «inauthentic content» (massenhaft produziert, wiederholend, nach einer Vorlage mit minimaler Abwechslung, leicht in großer Menge zu kopieren, ohne klaren eigenen Beitrag) wird nicht monetarisiert. Das Verbot betrifft die Einnahmen, nicht das Hochladen. Quellen: [Plagiarism Today](https://www.plagiarismtoday.com/2025/07/08/youtube-targets-inauthentic-content/) · [Daily Star](https://d11.thedailystar.net/tech-startup/news/youtubes-new-monetisation-rule-targets-mass-produced-inauthentic-content-3936511) · [subsub](https://www.subsub.io/blog/youtube-inauthentic-content-policy-2025).
-- **TikTok Creator Rewards:** 100 % eigene Inhalte, hochwertig, **länger als eine Minute**; Konto 18+, 10 000+ Follower, 100 000+ Aufrufe in 30 Tagen; Deutschland gehört zu den Ländern. Quellen: [ttcalculator](https://ttcalculator.net/guides/creator-rewards-program/) · [makeinfluence](https://www.makeinfluence.com/en/academy/tiktok-creator-rewards-program-how-organic-monetization-works-in-2026).
+- **YouTube (از ۱۵ ژوئیه ۲۰۲۵):** محتوای «inauthentic» (انبوه‌ساز، تکراری، بر پایهٔ یک قالب با تفاوت ناچیز، کپی‌کردنش در مقیاس بالا آسان، بدون سهم روشن سازنده) درآمدزا نمی‌شود. ممنوعیت دربارهٔ درآمد است، نه آپلود. منابع: [Plagiarism Today](https://www.plagiarismtoday.com/2025/07/08/youtube-targets-inauthentic-content/) · [Daily Star](https://d11.thedailystar.net/tech-startup/news/youtubes-new-monetisation-rule-targets-mass-produced-inauthentic-content-3936511) · [subsub](https://www.subsub.io/blog/youtube-inauthentic-content-policy-2025).
+- **TikTok Creator Rewards:** محتوای ۱۰۰٪ اصیل، باکیفیت و **بیش از یک دقیقه**؛ حساب ۱۸ سال به بالا، ۱۰٬۰۰۰+ دنبال‌کننده، ۱۰۰٬۰۰۰+ بازدید در ۳۰ روز؛ آلمان جزو کشورهای برنامه است. منابع: [ttcalculator](https://ttcalculator.net/guides/creator-rewards-program/) · [makeinfluence](https://www.makeinfluence.com/en/academy/tiktok-creator-rewards-program-how-organic-monetization-works-in-2026).
 
-Folgen für die Lektionen:
-1. Echte Animation: Lena und Herr Braun bewegen sich (Sprechclips, Lachen nach dem Witz), dazu bewegte Grafiken (Regen, Uhr, Wolke). Ein Standbild mit Text würde eher als Folienvideo gelten.
-2. **Länge: mindestens 61,5 s** (vorher 60 s), damit das Video «über eine Minute» ist; weiterhin höchstens 65 s.
-3. Risiko «Vorlage mit minimaler Abwechslung»: die fünf Teile sind jede Lektion gleich. Dagegen helfen: jede Lektion eine **andere kleine Geschichte**, andere Bilder und Pointen, eigener Beitrag (eigene Figuren, eigene Stimmen). Ob eine Plattform den Kanal als «original» wertet, weiß ich nicht und kann es nicht zusichern.
-4. Ob Ihr Konto die Mindestzahlen (Follower, Aufrufe) erreicht, weiß ich nicht.
+پیامد برای درس‌ها:
+1. انیمیشن واقعی: لنا و براون حرکت می‌کنند (کلیپ حرف‌زدن، خندیدن بعد از شوخی) و گرافیک‌ها هم متحرک‌اند (باران، ساعت، ابر). عکس ثابت با نوشته بیشتر شبیه ویدیوی اسلاید است.
+2. **طول: دست‌کم ۶۱٫۵ ثانیه** (پیش‌تر ۶۰) تا ویدیو «بیش از یک دقیقه» باشد؛ حداکثر همچنان ۶۵ ثانیه.
+3. خطر «قالب با تفاوت ناچیز»: پنج بخش در هر درس یکی است. راه‌حل: هر درس یک **داستان کوچک دیگر**، تصویر و شوخی دیگر، سهم اصیل (شخصیت‌ها و صداهای خودتان). اینکه پلتفرم کانال را «اصیل» حساب کند یا نه، را نمی‌دانم و نمی‌توانم تضمین کنم.
+4. اینکه حساب شما به حداقل‌ها (دنبال‌کننده، بازدید) می‌رسد یا نه، را نمی‌دانم.
