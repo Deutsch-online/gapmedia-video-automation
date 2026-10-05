@@ -20,7 +20,7 @@
   const lerp = (a, b, k) => a + (b - a) * k;
   const INK = "#3b2a24";
   const line = (w = 4, c = INK) => ({ stroke: c, "stroke-width": w, "stroke-linejoin": "round", "stroke-linecap": "round" });
-  const SKIN = "#F5CBA7", SKIN_D = "#E6AE86", HAIR = "#4A3126", SWEATER = "#2F6DAA", SWEATER_D = "#245B90", APRON = "#9AA2AB", APRON_D = "#7C858F";
+  const SKIN = "#F5CBA7", SKIN_D = "#E6AE86", HAIR = "#4A3126", SWEATER = "#FFFFFF", SWEATER_D = "#DDE3EE", APRON = "#F0643C", APRON_D = "#D44E28";
   const COUNTER_Y = 1250;
 
   const defs = el("defs", {}, svg);
@@ -68,36 +68,41 @@
   for (const x of [30, 560]) R(counter, x, COUNTER_Y + 80, 490, 560, "none", { rx: 22, ...line(4, "#9BBFA6") });
   C(counter, 500, COUNTER_Y + 140, 12, "#8A6A4E"); C(counter, 580, COUNTER_Y + 140, 12, "#8A6A4E");
 
-  // ------------------------------------------------------------------ the man
+  // ------------------------------------------------------------------ the man (a friendly young cook: big round head, chef's hat, white jacket)
   const body = g(bodyLayer);
-  P(body, "M 372 800 Q 540 735 708 800 L 742 1262 L 338 1262 Z", SWEATER, line(5));
-  P(body, "M 380 840 Q 540 790 700 840", "none", { stroke: SWEATER_D, "stroke-width": 6, "stroke-opacity": 0.5, "stroke-linecap": "round" });
-  P(body, "M 500 650 L 500 790 Q 540 836 580 790 L 580 650 Z", SKIN, line(4));
-  P(body, "M 478 780 Q 540 850 602 780 L 616 800 Q 540 880 464 800 Z", SWEATER_D, line(3));
+  P(body, "M 505 690 L 505 800 Q 540 828 575 800 L 575 690 Z", SKIN, line(4));
+  P(body, "M 350 826 Q 540 740 730 826 L 762 1262 L 318 1262 Z", SWEATER, line(5));
+  P(body, "M 372 860 Q 540 800 708 860", "none", { stroke: SWEATER_D, "stroke-width": 8, "stroke-opacity": 0.8, "stroke-linecap": "round" });
+  P(body, "M 462 792 Q 540 868 618 792 L 648 818 Q 540 918 432 818 Z", "#FFC83D", line(4));
   const apron = g(body, { opacity: 0 });
-  P(apron, "M 440 812 L 640 812 L 676 1262 L 404 1262 Z", APRON, line(4));
-  P(apron, "M 440 812 L 466 784 M 640 812 L 614 784", "none", line(7, APRON_D));
-  R(apron, 478, 1010, 124, 110, APRON_D, { rx: 12, "fill-opacity": 0.45 });
-  const head = g(bodyLayer, { transform: "translate(540,566)" });
-  E(head, -98, 8, 17, 28, SKIN, line(4)); E(head, 98, 8, 17, 28, SKIN, line(4));
-  E(head, 0, 0, 96, 116, SKIN, line(5));
-  E(head, -60, 44, 22, 14, "#F29C8A", { opacity: 0.45 }); E(head, 60, 44, 22, 14, "#F29C8A", { opacity: 0.45 });
-  P(head, "M -102 -22 C -112 -128 -42 -150 6 -140 C 70 -148 118 -98 102 -14 C 92 -58 48 -86 -4 -78 C -58 -74 -92 -56 -102 -22 Z", HAIR, line(5));
-  P(head, "M -20 -82 C 10 -112 60 -112 84 -78", "none", { stroke: "#6A4A39", "stroke-width": 6, "stroke-linecap": "round", opacity: 0.8 });
-  const eyes = [-40, 40].map((x) => {
-    const eg = g(head, { transform: `translate(${x},-8)` });
-    E(eg, 0, 0, 21, 24, "#FFFFFF", line(3.5));
-    const pupil = C(eg, 0, 0, 11, "#3A2A22"); C(eg, -4, -5, 3.4, "#FFFFFF");
-    const lid = P(eg, "M -23 -4 Q 0 -34 23 -4 L 23 -30 L -23 -30 Z", SKIN, { opacity: 0 });
+  P(apron, "M 430 830 L 650 830 L 690 1262 L 390 1262 Z", APRON, line(4));
+  P(apron, "M 430 830 L 462 794 M 650 830 L 618 794", "none", line(8, APRON_D));
+  R(apron, 474, 1020, 132, 116, APRON_D, { rx: 14, "fill-opacity": 0.5 });
+  [920, 990].forEach((y) => C(body, 540, y, 9, "#DDE3EE", line(3)));
+  const head = g(bodyLayer, { transform: "translate(540,612)" });
+  E(head, -112, 10, 18, 30, SKIN, line(4)); E(head, 112, 10, 18, 30, SKIN, line(4));
+  E(head, 0, 0, 112, 106, SKIN, line(5));
+  P(head, "M -108 -12 Q -118 -60 -84 -86 L -84 -30 Q -100 -26 -108 -12 Z M 108 -12 Q 118 -60 84 -86 L 84 -30 Q 100 -26 108 -12 Z", HAIR, line(4));
+  E(head, -68, 46, 26, 16, "#F28C7A", { opacity: 0.5 }); E(head, 68, 46, 26, 16, "#F28C7A", { opacity: 0.5 });
+  const eyes = [-46, 46].map((x) => {
+    const eg = g(head, { transform: `translate(${x},-6)` });
+    E(eg, 0, 0, 25, 29, "#FFFFFF", line(3.5));
+    const pupil = C(eg, 0, 0, 15, "#3A2A22"); C(eg, -5, -7, 5, "#FFFFFF"); C(eg, 6, 6, 2.6, "#FFFFFF");
+    const lid = P(eg, "M -28 -4 Q 0 -40 28 -4 L 28 -36 L -28 -36 Z", SKIN, { opacity: 0 });
     return { eg, pupil, lid };
   });
-  const brows = [P(head, "M -66 -46 Q -40 -62 -14 -48", "none", line(7, HAIR)), P(head, "M 14 -48 Q 40 -62 66 -46", "none", line(7, HAIR))];
-  P(head, "M -3 6 Q -14 30 -3 34 Q 6 36 10 32", "none", line(4, SKIN_D));
-  const mouth = g(head, { transform: "translate(0,66)" });
+  const brows = [P(head, "M -74 -48 Q -46 -68 -16 -52", "none", line(9, HAIR)), P(head, "M 16 -52 Q 46 -68 74 -48", "none", line(9, HAIR))];
+  E(head, 0, 26, 10, 8, SKIN_D, { opacity: 0.9 });
+  const mouth = g(head, { transform: "translate(0,64)" });
   const mouthShape = P(mouth, "M -28 0 Q 0 14 28 0", "none", line(5));
   const mouthIn = P(mouth, "M -26 0 Q 0 2 26 0 Q 22 30 0 32 Q -22 30 -26 0 Z", "#7B2C34", { opacity: 0, ...line(4) });
   const teeth = R(mouth, -20, 1, 40, 9, "#FFFFFF", { opacity: 0, rx: 3 });
   const tongue = E(mouth, 0, 24, 13, 7, "#E2706F", { opacity: 0 });
+  // the chef's hat
+  R(head, -96, -112, 192, 40, "#FFFFFF", { rx: 10, ...line(5) });
+  [[-62, -150, 48], [0, -184, 60], [62, -150, 48]].forEach(([x, y, r]) => C(head, x, y, r, "#FFFFFF", line(5)));
+  R(head, -90, -140, 180, 36, "#FFFFFF"); R(head, -92, -112, 184, 36, "#FFFFFF");
+  P(head, "M -90 -100 L 90 -100", "none", { stroke: "#DDE3EE", "stroke-width": 6, "stroke-linecap": "round" });
 
   // ------------------------------------------------------------------ props on the counter (one set per scene)
   const sets = { wash: g(propsLayer), cut: g(propsLayer), peel: g(propsLayer), stove: g(propsLayer) };
@@ -154,9 +159,9 @@
   const armNodes = {};
   for (const k of ["R", "L"]) {
     const a = g(armsLayer);
-    armNodes[k] = { up0: el("path", { fill: "none", ...line(60, INK) }, a), up: el("path", { fill: "none", stroke: SWEATER, "stroke-width": 50, "stroke-linecap": "round" }, a),
-      fo0: el("path", { fill: "none", ...line(48, INK) }, a), fo: el("path", { fill: "none", stroke: SKIN, "stroke-width": 38, "stroke-linecap": "round" }, a),
-      cuff: el("path", { fill: "none", stroke: SWEATER_D, "stroke-width": 54, "stroke-linecap": "round" }, a), hand: C(a, 0, 0, 29, SKIN, line(4.5)), thumb: C(a, 0, 0, 12, SKIN, line(3.5)) };
+    armNodes[k] = { up0: el("path", { fill: "none", ...line(68, INK) }, a), up: el("path", { fill: "none", stroke: SWEATER, "stroke-width": 58, "stroke-linecap": "round" }, a),
+      fo0: el("path", { fill: "none", ...line(54, INK) }, a), fo: el("path", { fill: "none", stroke: SKIN, "stroke-width": 44, "stroke-linecap": "round" }, a),
+      cuff: el("path", { fill: "none", stroke: "#C5CEDF", "stroke-width": 54, "stroke-linecap": "round" }, a), hand: C(a, 0, 0, 33, SKIN, line(4.5)), thumb: C(a, 0, 0, 12, SKIN, line(3.5)) };
   }
   function arm(k, tx, ty, curl = 1) {
     const [sx, sy] = SH[k];
@@ -170,7 +175,7 @@
     const n = armNodes[k];
     const up = `M ${sx} ${sy} L ${ex[0]} ${ex[1]}`, fo = `M ${ex[0]} ${ex[1]} L ${tx} ${ty}`;
     n.up0.setAttribute("d", up); n.up.setAttribute("d", up); n.fo0.setAttribute("d", fo); n.fo.setAttribute("d", fo);
-    const cx = ex[0] + (tx - ex[0]) * 0.13, cy = ex[1] + (ty - ex[1]) * 0.13;
+    const cx = ex[0] + (tx - ex[0]) * 0.06, cy = ex[1] + (ty - ex[1]) * 0.06;
     n.cuff.setAttribute("d", `M ${ex[0]} ${ex[1]} L ${cx} ${cy}`);
     n.hand.setAttribute("cx", tx); n.hand.setAttribute("cy", ty); n.thumb.setAttribute("cx", tx + 18 * out * -1 * curl); n.thumb.setAttribute("cy", ty - 14);
     return [tx, ty];
@@ -307,9 +312,9 @@
     mouthShape.setAttribute("d", `M -${28 + smile * 4} ${-smile * 2} Q 0 ${8 + smile * 14} ${28 + smile * 4} ${-smile * 2}`);
     mouthShape.setAttribute("opacity", m > 0.06 ? 0 : 1);
     const blink = Math.max(0, 1 - Math.abs(((t % 3.6) - 1.7) / 0.07)), look = pose.gaze;
-    eyes.forEach((e) => { e.lid.setAttribute("opacity", blink > 0.5 ? 1 : 0); e.pupil.setAttribute("cx", 0); e.pupil.setAttribute("cy", 5 * look); });
+    eyes.forEach((e) => { e.lid.setAttribute("opacity", blink > 0.5 ? 1 : 0); e.pupil.setAttribute("cx", 0); e.pupil.setAttribute("cy", 6 * look); });
     brows[0].setAttribute("transform", `translate(0,${-4 * smile + (m > 0.4 ? -3 : 0)})`); brows[1].setAttribute("transform", `translate(0,${-4 * smile + (m > 0.4 ? -3 : 0)})`);
-    head.setAttribute("transform", `translate(540,${566 + Math.sin(t * 1.7) * 2}) rotate(${Math.sin(t * 0.8) * 1.2 + (look ? 2 : 0)})`);
+    head.setAttribute("transform", `translate(540,${612 + Math.sin(t * 1.7) * 2}) rotate(${Math.sin(t * 0.8) * 1.2 + (look ? 2 : 0)})`);
     body.setAttribute("transform", `translate(0,${Math.sin(t * 1.7) * 1.5})`);
   }
   window.__kochDraw = draw;

@@ -18,15 +18,15 @@ const HF = "npx --yes hyperframes@0.8.79", iso = new Date().toISOString().slice(
 const noTelegram = process.argv.includes("--no-telegram");
 
 const SCENES = [
-  { de: "Ich wasche das Gemüse.", verb: "wasche", sfx: [["water", 0.3, 0.22]] },
-  { de: "Ich schneide die Tomate.", verb: "schneide", sfx: [["chop", 0.3, 0.3]] },
-  { de: "Ich schäle die Kartoffel.", verb: "schäle", sfx: [["peel", 0.4, 0.28]] },
-  { de: "Ich lege die Zwiebel in die Pfanne.", verb: "lege", sfx: [["sizzle", 2.0, 0.2]] },
-  { de: "Ich rühre das Essen um.", verb: "rühre", sfx: [["stir", 0.3, 0.26], ["sizzle", 0.2, 0.14]] },
-  { de: "Ich koche die Suppe.", verb: "koche", sfx: [["boil", 0.3, 0.24]] },
+  { de: "Ich wasche das Gemüse.", fa: "من سبزی را می‌شویم.", verb: "wasche", sfx: [["water", 0.3, 0.22]] },
+  { de: "Ich schneide die Tomate.", fa: "من گوجه‌فرنگی را برش می‌دهم.", verb: "schneide", sfx: [["chop", 0.3, 0.3]] },
+  { de: "Ich schäle die Kartoffel.", fa: "من سیب‌زمینی را پوست می‌کنم.", verb: "schäle", sfx: [["peel", 0.4, 0.28]] },
+  { de: "Ich lege die Zwiebel in die Pfanne.", fa: "من پیاز را توی تابه می‌گذارم.", verb: "lege", sfx: [["sizzle", 2.0, 0.2]] },
+  { de: "Ich rühre das Essen um.", fa: "من غذا را هم می‌زنم.", verb: "rühre", sfx: [["stir", 0.3, 0.26], ["sizzle", 0.2, 0.14]] },
+  { de: "Ich koche die Suppe.", fa: "من سوپ را می‌پزم.", verb: "koche", sfx: [["boil", 0.3, 0.24]] },
 ];
 const SCENE_LEN = 10.2, SAY1 = 0.5, SAY2 = 5.7, END_HOLD = 3.0;
-const END = { de: "Guten Appetit!" };
+const END = { de: "Guten Appetit!", fa: "نوش جان!" };
 const duration = +(SCENES.length * SCENE_LEN + END_HOLD).toFixed(3);
 if (duration < 60 || duration > 65) throw new Error(`film is ${duration}s; it must be 60-65 s`);
 
