@@ -1,0 +1,34 @@
+ kochen series k01-ich-koche: 62.5s, 12 shots
+  lipsync s0 in 88s
+shot s0 (kontext+lipsync) in 135s
+  lipsync s1 in 84s
+shot s1 (kontext+lipsync) in 131s
+  lipsync s2 in 84s
+shot s2 (kontext+lipsync) in 132s
+  lipsync s3 in 83s
+shot s3 (kontext+lipsync) in 130s
+  lipsync s4 in 88s
+shot s4 (kontext+lipsync) in 136s
+  lipsync s5 in 87s
+shot s5 (kontext+lipsync) in 133s
+  lipsync s6 in 87s
+shot s6 (kontext+lipsync) in 134s
+  lipsync s7 in 88s
+shot s7 (kontext+lipsync) in 137s
+  lipsync s8 in 87s
+shot s8 (kontext+lipsync) in 134s
+gradio_client.exceptions.AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:41:01. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://huggingf
+gradio_client.exceptions.AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:59. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://huggingf
+   mcp-tools/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:41:01. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://
+   black-forest-labs/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:59. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - 
+  kontext failed for s9: kontext failed on every Space — mcp-tools/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:41:01. Add credits to keep using Ze
+  free GPU quota spent
+gradio_client.exceptions.AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:58. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://huggingf
+gradio_client.exceptions.AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:56. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://huggingf
+   mcp-tools/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:58. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - https://
+   black-forest-labs/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:56. Add credits to keep using ZeroGPU. $1 for 10 minutes of ZeroGPU inference - 
+  kontext failed for s9: kontext failed on every Space — mcp-tools/FLUX.1-Kontext-Dev: AppError: You have exceeded your Pro ZeroGPU quota (90s requested vs. 0s left). Try again in 21:40:58. Add credits to keep using Ze
+  PRO GPU quota spent
+shot FAILED s9: quota
+  if (missing.length) throw new Error(`${missing.length} of ${jobs.length} series shot(s) are missing (the daily Hugging Face GPU quota?). The finished shots are kept; run again after the quota resets. Nothing was delive
+Error: 3 of 12 series shot(s) are missing (the daily Hugging Face GPU quota?). The finished shots are kept; run again after the quota resets. Nothing was delivered.
