@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { LESSONS, SEGMENTS, buildTimeline, buildCourseHTML, buildCardHTML, flashcardsTSV, estimateDur, validateLesson, LESSON_MIN, LESSON_MAX } from "./lib/course-lesson.mjs";
 
 for (const [id, lesson] of Object.entries(LESSONS)) {
@@ -27,3 +27,25 @@ const mood = readFileSync("music/mood.mjs", "utf8"); assert.match(mood, /calm: \
 const wf = readFileSync(".github/workflows/course-lesson.yml", "utf8");
 assert.doesNotMatch(wf, /schedule:/, "manual only"); assert.match(wf, /node course-build\.mjs/); assert.match(wf, /group: gapmedia-lesson/);
 console.log("course: ok");
+
+// method 2 (from lesson 55)
+import { LESSONS_V2, SEGMENTS_V2, validateV2, timelineV2, buildCourseHTMLv2 } from "./lib/course-v2.mjs";
+for (const [id, lesson] of Object.entries(LESSONS_V2)) {
+  assert.deepEqual(validateV2(lesson), [], `${id} has no problems`);
+  const tl = timelineV2(lesson);
+  assert.ok(tl.total >= LESSON_MIN && tl.total <= LESSON_MAX, `${id}: ${tl.total}s`);
+  assert.deepEqual(tl.segs.map((s) => s.id), SEGMENTS_V2, "five parts, in order");
+  assert.equal(lesson.no, 55, "the series pointer stood at 54: the first method-2 lesson is 55");
+  assert.ok(timelineV2(lesson, (it) => estimateDur(it) * 1.4).total > LESSON_MAX, "a much longer voice passes the limit (the build then refuses it)");
+  // spaced return: the retrieve part brings back a phrase of an earlier lesson
+  assert.ok(lesson.retrieve.some((x) => x.k === "n" && /lesson 54/i.test(x.en)), "an earlier lesson comes back");
+  assert.ok(lesson.shadow.some((x) => x.tip), "a sound tip for Persian speakers");
+  for (const theme of ["easy", "tiktok", "youtube"]) {
+    const html = buildCourseHTMLv2({ lesson, tl, theme });
+    const own = html.slice(html.indexOf("</script>"));
+    assert.doesNotMatch(own, /Math\.random|Date\.now/); assert.doesNotMatch(own, /repeat:\s*-1/);
+  }
+  assert.equal(flashcardsTSV(lesson).trim().split("\n").length, lesson.cards.length);
+}
+assert.ok(existsSync("research/teaching-methods-2026-10-05.md"), "the research behind method 2 is in the repository");
+console.log("course method 2: ok");

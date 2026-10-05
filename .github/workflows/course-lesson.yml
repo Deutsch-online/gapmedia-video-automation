@@ -9,7 +9,7 @@ on:
       lesson:
         description: "Lesson id (lib/course-lesson.mjs)"
         required: false
-        default: "c01-hello"
+        default: "c55-weather"
         type: string
 
 concurrency:
@@ -38,7 +38,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           LESSON: ${{ inputs.lesson }}
-        run: node course-build.mjs --lesson "${LESSON:-c01-hello}"
+        run: node course-build.mjs --lesson "${LESSON:-c55-weather}"
       - name: Keep the flashcards
         if: success()
         uses: actions/upload-artifact@v4

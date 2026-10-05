@@ -12,6 +12,7 @@ import { assertComposition } from "./lib/hf-check.mjs";
 import { sfxFile } from "./lib/sfx.mjs";
 import { loadEnv, telegramConfig, sendPhoto, sendDocument } from "./lib/telegram.mjs";
 import { COURSE, LESSONS, buildTimeline, buildCourseHTML, buildCardHTML, flashcardsTSV, estimateDur, validateLesson } from "./lib/course-lesson.mjs";
+import { LESSONS_V2, SEGMENTS_V2, buildCourseHTMLv2 } from "./lib/course-v2.mjs";
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
 const localEnv = loadEnv();
@@ -19,10 +20,11 @@ Object.assign(process.env, localEnv);
 const tg = telegramConfig(localEnv);
 const arg = (name, d = "") => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : d; };
 const dry = process.argv.includes("--dry"), noTelegram = process.argv.includes("--no-telegram");
-const id = arg("--lesson", Object.keys(LESSONS)[0]);
-const lesson = LESSONS[id];
+const id = arg("--lesson", Object.keys(LESSONS_V2)[0]);
+const lesson = LESSONS[id] || LESSONS_V2[id];
+const v2 = lesson?.method === 2;   // method 2 (from lesson 55): research/teaching-methods-2026-10-05.md
 if (!lesson) { console.error(` ✗ unknown lesson "${id}"`); process.exit(1); }
-const problems = validateLesson(lesson);
+const problems = validateLesson(lesson, v2 ? SEGMENTS_V2 : undefined);
 if (problems.length) { console.error(` ✗ lesson ${id}:\n   ${problems.join("\n   ")}`); process.exit(1); }
 
 const HF = "npx --yes hyperframes@0.8.79";
@@ -51,7 +53,7 @@ const spokenDur = (it) => {
   files.set(it, f);
   return probe(f);
 };
-const tl = buildTimeline(lesson, dry ? estimateDur : spokenDur);
+const tl = buildTimeline(lesson, dry ? estimateDur : spokenDur, v2 ? SEGMENTS_V2 : undefined);
 console.log(` course ${id}: ${tl.total}s, ${tl.items.length} items, ${tl.segs.map((s) => `${s.id} ${s.t0.toFixed(1)}-${s.t1.toFixed(1)}`).join(" | ")}`);
 if (tl.total > 65) throw new Error(`lesson ${id} is ${tl.total}s; the limit is 65s`);
 
@@ -59,7 +61,7 @@ if (tl.total > 65) throw new Error(`lesson ${id} is ${tl.total}s; the limit is 6
 const silentFor = {};
 for (const theme of ["easy", "tiktok", "youtube"]) {
   const comp = `${compDir}/${id}-${theme}.html`;
-  writeFileSync(comp, buildCourseHTML({ lesson, tl, theme }));
+  writeFileSync(comp, (v2 ? buildCourseHTMLv2 : buildCourseHTML)({ lesson, tl, theme }));
   assertComposition(comp, { cli: HF });
   if (dry) continue;
   const silent = `${outDir}/${id}-${theme}-silent.mp4`;
