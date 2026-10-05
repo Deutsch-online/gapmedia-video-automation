@@ -1,0 +1,1 @@
+These three scripts are copied from the business-motion-film skill (MIT, source in .claude/skills/business-motion-film/SOURCE.txt) because .claude/ is not part of the repository, so the CI runners do not have it.

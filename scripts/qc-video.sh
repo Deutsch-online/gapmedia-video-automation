@@ -5,7 +5,7 @@
 # Writes <outdir>/qc.json (numbers), <outdir>/contact.jpg (a frame every 2.5 s). Measured only: listening and judging stay with people.
 set -uo pipefail
 f="$1"; out="$2"; label="${3:-$(basename "$f")}"
-S="$(cd "$(dirname "$0")/.." && pwd)/.claude/skills/business-motion-film/scripts"
+S="$(cd "$(dirname "$0")" && pwd)/qc"
 mkdir -p "$out"
 dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$f")
 w=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")

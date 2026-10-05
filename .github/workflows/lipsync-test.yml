@@ -1,0 +1,55 @@
+name: Lip-sync test (Hugging Face, manual)
+
+# Owner, 2026-10-05: the lips must move only as much as the words. Until today every lip-sync call of the series failed
+# with a NameError and fell back to a generic motion clip. This runs ONE call (free and PRO GPU quota only, no paid credits)
+# and keeps a contact sheet of the result in the repository, so the lips can be checked on the pictures.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          python -m pip install --disable-pip-version-check --quiet gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: One lip-sync call
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PAID_FALLBACK: "off"
+        run: |
+          set -o pipefail
+          mkdir -p out qc
+          EDGE_TTS_VOICE=de-DE-ConradNeural EDGE_TTS_SPEED=0.95 node music/edge-tts.mjs "Ich wasche das Gemüse." -o out/lip.mp3
+          python ai-cast/lipsync-test.py public/ai-cast/v2/braun.jpg out/lip.mp3 out/lip.mp4 2>&1 | tee qc/lipsync-test.log
+      - name: Contact sheet of the result
+        if: always()
+        run: |
+          [ -f out/lip.mp4 ] && bash scripts/qc/contact-sheet.sh out/lip.mp4 qc/lipsync-test.jpg 0.4 6 3 || true
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/lip.mp4 > qc/lipsync-test-duration.txt 2>/dev/null || true
+      - name: Keep the result
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A qc
+          git diff --staged --quiet || git commit -m "lipsync test result"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

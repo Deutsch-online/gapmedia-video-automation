@@ -10,7 +10,7 @@ Usage: python ai-cast/shots.py job.json
 import hashlib, json, math, os, shutil, sys, time
 sys.path.insert(0, os.path.dirname(__file__))
 import build
-from build import call, path_of, first_working, LENA, BRAUN, KRAUSE, PFEIFFER, MOTION_NEG, VIDEO_SPACES
+from build import call, client, path_of, first_working, LENA, BRAUN, KRAUSE, PFEIFFER, MOTION_NEG, VIDEO_SPACES   # `client` was missing: every lip-sync call failed with a NameError until 2026-10-05
 from gradio_client import handle_file
 from PIL import Image
 
