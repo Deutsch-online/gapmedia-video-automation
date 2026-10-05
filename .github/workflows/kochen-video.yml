@@ -1,6 +1,6 @@
-name: Lena macht sich fertig (one episode, manual)
+name: Ich koche (one episode, manual)
 
-# Owner request 2026-10-05: build the "Lena macht sich fertig" short on Hugging Face. Manual only (no cron):
+# Owner request 2026-10-05: build the "Ich koche" short on Hugging Face. Manual only (no cron):
 # it spends the daily ZeroGPU quota first, the PRO quota second and at most PAID_BUDGET_USD of paid
 # credits last. The result goes to the owner's bot chat only, in three formats.
 on:
@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 jobs:
-  fertig:
+  kochen:
     runs-on: ubuntu-latest
     timeout-minutes: 110
     steps:
@@ -40,13 +40,13 @@ jobs:
           python -m pip install --disable-pip-version-check --quiet gradio_client pillow 'huggingface_hub>=0.34'
           sudo apt-get update
           sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
-      - name: Restore the Fertig shots
+      - name: Restore the Kochen shots
         uses: actions/cache/restore@v4
         with:
           path: renders/series-shots
-          key: series-shots-fe-${{ github.run_id }}
+          key: series-shots-ko-${{ github.run_id }}
           restore-keys: |
-            series-shots-fe-
+            series-shots-ko-
       - name: Build and deliver the episode
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -55,22 +55,29 @@ jobs:
           PAID_FALLBACK: "off"      # owner, 2026-10-05: no extra cost, only the free and the PRO GPU quota
           # real lip-sync for the shots where the visible character speaks (LongCat-Video-Avatar on a ZeroGPU Space)
           LIPSYNC: "on"
-        run: node fertig-build.mjs
-      - name: Keep the Fertig shots for the next render
+        run: |
+          set -o pipefail
+          node kochen-build.mjs 2>&1 | tee build.log
+      - name: Summarise the build (which shots, which engine, lip-sync, quota)
+        if: always()
+        run: |
+          mkdir -p qc
+          grep -aE "^shot |lipsync|quota|FAILED|stage:|series " build.log | cut -c1-220 > qc/kochen-build-summary.txt || true
+      - name: Keep the Kochen shots for the next render
         if: always()
         uses: actions/cache/save@v4
         with:
           path: renders/series-shots
-          key: series-shots-fe-${{ github.run_id }}
+          key: series-shots-ko-${{ github.run_id }}
       - name: Measure the finished videos (QC report with numbers and a contact sheet)
         if: success()
-        run: bash scripts/qc-renders.sh "renders/fertig/$(date -u +%F)"
+        run: bash scripts/qc-renders.sh "renders/kochen/$(date -u +%F)"
       - name: Keep the contact sheet
-        if: success()
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A ai-cast/contact qc
-          git diff --staged --quiet || git commit -m "fertig: contact sheet"
+          git diff --staged --quiet || git commit -m "kochen: contact sheet"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
