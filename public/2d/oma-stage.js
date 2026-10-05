@@ -25,8 +25,12 @@
   const defs = el("defs", {}, svg);
   const rad = (id, stops) => { const r = el("radialGradient", { id, cx: 0.5, cy: 0.5, r: 0.5 }, defs); stops.forEach(([o, c, a = 1]) => el("stop", { offset: o, "stop-color": c, "stop-opacity": a }, r)); return `url(#${id})`; };
 
+  // hand-drawn "boil": the lines of people and props tremble a little, re-posed 8 times a second (seek-safe: the seed is a function of time)
+  const boil = el("filter", { id: "boil", x: "-5%", y: "-5%", width: "110%", height: "110%" }, defs);
+  const boilNoise = el("feTurbulence", { type: "fractalNoise", baseFrequency: "0.011", numOctaves: "2", seed: "1", result: "n" }, boil);
+  el("feDisplacementMap", { in: "SourceGraphic", in2: "n", scale: "5", xChannelSelector: "R", yChannelSelector: "G" }, boil);
   // ------------------------------------------------------------------ layers: room, back props, people, front props, effects
-  const room = g(svg), backProps = g(svg), people = g(svg), frontProps = g(svg), fx = g(svg);
+  const room = g(svg), backProps = g(svg, { filter: "url(#boil)" }), people = g(svg, { filter: "url(#boil)" }), frontProps = g(svg, { filter: "url(#boil)" }), fx = g(svg);
   const rooms = { living: g(room), kitchen: g(room), hall: g(room), bed: g(room) };
   const floor = (p, c, c2) => { R(p, 0, FLOOR, 1080, 420, c); R(p, 0, FLOOR, 1080, 8, c2); };
   const frame = (p, x, y, w, h, c = "#B8855A") => { R(p, x, y, w, h, "#F3E6C9", line(4)); R(p, x + 12, y + 12, w - 24, h - 24, c, { opacity: 0.55 }); };
@@ -219,7 +223,10 @@
     show(lampGlow, 0); lampShade.setAttribute("fill", si > 1 ? "#FFE58A" : "#CFC6B0");
     const o = SC[si](u); show(rooms[o.room], 1); show(S[si].back, 1); show(S[si].front, 1);
     // people
-    girl.x = o.gx; girl.dy = o.dy || 0; place(girl.root, girl.x, FLOOR + girl.dy, 0, girl.s); place(oma.root, oma.x, FLOOR, 0, oma.s);
+    boilNoise.setAttribute("seed", 1 + (Math.floor(t * 8) % 7));
+    const mv = clamp(mouthAt(t), 0, 1), ant = ss(T0 - 0.35, T0, u) * (1 - ss(T0, T0 + 0.25, u));            // a small crouch before the girl acts (anticipation)
+    girl.x = o.gx; girl.dy = o.dy || 0; place(girl.root, girl.x, FLOOR + girl.dy, 0, girl.s * (1 + 0.03 * ant), girl.s * (1 - 0.05 * ant + wob(t, 0.9, 0.006)));
+    place(oma.root, oma.x, FLOOR, 0, oma.s * (1 - 0.012 * mv), oma.s * (1 + 0.016 * mv + wob(t, 0.8, 0.005)));
     const gr = world(girl, o.R[0], o.R[1]), gl = world(girl, o.L[0], o.L[1]); girl.ik("R", gr[0], gr[1]); girl.ik("L", gl[0], gl[1]);
     // Oma: says the order and points at what has to be done, the other hand on the hip
     const pt = ss(0.15, 0.6, u) - ss(2.5, 3.0, u), tgt = world(oma, o.point[0], o.point[1]), dirx = tgt[0] - SH.L[0], diry = tgt[1] - SH.L[1], dl = Math.hypot(dirx, diry) || 1;
