@@ -1,0 +1,26 @@
+ kochen series k01-ich-koche: 62.5s, 12 shots
+  lipsync FAILED s0: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s0 (kontext) in 103s
+  lipsync FAILED s1: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s1 (kontext) in 99s
+  lipsync FAILED s2: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s2 (kontext) in 104s
+  lipsync FAILED s3: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s3 (kontext) in 93s
+  lipsync FAILED s4: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s4 (kontext) in 103s
+  lipsync FAILED s5: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s5 (kontext) in 105s
+  lipsync FAILED s6: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s6 (kontext) in 100s
+  lipsync FAILED s7: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s7 (kontext) in 106s
+  lipsync FAILED s8: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s8 (kontext) in 100s
+  lipsync FAILED s9: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s9 (kontext) in 103s
+  lipsync FAILED s10: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s10 (kontext) in 98s
+  lipsync FAILED s11: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s11 (kontext) in 92s
+ series shots: 12 of 12 with motion
