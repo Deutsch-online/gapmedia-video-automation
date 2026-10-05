@@ -8,6 +8,7 @@
 node_modules/
 renders/
 compositions/daily/
+compositions/course/
 snapshots/
 index.html
 music/*.wav
