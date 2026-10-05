@@ -55,7 +55,14 @@ jobs:
           PAID_FALLBACK: "off"      # owner, 2026-10-05: no extra cost, only the free and the PRO GPU quota
           # real lip-sync for the shots where the visible character speaks (LongCat-Video-Avatar on a ZeroGPU Space)
           LIPSYNC: "on"
-        run: node freunde-build.mjs
+        run: |
+          set -o pipefail
+          node freunde-build.mjs 2>&1 | tee build.log
+      - name: Summarise the build (which shots, which engine, lip-sync, quota)
+        if: always()
+        run: |
+          mkdir -p qc
+          grep -aE "^shot |lipsync|quota|FAILED|stage:|series " build.log | cut -c1-220 > qc/freunde-build-summary.txt || true
       - name: Keep the Freunde shots for the next render
         if: always()
         uses: actions/cache/save@v4
@@ -66,7 +73,7 @@ jobs:
         if: success()
         run: bash scripts/qc-renders.sh "renders/freunde/$(date -u +%F)"
       - name: Keep the contact sheet
-        if: success()
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

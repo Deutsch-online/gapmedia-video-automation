@@ -20,6 +20,10 @@ DEFAULT_CAST = {"lena": {"ref": f"{CAST_DIR}/lena-cu.png", "look": LENA}, "braun
 DEFAULT_STYLE = ("High-end 3D animated feature film still, stylised human, warm natural light, shallow depth of field, "
                  "rich detailed textures, expressive appealing faces, vertical 9:16 frame, the characters in the lower two thirds "
                  "of the frame and calm background above them, clean image with no text, no letters and no watermark")
+# owner, 2026-10-05: the characters were zoomed in and the picture was not happy: a wide shot, the whole body, the place around, bright
+WIDE = ("WIDE medium shot, camera far away: the whole body is visible from head to shoes with free space around the character, "
+        "the place clearly visible in the background, bright cheerful colours, soft sunny light, cute Pixar-style 3D animated film still, "
+        "vertical 9:16, no close-up, no text, no watermark.")
 KONTEXT = ["mcp-tools/FLUX.1-Kontext-Dev", "black-forest-labs/FLUX.1-Kontext-Dev"]
 
 
@@ -44,8 +48,8 @@ def make_still(j, shot_dir, cast, style):
     chars = j["chars"]
     ref = vertical_ref(chars[0], cast, shot_dir) if len(chars) == 1 else None
     if ref:
-        prompt = (f"Keep the same character: identical face, hairstyle, skin tone and age. Put this character {j['prompt']}. "
-                  "Vertical 9:16 cinematic composition, high-end 3D animated feature film still, warm light, no text.")
+        prompt = (f"Keep the same character: identical face, hairstyle, outfit, skin tone and age. Put this character {j['prompt']}. "
+                  + WIDE)
         try:
             r = first_working(KONTEXT, {"input_image": handle_file(ref), "prompt": prompt, "seed": j["seed"], "randomize_seed": False,
                                         "guidance_scale": 2.5, "steps": 24}, "kontext")
@@ -121,8 +125,8 @@ def paid_still(j, shot_dir, cast, style):
     ref = vertical_ref(chars[0], cast, shot_dir) if len(chars) == 1 else None
     c = paid_client()
     if ref:
-        prompt = (f"Keep the same character: identical face, hairstyle, skin tone and age. Put this character {j['prompt']}. "
-                  "Vertical 9:16 cinematic composition, high-end 3D animated feature film still, warm light, no text.")
+        prompt = (f"Keep the same character: identical face, hairstyle, outfit, skin tone and age. Put this character {j['prompt']}. "
+                  + WIDE)
         img = c.image_to_image(open(ref, "rb").read(), prompt=prompt, model="black-forest-labs/FLUX.1-Kontext-dev")
     else:
         who = " ".join(f"Character {i + 1}: {(cast.get(x) or {}).get('look', x)}." for i, x in enumerate(chars))
