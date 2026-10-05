@@ -1,0 +1,49 @@
+name: Oma sagt (hand-drawn cartoon, manual)
+
+# Owner request 2026-10-05: "build it without Hugging Face, no extra cost". Manual only (no cron).
+# The picture is drawn in SVG (public/2d/oma-stage.js), the voice is Edge TTS, the music bed is kitchen-1.
+# No GPU, no Hugging Face, no paid service. The result goes to the owner's bot chat only, in three formats.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  oma:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install video dependencies
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Build and deliver the film
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node oma-build.mjs
+      - name: Measure the finished videos (QC report with numbers and a contact sheet)
+        if: success()
+        run: bash scripts/qc-renders.sh "renders/oma/$(date -u +%F)"
+      - name: Keep the QC report
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A qc
+          git diff --staged --quiet || git commit -m "oma: qc report"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
