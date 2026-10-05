@@ -33,6 +33,9 @@ export const MOODS = {
   // punchy and playful — social features, stories, community
   play: { bpm: [128, 136], bright: 1.12, groove: "broken", palette: "bright",
           useLead: true, usePluck: true, openHats: true, swing: 0.018 },
+  // calm and friendly — a course lesson (owner, 2026-10-05: "calm music"): slow, soft, a gentle tune, no open hats
+  calm: { bpm: [84, 92], bright: 0.85, groove: "half", palette: "soft",
+          useLead: true, usePluck: true, openHats: false, swing: 0.010 },
   // steady and serious — a deportation story must not sound celebratory
   news: { bpm: [96, 104], bright: 0.72, groove: "half", palette: "soft",
           useLead: false, usePluck: true, openHats: false, swing: 0.004 },

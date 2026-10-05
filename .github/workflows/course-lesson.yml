@@ -1,0 +1,47 @@
+name: Course lesson (Deutsch in 60 Sekunden, manual)
+
+# Owner request 2026-10-05: a course of one-minute lessons (CURRICULUM_DESIGN.md). No AI video and no GPU:
+# portraits, typography and shapes. One lesson per run; the video in three formats, a calm music bed and the
+# flashcards go to the owner's bot chat only. Manual (no cron) until the owner approves the sample lesson.
+on:
+  workflow_dispatch:
+    inputs:
+      lesson:
+        description: "Lesson id (lib/course-lesson.mjs)"
+        required: false
+        default: "c01-hello"
+        type: string
+
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  course:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install video dependencies
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation
+      - name: Build and deliver the lesson
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          LESSON: ${{ inputs.lesson }}
+        run: node course-build.mjs --lesson "${LESSON:-c01-hello}"
+      - name: Keep the flashcards
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: course-flashcards
+          path: renders/course/*/*-flashcards.tsv
