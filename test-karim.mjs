@@ -14,7 +14,8 @@ for (const E of Object.values(KARIM_EPISODES)) {
     });
     t += q(cur - t + 0.15);
   }
-  assert.ok(t + 3.5 <= 65, `${E.title}: about ${(t + 3.5).toFixed(0)} s`);
+  // the real Edge German voices ran 1.28x longer than this estimate (first CI run: estimate 62.5 s, real 80 s)
+  assert.ok((t + 3.5) * 1.28 <= 64, `${E.title}: about ${((t + 3.5) * 1.28).toFixed(0)} s real`);
 }
 const wf = readFileSync(".github/workflows/karim-video.yml", "utf8");
 assert.doesNotMatch(wf, /schedule:/, "manual only"); assert.match(wf, /group: gapmedia-lesson/); assert.match(wf, /node karim-build\.mjs/);
