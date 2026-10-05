@@ -1,0 +1,27 @@
+{
+ "label": "koch-koch-2026-10-05-tiktok-easy",
+ "duration_s": 64.2,
+ "width": 1080,
+ "height": 1920,
+ "fps": "30/1",
+ "has_audio": true,
+ "aspect": 0.562,
+ "loudness_lufs": -14.5,
+ "loudness_range_lu": 4.6,
+ "true_peak_dbtp": -1.3,
+ "silences_over_0.4s": 0,
+ "silence_seconds": 0.0,
+ "silence_share": 0.0,
+ "hard_cuts_score_0.3": 0,
+ "cuts_per_minute": 0.0,
+ "frozen_seconds_est": 33.5,
+ "frozen_share": 0.522,
+ "black_segments": 0,
+ "checks": {
+  "over_one_minute": true,
+  "within_65s": true,
+  "vertical_9x16": true,
+  "loudness_ok(-16..-12 target, -24..-10 tolerated)": true,
+  "true_peak_ok(<=-1)": true
+ }
+}
