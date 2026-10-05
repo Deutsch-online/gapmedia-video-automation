@@ -1,0 +1,9 @@
+ freunde series f01-falsche-freunde: 61.5s, 12 shots
+  lipsync FAILED s0: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s0 (kontext) in 94s
+  lipsync FAILED s1: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s1 (kontext) in 102s
+  lipsync FAILED s2: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s2 (kontext) in 87s
+  lipsync FAILED s3: NameError: name 'client' is not defined -> the generic motion clip instead
+shot s3 (kontext) in 105s
