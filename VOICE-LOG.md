@@ -1255,3 +1255,11 @@ made the children's voices bad.
 
 **Status: awaiting the owner's ear.** I cannot hear these voices; the children's voices are the
 hardest case (no toddler voice exists in the list).
+
+## 2026-10-05 — «Ich koche» (Herr Braun): voice and music chosen by the owner's ear
+
+Four German male Edge voices read the same three sentences (`scripts/voice-audition.mjs`, speed 0.95, volume 1.0, no pitch change):
+1 `de-DE-ConradNeural`, 2 `de-DE-FlorianMultilingualNeural`, 3 `de-DE-KillianNeural`, 4 `de-AT-JonasNeural`.
+Owner: «موزیک و صدا یک» — read as sample 1 of each: voice 1 = Conrad (speed 0.95, no pitch change) and music bed 1 = `public/music/kitchen-1.mp3`
+(ACE-Step, "cheerful happy cooking show, acoustic guitar, ukulele, light percussion, whistling", 108 bpm). If sample 1 was not what was meant, the owner says so and the voice is changed by one variable only.
+Why the earlier voice sounded harsh (owner, same day): Conrad was set at -8 Hz pitch for the series; the audition sample had no pitch change.
