@@ -142,7 +142,7 @@ assert.match(dfilm.replace(/\s+/g, " "), /class="explain"><div class="cap sub en
 console.log("easydeutsch: ok");
 // fun (owner, 2026-10-04): comedy sounds, a "HA HA!" burst after each joke, a teaser, a quiz
 const { SFX_KINDS } = await import("./lib/sfx.mjs");
-assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "stamp", "womp", "slidewhistle", "boing", "bonk", "tada"]);
+assert.deepEqual(SFX_KINDS, ["ding", "pop", "rimshot", "tick", "sting", "vacuum", "ring", "drill", "stamp", "womp", "slidewhistle", "boing", "bonk", "water", "chop", "peel", "sizzle", "stir", "boil", "tada"]);
 assert.match(easy, /sfx\("rimshot"/, "a ba-dum-tss after the joke"); assert.match(easy, /sfx\("tick"/); 
 assert.match(easy, /jokes, quiz, teaser:/, "the film gets the jokes, the quiz and the teaser");
 const fun = buildEasyCartoonHTML({ episodeNo: 54, title: "x", hookDur: 3, outroAt: 15, total: 18, three: true, dialogue: true, cast: "aiclips", stageVideo: "s.mp4", lines: [], jokes: [5, 9],
