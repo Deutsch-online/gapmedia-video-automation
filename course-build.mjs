@@ -13,6 +13,7 @@ import { sfxFile } from "./lib/sfx.mjs";
 import { loadEnv, telegramConfig, sendPhoto, sendDocument } from "./lib/telegram.mjs";
 import { COURSE, LESSONS, buildTimeline, buildCourseHTML, buildCardHTML, flashcardsTSV, estimateDur, validateLesson } from "./lib/course-lesson.mjs";
 import { LESSONS_V2, SEGMENTS_V2, buildCourseHTMLv2 } from "./lib/course-v2.mjs";
+import { renderAIStage, aiCastReady } from "./lib/ai-stage.mjs";
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
 const localEnv = loadEnv();
@@ -57,11 +58,24 @@ const tl = buildTimeline(lesson, dry ? estimateDur : spokenDur, v2 ? SEGMENTS_V2
 console.log(` course ${id}: ${tl.total}s, ${tl.items.length} items, ${tl.segs.map((s) => `${s.id} ${s.t0.toFixed(1)}-${s.t1.toFixed(1)}`).join(" | ")}`);
 if (tl.total > 65) throw new Error(`lesson ${id} is ${tl.total}s; the limit is 65s`);
 
+// ---- the animated stage (owner, 2026-10-05: "it must be animation"): Lena and Herr Braun move. The talk clip of whoever speaks,
+// the other one laughs after the joke, a slow still two-shot in between (lib/ai-stage.mjs, the clips of public/ai-cast).
+let stageVideo = "";
+if (v2) {
+  if (!aiCastReady()) throw new Error("the animated clips of public/ai-cast are missing: method 2 needs them");
+  mkdirSync("public/ai-cast/stage", { recursive: true });
+  const segIndex = (id) => SEGMENTS_V2.indexOf(id);
+  const lines = tl.items.filter((x) => x.k === "d").map((x) => ({ who: x.who, t: x.t0, dur: x.dur, item: segIndex(x.seg), key: x.seg !== "scene" }));
+  stageVideo = `public/ai-cast/stage/course-${id}-${iso}.mp4`;
+  renderAIStage({ lines, outroAt: tl.segs[tl.segs.length - 1].t0, total: tl.total, out: stageVideo, work: `${outDir}/${id}-ai-stage` });
+  console.log(` stage film: ${stageVideo}`);
+}
+
 // ---- the compositions: the same lesson in the three looks (Instagram, TikTok, YouTube)
 const silentFor = {};
 for (const theme of ["easy", "tiktok", "youtube"]) {
   const comp = `${compDir}/${id}-${theme}.html`;
-  writeFileSync(comp, (v2 ? buildCourseHTMLv2 : buildCourseHTML)({ lesson, tl, theme }));
+  writeFileSync(comp, (v2 ? buildCourseHTMLv2 : buildCourseHTML)({ lesson, tl, theme, stageVideo }));
   assertComposition(comp, { cli: HF });
   if (dry) continue;
   const silent = `${outDir}/${id}-${theme}-silent.mp4`;

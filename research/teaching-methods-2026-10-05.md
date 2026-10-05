@@ -49,3 +49,16 @@
 
 ۱۰ درس با روش ۲ (۵۵–۶۴). از صاحب کانال تصویر Insights می‌خواهیم: نگه‌داشتن بیننده (Retention)،
 ذخیره، اشتراک، دیدن دوباره. با درس‌های قدیم مقایسه می‌کنیم. بدون این داده، «بهتر» ادعا نمی‌شود.
+
+## Dazu: Einnahmen (Monetarisierung) und die Animation — Ergänzung 2026-10-05
+
+Auftrag des Kanalinhabers: «Es muss Animation sein, damit das Video Einnahmen bringen kann.» Was die Suche zeigte (nur Zusammenfassungen gelesen):
+
+- **YouTube (ab 15. Juli 2025):** «inauthentic content» (massenhaft produziert, wiederholend, nach einer Vorlage mit minimaler Abwechslung, leicht in großer Menge zu kopieren, ohne klaren eigenen Beitrag) wird nicht monetarisiert. Das Verbot betrifft die Einnahmen, nicht das Hochladen. Quellen: [Plagiarism Today](https://www.plagiarismtoday.com/2025/07/08/youtube-targets-inauthentic-content/) · [Daily Star](https://d11.thedailystar.net/tech-startup/news/youtubes-new-monetisation-rule-targets-mass-produced-inauthentic-content-3936511) · [subsub](https://www.subsub.io/blog/youtube-inauthentic-content-policy-2025).
+- **TikTok Creator Rewards:** 100 % eigene Inhalte, hochwertig, **länger als eine Minute**; Konto 18+, 10 000+ Follower, 100 000+ Aufrufe in 30 Tagen; Deutschland gehört zu den Ländern. Quellen: [ttcalculator](https://ttcalculator.net/guides/creator-rewards-program/) · [makeinfluence](https://www.makeinfluence.com/en/academy/tiktok-creator-rewards-program-how-organic-monetization-works-in-2026).
+
+Folgen für die Lektionen:
+1. Echte Animation: Lena und Herr Braun bewegen sich (Sprechclips, Lachen nach dem Witz), dazu bewegte Grafiken (Regen, Uhr, Wolke). Ein Standbild mit Text würde eher als Folienvideo gelten.
+2. **Länge: mindestens 61,5 s** (vorher 60 s), damit das Video «über eine Minute» ist; weiterhin höchstens 65 s.
+3. Risiko «Vorlage mit minimaler Abwechslung»: die fünf Teile sind jede Lektion gleich. Dagegen helfen: jede Lektion eine **andere kleine Geschichte**, andere Bilder und Pointen, eigener Beitrag (eigene Figuren, eigene Stimmen). Ob eine Plattform den Kanal als «original» wertet, weiß ich nicht und kann es nicht zusichern.
+4. Ob Ihr Konto die Mindestzahlen (Follower, Aufrufe) erreicht, weiß ich nicht.
