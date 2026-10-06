@@ -80,15 +80,15 @@
   function person(cfg) {
     const root = g(people), body = g(root), arms = g(root);
     const mk = (node) => node;
-    // legs
-    if (cfg.skirt) {
-      [-26, 26].forEach((x) => R(body, x - 11, -140, 22, 112, cfg.stocking, line(3.5)));
-      [-26, 26].forEach((x) => P(body, `M ${x - 20} -28 L ${x + 22} -28 L ${x + 26} 0 L ${x - 24} 0 Z`, cfg.shoes, line(3.5)));
-      P(body, "M -74 -262 L 74 -262 L 96 -92 L -96 -92 Z", cfg.bottom, line(5));
-    } else {
-      [-24, 24].forEach((x) => { R(body, x - 21, -250, 42, 224, cfg.bottom, line(4.5)); P(body, `M ${x - 26} -30 L ${x + 26} -30 L ${x + 34} 0 L ${x - 30} 0 Z`, cfg.shoes, line(4)); });
-      R(body, -45, -258, 90, 30, cfg.bottom, line(4.5));
-    }
+    // legs: one group each, so that they can swing from the hip when the person walks
+    const legs = [-1, 1].map((sg) => {
+      const x = sg * (cfg.skirt ? 26 : 24), lg = g(body);
+      if (cfg.skirt) { R(lg, x - 11, -140, 22, 112, cfg.stocking, line(3.5)); P(lg, `M ${x - 20} -28 L ${x + 22} -28 L ${x + 26} 0 L ${x - 24} 0 Z`, cfg.shoes, line(3.5)); }
+      else { R(lg, x - 21, -250, 42, 224, cfg.bottom, line(4.5)); P(lg, `M ${x - 26} -30 L ${x + 26} -30 L ${x + 34} 0 L ${x - 30} 0 Z`, cfg.shoes, line(4)); }
+      return { n: lg, px: x, py: cfg.skirt ? -110 : -240 };
+    });
+    if (cfg.skirt) P(body, "M -74 -262 L 74 -262 L 96 -92 L -96 -92 Z", cfg.bottom, line(5));
+    else R(body, -45, -258, 90, 30, cfg.bottom, line(4.5));
     R(body, -17, -498, 34, 54, SKIN, line(4));
     P(body, "M -68 -450 Q 0 -484 68 -450 L 80 -228 L -80 -228 Z", cfg.top, line(5));
     if (cfg.cardigan) { P(body, "M -22 -468 L 0 -300 L 22 -468 Z", "#FFFFFF", line(3)); [-390, -340, -290].forEach((y) => C(body, 0, y, 5, "#F6E7B0", line(2.5))); P(body, "M 0 -462 L 0 -228", "none", line(3)); }
@@ -118,11 +118,11 @@
       const e1 = [px - dy / d * h, py + dx / d * h], e2 = [px + dy / d * h, py - dx / d * h], out = k === "R" ? -1 : 1, ex = (e1[0] - px) * out > (e2[0] - px) * out ? e1 : e2, n = A[k];
       const up = `M ${sx} ${sy} L ${ex[0]} ${ex[1]}`, fo = `M ${ex[0]} ${ex[1]} L ${tx} ${ty}`; n.u0.setAttribute("d", up); n.u.setAttribute("d", up); n.f0.setAttribute("d", fo); n.f.setAttribute("d", fo); n.h.setAttribute("cx", tx); n.h.setAttribute("cy", ty);
     }
-    return { root, head, eyes, brows, mClosed, mOpen, tongue, ik, cfg, x: 0, s: 1, dy: 0 };
+    return { root, head, eyes, brows, mClosed, mOpen, tongue, ik, legs, cfg, x: 0, s: 1, dy: 0 };
   }
   const oma = person({ skirt: true, bottom: "#3D4F73", stocking: "#CFCFD6", shoes: "#6E4B36", top: "#8FA77A", topD: "#6F8A5C", cardigan: true, hair: "#C9C9D2", browC: "#9A9AA6", glasses: "#D93B4A", bun: true, bunR: 30, iris: "#4F7F8F" });
   const girl = person({ bottom: "#F1E3C6", shoes: "#F7F7F7", top: "#D8554A", topD: "#B8403A", hair: "#F2C14E", bun: true, bunR: 30, bunX: 22, tie: "#D8554A", curls: true, iris: "#3F8FD0" });
-  oma.s = 1.2; girl.s = 1.1; oma.x = 250;
+  oma.s = 1.32; girl.s = 1.2; oma.x = 250;
   const world = (p, wx, wy) => [(wx - p.x) / p.s, (wy - FLOOR - p.dy) / p.s];
 
   // ------------------------------------------------------------------ props
@@ -172,30 +172,30 @@
     // 3 Setz dich hin!
     (u) => { const k = ss(T0, T1 - 0.4, u), gx = 800; show(S[2].back, 1); return { room: "living", gx, dy: 80 * k, R: [gx - 85, lerp(1040, 1010, k)], L: [gx + 85, lerp(1040, 1010, k)], point: [800, 1100], sit: k }; },
     // 4 Stell den Teller auf den Tisch!
-    (u) => { const k = ss(T0, 3.4, u), rel = ss(3.4, 4.2, u), gx = 700; const px = lerp(700, 860, k), py = lerp(960, 1092, k); place(plate, px, py); show(plate, 1);
+    (u) => { const k = ss(T0, 3.4, u), rel = ss(3.4, 4.2, u), gx = lerp(660, 770, k); const px = lerp(700, 860, k), py = lerp(960, 1092, k); place(plate, px, py); show(plate, 1);
       const hr = lerp(1, 0, rel), r = rest(gx); sparkle(860, 1050, u, 4.2);
-      return { room: "kitchen", gx, R: [lerp(px - 52, gx - 80, rel), lerp(py + 10, 1040, rel)], L: [lerp(px + 52, gx + 80, rel), lerp(py + 10, 1040, rel)], point: [860, 1100], rr: hr }; },
+      return { room: "kitchen", gx, R: [lerp(px - 52, gx - 80, rel), lerp(py + 10, 1040, rel)], L: [lerp(px + 52, gx + 80, rel), lerp(py + 10, 1040, rel)], point: [860, 1100], rr: hr, walk: k > 0.02 && k < 0.98 }; },
     // 5 Häng die Jacke auf!
-    (u) => { const k = ss(T0, 3.4, u), gx = 720; const jx = lerp(720, 616, k), jy = lerp(930, 760, k), hang = ss(3.4, 4.0, u); place(jacket, jx, jy + 36 * hang, 0, 1); show(jacket, 1);
+    (u) => { const k = ss(T0, 3.4, u), gx = lerp(780, 690, k); const jx = lerp(720, 616, k), jy = lerp(930, 760, k), hang = ss(3.4, 4.0, u); place(jacket, jx, jy + 36 * hang, 0, 1); show(jacket, 1);
       const r = rest(gx), r2 = hang; sparkle(610, 800, u, 4.0);
-      return { room: "hall", gx, R: [lerp(jx + 10, gx - 80, r2), lerp(jy - 30, 1040, r2)], L: [lerp(jx + 60, gx + 80, r2), lerp(jy - 20, 1040, r2)], point: [600, 740] }; },
+      return { room: "hall", gx, R: [lerp(jx + 10, gx - 80, r2), lerp(jy - 30, 1040, r2)], L: [lerp(jx + 60, gx + 80, r2), lerp(jy - 20, 1040, r2)], point: [600, 740], walk: k > 0.02 && k < 0.98 }; },
     // 6 Feg den Boden!
     (u) => { const gx = 770, sw = u > T0 ? wob(u - T0, 0.9, 85) : 0, on = u > T0 - 0.3 ? 1 : 0; place(broom, gx - 150 + sw, FLOOR - 6, wob(u - T0, 0.9, 6)); show(broom, 1);
       const n = clamp((u - T0) / 2.3, 0, 1); dust.forEach((d, i) => { const k = ((u * 1.4 + i / 8) % 1); place(d, gx - 150 + sw + (i - 4) * 12, FLOOR - 10 - k * 40, 0, 1 - k * 0.4); show(d, u > T0 && u < T1 + 0.4 ? 0.7 * (1 - k) : 0); });
       place(pile, 540 - n * 60, 1244, 0, 1 + n * 7, 1 + n * 3); show(pile, n > 0 ? 1 : 0); sparkle(500, 1190, u, T1 + 0.2);
-      const hy = 900; return { room: "hall", gx, R: [gx - 150 + sw - 6, hy + 170], L: [gx - 150 + sw - 8, hy + 40], point: [520, 1200] }; },
+      const hy = 900; return { room: "hall", gx, R: [gx - 150 + sw - 6, hy + 170], L: [gx - 150 + sw - 8, hy + 40], point: [520, 1200], walk: u > T0 && u < T1 + 0.4, shuffle: true }; },
     // 7 Bring den Müll raus!
     (u) => { const k = ss(T0, 3.8, u), gx = lerp(660, 860, k), open = ss(T0 + 1.2, T0 + 2.3, u); door.leaf.setAttribute("transform", `translate(912,312) scale(${lerp(1, 0.12, open)},1)`); show(S[6].back, 1);
       const bx = gx + 70, by = lerp(1090, 1130, 0) + 0; place(bag, bx, 1150 + 0, wob(u, 1.2, 3 * k)); show(bag, 1);
-      sparkle(900, 1000, u, 3.9); return { room: "hall", gx, R: [bx - 14, 1120], L: [gx + 80, 1040], point: [980, 1000], noHall: true }; },
+      sparkle(900, 1000, u, 3.9); return { room: "hall", gx, R: [bx - 14, 1120], L: [gx + 80, 1040], point: [980, 1000], walk: k > 0.02 && k < 0.98 }; },
     // 8 Wasch die Äpfel!
     (u) => { const k = ss(T0, 2.6, u), A = u > T0 && u < T1, gx = 740, r = rest(gx); apples.forEach((a, i) => { place(a, 600 + i * 56, 1074); show(a, i === 0 && A ? 0 : 1); }); const hx = lerp(880, 850, 0) + wob(u, 1.6, A ? 10 : 0), hy = 1060;
       if (A) { place(apples[0], hx + 4, hy - 20); show(apples[0], 1); } show(water, A ? 1 : 0); water.setAttribute("stroke-dashoffset", -u * 330); sparkle(840, 1000, u, T1 + 0.1);
       return { room: "kitchen", gx, R: A ? [hx - 20, hy] : r.R, L: A ? [hx + 22, hy] : r.L, point: [840, 1000] }; },
     // 9 Leg die Kleidung in den Schrank!
-    (u) => { const o = ss(T0 - 0.2, T0 + 0.8, u), k = ss(T0 + 0.6, 3.5, u), gx = 620; ward.doorL.setAttribute("transform", `translate(712,432) scale(${lerp(1, 0.12, o)},1)`); ward.doorR.setAttribute("transform", `translate(1028,432) scale(${lerp(1, 0.12, o)},1)`);
+    (u) => { const o = ss(T0 - 0.2, T0 + 0.8, u), k = ss(T0 + 0.6, 3.5, u), gx = lerp(560, 650, k); ward.doorL.setAttribute("transform", `translate(712,432) scale(${lerp(1, 0.12, o)},1)`); ward.doorR.setAttribute("transform", `translate(1028,432) scale(${lerp(1, 0.12, o)},1)`);
       const cx = lerp(gx + 40, 840, k), cy = lerp(930, 1020, k); place(clothes, cx, cy, 0, lerp(1, 0.9, k)); show(clothes, u < T1 ? 1 : 0); sparkle(860, 820, u, T1);
-      return { room: "bed", gx, R: [cx - 36, cy + 10], L: [cx + 36, cy + 10], point: [860, 820] }; },
+      return { room: "bed", gx, R: [cx - 36, cy + 10], L: [cx + 36, cy + 10], point: [860, 820], walk: k > 0.02 && k < 0.98 }; },
     // 10 Mach dein Bett!
     (u) => { const k = ss(T0, T1, u), gx = 800, y0 = lerp(1010, 1058, k), amp = (1 - k) * 34; show(S[9].back, 1);
       const pts = []; for (let i = 0; i <= 12; i++) { const x = 560 + (i / 12) * 470; pts.push([x, y0 - amp * Math.sin((i / 12) * Math.PI * 2.5 + 0.8) * (1 - i / 14)]); }
@@ -223,18 +223,26 @@
     show(lampGlow, 0); lampShade.setAttribute("fill", si > 1 ? "#FFE58A" : "#CFC6B0");
     const o = SC[si](u); show(rooms[o.room], 1); show(S[si].back, 1); show(S[si].front, 1);
     // people
+    const hopT = (u - T1 - 0.15) / 0.7, hop = !o.sit && hopT > 0 && hopT < 1 ? Math.abs(Math.sin(hopT * Math.PI * 2)) * 28 : 0;   // a little jump of joy when the job is done
+    const ph = o.shuffle ? t * 4.5 : o.gx / 34, amp = o.walk ? (o.shuffle ? 0.35 : 1) : 0;
+    girl.legs.forEach((l, i) => { const a = Math.sin(ph + i * Math.PI) * 20 * amp, lift = Math.max(0, Math.cos(ph + i * Math.PI)) * 12 * amp; l.n.setAttribute("transform", `translate(0,${-lift}) rotate(${a} ${l.px} ${l.py})`); });
+    oma.legs.forEach((l, i) => l.n.setAttribute("transform", `rotate(${(i ? 1 : -1) * wob(t, 0.35, 1.2)} ${l.px} ${l.py})`));   // Oma shifts her weight
+    const bobW = Math.abs(Math.sin(ph)) * 8 * amp;
     boilNoise.setAttribute("seed", 1 + (Math.floor(t * 8) % 7));
     const mv = clamp(mouthAt(t), 0, 1), ant = ss(T0 - 0.35, T0, u) * (1 - ss(T0, T0 + 0.25, u));            // a small crouch before the girl acts (anticipation)
-    girl.x = o.gx; girl.dy = o.dy || 0; place(girl.root, girl.x, FLOOR + girl.dy, 0, girl.s * (1 + 0.03 * ant), girl.s * (1 - 0.05 * ant + wob(t, 0.9, 0.006)));
+    girl.x = o.gx; girl.dy = (o.dy || 0) - hop - bobW; place(girl.root, girl.x, FLOOR + girl.dy, wob(ph, 1 / (2 * Math.PI), 2.5 * amp), girl.s * (1 + 0.03 * ant), girl.s * (1 - 0.05 * ant + wob(t, 0.9, 0.006)));
     place(oma.root, oma.x, FLOOR, 0, oma.s * (1 - 0.012 * mv), oma.s * (1 + 0.016 * mv + wob(t, 0.8, 0.005)));
-    const gr = world(girl, o.R[0], o.R[1]), gl = world(girl, o.L[0], o.L[1]); girl.ik("R", gr[0], gr[1]); girl.ik("L", gl[0], gl[1]);
-    // Oma: says the order and points at what has to be done, the other hand on the hip
-    const pt = ss(0.15, 0.6, u) - ss(2.5, 3.0, u), tgt = world(oma, o.point[0], o.point[1]), dirx = tgt[0] - SH.L[0], diry = tgt[1] - SH.L[1], dl = Math.hypot(dirx, diry) || 1;
-    oma.ik("L", lerp(78, SH.L[0] + dirx / dl * 175, pt), lerp(-250, SH.L[1] + diry / dl * 175 * 0.6 - 10, pt) + wob(t, 2.4, 3 * pt)); oma.ik("R", -92, -255);
-    const m = clamp(mouthAt(t), 0, 1), bob = Math.sin(t * 1.9) * 2;
-    face(oma, t, m, [3 * (1 - pt) + 2, 2], pt > 0.5 ? 0.6 : 0.9); face(girl, t, 0, [clamp((oma.x - o.gx) / 400, -1, 1) * -4 + 3, 2], u > T1 ? 1.6 : 0.8);
-    oma.head.setAttribute("transform", `translate(0,${-548 + bob}) rotate(${wob(t, 0.8, 1.2) + (m > 0.2 ? Math.sin(t * 12) * 1.2 : 0)})`); girl.head.setAttribute("transform", `translate(0,${-548 + Math.sin(t * 1.7 + 1) * 2}) rotate(${wob(t, 0.7, 1.4, 1)})`);
-    if (o.sit) girl.head.setAttribute("transform", `translate(0,${-548 + 4 * o.sit}) rotate(${wob(t, 0.7, 1.4, 1)})`);
+    const sw = amp * 30, gr = world(girl, o.R[0] + (o.shuffle ? 0 : Math.sin(ph) * sw * 0), o.R[1]), gl = world(girl, o.L[0], o.L[1]); girl.ik("R", gr[0], gr[1]); girl.ik("L", gl[0], gl[1]);
+    // Oma: says the order and points at what has to be done; her free hand talks along with the voice
+    const pt = ss(0.15, 0.6, u) - ss(2.5, 3.0, u), speak = ss(0.3, 0.5, u) * (1 - ss(2.4, 2.7, u)), tgt = world(oma, o.point[0], o.point[1]), dirx = tgt[0] - SH.L[0], diry = tgt[1] - SH.L[1], dl = Math.hypot(dirx, diry) || 1;
+    oma.ik("L", lerp(78, SH.L[0] + dirx / dl * 175, pt), lerp(-250, SH.L[1] + diry / dl * 175 * 0.6 - 10, pt) + wob(t, 2.4, 3 * pt));
+    oma.ik("R", -92 - Math.sin(t * 5.5) * 16 * speak, -255 - (0.5 + 0.5 * Math.sin(t * 5.5 + 1)) * 75 * speak);
+    const m = clamp(mouthAt(t), 0, 1), bob = Math.sin(t * 1.9) * 2, glad = hop > 0 || (u > T1 && u < T1 + 1.2) ? 1 : 0;
+    const gz = [clamp((o.point[0] - o.gx) / 140, -1, 1) * 4, o.point[1] > 1000 ? 4 : o.point[1] > 800 ? 2 : -1];                 // the girl looks at the thing she works on
+    face(oma, t, m, [4 * (1 - pt) + 2 * pt * (o.point[0] > oma.x ? 1 : -1), 2], pt > 0.5 ? 0.6 : 0.9 + glad * 0.6);
+    face(girl, t, 0, u < T0 - 0.4 ? [clamp((oma.x - o.gx) / 300, -1, 1) * 4, 2] : gz, glad ? 2.6 : u > T0 - 0.4 ? 0.4 : 0.9);
+    oma.head.setAttribute("transform", `translate(0,${-548 + bob}) rotate(${wob(t, 0.8, 1.2) + 4 * speak * Math.sin(t * 3.1) + (m > 0.2 ? Math.sin(t * 12) * 1.2 : 0) + 3 * pt})`);
+    girl.head.setAttribute("transform", `translate(0,${-548 + Math.sin(t * 1.7 + 1) * 2 + (o.sit ? 4 * o.sit : 0)}) rotate(${wob(t, 0.7, 1.4, 1) + (glad ? Math.sin(t * 9) * 3 : 0) - 4 * (u > T0 - 0.4 && u < T1 ? 1 : 0) * Math.sign(o.point[0] - o.gx)})`);
   }
   window.__omaDraw = draw; draw(0); window.addEventListener("hf-seek", (ev) => draw(ev.detail.time));
 })();
