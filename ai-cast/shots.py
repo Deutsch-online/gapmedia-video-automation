@@ -44,11 +44,27 @@ def vertical_ref(char, cast, shot_dir):
     return out if os.path.exists(out) else None
 
 
+def pair_ref(chars, cast, shot_dir):
+    """Two characters side by side on one 9:16 reference picture (the left one is chars[0])."""
+    out = f"{shot_dir}/ref-{chars[0]}-{chars[1]}.png"
+    if os.path.exists(out):
+        return out
+    parts = [vertical_ref(c, cast, shot_dir) for c in chars[:2]]
+    if not all(parts):
+        return None
+    canvas = Image.new("RGB", (576, 1024), "#F7EFDD")
+    for k, f in enumerate(parts):
+        canvas.paste(Image.open(f).convert("RGB").resize((288, 512), Image.LANCZOS), (k * 288, 256))
+    canvas.save(out)
+    return out
+
+
 def make_still(j, shot_dir, cast, style):
     chars = j["chars"]
-    ref = vertical_ref(chars[0], cast, shot_dir) if len(chars) == 1 else None
+    ref = vertical_ref(chars[0], cast, shot_dir) if len(chars) == 1 else (pair_ref(chars, cast, shot_dir) if len(chars) == 2 else None)
     if ref:
-        prompt = (f"Keep the same character: identical face, hairstyle, outfit, skin tone and age. Put this character {j['prompt']}. "
+        who = "the same character" if len(chars) == 1 else "the same two characters (the one on the left and the one on the right of the reference picture)"
+        prompt = (f"Keep {who}: identical faces, hairstyles, outfits, skin tones and ages. Put {'this character' if len(chars) == 1 else 'these two characters'} {j['prompt']}. "
                   + WIDE)
         try:
             r = first_working(KONTEXT, {"input_image": handle_file(ref), "prompt": prompt, "seed": j["seed"], "randomize_seed": False,
