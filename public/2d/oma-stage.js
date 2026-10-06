@@ -204,6 +204,73 @@
       return { room: "bed", gx, R: [lerp(640, 600, k), y0 - 10], L: [lerp(780, 740, k), y0 - 6], point: [700, 1040] }; },
   ];
 
+  // ------------------------------------------------------------------ lesson 2: ten more orders (CFG.set === 2)
+  const S2 = Array.from({ length: 10 }, () => ({ back: mkG(backProps), front: mkG(frontProps) }));
+  const P2 = [];                                          // everything that belongs to lesson 2 and is hidden at the start of every frame
+  const mk2 = (parent, ...a) => { const n = g(parent, { opacity: 0 }); P2.push(n); return n; };
+  // 2 the plant and the watering can
+  const potPlant = g(S2[1].back); P(potPlant, "M 460 1250 L 540 1250 L 550 1160 L 450 1160 Z", "#D4875A", line(4)); R(potPlant, 444, 1148, 112, 18, "#E19B6E", { rx: 6, ...line(3.5) });
+  const leaves = g(potPlant); for (let i = -2; i <= 2; i++) P(leaves, `M 500 1150 Q ${500 + i * 46} ${1090 - Math.abs(i) * 10} ${500 + i * 62} ${1040 + Math.abs(i) * 24} Q ${500 + i * 20} 1090 500 1150 Z`, i % 2 ? "#4FA35B" : "#6CC07A", line(3));
+  const can = mk2(frontProps); R(can, -42, -30, 84, 62, "#4DB6FF", { rx: 14, ...line(4) }); P(can, "M -42 -6 L -96 -44 L -90 -56 L -36 -22 Z", "#3A9BE0", line(4)); P(can, "M 30 -30 Q 70 -70 56 -2", "none", line(7)); P(can, "M 30 -30 Q 70 -70 56 -2", "none", { stroke: "#3A9BE0", "stroke-width": 3 });
+  const wdrops = Array.from({ length: 7 }, () => { const d = P(frontProps, "M 0 -8 Q 7 4 0 10 Q -7 4 0 -8 Z", "#8CCBFF", { opacity: 0 }); P2.push(d); return d; });
+  // 3 the glass of water, 4 the apple
+  const glass = mk2(frontProps); P(glass, "M -22 -44 L 22 -44 L 17 34 L -17 34 Z", "#FFFFFF", { "fill-opacity": 0.35, ...line(3.5) }); const glassWater = P(glass, "M -20 -20 L 20 -20 L 16 32 L -16 32 Z", "#8CCBFF", { opacity: 0.85 });
+  const apple2 = mk2(frontProps); const appleBody = g(apple2); C(appleBody, 0, 0, 27, "#E0412F", line(3.5)); R(appleBody, -2, -38, 4, 14, "#6E4B36"); E(appleBody, -9, -9, 6, 9, "#F4806A", { opacity: 0.7 }); const appleCore = g(apple2, { opacity: 0 }); R(appleCore, -4, -22, 8, 44, "#E8D9A8", { rx: 3, ...line(2.5) });
+  // 5 the book on the sofa (the sofa again)
+  { R(S2[4].back, 560, 940, 480, 200, "#7E9C86", line(5)); R(S2[4].back, 540, 980, 40, 220, "#6F8A78", { rx: 16, ...line(4) }); R(S2[4].back, 1020, 980, 40, 220, "#6F8A78", { rx: 16, ...line(4) }); R(S2[4].front, 560, 1130, 480, 230, "#8FB09A", line(5)); R(S2[4].front, 560, 1124, 480, 18, "#A5C4AE", line(3)); }
+  const book = mk2(frontProps); R(book, -66, -44, 132, 90, "#C2563C", { rx: 6, ...line(4) }); R(book, -60, -38, 58, 78, "#FFFFFF", line(2.5)); R(book, 2, -38, 58, 78, "#FFFFFF", line(2.5)); [-22, -8, 6].forEach((y) => { P(book, `M -52 ${y} L -10 ${y} M 10 ${y} L 52 ${y}`, "none", { stroke: "#B8B0A6", "stroke-width": 3 }); });
+  const pageFlip = P(book, "M 2 -38 L 60 -38 L 60 40 L 2 40 Z", "#F6F1E4", line(2.5));
+  // 6 the table, the paper and the pencil
+  { R(S2[5].front, 580, 1100, 470, 30, "#B8855A", line(5)); [[600, 1130], [1010, 1130]].forEach(([x, y]) => R(S2[5].front, x, y, 26, 120, "#9C6F47", line(4))); }
+  const paper = mk2(frontProps); P(paper, "M -70 8 L 70 8 L 84 -16 L -56 -16 Z", "#FFFFFF", line(3)); const nameLine = el("path", { d: "M -34 -4 l 8 -14 l 8 14 l 8 -14 l 8 14 M 4 -14 v14 M 12 -6 q 0 -8 10 -8 q 8 0 8 8 q 0 8 -8 8 q -10 0 -10 -8 m 18 0 v8", fill: "none", stroke: "#2E4A8A", "stroke-width": 3, "stroke-linecap": "round", "stroke-linejoin": "round", pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, paper);
+  const pencil = mk2(frontProps); P(pencil, "M -4 -70 L 4 -70 L 4 0 L 0 12 L -4 0 Z", "#F3C84D", line(2.5)); R(pencil, -4, -76, 8, 10, "#E9724C", { rx: 2, ...line(2) });
+  // 7 the jacket put on
+  const jacketOn = mk2(frontProps); P(jacketOn, "M -70 -455 Q 0 -490 70 -455 L 90 -232 L -90 -232 Z", "#4F9A6A", line(5)); P(jacketOn, "M 0 -470 L 0 -232", "none", line(3, "#3C7A52")); [-420, -370, -320].forEach((y) => C(jacketOn, 0, y, 5, "#F6E7B0", line(2)));
+  // 8 the ball
+  const ball = mk2(frontProps); C(ball, 0, 0, 26, "#FF7A59", line(3.5)); P(ball, "M -26 0 Q 0 -14 26 0 M 0 -26 Q 12 0 0 26", "none", line(2.5, "#FFFFFF"));
+  // 10 hearts
+  const hearts = Array.from({ length: 5 }, () => { const h = P(fx, "M 0 10 C -30 -12 -14 -30 0 -14 C 14 -30 30 -12 0 10 Z", "#FF6F91", { opacity: 0, ...line(2.5) }); P2.push(h); return h; });
+  const leafLamp = () => { show(lampGlow, 0); };
+
+  const SC2 = [
+    // 1 Mach die Tür auf!
+    (u) => { const k = ss(T0, 3.4, u), gx = 770; door.leaf.setAttribute("transform", `translate(912,312) scale(${lerp(1, 0.12, k)},1)`); sparkle(990, 880, u, 3.5);
+      return { room: "hall", gx, R: [gx - 80, 1040], L: k > 0 && k < 1 ? [lerp(920, 940, k), 880] : [gx + 80, 1040], point: [980, 880] }; },
+    // 2 Gieß die Blume!
+    (u) => { const gx = 700, k = ss(T0, 2.4, u), pour = ss(2.4, 2.8, u) * (1 - ss(4.2, 4.6, u)), grow = ss(2.8, 4.6, u); place(leaves, 500, 1150, 0, 1, lerp(0.35, 1, grow)); leaves.setAttribute("transform", `translate(500,1150) scale(${lerp(0.55, 1, grow)},${lerp(0.35, 1, grow)}) translate(-500,-1150)`);
+      const cx = lerp(gx - 80, 590, k), cy = lerp(1040, 960, k); place(can, cx, cy, -30 * pour); show(can, 1);
+      wdrops.forEach((d, i) => { const f = ((u * 1.6 + i / 7) % 1); place(d, cx - 92 + f * -10, cy - 40 + f * 190, 0, 1); show(d, pour > 0.2 ? 0.9 * (1 - f * 0.6) : 0); });
+      sparkle(500, 1020, u, 4.7); return { room: "living", gx, R: [cx + 36, cy + 8], L: [gx + 80, 1040], point: [500, 1060] }; },
+    // 3 Trink das Wasser!
+    (u) => { const gx = 740, k = ss(T0, 2.6, u), sip = ss(2.8, 4.0, u); const hx = lerp(gx + 40, gx - 4, k), hy = lerp(1000, 640, k) - 0; place(glass, hx + 30, hy, lerp(0, -22, sip)); show(glass, 1);
+      glassWater.setAttribute("d", `M -20 ${-20 + 52 * sip} L 20 ${-20 + 52 * sip} L 16 32 L -16 32 Z`);
+      return { room: "kitchen", gx, R: [gx - 80, 1040], L: [hx, hy + 10], point: [gx, 700] }; },
+    // 4 Iss den Apfel!
+    (u) => { const gx = 740, k = ss(T0, 2.6, u), bite = ss(2.8, 4.4, u); const hx = lerp(gx + 60, gx + 6, k), hy = lerp(1000, 680, k); place(apple2, hx + 26, hy, 0, lerp(1, 0.5, bite)); show(apple2, 1); show(appleCore, bite > 0.9 ? 1 : 0); show(appleBody, bite > 0.9 ? 0 : 1);
+      return { room: "kitchen", gx, R: [gx - 80, 1040], L: [hx, hy + 10], point: [gx, 720] }; },
+    // 5 Lies das Buch!
+    (u) => { const gx = 800, k = ss(T0, 3.0, u), dy = 80 * ss(T0 - 0.2, T0 + 0.9, u); place(book, gx, 940 + dy, 0, 0.9); show(book, 1); const flip = ss(3.4, 4.0, u); pageFlip.setAttribute("transform", `translate(2,0) scale(${1 - 2 * flip},1) translate(-2,0)`); pageFlip.setAttribute("opacity", flip < 0.99 ? 1 : 0);
+      return { room: "living", gx, dy, R: [gx - 40, 960 + dy], L: [gx + 40, 960 + dy], point: [gx, 900], sit: ss(T0 - 0.2, T0 + 0.9, u) }; },
+    // 6 Schreib deinen Namen!
+    (u) => { const gx = 760, k = ss(T0, 2.2, u), wr = ss(2.3, 4.2, u); place(paper, 820, 1090); show(paper, 1); nameLine.setAttribute("stroke-dashoffset", 1 - wr); const px = lerp(780, 870, wr), py = 1086 - 8 * Math.abs(Math.sin(wr * 18));
+      place(pencil, px, py, 14); show(pencil, 1); return { room: "kitchen", gx, R: [gx - 80, 1040], L: [px + 8, py - 40], point: [820, 1080] }; },
+    // 7 Zieh die Jacke an!
+    (u) => { const gx = 770, k = ss(T0, 2.6, u), on = ss(2.6, 3.2, u); place(jacket, lerp(gx - 40, gx, k), lerp(1000, 900, k)); show(jacket, on > 0.5 ? 0 : 1);
+      jacketOn.setAttribute("transform", `translate(${gx},${FLOOR}) scale(${girl.s})`); show(jacketOn, on > 0.5 ? 1 : 0); sparkle(gx, 900, u, 3.4);
+      return { room: "hall", gx, R: [lerp(gx - 30, gx - 80, on), lerp(1000, 1040, on)], L: [lerp(gx + 30, gx + 80, on), lerp(1000, 1040, on)], point: [gx, 900] }; },
+    // 8 Wirf den Ball zu mir!
+    (u) => { const gx = 780, t1 = clamp((u - 2.4) / 1.4, 0, 1), catchT = u > 3.8; const bx = lerp(gx - 60, oma.x + 100, t1), by = lerp(900, 900, t1) - Math.sin(t1 * Math.PI) * 220;
+      place(ball, catchT ? oma.x + 96 : bx, catchT ? 880 : by, u * 300); show(ball, 1);
+      return { room: "living", gx, R: [t1 < 0.02 ? gx - 50 : gx - 80, t1 < 0.02 ? 900 - 40 * ss(1.9, 2.4, u) : 1040], L: [gx + 80, 1040], point: [oma.x + 160, 880] }; },
+    // 9 Mach das Licht aus!
+    (u) => { const gx = 680, off = u > 3.2, k = ss(T0, 2.4, u); show(lampGlow, off ? 0 : 1); lampShade.setAttribute("fill", off ? "#CFC6B0" : "#FFE58A"); dim.setAttribute("opacity", off ? 0.38 : 0);
+      return { room: "living", gx, R: [lerp(gx - 80, 560, k), lerp(1040, 800, k)], L: [gx + 80, 1040], point: [520, 720] }; },
+    // 10 Komm zu mir!
+    (u) => { const k = ss(T0, 3.2, u), gx = lerp(820, oma.x + 190, k); const hug = ss(3.3, 3.9, u);
+      hearts.forEach((h, i) => { const f = clamp((u - 3.6 - i * 0.12) / 1.4, 0, 1); place(h, oma.x + 90 + i * 34 - 60, 640 - f * 150, 0, 0.8 + f * 0.4); show(h, f > 0 && f < 1 ? 1 - f * 0.8 : 0); });
+      return { room: "living", gx, R: [gx - 80, 1040], L: [gx + 80, 1040], point: [oma.x + 190, 880], walk: k > 0.02 && k < 0.98 }; },
+  ];
+
   // ------------------------------------------------------------------ the frame
   const MOUTH = CFG.mouth || [];
   const mouthAt = (t) => { const f = t * 25, i = Math.floor(f), k = f - i; return lerp(MOUTH[i] || 0, MOUTH[i + 1] || 0, k); };
@@ -216,12 +283,12 @@
     p.brows.forEach((b) => b.setAttribute("transform", `translate(0,${-3 * smile - (m > 0.4 ? 2 : 0)})`));
   }
   function draw(t) {
-    const si = Math.min(sceneOf(t), SC.length - 1), sc = (CFG.scenes || [])[si] || { t0: 0 }, u = Math.max(0, t - sc.t0);
-    door.leaf.setAttribute("transform", "translate(912,312)"); ward.doorL.setAttribute("transform", "translate(712,432)"); ward.doorR.setAttribute("transform", "translate(1028,432)");
-    for (const n of Object.values(rooms)) show(n, 0); S.forEach((s) => { show(s.back, 0); show(s.front, 0); });
+    const SCN = CFG.set === 2 ? SC2 : SC, SS = CFG.set === 2 ? S2 : S, si = Math.min(sceneOf(t), SCN.length - 1), sc = (CFG.scenes || [])[si] || { t0: 0 }, u = Math.max(0, t - sc.t0);
+    win.sash.setAttribute("transform", "translate(948,392) scale(-1,1)"); door.leaf.setAttribute("transform", "translate(912,312)"); ward.doorL.setAttribute("transform", "translate(712,432)"); ward.doorR.setAttribute("transform", "translate(1028,432)");
+    for (const n of Object.values(rooms)) show(n, 0); S.forEach((s) => { show(s.back, 0); show(s.front, 0); }); S2.forEach((s) => { show(s.back, 0); show(s.front, 0); }); P2.forEach((n) => show(n, 0)); wdrops.forEach((d) => show(d, 0)); hearts.forEach((h) => show(h, 0));
     [plate, jacket, broom, bag, clothes, blanket, blanketHi, pile, water].forEach((n) => show(n, 0)); dust.forEach((d) => show(d, 0)); apples.forEach((a) => show(a, 0)); sparks.forEach((s) => show(s, 0)); show(dim, 0);
-    show(lampGlow, 0); lampShade.setAttribute("fill", si > 1 ? "#FFE58A" : "#CFC6B0");
-    const o = SC[si](u); show(rooms[o.room], 1); show(S[si].back, 1); show(S[si].front, 1);
+    show(lampGlow, 0); lampShade.setAttribute("fill", CFG.set === 2 || si > 1 ? "#FFE58A" : "#CFC6B0");
+    const o = SCN[si](u); show(rooms[o.room], 1); show(SS[si].back, 1); show(SS[si].front, 1);
     // people
     const hopT = (u - T1 - 0.15) / 0.7, hop = !o.sit && hopT > 0 && hopT < 1 ? Math.abs(Math.sin(hopT * Math.PI * 2)) * 28 : 0;   // a little jump of joy when the job is done
     const ph = o.shuffle ? t * 4.5 : o.gx / 34, amp = o.walk ? (o.shuffle ? 0.35 : 1) : 0;

@@ -32,10 +32,23 @@ const FULL = [
   { de: "Mach dein Bett!", fa: "تختت را مرتب کن!", verb: "Mach", sfx: [[WHOOSH, 3.0, 0.3]] },
 ];
 // OMA_SAMPLE=1: a short sample (3 scenes) to compare voices by ear; OMA_VOICE = edge | omni-auto | omni-clone
-const SAMPLE = process.env.OMA_SAMPLE === "1", VOICE = process.env.OMA_VOICE || "edge", TAG = SAMPLE ? `-sample-${VOICE}` : "";
-const SCENES = SAMPLE ? FULL.slice(0, 3) : FULL;
+const SET = process.env.OMA_SET === "2" ? 2 : 1;               // lesson 2: ten more orders (public/2d/oma-stage.js, CFG.set)
+const SAMPLE = process.env.OMA_SAMPLE === "1", VOICE = process.env.OMA_VOICE || "edge", TAG = SAMPLE ? `-sample-${VOICE}` : SET === 2 ? "-v2" : "";
+const FULL2 = [
+  { de: "Mach die Tür auf!", fa: "در را باز کن!", verb: "Mach", sfx: [[WHOOSH, 2.4, 0.25]] },
+  { de: "Gieß die Blume!", fa: "به گل آب بده!", verb: "Gieß", sfx: [["water", 2.6, 0.2, "atrim=0:2.2,afade=t=out:st=1.9:d=0.3"]] },
+  { de: "Trink das Wasser!", fa: "آب را بنوش!", verb: "Trink", sfx: [["pop", 3.4, 0.3]] },
+  { de: "Iss den Apfel!", fa: "سیب را بخور!", verb: "Iss", sfx: [["bonk", 3.3, 0.12], ["bonk", 4.0, 0.12]] },
+  { de: "Lies das Buch!", fa: "کتاب را بخوان!", verb: "Lies", sfx: [[WHOOSH, 3.5, 0.2]] },
+  { de: "Schreib deinen Namen!", fa: "اسمت را بنویس!", verb: "Schreib", sfx: [["peel", 2.4, 0.14, "atrim=0:1.8,afade=t=out:st=1.5:d=0.3"]] },
+  { de: "Zieh die Jacke an!", fa: "کاپشن را بپوش!", verb: "Zieh", sfx: [[WHOOSH, 2.7, 0.3]] },
+  { de: "Wirf den Ball zu mir!", fa: "توپ را بسوی من پرت کن!", verb: "Wirf", sfx: [[WHOOSH, 2.6, 0.3], ["pop", 3.8, 0.4]] },
+  { de: "Mach das Licht aus!", fa: "چراغ را خاموش کن!", verb: "Mach", sfx: [["tick", 3.15, 0.6]] },
+  { de: "Komm zu mir!", fa: "پیش من بیا!", verb: "Komm", sfx: [["ding", 3.7, 0.2]] },
+];
+const SCENES = SAMPLE ? (SET === 2 ? FULL2 : FULL).slice(0, 3) : SET === 2 ? FULL2 : FULL;
 const SCENE_LEN = 6.0, SAY = 0.4, END_HOLD = 3.0;
-const END = { de: "Gut gemacht!", fa: "آفرین!" };
+const END = SET === 2 ? { de: "Du bist toll!", fa: "تو عالی هستی!" } : { de: "Gut gemacht!", fa: "آفرین!" };
 const duration = +(SCENES.length * SCENE_LEN + END_HOLD).toFixed(3);
 if (!SAMPLE && (duration < 60 || duration > 65)) throw new Error(`film is ${duration}s; it must be 60-65 s`);
 
@@ -85,7 +98,7 @@ const stage = { id: "oma-stage", src: "public/2d/oma-stage.js", cfg: "__oma", dr
 const silentFor = {};
 for (const theme of SAMPLE ? ["tiktok"] : ["easy", "tiktok", "youtube"]) {
   const c = `${compDir}/oma${TAG}-${theme}.html`;
-  writeFileSync(c, buildKochHTML({ total: duration, theme, scenes, mouth, end, stage, noSparks: true }));
+  writeFileSync(c, buildKochHTML({ total: duration, theme, scenes, mouth, end, stage, noSparks: true, set: SET }));
   assertComposition(c, { cli: HF });
   const silent = `${outDir}/oma${TAG}-${theme}-silent.mp4`;
   execSync(`${HF} render -c "${c}" --quality high --fps 30 -o "${silent}"`, { stdio: "inherit" });
@@ -93,7 +106,7 @@ for (const theme of SAMPLE ? ["tiktok"] : ["easy", "tiktok", "youtube"]) {
 }
 
 // 4. music bed kitchen-1, then Telegram
-const caption = SAMPLE ? `Sample (3 scenes), voice: ${VOICE}, renderer: ${HF.split(" ").pop()}` : "Oma sagt … 👵\n\n#DeutschLernen #LearnGerman #Deutsch #A1 #Imperativ #fyp";
+const caption = SAMPLE ? `Sample (3 scenes), voice: ${VOICE}, renderer: ${HF.split(" ").pop()}` : `Oma sagt … ${SET === 2 ? "(2) " : ""}👵\n\n#DeutschLernen #LearnGerman #Deutsch #A1 #Imperativ #fyp`;
 await deliver({ id: `oma${TAG}`, iso, episodeNo: 1, text: { title: "Oma sagt" }, duration, caption, cuts: scenes.map((s) => s.t0), voice,
   silentIn: silentFor.easy || silentFor.tiktok, silentFor, parts, tg, noTelegram, isCorrection: true, saveProgress: () => {}, idx: 0, outDir,
   brand: { label: "Oma sagt", file: "oma" }, dips: [], musicStyle: "comedy", bedPrefix: "kitchen", bedPick: "kitchen-1", musicGain: 0.35, onlyFormat: SAMPLE ? "tiktok-easy" : "" });
