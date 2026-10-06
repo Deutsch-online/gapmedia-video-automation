@@ -17,14 +17,20 @@ STYLE = ("semi-realistic 2D animation character illustration in the style of a m
 CHARS = {
     "lena": "a beautiful slim young woman in her twenties with long wavy dark-brown hair, warm brown eyes, a warm smile, a soft pink hoodie, light blue jeans and white sneakers, small silver hoop earrings",
     "braun": "a handsome slim man in his thirties with short dark-brown hair, light stubble, a kind smile, a blue sweater, dark trousers and brown shoes",
+    "oma": "a kind slim grandmother in her late sixties with grey hair in a neat bun, red round glasses, a warm smile, a sage-green cardigan over a white blouse, a navy skirt and brown shoes",
+    "enkelin": "a cute slim girl of nine years with blond hair in a messy bun with a red hair tie and a few curls, big blue eyes, a happy smile, a red sweater, cream trousers and white sneakers",
     "krause": "a lovely slim elderly woman in her late sixties with short curly silver hair in pink hair curlers, round glasses on a chain, a warm lovable smile, a floral pink bathrobe and fluffy slippers",
 }
+ONLY = [c for c in os.environ.get("ONLY", "").split(",") if c] or list(CHARS)   # ONLY=oma,enkelin: only these characters
+CHARS = {c: CHARS[c] for c in ONLY if c in CHARS}
+KIND = {"enkelin": ("handsome slim adult with realistic body proportions, normal-sized head, long legs, NOT chibi, NOT chubby, NOT a baby face", "slim cute child with natural child proportions, normal-sized head, NOT chibi, NOT chubby, NOT a baby face"),
+        "oma": ("handsome slim adult", "lovely slim elderly woman")}
 out = sys.argv[1]; n = int(sys.argv[2]) if len(sys.argv) > 2 else 4
 SEED0 = int(os.environ.get("SEED0", "1"))   # candidate seeds SEED0 .. SEED0+n-1: a new round does not repeat the old pictures
 os.makedirs(out, exist_ok=True)
 
 def one(char, seed):
-    r = first_working(["black-forest-labs/FLUX.1-schnell"], {"prompt": f"{STYLE}. {CHARS[char]}.", "seed": seed, "randomize_seed": False, "width": 576, "height": 1024}, "still")
+    r = first_working(["black-forest-labs/FLUX.1-schnell"], {"prompt": f"{STYLE.replace(*KIND[char]) if char in KIND else STYLE}. {CHARS[char]}.", "seed": seed, "randomize_seed": False, "width": 576, "height": 1024}, "still")
     Image.open(r).convert("RGB").save(f"{out}/{char}-{seed}.jpg", quality=88)
 
 for char in CHARS:

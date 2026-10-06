@@ -11,6 +11,11 @@ on:
         required: false
         default: "4"
         type: string
+      only:
+        description: "Characters to make (comma separated; empty = all)"
+        required: false
+        default: ""
+        type: string
       seed0:
         description: "First seed (a new round: another number)"
         required: false
@@ -45,6 +50,7 @@ jobs:
           PAID_FALLBACK: "off"
           SEEDS: ${{ inputs.seeds }}
           SEED0: ${{ inputs.seed0 }}
+          ONLY: ${{ inputs.only }}
         run: python ai-cast/design-cast.py ai-cast/design "${SEEDS:-4}"
       - name: Send the sheet to the bot chat
         env:
