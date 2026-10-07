@@ -19,11 +19,12 @@ CHARS = {
     "braun": "a handsome slim man in his thirties with short dark-brown hair, light stubble, a kind smile, a blue sweater, dark trousers and brown shoes",
     "oma": "a kind slim grandmother in her late sixties with grey hair in a neat bun, red round glasses, a warm smile, a sage-green cardigan over a white blouse, a navy skirt and brown shoes",
     "enkelin": "a cute slim girl of nine years with blond hair in a messy bun with a red hair tie and a few curls, big blue eyes, a happy smile, a red sweater, cream trousers and white sneakers",
+    "opa": "a cheerful slim grandfather in his late sixties with a bald head and white fringe, a big white curly moustache, a flat green cap, a yellow shirt with green suspenders, brown trousers and brown shoes, a warm funny smile",
     "krause": "a lovely slim elderly woman in her late sixties with short curly silver hair in pink hair curlers, round glasses on a chain, a warm lovable smile, a floral pink bathrobe and fluffy slippers",
 }
 ONLY = [c for c in os.environ.get("ONLY", "").split(",") if c] or list(CHARS)   # ONLY=oma,enkelin: only these characters
 CHARS = {c: CHARS[c] for c in ONLY if c in CHARS}
-KIND = {"enkelin": ("handsome slim adult with realistic body proportions, normal-sized head, long legs, NOT chibi, NOT chubby, NOT a baby face", "slim cute child with natural child proportions, normal-sized head, NOT chibi, NOT chubby, NOT a baby face"),
+KIND = {"opa": ("handsome slim adult", "lovely slim elderly man"), "enkelin": ("handsome slim adult with realistic body proportions, normal-sized head, long legs, NOT chibi, NOT chubby, NOT a baby face", "slim cute child with natural child proportions, normal-sized head, NOT chibi, NOT chubby, NOT a baby face"),
         "oma": ("handsome slim adult", "lovely slim elderly woman")}
 out = sys.argv[1]; n = int(sys.argv[2]) if len(sys.argv) > 2 else 4
 SEED0 = int(os.environ.get("SEED0", "1"))   # candidate seeds SEED0 .. SEED0+n-1: a new round does not repeat the old pictures
