@@ -22,6 +22,12 @@ CHARS = {
     "opa": "a cheerful slim grandfather in his late sixties with a bald head and white fringe, a big white curly moustache, a flat green cap, a yellow shirt with green suspenders, brown trousers and brown shoes, a warm funny smile",
     "krause": "a lovely slim elderly woman in her late sixties with short curly silver hair in pink hair curlers, round glasses on a chain, a warm lovable smile, a floral pink bathrobe and fluffy slippers",
 }
+CALL_STYLE = ("bold 2D cartoon in the style of a modern adult animated TV comedy series, thick black outlines, flat cel-shaded colours, "
+              "slightly exaggerated expressive face with big eyes and heavy eyebrows, attractive and funny, waist-up, holding a smartphone to the ear, "
+              "plain light background, highly detailed, no text, no watermark")
+CHARS["chefin"] = "an elegant confident woman in her forties, big voluminous wavy auburn hair, green eyes behind stylish glasses, red lipstick, a bordeaux blazer over a white blouse, gold earrings, a stern but funny face"
+CHARS["koch"] = "a cheerful stocky chef in his forties, tall white chef hat, thick black moustache, warm brown eyes, a white double-breasted chef jacket with a red neckerchief, sweating a little, a worried funny face"
+CALL = {"chefin", "koch"}
 ONLY = [c for c in os.environ.get("ONLY", "").split(",") if c] or list(CHARS)   # ONLY=oma,enkelin: only these characters
 CHARS = {c: CHARS[c] for c in ONLY if c in CHARS}
 KIND = {"opa": ("handsome slim adult", "lovely slim elderly man"), "enkelin": ("handsome slim adult with realistic body proportions, normal-sized head, long legs, NOT chibi, NOT chubby, NOT a baby face", "slim cute child with natural child proportions, normal-sized head, NOT chibi, NOT chubby, NOT a baby face"),
@@ -31,7 +37,7 @@ SEED0 = int(os.environ.get("SEED0", "1"))   # candidate seeds SEED0 .. SEED0+n-1
 os.makedirs(out, exist_ok=True)
 
 def one(char, seed):
-    r = first_working(["black-forest-labs/FLUX.1-schnell"], {"prompt": f"{STYLE.replace(*KIND[char]) if char in KIND else STYLE}. {CHARS[char]}.", "seed": seed, "randomize_seed": False, "width": 576, "height": 1024}, "still")
+    r = first_working(["black-forest-labs/FLUX.1-schnell"], {"prompt": f"{CALL_STYLE if char in CALL else STYLE.replace(*KIND[char]) if char in KIND else STYLE}. {CHARS[char]}.", "seed": seed, "randomize_seed": False, "width": 576, "height": 1024}, "still")
     Image.open(r).convert("RGB").save(f"{out}/{char}-{seed}.jpg", quality=88)
 
 for char in CHARS:
