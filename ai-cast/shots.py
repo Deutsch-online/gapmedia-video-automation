@@ -65,7 +65,7 @@ def make_still(j, shot_dir, cast, style):
     if ref:
         who = "the same character" if len(chars) == 1 else "the same two characters (the one on the left and the one on the right of the reference picture)"
         prompt = (f"Keep {who}: identical faces, hairstyles, outfits, skin tones and ages. Put {'this character' if len(chars) == 1 else 'these two characters'} {j['prompt']}. "
-                  + WIDE)
+                  + j.get("wide", WIDE))
         try:
             r = first_working(KONTEXT, {"input_image": handle_file(ref), "prompt": prompt, "seed": j["seed"], "randomize_seed": False,
                                         "guidance_scale": 2.5, "steps": 24}, "kontext")
