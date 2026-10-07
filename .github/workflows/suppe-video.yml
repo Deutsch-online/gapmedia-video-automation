@@ -61,6 +61,30 @@ jobs:
         with:
           path: renders/series-shots
           key: series-shots-su-${{ github.run_id }}
+      - name: Contact sheet of the finished stills (so the pictures can be checked even when the quota stops the run)
+        if: always()
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          import glob, os
+          from PIL import Image, ImageDraw
+          fs = sorted(glob.glob("renders/series-shots/**/*.png", recursive=True), key=lambda f: (len(os.path.basename(f)), f))
+          fs = [f for f in fs if not os.path.basename(f).startswith("ref-")]
+          if fs:
+              W, H, cols = 288, 512, 6
+              rows = (len(fs) + cols - 1) // cols
+              sh = Image.new("RGB", (cols * W, rows * H), "#222")
+              d = ImageDraw.Draw(sh)
+              for i, f in enumerate(fs):
+                  sh.paste(Image.open(f).convert("RGB").resize((W, H)), ((i % cols) * W, (i // cols) * H)); d.text(((i % cols) * W + 8, (i // cols) * H + 8), os.path.basename(f), fill="#FFF")
+              os.makedirs("ai-cast/contact", exist_ok=True); sh.save("ai-cast/contact/suppe-stills.jpg", quality=88); print("stills:", len(fs))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A ai-cast/contact
+          git diff --staged --quiet || git commit -m "suppe: stills sheet"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
       - name: Measure the finished videos (QC report with numbers and a contact sheet)
         if: success()
         run: bash scripts/qc-renders.sh "renders/suppe/$(date -u +%F)"
