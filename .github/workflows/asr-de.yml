@@ -1,0 +1,22 @@
+name: German ASR of a clip (manual, log only)
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "path in the repo"
+        default: "public/ai-cast/baecker-vids.mp4"
+permissions:
+  contents: read
+jobs:
+  asr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install openai-whisper
+      - run: python scripts/asr-de.py "${{ inputs.video }}"
