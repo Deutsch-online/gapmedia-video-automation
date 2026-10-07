@@ -39,58 +39,82 @@
 
   // ------------------------------------------------------------------ a bold cartoon person: big head, thick outline, glove hands, a face that acts
   function person(cfg) {
-    const root = g(people), body = g(root), phoneLayer = g(root), arms = g(root);
-    const skin = cfg.skin, skinD = cfg.skinD;
+    const root = g(people); E(root, 4, 6, 118, 18, "#000000", { opacity: 0.2 });
+    const body = g(root), phoneLayer = g(root), arms = g(root);
+    const skin = cfg.skin, skinD = cfg.skinD, SHD = (d, o = 0.18) => P(body, d, "#25101C", { opacity: o }), HI = (d, o = 0.2) => P(body, d, "#FFFFFF", { opacity: o });
     const legs = [-1, 1].map((sg) => {
-      const x = sg * 28, lg = g(body);
-      if (cfg.skirt) { R(lg, x - 14, -170, 28, 140, cfg.stocking, ln(5)); P(lg, `M ${x - 22} -34 L ${x + 24} -34 L ${x + 34} -6 L ${x - 34} -6 L ${x - 30} 0 L ${x + 30} 0 L ${x + 36} -6 Z`, cfg.shoes, ln(5)); }
-      else { R(lg, x - 24, -270, 48, 244, cfg.bottom, ln(5)); if (cfg.checks) for (let k = 0; k < 6; k++) R(lg, x - 24, -250 + k * 38, 48, 14, cfg.checks, { opacity: 0.55 }); P(lg, `M ${x - 30} -34 L ${x + 30} -34 L ${x + 40} 0 L ${x - 34} 0 Z`, cfg.shoes, ln(5)); }
+      const x = sg * 30, lg = g(body);
+      if (cfg.skirt) {
+        P(lg, `M ${x - 17} -134 Q ${x - 24} -80 ${x - 15} -42 L ${x - 13} -30 L ${x + 13} -30 L ${x + 15} -42 Q ${x + 24} -80 ${x + 17} -134 Z`, cfg.stocking, ln(5)); P(lg, `M ${x + 4} -128 Q ${x + 14} -80 ${x + 9} -44`, "none", { stroke: "#FFFFFF", "stroke-width": 5, opacity: 0.35, "stroke-linecap": "round" });
+        P(lg, `M ${x - 15} -36 L ${x + 15} -36 Q ${x + 28} -22 ${x + 40} -4 L ${x + 36} 0 L ${x - 10} 0 L ${x - 14} -14 Z`, cfg.shoes, ln(5)); R(lg, x - 14, -14, 6, 14, OUT);
+      } else {
+        P(lg, `M ${x - 27} -266 L ${x + 27} -266 L ${x + 23} -36 L ${x - 23} -36 Z`, cfg.bottom, ln(5)); if (cfg.checks) for (let k = 0; k < 6; k++) R(lg, x - 25 + k * 0, -246 + k * 36, 50 - 4, 12, cfg.checks, { opacity: 0.5 }); P(lg, `M ${x + 8} -260 L ${x + 6} -40`, "none", { stroke: "#FFFFFF", "stroke-width": 5, opacity: 0.2 });
+        P(lg, `M ${x - 28} -38 L ${x + 26} -38 Q ${x + 48} -26 ${x + 44} 0 L ${x - 32} 0 Z`, cfg.shoes, ln(5)); P(lg, `M ${x - 28} -10 L ${x + 44} -10`, "none", ln(3, "#FFFFFF"));
+      }
       return { n: lg, px: x, py: cfg.skirt ? -140 : -260 };
     });
-    if (cfg.skirt) P(body, "M -84 -276 L 84 -276 L 72 -110 L -72 -110 Z", cfg.bottom, ln(6));
-    else R(body, -50, -282, 100, 34, cfg.bottom, ln(5));
-    R(body, -22, -520, 44, 70, skin, ln(5));
-    P(body, "M -86 -450 Q 0 -500 86 -450 L 98 -250 L -98 -250 Z", cfg.top, ln(6));
-    if (cfg.chef) { P(body, "M -30 -478 L 0 -330 L 30 -478 Z", cfg.shirt, ln(3)); [-410, -360, -310].forEach((y) => { C(body, -20, y, 7, cfg.topD, ln(3)); C(body, 20, y, 7, cfg.topD, ln(3)); }); P(body, "M 0 -486 L 0 -250", "none", ln(3, cfg.topD)); P(body, "M -40 -482 L 0 -452 L 40 -482 L 24 -494 L -24 -494 Z", "#D63B3B", ln(5)); }
-    else { P(body, "M -34 -480 L 0 -318 L 34 -480 Z", cfg.shirt, ln(3)); P(body, "M -34 -480 L 0 -318 L -64 -430 Z", cfg.topD, ln(5)); P(body, "M 34 -480 L 0 -318 L 64 -430 Z", cfg.topD, ln(5)); P(body, "M 0 -318 L 0 -250", "none", ln(4, cfg.topD)); C(body, -6, -298, 7, "#F3C84D", ln(3)); }
-    if (cfg.necklace) { P(body, "M -26 -486 Q 0 -440 26 -486", "none", ln(4, "#D9A62E")); C(body, 0, -450, 8, "#D9A62E", ln(3)); }
+    if (cfg.skirt) { P(body, "M -78 -268 L 78 -268 Q 90 -190 68 -108 L -68 -108 Q -90 -190 -78 -268 Z", cfg.bottom, ln(6)); P(body, "M 0 -150 L 0 -108", "none", ln(3.5, "#15151B")); SHD("M 30 -268 L 78 -268 Q 90 -190 68 -108 L 40 -108 Q 56 -190 30 -268 Z", 0.28); }
+    else { R(body, -52, -284, 104, 40, cfg.bottom, ln(5)); R(body, -52, -270, 104, 10, "#2E2A28"); R(body, -8, -272, 16, 14, "#D9A62E", ln(2.5)); }
+    P(body, "M -24 -522 L 24 -522 L 28 -466 L -28 -466 Z", skin, ln(5)); P(body, "M -26 -516 Q 0 -488 26 -516 L 26 -482 Q 0 -462 -26 -482 Z", skinD, { opacity: 0.7 });
+    if (cfg.skirt) {
+      P(body, "M -92 -448 Q -100 -420 -90 -380 Q -76 -330 -72 -290 Q -94 -270 -98 -240 L 98 -240 Q 94 -270 72 -290 Q 76 -330 90 -380 Q 100 -420 92 -448 Q 0 -500 -92 -448 Z", cfg.top, ln(6));
+      P(body, "M -36 -490 Q 0 -440 36 -490 L 4 -320 L -4 -320 Z", cfg.shirt, ln(3.5)); P(body, "M -30 -488 Q -20 -470 -34 -452 M 30 -488 Q 20 -470 34 -452", "none", ln(3, "#D8D0D4"));
+      P(body, "M -36 -490 L -4 -318 L -66 -396 L -80 -452 Z", cfg.topD, ln(5)); P(body, "M 36 -490 L 4 -318 L 66 -396 L 80 -452 Z", cfg.topD, ln(5)); C(body, -14, -400, 10, "#F3C84D", ln(3)); P(body, "M -4 -318 L -4 -240 M 4 -318 L 4 -240", "none", ln(3, cfg.topD));
+      C(body, 0, -306, 8, "#F3C84D", ln(3)); C(body, 0, -270, 8, "#F3C84D", ln(3)); P(body, "M 42 -330 L 74 -330", "none", ln(5, cfg.topD)); P(body, "M -74 -326 L -42 -326 L -44 -304 L -72 -304 Z", cfg.topD, ln(3.5));
+      SHD("M 44 -450 Q 78 -380 66 -290 Q 94 -270 98 -240 L 74 -240 Q 60 -300 50 -330 Z", 0.22); HI("M -72 -440 Q -84 -380 -78 -310 L -64 -310 Q -70 -380 -56 -438 Z", 0.18);
+    } else {
+      P(body, "M -94 -448 Q -104 -380 -96 -246 L 96 -246 Q 104 -380 94 -448 Q 0 -500 -94 -448 Z", cfg.top, ln(6));
+      P(body, "M -30 -486 L 0 -330 L 30 -486 Z", cfg.shirt, ln(3)); P(body, "M 0 -480 L 0 -246", "none", ln(3.5, cfg.topD)); [-410, -360, -310, -260].forEach((y) => { C(body, -22, y, 8, "#8C97A3", ln(3)); C(body, 22, y, 8, "#8C97A3", ln(3)); });
+      P(body, "M -44 -482 L 0 -446 L 44 -482 L 28 -500 L -28 -500 Z", "#D63B3B", ln(5)); P(body, "M -60 -330 L -30 -330 L -30 -300 L -60 -300 Z", "none", ln(3, cfg.topD)); R(body, -54, -336, 6, 36, "#2F7A4F");
+      SHD("M 44 -450 Q 84 -380 74 -246 L 96 -246 Q 104 -380 94 -448 Z", 0.16); HI("M -76 -440 Q -88 -380 -84 -320 L -70 -320 Q -72 -380 -60 -438 Z", 0.35);
+    }
+    if (cfg.necklace) { P(body, "M -26 -490 Q 0 -440 26 -490", "none", ln(4, "#D9A62E")); C(body, 0, -452, 8, "#D9A62E", ln(3)); }
     const head = g(root, { transform: "translate(0,-596)" });
-    if (cfg.longHair) { P(head, "M -100 -20 Q -112 -130 0 -128 Q 112 -130 100 -20 Q 118 70 96 150 L -96 150 Q -118 70 -100 -20 Z", cfg.hair, ln(6)); P(head, "M -80 40 Q -94 90 -84 140 M 80 40 Q 94 90 84 140", "none", ln(4, cfg.hairD)); }
-    E(head, -78, 14, 14, 22, skin, ln(5)); E(head, 78, 14, 14, 22, skin, ln(5));
-    if (cfg.earring) { C(head, -80, 44, 8, "#F3C84D", ln(3)); C(head, 80, 44, 8, "#F3C84D", ln(3)); }
-    E(head, 0, 0, 80, 86, skin, ln(6)); P(head, "M -60 60 Q 0 104 60 60 Q 0 90 -60 60 Z", skinD, { opacity: 0.35 });
-    E(head, -46, 38, 18, 11, "#F28C7A", { opacity: 0.55 }); E(head, 46, 38, 18, 11, "#F28C7A", { opacity: 0.55 });
-    // eyes: white, outlined, a pupil that looks, a lid that frowns or droops, lashes
+    if (cfg.longHair) {
+      P(head, "M -104 -10 Q -124 -124 -30 -136 Q 0 -152 36 -136 Q 124 -124 104 -10 Q 130 80 102 160 Q 72 172 42 150 L -42 150 Q -72 172 -102 160 Q -130 80 -104 -10 Z", cfg.hair, ln(6));
+      P(head, "M -92 40 Q -112 100 -96 150 M -70 60 Q -86 110 -70 150 M 92 40 Q 112 100 96 150 M 70 60 Q 86 110 70 150", "none", ln(4, cfg.hairD)); P(head, "M -84 -96 Q -40 -138 22 -128", "none", { stroke: "#E58A5A", "stroke-width": 12, opacity: 0.55, "stroke-linecap": "round" });
+    }
+    E(head, -80, 16, 15, 24, skin, ln(5)); E(head, 80, 16, 15, 24, skin, ln(5)); P(head, "M -82 8 Q -76 16 -82 28 M 82 8 Q 76 16 82 28", "none", ln(3, skinD));
+    if (cfg.earring) { C(head, -82, 48, 9, "#F3C84D", ln(3)); C(head, 82, 48, 9, "#F3C84D", ln(3)); }
+    P(head, "M -82 -8 Q -84 56 -42 90 Q 0 108 42 90 Q 84 56 82 -8 Q 82 -90 0 -92 Q -82 -90 -82 -8 Z", skin, ln(6));
+    P(head, "M -56 70 Q 0 108 56 70 Q 0 96 -56 70 Z", skinD, { opacity: 0.45 }); P(head, "M 52 -40 Q 80 10 60 70 Q 76 20 52 -40 Z", skinD, { opacity: 0.28 }); E(head, -30, -52, 34, 14, "#FFFFFF", { opacity: 0.16 });
+    E(head, -48, 40, 19, 12, "#F28C7A", { opacity: 0.6 }); E(head, 48, 40, 19, 12, "#F28C7A", { opacity: 0.6 });
     const eyes = [-1, 1].map((sg) => {
-      const eg = g(head, { transform: `translate(${sg * 32},-10)` }), RX = 24, RY = 27, cid = `eyeclip${cfg.id}${sg > 0 ? "r" : "l"}`;
+      const eg = g(head, { transform: `translate(${sg * 33},-8)` }), RX = 25, RY = 28, cid = `eyeclip${cfg.id}${sg > 0 ? "r" : "l"}`;
       el("ellipse", { cx: 0, cy: 0, rx: RX, ry: RY }, el("clipPath", { id: cid }, defs));
-      E(eg, 0, 0, RX, RY, "#FFFFFF"); const pg = g(eg); C(pg, 0, 0, 12, cfg.iris || "#3A2A22"); C(pg, 0, 0, 6.5, "#0E0A0A"); C(pg, -4, -5, 3.5, "#FFFFFF");
+      E(eg, 0, 0, RX, RY, "#FFFFFF"); const pg = g(eg); C(pg, 0, 0, 13, cfg.iris || "#3A2A22"); C(pg, 0, 0, 7.5, "#0E0A0A"); C(pg, -5, -6, 4.2, "#FFFFFF"); C(pg, 5, 5, 2, "#FFFFFF", { opacity: 0.8 });
       const lid = P(eg, "M 0 0", cfg.skin, { ...ln(5), "clip-path": `url(#${cid})` });
-      E(eg, 0, 0, RX, RY, "none", ln(5)); if (cfg.lashes) P(eg, `M ${sg * 22} -14 L ${sg * 38} -24 M ${sg * 24} -4 L ${sg * 42} -6`, "none", ln(5));
+      E(eg, 0, 0, RX, RY, "none", ln(5)); P(eg, `M ${-RX - 1} -4 Q 0 ${-RY * 1.5} ${RX + 1} -4`, "none", ln(cfg.lashes ? 10 : 7));
+      if (cfg.lashes) P(eg, `M ${sg * 23} -12 L ${sg * 41} -26 M ${sg * 25} -2 L ${sg * 45} -7`, "none", ln(5));
       return { eg, pg, lid, RX, RY, sg };
     });
-    const brows = [-1, 1].map((sg) => P(head, "M 0 0", "none", ln(10, cfg.browC || cfg.hair)));
-    E(head, 0, 28, 7, 6, skinD, { opacity: 0.9 }); P(head, "M -6 22 Q 0 32 8 24", "none", ln(3.5, skinD));
-    const mouth = g(head, { transform: "translate(0,56)" });
-    const mClosed = P(mouth, "M -20 0 Q 0 8 20 0", "none", ln(6, cfg.lips || OUT));
-    const mOpen = g(mouth, { opacity: 0 }); const mShape = P(mOpen, "M 0 0", "#7B2C34", ln(5)); const teeth = P(mOpen, "M 0 0", "#FFFFFF"); const tongue = E(mOpen, 0, 10, 12, 6, "#E2706F");
-    if (cfg.stache) P(head, "M -34 40 Q -18 28 0 38 Q 18 28 34 40 Q 18 48 0 44 Q -18 48 -34 40 Z", cfg.hair, ln(4));
-    // hair in front: fringe / hat
-    if (cfg.longHair) { P(head, "M -84 -20 Q -80 -100 0 -104 Q 90 -100 82 -10 Q 66 -58 14 -62 Q -40 -64 -84 -20 Z", cfg.hair, ln(6)); P(head, "M -40 -90 Q -10 -70 20 -92 M 10 -98 Q 40 -78 62 -88", "none", ln(4, cfg.hairD)); }
-    else if (cfg.hat) { P(head, "M -82 -22 Q -80 -72 0 -76 Q 80 -72 82 -22 Q 60 -46 0 -46 Q -60 -46 -82 -22 Z", cfg.hair, ln(5)); R(head, -84, -98, 168, 38, "#FFFFFF", { rx: 10, ...ln(6) }); [[-46, -150], [0, -170], [46, -150]].forEach(([x, y]) => C(head, x, y, 46, "#FFFFFF", ln(6))); R(head, -80, -110, 160, 30, "#FFFFFF", { rx: 6 }); P(head, "M -70 -92 L 70 -92", "none", ln(3, "#D8DEE8")); }
+    const brows = [-1, 1].map((sg) => P(head, "M 0 0", cfg.browC || cfg.hair, ln(2.5)));
+    P(head, "M -3 6 Q -9 26 -4 30 M 3 6 Q 9 26 4 30", "none", ln(3, skinD)); E(head, 0, 30, 9, 6.5, skinD, { opacity: 0.85 }); P(head, "M -10 32 Q 0 38 10 32", "none", ln(3.5, skinD));
+    const mouth = g(head, { transform: "translate(0,58)" });
+    const mClosed = P(mouth, "M -20 0 Q 0 8 20 0", "none", ln(7, cfg.lips || OUT));
+    const mOpen = g(mouth, { opacity: 0 }); const mShape = P(mOpen, "M 0 0", "#7B2C34", ln(5)); const teeth = P(mOpen, "M 0 0", "#FFFFFF"); const tongue = E(mOpen, 0, 10, 13, 6, "#E2706F");
+    if (cfg.lips) E(mouth, 0, 14, 11, 4, "#FFFFFF", { opacity: 0.25 });
+    if (cfg.stache) { P(head, "M -40 44 Q -22 26 0 38 Q 22 26 40 44 Q 52 36 56 24 Q 48 54 22 50 Q 0 46 -22 50 Q -48 54 -56 24 Q -52 36 -40 44 Z", cfg.hair, ln(4)); P(head, "M -30 70 Q 0 86 30 70", "none", { stroke: cfg.hair, "stroke-width": 3, opacity: 0.35 }); }
+    if (cfg.longHair) {
+      P(head, "M -88 -16 Q -96 -116 0 -120 Q 94 -116 90 -16 Q 80 -68 38 -78 Q 12 -30 -30 -18 Q -56 -54 -88 -16 Z", cfg.hair, ln(6));
+      P(head, "M -60 -98 Q -20 -118 24 -104", "none", { stroke: "#E58A5A", "stroke-width": 10, opacity: 0.6, "stroke-linecap": "round" }); P(head, "M -20 -112 Q -8 -142 -26 -150 M 4 -116 Q 20 -146 8 -156", "none", ln(3, cfg.hair));
+    } else if (cfg.hat) {
+      P(head, "M -84 -20 Q -82 -78 0 -82 Q 82 -78 84 -20 Q 62 -50 0 -50 Q -62 -50 -84 -20 Z", cfg.hair, ln(5)); R(head, -86, -104, 172, 44, "#FFFFFF", { rx: 10, ...ln(6) });
+      [[-50, -156, 44], [0, -178, 50], [50, -156, 44], [-26, -134, 40], [28, -134, 40]].forEach(([x, y, r]) => C(head, x, y, r, "#FFFFFF", ln(6))); R(head, -82, -118, 164, 30, "#FFFFFF");
+      P(head, "M -40 -178 Q -34 -150 -40 -124 M 8 -190 Q 14 -150 8 -122 M 54 -176 Q 48 -150 54 -122", "none", ln(3, "#CBD2DC")); P(head, "M -76 -86 L 76 -86", "none", ln(3, "#CBD2DC")); P(head, "M -70 -60 L 70 -60", "none", { stroke: "#000", "stroke-width": 8, opacity: 0.1 });
+    }
     const marks = { vein: g(head, { opacity: 0 }), sweat: P(head, "M 0 -12 Q 12 8 0 18 Q -12 8 0 -12 Z", "#8CCBFF", { opacity: 0, ...ln(3.5) }) };
-    P(marks.vein, "M 48 -78 L 62 -66 M 62 -78 L 48 -66 M 46 -72 L 64 -72", "none", ln(7, "#E03030"));
-    // arms (two-bone IK, long sleeves, glove hands)
+    P(marks.vein, "M 48 -84 L 64 -70 M 64 -84 L 48 -70 M 46 -77 L 66 -77", "none", ln(8, "#E03030"));
     const A = {};
     for (const k of ["R", "L"]) {
-      const a = g(arms); A[k] = { u0: el("path", { fill: "none", ...ln(46) }, a), u: el("path", { fill: "none", stroke: cfg.top, "stroke-width": 34, "stroke-linecap": "round" }, a), f0: el("path", { fill: "none", ...ln(40) }, a), f: el("path", { fill: "none", stroke: cfg.top, "stroke-width": 28, "stroke-linecap": "round" }, a), h: g(a) };
-      const h = A[k].h; E(h, 0, 6, 25, 23, "#FFFFFF", ln(5)); [-14, 0, 14].forEach((x, i) => E(h, x, -14 + (i === 1 ? -3 : 0), 8, 11, "#FFFFFF", ln(4))); E(h, k === "R" ? 24 : -24, 4, 9, 14, "#FFFFFF", ln(4));
+      const a = g(arms); A[k] = { u0: el("path", { fill: "none", ...ln(48) }, a), u: el("path", { fill: "none", stroke: cfg.top, "stroke-width": 36, "stroke-linecap": "round" }, a), f0: el("path", { fill: "none", ...ln(42) }, a), f: el("path", { fill: "none", stroke: cfg.top, "stroke-width": 30, "stroke-linecap": "round" }, a), s: el("path", { fill: "none", stroke: "#000", "stroke-width": 8, "stroke-linecap": "round", opacity: 0.12 }, a), h: g(a) };
+      const h = A[k].h; R(h, -17, 6, 34, 16, cfg.topD, ln(4)); E(h, 0, -6, 26, 24, "#FFFFFF", ln(5)); [-15, -5, 5, 15].forEach((x, i) => E(h, x, -26 + Math.abs(i - 1.5) * 3, 7, 12, "#FFFFFF", ln(4))); E(h, k === "R" ? 25 : -25, -8, 9, 15, "#FFFFFF", ln(4));
     }
     function ik(k, tx, ty) {
       const [sx, sy] = SH[k]; let dx = tx - sx, dy = ty - sy, d = Math.hypot(dx, dy); const mx = L1 + L2 - 1; if (d > mx) { dx *= mx / d; dy *= mx / d; d = mx; tx = sx + dx; ty = sy + dy; }
       const a = (L1 * L1 - L2 * L2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, L1 * L1 - a * a)), px = sx + dx * a / d, py = sy + dy * a / d;
       const e1 = [px - dy / d * h, py + dx / d * h], e2 = [px + dy / d * h, py - dx / d * h], out = k === "R" ? -1 : 1, ex = (e1[0] - px) * out > (e2[0] - px) * out ? e1 : e2, n = A[k];
-      const up = `M ${sx} ${sy} L ${ex[0]} ${ex[1]}`, fo = `M ${ex[0]} ${ex[1]} L ${tx} ${ty}`; n.u0.setAttribute("d", up); n.u.setAttribute("d", up); n.f0.setAttribute("d", fo); n.f.setAttribute("d", fo); n.h.setAttribute("transform", `translate(${tx},${ty})`);
+      const up = `M ${sx} ${sy} L ${ex[0]} ${ex[1]}`, fo = `M ${ex[0]} ${ex[1]} L ${tx} ${ty}`; n.u0.setAttribute("d", up); n.u.setAttribute("d", up); n.f0.setAttribute("d", fo); n.f.setAttribute("d", fo); n.s.setAttribute("d", `M ${ex[0] + 6} ${ex[1] + 4} L ${tx + 5} ${ty + 6}`); n.h.setAttribute("transform", `translate(${tx},${ty})`);
     }
     return { root, head, eyes, brows, mClosed, mOpen, mShape, teeth, tongue, marks, phoneLayer, ik, legs, cfg };
   }
@@ -123,6 +147,21 @@
   const mouthAt = (t) => { const f = t * 25, i = Math.floor(f), k = f - i; return lerp(MOUTH[i] || 0, MOUTH[i + 1] || 0, k); };
   const sceneOf = (t) => { const S2 = CFG.scenes || []; for (let i = S2.length - 1; i >= 0; i--) if (t >= S2[i].t0) return i; return 0; };
 
+  // depth: floor perspective, baseboards, light beams, a flame under the pot
+  const flames = [];
+  {
+    const o = rooms.boss, k = rooms.cook;
+    for (let x = -600; x <= 1700; x += 150) P(o, `M ${540 + (x - 540) * 0.3} ${FLOOR + 10} L ${x} 1460`, "none", { stroke: "#D99C94", "stroke-width": 3, opacity: 0.5 });
+    P(o, "M 0 1290 L 1080 1290", "none", { stroke: "#D99C94", "stroke-width": 3, opacity: 0.5 }); R(o, 0, FLOOR - 26, 1080, 28, "#E8CDC2", ln(4, "#C9A89C"));
+    P(o, "M 50 700 L 400 700 L 700 1250 L 150 1250 Z", "#FFFFFF", { opacity: 0.13 }); P(o, "M 60 710 L 140 710 L 330 1250 L 250 1250 Z", "#FFFFFF", { opacity: 0.08 });
+    R(o, 470, 380, 130, 90, "#FFFFFF", ln(5, "#C9A89C")); R(o, 480, 390, 110, 70, "#F3C8B8"); P(o, "M 480 450 L 520 410 L 550 440 L 570 420 L 590 450 Z", "#E58A7A");
+    R(o, 640, 410, 70, 50, "#FFFFFF", ln(4, "#C9A89C")); P(o, "M 648 452 L 670 424 L 690 444", "none", ln(4, "#7FA6C9"));
+    for (let x = 0; x < 1080; x += 90) P(k, `M ${540 + (x - 540) * 0.35} ${FLOOR + 6} L ${x} 1460`, "none", { stroke: "#9AA4AE", "stroke-width": 2, opacity: 0.35 });
+    P(k, "M 40 480 L 40 560 M 60 480 L 60 560 M 80 480 L 80 560", "none", ln(6, "#8C97A3")); P(k, "M 520 160 L 520 240 Q 500 280 520 300 M 560 160 L 560 250", "none", ln(5, "#6B7683")); E(k, 520, 310, 18, 30, "#C9D2DA", ln(4));
+    E(k, 520, 190, 140, 160, "#FFF1C2", { opacity: 0.12 });
+    [-26, 0, 26].forEach((dx) => flames.push(P(k, `M ${170 + dx} 1000 Q ${160 + dx} 980 ${170 + dx} 955 Q ${182 + dx} 980 ${178 + dx} 1000 Z`, "#FF9A3C", { opacity: 0 })));
+  }
+
   const boss = person({ id: "b", skirt: true, bottom: "#2F2F3A", stocking: "#EBCDB8", shoes: "#B2253A", top: "#9E2A4B", topD: "#7A1F39", shirt: "#FFFFFF", hair: "#B5472B", hairD: "#8E3320", longHair: true, skin: "#F7CFAE", skinD: "#E5AB85", iris: "#3F7F5A", lashes: true, lips: "#C62F4B", earring: true, necklace: true });
   const cook = person({ id: "c", bottom: "#4A5A78", checks: "#FFFFFF", shoes: "#2E2A28", top: "#FFFFFF", topD: "#C3CBD8", shirt: "#FFFFFF", chef: true, hair: "#2E2A28", hat: true, stache: true, skin: "#E8B58C", skinD: "#C98F68", iris: "#5A3B22" });
   boss.s = 1.36; cook.s = 1.28;
@@ -149,7 +188,11 @@
       e.pg.setAttribute("transform", `translate(${look[0] * 8},${look[1] * 6})`);
     });
     const raise = extra.raise || 0;
-    p.brows.forEach((b, i) => { const sg = i ? 1 : -1, dy = (sg > 0 ? raise : 0) - (m > 0.4 ? 3 : 0); b.setAttribute("d", `M ${sg * 8} ${M.bi - 10 + dy} Q ${sg * 36} ${Math.min(M.bi, M.bo) - 20 + dy} ${sg * 60} ${M.bo - 8 + dy}`); });
+    p.brows.forEach((b, i) => {
+      const sg = i ? 1 : -1, dy = (sg > 0 ? raise : 0) - (m > 0.4 ? 3 : 0), thick = p.cfg.hat ? 13 : 9, x0 = sg * 8, y0 = M.bi - 10 + dy, cx = sg * 36, cy = Math.min(M.bi, M.bo) - 20 + dy, x1 = sg * 60, y1 = M.bo - 8 + dy, up = [], lo = [];
+      for (let k = 0; k <= 8; k++) { const u2 = k / 8, x = (1 - u2) * (1 - u2) * x0 + 2 * (1 - u2) * u2 * cx + u2 * u2 * x1, y = (1 - u2) * (1 - u2) * y0 + 2 * (1 - u2) * u2 * cy + u2 * u2 * y1, tx = 2 * (1 - u2) * (cx - x0) + 2 * u2 * (x1 - cx), ty = 2 * (1 - u2) * (cy - y0) + 2 * u2 * (y1 - cy), l = Math.hypot(tx, ty) || 1, nx = -ty / l, ny = tx / l, th = thick * (1 - 0.6 * u2) * (u2 < 0.15 ? 0.7 + u2 * 2 : 1) / 2; up.push([x + nx * th, y + ny * th]); lo.push([x - nx * th, y - ny * th]); }
+      b.setAttribute("d", `M ${up.map((q) => q.join(" ")).join(" L ")} L ${lo.reverse().map((q) => q.join(" ")).join(" L ")} Z`);
+    });
     const s = M.s, w = 22 + 10 * Math.max(0, s) / 2.4, h = 3 + 34 * m;
     if (m > 0.07) {
       p.mClosed.setAttribute("opacity", 0); p.mOpen.setAttribute("opacity", 1);
@@ -190,6 +233,7 @@
     show(bowl, 0); show(tablet, 0);
     if (sc.prop === "bowl" && sp === cook) { place(bowl, gp[0] + 4, gp[1] - 6, wob(t, 2, 6) * talk); show(bowl, 1); }
     if (sc.prop === "tablet" && sp === boss) { place(tablet, gp[0] + 4, gp[1] - 14, wob(t, 2, 5) * talk); show(tablet, 1); }
+    flames.forEach((f, i) => { const k = 0.8 + 0.3 * Math.sin(t * 14 + i * 2); f.setAttribute("transform", `translate(0,${1000 * (1 - k)}) scale(1,${k})`); show(f, sc.who === "cook" ? 0.9 : 0); });
     steam.forEach((s, i) => { const k = ((t * 0.7 + i / 3) % 1); s.setAttribute("cx", 170 + (i - 1) * 26 + Math.sin(k * 6 + i) * 12); s.setAttribute("cy", 900 - k * 150); s.setAttribute("r", 14 + k * 22); show(s, sc.who === "cook" ? 0.6 * (1 - k) : 0); });
     // the face: eases from the last line's mood into this one
     const prev = scs[si - 1] ? { ...FALLBACK, ...scs[si - 1] } : sc, K = ss(0, 0.3, u), M = lerpMood(MOODS[prev.who === sc.who ? prev.mood : sc.mood] || MOODS.calm, MOODS[sc.mood] || MOODS.calm, K);
