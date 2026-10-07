@@ -1,7 +1,7 @@
-name: Der Anruf (hand-drawn phone-call cartoon, manual)
+name: Die Suppe (hand-drawn phone-call cartoon, manual)
 
 # Owner request 2026-10-05: "build it without Hugging Face, no extra cost". Manual only (no cron).
-# The picture is drawn in SVG (public/2d/tel-stage.js), the voice is Edge TTS, the music bed is kitchen-1.
+# The picture is drawn in SVG (public/2d/anruf-stage.js), the voice is Edge TTS, the music bed is kitchen-1.
 # No GPU, no Hugging Face, no paid service. The result goes to the owner's bot chat only, in three formats.
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  tel:
+  anruf:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -35,16 +35,16 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           OMA_HF: "npx --yes hyperframes@0.8.79"
-        run: node tel-build.mjs
+        run: node anruf-build.mjs
       - name: Measure the finished videos (QC report with numbers and a contact sheet)
         if: success()
-        run: bash scripts/qc-renders.sh "renders/tel/$(date -u +%F)"
+        run: bash scripts/qc-renders.sh "renders/anruf/$(date -u +%F)"
       - name: Keep the QC report
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A qc
-          git diff --staged --quiet || git commit -m "tel: qc report"
+          git diff --staged --quiet || git commit -m "anruf: qc report"
           git pull --rebase --autostash origin main
           git push origin HEAD:main
