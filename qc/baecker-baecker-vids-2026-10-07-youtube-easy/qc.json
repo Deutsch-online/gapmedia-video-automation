@@ -1,0 +1,27 @@
+{
+ "label": "baecker-baecker-vids-2026-10-07-youtube-easy",
+ "duration_s": 70.13,
+ "width": 1080,
+ "height": 1920,
+ "fps": "30/1",
+ "has_audio": true,
+ "aspect": 0.562,
+ "loudness_lufs": -16.7,
+ "loudness_range_lu": 5.3,
+ "true_peak_dbtp": -1.3,
+ "silences_over_0.4s": 11,
+ "silence_seconds": 9.9,
+ "silence_share": 0.141,
+ "hard_cuts_score_0.3": 2,
+ "cuts_per_minute": 1.7,
+ "frozen_seconds_est": 4.4,
+ "frozen_share": 0.063,
+ "black_segments": 0,
+ "checks": {
+  "over_one_minute": true,
+  "within_65s": false,
+  "vertical_9x16": true,
+  "loudness_ok(-16..-12 target, -24..-10 tolerated)": true,
+  "true_peak_ok(<=-1)": true
+ }
+}
