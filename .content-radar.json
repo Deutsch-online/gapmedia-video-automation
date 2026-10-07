@@ -1,6 +1,33 @@
 {
-  "at": "2026-10-05T01:24:21.311Z",
+  "at": "2026-10-07T02:24:52.137Z",
   "rows": [
+    {
+      "cat": "tools",
+      "title": "FLUX 3 Image: Pixel-Perfect AI Editing | ArWriter",
+      "url": "https://arwriterai.com/en/blog/flux-3-image-pixel-editing-2026/",
+      "date": "2026-10-05",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Stable Video Diffusion: Seedance 2.5 Review",
+      "url": "https://stablevideodiffusion.net/blog/stable-video-diffusion-seedance-one-take-model",
+      "date": "2026-10-04",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "InvokeAI 7 Alpha Adds Video With Sound: Try It Safely",
+      "url": "https://www.creativeainews.com/articles/invokeai-7-alpha-video-audio-safe-install-2026/",
+      "date": "2026-10-04",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
     {
       "cat": "instagram",
       "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
@@ -8,7 +35,7 @@
       "date": "2026-10-01",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "instagram",
@@ -17,7 +44,7 @@
       "date": "2026-10-01",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tiktok",
@@ -26,61 +53,52 @@
       "date": "2026-10-02",
       "sources": 7,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
-      "cat": "tools",
-      "title": "Kling 4.0 First Look: What Kuaishou's New Video Model Actually Does | MindStudio",
-      "url": "https://www.mindstudio.ai/blog/kling-4-0-first-look",
+      "cat": "tiktok",
+      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
+      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/",
       "date": "2026-10-02",
-      "sources": 8,
+      "sources": 6,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tools",
-      "title": "Claude Opus 5.5 and the editing breakthrough",
-      "url": "https://absolutelyagentic.com/p/claude-opus-5-5-and-the-editing-breakthrough",
+      "title": "Johnson Sheng: Kling 4.0 Was Definitely Worth the Wait!",
+      "url": "https://kling.ai/blog/Kling4-Hands-On-Review-JohnsonSheng",
       "date": "2026-10-02",
-      "sources": 8,
+      "sources": 6,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Two Weeks with Kling 4.0: Physical Continuity, Camera Control, and Pitfalls Still Worth Avoiding - DEV Community",
-      "url": "https://dev.to/kling4ai-production/two-weeks-with-kling-40-physical-continuity-camera-control-and-pitfalls-still-worth-avoiding-ii4",
-      "date": "2026-10-04",
-      "sources": 5,
-      "clear": false,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "instagram",
       "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
       "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively",
       "date": "2026-10-01",
-      "sources": 7,
+      "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tiktok",
-      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
-      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/",
+      "title": "TikTok Will Pay Creators in 30 Days — and Own the Pipe - Prompt/Power",
+      "url": "https://promptandpower.com/tiktok-one-pay-creators-summit/",
       "date": "2026-10-01",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tools",
       "title": "Trumbone 1.1 Indigo | Trumbone Blog",
       "url": "https://trumbone.com/blog/trumbone-1-1-indigo",
       "date": "2026-10-01",
-      "sources": 5,
+      "sources": 6,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "instagram",
@@ -89,16 +107,7 @@
       "date": "2026-09-30",
       "sources": 7,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
-      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/",
-      "date": "2026-09-30",
-      "sources": 7,
-      "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "instagram",
@@ -111,86 +120,77 @@
     },
     {
       "cat": "tiktok",
-      "title": "TikTok reportedly launching 'Stories' feature similar to Snapchat",
-      "url": "https://mashable.com/article/tiktok-launching-stories",
-      "date": "",
-      "sources": 8,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tools",
-      "title": "Gemini Apps' release updates & improvements",
-      "url": "https://gemini.google/release-notes/",
-      "date": "",
-      "sources": 5,
+      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
+      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/",
+      "date": "2026-09-30",
+      "sources": 7,
       "clear": true,
       "score": 23
     },
     {
       "cat": "tiktok",
-      "title": "TikTok wants creators to see green: Its latest fintech feature will pay them for brand deals within 30 days - Tubefilter",
-      "url": "https://www.tubefilter.com/2026/09/29/tiktok-one-pay-creator-brand-deal-compensation/",
+      "title": "TikTok One Pay Brings Creator Brand Payments Inside TikTok",
+      "url": "https://wersm.com/tiktok-one-pay-creator-brand-payments/",
       "date": "2026-09-30",
       "sources": 8,
-      "clear": false,
-      "score": 22
+      "clear": true,
+      "score": 23
     }
   ],
   "shown": [
     {
       "n": 1,
+      "cat": "tools",
+      "title": "FLUX 3 Image: Pixel-Perfect AI Editing | ArWriter",
+      "url": "https://arwriterai.com/en/blog/flux-3-image-pixel-editing-2026/"
+    },
+    {
+      "n": 2,
+      "cat": "tools",
+      "title": "Stable Video Diffusion: Seedance 2.5 Review",
+      "url": "https://stablevideodiffusion.net/blog/stable-video-diffusion-seedance-one-take-model"
+    },
+    {
+      "n": 3,
+      "cat": "tools",
+      "title": "InvokeAI 7 Alpha Adds Video With Sound: Try It Safely",
+      "url": "https://www.creativeainews.com/articles/invokeai-7-alpha-video-audio-safe-install-2026/"
+    },
+    {
+      "n": 4,
       "cat": "instagram",
       "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
       "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/"
     },
     {
-      "n": 2,
+      "n": 5,
       "cat": "instagram",
       "title": "Instagram’s Edits app gets an AI assistant that reads your Reels data",
       "url": "https://thenextweb.com/news/instagram-edits-assistant-ai-creators-reels"
     },
     {
-      "n": 3,
+      "n": 6,
       "cat": "instagram",
       "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
       "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively"
     },
     {
-      "n": 4,
+      "n": 7,
       "cat": "tiktok",
       "title": "TikTok One AI Creator Search & One Plus: What They Do (2026) | Storika",
       "url": "https://www.storika.ai/guides/tiktok-one-ai-creator-search-2026"
     },
     {
-      "n": 5,
-      "cat": "tiktok",
-      "title": "TikTok hopeful about new monetisation platform for local creators and influencers",
-      "url": "https://www.businessday.co.za/companies/2026-10-01-tiktok-hopeful-about-new-monetisation-platform-for-local-creators-and-influencers/"
-    },
-    {
-      "n": 6,
-      "cat": "tiktok",
-      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
-      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/"
-    },
-    {
-      "n": 7,
-      "cat": "tools",
-      "title": "Kling 4.0 First Look: What Kuaishou's New Video Model Actually Does | MindStudio",
-      "url": "https://www.mindstudio.ai/blog/kling-4-0-first-look"
-    },
-    {
       "n": 8,
-      "cat": "tools",
-      "title": "Claude Opus 5.5 and the editing breakthrough",
-      "url": "https://absolutelyagentic.com/p/claude-opus-5-5-and-the-editing-breakthrough"
+      "cat": "tiktok",
+      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
+      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/"
     },
     {
       "n": 9,
-      "cat": "tools",
-      "title": "Two Weeks with Kling 4.0: Physical Continuity, Camera Control, and Pitfalls Still Worth Avoiding - DEV Community",
-      "url": "https://dev.to/kling4ai-production/two-weeks-with-kling-40-physical-continuity-camera-control-and-pitfalls-still-worth-avoiding-ii4"
+      "cat": "tiktok",
+      "title": "TikTok Will Pay Creators in 30 Days — and Own the Pipe - Prompt/Power",
+      "url": "https://promptandpower.com/tiktok-one-pay-creators-summit/"
     }
   ]
 }
