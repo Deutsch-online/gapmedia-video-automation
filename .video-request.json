@@ -1,5 +1,10 @@
 {
-  "action": "build-german-lesson",
+  "requestedAt": "2026-10-09T11:09:49.233Z",
+  "source": "telegram-cloud-worker",
+  "requestId": "be12cfde-f880-4bfb-9971-c7abadf3bd6e",
+  "action": "build-all",
+  "pick": "1",
   "payload": "",
+  "voice_id": "",
   "voice_mode": "on"
 }
