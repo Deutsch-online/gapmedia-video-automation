@@ -1,23 +1,77 @@
 {
-  "at": "2026-10-07T02:24:52.137Z",
+  "at": "2026-10-09T03:25:48.328Z",
   "rows": [
     {
-      "cat": "tools",
-      "title": "FLUX 3 Image: Pixel-Perfect AI Editing | ArWriter",
-      "url": "https://arwriterai.com/en/blog/flux-3-image-pixel-editing-2026/",
-      "date": "2026-10-05",
-      "sources": 8,
+      "cat": "instagram",
+      "title": "Are you ready for everything to look like TikTok? | The Verge",
+      "url": "https://www.theverge.com/tech/1006069/instagram-facebook-full-screen-reels-test-tiktok",
+      "date": "2026-10-08",
+      "sources": 7,
       "clear": true,
-      "score": 28
+      "score": 30
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
+      "date": "2026-10-08",
+      "sources": 6,
+      "clear": true,
+      "score": 29
     },
     {
       "cat": "tools",
-      "title": "Stable Video Diffusion: Seedance 2.5 Review",
-      "url": "https://stablevideodiffusion.net/blog/stable-video-diffusion-seedance-one-take-model",
-      "date": "2026-10-04",
-      "sources": 7,
+      "title": "Vidu Q4 Review: Hands-On Tests of Dialogue, Cuts and References",
+      "url": "https://viduq4.org/vidu-q4-review",
+      "date": "2026-10-08",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Introducing Vidu Q4 Preview in YouCam Apps: Turn One Photo into a Cinematic 4K Video",
+      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/vidu-q4-youcam-apps",
+      "date": "2026-10-08",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Unveils One-Click Checkout and AI Shopping Assistant",
+      "url": "https://www.techrepublic.com/article/news-tiktok-ai-shopping-assistant-one-click-checkout/",
+      "date": "2026-10-06",
+      "sources": 8,
       "clear": true,
       "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok puts brand, creator and AI assets into one approval workflow | Marketer Fizz",
+      "url": "https://www.marketerfizz.com/news/tiktok-smart-plus-creative-selection-approval",
+      "date": "2026-10-06",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "Kandinsky 6.0 AI Video: Pro, Lite and VSR | Flixly",
+      "url": "https://www.flixly.ai/blog/kandinsky-6-ai-video-generator",
+      "date": "2026-10-06",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok is adding even more shopping features. | The Verge",
+      "url": "https://www.theverge.com/news/1004925/tiktok-is-adding-even-more-shopping-features",
+      "date": "2026-10-05",
+      "sources": 6,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "tools",
@@ -26,25 +80,25 @@
       "date": "2026-10-04",
       "sources": 8,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
-      "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/",
-      "date": "2026-10-01",
-      "sources": 8,
-      "clear": true,
       "score": 25
     },
     {
       "cat": "instagram",
-      "title": "Instagram’s Edits app gets an AI assistant that reads your Reels data",
-      "url": "https://thenextweb.com/news/instagram-edits-assistant-ai-creators-reels",
-      "date": "2026-10-01",
+      "title": "Instagram adds an AI creative assistant to its Edits video app",
+      "url": "https://www.aiaffairs.com/technology/instagram-ai-creative-assistant-edits-app/",
+      "date": "2026-10-03",
       "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 24
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram’s new AI can tell creators why one Reel worked and another didn’t",
+      "url": "https://thecreatorsindex.com/platform/meta/instagrams-new-ai-can-tell-creators-why-one-reel-worked-and-another-didnt",
+      "date": "2026-10-03",
+      "sources": 8,
+      "clear": true,
+      "score": 24
     },
     {
       "cat": "tiktok",
@@ -53,16 +107,7 @@
       "date": "2026-10-02",
       "sources": 7,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
-      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/",
-      "date": "2026-10-02",
-      "sources": 6,
-      "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "tools",
@@ -71,126 +116,63 @@
       "date": "2026-10-02",
       "sources": 6,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
-      "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively",
-      "date": "2026-10-01",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Will Pay Creators in 30 Days — and Own the Pipe - Prompt/Power",
-      "url": "https://promptandpower.com/tiktok-one-pay-creators-summit/",
-      "date": "2026-10-01",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "Trumbone 1.1 Indigo | Trumbone Blog",
-      "url": "https://trumbone.com/blog/trumbone-1-1-indigo",
-      "date": "2026-10-01",
-      "sources": 6,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram rolls out an AI video assistant for creators | TechCrunch",
-      "url": "https://techcrunch.com/2026/09/30/instagram-rolls-out-an-ai-video-assistant-for-creators/",
-      "date": "2026-09-30",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram is adding an AI 'assistant' to tell you how to post",
-      "url": "https://www.theverge.com/tech/1002402/instagram-ai-edits-assistant-creators-analytics-youtube",
-      "date": "",
-      "sources": 8,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok One Adds In-App Creator Payments And A Vetted Label - Self Employed",
-      "url": "https://www.selfemployed.com/news/tiktok-one-pay-plus-label-creators-2026/",
-      "date": "2026-09-30",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok One Pay Brings Creator Brand Payments Inside TikTok",
-      "url": "https://wersm.com/tiktok-one-pay-creator-brand-payments/",
-      "date": "2026-09-30",
-      "sources": 8,
-      "clear": true,
       "score": 23
     }
   ],
   "shown": [
     {
       "n": 1,
-      "cat": "tools",
-      "title": "FLUX 3 Image: Pixel-Perfect AI Editing | ArWriter",
-      "url": "https://arwriterai.com/en/blog/flux-3-image-pixel-editing-2026/"
+      "cat": "instagram",
+      "title": "Are you ready for everything to look like TikTok? | The Verge",
+      "url": "https://www.theverge.com/tech/1006069/instagram-facebook-full-screen-reels-test-tiktok"
     },
     {
       "n": 2,
-      "cat": "tools",
-      "title": "Stable Video Diffusion: Seedance 2.5 Review",
-      "url": "https://stablevideodiffusion.net/blog/stable-video-diffusion-seedance-one-take-model"
+      "cat": "instagram",
+      "title": "Instagram adds an AI creative assistant to its Edits video app",
+      "url": "https://www.aiaffairs.com/technology/instagram-ai-creative-assistant-edits-app/"
     },
     {
       "n": 3,
-      "cat": "tools",
-      "title": "InvokeAI 7 Alpha Adds Video With Sound: Try It Safely",
-      "url": "https://www.creativeainews.com/articles/invokeai-7-alpha-video-audio-safe-install-2026/"
+      "cat": "instagram",
+      "title": "Instagram’s new AI can tell creators why one Reel worked and another didn’t",
+      "url": "https://thecreatorsindex.com/platform/meta/instagrams-new-ai-can-tell-creators-why-one-reel-worked-and-another-didnt"
     },
     {
       "n": 4,
-      "cat": "instagram",
-      "title": "Instagram’s New AI Assistant Analyzes Reels and Suggests What to Make Next",
-      "url": "https://www.techrepublic.com/article/news-instagram-edits-ai-performance-content-ideas/"
+      "cat": "tiktok",
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature"
     },
     {
       "n": 5,
-      "cat": "instagram",
-      "title": "Instagram’s Edits app gets an AI assistant that reads your Reels data",
-      "url": "https://thenextweb.com/news/instagram-edits-assistant-ai-creators-reels"
+      "cat": "tiktok",
+      "title": "TikTok Unveils One-Click Checkout and AI Shopping Assistant",
+      "url": "https://www.techrepublic.com/article/news-tiktok-ai-shopping-assistant-one-click-checkout/"
     },
     {
       "n": 6,
-      "cat": "instagram",
-      "title": "Meta launches 'Edits Assistant' for Instagram: users stay in control creatively | Android Central",
-      "url": "https://www.androidcentral.com/apps-software/meta/meta-launches-edits-assistant-for-instagram-users-stay-in-control-creatively"
+      "cat": "tiktok",
+      "title": "TikTok puts brand, creator and AI assets into one approval workflow | Marketer Fizz",
+      "url": "https://www.marketerfizz.com/news/tiktok-smart-plus-creative-selection-approval"
     },
     {
       "n": 7,
-      "cat": "tiktok",
-      "title": "TikTok One AI Creator Search & One Plus: What They Do (2026) | Storika",
-      "url": "https://www.storika.ai/guides/tiktok-one-ai-creator-search-2026"
+      "cat": "tools",
+      "title": "Vidu Q4 Review: Hands-On Tests of Dialogue, Cuts and References",
+      "url": "https://viduq4.org/vidu-q4-review"
     },
     {
       "n": 8,
-      "cat": "tiktok",
-      "title": "TikTok One: Pagos Sin Comisión y Búsqueda de Creadores con IA",
-      "url": "https://jpdirector.net/en/tiktok-ads/tiktok-one-pay-y-el-buscador-de-creadores-con-ia-que-cambio-esta-semana/"
+      "cat": "tools",
+      "title": "Introducing Vidu Q4 Preview in YouCam Apps: Turn One Photo into a Cinematic 4K Video",
+      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/vidu-q4-youcam-apps"
     },
     {
       "n": 9,
-      "cat": "tiktok",
-      "title": "TikTok Will Pay Creators in 30 Days — and Own the Pipe - Prompt/Power",
-      "url": "https://promptandpower.com/tiktok-one-pay-creators-summit/"
+      "cat": "tools",
+      "title": "Kandinsky 6.0 AI Video: Pro, Lite and VSR | Flixly",
+      "url": "https://www.flixly.ai/blog/kandinsky-6-ai-video-generator"
     }
   ]
 }
