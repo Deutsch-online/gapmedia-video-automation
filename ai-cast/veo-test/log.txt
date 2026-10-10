@@ -1,19 +1,7 @@
-start: HTTP 429 {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
-    "status": "RESOURCE_EXHAUSTED",
-    "details": [
-      {
-        "@type": "type.googleapis.com/google.rpc.Help",
-        "links": [
-          {
-            "description": "Learn more about Gemini API quotas",
-            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
-          }
-        ]
-      }
-    ]
-  }
+start: HTTP 200 {
+  "name": "models/veo-3.1-lite-generate-preview/operations/u3xy8i4mnb2e"
 }
 
+  waiting 10s ...
+done: {"@type":"type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse","generateVideoResponse":{"raiMediaFilteredCount":1,"raiMediaFilteredReasons":["We encountered an issue with the audio for your prompt, which means we could not create your video. This can sometimes happen due to our safety filters or other processing issues. Please modify your request and try again. You have not been charged for this attempt."]}}
+NO VIDEO URI in the response
