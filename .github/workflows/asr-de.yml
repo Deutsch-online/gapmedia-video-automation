@@ -6,7 +6,7 @@ on:
         description: "path in the repo"
         default: "public/ai-cast/baecker-vids.mp4"
 permissions:
-  contents: read
+  contents: write
 jobs:
   asr:
     runs-on: ubuntu-latest
@@ -19,4 +19,14 @@ jobs:
       - run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
           pip install openai-whisper
-      - run: python scripts/asr-de.py "${{ inputs.video }}"
+      - name: Transcribe (the text goes to a file in the repository, the logs may not be readable)
+        run: python scripts/asr-de.py "${{ inputs.video }}" | tee ai-cast/asr-result.txt
+      - name: Keep the transcript
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A ai-cast/asr-result.txt
+          git diff --staged --quiet || git commit -m "asr: transcript"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
