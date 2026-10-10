@@ -1,0 +1,43 @@
+KEY OK. 62 models visible.
+
+VIDEO (Veo): 3
+  veo-3.1-generate-preview  [predictLongRunning]
+  veo-3.1-fast-generate-preview  [predictLongRunning]
+  veo-3.1-lite-generate-preview  [predictLongRunning]
+
+IMAGE (Imagen / image models): 6
+  gemini-2.5-flash-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3-pro-image-preview  [generateContent,countTokens,batchGenerateContent]
+  gemini-3-pro-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-image-preview  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-lite-image  [generateContent,countTokens,batchGenerateContent]
+
+TEXT/MULTIMODAL (gemini): 45
+  gemini-2.5-flash  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-2.5-pro  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-2.5-flash-preview-tts  [countTokens,generateContent]
+  gemini-2.5-pro-preview-tts  [countTokens,generateContent,batchGenerateContent]
+  gemini-flash-latest  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-flash-lite-latest  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-pro-latest  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-2.5-flash-lite  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-2.5-flash-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3-flash-preview  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3.1-pro-preview  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3.1-pro-preview-customtools  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3.1-flash-lite-preview  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3.1-flash-lite  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3-pro-image-preview  [generateContent,countTokens,batchGenerateContent]
+  gemini-3-pro-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-image-preview  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.1-flash-lite-image  [generateContent,countTokens,batchGenerateContent]
+  gemini-nano-banana-2.1  [generateContent,countTokens,batchGenerateContent]
+  gemini-3.5-flash  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-3.5-flash-lite  [generateContent,countTokens,createCachedContent,batchGenerateContent]
+  gemini-omni-flash-preview  [generateContent,countTokens]
+  gemini-omni-1.1-flash  [generateContent,countTokens]
+  gemini-3.5-transcribe  [generateContent,countTokens]
+
+Note: a model in the list is not proof that the free tier may use it; billing/limits are shown in Google AI Studio.
