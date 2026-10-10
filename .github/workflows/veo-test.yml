@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: "22"
       - name: One Veo clip (log goes to the file, the key is never printed)
-        run: node scripts/veo-test.mjs 2>&1 | tee ai-cast/veo-test/log.txt
+        run: mkdir -p ai-cast/veo-test && node scripts/veo-test.mjs 2>&1 | tee ai-cast/veo-test/log.txt
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - name: Keep the result in the repository
