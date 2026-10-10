@@ -8,7 +8,7 @@ const API = "https://generativelanguage.googleapis.com/v1beta";
 const H = { "x-goog-api-key": key, "content-type": "application/json" };
 const redact = (s) => String(s).split(key).join("***");
 const img = readFileSync("public/ai-cast/v2/chefin.jpg").toString("base64");
-const prompt = "Fixed camera, medium shot, a 2D cartoon. The elegant woman with big wavy auburn hair and glasses holds a smartphone to her ear in a bright office hallway, looks impatient with one raised eyebrow and says in German, clearly and loudly: \"Wo ist die Suppe?\". Her mouth moves exactly with the words. Natural office room tone, no music.";
+const prompt = process.env.VEO_PROMPT || "A 2D cartoon. The woman from the picture holds a smartphone to her ear in an office hallway. She frowns and says: \"Wo ist die Suppe?\"";
 const body = { instances: [{ prompt, image: { bytesBase64Encoded: img, mimeType: "image/jpeg" } }], parameters: { aspectRatio: "9:16", durationSeconds: DUR, resolution: "720p" } };
 let r = await fetch(`${API}/models/${MODEL}:predictLongRunning`, { method: "POST", headers: H, body: JSON.stringify(body) });
 let t = redact(await r.text());
