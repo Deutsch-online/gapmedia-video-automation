@@ -1,0 +1,2 @@
+SEG 0.00-2.72 Wo ist die Suppe?
+  Wo@0.00 ist@1.68 die@1.88 Suppe?@2.06
