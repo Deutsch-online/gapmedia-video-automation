@@ -1,0 +1,19 @@
+name: Gemini account check (manual, read-only)
+# Owner request 2026-10-10: "check my Gemini account". Lists the models the GEMINI_API_KEY secret can see (Veo, image, text).
+# No generation, no cost. The key is read from the repository secret and never printed.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/gemini-check.mjs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
