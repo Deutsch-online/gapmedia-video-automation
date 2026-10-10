@@ -1,7 +1,8 @@
 start: HTTP 200 {
-  "name": "models/veo-3.1-lite-generate-preview/operations/u3xy8i4mnb2e"
+  "name": "models/veo-3.1-lite-generate-preview/operations/0ey8708khzmz"
 }
 
   waiting 10s ...
-done: {"@type":"type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse","generateVideoResponse":{"raiMediaFilteredCount":1,"raiMediaFilteredReasons":["We encountered an issue with the audio for your prompt, which means we could not create your video. This can sometimes happen due to our safety filters or other processing issues. Please modify your request and try again. You have not been charged for this attempt."]}}
-NO VIDEO URI in the response
+done: {"@type":"type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse","generateVideoResponse":{"generatedSamples":[{"video":{"uri":"https://generativelanguage.googleapis.com/v1beta/files/rvxl7yi1q016:download?alt=media"}}]}}
+download: HTTP 200
+saved ai-cast/veo-test/test.mp4
