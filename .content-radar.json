@@ -1,50 +1,113 @@
 {
-  "at": "2026-10-09T03:25:48.328Z",
+  "at": "2026-10-11T04:23:46.854Z",
   "rows": [
     {
+      "cat": "tiktok",
+      "title": "TikTok expands AI ad suite with new ad tools | AiToolsObserver",
+      "url": "https://aitoolsobserver.com/hub/tiktok-expands-ai-ad-suite-with-creator-search-video-generation-and-mcp-server/",
+      "date": "2026-10-10",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
       "cat": "instagram",
-      "title": "Are you ready for everything to look like TikTok? | The Verge",
-      "url": "https://www.theverge.com/tech/1006069/instagram-facebook-full-screen-reels-test-tiktok",
-      "date": "2026-10-08",
+      "title": "Edits is becoming Instagram’s all-in-one creation app",
+      "url": "https://thecreatorsindex.com/news/latest-updates/edits-is-becoming-instagrams-all-in-one-creation-app",
+      "date": "2026-10-09",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram is adding an AI ‘assistant’ to tell you how to post - Jingletree",
+      "url": "https://jingletree.com/instagram-is-adding-an-ai-assistant-to-tell-you-how-to-post-279373.html",
+      "date": "2026-10-09",
       "sources": 7,
       "clear": true,
-      "score": 30
+      "score": 28
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
-      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
-      "date": "2026-10-08",
-      "sources": 6,
+      "title": "TikTok Unveils AI-Powered Ad And Creator Tools At Canada Summit",
+      "url": "https://www.netinfluencer.com/tiktok-unveils-ai-powered-ad-and-creator-tools-at-canada-summit/",
+      "date": "2026-10-09",
+      "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 28
     },
     {
       "cat": "tools",
-      "title": "Vidu Q4 Review: Hands-On Tests of Dialogue, Cuts and References",
-      "url": "https://viduq4.org/vidu-q4-review",
-      "date": "2026-10-08",
-      "sources": 8,
+      "title": "Google Gemini Omni Review (2026) — Is It Worth It? | ToolPorto",
+      "url": "https://toolporto.com/reviews/google-gemini-omni",
+      "date": "2026-10-09",
+      "sources": 7,
       "clear": true,
-      "score": 29
+      "score": 28
     },
     {
       "cat": "tools",
-      "title": "Introducing Vidu Q4 Preview in YouCam Apps: Turn One Photo into a Cinematic 4K Video",
-      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/vidu-q4-youcam-apps",
-      "date": "2026-10-08",
+      "title": "Kling 4.0 Review: What the Preview Changes",
+      "url": "https://www.selfyz.ai/en/blog/kling-4-0-review.html",
+      "date": "2026-10-09",
+      "sources": 5,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Nano Banana 2.1: What's New & How to Use It (2026)",
+      "url": "https://gensoai.io/blog/nano-banana-2-1-whats-new-how-to-use",
+      "date": "2026-10-09",
+      "sources": 7,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Edits Now Lets You Make Custom Photo and Video Carousels | PetaPixel",
+      "url": "https://petapixel.com/2026/10/07/instagram-edits-now-lets-you-make-custom-photo-and-video-carousels/",
+      "date": "2026-10-07",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 26
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram's Edits App Adds An AI Assistant That Reads Your Reels Data - Self Employed",
+      "url": "https://www.selfemployed.com/news/instagram-edits-assistant-ai-creators-reels-2026/",
+      "date": "2026-10-07",
+      "sources": 8,
+      "clear": true,
+      "score": 26
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram gives creators an AI analyst inside Edits",
+      "url": "https://www.contentgrip.com/instagram-edits-ai-assistant-creators/",
+      "date": "2026-10-07",
+      "sources": 8,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Unveils One-Click Checkout and AI Shopping Assistant",
-      "url": "https://www.techrepublic.com/article/news-tiktok-ai-shopping-assistant-one-click-checkout/",
-      "date": "2026-10-06",
+      "title": "TikTok Ad Network launches, alongside slate of agentic features | The Drum",
+      "url": "https://www.thedrum.com/news/tiktok-ad-network-launches-alongside-slate-of-agentic-features",
+      "date": "2026-10-07",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 26
+    },
+    {
+      "cat": "tools",
+      "title": "Syren by Synthesia: Create Video from a Single Prompt",
+      "url": "https://www.synthesia.io/post/syren-studio",
+      "date": "2026-10-07",
+      "sources": 8,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -53,68 +116,23 @@
       "date": "2026-10-06",
       "sources": 8,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Kandinsky 6.0 AI Video: Pro, Lite and VSR | Flixly",
-      "url": "https://www.flixly.ai/blog/kandinsky-6-ai-video-generator",
-      "date": "2026-10-06",
-      "sources": 8,
-      "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tiktok",
-      "title": "TikTok is adding even more shopping features. | The Verge",
-      "url": "https://www.theverge.com/news/1004925/tiktok-is-adding-even-more-shopping-features",
+      "title": "TikTok rolls out an AI shopping assistant and one-click checkout | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/05/tiktok-rolls-out-an-ai-shopping-assistant-and-one-click-checkout/",
       "date": "2026-10-05",
-      "sources": 6,
+      "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tools",
       "title": "InvokeAI 7 Alpha Adds Video With Sound: Try It Safely",
       "url": "https://www.creativeainews.com/articles/invokeai-7-alpha-video-audio-safe-install-2026/",
       "date": "2026-10-04",
-      "sources": 8,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram adds an AI creative assistant to its Edits video app",
-      "url": "https://www.aiaffairs.com/technology/instagram-ai-creative-assistant-edits-app/",
-      "date": "2026-10-03",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram’s new AI can tell creators why one Reel worked and another didn’t",
-      "url": "https://thecreatorsindex.com/platform/meta/instagrams-new-ai-can-tell-creators-why-one-reel-worked-and-another-didnt",
-      "date": "2026-10-03",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok One AI Creator Search & One Plus: What They Do (2026) | Storika",
-      "url": "https://www.storika.ai/guides/tiktok-one-ai-creator-search-2026",
-      "date": "2026-10-02",
       "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tools",
-      "title": "Johnson Sheng: Kling 4.0 Was Definitely Worth the Wait!",
-      "url": "https://kling.ai/blog/Kling4-Hands-On-Review-JohnsonSheng",
-      "date": "2026-10-02",
-      "sources": 6,
       "clear": true,
       "score": 23
     }
@@ -122,57 +140,57 @@
   "shown": [
     {
       "n": 1,
-      "cat": "instagram",
-      "title": "Are you ready for everything to look like TikTok? | The Verge",
-      "url": "https://www.theverge.com/tech/1006069/instagram-facebook-full-screen-reels-test-tiktok"
+      "cat": "tiktok",
+      "title": "TikTok expands AI ad suite with new ad tools | AiToolsObserver",
+      "url": "https://aitoolsobserver.com/hub/tiktok-expands-ai-ad-suite-with-creator-search-video-generation-and-mcp-server/"
     },
     {
       "n": 2,
-      "cat": "instagram",
-      "title": "Instagram adds an AI creative assistant to its Edits video app",
-      "url": "https://www.aiaffairs.com/technology/instagram-ai-creative-assistant-edits-app/"
+      "cat": "tiktok",
+      "title": "TikTok Unveils AI-Powered Ad And Creator Tools At Canada Summit",
+      "url": "https://www.netinfluencer.com/tiktok-unveils-ai-powered-ad-and-creator-tools-at-canada-summit/"
     },
     {
       "n": 3,
-      "cat": "instagram",
-      "title": "Instagram’s new AI can tell creators why one Reel worked and another didn’t",
-      "url": "https://thecreatorsindex.com/platform/meta/instagrams-new-ai-can-tell-creators-why-one-reel-worked-and-another-didnt"
+      "cat": "tiktok",
+      "title": "TikTok Ad Network launches, alongside slate of agentic features | The Drum",
+      "url": "https://www.thedrum.com/news/tiktok-ad-network-launches-alongside-slate-of-agentic-features"
     },
     {
       "n": 4,
-      "cat": "tiktok",
-      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
-      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature"
+      "cat": "instagram",
+      "title": "Edits is becoming Instagram’s all-in-one creation app",
+      "url": "https://thecreatorsindex.com/news/latest-updates/edits-is-becoming-instagrams-all-in-one-creation-app"
     },
     {
       "n": 5,
-      "cat": "tiktok",
-      "title": "TikTok Unveils One-Click Checkout and AI Shopping Assistant",
-      "url": "https://www.techrepublic.com/article/news-tiktok-ai-shopping-assistant-one-click-checkout/"
+      "cat": "instagram",
+      "title": "Instagram is adding an AI ‘assistant’ to tell you how to post - Jingletree",
+      "url": "https://jingletree.com/instagram-is-adding-an-ai-assistant-to-tell-you-how-to-post-279373.html"
     },
     {
       "n": 6,
-      "cat": "tiktok",
-      "title": "TikTok puts brand, creator and AI assets into one approval workflow | Marketer Fizz",
-      "url": "https://www.marketerfizz.com/news/tiktok-smart-plus-creative-selection-approval"
+      "cat": "instagram",
+      "title": "Instagram Edits Now Lets You Make Custom Photo and Video Carousels | PetaPixel",
+      "url": "https://petapixel.com/2026/10/07/instagram-edits-now-lets-you-make-custom-photo-and-video-carousels/"
     },
     {
       "n": 7,
       "cat": "tools",
-      "title": "Vidu Q4 Review: Hands-On Tests of Dialogue, Cuts and References",
-      "url": "https://viduq4.org/vidu-q4-review"
+      "title": "Google Gemini Omni Review (2026) — Is It Worth It? | ToolPorto",
+      "url": "https://toolporto.com/reviews/google-gemini-omni"
     },
     {
       "n": 8,
       "cat": "tools",
-      "title": "Introducing Vidu Q4 Preview in YouCam Apps: Turn One Photo into a Cinematic 4K Video",
-      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/vidu-q4-youcam-apps"
+      "title": "Kling 4.0 Review: What the Preview Changes",
+      "url": "https://www.selfyz.ai/en/blog/kling-4-0-review.html"
     },
     {
       "n": 9,
       "cat": "tools",
-      "title": "Kandinsky 6.0 AI Video: Pro, Lite and VSR | Flixly",
-      "url": "https://www.flixly.ai/blog/kandinsky-6-ai-video-generator"
+      "title": "Nano Banana 2.1: What's New & How to Use It (2026)",
+      "url": "https://gensoai.io/blog/nano-banana-2-1-whats-new-how-to-use"
     }
   ]
 }
