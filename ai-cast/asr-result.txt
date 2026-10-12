@@ -1,2 +1,52 @@
-SEG 0.00-2.72 Wo ist die Suppe?
-  Wo@0.00 ist@1.68 die@1.88 Suppe?@2.06
+SEG 0.00-1.94 Fährt dieser Bus zum Bahnhof?
+  Fährt@0.00 dieser@0.40 Bus@0.70 zum@0.98 Bahnhof?@1.28
+SEG 2.44-4.48 Ja, wir fahren zum Bahnhof.
+  Ja,@2.44 wir@2.96 fahren@3.16 zum@3.44 Bahnhof.@3.72
+SEG 4.76-6.64 Können Sie mir dort Bescheid sagen?
+  Können@4.76 Sie@5.10 mir@5.24 dort@5.50 Bescheid@5.78 sagen?@6.32
+SEG 7.40-9.84 Natürlich! Ich sage Ihnen Bescheid.
+  Natürlich!@7.40 Ich@8.32 sage@8.48 Ihnen@8.74 Bescheid.@8.98
+SEG 10.06-11.60 Was kostet die Fahrkarte?
+  Was@10.06 kostet@10.30 die@10.72 Fahrkarte?@10.96
+SEG 12.56-13.66 3 Euro bitte.
+  3@12.56 Euro@12.84 bitte.@13.14
+SEG 14.48-15.86 Hier sind 3 Euro.
+  Hier@14.48 sind@14.68 3@14.92 Euro.@15.22
+SEG 16.52-18.80 Danke. Hier ist Ihre Fahrkarte.
+  Danke.@16.52 Hier@17.06 ist@17.28 Ihre@17.46 Fahrkarte.@17.66
+SEG 20.54-21.56 Möchten Sie sich setzen?
+  Möchten@20.54 Sie@20.82 sich@20.96 setzen?@21.20
+SEG 23.24-24.82 Ja, sehr gerne.
+  Ja,@23.24 sehr@24.02 gerne.@24.26
+SEG 25.62-27.40 Bitte, nehmen Sie meinen Platz.
+  Bitte,@25.62 nehmen@26.34 Sie@26.50 meinen@26.68 Platz.@26.90
+SEG 28.28-29.48 Vielen Dank, mein Kind.
+  Vielen@28.28 Dank,@28.56 mein@28.94 Kind.@29.12
+SEG 29.98-29.98 
+  
+SEG 29.98-29.98 
+  
+SEG 29.98-31.66 Wo möchten Sie hin?
+  Wo@29.98 möchten@30.80 Sie@31.10 hin?@31.34
+SEG 32.66-33.98 Ich muss zum Bahnhof.
+  Ich@32.66 muss@32.90 zum@33.22 Bahnhof.@33.48
+SEG 35.72-36.70 Kennen Sie den Weg?
+  Kennen@35.72 Sie@36.06 den@36.16 Weg?@36.40
+SEG 37.60-41.60 Nein, leider nicht. Du musst nicht mitkommen.
+  Nein,@37.60 leider@38.54 nicht.@38.92 Du@40.06 musst@40.28 nicht@40.62 mitkommen.@40.96
+SEG 42.10-43.76 Ich bringe Sie zum Bahnhof.
+  Ich@42.10 bringe@42.38 Sie@42.68 zum@42.86 Bahnhof.@43.10
+SEG 44.52-46.06 Aber du hast keine Zeit.
+  Aber@44.52 du@44.74 hast@44.88 keine@45.16 Zeit.@45.50
+SEG 46.62-48.70 Das ist okay. Kommen Sie.
+  Das@46.62 ist@46.82 okay.@47.10 Kommen@48.04 Sie.@48.32
+SEG 50.12-52.04 Meine Tochter ist Lehrerin.
+  Meine@50.12 Tochter@50.50 ist@50.98 Lehrerin.@51.32
+SEG 52.40-54.08 Wirklich? Wie heißt sie?
+  Wirklich?@52.40 Wie@53.34 heißt@53.52 sie?@53.82
+SEG 54.56-56.14 Sie heißt Frau Berger.
+  Sie@54.56 heißt@54.76 Frau@55.14 Berger.@55.48
+SEG 56.64-58.94 Frau Berger? Sie ist meine Lehrerin.
+  Frau@56.64 Berger?@56.82 Sie@57.68 ist@57.84 meine@58.06 Lehrerin.@58.28
+SEG 59.22-59.98 Vielen Dank für's Zuschauen.
+  Vielen@59.22 Dank@59.30 für's@59.32 Zuschauen.@59.94
