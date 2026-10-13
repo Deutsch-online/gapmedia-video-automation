@@ -1,0 +1,20 @@
+SEG 0.00-1.70 Ich will Pizza.
+  Ich@0.00 will@0.60 Pizza.@0.88
+SEG 2.64-4.92 Nicht gut. Ich möchte eine Pizza.
+  Nicht@2.64 gut.@2.98 Ich@3.58 möchte@3.78 eine@4.10 Pizza.@4.44
+SEG 5.08-7.18 Ich möchte eine Pizza.
+  Ich@5.08 möchte@5.48 eine@5.88 Pizza.@6.60
+SEG 10.48-11.98 Ich nehme Kaffee.
+  Ich@10.48 nehme@10.88 Kaffee.@11.18
+SEG 12.38-14.82 Besser. Ich hätte gern einen Kaffee.
+  Besser.@12.38 Ich@13.08 hätte@13.22 gern@13.46 einen@13.72 Kaffee.@14.04
+SEG 14.86-16.56 Ich hätte gern einen Kaffee.
+  Ich@14.86 hätte@15.06 gern@15.42 einen@15.76 Kaffee.@16.08
+SEG 20.46-21.60 Gib mir Brot.
+  Gib@20.46 mir@20.82 Brot.@21.04
+SEG 22.38-24.14 Nein, ich hätte gern ein Brot.
+  Nein,@22.38 ich@22.80 hätte@22.86 gern@23.12 ein@23.32 Brot.@23.62
+SEG 25.22-26.92 Nein, ich hätte gern ein Brot.
+  Nein,@25.22 ich@25.90 hätte@26.10 gern@26.36 ein@26.60 Brot.@26.82
+SEG 28.32-29.84 Ich hätte gern ein Brot.
+  Ich@28.32 hätte@28.84 gern@29.08 ein@29.26 Brot.@29.56
