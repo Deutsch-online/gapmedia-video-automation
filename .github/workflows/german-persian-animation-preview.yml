@@ -19,21 +19,68 @@ jobs:
       OMA_HF: npx --yes hyperframes@0.8.134
       OMA_SET: "2"
       OMA_VOICE: edge
+      EDGE_TTS_CLIENT: python
       REQUIRE_VOICE: "on"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify the private bot destination
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import { telegramConfig, verifyDelivery } from './lib/telegram.mjs';
+          import { writeFileSync } from 'node:fs';
+          const tg = telegramConfig(process.env);
+          if (!tg.enabled) throw new Error('Telegram secrets are not configured in Deutsch-online/gapmedia-video-automation.');
+          const check = await verifyDelivery({ token: tg.token, chatId: tg.reviewChatId, requirePrivate: true });
+          if (!check.ok) throw new Error(check.reason);
+          if (check.warning) console.warn(check.warning);
+          writeFileSync('.preview-bot-target.json', JSON.stringify({ id: String(tg.reviewChatId) }));
+          console.log('Private bot delivery preflight passed.');
+          JS
       - name: Install rendering dependencies
         run: |
           npm ci
+          python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8'
           sudo apt-get update
           sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation fonts-noto-core
+      - name: Verify voice and composition contracts
+        run: |
+          node --check music/edge-tts.mjs
+          node test-german-tts-engine.mjs
+          node test-hyperframes-check.mjs
+          node test-bot-chat.mjs
       - name: Render German cartoon with Persian translations
         run: node oma-build.mjs --no-telegram
       - name: Check finished videos
-        run: bash scripts/qc-renders.sh "renders/oma/$(date -u +%F)"
+        run: |
+          node --input-type=module <<'JS'
+          import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const iso = new Date().toISOString().slice(0, 10);
+          const dir = 'renders/oma/' + iso;
+          const files = readdirSync(dir).filter(f => f.endsWith('.mp4') && !f.includes('-silent'));
+          if (files.length !== 3) throw new Error('Expected all three finished video formats, found ' + files.length);
+          for (const name of files) {
+            const file = dir + '/' + name;
+            const out = 'qc/preview-' + process.env.GITHUB_RUN_ID + '/' + name.replace(/\.mp4$/, '');
+            execFileSync('bash', ['scripts/qc-video.sh', file, out, name], { stdio: 'inherit' });
+            const qc = JSON.parse(readFileSync(out + '/qc.json', 'utf8'));
+            if (!qc.has_audio || qc.width !== 1080 || qc.height !== 1920 ||
+                !Object.values(qc.checks).every(Boolean)) {
+              throw new Error('Video quality check failed for ' + name);
+            }
+          }
+          writeFileSync('.preview-video-files.json', JSON.stringify(files.map(f => dir + '/' + f)));
+          JS
       - name: Upload video files and quality report
         if: always()
         uses: actions/upload-artifact@v4
@@ -41,6 +88,33 @@ jobs:
           name: german-persian-cartoon
           path: |
             renders/oma/**/*.mp4
-            qc/
+            qc/preview-${{ github.run_id }}/
           if-no-files-found: warn
           retention-days: 7
+      - name: Send checked videos to the private bot chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { telegramConfig, verifyDelivery, sendVideo } from './lib/telegram.mjs';
+          const tg = telegramConfig(process.env);
+          const target = JSON.parse(readFileSync('.preview-bot-target.json', 'utf8'));
+          if (!tg.enabled || String(tg.reviewChatId) !== target.id) throw new Error('Bot destination changed after preflight.');
+          const check = await verifyDelivery({ token: tg.token, chatId: target.id, requirePrivate: true });
+          if (!check.ok) throw new Error(check.reason);
+          const files = JSON.parse(readFileSync('.preview-video-files.json', 'utf8'));
+          const delivered = [];
+          for (const file of files) {
+            const result = await sendVideo({
+              token: tg.token, chatId: target.id, file,
+              caption: 'Oma sagt · Deutsch A1\nانیمیشن آموزش آلمانی با زیرنویس فارسی و آلمانی'
+            });
+            if (!result?.message_id) throw new Error('Telegram did not confirm the video.');
+            delivered.push({ file, message_id: result.message_id });
+            writeFileSync('.preview-delivery.json', JSON.stringify(delivered));
+            console.log('Telegram confirmed video: ' + file + ' (message ' + result.message_id + ')');
+          }
+          JS
