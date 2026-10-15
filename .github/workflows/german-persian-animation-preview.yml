@@ -1,4 +1,4 @@
-name: German Persian cartoon preview
+name: German Persian cartoon with bot delivery
 on:
   push:
     branches:
