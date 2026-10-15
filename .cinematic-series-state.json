@@ -4,5 +4,7 @@
   "deliveries": {},
   "history": [],
   "pending": null,
-  "attempts": {}
+  "attempts": {
+    "2026-10-15": 1
+  }
 }
