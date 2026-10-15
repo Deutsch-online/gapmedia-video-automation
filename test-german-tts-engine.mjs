@@ -54,8 +54,13 @@ assert.match(src, /const engine = languageBoost \? GERMAN_WORD_ENGINE : TTS_ENGI
 // The spoken copy has to be prepared for whichever engine will read it —
 // pocketSpeakable and minimaxSpeakable are different transforms, and
 // music/voice-qc.mjs compares ASR against this exact string.
-assert.match(src, /import \{ minimaxSpeakable, pocketSpeakable \}/);
-assert.match(src, /const speakableFor = \(engine\) => \(engine === "pocket" \? pocketSpeakable : minimaxSpeakable\);/);
+// Lesson pronunciation now goes through the shared preparation helper. Keep
+// checking the engine-specific routing inside it instead of pinning old imports.
+assert.match(src, /import \{ lessonSpeakable \}/);
+assert.match(src, /const speakableFor = \(engine\) => \(text\) => lessonSpeakable\(text, engine\);/);
+const pronunciation = readFileSync("lib/pronounce.mjs", "utf8");
+assert.match(pronunciation, /return engine === "pocket" \? pocketSpeakable\(spoken\) : minimaxSpeakable\(spoken\);/,
+  "the shared helper must preserve the engine-specific spoken-text transform");
 assert.ok(!/const spoken = minimaxSpeakable\(written\);/.test(src),
   "the spoken copy must follow the engine, not assume MiniMax");
 
