@@ -1,6 +1,60 @@
 {
-  "at": "2026-10-13T04:26:54.604Z",
+  "at": "2026-10-15T04:34:17.012Z",
   "rows": [
+    {
+      "cat": "instagram",
+      "title": "Instagram tests music-synced video effects in Edits app | Polaris7 Intelligence",
+      "url": "https://www.polaris7.io/signals/instagram-tests-music-synced-video-effects-in-edits-app",
+      "date": "2026-10-14",
+      "sources": 6,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Runway Gen-4.5 and Google Veo Are Changing AI Video Production—What Creators Need to Know",
+      "url": "https://mivicai.com/runway-gen-4-5-google-veo-ai-video-production/",
+      "date": "2026-10-14",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Higgsfield takes AI video from 1 minute to over 10 | OpenAI",
+      "url": "https://openai.com/index/higgsfield-longer-videos-voice/",
+      "date": "2026-10-13",
+      "sources": 6,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Veo 3 adds 4K cinematic output and reference image control — Google Veo 3 | ReelStack",
+      "url": "https://reel-stack.com/news/veo-3-veo-3-adds-4k-cinematic-output-and-reference-image-control-2026-10-13",
+      "date": "2026-10-13",
+      "sources": 6,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Tests Option to Open Directly to Reels Feed First",
+      "url": "https://www.techjuice.pk/instagram-tests-option-open-directly-reels-feed/",
+      "date": "2026-10-12",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Muse: What Is the New AI Feature in Instagram’s Share Menu?",
+      "url": "https://www.stackumbrella.com/technology/instagram-muse-what-is-the-new-ai-feature-in-instagrams-share-menu-12664299",
+      "date": "2026-10-11",
+      "sources": 8,
+      "clear": true,
+      "score": 26
+    },
     {
       "cat": "tiktok",
       "title": "TikTok Folds Creator Videos Into AI Ad Pipeline",
@@ -8,25 +62,25 @@
       "date": "2026-10-11",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tools",
-      "title": "Vidu Q4 Review: We Tested Vidu AI's New Model on 4 References, a Voice Clip and 2K · ZOOOP",
-      "url": "https://zooop.ai/blog/vidu-q4-review",
+      "title": "Adobe Firefly: The next evolution of creative AI is here | Adobe Blog (2026)",
+      "url": "https://lubbil.com/article/adobe-firefly-the-next-evolution-of-creative-ai-is-here-adobe-blog",
       "date": "2026-10-11",
-      "sources": 6,
+      "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tiktok",
-      "title": "TikTok expands AI ad suite with new ad tools | AiToolsObserver",
-      "url": "https://aitoolsobserver.com/hub/tiktok-expands-ai-ad-suite-with-creator-search-video-generation-and-mcp-server/",
+      "title": "TikTok Comment Polls, Voice and Photo Replies: A Playbook",
+      "url": "https://younusfardeen.com/blog/tiktok-comment-polls-voice-photo-comments-playbook",
       "date": "2026-10-10",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "instagram",
@@ -35,162 +89,108 @@
       "date": "2026-10-08",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
-      "cat": "tools",
-      "title": "Google Gemini Omni Review (2026) — Is It Worth It? | ToolPorto",
-      "url": "https://toolporto.com/reviews/google-gemini-omni",
+      "cat": "tiktok",
+      "title": "TikTok Unveils AI-Powered Ad And Creator Tools At Canada Summit",
+      "url": "https://www.netinfluencer.com/tiktok-unveils-ai-powered-ad-and-creator-tools-at-canada-summit/",
       "date": "2026-10-09",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
-      "cat": "tools",
-      "title": "Kling 4.0 Review: What the Preview Changes",
-      "url": "https://www.selfyz.ai/en/blog/kling-4-0-review.html",
+      "cat": "tiktok",
+      "title": "Tiktok Announces New Programme for Content Creators to Earn Millions - Omnipost",
+      "url": "https://dd.jobartis.com/tiktok-announces-new-programme-for-content-creators-to-earn-millions-4621903.html",
       "date": "2026-10-09",
-      "sources": 6,
+      "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
-      "cat": "instagram",
-      "title": "Edits launches carousels with direct posting to Instagram | t2ONLINE",
-      "url": "https://t2online.in/tech/tech-news/edits-adds-carousel-tool-that-mixes-photos-and-videos-on-one-canvas/2008516",
+      "cat": "tiktok",
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
       "date": "2026-10-08",
       "sources": 7,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok introduces AI creator search: what to check before choosing a name | Renoir Intelligence",
-      "url": "https://renoirassessoria.com/en/tiktok-ia-selecao-creators/",
-      "date": "2026-10-08",
-      "sources": 6,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram Edits Now Lets You Make Custom Photo and Video Carousels | PetaPixel",
-      "url": "https://petapixel.com/2026/10/07/instagram-edits-now-lets-you-make-custom-photo-and-video-carousels/",
-      "date": "2026-10-07",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram's Edits App Adds An AI Assistant That Reads Your Reels Data - Self Employed",
-      "url": "https://www.selfemployed.com/news/instagram-edits-assistant-ai-creators-reels-2026/",
-      "date": "2026-10-07",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram gives creators an AI analyst inside Edits",
-      "url": "https://www.contentgrip.com/instagram-edits-ai-assistant-creators/",
-      "date": "2026-10-07",
-      "sources": 7,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Ad Network launches, alongside slate of agentic features | The Drum",
-      "url": "https://www.thedrum.com/news/tiktok-ad-network-launches-alongside-slate-of-agentic-features",
-      "date": "2026-10-07",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "Syren by Synthesia: Create Video from a Single Prompt",
-      "url": "https://www.synthesia.io/post/syren-studio",
-      "date": "2026-10-07",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "HiDream.ai Makes vivago R1 Available Globally for End-to-End AI Video Production",
-      "url": "https://wireapp.newsfilecorp.com/release/317877/HiDream.ai-Makes-vivago-R1-Available-Globally-for-EndtoEnd-AI-Video-Production",
-      "date": "2026-10-07",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok puts brand, creator and AI assets into one approval workflow | Marketer Fizz",
-      "url": "https://www.marketerfizz.com/news/tiktok-smart-plus-creative-selection-approval",
-      "date": "2026-10-06",
-      "sources": 8,
       "clear": true,
       "score": 23
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram’s Edits app gets carousel creation tools with photos, videos and custom layouts<!-- --> - Storyboard18",
+      "url": "https://www.storyboard18.com/amp/digital/instagrams-edits-app-gets-carousel-creation-tools-with-photos-videos-and-custom-layouts-ws-l-112200.htm",
+      "date": "2026-10-08",
+      "sources": 8,
+      "clear": false,
+      "score": 20
+    },
+    {
+      "cat": "tools",
+      "title": "Creative AI Briefing: October 9, 2026 (Morning) | Fervor Creative AI",
+      "url": "https://fervorcreativeai.com/briefings/2026-10-09-0520/",
+      "date": "2026-10-09",
+      "sources": 4,
+      "clear": true,
+      "score": 20
     }
   ],
   "shown": [
     {
       "n": 1,
+      "cat": "instagram",
+      "title": "Instagram tests music-synced video effects in Edits app | Polaris7 Intelligence",
+      "url": "https://www.polaris7.io/signals/instagram-tests-music-synced-video-effects-in-edits-app"
+    },
+    {
+      "n": 2,
+      "cat": "instagram",
+      "title": "Instagram Tests Option to Open Directly to Reels Feed First",
+      "url": "https://www.techjuice.pk/instagram-tests-option-open-directly-reels-feed/"
+    },
+    {
+      "n": 3,
+      "cat": "instagram",
+      "title": "Instagram Muse: What Is the New AI Feature in Instagram’s Share Menu?",
+      "url": "https://www.stackumbrella.com/technology/instagram-muse-what-is-the-new-ai-feature-in-instagrams-share-menu-12664299"
+    },
+    {
+      "n": 4,
+      "cat": "tools",
+      "title": "Runway Gen-4.5 and Google Veo Are Changing AI Video Production—What Creators Need to Know",
+      "url": "https://mivicai.com/runway-gen-4-5-google-veo-ai-video-production/"
+    },
+    {
+      "n": 5,
+      "cat": "tools",
+      "title": "Higgsfield takes AI video from 1 minute to over 10 | OpenAI",
+      "url": "https://openai.com/index/higgsfield-longer-videos-voice/"
+    },
+    {
+      "n": 6,
+      "cat": "tools",
+      "title": "Veo 3 adds 4K cinematic output and reference image control — Google Veo 3 | ReelStack",
+      "url": "https://reel-stack.com/news/veo-3-veo-3-adds-4k-cinematic-output-and-reference-image-control-2026-10-13"
+    },
+    {
+      "n": 7,
       "cat": "tiktok",
       "title": "TikTok Folds Creator Videos Into AI Ad Pipeline",
       "url": "https://www.parasocialmagazine.com/news/tiktok-folds-creator-videos-into-ai-ad-pipeline/"
     },
     {
-      "n": 2,
-      "cat": "tiktok",
-      "title": "TikTok expands AI ad suite with new ad tools | AiToolsObserver",
-      "url": "https://aitoolsobserver.com/hub/tiktok-expands-ai-ad-suite-with-creator-search-video-generation-and-mcp-server/"
-    },
-    {
-      "n": 3,
-      "cat": "tiktok",
-      "title": "TikTok introduces AI creator search: what to check before choosing a name | Renoir Intelligence",
-      "url": "https://renoirassessoria.com/en/tiktok-ia-selecao-creators/"
-    },
-    {
-      "n": 4,
-      "cat": "tools",
-      "title": "Vidu Q4 Review: We Tested Vidu AI's New Model on 4 References, a Voice Clip and 2K · ZOOOP",
-      "url": "https://zooop.ai/blog/vidu-q4-review"
-    },
-    {
-      "n": 5,
-      "cat": "tools",
-      "title": "Google Gemini Omni Review (2026) — Is It Worth It? | ToolPorto",
-      "url": "https://toolporto.com/reviews/google-gemini-omni"
-    },
-    {
-      "n": 6,
-      "cat": "tools",
-      "title": "Kling 4.0 Review: What the Preview Changes",
-      "url": "https://www.selfyz.ai/en/blog/kling-4-0-review.html"
-    },
-    {
-      "n": 7,
-      "cat": "instagram",
-      "title": "Are you ready for everything to look like TikTok? | The Verge",
-      "url": "https://www.theverge.com/tech/1006069/instagram-facebook-full-screen-reels-test-tiktok"
-    },
-    {
       "n": 8,
-      "cat": "instagram",
-      "title": "Edits launches carousels with direct posting to Instagram | t2ONLINE",
-      "url": "https://t2online.in/tech/tech-news/edits-adds-carousel-tool-that-mixes-photos-and-videos-on-one-canvas/2008516"
+      "cat": "tiktok",
+      "title": "TikTok Comment Polls, Voice and Photo Replies: A Playbook",
+      "url": "https://younusfardeen.com/blog/tiktok-comment-polls-voice-photo-comments-playbook"
     },
     {
       "n": 9,
-      "cat": "instagram",
-      "title": "Instagram Edits Now Lets You Make Custom Photo and Video Carousels | PetaPixel",
-      "url": "https://petapixel.com/2026/10/07/instagram-edits-now-lets-you-make-custom-photo-and-video-carousels/"
+      "cat": "tiktok",
+      "title": "TikTok Unveils AI-Powered Ad And Creator Tools At Canada Summit",
+      "url": "https://www.netinfluencer.com/tiktok-unveils-ai-powered-ad-and-creator-tools-at-canada-summit/"
     }
   ]
 }
