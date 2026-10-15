@@ -118,7 +118,8 @@
       ]
     },
     "date": "2026-10-15",
-    "status": "rendering"
+    "status": "dispatching",
+    "file": "renders/cinematic-series/e0001/e0001-cinematic-fa-de.mp4"
   },
   "attempts": {
     "2026-10-15": 1
