@@ -1,14 +1,10 @@
 {
   "version": 1,
-  "next_episode": 2,
-  "deliveries": {
-    "2026-10-15": {
-      "episode": 1,
-      "message_id": 2436
-    }
-  },
-  "history": [
-    {
+  "next_episode": 1,
+  "deliveries": {},
+  "history": [],
+  "pending": {
+    "plan": {
       "episode": 1,
       "title_de": "Eine unerwartete Fahrt",
       "title_fa": "یک سفر غیرمنتظره",
@@ -120,9 +116,10 @@
           "asset": "farewell.png"
         }
       ]
-    }
-  ],
-  "pending": null,
+    },
+    "date": "2026-10-15",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2
   }
