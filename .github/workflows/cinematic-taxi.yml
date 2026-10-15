@@ -1,0 +1,122 @@
+name: Cinematic taxi animation with Persian and German subtitles
+on:
+  push:
+    branches: [codex/cinematic-taxi-20261015]
+    paths:
+      - .github/workflows/cinematic-taxi.yml
+      - ai-cast/cinematic-preview.py
+      - public/ai-cast/cinematic-taxi/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cinematic-taxi
+  cancel-in-progress: false
+jobs:
+  cinematic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PAID_FALLBACK: "off"
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      EDGE_TTS_CLIENT: python
+      REQUIRE_VOICE: "on"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify private bot destination
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import { telegramConfig, verifyDelivery } from './lib/telegram.mjs';
+          import { writeFileSync } from 'node:fs';
+          const tg = telegramConfig(process.env);
+          if (!tg.enabled) throw new Error('Bot credentials are not configured.');
+          const result = await verifyDelivery({ token: tg.token, chatId: tg.reviewChatId, requirePrivate: true });
+          if (!result.ok) throw new Error(result.reason);
+          writeFileSync('.cinematic-bot-target.json', JSON.stringify({ id: String(tg.reviewChatId) }));
+          console.log('Private bot destination verified.');
+          JS
+      - name: Install media tools
+        run: |
+          npm ci
+          python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8' gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Check rendering code
+        run: |
+          python -m py_compile ai-cast/cinematic-preview.py
+          node --check music/edge-tts.mjs
+          node test-german-tts-engine.mjs
+      - name: Restore generated motion clips
+        uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-taxi/motion-v1
+          key: cinematic-taxi-v1-${{ github.run_id }}
+          restore-keys: cinematic-taxi-v1-
+      - name: Send the redesigned key art to the bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import { sendPhoto } from './lib/telegram.mjs';
+          const target = JSON.parse(readFileSync('.cinematic-bot-target.json', 'utf8'));
+          const result = await sendPhoto({
+            token: process.env.TELEGRAM_BOT_TOKEN, chatId: target.id,
+            file: 'public/ai-cast/cinematic-taxi/kindness.png',
+            caption: 'طرح سینمایی جدید: شخصیت‌های طبیعی‌تر، نور و بافت‌های پرجزئیات. نسخهٔ متحرک با زیرنویس فارسی و آلمانی در حال ساخت است.'
+          });
+          if (!result?.message_id) throw new Error('Key art was not confirmed by Telegram.');
+          console.log('Key art confirmed by Telegram (message ' + result.message_id + ').');
+          JS
+      - name: Generate real character animation, German voices and bilingual captions
+        run: python ai-cast/cinematic-preview.py
+      - name: Keep completed motion clips
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: renders/cinematic-taxi/motion-v1
+          key: cinematic-taxi-v1-${{ github.run_id }}
+      - name: Upload original art and finished video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cinematic-taxi-fa-de
+          path: |
+            public/ai-cast/cinematic-taxi/
+            renders/cinematic-taxi/cinematic-taxi-fa-de.mp4
+            renders/cinematic-taxi/quality.json
+            renders/cinematic-taxi/contact.jpg
+          if-no-files-found: error
+          retention-days: 14
+      - name: Send the checked cinematic video to the bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { sendVideo, verifyDelivery } from './lib/telegram.mjs';
+          const target = JSON.parse(readFileSync('.cinematic-bot-target.json', 'utf8'));
+          const q = JSON.parse(readFileSync('renders/cinematic-taxi/quality.json', 'utf8'));
+          if (!q.genuine_motion || !q.German_audio || !q.Persian_and_German_subtitles) throw new Error('Incomplete video quality report.');
+          const check = await verifyDelivery({ token: process.env.TELEGRAM_BOT_TOKEN, chatId: target.id, requirePrivate: true });
+          if (!check.ok) throw new Error(check.reason);
+          const result = await sendVideo({
+            token: process.env.TELEGRAM_BOT_TOKEN, chatId: target.id, file: q.video,
+            caption: 'مهربانی در راه ایستگاه · نسخهٔ سینمایی جدید\nصدای آلمانی و زیرنویس فارسی و آلمانی'
+          });
+          if (!result?.message_id) throw new Error('Video delivery was not confirmed.');
+          writeFileSync('renders/cinematic-taxi/delivery.json', JSON.stringify({ message_id: result.message_id }));
+          console.log('Cinematic video confirmed by Telegram (message ' + result.message_id + ').');
+          JS
