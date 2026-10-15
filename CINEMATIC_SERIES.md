@@ -38,3 +38,5 @@ The scheduler is `.github/workflows/cinematic-series.yml`. Configuration is
 The manual workflow's `force` input starts today's episode early but never
 replays an already delivered day. A push can do the same only when that push
 actually changes `.cinematic-series-request.json`.
+
+Video descriptions and Telegram video captions are German only, with relevant German/English hashtags. Persian text remains in the in-video subtitles and is not included in video metadata.

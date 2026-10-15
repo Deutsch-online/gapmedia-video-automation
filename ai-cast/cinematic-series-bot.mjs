@@ -18,8 +18,11 @@ if (action === 'verify') {
   if (qc.duration < 60 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles) {
     throw new Error('Video quality gates did not pass');
   }
-  const result = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, attempts: 1,
-    caption: `Marta und Lukas · Folge ${p.plan.episode}\n${p.plan.title_de}\nقسمت ${p.plan.episode} — ${p.plan.title_fa}\n\nآلمانی با زیرنویس فارسی و آلمانی` });
+  // Metadata stays German; Persian belongs only to the in-video subtitles.
+  const germanTitle = /\p{Script=Arabic}/u.test(String(p.plan.title_de || ''))
+    ? 'Eine neue Geschichte' : p.plan.title_de;
+  const caption = `Marta und Lukas · Folge ${p.plan.episode}\n${germanTitle}\n\nDeutsch lernen mit Geschichten aus dem Alltag.\n\n#DeutschLernen #LearnGerman #DeutschA1 #DeutschImAlltag #GermanStories #Animation #Shorts`;
+  const result = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, attempts: 1, caption });
   if (!result?.message_id) throw new Error('Telegram did not confirm delivery');
   console.log(JSON.stringify({ message_id: result.message_id }));
 }
