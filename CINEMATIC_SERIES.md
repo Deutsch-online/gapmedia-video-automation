@@ -4,7 +4,7 @@ Owner request, 2026-10-15: preserve the approved cinematic taxi design, make eac
 new episode at least one minute, continue the story as a serial, and create at
 least one episode each day for delivery to the private Telegram bot chat.
 
-The daily build starts at 17:30 Europe/Berlin (CET/CEST automatically). GitHub
+The daily build starts at 07:30 Europe/Berlin (CET/CEST automatically). GitHub
 checks every 15 minutes; queue and rendering time determine actual delivery time.
 A first manual build can run immediately and counts as today's episode.
 
