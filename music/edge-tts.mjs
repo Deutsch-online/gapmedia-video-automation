@@ -17,7 +17,8 @@
 //
 // The voice is overridable with EDGE_TTS_VOICE so an audition never needs a
 // code change.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { dirname } from "node:path";
 import { synthesize } from "../lib/edge-tts.mjs";
 import { trimDeadAir } from "../lib/voice-settings.mjs";
@@ -55,7 +56,18 @@ const volume = pct(process.env.EDGE_TTS_VOL, "+0%");
 
 let audio;
 try {
-  audio = await synthesize({ text, voice, rate, pitch, volume, timeoutMs: 25000 });
+  if (process.env.EDGE_TTS_CLIENT === "python") {
+    // Opt in to the maintained client when the bundled protocol becomes stale.
+    // The character, language, rate and volume stay the same.
+    mkdirSync(dirname(output), { recursive: true });
+    execFileSync("python3", ["-m", "edge_tts", "--voice", voice,
+      "--text", text, "--rate=" + rate, "--pitch=" + pitch,
+      "--volume=" + volume, "--write-media", output],
+      { stdio: "inherit", timeout: 60000 });
+    audio = readFileSync(output);
+  } else {
+    audio = await synthesize({ text, voice, rate, pitch, volume, timeoutMs: 25000 });
+  }
 } catch (e) {
   console.error(`Edge TTS failed: ${e.message}`);
   process.exit(1);
