@@ -1,10 +1,14 @@
 {
   "version": 1,
-  "next_episode": 1,
-  "deliveries": {},
-  "history": [],
-  "pending": {
-    "plan": {
+  "next_episode": 2,
+  "deliveries": {
+    "2026-10-15": {
+      "episode": 1,
+      "message_id": 2437
+    }
+  },
+  "history": [
+    {
       "episode": 1,
       "title_de": "Eine unerwartete Fahrt",
       "title_fa": "یک سفر غیرمنتظره",
@@ -116,11 +120,9 @@
           "asset": "farewell.png"
         }
       ]
-    },
-    "date": "2026-10-15",
-    "status": "dispatching",
-    "file": "renders/cinematic-series/e0001/e0001-cinematic-fa-de.mp4"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2
   }
