@@ -3,7 +3,123 @@
   "next_episode": 1,
   "deliveries": {},
   "history": [],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 1,
+      "title_de": "Eine unerwartete Fahrt",
+      "title_fa": "یک سفر غیرمنتظره",
+      "summary": "Marta meets Lukas, who takes her to the station free of charge. She promises to tell him about her journey tomorrow.",
+      "cliffhanger": "At the station, Marta is about to discover that her ticket is missing.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Guten Morgen! Fahren Sie zum Bahnhof?",
+          "fa": "صبح بخیر! به ایستگاه قطار می‌روید؟",
+          "scene": "Marta stands beside the taxi and politely asks Lukas a question; medium two shot.",
+          "motion": "Marta speaks and raises one hand politely; Lukas listens and nods.",
+          "asset": "conversation.png"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ja, natürlich. Steigen Sie bitte ein.",
+          "fa": "بله، البته. لطفاً سوار شوید.",
+          "scene": "Lukas stands by the open passenger door and welcomes Marta; the seat is visible.",
+          "motion": "Lukas speaks and opens the passenger door wider, offering his hand.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Was kostet die Fahrt?",
+          "fa": "کرایهٔ مسیر چقدر است؟",
+          "scene": "Medium close-up of Marta beside the taxi, holding her small coin purse.",
+          "motion": "Marta speaks, opens her purse and looks up with a questioning expression.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Normalerweise kostet sie zehn Euro.",
+          "fa": "معمولاً ده یورو می‌شود.",
+          "scene": "Medium close-up of Lukas outside the teal taxi, facing Marta just off camera.",
+          "motion": "Lukas speaks kindly and makes one small explanatory gesture with his open hand.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Oh, ich habe nur fünf Euro dabei.",
+          "fa": "اوه، من فقط پنج یورو همراهم دارم.",
+          "scene": "Marta looks worried into her nearly empty purse beside the open taxi door.",
+          "motion": "Marta speaks, looks down at the coins and then looks back up at Lukas.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Kein Problem. Heute fahren Sie kostenlos.",
+          "fa": "اشکالی ندارد. امروز رایگان می‌روید.",
+          "scene": "Both characters beside the open teal taxi, Lukas gently holding out his hand to help Marta.",
+          "motion": "Lukas speaks with a warm smile, takes Marta's hand gently and nods reassuringly.",
+          "asset": "kindness.png"
+        },
+        {
+          "speaker": "marta",
+          "de": "Wirklich? Das ist sehr freundlich von Ihnen.",
+          "fa": "واقعاً؟ این خیلی مهربانانه است.",
+          "scene": "Medium close-up of Marta, her worried expression turning into a relieved smile.",
+          "motion": "Marta speaks in delighted surprise, smiles and briefly lifts her free hand to her chest.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich helfe Ihnen mit der Tasche.",
+          "fa": "در برداشتن کیف کمکتان می‌کنم.",
+          "scene": "Lukas carefully takes Marta's leather handbag while she stands by the open passenger door.",
+          "motion": "Lukas speaks, gently lifts the handbag and moves it towards the back seat.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Vielen Dank. Mein Zug fährt um zwölf Uhr.",
+          "fa": "خیلی ممنون. قطار من ساعت دوازده حرکت می‌کند.",
+          "scene": "Marta is seated comfortably in the rear of the taxi, looking towards Lukas at the driver's door.",
+          "motion": "Marta speaks, settles into the seat and looks towards the driver with a grateful smile.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Keine Sorge. Wir kommen rechtzeitig an.",
+          "fa": "نگران نباشید. به‌موقع می‌رسیم.",
+          "scene": "Interior taxi two shot with Lukas in the driver seat and Marta in the rear seat, village street outside.",
+          "motion": "Lukas speaks reassuringly, looks ahead and gently turns the steering wheel as the street moves outside.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Da vorne ist schon der Bahnhof.",
+          "fa": "ایستگاه قطار همین جلو است.",
+          "scene": "Taxi interior looking past Lukas towards the grand train station ahead; Marta visible in the back seat.",
+          "motion": "Lukas speaks and briefly points towards the station ahead, while the taxi slows smoothly.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Danke! Wie kann ich mich bedanken?",
+          "fa": "ممنون! چطور می‌توانم از شما تشکر کنم؟",
+          "scene": "At the station curb, Marta looks out through the open rear window towards Lukas standing outside.",
+          "motion": "Marta speaks gratefully through the open window and makes a small warm gesture.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Erzählen Sie mir morgen von Ihrer Reise.",
+          "fa": "فردا از سفرتان برایم تعریف کنید.",
+          "scene": "Lukas beside the taxi and Marta at the open window, both waving goodbye at the station.",
+          "motion": "Lukas speaks with a friendly smile, waves gently; Marta returns the wave.",
+          "asset": "farewell.png"
+        }
+      ]
+    },
+    "date": "2026-10-15",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 1
   }
