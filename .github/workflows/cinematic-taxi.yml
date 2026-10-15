@@ -11,7 +11,7 @@ permissions:
   contents: read
 concurrency:
   group: cinematic-taxi
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   cinematic:
     runs-on: ubuntu-latest
