@@ -334,6 +334,8 @@ def production(force=False):
     if not go:
         print(json.dumps({'go': False, 'reason': reason, 'date': date}))
         return
+    state['attempts'][date] = state['attempts'].get(date, 0) + 1
+    checkpoint(state)
     if not (os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY') or os.getenv('GROQ_API_KEY')):
         raise RuntimeError('A continuing series needs a configured story provider (Gemini or Groq)')
     bot('verify')
@@ -341,7 +343,6 @@ def production(force=False):
     plan = pending['plan'] if pending else make_plan(state)
     validate_plan(plan, state['next_episode'], state['history'])
     state['pending'] = {'plan': plan, 'date': date, 'status': 'rendering'}
-    state['attempts'][date] = state['attempts'].get(date, 0) + 1
     checkpoint(state)
     try:
         final = render(plan, config)
