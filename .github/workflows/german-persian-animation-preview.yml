@@ -1,0 +1,46 @@
+name: German Persian cartoon preview
+on:
+  push:
+    branches:
+      - codex/german-persian-animation-20261015
+    paths:
+      - .github/workflows/german-persian-animation-preview.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: german-persian-animation-preview
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      OMA_HF: npx --yes hyperframes@0.8.134
+      OMA_SET: "2"
+      OMA_VOICE: edge
+      REQUIRE_VOICE: "on"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install rendering dependencies
+        run: |
+          npm ci
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2 fonts-liberation fonts-noto-core
+      - name: Render German cartoon with Persian translations
+        run: node oma-build.mjs --no-telegram
+      - name: Check finished videos
+        run: bash scripts/qc-renders.sh "renders/oma/$(date -u +%F)"
+      - name: Upload video files and quality report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: german-persian-cartoon
+          path: |
+            renders/oma/**/*.mp4
+            qc/
+          if-no-files-found: warn
+          retention-days: 7
