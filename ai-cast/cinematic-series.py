@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import textwrap
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -127,9 +128,34 @@ def validate_plan(plan, episode, history):
 
 def request_json(url, payload, headers):
     data = json.dumps(payload).encode('utf-8')
-    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json', **headers})
+    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json', 'User-Agent': 'GapMedia-CinematicSeries/1.0', **headers})
     with urllib.request.urlopen(req, timeout=75) as response:
         return json.load(response)
+
+
+def provider_error(exc):
+    """Report useful provider diagnostics without logging credentials or URLs."""
+    detail = type(exc).__name__
+    if isinstance(exc, urllib.error.HTTPError):
+        detail += ' HTTP ' + str(exc.code)
+        try:
+            body = json.loads(exc.read(16384).decode('utf-8', errors='replace'))
+            error = body.get('error', {})
+            if isinstance(error, dict):
+                fields = [str(error[k]) for k in ('status', 'code', 'type', 'message')
+                          if isinstance(error.get(k), (str, int))]
+                detail += ': ' + ' | '.join(fields)
+        except (ValueError, OSError, AttributeError):
+            pass
+    elif isinstance(exc, (ValueError, KeyError)):
+        detail += ': ' + str(exc)
+    # Providers sometimes echo a credential in an error message.
+    for name, value in os.environ.items():
+        if value and any(tag in name.upper() for tag in ('KEY', 'TOKEN', 'SECRET', 'PASSWORD')):
+            detail = detail.replace(value, '[REDACTED]')
+    detail = re.sub(r'https?://[^\s|]+', '[URL]', detail)
+    detail = re.sub(r'(?i)(bearer\s+|key[=:]\s*)[^\s|]+', r'\1[REDACTED]', detail)
+    return re.sub(r'[\x00-\x1f\x7f]', ' ', detail)[:1600]
 
 def make_plan(state):
     episode = state['next_episode']
@@ -175,7 +201,9 @@ def make_plan(state):
                 raw = r['choices'][0]['message']['content']
             return validate_plan(json.loads(raw), episode, state['history'])
         except Exception as exc:
-            errors.append(provider + ': ' + type(exc).__name__)
+            detail = provider + ': ' + provider_error(exc)
+            print('Story provider failed: ' + detail, flush=True)
+            errors.append(detail)
     raise RuntimeError('Story providers did not produce a valid continuing episode: ' + ', '.join(errors))
 
 def checkpoint(state):
