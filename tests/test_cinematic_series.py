@@ -302,5 +302,38 @@ class SpeechTimingTests(unittest.TestCase):
                 speech.ensure_clip(png, audio, clip, 'natural gesture', 42)
                 self.assertEqual(call.call_count, 2)
 
+
+class PauseMusicTests(unittest.TestCase):
+    def module(self):
+        spec = importlib.util.spec_from_file_location('pause_music', m.ROOT / 'ai-cast/cinematic_music.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_brief_word_gaps_are_not_music_windows(self):
+        music = self.module()
+        result = type('Result', (), {'stderr': 'silence_start: 0\\nsilence_end: 0.5\\nsilence_start: 1.2\\nsilence_end: 1.45\\nsilence_start: 2.5\\nsilence_end: 4.0\\n'})()
+        with patch.object(music, 'run', return_value=result):
+            protected = music.protected_speech('voice.mp4', 4)
+        self.assertEqual(protected, [[0.35, 2.75]])
+        self.assertEqual(music.music_windows(protected, 4), [[2.75, 4]])
+
+    @unittest.skipUnless(m.shutil.which('ffmpeg'), 'media tools required')
+    def test_real_music_stem_is_zero_during_speech_and_audible_during_pauses(self):
+        import wave
+        import array
+        music = self.module()
+        with tempfile.TemporaryDirectory() as d:
+            track, output = Path(d) / 'track.wav', Path(d) / 'gated.wav'
+            m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
+                       'sine=frequency=440:duration=4', str(track)])
+            report = music.gated_track(track, output, [[0, 2]], 4)
+            self.assertEqual(report['nonzero_music_samples_during_protected_speech'], 0)
+            with wave.open(str(output)) as wav:
+                self.assertEqual(wav.getnframes(), 192000)
+                samples = array.array('h', wav.readframes(wav.getnframes()))
+            self.assertFalse(any(samples[:192000]))
+            self.assertTrue(any(samples[240000:]))
+            
 if __name__ == '__main__':
     unittest.main()

@@ -482,6 +482,8 @@ def render(plan, config, preview=False):
         smaller.replace(final)
     if not preview:
         conform_duration(final)
+    from cinematic_music import add_pause_music
+    music_report = add_pause_music(final)
     info = ffprobe(final)
     v = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = seconds(final)
@@ -496,7 +498,7 @@ def render(plan, config, preview=False):
     if frozen > (3 if preview else 13):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     return str(final)

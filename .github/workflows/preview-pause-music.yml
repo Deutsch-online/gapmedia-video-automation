@@ -1,0 +1,47 @@
+name: Cheerful music in dialogue pauses
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/add-preview-pause-music.py]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  music:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - uses: actions/download-artifact@v4
+        with:
+          name: everyday-single-speaker-preview
+          run-id: 38937423460
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: renders/cinematic-series
+      - name: Mix music only in non-speaking pauses and privately deliver
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python ai-cast/add-preview-pause-music.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: everyday-pause-music-preview
+          path: |
+            renders/cinematic-series/preview-*/**/*.mp4
+            renders/cinematic-series/preview-*/**/*-music-report.json
+            renders/cinematic-series/preview-*/preview-exports.json
+          retention-days: 14

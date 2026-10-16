@@ -22,7 +22,7 @@ if (action === 'verify') {
   // Preserve its complete story while enforcing the current delivery duration.
   execFileSync('python3', ['ai-cast/cinematic-series.py', 'conform', '--file', file], { stdio: ['ignore', 'ignore', 'pipe'] });
   const qc = JSON.parse(readFileSync(qualityPath, 'utf8'));
-  if (qc.duration !== 60 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion) {
+  if (qc.duration !== 60 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion || !qc.pause_music || qc.music_during_speech_samples !== 0) {
     throw new Error('Video quality gates did not pass');
   }
   // Metadata stays German; Persian belongs only to the in-video subtitles.
