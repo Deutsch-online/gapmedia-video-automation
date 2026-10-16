@@ -328,9 +328,11 @@
       ]
     },
     "date": "2026-10-16",
-    "status": "dispatching",
+    "status": "exporting",
     "backfill": true,
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2439
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0002/tiktok/e0002-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0002/instagram/e0002-instagram-60s.mp4"
