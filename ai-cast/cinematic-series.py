@@ -284,10 +284,20 @@ def conform_duration(path):
                  '-vf', f'setpts=(PTS-STARTPTS)/{speed:.12f},fps=30',
                  '-af', f'atempo={speed:.12f},apad,atrim=duration=60',
                  '-t', '60', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
-                 '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
+                 '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '48000', '-b:a', '192k',
                  '-movflags', '+faststart', target])
         target.replace(path)
     info = ffprobe(path)
+    if abs(float(info['format']['duration']) - 60) > .00001:
+        # AAC at 96 kHz can leave an 8 ms tail even with -t 60.
+        # Keep the already exact video and remux a 48 kHz audio track.
+        target = path.with_name(path.stem + '-audio60.mp4')
+        command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-c:v', 'copy',
+                 '-af', 'aresample=48000,atrim=duration=60', '-ar', '48000',
+                 '-c:a', 'aac', '-b:a', '192k', '-t', '60',
+                 '-movflags', '+faststart', target])
+        target.replace(path)
+        info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
     if abs(float(video['duration']) - 60) > .00001 or abs(float(info['format']['duration']) - 60) > .00001:
         raise RuntimeError('Output must be exactly sixty seconds')
@@ -411,7 +421,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return str(final)
 
 def bot(action, extra=''):
-    result = command(['node', 'ai-cast/cinematic-series-bot.mjs', action, extra], capture_output=True, text=True)
+    try:
+        result = command(['node', 'ai-cast/cinematic-series-bot.mjs', action, extra], capture_output=True, text=True)
+    except subprocess.CalledProcessError as exc:
+        print(provider_error(ValueError((exc.stderr or 'Bot operation failed')[-2000:])), file=sys.stderr, flush=True)
+        raise
     # The helper returns only a message id, never credentials or chat details.
     return json.loads(result.stdout.strip().splitlines()[-1])
 
@@ -443,6 +457,12 @@ def production(force=False):
                 'reason': 'ZeroGPU quota exhausted'}
         checkpoint(state)
         raise
+    # Complete media preparation before declaring an uncertain upload intent.
+    conform_duration(final)
+    quality_path = Path(final).parent / 'quality.json'
+    quality = load_json(quality_path)
+    quality['duration'] = 60.0
+    atomic_json(quality_path, quality)
     # This intent is durable BEFORE sendVideo. A process killed during upload
     # may have reached Telegram: never automatically send the same episode twice.
     state['pending'].update(status='dispatching', file=final)

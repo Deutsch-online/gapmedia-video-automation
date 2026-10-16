@@ -180,7 +180,7 @@ class ExactDurationTests(unittest.TestCase):
             path = Path(d) / 'episode.mp4'
             m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
                        'testsrc2=size=64x64:rate=30:duration=65', '-f', 'lavfi', '-i',
-                       'sine=frequency=440:duration=65', '-c:v', 'libx264', '-preset', 'ultrafast',
+                       'sine=frequency=440:sample_rate=96000:duration=65', '-c:v', 'libx264', '-preset', 'ultrafast',
                        '-c:a', 'aac', '-t', '65', path])
             self.assertEqual(m.conform_duration(path), 60)
             info = m.ffprobe(path)
