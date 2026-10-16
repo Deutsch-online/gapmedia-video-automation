@@ -1,5 +1,5 @@
 
-"""Owner-requested fifteen-second comedy preview; never advances the daily serial."""
+"""Owner-requested short preview with redesigned large cream captions (v2)."""
 import importlib.util
 from pathlib import Path
 spec = importlib.util.spec_from_file_location('series', Path(__file__).with_name('cinematic-series.py'))

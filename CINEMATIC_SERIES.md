@@ -58,3 +58,7 @@ Starting with episode 3, the active series is **Marta & Lukas: WG-Chaos**. The t
 `ai-cast/comedy-pilot.json` is episode 3: **Der Chef vom Staubsauger**. A proud flatmate's robot vacuum steals a sock and slipper; he must chase it, and his supposedly manual broom then rides away on it. Thirteen unique animated actions build a complete visual joke. Later stories use only this comedy season's memory, a surprising opening visual, escalating everyday misunderstandings and a final visual punchline. The validator requires concrete hook/setup/payoff fields and rejects legacy taxi assets. No view-count guarantees are made.
 
 This is configured for the next daily episode, not a resend of today's already delivered episode 2. All sixty-second, two-platform, private delivery, language and GPU safeguards still apply.
+
+## Caption design v2
+
+The black rail is removed. Two rounded translucent cream cards separate German and Persian, with teal/coral accents. German uses bold DejaVu Sans up to 64 px (three-line fallback 60 px); Persian uses bold Noto Naskh Arabic up to 92 px. Whole-word line breaks are measured with the actual fonts; long captions stay readable instead of being clipped. This layout was rasterized and visually checked on the new portrait and fitted against all thirteen pilot lines. A revised short preview reuses cached animated scenes and gets separate receipts, leaving the original preview intact.

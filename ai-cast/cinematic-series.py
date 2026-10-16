@@ -325,6 +325,70 @@ def conform_duration(path):
         raise RuntimeError('Output must be exactly sixty seconds')
     return 60.0
 
+
+def caption_text(text, family, size, width=950):
+    """Fit whole words to two large lines using actual font widths."""
+    from PIL import ImageFont
+    path = subprocess.check_output(['fc-match', '-f', '%{file}', family], text=True).strip()
+    for point_size in range(size, size-11, -2):
+        font = ImageFont.truetype(path, point_size)
+        words = text.split()
+        if font.getlength(text) <= width:
+            return text, point_size
+        candidates = [(' '.join(words[:i]), ' '.join(words[i:])) for i in range(1, len(words))]
+        if candidates:
+            pair = min(candidates, key=lambda p: max(font.getlength(p[0]), font.getlength(p[1])))
+            if max(font.getlength(pair[0]), font.getlength(pair[1])) <= width:
+                return r'\N'.join(pair), point_size
+    if size == 64:
+        font = ImageFont.truetype(path, 60)
+        lines, line = [], ''
+        for word in text.split():
+            candidate = (line + ' ' + word).strip()
+            if line and font.getlength(candidate) > width:
+                lines.append(line)
+                line = word
+            else:
+                line = candidate
+        lines.append(line)
+        if len(lines) <= 3:
+            return r'\N'.join(lines), 60
+    raise ValueError('Caption is too long for the large readable layout')
+
+def build_subtitles(plan):
+    ass = '''[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: DE,DejaVu Sans,64,&H005B4C11,&H000000FF,&H00F8F4EE,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,80,80,0,1
+Style: FA,Noto Naskh Arabic,92,&H00372622,&H000000FF,&H00F8F4EE,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,5,80,80,0,1
+Style: CARD,DejaVu Sans,20,&H10F8F4EE,&H000000FF,&H00F8F4EE,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+'''
+    def rounded(width, height, r=26):
+        return (f'm {r} 0 l {width-r} 0 b {width} 0 {width} 0 {width} {r} '
+                f'l {width} {height-r} b {width} {height} {width} {height} {width-r} {height} '
+                f'l {r} {height} b 0 {height} 0 {height} 0 {height-r} '
+                f'l 0 {r} b 0 0 0 0 {r} 0')
+    for i, scene in enumerate(plan['scenes']):
+        start, end = subtitle_time(i*5+.1), subtitle_time((i+1)*5)
+        for lang, top, height, y, size, family, accent in [
+                ('de', 1410, 160, 1490, 64, 'DejaVu Sans:style=Bold', '&H00B6A632&'),
+                ('fa', 1590, 190, 1685, 92, 'Noto Naskh Arabic:style=Bold', '&H0080A3F2&')]:
+            text, fitted_size = caption_text(scene[lang], family, size)
+            if lang == 'de' and text.count(r'\N') == 2:
+                top, height, y = 1350, 220, 1460
+            ass += f'Dialogue: 0,{start},{end},CARD,,0,0,0,,{{\\an7\\pos(40,{top})\\p1}}{rounded(1000,height)}{{\\p0}}\n'
+            # A slim colored tab identifies each language without a heavy black rail.
+            ass += f'Dialogue: 1,{start},{end},CARD,,0,0,0,,{{\\an7\\pos(40,{top+28})\\1c{accent}\\p1}}{rounded(8,height-56,4)}{{\\p0}}\n'
+            ass += f'Dialogue: 2,{start},{end},{lang.upper()},,0,0,0,,{{\\pos(540,{y})\\fs{fitted_size}}}{text}\n'
+    return ass
+
+
 def render(plan, config, preview=False):
     if preview and len(plan.get('scenes', [])) != 3:
         raise ValueError('A short preview must contain exactly three scenes')
@@ -394,29 +458,14 @@ def render(plan, config, preview=False):
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         parts.append(part)
         print(f'Completed scene {i+1}/13 of episode {plan["episode"]}', flush=True)
-    ass = '''[Script Info]
-ScriptType: v4.00+
-PlayResX: 1080
-PlayResY: 1920
-WrapStyle: 0
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: DE,DejaVu Sans,50,&H00A5DFFF,&H000000FF,&H00251D17,&H00251D17,0,0,0,0,100,100,0,0,1,1,0,5,65,65,0,1
-Style: FA,Noto Naskh Arabic,70,&H00FFFFFF,&H000000FF,&H00251D17,&H00251D17,0,0,0,0,100,100,0,0,1,0,0,5,65,65,0,1
-[Events]
-Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-'''
-    for i, scene in enumerate(plan['scenes']):
-        for lang, y, width in [('de', 1615, 36), ('fa', 1760, 40)]:
-            text = r'\N'.join(textwrap.wrap(scene[lang], width=width))
-            ass += f'Dialogue: 0,{subtitle_time(i*5+.1)},{subtitle_time((i+1)*5)},{lang.upper()},,0,0,0,,{{\\pos(540,{y})}}{text}\n'
+    ass = build_subtitles(plan)
     subs = folder / 'subtitles.ass'
     subs.write_text(ass, encoding='utf-8')
     concat = folder / 'concat.txt'
     concat.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
     final = folder / f'{ep}-cinematic-fa-de.mp4'
     command(['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', concat,
-             '-vf', f'drawbox=x=35:y=1500:w=1010:h=365:color=0x152128@0.86:t=fill,ass={subs}',
+             '-vf', f'ass={subs}',
              '-af', 'loudnorm=I=-16:TP=-1.5:LRA=9', '-c:v', 'libx264', '-crf', '18', '-preset', 'fast',
              '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', final])
     if final.stat().st_size > 45 * 1024 * 1024:
@@ -441,7 +490,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if frozen > (3 if preview else 13):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     return str(final)
