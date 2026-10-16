@@ -1,10 +1,14 @@
 {
   "version": 1,
-  "next_episode": 2,
+  "next_episode": 3,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
       "message_id": 2437
+    },
+    "2026-10-16": {
+      "episode": 2,
+      "message_id": 2438
     }
   },
   "history": [
@@ -120,10 +124,8 @@
           "asset": "farewell.png"
         }
       ]
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 2,
       "title_de": "Rettung in letzter Sekunde",
       "title_fa": "نجات در آخرین ثانیه",
@@ -222,11 +224,9 @@
           "motion": "Lukas freezes as he leans forward, stares wide-eyed at the floor mat, and points in stunned realization."
         }
       ]
-    },
-    "date": "2026-10-16",
-    "status": "dispatching",
-    "file": "renders/cinematic-series/e0002/e0002-cinematic-fa-de.mp4"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4
