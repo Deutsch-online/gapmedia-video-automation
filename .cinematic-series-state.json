@@ -226,7 +226,111 @@
       ]
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 2,
+      "title_de": "Rettung in letzter Sekunde",
+      "title_fa": "نجات در آخرین ثانیه",
+      "summary": "Lukas realizes Marta left her train ticket on the taxi backseat. He rushes into the busy station just in time to hand it to her before her train departs, but a new oversight soon appears.",
+      "cliffhanger": "Back in his taxi after the train departs, Lukas discovers Marta's heavy bunch of house keys lying under the passenger seat.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Wo ist denn meine Fahrkarte für den Zug?",
+          "fa": "بلیت قطار من کجاست؟",
+          "scene": "Medium shot of elderly Marta standing in the grand station entrance hall under a large timetable board, rummaging through her open leather handbag with a worried expression.",
+          "motion": "Marta frantically sifts through the contents of her bag and speaks to herself with furrowed brows."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Marta hat ihr Zugticket im Auto vergessen!",
+          "fa": "مارتا بلیت قطارش را در ماشین جا گذاشته است!",
+          "scene": "Interior shot of Lukas in his taxi outside the station, glancing into the rearview mirror and spotting a white paper train ticket on the backseat.",
+          "motion": "Lukas turns around in the driver seat, reaches back to pick up the ticket, and gasps in surprise."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich muss mich beeilen, der Zug fährt bald.",
+          "fa": "باید عجله کنم، قطار به‌زودی حرکت می‌کند.",
+          "scene": "Cinematic low-angle shot outside the railway station entrance as Lukas quickly steps out of his beige taxi with the ticket firmly in hand.",
+          "motion": "Lukas pushes the taxi door shut with his hip and sets off into a brisk jog toward the station doors."
+        },
+        {
+          "speaker": "marta",
+          "de": "Der Zug nach Hamburg kommt in fünf Minuten.",
+          "fa": "قطار به مقصد هامبورگ تا پنج دقیقه دیگر می‌آید.",
+          "scene": "Wide eye-level shot on train platform four, showing morning travelers walking past Marta who stares anxiously up at the digital platform display.",
+          "motion": "Marta looks up at the glowing platform sign, clenches her hands together, and speaks nervously."
+        },
+        {
+          "speaker": "marta",
+          "de": "Hallo Lukas, ich suche überall mein Ticket!",
+          "fa": "سلام لوکاس، من همه‌جا دنبال بلیتم می‌گردم!",
+          "scene": "Close-up of Marta holding an old flip phone to her ear on the noisy platform, her face tense with worry.",
+          "motion": "Marta answers her ringing phone, talking urgently while watching the empty railway tracks."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Keine Sorge, Marta, ich habe Ihre Fahrkarte.",
+          "fa": "نگران نباشید، مارتا، بلیت شما پیش من است.",
+          "scene": "Tracking medium shot of Lukas holding his smartphone to his ear while weaving through busy travelers in the bustling main station concourse.",
+          "motion": "Lukas jogs through the crowd, speaking reassuringly into his phone as he holds the ticket in front of him."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich stehe oben auf Gleis vier, mein Junge.",
+          "fa": "من بالا در سکوی چهار ایستاده‌ام، پسرم.",
+          "scene": "Medium shot of Marta on platform four near the top of the wide stone stairs, clutching her wool coat tightly against the draft.",
+          "motion": "Marta speaks into her phone with relief and turns her gaze expectantly toward the stairs."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich sehe Sie schon bei der großen Uhr!",
+          "fa": "شما را کنار ساعت بزرگ می‌بینم!",
+          "scene": "Dynamic shot from bottom of the platform stairs looking up, showing Lukas bounding up two steps at a time toward the bright platform level.",
+          "motion": "Lukas reaches the top landing, lowers his phone, waves the ticket above his head, and speaks out loud."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Hier ist Ihr Ticket, pünktlich zur Abfahrt.",
+          "fa": "این هم بلیت شما، درست به‌موقع قبل از حرکت.",
+          "scene": "Two-shot of Lukas and Marta under the platform clock as Lukas catches his breath and extends the ticket toward her with a warm smile.",
+          "motion": "Lukas hands the folded ticket into Marta's waiting palms while catching his breath."
+        },
+        {
+          "speaker": "marta",
+          "de": "Du bist heute wirklich mein rettender Engel, Lukas.",
+          "fa": "تو امروز واقعاً فرشته نجات من هستی، لوکاس.",
+          "scene": "Warm close-up of Marta beaming gratefully at Lukas, her weathered face glowing with affectionate relief.",
+          "motion": "Marta takes the ticket with both hands, gently touches Lukas's forearm, and speaks with heartfelt gratitude."
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt steige ich ein und winke dir.",
+          "fa": "حالا سوار می‌شوم و برایت دست تکان می‌دهم.",
+          "scene": "Wide cinematic shot of the sleek red train gliding into the platform with a soft hiss of air brakes as morning sunlight streams through the station glass roof.",
+          "motion": "Marta lifts her small travel bag, turns toward the opening train doors, and speaks over her shoulder with a cheerful nod."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Das war knapp, aber alles ist gut gegangen.",
+          "fa": "نزدیک بود دیر شود، اما همه‌چیز خوب پیش رفت.",
+          "scene": "Exterior street shot outside the station as Lukas returns to his taxi, opening the driver's door with a contented sigh.",
+          "motion": "Lukas smiles to himself, slides into the driver seat, and closes the car door behind him."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Moment mal, das sind doch Martas Hausschlüssel!",
+          "fa": "یک لحظه صبر کن، این‌ها که کلیدهای خانه مارتا هستند!",
+          "scene": "Close-up interior shot focusing on the dark passenger floor mat where an antique brass key ring with multiple keys and a floral tag lies half-hidden.",
+          "motion": "Lukas freezes as he leans forward, stares wide-eyed at the floor mat, and points in stunned realization."
+        }
+      ]
+    },
+    "date": "2026-10-16",
+    "status": "exporting",
+    "backfill": true
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4
