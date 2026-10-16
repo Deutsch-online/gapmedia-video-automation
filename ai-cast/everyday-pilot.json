@@ -1,0 +1,119 @@
+{
+  "episode": 3,
+  "series_version": "wg-alltag-v1",
+  "series_name": "Marta & Lukas: Alltag in Deutschland",
+  "content_basis": "everyday-reenactment",
+  "title_de": "Einkaufen ohne Einkaufstasche",
+  "title_fa": "خرید بدون ساک خرید",
+  "summary": "Two flatmates forget their reusable shopping bag, buy only the groceries they need, arrange fragile eggs safely, pay by card and share the items on the way home.",
+  "cliffhanger": "At home they will put the reusable bag by the door before their next shopping trip.",
+  "visual_hook": "At the supermarket entrance, Marta checks her handbag and realizes the reusable shopping bag is missing.",
+  "everyday_problem": "The reusable bag was left at home and the roommates want to avoid buying another bag.",
+  "practical_resolution": "They buy only bread, a small milk carton and eggs, carry them carefully between two people, and plan to hang the bag by the door.",
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Ich habe die Einkaufstasche zu Hause vergessen.",
+      "fa": "ساک خرید را در خانه فراموش کرده‌ام.",
+      "scene": "At a modern Berlin supermarket entrance, Marta opens her empty handbag while Lukas holds a small shopping basket.",
+      "motion": "Marta checks her handbag, looks up at Lukas and speaks with a mildly concerned expression.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Wir können eine Tüte an der Kasse kaufen.",
+      "fa": "می‌توانیم کنار صندوق یک کیسه بخریم.",
+      "scene": "Two roommates by the supermarket basket stand, Lukas gestures toward the distant checkout.",
+      "motion": "Lukas takes a basket and points calmly toward the checkout while replying; Marta listens.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Ich möchte nicht schon wieder eine neue kaufen.",
+      "fa": "نمی‌خواهم باز هم یک کیسهٔ تازه بخرم.",
+      "scene": "Marta and Lukas walk into the grocery aisle, keeping their small basket between them.",
+      "motion": "Marta shakes her head gently and speaks; Lukas slows his step and listens.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Dann nehmen wir nur das Nötigste mit.",
+      "fa": "پس فقط چیزهای ضروری را می‌گیریم.",
+      "scene": "Medium two shot at the start of the grocery aisle; Lukas looks at the empty basket.",
+      "motion": "Lukas holds up the small basket and makes one practical open-hand gesture while speaking.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Brot, Milch und Eier stehen auf meiner Liste.",
+      "fa": "نان، شیر و تخم‌مرغ در فهرستم هستند.",
+      "scene": "Marta checks a small handwritten grocery list without legible text; Lukas stands beside her.",
+      "motion": "Marta counts the three items on her fingers while speaking, then puts the list in her pocket.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Die Milch ist heute etwas teurer.",
+      "fa": "شیر امروز کمی گران‌تر است.",
+      "scene": "Lukas compares two plain unbranded milk cartons on a supermarket shelf; Marta watches.",
+      "motion": "Lukas picks up a large milk carton, glances at the shelf label and speaks naturally.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Dann nehmen wir die kleinere Packung.",
+      "fa": "پس بستهٔ کوچک‌تر را می‌گیریم.",
+      "scene": "Marta reaches for a smaller plain milk carton beside the larger one held by Lukas.",
+      "motion": "Marta takes the smaller carton and places it carefully in their basket while replying.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Für morgen reicht das bestimmt.",
+      "fa": "حتماً برای فردا کافی است.",
+      "scene": "Both roommates beside the refrigerated shelf, small carton visible in their basket.",
+      "motion": "Lukas nods, puts the larger carton back on the shelf and speaks.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Bitte leg das Brot nicht auf die Eier.",
+      "fa": "لطفاً نان را روی تخم‌مرغ‌ها نگذار.",
+      "scene": "Marta holds an egg carton while Lukas is about to put a wrapped loaf on top of it in the basket.",
+      "motion": "Marta gently stops the loaf with her free hand and speaks; Lukas pauses without dropping anything.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Stimmt. Die Eier kommen nach oben.",
+      "fa": "درست است. تخم‌مرغ‌ها را بالا می‌گذاریم.",
+      "scene": "Close medium shot of both roommates arranging a small basket with bread, milk and eggs.",
+      "motion": "Lukas places the loaf below and sets the egg carton gently on top while replying.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Ich bezahle heute mit meiner Karte.",
+      "fa": "امروز با کارتم پرداخت می‌کنم.",
+      "scene": "At a supermarket checkout, Marta holds a plain bank card near the payment terminal; Lukas waits with the groceries.",
+      "motion": "Marta speaks then taps her card on the terminal; Lukas picks up the wrapped bread.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Gut. Ich trage die Milch und das Brot.",
+      "fa": "خوب است. من شیر و نان را می‌برم.",
+      "scene": "Just beyond the checkout, Lukas holds the bread and small milk carton while Marta carries the eggs.",
+      "motion": "Lukas secures the milk and loaf in his arms and speaks; Marta carefully takes the egg carton.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Nächstes Mal hängt die Tasche gleich an der Tür.",
+      "fa": "دفعهٔ بعد ساک را کنار در آویزان می‌کنیم.",
+      "scene": "The roommates walk out of the supermarket with the three items safely in their hands, natural street in background.",
+      "motion": "Marta speaks with a small relieved smile; Lukas nods as they walk together at a normal pace.",
+      "asset": null
+    }
+  ]
+}

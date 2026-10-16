@@ -62,3 +62,9 @@ This is configured for the next daily episode, not a resend of today's already d
 ## Caption design v2
 
 The black rail is removed. Two rounded translucent cream cards separate German and Persian, with teal/coral accents. German uses bold DejaVu Sans up to 64 px (three-line fallback 60 px); Persian uses bold Noto Naskh Arabic up to 92 px. Whole-word line breaks are measured with the actual fonts; long captions stay readable instead of being clipped. This layout was rasterized and visually checked on the new portrait and fitted against all thirteen pilot lines. A revised short preview reuses cached animated scenes and gets separate receipts, leaving the original preview intact.
+
+## Everyday-life direction supersedes comedy (owner correction, 2026-10-16)
+
+The active season is now **Marta & Lukas: Alltag in Deutschland**, version `wg-alltag-v1`. 3D cartoon visuals and established character references stay, but invented slapstick, fantasy devices and mandatory punchlines are removed from production prompts and validation. Episode 3 is `ai-cast/everyday-pilot.json`: **Einkaufen ohne Einkaufstasche**, a natural supermarket conversation about a forgotten reusable bag, buying essentials, arranging fragile eggs and sharing the carrying.
+
+Later episodes follow familiar daily activities with credible actions and natural dialogue. History is filtered to this active direction, so the vacuum gag is not continued. Required story fields are `visual_hook`, `everyday_problem`, `practical_resolution`, and `content_basis: everyday-reenactment`. These are illustrative reenactments; neither captions nor narration may falsely claim a documented true event or invent named sources. A supplied real personal account can be adapted when one is provided. Previously sent comedy previews remain historical samples, not the active daily story.

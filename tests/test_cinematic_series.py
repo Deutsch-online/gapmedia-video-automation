@@ -221,21 +221,21 @@ class PlatformDeliveryTests(unittest.TestCase):
             bot.assert_not_called()
 
 
-class ComedySeasonTests(unittest.TestCase):
+class EverydayLifeTests(unittest.TestCase):
     def test_cartoon_pilot_is_a_new_nonrepeating_story(self):
         state = m.new_state()
         state['next_episode'] = 3
         state['history'] = [m.first_episode()]
         plan = m.make_plan(state)
-        self.assertEqual(plan['series_version'], 'wg-comedy-v1')
+        self.assertEqual(plan['series_version'], 'wg-alltag-v1')
         self.assertEqual(plan['episode'], 3)
         self.assertEqual(len(plan['scenes']), 13)
         self.assertTrue(all(not s.get('asset') for s in plan['scenes']))
         self.assertIn('3D CARTOON', m.STYLE)
 
-    def test_new_season_rejects_missing_gag_and_old_assets(self):
-        plan = m.load_json(m.ROOT / 'ai-cast/comedy-pilot.json')
-        for field in ('visual_hook', 'comedy_setup', 'comedy_payoff'):
+    def test_new_season_rejects_missing_practical_resolution_and_old_assets(self):
+        plan = m.load_json(m.ROOT / 'ai-cast/everyday-pilot.json')
+        for field in ('visual_hook', 'everyday_problem', 'practical_resolution'):
             broken = copy.deepcopy(plan)
             broken[field] = ''
             with self.assertRaises(ValueError):
@@ -244,10 +244,10 @@ class ComedySeasonTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             m.validate_plan(plan, 3, [])
 
-    def test_later_episodes_use_only_the_comedy_season_memory(self):
+    def test_later_episodes_use_only_everyday_life_memory(self):
         state = m.new_state()
         state['next_episode'] = 4
-        state['history'] = [m.first_episode(), m.load_json(m.ROOT / 'ai-cast/comedy-pilot.json')]
+        state['history'] = [m.first_episode(), m.load_json(m.ROOT / 'ai-cast/everyday-pilot.json')]
         plan = copy.deepcopy(state['history'][-1])
         plan['episode'] = 4
         # Provider-prompt test; isolate repetition validation from the prompt being checked.
@@ -255,11 +255,11 @@ class ComedySeasonTests(unittest.TestCase):
         with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one'}), patch.object(m, 'validate_plan', return_value=plan), patch.object(m, 'request_json', return_value=response) as request:
             m.make_plan(state)
         prompt = request.call_args.args[1]['contents'][0]['parts'][0]['text']
-        self.assertIn('COMEDY season', prompt)
-        self.assertIn('visual punchline', prompt)
+        self.assertIn('everyday-life series', prompt)
+        self.assertIn('Natural speech and credible actions only', prompt)
         memory = prompt.split('Story history: ')[1]
         self.assertNotIn('Eine unerwartete Fahrt', memory)
-        self.assertIn('Der Chef vom Staubsauger', memory)
+        self.assertIn('Einkaufen ohne Einkaufstasche', memory)
 
 if __name__ == '__main__':
     unittest.main()

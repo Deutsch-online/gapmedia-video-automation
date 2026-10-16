@@ -29,8 +29,8 @@ if (action === 'verify') {
   const germanTitle = /\p{Script=Arabic}/u.test(String(p.plan.title_de || ''))
     ? 'Eine neue Geschichte' : p.plan.title_de;
   const platformLabel = platform === 'tiktok' ? 'TikTok-Version' : platform === 'instagram' ? 'Instagram-Reels-Version' : '';
-  const seriesName = p.plan.series_version === 'wg-comedy-v1' ? 'Marta & Lukas: WG-Chaos' : 'Marta und Lukas';
-  const caption = `${seriesName} · Folge ${p.plan.episode}\n${germanTitle}\n${platformLabel}\n\n${p.plan.series_version === 'wg-comedy-v1' ? 'Deutsch lernen mit Chaos, Humor und kleinen Alltagskatastrophen.' : 'Deutsch lernen mit Geschichten aus dem Alltag.'}\n\n#DeutschLernen #LearnGerman #DeutschA1 #DeutschImAlltag #GermanStories #Animation #Comedy #AlltagsComedy ${platform === 'instagram' ? '#Reels' : '#TikTok'} #Shorts`;
+  const seriesName = p.plan.series_version === 'wg-alltag-v1' ? 'Marta & Lukas: Alltag in Deutschland' : 'Marta und Lukas';
+  const caption = `${seriesName} · Folge ${p.plan.episode}\n${germanTitle}\n${platformLabel}\n\n${p.plan.series_version === 'wg-alltag-v1' ? 'Deutsch lernen mit natürlichen Gesprächen und vertrauten Alltagssituationen.' : 'Deutsch lernen mit Geschichten aus dem Alltag.'}\n\n#DeutschLernen #LearnGerman #DeutschA1 #DeutschImAlltag #GermanStories #Animation #AlltagInDeutschland #DeutschDialoge ${platform === 'instagram' ? '#Reels' : '#TikTok'} #Shorts`;
   const result = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, attempts: 1, caption });
   if (!result?.message_id) throw new Error('Telegram did not confirm delivery');
   console.log(JSON.stringify({ message_id: result.message_id }));

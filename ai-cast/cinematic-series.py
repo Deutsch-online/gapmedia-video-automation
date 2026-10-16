@@ -20,19 +20,19 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 STATE = Path('.cinematic-series-state.json')
 CONFIG = Path('.cinematic-series.json')
-STYLE = ('Polished original theatrical 3D CARTOON sitcom animation, appealing exaggerated adult cartoon proportions, '
+STYLE = ('Polished original theatrical 3D CARTOON everyday-life animation, appealing exaggerated adult cartoon proportions, '
          'large expressive eyes and eyebrows, clear readable comic silhouettes, rounded shapes, tactile colorful clothing, '
          'warm contemporary Berlin shared apartment, vibrant mustard teal and coral palette, '
          'beautiful dimensional light and rich environmental depth, vertical 9:16. '
-         'Brisk normal-speed physical comedy, expressive anticipation and reaction, genuine character acting. '
+         'Natural believable real-time everyday actions, grounded expressive facial reactions and genuine character acting. '
          'No live action, no photorealistic adults, no elderly grandmother, no vintage taxi, no flat vectors, '
          'no stick figures, no writing, no watermark. ')
 CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive skin, large brown eyes, '
         'dark chestnut wavy bob, expressive eyebrows, mustard sweatshirt, teal dungarees and coral sneakers. '
-        'She is an inventive, energetic, witty flatmate. '
+        'She is a practical, friendly young adult flatmate. '
         'Lukas is the tall lanky young adult man on the RIGHT, messy copper-red quiff, turquoise round glasses, '
         'coral hoodie, navy joggers and white sneakers outdoors or soft white slippers at home. '
-        'He is lovable, overconfident and accident-prone. '
+        'He is a friendly, ordinary young adult flatmate. '
         'They are equal adult roommates, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
 
@@ -112,11 +112,13 @@ def validate_plan(plan, episode, history):
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != 13:
         raise ValueError('A new episode must contain exactly thirteen five-second scenes')
     if episode >= 3:
-        if plan.get('series_version') != 'wg-comedy-v1':
-            raise ValueError('New episodes must belong to the 3D cartoon comedy season')
-        for key in ('visual_hook', 'comedy_setup', 'comedy_payoff'):
+        if plan.get('series_version') != 'wg-alltag-v1':
+            raise ValueError('New episodes must belong to the 3D cartoon everyday-life series')
+        if plan.get('content_basis') != 'everyday-reenactment':
+            raise ValueError('Do not present an illustrative story as a documented true event')
+        for key in ('visual_hook', 'everyday_problem', 'practical_resolution'):
             if not isinstance(plan.get(key), str) or len(plan[key].strip()) < 20:
-                raise ValueError('Comedy needs a concrete visual hook, setup and payoff: ' + key)
+                raise ValueError('Everyday stories need a concrete situation, problem and practical resolution: ' + key)
         if any(scene.get('asset') for scene in plan.get('scenes', [])):
             raise ValueError('Do not reuse the old taxi-season scene assets')
     for key in ('title_de', 'title_fa', 'summary', 'cliffhanger'):
@@ -198,31 +200,30 @@ def groq_model(key):
 def make_plan(state):
     episode = state['next_episode']
     if episode == 3:
-        return validate_plan(load_json(ROOT / 'ai-cast/comedy-pilot.json'), episode, state['history'])
+        return validate_plan(load_json(ROOT / 'ai-cast/everyday-pilot.json'), episode, state['history'])
     if episode == 1:
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
-               'cliffhanger': h['cliffhanger']} for h in state['history'] if h.get('series_version') == 'wg-comedy-v1']
-    prompt = ('Write the NEXT 60-second episode of a colorful original 3D CARTOON German A1/A2 comedy sitcom, '
-              'Marta & Lukas: WG-Chaos. They are young adult flatmates in contemporary Berlin, never grandmother or taxi driver. '
-              'Continue this COMEDY season only. Open on a surprising visible comic problem in the first two seconds. ' 
-              'Use a recognizable everyday situation: supermarket, laundry, public transport, cooking or shared housing. '
-              'Build three escalating physical misunderstandings, a deadpan reaction and a visual punchline in the last shot. '
-              'Marta is inventive and witty; Lukas is lovable but overconfident. Humour comes from their conflicting intentions, '
-              'never nationality, accent, disability or cruelty. No long greetings, sentimental moral or slow exposition. '
-              'Make action and reactions genuinely visible; do not rely only on spoken jokes. Finish with a new '
-              'concrete cliffhanger. No violence, no repetitive generic moral, no repeated plot or dialogue. '
-              'No new speaking characters; other people may appear silently. Characters can speak by phone '
-              'when apart. Each scene has a different clear visible comic action. Preserve comedy-season continuity. '
-              'Return ONLY valid JSON with episode (integer), title_de, title_fa, summary (English), '
-              'cliffhanger (English), series_version (wg-comedy-v1), series_name (Marta & Lukas: WG-Chaos), '
-              'visual_hook, comedy_setup, comedy_payoff (specific visible actions in English), '
-              'scenes (EXACTLY 13 objects). Each scene has speaker (marta or lukas), '
-              'de (natural German, 4-12 words, one thought that fits under 4.4 seconds), '
-              'fa (accurate natural Persian translation), scene (English visual composition with camera and '
-              'location), motion (English visible action including who speaks and who listens). '
-              'Never insert subtitle text into the image prompts. Do not set asset. '
-              'Avoid backslashes, markup and line breaks in JSON string values. '
+               'cliffhanger': h['cliffhanger']} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
+    prompt = ('Write the NEXT 60-second German A1/A2 animated everyday-life conversation. '
+              'Marta & Lukas: Alltag in Deutschland. They are ordinary young adult flatmates in Berlin. '
+              'Use a familiar real-life activity: groceries, commuting, laundry, a medical appointment, '
+              'cooking, housework or a practical administrative task. Natural speech and credible actions only. '
+              'No invented comic accidents, slapstick, punchline, fantasy gadgets, artificial drama or moral lecture. '
+              'Start with the ordinary practical situation, show the steps, and resolve one small everyday problem. '
+              'These are illustrative everyday reenactments, NOT documented true events. Never claim that a specific '
+              'real person experienced this or invent a source, quote, current price or legal requirement. '
+              'Continue only this everyday-life series history. Do not continue the robot-vacuum comedy or taxi season. '
+              'No long introductions. Both flatmates listen and respond naturally. '
+              'Return ONLY valid JSON: episode (integer), title_de, title_fa, summary (English), '
+              'cliffhanger (an ordinary next step, not a dramatic cliffhanger), '
+              'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
+              'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution '
+              '(specific credible actions in English), scenes (EXACTLY 13 objects). '
+              'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
+              'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
+              'Only these two speaking characters. Silent background people are allowed. '
+              'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
               f'Episode number: {episode}. Story history: ' + json.dumps(memory, ensure_ascii=False))
     errors = []
     for provider in ('gemini', 'groq'):

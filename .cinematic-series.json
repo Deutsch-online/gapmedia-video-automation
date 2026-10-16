@@ -1,5 +1,5 @@
 {
-  "series": "Marta & Lukas: WG-Chaos",
+  "series": "Marta & Lukas: Alltag in Deutschland",
   "timezone": "Europe/Berlin",
   "time": "00:00",
   "minimum_seconds": 60,
@@ -7,7 +7,7 @@
   "daily_episodes": 1,
   "max_daily_attempts": 2,
   "reference_dir": "public/ai-cast/wg-chaos",
-  "style": "wg-chaos-3d-v1",
+  "style": "wg-alltag-3d-v1",
   "paid_fallback": false,
   "maximum_seconds": 60,
   "schedule_mode": "gpu-availability",
@@ -15,6 +15,6 @@
     "tiktok",
     "instagram"
   ],
-  "series_version": "wg-comedy-v1",
-  "genre": "3d-cartoon-everyday-comedy"
+  "series_version": "wg-alltag-v1",
+  "genre": "3d-cartoon-everyday-life"
 }
