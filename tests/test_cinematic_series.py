@@ -109,10 +109,37 @@ class ProviderDiagnosticsTests(unittest.TestCase):
         plan['episode'] = 2
         error = m.urllib.error.HTTPError('https://example.com', 429, 'Limit', {}, io.BytesIO(b'{"error":{"message":"Quota exceeded"}}'))
         response = {'choices': [{'message': {'content': m.json.dumps(plan)}}]}
-        with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one', 'GROQ_API_KEY': 'test-two'}), patch.object(m, 'request_json', side_effect=[error, response]) as request, patch('builtins.print') as report:
+        with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one', 'GROQ_API_KEY': 'test-two'}), patch.object(m, 'groq_model', return_value='available-model'), patch.object(m, 'request_json', side_effect=[error, response]) as request, patch('builtins.print') as report:
             self.assertEqual(m.make_plan(state)['episode'], 2)
         self.assertEqual(request.call_count, 2)
         self.assertIn('HTTP 429', report.call_args.args[0])
+
+
+class RecoveryTests(unittest.TestCase):
+    def test_manual_recovery_is_one_extra_attempt_and_preserves_delivery_guards(self):
+        state = m.new_state()
+        date = '2026-10-16'
+        now = datetime(2026, 10, 16, 18, tzinfo=timezone.utc)
+        state['attempts'][date] = 2
+        self.assertEqual(m.due(state, CONFIG, now)[1], 'daily-attempt-limit')
+        state['manual_recovery'] = {date: 100}
+        self.assertTrue(m.due(state, CONFIG, now)[0])
+        state['attempts'][date] = 3
+        self.assertEqual(m.due(state, CONFIG, now, force=True)[1], 'daily-attempt-limit')
+        state['attempts'][date] = 2
+        state['deliveries'][date] = {'episode': 2, 'message_id': 1}
+        self.assertEqual(m.due(state, CONFIG, now, force=True)[1], 'already-delivered')
+
+    def test_groq_selects_only_available_supported_model(self):
+        from unittest.mock import MagicMock
+        response = MagicMock()
+        response.__enter__.return_value = io.StringIO('{"data":[{"id":"whisper-large-v3"},{"id":"openai/gpt-oss-120b"}]}')
+        with patch.dict(os.environ, {}, clear=True), patch.object(m.urllib.request, 'urlopen', return_value=response):
+            self.assertEqual(m.groq_model('test'), 'openai/gpt-oss-120b')
+        response.__enter__.return_value = io.StringIO('{"data":[{"id":"whisper-large-v3"}]}')
+        with patch.dict(os.environ, {}, clear=True), patch.object(m.urllib.request, 'urlopen', return_value=response):
+            with self.assertRaises(ValueError):
+                m.groq_model('test')
 
 if __name__ == '__main__':
     unittest.main()
