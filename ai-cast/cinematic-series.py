@@ -13,7 +13,7 @@ import sys
 import textwrap
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -65,7 +65,16 @@ def due(state, config, now=None, force=False):
     if (state.get('pending') or {}).get('status') == 'dispatching':
         return False, 'delivery-needs-reconciliation', date
     recovery = min(1, max(0, int(state.get('manual_recovery', {}).get(date, 0))))
-    if state.get('attempts', {}).get(date, 0) >= config.get('max_daily_attempts', 2) + recovery:
+    quota = state.get('quota_recovery', {})
+    quota_extra = 0
+    if quota.get('date') == date and (state.get('pending') or {}).get('status') == 'render-failed':
+        ready = datetime.fromisoformat(quota['not_before'])
+        if ready.tzinfo is None:
+            raise ValueError('Quota recovery timestamp must include timezone')
+        if local < ready:
+            return False, 'waiting-for-gpu-quota', date
+        quota_extra = 1
+    if state.get('attempts', {}).get(date, 0) >= config.get('max_daily_attempts', 2) + recovery + quota_extra:
         return False, 'daily-attempt-limit', date
     if not force and local.strftime('%H:%M') < config['time']:
         return False, 'before-daily-slot', date
@@ -390,8 +399,13 @@ def production(force=False):
     checkpoint(state)
     try:
         final = render(plan, config)
-    except Exception:
+    except Exception as exc:
         state['pending']['status'] = 'render-failed'
+        if str(exc).strip().lower() == 'quota' and state.get('quota_recovery', {}).get('date') != date:
+            # One deferred continuation per day; never occupy a runner waiting for GPU credits.
+            state['quota_recovery'] = {'date': date, 'not_before':
+                (datetime.now(timezone.utc) + timedelta(hours=5)).isoformat(),
+                'reason': 'ZeroGPU quota exhausted'}
         checkpoint(state)
         raise
     # This intent is durable BEFORE sendVideo. A process killed during upload
