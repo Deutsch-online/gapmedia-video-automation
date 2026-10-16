@@ -224,7 +224,8 @@
       ]
     },
     "date": "2026-10-16",
-    "status": "rendering"
+    "status": "dispatching",
+    "file": "renders/cinematic-series/e0002/e0002-cinematic-fa-de.mp4"
   },
   "attempts": {
     "2026-10-15": 2,
