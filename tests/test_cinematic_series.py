@@ -82,5 +82,37 @@ class SeriesTests(unittest.TestCase):
             with self.assertRaises(json.JSONDecodeError):
                 m.load_json(path, m.new_state())
 
+import io
+import os
+import unittest
+from unittest.mock import patch
+
+class ProviderDiagnosticsTests(unittest.TestCase):
+    def test_http_status_and_message_preserved_but_credentials_removed(self):
+        body = b'{"error":{"code":"invalid_api_key","message":"key=private-value https://example.com/?key=private-value"}}'
+        error = m.urllib.error.HTTPError('https://example.com', 401, 'Unauthorized', {}, io.BytesIO(body))
+        with patch.dict(os.environ, {'GROQ_API_KEY': 'private-value'}):
+            detail = m.provider_error(error)
+        self.assertIn('HTTP 401', detail)
+        self.assertIn('invalid_api_key', detail)
+        self.assertNotIn('private-value', detail)
+        self.assertNotIn('example.com', detail)
+
+    def test_html_failure_does_not_dump_body(self):
+        error = m.urllib.error.HTTPError('https://example.com', 403, 'Forbidden', {}, io.BytesIO(b'<html>secret body</html>'))
+        self.assertEqual(m.provider_error(error), 'HTTPError HTTP 403')
+
+    def test_failed_primary_falls_back_and_reports_status(self):
+        state = m.new_state()
+        state['next_episode'] = 2
+        plan = m.first_episode()
+        plan['episode'] = 2
+        error = m.urllib.error.HTTPError('https://example.com', 429, 'Limit', {}, io.BytesIO(b'{"error":{"message":"Quota exceeded"}}'))
+        response = {'choices': [{'message': {'content': m.json.dumps(plan)}}]}
+        with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one', 'GROQ_API_KEY': 'test-two'}), patch.object(m, 'request_json', side_effect=[error, response]) as request, patch('builtins.print') as report:
+            self.assertEqual(m.make_plan(state)['episode'], 2)
+        self.assertEqual(request.call_count, 2)
+        self.assertIn('HTTP 429', report.call_args.args[0])
+
 if __name__ == '__main__':
     unittest.main()
