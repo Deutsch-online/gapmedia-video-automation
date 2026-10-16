@@ -64,7 +64,8 @@ def due(state, config, now=None, force=False):
         return False, 'already-delivered', date
     if (state.get('pending') or {}).get('status') == 'dispatching':
         return False, 'delivery-needs-reconciliation', date
-    if state.get('attempts', {}).get(date, 0) >= config.get('max_daily_attempts', 2):
+    recovery = min(1, max(0, int(state.get('manual_recovery', {}).get(date, 0))))
+    if state.get('attempts', {}).get(date, 0) >= config.get('max_daily_attempts', 2) + recovery:
         return False, 'daily-attempt-limit', date
     if not force and local.strftime('%H:%M') < config['time']:
         return False, 'before-daily-slot', date
@@ -157,6 +158,21 @@ def provider_error(exc):
     detail = re.sub(r'(?i)(bearer\s+|key[=:]\s*)[^\s|]+', r'\1[REDACTED]', detail)
     return re.sub(r'[\x00-\x1f\x7f]', ' ', detail)[:1600]
 
+def groq_model(key):
+    override = os.getenv('CINEMATIC_GROQ_TEXT_MODEL')
+    if override:
+        return override
+    req = urllib.request.Request('https://api.groq.com/openai/v1/models',
+                                 headers={'Authorization': 'Bearer ' + key,
+                                          'User-Agent': 'GapMedia-CinematicSeries/1.0'})
+    with urllib.request.urlopen(req, timeout=30) as response:
+        models = {m['id'] for m in json.load(response)['data'] if m.get('active', True)}
+    for candidate in ('openai/gpt-oss-120b', 'llama-3.3-70b-versatile',
+                      'qwen/qwen3-32b', 'openai/gpt-oss-20b', 'llama-3.1-8b-instant'):
+        if candidate in models:
+            return candidate
+    raise ValueError('No supported German/Persian story model in the Groq model catalog')
+
 def make_plan(state):
     episode = state['next_episode']
     if episode == 1:
@@ -184,7 +200,7 @@ def make_plan(state):
                 key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
                 if not key:
                     continue
-                model = os.getenv('CINEMATIC_TEXT_MODEL', 'gemini-2.5-flash')
+                model = os.getenv('CINEMATIC_TEXT_MODEL', 'gemini-3.8-flash')
                 r = request_json('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
                                  {'contents': [{'parts': [{'text': prompt}]}],
                                   'generationConfig': {'responseMimeType': 'application/json', 'temperature': .7}},
@@ -195,7 +211,7 @@ def make_plan(state):
                 if not key:
                     continue
                 r = request_json('https://api.groq.com/openai/v1/chat/completions',
-                                 {'model': 'llama-3.3-70b-versatile', 'messages': [{'role': 'user', 'content': prompt}],
+                                 {'model': groq_model(key), 'messages': [{'role': 'user', 'content': prompt}],
                                   'response_format': {'type': 'json_object'}, 'temperature': .7, 'max_tokens': 5000},
                                  {'Authorization': 'Bearer ' + key})
                 raw = r['choices'][0]['message']['content']
