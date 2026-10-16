@@ -188,5 +188,37 @@ class ExactDurationTests(unittest.TestCase):
             self.assertEqual({x['codec_type'] for x in info['streams']}, {'video', 'audio'})
             self.assertEqual(m.conform_duration(path), 60)
 
+
+class PlatformDeliveryTests(unittest.TestCase):
+    def test_receipt_is_saved_before_starting_next_platform(self):
+        state = m.new_state()
+        state['pending'] = {'status': 'rendering'}
+        events = []
+        def checkpoint(st):
+            events.append(('checkpoint', st['pending']['status'], dict(st['pending'].get('platform_receipts', {}))))
+        def bot(action, file, platform):
+            events.append(('send', platform))
+            return {'message_id': 11 if platform == 'tiktok' else 12}
+        with tempfile.TemporaryDirectory() as d, patch.object(m, 'export_platforms', return_value={'tiktok': 'tt.mp4', 'instagram': 'ig.mp4'}), patch.object(m, 'checkpoint', side_effect=checkpoint), patch.object(m, 'bot', side_effect=bot):
+            self.assertEqual(m.deliver_platforms(state, str(Path(d) / 'master.mp4')), {'tiktok': 11, 'instagram': 12})
+        first_receipt = events.index(('checkpoint', 'exporting', {'tiktok': 11}))
+        self.assertLess(first_receipt, events.index(('send', 'instagram')))
+
+    def test_confirmed_platform_is_not_sent_again(self):
+        state = m.new_state()
+        state['pending'] = {'status': 'exporting', 'platform_receipts': {'tiktok': 11}}
+        with tempfile.TemporaryDirectory() as d, patch.object(m, 'export_platforms', return_value={'tiktok': 'tt.mp4', 'instagram': 'ig.mp4'}), patch.object(m, 'checkpoint'), patch.object(m, 'bot', return_value={'message_id': 12}) as bot:
+            self.assertEqual(m.deliver_platforms(state, str(Path(d) / 'master.mp4')), {'tiktok': 11, 'instagram': 12})
+            self.assertEqual(bot.call_count, 1)
+            self.assertEqual(bot.call_args.args[2], 'instagram')
+
+    def test_unconfirmed_upload_prevents_replay(self):
+        state = m.new_state()
+        state['pending'] = {'status': 'dispatching'}
+        with patch.object(m, 'bot') as bot:
+            with self.assertRaises(RuntimeError):
+                m.deliver_platforms(state, 'master.mp4')
+            bot.assert_not_called()
+
 if __name__ == '__main__':
     unittest.main()

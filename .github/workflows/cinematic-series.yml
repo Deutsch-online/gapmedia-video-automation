@@ -106,6 +106,8 @@ jobs:
           name: cinematic-series-${{ github.run_id }}
           path: |
             renders/cinematic-series/**/e*-cinematic-fa-de.mp4
+            renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/delivery-*.json
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/episode.json
             renders/cinematic-series/**/contact.jpg

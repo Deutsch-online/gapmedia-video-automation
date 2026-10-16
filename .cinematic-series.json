@@ -10,5 +10,9 @@
   "style": "approved-cinematic-taxi-v1",
   "paid_fallback": false,
   "maximum_seconds": 60,
-  "schedule_mode": "gpu-availability"
+  "schedule_mode": "gpu-availability",
+  "outputs": [
+    "tiktok",
+    "instagram"
+  ]
 }

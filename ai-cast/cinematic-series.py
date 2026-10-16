@@ -420,9 +420,65 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
              '-frames:v', '1', folder / 'contact.jpg'])
     return str(final)
 
-def bot(action, extra=''):
+
+PLATFORM_PROFILES = {'tiktok': ('4500k', '5000k'), 'instagram': ('3500k', '4000k')}
+
+def export_platforms(master):
+    master = Path(master)
+    quality = load_json(master.parent / 'quality.json')
+    if quality.get('duration') != 60 or not all(quality.get(k) for k in
+            ('genuine_motion', 'German_audio', 'bilingual_subtitles')):
+        raise RuntimeError('Platform exports require an approved sixty-second master')
+    files = {}
+    for platform, (bitrate, maximum) in PLATFORM_PROFILES.items():
+        folder = master.parent / platform
+        folder.mkdir(parents=True, exist_ok=True)
+        target = folder / (master.name.split('-')[0] + '-' + platform + '-60s.mp4')
+        command(['ffmpeg', '-y', '-v', 'error', '-i', master,
+                 '-vf', 'scale=1080:1920,setsar=1,fps=30',
+                 '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.2',
+                 '-preset', 'fast', '-b:v', bitrate, '-maxrate', maximum, '-bufsize', '10000k',
+                 '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-t', '60',
+                 '-map_metadata', '-1', '-movflags', '+faststart', target])
+        conform_duration(target)
+        info = ffprobe(target)
+        video = next(x for x in info['streams'] if x['codec_type'] == 'video')
+        audio = next(x for x in info['streams'] if x['codec_type'] == 'audio')
+        if (video['width'], video['height']) != (1080, 1920) or video['codec_name'] != 'h264':
+            raise RuntimeError('Platform video dimensions or codec failed')
+        if video['avg_frame_rate'] != '30/1' or audio['codec_name'] != 'aac':
+            raise RuntimeError('Platform frame rate or audio codec failed')
+        if target.stat().st_size > 45 * 1024 * 1024:
+            raise RuntimeError('Platform export exceeds the private bot upload budget')
+        atomic_json(folder / 'quality.json', {**quality, 'duration': 60.0, 'platform': platform,
+                                             'width': 1080, 'height': 1920, 'fps': 30})
+        files[platform] = str(target)
+    return files
+
+def deliver_platforms(state, master):
+    pending = state['pending']
+    receipts = pending.setdefault('platform_receipts', {})
+    if pending.get('status') == 'dispatching':
+        raise RuntimeError('An upload intent is unresolved; reconcile before any replay')
+    files = export_platforms(master)
+    pending['platform_files'] = files
+    for platform in PLATFORM_PROFILES:
+        if platform in receipts:
+            continue
+        pending.update(status='dispatching', file=files[platform], platform=platform)
+        checkpoint(state)
+        receipt = bot('send', files[platform], platform)
+        if not receipt.get('message_id'):
+            raise RuntimeError('Missing platform delivery receipt; do not replay')
+        receipts[platform] = receipt['message_id']
+        atomic_json(Path(master).parent / ('delivery-' + platform + '.json'), receipt)
+        pending['status'] = 'exporting'
+        checkpoint(state)
+    return dict(receipts)
+
+def bot(action, extra='', platform=''):
     try:
-        result = command(['node', 'ai-cast/cinematic-series-bot.mjs', action, extra], capture_output=True, text=True)
+        result = command(['node', 'ai-cast/cinematic-series-bot.mjs', action, extra, platform], capture_output=True, text=True)
     except subprocess.CalledProcessError as exc:
         print(provider_error(ValueError((exc.stderr or 'Bot operation failed')[-2000:])), file=sys.stderr, flush=True)
         raise
@@ -444,7 +500,7 @@ def production(force=False):
     pending = state.get('pending')
     plan = pending['plan'] if pending else make_plan(state)
     validate_plan(plan, state['next_episode'], state['history'])
-    state['pending'] = {'plan': plan, 'date': date, 'status': 'rendering'}
+    state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
     checkpoint(state)
     try:
         final = render(plan, config)
@@ -463,19 +519,14 @@ def production(force=False):
     quality = load_json(quality_path)
     quality['duration'] = 60.0
     atomic_json(quality_path, quality)
-    # This intent is durable BEFORE sendVideo. A process killed during upload
-    # may have reached Telegram: never automatically send the same episode twice.
-    state['pending'].update(status='dispatching', file=final)
-    checkpoint(state)
-    result = bot('send', final)
-    if not result.get('message_id'):
-        raise RuntimeError('Telegram did not confirm delivery')
-    state['deliveries'][date] = {'episode': plan['episode'], 'message_id': result['message_id']}
+    receipts = deliver_platforms(state, final)
+    state['deliveries'][date] = {'episode': plan['episode'],
+                                 'message_id': receipts['tiktok'], 'platforms': receipts}
     state['history'].append(plan)
     state['next_episode'] = plan['episode'] + 1
     state['pending'] = None
     checkpoint(state)
-    print(f"Episode {plan['episode']} delivered; Telegram message {result['message_id']}", flush=True)
+    print(f"Episode {plan['episode']} delivered in both formats: {receipts}", flush=True)
 
 
 def main():
