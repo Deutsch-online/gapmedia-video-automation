@@ -1,0 +1,36 @@
+name: Deliver reviewed everyday dialogue preview
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/reviewed-dialogue-preview.json]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: everyday-single-speaker-preview
+          run-id: 38937423460
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: renders/cinematic-series
+      - name: Deliver reviewed short samples privately once per platform
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node -e "const fs=require('fs'); const r=JSON.parse(fs.readFileSync('ai-cast/reviewed-dialogue-preview.json')); if(r.source_run!==38937423460 || !r.single_speaker_frames_checked) process.exit(1);"
+          node ai-cast/send-comedy-preview.mjs renders/cinematic-series/preview-e0003/preview-exports.json

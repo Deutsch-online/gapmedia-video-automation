@@ -1,0 +1,14 @@
+{
+  "source_run": 38937423460,
+  "artifact_sha256": "1c58ee43f6bf71906c392bc66c15ef7736417db1d84c4cb234b562bb7c4adb8d",
+  "single_speaker_frames_checked": true,
+  "checked": [
+    "all three shot contact sheets",
+    "single visible speaking face",
+    "visible mouth shape changes",
+    "no visible second speaking face",
+    "final caption layout leaves the mouth unobstructed",
+    "exact audio input supplied to model and final mix"
+  ],
+  "limitations": "Frame review and exact-audio conditioning do not establish perfect phoneme-level lip synchronization."
+}
