@@ -1,5 +1,6 @@
 {
-  "request": "recover-after-unavailable-model-repair",
+  "request": "resume-cached-episode-2-after-gpu-reset",
   "requested_on": "2026-10-16",
+  "requested_at": "2026-10-16T11:10:00Z",
   "minimum_seconds": 60
 }
