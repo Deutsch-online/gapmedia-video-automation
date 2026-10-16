@@ -20,15 +20,20 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 STATE = Path('.cinematic-series-state.json')
 CONFIG = Path('.cinematic-series.json')
-STYLE = ('Cinematic semi-realistic animated feature film, beautiful natural adult proportions, '
-         'detailed expressive faces and hands, tactile wool and linen fabrics, subtle painted skin, '
-         'vintage European village and station, teal and warm gold palette, soft volumetric morning light, '
-         'rich environmental depth, elegant painterly rendering, vertical 9:16, '
-         'no flat vector graphics, no stick figures, no chibi, no writing or watermarks. ')
-CAST = ('Marta is the same kind elderly grandmother as the reference, round spectacles, '
-        'silver hair, burgundy patterned headscarf, forest-green wool coat and leather handbag. '
-        'Lukas is the same young taxi driver as the reference, wavy dark brown hair, '
-        'cream linen shirt with rolled sleeves and brown trousers. The taxi is dark teal. ')
+STYLE = ('Polished original theatrical 3D CARTOON sitcom animation, appealing exaggerated adult cartoon proportions, '
+         'large expressive eyes and eyebrows, clear readable comic silhouettes, rounded shapes, tactile colorful clothing, '
+         'warm contemporary Berlin shared apartment, vibrant mustard teal and coral palette, '
+         'beautiful dimensional light and rich environmental depth, vertical 9:16. '
+         'Brisk normal-speed physical comedy, expressive anticipation and reaction, genuine character acting. '
+         'No live action, no photorealistic adults, no elderly grandmother, no vintage taxi, no flat vectors, '
+         'no stick figures, no writing, no watermark. ')
+CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive skin, large brown eyes, '
+        'dark chestnut wavy bob, expressive eyebrows, mustard sweatshirt, teal dungarees and coral sneakers. '
+        'She is an inventive, energetic, witty flatmate. '
+        'Lukas is the tall lanky young adult man on the RIGHT, messy copper-red quiff, turquoise round glasses, '
+        'coral hoodie, navy joggers and white sneakers outdoors or soft white slippers at home. '
+        'He is lovable, overconfident and accident-prone. '
+        'They are equal adult roommates, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
 
 def command(args, **kwargs):
@@ -106,6 +111,14 @@ def first_episode():
 def validate_plan(plan, episode, history):
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != 13:
         raise ValueError('A new episode must contain exactly thirteen five-second scenes')
+    if episode >= 3:
+        if plan.get('series_version') != 'wg-comedy-v1':
+            raise ValueError('New episodes must belong to the 3D cartoon comedy season')
+        for key in ('visual_hook', 'comedy_setup', 'comedy_payoff'):
+            if not isinstance(plan.get(key), str) or len(plan[key].strip()) < 20:
+                raise ValueError('Comedy needs a concrete visual hook, setup and payoff: ' + key)
+        if any(scene.get('asset') for scene in plan.get('scenes', [])):
+            raise ValueError('Do not reuse the old taxi-season scene assets')
     for key in ('title_de', 'title_fa', 'summary', 'cliffhanger'):
         if not isinstance(plan.get(key), str) or not plan[key].strip():
             raise ValueError('Missing episode field: ' + key)
@@ -184,18 +197,27 @@ def groq_model(key):
 
 def make_plan(state):
     episode = state['next_episode']
+    if episode == 3:
+        return validate_plan(load_json(ROOT / 'ai-cast/comedy-pilot.json'), episode, state['history'])
     if episode == 1:
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
-               'cliffhanger': h['cliffhanger']} for h in state['history']]
-    prompt = ('Write the NEXT episode of an ongoing warm cinematic German A1/A2 learning serial, '
-              'Marta und Lukas. Same elderly grandmother Marta and young taxi driver Lukas. '
-              'Continue the most recent cliffhanger, resolve a small everyday problem and finish with a new '
+               'cliffhanger': h['cliffhanger']} for h in state['history'] if h.get('series_version') == 'wg-comedy-v1']
+    prompt = ('Write the NEXT 60-second episode of a colorful original 3D CARTOON German A1/A2 comedy sitcom, '
+              'Marta & Lukas: WG-Chaos. They are young adult flatmates in contemporary Berlin, never grandmother or taxi driver. '
+              'Continue this COMEDY season only. Open on a surprising visible comic problem in the first two seconds. ' 
+              'Use a recognizable everyday situation: supermarket, laundry, public transport, cooking or shared housing. '
+              'Build three escalating physical misunderstandings, a deadpan reaction and a visual punchline in the last shot. '
+              'Marta is inventive and witty; Lukas is lovable but overconfident. Humour comes from their conflicting intentions, '
+              'never nationality, accent, disability or cruelty. No long greetings, sentimental moral or slow exposition. '
+              'Make action and reactions genuinely visible; do not rely only on spoken jokes. Finish with a new '
               'concrete cliffhanger. No violence, no repetitive generic moral, no repeated plot or dialogue. '
               'No new speaking characters; other people may appear silently. Characters can speak by phone '
-              'when apart. Each scene shows a clear visible action. Preserve story continuity. '
+              'when apart. Each scene has a different clear visible comic action. Preserve comedy-season continuity. '
               'Return ONLY valid JSON with episode (integer), title_de, title_fa, summary (English), '
-              'cliffhanger (English), scenes (EXACTLY 13 objects). Each scene has speaker (marta or lukas), '
+              'cliffhanger (English), series_version (wg-comedy-v1), series_name (Marta & Lukas: WG-Chaos), '
+              'visual_hook, comedy_setup, comedy_payoff (specific visible actions in English), '
+              'scenes (EXACTLY 13 objects). Each scene has speaker (marta or lukas), '
               'de (natural German, 4-12 words, one thought that fits under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English visual composition with camera and '
               'location), motion (English visible action including who speaks and who listens). '
@@ -315,7 +337,7 @@ def render(plan, config):
     folder.mkdir(parents=True, exist_ok=True)
     cache.mkdir(parents=True, exist_ok=True)
     art = Path(config['reference_dir'])
-    reference_signature = hashlib.sha256((art / 'kindness.png').read_bytes()).hexdigest()
+    reference_signature = hashlib.sha256((art / 'characters.png').read_bytes()).hexdigest()
     atomic_json(folder / 'episode.json', plan)
     audios = []
     for i, scene in enumerate(plan['scenes']):
@@ -344,12 +366,12 @@ def render(plan, config):
             if scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
             else:
-                prompt = ('Keep the EXACT grandmother and young man from this reference whenever present: '
+                prompt = ('Keep the EXACT young cartoon flatmates from this reference whenever present: '
                           'identical faces, hair, clothes and ages. ' + STYLE + CAST + 'Scene: ' + scene['scene'] +
                           ' Faces and important action in upper three quarters; calm lower area for later captions.')
                 def create_still():
                     return shots.first_working(shots.KONTEXT,
-                        {'input_image': handle_file(str(art / 'kindness.png')), 'prompt': prompt,
+                        {'input_image': handle_file(str(art / 'characters.png')), 'prompt': prompt,
                          'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
                 result = shots.run_free(create_still)

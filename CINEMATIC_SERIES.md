@@ -50,3 +50,11 @@ Daily eligibility begins at 00:00 Berlin; GPU reset availability controls contin
 ## Two platform exports (owner request, 2026-10-16)
 
 Each completed story produces separate TikTok and Instagram Reels MP4 exports: both 60 seconds, 1080x1920, 30 fps, H.264 High / AAC. TikTok targets 4.5 Mbps, Reels 3.5 Mbps, each below the private bot upload budget. German/Persian embedded subtitles remain; German captions identify the platform and contain relevant hashtags. Both files go to the private Telegram bot chat. Each confirmed platform message ID is checkpointed before the next upload; unresolved uploads stop automatic replay. An episode advances only after both receipts. Episode 2 receives these two exports as a one-time addition to its already delivered master.
+
+## New cartoon comedy season (owner selection, 2026-10-16)
+
+Starting with episode 3, the active series is **Marta & Lukas: WG-Chaos**. The two speaking characters are redesigned as young adult flatmates in Berlin, with exaggerated expressive 3D cartoon faces and clear silhouettes. Their generated portrait reference is `public/ai-cast/wg-chaos/characters.png`; it replaces the elderly/taxi reference for new production. Earlier delivered episodes remain in history.
+
+`ai-cast/comedy-pilot.json` is episode 3: **Der Chef vom Staubsauger**. A proud flatmate's robot vacuum steals a sock and slipper; he must chase it, and his supposedly manual broom then rides away on it. Thirteen unique animated actions build a complete visual joke. Later stories use only this comedy season's memory, a surprising opening visual, escalating everyday misunderstandings and a final visual punchline. The validator requires concrete hook/setup/payoff fields and rejects legacy taxi assets. No view-count guarantees are made.
+
+This is configured for the next daily episode, not a resend of today's already delivered episode 2. All sixty-second, two-platform, private delivery, language and GPU safeguards still apply.

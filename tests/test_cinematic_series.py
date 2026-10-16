@@ -220,5 +220,46 @@ class PlatformDeliveryTests(unittest.TestCase):
                 m.deliver_platforms(state, 'master.mp4')
             bot.assert_not_called()
 
+
+class ComedySeasonTests(unittest.TestCase):
+    def test_cartoon_pilot_is_a_new_nonrepeating_story(self):
+        state = m.new_state()
+        state['next_episode'] = 3
+        state['history'] = [m.first_episode()]
+        plan = m.make_plan(state)
+        self.assertEqual(plan['series_version'], 'wg-comedy-v1')
+        self.assertEqual(plan['episode'], 3)
+        self.assertEqual(len(plan['scenes']), 13)
+        self.assertTrue(all(not s.get('asset') for s in plan['scenes']))
+        self.assertIn('3D CARTOON', m.STYLE)
+
+    def test_new_season_rejects_missing_gag_and_old_assets(self):
+        plan = m.load_json(m.ROOT / 'ai-cast/comedy-pilot.json')
+        for field in ('visual_hook', 'comedy_setup', 'comedy_payoff'):
+            broken = copy.deepcopy(plan)
+            broken[field] = ''
+            with self.assertRaises(ValueError):
+                m.validate_plan(broken, 3, [])
+        plan['scenes'][0]['asset'] = 'conversation.png'
+        with self.assertRaises(ValueError):
+            m.validate_plan(plan, 3, [])
+
+    def test_later_episodes_use_only_the_comedy_season_memory(self):
+        state = m.new_state()
+        state['next_episode'] = 4
+        state['history'] = [m.first_episode(), m.load_json(m.ROOT / 'ai-cast/comedy-pilot.json')]
+        plan = copy.deepcopy(state['history'][-1])
+        plan['episode'] = 4
+        # Provider-prompt test; isolate repetition validation from the prompt being checked.
+        response = {'candidates': [{'content': {'parts': [{'text': m.json.dumps(plan)}]}}]}
+        with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one'}), patch.object(m, 'validate_plan', return_value=plan), patch.object(m, 'request_json', return_value=response) as request:
+            m.make_plan(state)
+        prompt = request.call_args.args[1]['contents'][0]['parts'][0]['text']
+        self.assertIn('COMEDY season', prompt)
+        self.assertIn('visual punchline', prompt)
+        memory = prompt.split('Story history: ')[1]
+        self.assertNotIn('Eine unerwartete Fahrt', memory)
+        self.assertIn('Der Chef vom Staubsauger', memory)
+
 if __name__ == '__main__':
     unittest.main()

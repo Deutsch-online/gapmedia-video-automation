@@ -1,0 +1,118 @@
+{
+  "episode": 3,
+  "series_version": "wg-comedy-v1",
+  "series_name": "Marta & Lukas: WG-Chaos",
+  "title_de": "Der Chef vom Staubsauger",
+  "title_fa": "رئیس جاروبرقی",
+  "summary": "In their Berlin shared apartment, Lukas boasts about his robot vacuum. It steals a sock and a slipper, turning him into the cleaner's servant. When he chooses a broom instead, the robot carries that away too.",
+  "cliffhanger": "Tomorrow Lukas promises a foolproof breakfast machine; Marta doubts that anything he calls automatic can end well.",
+  "visual_hook": "A robot vacuum is running away with Marta's bright yellow sock while Lukas proudly holds its remote.",
+  "comedy_setup": "An overconfident flatmate claims his robot does all the housework.",
+  "comedy_payoff": "He must chase the robot, and even his supposedly manual broom rides away on it.",
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Warum fährt dein Staubsauger mit meiner Socke spazieren?",
+      "fa": "چرا جاروبرقی‌ات جوراب مرا به گردش برده؟",
+      "scene": "In the colorful Berlin shared living room, Marta points in disbelief at a teal robot vacuum dragging a yellow sock; Lukas proudly holds its remote. Wide low angle with sock clearly visible.",
+      "motion": "The vacuum darts across frame dragging the sock; Marta recoils with wide eyes while Lukas proudly raises the remote.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Er hilft beim Aufräumen. Ganz automatisch!",
+      "fa": "او در مرتب‌کردن خانه کمک می‌کند. کاملاً خودکار!",
+      "scene": "Medium shot of Lukas boasting beside the sofa; Marta looks skeptical, sock-dragging robot visible behind him.",
+      "motion": "Lukas confidently presses his palm to his chest and raises a finger; the robot circles behind him; Marta folds her arms.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Dann ist meine zweite Socke wohl auch im Urlaub.",
+      "fa": "پس جوراب دومم هم حتماً به تعطیلات رفته است.",
+      "scene": "Marta points to her empty shoe and one bare foot, her other sock also missing, while looking dryly at Lukas; the robot rolls behind with a single yellow sock.",
+      "motion": "Marta slowly raises one eyebrow and holds out the empty shoe; Lukas glances down and loses his confident smile.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Warte, ich drücke einfach auf diesen Knopf.",
+      "fa": "صبر کن، فقط این دکمه را فشار می‌دهم.",
+      "scene": "Lukas holds a small plain black remote with a single blank round button, Marta beside him watching his thumb; robot in background.",
+      "motion": "Lukas theatrically presses the remote button; the robot makes a sharp turn toward his feet; Marta flinches.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Warum fährt er jetzt direkt auf dich zu?",
+      "fa": "چرا حالا مستقیم به طرف تو می‌آید؟",
+      "scene": "Low wide shot from behind the teal vacuum heading toward Lukas and Marta beside the couch; both faces remain clearly visible.",
+      "motion": "The robot rolls toward Lukas; Marta points quickly at it; Lukas freezes then tries to look dignified.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Vielleicht erkennt er mich als seinen Chef.",
+      "fa": "شاید مرا به‌عنوان رئیسش می‌شناسد.",
+      "scene": "Medium shot of Lukas standing proudly, hand on hip, robot approaching his slipper; Marta stares at his foot.",
+      "motion": "Lukas straightens and gives a pompous little salute to the robot while Marta leans sideways to inspect his feet.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Nein. Du stehst auf seinem Ladekabel.",
+      "fa": "نه. روی سیم شارژش ایستاده‌ای.",
+      "scene": "Marta bends slightly and points to the vacuum docking-station charging cable under Lukas's slipper; teal robot beside the sock.",
+      "motion": "Marta taps Lukas's sleeve then points downward; Lukas looks down, lifts his foot, and makes a sheepish face.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Oh. Dann gehe ich besser zur Seite.",
+      "fa": "اوه. پس بهتر است کنار بروم.",
+      "scene": "Full-body shot of Lukas taking an exaggerated sideways step, accidentally leaving one white slipper directly in front of the robot; Marta reaches toward him.",
+      "motion": "Lukas takes a huge awkward sideways step; one slipper slips off his foot and the robot nudges it forward; Marta reacts instantly.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Zu spät! Er hat schon deinen Hausschuh.",
+      "fa": "دیر شد! دمپایی‌ات را گرفت.",
+      "scene": "Low medium-wide shot showing robot pushing Lukas's white slipper with the yellow sock attached; both roommates behind it.",
+      "motion": "Marta reaches after the slipper but misses; the robot scoots around her hand; Lukas hops on one foot in surprise.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Gib den zurück! Ich brauche zwei!",
+      "fa": "آن را پس بده! من دو تا لازم دارم!",
+      "scene": "Lukas and Marta in a wide living-room shot; Lukas hopping comically behind the little vacuum as it pushes his slipper.",
+      "motion": "Lukas hops twice after the robot with arms out for balance; Marta steps aside and points out its path with an amused grin.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Jetzt jagst du den Staubsauger. Sehr automatisch.",
+      "fa": "حالا تو دنبال جاروبرقی می‌دوی. عجب کار خودکاری!",
+      "scene": "Marta leans against the sofa with a deadpan smile; Lukas circles past behind her following his slipper on the robot.",
+      "motion": "Marta dryly raises one eyebrow and gestures toward the chase; Lukas passes behind her, reaching unsuccessfully for the slipper.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Morgen kaufe ich einen ganz normalen Besen.",
+      "fa": "فردا یک جاروی کاملاً معمولی می‌خرم.",
+      "scene": "Lukas has recovered his slipper and sock and holds a simple broom vertically with its bristles resting on the stopped robot; Marta notices the setup.",
+      "motion": "Lukas puts on the recovered slipper, triumphantly grips the broom handle, and turns away as the robot starts rolling beneath the bristles.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Gut. Aber dein Besen fährt gerade auch weg.",
+      "fa": "خوب است. ولی جارویت هم دارد فرار می‌کند.",
+      "scene": "Wide final gag: the robot slowly carries the broom sideways by its bristles while Lukas is left holding empty air; Marta points and laughs.",
+      "motion": "The robot carries the broom out of Lukas's loose grip; his triumphant face collapses into disbelief; Marta laughs and points after the runaway broom.",
+      "asset": null
+    }
+  ]
+}
