@@ -141,5 +141,27 @@ class RecoveryTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 m.groq_model('test')
 
+
+class QuotaRecoveryTests(unittest.TestCase):
+    def test_waits_for_reset_then_allows_only_one_continuation(self):
+        state = m.new_state()
+        date = '2026-10-16'
+        state['attempts'][date] = 3
+        state['manual_recovery'] = {date: 1}
+        state['pending'] = {'status': 'render-failed', 'plan': m.first_episode()}
+        state['quota_recovery'] = {'date': date, 'not_before': '2026-10-16T10:50:00+00:00'}
+        config = {'time': '07:30', 'max_daily_attempts': 2}
+        before = datetime(2026, 10, 16, 10, 49, tzinfo=timezone.utc)
+        ready = datetime(2026, 10, 16, 10, 50, tzinfo=timezone.utc)
+        self.assertEqual(m.due(state, config, before, force=True)[1], 'waiting-for-gpu-quota')
+        self.assertTrue(m.due(state, config, ready)[0])
+        state['attempts'][date] = 4
+        self.assertEqual(m.due(state, config, ready, force=True)[1], 'daily-attempt-limit')
+        state['attempts'][date] = 3
+        state['pending']['status'] = 'dispatching'
+        self.assertEqual(m.due(state, config, ready)[1], 'delivery-needs-reconciliation')
+        state['deliveries'][date] = {'message_id': 1}
+        self.assertEqual(m.due(state, config, ready)[1], 'already-delivered')
+
 if __name__ == '__main__':
     unittest.main()
