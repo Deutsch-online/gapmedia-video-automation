@@ -224,7 +224,7 @@
       ]
     },
     "date": "2026-10-16",
-    "status": "rendering"
+    "status": "render-failed"
   },
   "attempts": {
     "2026-10-15": 2,
