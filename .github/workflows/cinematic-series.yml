@@ -9,6 +9,7 @@ on:
       - .cinematic-series.json
       - .github/workflows/cinematic-series.yml
       - ai-cast/cinematic-series.py
+      - ai-cast/cinematic_speech.py
       - ai-cast/comedy-pilot.json
       - ai-cast/everyday-pilot.json
       - public/ai-cast/wg-chaos/**

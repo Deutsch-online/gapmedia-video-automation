@@ -2,11 +2,11 @@ import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {telegramConfig, verifyDelivery, sendVideo} from '../lib/telegram.mjs';
 const manifest = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-const path = '.comedy-preview-captions-v2-receipt.json';
+const path = '.everyday-lipsync-preview-receipt.json';
 const state = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {receipts: {}, status: 'ready'};
 if (state.status === 'dispatching') throw new Error('Unconfirmed preview upload; do not resend automatically');
 const qc = manifest.quality;
-if (!(qc.duration >= 15 && qc.duration <= 15.3 && qc.genuine_motion && qc.German_audio && qc.bilingual_subtitles)) throw new Error('Preview quality failed');
+if (!(qc.duration >= 15 && qc.duration <= 15.3 && qc.genuine_motion && qc.German_audio && qc.bilingual_subtitles && qc.audio_conditioned_lips && qc.no_slow_motion)) throw new Error('Preview quality failed');
 const tg = telegramConfig(process.env);
 const verified = await verifyDelivery({token: tg.token, chatId: tg.reviewChatId, requirePrivate: true});
 if (!verified.ok) throw new Error('Private preview destination could not be verified');
@@ -24,7 +24,7 @@ function save() {
 for (const platform of ['tiktok', 'instagram']) {
   if (state.receipts[platform]) continue;
   state.status = 'dispatching'; state.platform = platform; save();
-  const caption = `Marta & Lukas: WG-Chaos · Vorschau · Neues Untertiteldesign\nDer persönliche Assistent\n${platform === 'tiktok' ? 'TikTok-Version' : 'Instagram-Reels-Version'}\n\n#DeutschLernen #Comedy #Animation #WGChaos ${platform === 'tiktok' ? '#TikTok' : '#Reels'}`;
+  const caption = `Marta & Lukas: Alltag in Deutschland · Vorschau\nDie Einkaufstasche · Sprachgesteuerte Lippenbewegung\n${platform === 'tiktok' ? 'TikTok-Version' : 'Instagram-Reels-Version'}\n\n#DeutschLernen #AlltagInDeutschland #Animation #DeutschDialoge ${platform === 'tiktok' ? '#TikTok' : '#Reels'}`;
   const result = await sendVideo({token: tg.token, chatId: tg.reviewChatId, file: manifest.files[platform], attempts: 1, caption});
   if (!result?.message_id) throw new Error('Preview delivery receipt missing');
   state.receipts[platform] = result.message_id; state.status = 'ready'; save();

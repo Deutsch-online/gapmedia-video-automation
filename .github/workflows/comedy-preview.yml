@@ -1,4 +1,4 @@
-name: Short 3D comedy preview
+name: Everyday dialogue lip-sync preview
 on:
   push:
     branches: [main]
@@ -24,7 +24,7 @@ jobs:
           node-version: '22'
       - name: Check preview code
         run: |
-          python -m py_compile ai-cast/cinematic-series.py ai-cast/comedy-preview.py
+          python -m py_compile ai-cast/cinematic-series.py ai-cast/cinematic_speech.py ai-cast/comedy-preview.py
           node --check ai-cast/send-comedy-preview.mjs
       - name: Install media tools
         run: |
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: wg-chaos-short-preview
+          name: everyday-lipsync-preview
           path: |
             renders/cinematic-series/preview-*/**/*.mp4
             renders/cinematic-series/preview-*/quality.json

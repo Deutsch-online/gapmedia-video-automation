@@ -396,6 +396,7 @@ def render(plan, config, preview=False):
     # Heavy model dependencies are loaded only for an actual production run.
     sys.path.insert(0, str(ROOT / 'ai-cast'))
     import shots
+    import cinematic_speech as speech
     from gradio_client import handle_file
     from PIL import Image
     ep = ('preview-' if preview else '') + f"e{plan['episode']:04}"
@@ -420,11 +421,13 @@ def render(plan, config, preview=False):
             if not .4 < seconds(audio) <= 4.5:
                 raise RuntimeError(f'German narration does not fit scene {i}')
             sigfile.write_text(audio_sig)
-        audios.append(audio)
+        aligned = cache / f'{i:02}.aligned.wav'
+        speech.aligned_audio(audio, aligned)
+        audios.append(aligned)
     parts = []
     for i, scene in enumerate(plan['scenes']):
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
-        signature = hashlib.sha256(json.dumps([STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        signature = hashlib.sha256(json.dumps(['single-speaker-audio-v1', STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
         if not sigfile.exists() or sigfile.read_text() != signature:
             png.unlink(missing_ok=True)
@@ -435,7 +438,10 @@ def render(plan, config, preview=False):
             else:
                 prompt = ('Keep the EXACT young cartoon flatmates from this reference whenever present: '
                           'identical faces, hair, clothes and ages. ' + STYLE + CAST + 'Scene: ' + scene['scene'] +
-                          ' Faces and important action in upper three quarters; calm lower area for later captions.')
+                          ' For this dialogue shot show ONLY the speaking character, ' + scene['speaker'] +
+                          ', with one unobstructed face in a medium waist-up shot. The listener stays off camera. '
+                          'Keep visible hands and the practical action, no second face. '
+                          'Faces and important action in upper three quarters; calm lower area for later captions.')
                 def create_still():
                     return shots.first_working(shots.KONTEXT,
                         {'input_image': handle_file(str(art / 'characters.png')), 'prompt': prompt,
@@ -445,17 +451,13 @@ def render(plan, config, preview=False):
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
-        if not clip.exists():
-            job = {'id': f'{ep}-{i}', 'png': str(png), 'mp4': str(clip), 'dur': 5,
-                   'motion': scene['motion'] + ' Preserve exact identity, anatomy and film lighting.',
-                   'seed': plan['episode'] * 1009 + i * 11}
-            shots.run_free(shots.make_clip, job)
+        speech.ensure_clip(png, audios[i], clip, scene['motion'], plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
         part = folder / f'part-{i:02}.mp4'
         command(['ffmpeg', '-y', '-v', 'error', '-i', clip, '-i', audios[i], '-filter_complex',
-                 f'[0:v]setpts={5/seconds(clip):.8f}*PTS,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30[v];'
-                 '[1:a]adelay=250|250,apad,atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
+                 '[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30[v];'
+                 '[1:a]atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         parts.append(part)
         print(f'Completed scene {i+1}/13 of episode {plan["episode"]}', flush=True)
@@ -491,7 +493,7 @@ def render(plan, config, preview=False):
     if frozen > (3 if preview else 13):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     return str(final)
@@ -503,7 +505,7 @@ def export_platforms(master):
     master = Path(master)
     quality = load_json(master.parent / 'quality.json')
     if quality.get('duration') != 60 or not all(quality.get(k) for k in
-            ('genuine_motion', 'German_audio', 'bilingual_subtitles')):
+            ('genuine_motion', 'German_audio', 'bilingual_subtitles', 'audio_conditioned_lips', 'no_slow_motion')):
         raise RuntimeError('Platform exports require an approved sixty-second master')
     files = {}
     for platform, (bitrate, maximum) in PLATFORM_PROFILES.items():

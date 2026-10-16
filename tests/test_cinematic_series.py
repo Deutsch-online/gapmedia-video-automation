@@ -261,5 +261,46 @@ class EverydayLifeTests(unittest.TestCase):
         self.assertNotIn('Eine unerwartete Fahrt', memory)
         self.assertIn('Einkaufen ohne Einkaufstasche', memory)
 
+
+class SpeechTimingTests(unittest.TestCase):
+    def speech_module(self):
+        spec = importlib.util.spec_from_file_location('speech', m.ROOT / 'ai-cast/cinematic_speech.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    @unittest.skipUnless(m.shutil.which('ffmpeg'), 'media tools required')
+    def test_model_and_mix_share_exact_five_second_audio_with_one_leading_delay(self):
+        import wave
+        speech = self.speech_module()
+        with tempfile.TemporaryDirectory() as d:
+            raw, aligned = Path(d) / 'raw.wav', Path(d) / 'aligned.wav'
+            m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
+                       'sine=frequency=440:duration=1', str(raw)])
+            speech.aligned_audio(raw, aligned)
+            with wave.open(str(aligned)) as wav:
+                self.assertEqual(wav.getframerate(), 48000)
+                self.assertEqual(wav.getnframes(), 240000)
+                self.assertEqual(wav.readframes(4800), bytes(9600))
+                self.assertNotEqual(wav.readframes(24000), bytes(48000))
+
+    def test_generic_cached_motion_is_not_accepted_and_audio_changes_force_new_take(self):
+        speech = self.speech_module()
+        with tempfile.TemporaryDirectory() as d:
+            png, audio, clip = [Path(d) / name for name in ('image.png', 'aligned.wav', 'clip.mp4')]
+            png.write_bytes(b'image')
+            audio.write_bytes(b'aligned-speech-one')
+            clip.write_bytes(b'old-generic-motion')
+            def generate(*args):
+                clip.write_bytes(b'audio-conditioned-take')
+            with patch.object(speech, 'generate', side_effect=generate) as call, patch.object(speech, 'probe', return_value={'format': {'duration': '5.0'}}):
+                speech.ensure_clip(png, audio, clip, 'natural gesture', 42)
+                self.assertEqual(call.call_count, 1)
+                speech.ensure_clip(png, audio, clip, 'natural gesture', 42)
+                self.assertEqual(call.call_count, 1)
+                audio.write_bytes(b'aligned-speech-two')
+                speech.ensure_clip(png, audio, clip, 'natural gesture', 42)
+                self.assertEqual(call.call_count, 2)
+
 if __name__ == '__main__':
     unittest.main()
