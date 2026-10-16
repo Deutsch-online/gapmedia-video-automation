@@ -114,6 +114,7 @@ QUOTA_SPENT = False
 
 def run_free(fn, *a):
     global TIER, QUOTA_SPENT
+    last_quota = None
     while TIER < 2:
         build.TOKEN = None if TIER == 0 else HF_TOKEN
         try:
@@ -121,10 +122,11 @@ def run_free(fn, *a):
         except Exception as e:
             if not is_quota(e):
                 raise
+            last_quota = e
             print(f"  {'free' if TIER == 0 else 'PRO'} GPU quota spent", flush=True)
             TIER += 1
     QUOTA_SPENT = True
-    raise RuntimeError("quota")
+    raise RuntimeError("quota: " + str(last_quota)) from last_quota
 
 
 def is_quota(e):

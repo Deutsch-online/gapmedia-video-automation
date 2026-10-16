@@ -67,16 +67,16 @@ def due(state, config, now=None, force=False):
     recovery = min(1, max(0, int(state.get('manual_recovery', {}).get(date, 0))))
     quota = state.get('quota_recovery', {})
     quota_extra = 0
-    if quota.get('date') == date and (state.get('pending') or {}).get('status') == 'render-failed':
+    if quota and (state.get('pending') or {}).get('status') == 'render-failed':
         ready = datetime.fromisoformat(quota['not_before'])
         if ready.tzinfo is None:
             raise ValueError('Quota recovery timestamp must include timezone')
         if local < ready:
             return False, 'waiting-for-gpu-quota', date
-        quota_extra = 1
+        quota_extra = 1 if quota.get('date') == date else 0
     if state.get('attempts', {}).get(date, 0) >= config.get('max_daily_attempts', 2) + recovery + quota_extra:
         return False, 'daily-attempt-limit', date
-    if not force and local.strftime('%H:%M') < config['time']:
+    if not force and not quota and local.strftime('%H:%M') < config['time']:
         return False, 'before-daily-slot', date
     return True, 'manual' if force else 'daily-slot', date
 
@@ -259,6 +259,40 @@ def subtitle_time(t):
     n = round(t * 100)
     return f'{n//360000}:{n//6000%60:02}:{n//100%60:02}.{n%100:02}'
 
+
+def gpu_retry_at(message, now=None):
+    now = now or datetime.now(timezone.utc)
+    match = re.search(r'try again in (\d+):(\d{2}):(\d{2})', message, re.I)
+    delay = timedelta(hours=5)
+    if match:
+        hours, minutes, seconds = map(int, match.groups())
+        delay = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+    return now + delay + timedelta(minutes=2)
+
+def conform_duration(path):
+    """Fit the full story and all spoken lines to exactly sixty seconds."""
+    path = Path(path)
+    info = ffprobe(path)
+    video = next(s for s in info['streams'] if s['codec_type'] == 'video')
+    duration = float(video.get('duration') or info['format']['duration'])
+    if abs(duration - 60) > .00001:
+        if not 60 < duration <= 65.3:
+            raise RuntimeError('Unexpected source duration; refusing to cut or pad the story')
+        target = path.with_name(path.stem + '-60s.mp4')
+        speed = duration / 60
+        command(['ffmpeg', '-y', '-v', 'error', '-i', path,
+                 '-vf', f'setpts=(PTS-STARTPTS)/{speed:.12f},fps=30',
+                 '-af', f'atempo={speed:.12f},apad,atrim=duration=60',
+                 '-t', '60', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
+                 '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
+                 '-movflags', '+faststart', target])
+        target.replace(path)
+    info = ffprobe(path)
+    video = next(s for s in info['streams'] if s['codec_type'] == 'video')
+    if abs(float(video['duration']) - 60) > .00001 or abs(float(info['format']['duration']) - 60) > .00001:
+        raise RuntimeError('Output must be exactly sixty seconds')
+    return 60.0
+
 def render(plan, config):
     # Heavy model dependencies are loaded only for an actual production run.
     sys.path.insert(0, str(ROOT / 'ai-cast'))
@@ -357,10 +391,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                  '-b:v', '4000k', '-maxrate', '4200k', '-bufsize', '8000k',
                  '-c:a', 'copy', '-movflags', '+faststart', smaller])
         smaller.replace(final)
+    conform_duration(final)
     info = ffprobe(final)
     v = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = seconds(final)
-    if not 65 <= duration <= 65.3 or (v['width'], v['height']) != (1080, 1920):
+    if abs(duration - 60) > .00001 or (v['width'], v['height']) != (1080, 1920):
         raise RuntimeError('Episode failed duration or frame quality requirements')
     if not any(s['codec_type'] == 'audio' for s in info['streams']):
         raise RuntimeError('German narration is missing')
@@ -401,10 +436,10 @@ def production(force=False):
         final = render(plan, config)
     except Exception as exc:
         state['pending']['status'] = 'render-failed'
-        if str(exc).strip().lower() == 'quota' and state.get('quota_recovery', {}).get('date') != date:
+        if 'quota' in str(exc).lower() and state.get('quota_recovery', {}).get('date') != date:
             # One deferred continuation per day; never occupy a runner waiting for GPU credits.
             state['quota_recovery'] = {'date': date, 'not_before':
-                (datetime.now(timezone.utc) + timedelta(hours=5)).isoformat(),
+                gpu_retry_at(str(exc)).isoformat(),
                 'reason': 'ZeroGPU quota exhausted'}
         checkpoint(state)
         raise
@@ -426,14 +461,24 @@ def production(force=False):
 def main():
     os.chdir(ROOT)
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['gate', 'run', 'check'])
+    parser.add_argument('action', choices=['gate', 'run', 'check', 'conform'])
     parser.add_argument('--force', action='store_true')
+    parser.add_argument('--file')
     args = parser.parse_args()
+    if args.action == 'conform':
+        if not args.file:
+            raise ValueError('A video file is required')
+        duration = conform_duration(args.file)
+        quality_path = Path(args.file).parent / 'quality.json'
+        quality = load_json(quality_path)
+        quality['duration'] = duration
+        atomic_json(quality_path, quality)
+        return
     if args.action == 'check':
         validate_plan(first_episode(), 1, [])
         config = load_json(CONFIG)
-        if config['minimum_seconds'] < 60 or config['target_seconds'] != 65:
-            raise ValueError('Minimum episode duration must be at least one minute')
+        if config['minimum_seconds'] != 60 or config.get('maximum_seconds') != 60 or config['target_seconds'] != 60:
+            raise ValueError('Every episode must be exactly sixty seconds')
         print('Cinematic series plan and duration contract verified')
     elif args.action == 'gate':
         go, reason, date = due(load_json(STATE, new_state()), load_json(CONFIG), force=args.force)

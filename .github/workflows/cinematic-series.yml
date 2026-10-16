@@ -1,7 +1,7 @@
 name: Daily cinematic German Persian serial
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '7,22,37,52 * * * *'
   push:
     branches: [main, codex/cinematic-series-daily]
     paths:
@@ -73,7 +73,7 @@ jobs:
           path: renders/cinematic-series-cache
           key: cinematic-series-v1-${{ github.run_id }}
           restore-keys: cinematic-series-v1-
-      - name: Make, check and deliver the next 65-second episode
+      - name: Make, check and deliver the next 60-second episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

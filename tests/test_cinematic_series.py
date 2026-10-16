@@ -163,5 +163,30 @@ class QuotaRecoveryTests(unittest.TestCase):
         state['deliveries'][date] = {'message_id': 1}
         self.assertEqual(m.due(state, config, ready)[1], 'already-delivered')
 
+
+class ExactDurationTests(unittest.TestCase):
+    def test_provider_reset_time_and_midnight_wait(self):
+        now = datetime(2026, 10, 16, 6, 24, tzinfo=timezone.utc)
+        self.assertEqual(m.gpu_retry_at('quota: Try again in 4:16:20.', now).isoformat(),
+                         '2026-10-16T10:42:20+00:00')
+        state = m.new_state()
+        state['pending'] = {'status': 'render-failed'}
+        state['quota_recovery'] = {'date': '2026-10-16', 'not_before': '2026-10-17T01:00:00+00:00'}
+        self.assertEqual(m.due(state, CONFIG, datetime(2026, 10, 17, 0, 30, tzinfo=timezone.utc), force=True)[1], 'waiting-for-gpu-quota')
+
+    @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
+    def test_real_sixty_second_output_preserves_video_and_audio(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'episode.mp4'
+            m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
+                       'testsrc2=size=64x64:rate=30:duration=65', '-f', 'lavfi', '-i',
+                       'sine=frequency=440:duration=65', '-c:v', 'libx264', '-preset', 'ultrafast',
+                       '-c:a', 'aac', '-t', '65', path])
+            self.assertEqual(m.conform_duration(path), 60)
+            info = m.ffprobe(path)
+            self.assertEqual(float(info['format']['duration']), 60)
+            self.assertEqual({x['codec_type'] for x in info['streams']}, {'video', 'audio'})
+            self.assertEqual(m.conform_duration(path), 60)
+
 if __name__ == '__main__':
     unittest.main()

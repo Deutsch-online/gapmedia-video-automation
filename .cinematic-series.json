@@ -1,12 +1,14 @@
 {
   "series": "Marta und Lukas",
   "timezone": "Europe/Berlin",
-  "time": "07:30",
+  "time": "00:00",
   "minimum_seconds": 60,
-  "target_seconds": 65,
+  "target_seconds": 60,
   "daily_episodes": 1,
   "max_daily_attempts": 2,
   "reference_dir": "public/ai-cast/cinematic-taxi",
   "style": "approved-cinematic-taxi-v1",
-  "paid_fallback": false
+  "paid_fallback": false,
+  "maximum_seconds": 60,
+  "schedule_mode": "gpu-availability"
 }

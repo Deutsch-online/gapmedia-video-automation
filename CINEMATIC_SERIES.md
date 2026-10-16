@@ -40,3 +40,9 @@ replays an already delivered day. A push can do the same only when that push
 actually changes `.cinematic-series-request.json`.
 
 Video descriptions and Telegram video captions are German only, with relevant German/English hashtags. Persian text remains in the in-video subtitles and is not included in video metadata.
+
+## Current owner requirements (2026-10-16)
+
+Every delivered video is exactly 60 seconds (minimum = maximum = target). The complete story, speech and embedded subtitles are retimed together by 65/60; no ending is cut. The private delivery helper measures and enforces the duration, including a master from an already running legacy job.
+
+Daily eligibility begins at 00:00 Berlin; GPU reset availability controls continuation rather than a fixed 07:30 start. Quota errors preserve the provider's `Try again in H:MM:SS` message. The next eligible time is that interval plus two minutes; only if absent is a conservative five-hour wait used. Ready work resumes on the next GitHub cron check (minutes 7,22,37,52). GitHub may delay schedules, so reset time is eligibility, never a guaranteed start or delivery time. Completed scenes are cached and retries stay bounded; no paid fallback is enabled.
