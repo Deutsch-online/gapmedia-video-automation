@@ -405,7 +405,8 @@ def render(plan, config, preview=False):
     folder.mkdir(parents=True, exist_ok=True)
     cache.mkdir(parents=True, exist_ok=True)
     art = Path(config['reference_dir'])
-    reference_signature = hashlib.sha256((art / 'characters.png').read_bytes()).hexdigest()
+    speaker_refs = {name: art / (name + '-speaking.png') for name in VOICES}
+    reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     atomic_json(folder / 'episode.json', plan)
     audios = []
     for i, scene in enumerate(plan['scenes']):
@@ -433,18 +434,20 @@ def render(plan, config, preview=False):
             png.unlink(missing_ok=True)
             clip.unlink(missing_ok=True)
         if not png.exists():
-            if scene.get('asset'):
+            if preview and config.get('single_speaker_preview'):
+                shutil.copyfile(speaker_refs[scene['speaker']], png)
+            elif scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
             else:
-                prompt = ('Keep the EXACT young cartoon flatmates from this reference whenever present: '
-                          'identical faces, hair, clothes and ages. ' + STYLE + CAST + 'Scene: ' + scene['scene'] +
+                prompt = ('Keep ONLY the one young cartoon speaker from this single-person reference: '
+                          'identical face, hair, clothes and age. Never add another person or visible listener. ' + STYLE + 'Scene: ' + scene['scene'] +
                           ' For this dialogue shot show ONLY the speaking character, ' + scene['speaker'] +
                           ', with one unobstructed face in a medium waist-up shot. The listener stays off camera. '
                           'Keep visible hands and the practical action, no second face. '
                           'Faces and important action in upper three quarters; calm lower area for later captions.')
                 def create_still():
                     return shots.first_working(shots.KONTEXT,
-                        {'input_image': handle_file(str(art / 'characters.png')), 'prompt': prompt,
+                        {'input_image': handle_file(str(speaker_refs[scene['speaker']])), 'prompt': prompt,
                          'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
                 result = shots.run_free(create_still)

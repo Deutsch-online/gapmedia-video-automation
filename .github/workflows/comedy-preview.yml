@@ -36,12 +36,13 @@ jobs:
           path: renders/cinematic-series-cache
           key: comedy-preview-${{ github.run_id }}
           restore-keys: comedy-preview-
-      - name: Animate three scenes and send both preview files privately
+      - name: Animate and export single-speaker dialogue for visual review
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+          PREVIEW_REVIEW_ONLY: '1'
           PAID_FALLBACK: 'off'
           PYTHONUNBUFFERED: '1'
         run: python ai-cast/comedy-preview.py
@@ -53,9 +54,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: everyday-lipsync-preview
+          name: everyday-single-speaker-preview
           path: |
             renders/cinematic-series/preview-*/**/*.mp4
             renders/cinematic-series/preview-*/quality.json
+            renders/cinematic-series/preview-*/preview-exports.json
             renders/cinematic-series/preview-*/contact.jpg
           retention-days: 14

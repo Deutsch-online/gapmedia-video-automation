@@ -16,13 +16,13 @@ plan['scenes'] = [
   'fa': 'پس فقط چیزهای ضروری را می‌گیریم.',
   'scene': 'Only young cartoon Lukas with copper hair and turquoise glasses is visible, medium waist-up at the same supermarket entrance. He holds a small empty shopping basket. Marta stays entirely off-camera. One clear unobstructed face.',
   'motion': 'Lukas replies calmly and gestures once with an open hand toward the basket, then nods slightly toward Marta off-camera. Natural speech, blinking and gentle posture shift, no comic acting.', 'asset': None},
- {'speaker': 'marta', 'de': 'Ich nehme die Eier. Du trägst die Milch.',
-  'fa': 'من تخم‌مرغ‌ها را می‌برم. تو شیر را ببر.',
-  'scene': 'Only young cartoon Marta is visible, medium waist-up near the supermarket exit. She carefully holds a closed egg carton at chest height. Lukas and the milk are off-camera. One unobstructed speaking face, hands and carton visible.',
-  'motion': 'Marta speaks with a friendly practical expression, carefully adjusts her grip on the egg carton and gives a small nod toward her flatmate off-camera. Believable subtle full-body motion, no slow motion.', 'asset': None}
+ {'speaker': 'marta', 'de': 'Dann kaufen wir nur Brot und Milch.',
+  'fa': 'پس فقط نان و شیر می‌خریم.',
+  'scene': 'Only young cartoon Marta is visible, medium waist-up near the supermarket exit. Her handbag rests naturally at waist height. Lukas and the milk are off-camera. One unobstructed speaking face, hands and carton visible.',
+  'motion': 'Marta speaks with a friendly practical expression, briefly touches the handle of her handbag and gives a small nod toward her flatmate off-camera. Believable subtle full-body motion, no slow motion.', 'asset': None}
 ]
 m.bot('verify')
-master = Path(m.render(plan, m.load_json(m.CONFIG), preview=True))
+master = Path(m.render(plan, {**m.load_json(m.CONFIG), 'single_speaker_preview': True}, preview=True))
 quality = m.load_json(master.parent / 'quality.json')
 files = {}
 for platform, (bitrate, maximum) in m.PLATFORM_PROFILES.items():
@@ -38,4 +38,5 @@ for platform, (bitrate, maximum) in m.PLATFORM_PROFILES.items():
         raise RuntimeError('Preview duration failed')
     files[platform] = str(target)
 m.atomic_json(master.parent / 'preview-exports.json', {'files': files, 'quality': quality})
-m.command(['node', 'ai-cast/send-comedy-preview.mjs', str(master.parent / 'preview-exports.json')])
+if __import__('os').getenv('PREVIEW_REVIEW_ONLY') != '1':
+    m.command(['node', 'ai-cast/send-comedy-preview.mjs', str(master.parent / 'preview-exports.json')])

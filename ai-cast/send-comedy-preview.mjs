@@ -2,7 +2,7 @@ import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {telegramConfig, verifyDelivery, sendVideo} from '../lib/telegram.mjs';
 const manifest = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-const path = '.everyday-lipsync-preview-receipt.json';
+const path = '.everyday-lipsync-single-speaker-preview-receipt.json';
 const state = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {receipts: {}, status: 'ready'};
 if (state.status === 'dispatching') throw new Error('Unconfirmed preview upload; do not resend automatically');
 const qc = manifest.quality;
