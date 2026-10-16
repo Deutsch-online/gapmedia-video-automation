@@ -1,7 +1,8 @@
 {
   "receipts": {
-    "tiktok": 2447
+    "tiktok": 2447,
+    "instagram": 2448
   },
-  "status": "dispatching",
+  "status": "ready",
   "platform": "instagram"
 }
