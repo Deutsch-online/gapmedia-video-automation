@@ -230,7 +230,129 @@
       ]
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 3,
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "title_de": "Vor dem Einkauf",
+      "title_fa": "پیش از خرید",
+      "summary": "At the supermarket entrance, two flatmates realize their reusable bag is missing. They agree to buy only essentials and calmly check what they have at home, what they need and what they will cook for dinner before going inside.",
+      "cliffhanger": "Next time they will put the reusable shopping bag by the door before leaving home.",
+      "visual_hook": "Marta checks her personal handbag at the supermarket entrance and realizes she left the reusable shopping bag at home.",
+      "everyday_problem": "The shopping bag is missing, so the flatmates agree on a small practical grocery list before entering the store.",
+      "practical_resolution": "They choose essentials, confirm the quantities they need for dinner and remember to bring the reusable bag next time.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich habe die Einkaufstasche zu Hause vergessen.",
+          "fa": "ساک خرید را در خانه فراموش کرده‌ام.",
+          "scene": "Only young cartoon Marta is visible in a medium waist-up shot at a modern Berlin supermarket entrance. Her open handbag and hands are visible. Lukas is entirely off-camera. One face only, clearly visible mouth.",
+          "motion": "Marta speaks naturally while briefly checking her open handbag, then looks up toward her flatmate off-camera. Small believable hand movement, normal breathing and blinking. No exaggerated reaction.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Dann nehmen wir nur das Nötigste mit.",
+          "fa": "پس فقط چیزهای ضروری را می‌گیریم.",
+          "scene": "Only young cartoon Lukas with copper hair and turquoise glasses is visible, medium waist-up at the same supermarket entrance. He holds a small empty shopping basket. Marta stays entirely off-camera. One clear unobstructed face.",
+          "motion": "Lukas replies calmly and gestures once with an open hand toward the basket, then nods slightly toward Marta off-camera. Natural speech, blinking and gentle posture shift, no comic acting.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Wir brauchen Brot, Milch und ein paar Eier.",
+          "fa": "نان، شیر و چند تخم‌مرغ لازم داریم.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Haben wir zu Hause noch genug Kaffee?",
+          "fa": "در خانه هنوز به اندازهٔ کافی قهوه داریم؟",
+          "scene": "Only Lukas holding his shopping basket is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Lukas speaks naturally to the flatmate off-camera, with a small grounded head nod, normal breathing and blinking. Keep his basket stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Ja, Kaffee ist noch da. Butter brauchen wir auch.",
+          "fa": "بله، قهوه هنوز داریم. کره هم لازم داریم.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Soll ich wieder die kleine Packung Milch nehmen?",
+          "fa": "باز هم بستهٔ کوچک شیر را بگیرم؟",
+          "scene": "Only Lukas holding his shopping basket is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Lukas speaks naturally to the flatmate off-camera, with a small grounded head nod, normal breathing and blinking. Keep his basket stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Ja. Die große schaffen wir nicht vor dem Wochenende.",
+          "fa": "بله. بستهٔ بزرگ را تا آخر هفته تمام نمی‌کنیم.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Und was kochen wir heute Abend?",
+          "fa": "و امشب چه غذایی می‌پزیم؟",
+          "scene": "Only Lukas holding his shopping basket is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Lukas speaks naturally to the flatmate off-camera, with a small grounded head nod, normal breathing and blinking. Keep his basket stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Nudeln mit Gemüse. Das geht schnell.",
+          "fa": "ماکارونی با سبزیجات. زود آماده می‌شود.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Wie viele Tomaten brauchen wir dafür?",
+          "fa": "برای آن چند گوجه‌فرنگی لازم داریم؟",
+          "scene": "Only Lukas holding his shopping basket is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Lukas speaks naturally to the flatmate off-camera, with a small grounded head nod, normal breathing and blinking. Keep his basket stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Vier Stück reichen für uns beide.",
+          "fa": "چهار تا برای هر دوی ما کافی است.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "lukas",
+          "de": "Alles klar. Dann gehen wir jetzt hinein.",
+          "fa": "بسیار خوب. پس حالا برویم داخل.",
+          "scene": "Only Lukas holding his shopping basket is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Lukas speaks naturally to the flatmate off-camera, with a small grounded head nod, normal breathing and blinking. Keep his basket stable. No exaggerated acting or slow motion.",
+          "asset": null
+        },
+        {
+          "speaker": "marta",
+          "de": "Und nächstes Mal nehmen wir die Tasche mit.",
+          "fa": "و دفعهٔ بعد ساک خرید را با خود می‌آوریم.",
+          "scene": "Only Marta with her open handbag is visible, medium waist-up at the same supermarket entrance. One unobstructed speaking face. The other flatmate remains off-camera.",
+          "motion": "Marta speaks naturally to the flatmate off-camera, with a small grounded open-hand gesture, normal breathing and blinking. Keep her handbag stable. No exaggerated acting or slow motion.",
+          "asset": null
+        }
+      ]
+    },
+    "date": "2026-10-16#full-episode3-approved-style",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
