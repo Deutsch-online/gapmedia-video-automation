@@ -325,13 +325,15 @@ def conform_duration(path):
         raise RuntimeError('Output must be exactly sixty seconds')
     return 60.0
 
-def render(plan, config):
+def render(plan, config, preview=False):
+    if preview and len(plan.get('scenes', [])) != 3:
+        raise ValueError('A short preview must contain exactly three scenes')
     # Heavy model dependencies are loaded only for an actual production run.
     sys.path.insert(0, str(ROOT / 'ai-cast'))
     import shots
     from gradio_client import handle_file
     from PIL import Image
-    ep = f"e{plan['episode']:04}"
+    ep = ('preview-' if preview else '') + f"e{plan['episode']:04}"
     folder = Path('renders/cinematic-series') / ep
     cache = Path('renders/cinematic-series-cache') / ep
     folder.mkdir(parents=True, exist_ok=True)
@@ -423,18 +425,20 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                  '-b:v', '4000k', '-maxrate', '4200k', '-bufsize', '8000k',
                  '-c:a', 'copy', '-movflags', '+faststart', smaller])
         smaller.replace(final)
-    conform_duration(final)
+    if not preview:
+        conform_duration(final)
     info = ffprobe(final)
     v = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = seconds(final)
-    if abs(duration - 60) > .00001 or (v['width'], v['height']) != (1080, 1920):
+    duration_ok = (15 <= duration <= 15.3) if preview else abs(duration - 60) <= .00001
+    if not duration_ok or (v['width'], v['height']) != (1080, 1920):
         raise RuntimeError('Episode failed duration or frame quality requirements')
     if not any(s['codec_type'] == 'audio' for s in info['streams']):
         raise RuntimeError('German narration is missing')
     result = command(['ffmpeg', '-hide_banner', '-i', final, '-vf', 'freezedetect=n=-50dB:d=2',
                       '-an', '-f', 'null', '-'], capture_output=True, text=True)
     frozen = sum(float(x) for x in re.findall(r'freeze_duration: ([\d.]+)', result.stderr))
-    if frozen > 13:
+    if frozen > (3 if preview else 13):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
                 'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'frozen_seconds': frozen})
