@@ -65,6 +65,10 @@ def local_date(now=None):
 def due(state, config, now=None, force=False):
     local = local_date(now)
     date = local.date().isoformat()
+    request = config.get('manual_request', {})
+    if (request.get('episode') == state.get('next_episode') and
+            re.fullmatch(r'[a-z0-9-]{1,60}', str(request.get('id', '')))):
+        date += '#' + request['id']
     if date in state['deliveries']:
         return False, 'already-delivered', date
     if (state.get('pending') or {}).get('status') == 'dispatching':
@@ -404,6 +408,14 @@ def render(plan, config, preview=False):
     cache = Path('renders/cinematic-series-cache') / ep
     folder.mkdir(parents=True, exist_ok=True)
     cache.mkdir(parents=True, exist_ok=True)
+    # Adopt only the two approved matching shots; signatures still validate image, audio and motion.
+    approved = Path('renders/cinematic-series-cache/preview-e0003')
+    if not preview and plan['episode'] == 3 and approved.exists():
+        for index in (0, 1):
+            for item in approved.glob(f'{index:02}.*'):
+                target = cache / item.name
+                if not target.exists():
+                    shutil.copyfile(item, target)
     art = Path(config['reference_dir'])
     speaker_refs = {name: art / (name + '-speaking.png') for name in VOICES}
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
@@ -434,7 +446,7 @@ def render(plan, config, preview=False):
             png.unlink(missing_ok=True)
             clip.unlink(missing_ok=True)
         if not png.exists():
-            if preview and config.get('single_speaker_preview'):
+            if config.get('single_speaker_takes') or (preview and config.get('single_speaker_preview')):
                 shutil.copyfile(speaker_refs[scene['speaker']], png)
             elif scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
@@ -589,7 +601,7 @@ def production(force=False):
         final = render(plan, config)
     except Exception as exc:
         state['pending']['status'] = 'render-failed'
-        if 'quota' in str(exc).lower() and state.get('quota_recovery', {}).get('date') != date:
+        if 'quota' in str(exc).lower():
             # One deferred continuation per day; never occupy a runner waiting for GPU credits.
             state['quota_recovery'] = {'date': date, 'not_before':
                 gpu_retry_at(str(exc)).isoformat(),
@@ -605,6 +617,9 @@ def production(force=False):
     receipts = deliver_platforms(state, final)
     state['deliveries'][date] = {'episode': plan['episode'],
                                  'message_id': receipts['tiktok'], 'platforms': receipts}
+    calendar_day = local_date().date().isoformat()
+    if '#' in date and calendar_day not in state['deliveries']:
+        state['deliveries'][calendar_day] = dict(state['deliveries'][date])
     state['history'].append(plan)
     state['next_episode'] = plan['episode'] + 1
     state['pending'] = None

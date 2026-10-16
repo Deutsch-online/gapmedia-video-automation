@@ -259,7 +259,7 @@ class EverydayLifeTests(unittest.TestCase):
         self.assertIn('Natural speech and credible actions only', prompt)
         memory = prompt.split('Story history: ')[1]
         self.assertNotIn('Eine unerwartete Fahrt', memory)
-        self.assertIn('Einkaufen ohne Einkaufstasche', memory)
+        self.assertIn(state['history'][-1]['title_de'], memory)
 
 
 class SpeechTimingTests(unittest.TestCase):
@@ -335,5 +335,30 @@ class PauseMusicTests(unittest.TestCase):
             self.assertFalse(any(samples[:192000]))
             self.assertTrue(any(samples[240000:]))
             
+
+class RequestedFullEpisodeTests(unittest.TestCase):
+    def test_explicit_additional_episode_preserves_delivered_day_and_is_bounded(self):
+        state = m.new_state()
+        state['next_episode'] = 3
+        state['deliveries']['2026-10-16'] = {'episode': 2, 'message_id': 2438}
+        config = {'time': '00:00', 'max_daily_attempts': 2,
+                  'manual_request': {'id': 'full-episode3-approved-style', 'episode': 3}}
+        now = datetime(2026, 10, 16, 18, tzinfo=timezone.utc)
+        go, reason, slot = m.due(state, config, now)
+        self.assertTrue(go)
+        self.assertEqual(slot, '2026-10-16#full-episode3-approved-style')
+        self.assertEqual(state['deliveries']['2026-10-16']['message_id'], 2438)
+        state['attempts'][slot] = 2
+        self.assertEqual(m.due(state, config, now)[1], 'daily-attempt-limit')
+        state['next_episode'] = 4
+        self.assertEqual(m.due(state, config, now, force=True)[1], 'already-delivered')
+
+    def test_manual_request_does_not_bypass_unknown_upload(self):
+        state = m.new_state()
+        state['next_episode'] = 3
+        state['pending'] = {'status': 'dispatching'}
+        config = {'time': '00:00', 'manual_request': {'id': 'full-preview', 'episode': 3}}
+        self.assertEqual(m.due(state, config, datetime(2026, 10, 16, 18, tzinfo=timezone.utc), force=True)[1], 'delivery-needs-reconciliation')
+
 if __name__ == '__main__':
     unittest.main()

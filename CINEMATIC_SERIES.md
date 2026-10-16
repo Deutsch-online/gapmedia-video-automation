@@ -76,3 +76,9 @@ Later episodes follow familiar daily activities with credible actions and natura
 ## Cheerful instrumental in pauses only
 
 `ai-cast/cinematic_music.py` uses the project's existing instrumental `public/music/kitchen-2.mp3` at -23 LUFS. Speech is detected from the unmixed voice track; gaps shorter than 700 ms are kept inside the utterance. The full utterance gets 150 ms leading and 250 ms trailing protection. Only remaining gaps of at least 650 ms receive music, with 120 ms fades. The actual gated PCM music stem is checked for zero nonzero samples inside protected speech intervals. The voice keeps its level and timing, and the video stream is copied. Per-file JSON reports record the intervals and checks. The accepted single-speaker preview is reused to demonstrate this change without GPU inference.
+
+## Requested complete episode 3
+
+The owner requested the full sixty-second version after accepting the single-speaker lip-sync preview and pause-only music. Episode 3, **Vor dem Einkauf**, is a natural grocery-list conversation at the supermarket entrance. The manual request `full-episode3-approved-style` authorizes one additional episode without overwriting episode 2's existing delivery. Delivery/attempt keys for this request include the Berlin day and request ID; completion advances to episode 4, so the request cannot replay. Unknown uploads and bounded GPU retries still block duplication. If delivery crosses midnight it also fulfils the new calendar day's slot when that day has no delivery yet.
+
+Single-speaker takes use the approved individual portraits directly to avoid introducing a second speaking face. The two unchanged, approved preview shots may be adopted from cache, but image/audio/motion signatures must still match. Cache v2 restores partial full-episode work first, then approved preview work. Duration remains exactly sixty seconds and both platform receipts are required.

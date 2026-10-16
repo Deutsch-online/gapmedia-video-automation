@@ -76,8 +76,11 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: renders/cinematic-series-cache
-          key: cinematic-series-v1-${{ github.run_id }}
-          restore-keys: cinematic-series-v1-
+          key: cinematic-series-v2-${{ github.run_id }}
+          restore-keys: |
+            cinematic-series-v2-
+            comedy-preview-
+            cinematic-series-v1-
       - name: Make, check and deliver the next 60-second episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
@@ -103,7 +106,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: renders/cinematic-series-cache
-          key: cinematic-series-v1-${{ github.run_id }}
+          key: cinematic-series-v2-${{ github.run_id }}
       - name: Keep final episodes and quality evidence
         if: always() && github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         uses: actions/upload-artifact@v4
