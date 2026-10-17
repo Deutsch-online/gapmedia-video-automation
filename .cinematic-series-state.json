@@ -351,8 +351,10 @@
       ]
     },
     "date": "2026-10-17#full-episode3-approved-style",
-    "status": "dispatching",
-    "platform_receipts": {},
+    "status": "exporting",
+    "platform_receipts": {
+      "tiktok": 2454
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0003/tiktok/e0003-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0003/instagram/e0003-instagram-60s.mp4"
