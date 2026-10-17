@@ -17,7 +17,7 @@
   ],
   "series_version": "wg-alltag-v1",
   "genre": "3d-cartoon-everyday-life",
-  "single_speaker_takes": true,
+  "single_speaker_takes": false,
   "manual_request": {
     "id": "full-episode3-approved-style",
     "episode": 3

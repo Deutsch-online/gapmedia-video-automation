@@ -12,6 +12,19 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_new_episode_requires_visible_props_and_physical_action(self):
+        plan = json.loads((m.ROOT / 'ai-cast/everyday-pilot.json').read_text())
+        plan['episode'] = 4
+        with self.assertRaisesRegex(ValueError, 'visible objects'):
+            m.validate_plan(plan, 4, [])
+        for scene in plan['scenes']:
+            scene['visible_objects'] = ['reusable shopping bag']
+            scene['object_action'] = 'The speaker lifts the reusable bag into clear view.'
+        self.assertIs(m.validate_plan(plan, 4, []), plan)
+        plan['scenes'][3]['object_action'] = ''
+        with self.assertRaisesRegex(ValueError, 'physical action'):
+            m.validate_plan(plan, 4, [])
+
     def test_first_episode_is_a_full_minute_with_13_unique_actions(self):
         plan = m.validate_plan(m.first_episode(), 1, [])
         self.assertEqual(len(plan['scenes']) * 5, 65)

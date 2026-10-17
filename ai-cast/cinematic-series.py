@@ -125,6 +125,14 @@ def validate_plan(plan, episode, history):
                 raise ValueError('Everyday stories need a concrete situation, problem and practical resolution: ' + key)
         if any(scene.get('asset') for scene in plan.get('scenes', [])):
             raise ValueError('Do not reuse the old taxi-season scene assets')
+    if episode >= 4:
+        for scene in plan['scenes']:
+            props = scene.get('visible_objects')
+            if (not isinstance(props, list) or not 1 <= len(props) <= 3 or
+                    any(not isinstance(p, str) or not p.strip() for p in props)):
+                raise ValueError('Each scene needs one to three concrete visible objects related to its dialogue')
+            if not isinstance(scene.get('object_action'), str) or len(scene['object_action'].strip()) < 15:
+                raise ValueError('Each scene needs a visible physical action involving its objects')
     for key in ('title_de', 'title_fa', 'summary', 'cliffhanger'):
         if not isinstance(plan.get(key), str) or not plan[key].strip():
             raise ValueError('Missing episode field: ' + key)
@@ -226,7 +234,14 @@ def make_plan(state):
               '(specific credible actions in English), scenes (EXACTLY 13 objects). '
               'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
-              'Only these two speaking characters. Silent background people are allowed. '
+              'For every scene include visible_objects (1-3 concrete physical objects named or directly referenced in '
+              'that line) and object_action (a simple visible hand action with those objects, in English). '
+              'Show what they discuss: lift a milk carton, point to bread and eggs, place tomatoes in a basket, '
+              'open a reusable bag. Objects must be recognizable in the foreground beside the speaker, never '
+              'merely mentioned or hidden in scenery. Keep the location and object ownership consistent across cuts. '
+              'Choose dialogue about items physically available in the setting; do not show an absent item as present. '
+              'Alternate medium action shots and closer product-and-speaker framing, not thirteen identical portraits. '
+              'Only one visible face per speaking shot; the listener and all other people remain off-camera. '
               'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
               f'Episode number: {episode}. Story history: ' + json.dumps(memory, ensure_ascii=False))
     errors = []
@@ -440,13 +455,14 @@ def render(plan, config, preview=False):
     parts = []
     for i, scene in enumerate(plan['scenes']):
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
-        signature = hashlib.sha256(json.dumps(['single-speaker-audio-v1', STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
         if not sigfile.exists() or sigfile.read_text() != signature:
             png.unlink(missing_ok=True)
             clip.unlink(missing_ok=True)
         if not png.exists():
-            if config.get('single_speaker_takes') or (preview and config.get('single_speaker_preview')):
+            if (not scene.get('visible_objects') and
+                    (config.get('single_speaker_takes') or (preview and config.get('single_speaker_preview')))):
                 shutil.copyfile(speaker_refs[scene['speaker']], png)
             elif scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
@@ -456,6 +472,11 @@ def render(plan, config, preview=False):
                           ' For this dialogue shot show ONLY the speaking character, ' + scene['speaker'] +
                           ', with one unobstructed face in a medium waist-up shot. The listener stays off camera. '
                           'Keep visible hands and the practical action, no second face. '
+                          'Clearly show these specific physical objects in the foreground, large enough to recognize: ' +
+                          ', '.join(scene.get('visible_objects', [])) + '. Starting action: ' +
+                          scene.get('object_action', scene['motion']) + '. '
+                          'Use a fresh scene layout and suitable camera distance showing both the speaker mouth '
+                          'and the objects. Preserve the character identity, not the original supermarket backdrop. '
                           'Faces and important action in upper three quarters; calm lower area for later captions.')
                 def create_still():
                     return shots.first_working(shots.KONTEXT,
@@ -466,7 +487,10 @@ def render(plan, config, preview=False):
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
-        speech.ensure_clip(png, audios[i], clip, scene['motion'], plan['episode'] * 1009 + i * 11)
+        speech.ensure_clip(png, audios[i], clip,
+                           scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
+                           ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])),
+                           plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
         part = folder / f'part-{i:02}.mp4'
