@@ -24,7 +24,7 @@ for i in range(2):
         raise RuntimeError('Cached speech does not match the video')
     part = folder / f'part-{i:02}.mp4'
     m.command(['ffmpeg','-y','-v','error','-i',clip,'-i',audio,'-filter_complex',
-               '[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30[v];[1:a]atrim=0:5,aresample=48000[a]',
+               '[0:v]' + m.scene_layout() + '[v];[1:a]atrim=0:5,aresample=48000[a]',
                '-map','[v]','-map','[a]','-t','5','-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p','-c:a','aac',part])
     parts.append(part)
 subs = folder / 'subtitles.ass'

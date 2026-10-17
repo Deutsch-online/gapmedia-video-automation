@@ -2,7 +2,7 @@ import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {telegramConfig, verifyDelivery, sendVideo} from '../lib/telegram.mjs';
 const manifest = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-const path = '.episode4-object-preview-receipt.json';
+const path = '.episode4-clear-layout-preview-receipt.json';
 const state = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {receipts: {}, status: 'ready'};
 if (state.status === 'dispatching') throw new Error('Unconfirmed preview upload; do not resend automatically');
 const qc = manifest.quality;
@@ -25,7 +25,7 @@ function save() {
 for (const platform of ['tiktok', 'instagram']) {
   if (state.receipts[platform]) continue;
   state.status = 'dispatching'; state.platform = platform; save();
-  const caption = `Marta & Lukas: Alltag in Deutschland · Vorschau\nIm Supermarkt · Einkaufskorb und Tomaten\n${platform === 'tiktok' ? 'TikTok-Version' : 'Instagram-Reels-Version'}\n\n#DeutschLernen #AlltagInDeutschland #Animation #DeutschDialoge ${platform === 'tiktok' ? '#TikTok' : '#Reels'}`;
+  const caption = `Marta & Lukas: Alltag in Deutschland · Vorschau\nIm Supermarkt · Freie Sicht auf Einkaufskorb und Tomaten\n${platform === 'tiktok' ? 'TikTok-Version' : 'Instagram-Reels-Version'}\n\n#DeutschLernen #AlltagInDeutschland #Animation #DeutschDialoge ${platform === 'tiktok' ? '#TikTok' : '#Reels'}`;
   const result = await sendVideo({token: tg.token, chatId: tg.reviewChatId, file: manifest.files[platform], attempts: 1, caption});
   if (!result?.message_id) throw new Error('Preview delivery receipt missing');
   state.receipts[platform] = result.message_id; state.status = 'ready'; save();

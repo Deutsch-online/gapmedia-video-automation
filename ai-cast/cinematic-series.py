@@ -375,6 +375,11 @@ def caption_text(text, family, size, width=950):
             return r'\N'.join(lines), 60
     raise ValueError('Caption is too long for the large readable layout')
 
+def scene_layout():
+    """Keep the entire action above the earliest subtitle card (y=1350)."""
+    return ('scale=1080:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
+            'pad=1080:1920:(ow-iw)/2:0:color=0xEEF4F8,setsar=1,fps=30')
+
 def build_subtitles(plan):
     ass = '''[Script Info]
 ScriptType: v4.00+
@@ -495,7 +500,7 @@ def render(plan, config, preview=False):
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
         part = folder / f'part-{i:02}.mp4'
         command(['ffmpeg', '-y', '-v', 'error', '-i', clip, '-i', audios[i], '-filter_complex',
-                 '[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30[v];'
+                 '[0:v]' + scene_layout() + '[v];'
                  '[1:a]atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         parts.append(part)
