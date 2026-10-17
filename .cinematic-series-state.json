@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 4,
+  "next_episode": 3,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -12,22 +12,6 @@
       "platforms": {
         "tiktok": 2439,
         "instagram": 2440
-      }
-    },
-    "2026-10-17#full-episode3-approved-style": {
-      "episode": 3,
-      "message_id": 2452,
-      "platforms": {
-        "tiktok": 2452,
-        "instagram": 2453
-      }
-    },
-    "2026-10-17": {
-      "episode": 3,
-      "message_id": 2452,
-      "platforms": {
-        "tiktok": 2452,
-        "instagram": 2453
       }
     }
   },
@@ -244,8 +228,10 @@
           "motion": "Lukas freezes as he leans forward, stares wide-eyed at the floor mat, and points in stunned realization."
         }
       ]
-    },
-    {
+    }
+  ],
+  "pending": {
+    "plan": {
       "episode": 3,
       "series_version": "wg-alltag-v1",
       "series_name": "Marta & Lukas: Alltag in Deutschland",
@@ -363,9 +349,10 @@
           "asset": null
         }
       ]
-    }
-  ],
-  "pending": null,
+    },
+    "date": "2026-10-17#full-episode3-approved-style",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
