@@ -530,7 +530,7 @@
       ]
     },
     "date": "2026-10-18",
-    "status": "rendering"
+    "status": "render-failed"
   },
   "attempts": {
     "2026-10-15": 2,
@@ -543,8 +543,8 @@
     "2026-10-16": 1
   },
   "quota_recovery": {
-    "date": "2026-10-16#full-episode3-approved-style",
-    "not_before": "2026-10-17T11:14:09.302636+00:00",
+    "date": "2026-10-18",
+    "not_before": "2026-10-18T11:41:51.336046+00:00",
     "reason": "ZeroGPU quota exhausted"
   }
 }
