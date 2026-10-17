@@ -365,7 +365,173 @@
       ]
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 4,
+      "title_de": "Im Supermarkt",
+      "title_fa": "در سوپرمارکت",
+      "summary": "Inside the supermarket, Marta and Lukas pick up the few essential ingredients they need for dinner. While selecting eggs, they notice a cracked shell in the first carton and carefully replace it with an intact one before heading to the register.",
+      "cliffhanger": "They walk toward the checkout lane to pay for the groceries.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Lukas lifts a wire shopping basket near the supermarket produce section display.",
+      "everyday_problem": "One egg inside the first chosen egg carton is cracked.",
+      "practical_resolution": "Lukas opens the egg carton to inspect the eggs, spots the cracked shell, and Marta selects an undamaged carton from the shelf to place in the basket.",
+      "scenes": [
+        {
+          "speaker": "lukas",
+          "de": "Wir nehmen diesen Korb für die wenigen Sachen.",
+          "fa": "ما این سبد را برای همین چند وسیله برمی‌داریم.",
+          "scene": "Medium shot of Lukas standing near the supermarket entrance aisle, holding a red wire shopping basket by the handle.",
+          "motion": "Lukas lifts the shopping basket off the stack and holds it at his waist.",
+          "visible_objects": [
+            "wire shopping basket"
+          ],
+          "object_action": "Lukas lifts the wire shopping basket by its plastic-coated handle."
+        },
+        {
+          "speaker": "marta",
+          "de": "Hier sind die frischen Tomaten für unsere Soße.",
+          "fa": "اینجا گوجه‌فرنگی‌های تازه برای سس ما هستند.",
+          "scene": "Closer framing of Marta beside a wooden produce crate filled with bright red vine tomatoes.",
+          "motion": "Marta points with an open hand toward the cluster of tomatoes in the crate.",
+          "visible_objects": [
+            "red vine tomatoes",
+            "produce crate"
+          ],
+          "object_action": "Marta points toward the red vine tomatoes resting in the wooden produce crate."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Vier feste Tomaten reichen für uns zwei aus.",
+          "fa": "چهار تا گوجه سفت برای ما دو نفر کاملاً کافی است.",
+          "scene": "Medium close-up of Lukas examining two smooth red tomatoes in his palms.",
+          "motion": "Lukas gently checks the firmness of two tomatoes with his fingertips.",
+          "visible_objects": [
+            "red vine tomatoes"
+          ],
+          "object_action": "Lukas holds two red tomatoes and turns them in his hands."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich lege die Tomaten vorsichtig in den Korb.",
+          "fa": "من گوجه‌ها را با احتیاط داخل سبد می‌گذارم.",
+          "scene": "Closer product-and-speaker framing of Marta lowering the tomatoes gently into the wire basket held nearby.",
+          "motion": "Marta carefully places four tomatoes into the bottom of the shopping basket.",
+          "visible_objects": [
+            "red vine tomatoes",
+            "wire shopping basket"
+          ],
+          "object_action": "Marta sets the tomatoes softly into the bottom of the wire shopping basket."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Hier drüben steht die Packung Spaghetti für heute.",
+          "fa": "این طرف بسته اسپاگتی برای امروز قرار دارد.",
+          "scene": "Medium shot of Lukas in the dry pasta aisle, reaching for a blue paper packet of spaghetti.",
+          "motion": "Lukas picks up a package of spaghetti from the supermarket shelf.",
+          "visible_objects": [
+            "package of spaghetti"
+          ],
+          "object_action": "Lukas takes a package of spaghetti from the shelf and holds it upright."
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, die Nudeln passen perfekt zu den Tomaten.",
+          "fa": "خوبه، این ماکارونی کاملاً با گوجه‌ها جور درمی‌آید.",
+          "scene": "Closer framing of Marta looking at the pasta packet and nodding approvingly.",
+          "motion": "Marta taps the cardboard pasta package gently with two fingers.",
+          "visible_objects": [
+            "package of spaghetti"
+          ],
+          "object_action": "Marta touches the edge of the spaghetti box with her fingertips."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich nehme hier einen kleinen Karton mit Eiern.",
+          "fa": "من از اینجا یک شانه کوچک تخم‌مرغ برمی‌دارم.",
+          "scene": "Medium shot of Lukas standing before the refrigerated shelf, picking up a six-egg grey carton.",
+          "motion": "Lukas pulls a six-egg carton forward from the metal wire rack.",
+          "visible_objects": [
+            "six-egg carton"
+          ],
+          "object_action": "Lukas lifts the six-egg carton with both hands from the shelf."
+        },
+        {
+          "speaker": "marta",
+          "de": "Warte, wir müssen kurz hineinschauen, ob alle heil sind.",
+          "fa": "صبر کن، باید یک نگاه داخلش بیندازیم ببینیم همه سالم هستند یا نه.",
+          "scene": "Closer framing of Marta gesturing toward the egg carton with an open palm.",
+          "motion": "Marta indicates the carton lid with her index finger.",
+          "visible_objects": [
+            "six-egg carton"
+          ],
+          "object_action": "Marta points directly to the cardboard latch of the egg carton."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Stimmt, hier ist leider ein Ei leicht angeknackst.",
+          "fa": "درسته، متأسفانه اینجا یک تخم‌مرغ کمی ترک خورده است.",
+          "scene": "Medium close-up of Lukas opening the carton lid and looking down into the tray.",
+          "motion": "Lukas unlatches the egg carton and points to a cracked egg shell in the corner.",
+          "visible_objects": [
+            "six-egg carton",
+            "cracked egg"
+          ],
+          "object_action": "Lukas flips open the lid of the egg carton and points at the damaged shell."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich nehme diese Schachtel, hier sind alle ganz.",
+          "fa": "من این جعبه را برمی‌دارم، اینجا همه‌شان سالم هستند.",
+          "scene": "Closer product-and-speaker framing of Marta opening a second egg carton from the shelf to inspect it.",
+          "motion": "Marta opens a fresh six-egg carton, revealing six intact brown eggs.",
+          "visible_objects": [
+            "six-egg carton"
+          ],
+          "object_action": "Marta lifts the lid of the second egg carton and turns it forward."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Perfekt, ich stelle den Karton vorsichtig nach oben.",
+          "fa": "عالیه، من جعبه را با احتیاط رویشان قرار می‌دهم.",
+          "scene": "Medium shot of Lukas holding the shopping basket as the intact egg carton is placed on top.",
+          "motion": "Lukas positions the intact egg carton steadily above the vegetables in the basket.",
+          "visible_objects": [
+            "six-egg carton",
+            "wire shopping basket"
+          ],
+          "object_action": "Lukas rests the egg carton securely on top inside the wire shopping basket."
+        },
+        {
+          "speaker": "marta",
+          "de": "Wir brauchen noch diese Packung Hafermilch für morgen.",
+          "fa": "ما هنوز برای فردا به این پاکت شیر جو دوسر احتیاج داریم.",
+          "scene": "Closer framing of Marta reaching toward the plant milk display and lifting a carton.",
+          "motion": "Marta takes a carton of oat milk from the shelf and holds it upright.",
+          "visible_objects": [
+            "oat milk carton"
+          ],
+          "object_action": "Marta holds an oat milk carton in her left hand."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Alles ist bereit, wir können jetzt zur Kasse gehen.",
+          "fa": "همه‌چیز آماده است، الان می‌توانیم برویم سمت صندوق.",
+          "scene": "Medium shot of Lukas holding the filled shopping basket and gesturing forward along the aisle.",
+          "motion": "Lukas shifts the basket comfortably onto his forearm and gestures forward.",
+          "visible_objects": [
+            "wire shopping basket",
+            "oat milk carton"
+          ],
+          "object_action": "Lukas carries the wire basket containing the groceries and points down the aisle."
+        }
+      ]
+    },
+    "date": "2026-10-18",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
