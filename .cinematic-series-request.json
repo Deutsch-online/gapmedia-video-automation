@@ -1,6 +1,6 @@
 {
-  "request": "resume-cached-episode-3-after-gpu-reset",
-  "requested_at": "2026-10-17T11:38:00Z",
+  "request": "resume-cached-episode-4-after-gpu-reset",
+  "requested_at": "2026-10-18T11:42:00Z",
   "minimum_seconds": 60,
   "maximum_seconds": 60
 }
