@@ -545,19 +545,172 @@
       "series_version": "wg-alltag-v1",
       "series_name": "Marta & Lukas: Alltag in Deutschland",
       "content_basis": "everyday-reenactment",
-      "title_de": "Kleine Gespräche im Alltag",
-      "title_fa": "گفتگوهای کوتاه روزمره",
-      "summary": "Six short practical exchanges: finish buying oat milk, put away wet shoes, set down a phone at the table, wash a cooking pot, check drying laundry, and remember the house keys. Each exchange visibly features its relevant objects.",
-      "cliffhanger": "Their next ordinary day starts after they leave the apartment with the keys.",
-      "visual_hook": "Marta lifts the oat-milk carton close enough to recognize while Lukas readies the shopping basket.",
-      "everyday_problem": "Small everyday coordination tasks need short clear exchanges between two adult flatmates.",
-      "practical_resolution": "Each pair of lines shows the named object and a simple helpful response or physical action.",
+      "title_de": "Wir decken den Tisch",
+      "title_fa": "میز را می‌چینیم",
+      "summary": "A practical A1/A2 German lesson: two flatmates set a table for two. Every short instruction or response visibly demonstrates plates, forks, knives, drinking glasses or napkins in the same dining room.",
+      "cliffhanger": "With the table ready, they can serve dinner. The unshown supermarket steps remain saved for a later episode.",
+      "visual_hook": "Marta holds two dinner plates clearly in front of the dining table and introduces the practical task immediately.",
+      "everyday_problem": "The flatmates need to arrange two complete place settings with utensils and glasses in the correct positions.",
+      "practical_resolution": "The plates, forks, knives, glasses and napkins are physically placed to complete a usable table setting.",
       "reference": {
-        "url": "https://www.tiktok.com/@famdeutsch/video/7676239151297006880",
-        "reviewed": "cover and German timed captions; video playback unavailable",
-        "adaptation": "Six original short everyday exchanges with our established adult cartoon cast. No copied dialogue or artwork."
+        "profile": "https://www.tiktok.com/@seideutsch",
+        "reviewed_videos": [
+          "https://www.tiktok.com/@seideutsch/video/7697998094092225824",
+          "https://www.tiktok.com/@seideutsch/video/7696929666988264736",
+          "https://www.tiktok.com/@seideutsch/video/7688800281630428448"
+        ],
+        "reviewed": "Downloaded public videos; examined frame sequences and their German timed captions.",
+        "adaptation": "Original adult flatmate characters and new table-setting dialogue. Borrow the teaching method: name an object, show it clearly, demonstrate the matching physical action."
       },
       "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Heute decken wir zusammen den Tisch.",
+          "fa": "امروز با هم میز را می‌چینیم.",
+          "scene": "Only marta is visible in a medium action shot at the oak dining table beside the kitchen cabinet. Clearly show two dinner plates stacked in her hands in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta lifts two dinner plates from the open cabinet. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "dinner plates",
+            "kitchen cabinet"
+          ],
+          "object_action": "Marta lifts two dinner plates from the open cabinet."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich hole zuerst die Teller.",
+          "fa": "اول بشقاب‌ها را می‌آورم.",
+          "scene": "Only lukas is visible in a medium action shot at the same oak dining table. Clearly show two dinner plates in his hands in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas carries the two plates a short distance toward the table. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "dinner plates"
+          ],
+          "object_action": "Lukas carries the two plates a short distance toward the table."
+        },
+        {
+          "speaker": "marta",
+          "de": "Stell bitte zwei Teller nebeneinander.",
+          "fa": "لطفاً دو بشقاب را کنار هم بگذار.",
+          "scene": "Only marta is visible in a medium action shot at the same dining table set for two side-by-side seats. Clearly show two plates on the table in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta points to the two empty places for the plates. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "dinner plates",
+            "dining table"
+          ],
+          "object_action": "Marta points to the two empty places for the plates."
+        },
+        {
+          "speaker": "lukas",
+          "de": "So hat jeder seinen eigenen Platz.",
+          "fa": "این‌طوری هر کس جای خودش را دارد.",
+          "scene": "Only lukas is visible in a medium action shot at the same dining table with two side-by-side places. Clearly show two plates spaced apart in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas carefully sets the second plate beside the first. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "dinner plates",
+            "dining table"
+          ],
+          "object_action": "Lukas carefully sets the second plate beside the first."
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Gabel kommt links neben den Teller.",
+          "fa": "چنگال سمت چپ بشقاب قرار می‌گیرد.",
+          "scene": "Only marta is visible in a medium action shot at the same dining table. Clearly show one fork and a dinner plate in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta places a fork on the left side of the nearest dinner plate. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "fork",
+            "dinner plate"
+          ],
+          "object_action": "Marta places a fork on the left side of the nearest dinner plate."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich lege sie hier auf die Serviette.",
+          "fa": "آن را اینجا روی دستمال می‌گذارم.",
+          "scene": "Only lukas is visible in a medium action shot at the same dining table. Clearly show a fork and folded napkin left of a dinner plate in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas lays the second fork on a folded napkin left of the second plate. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "fork",
+            "napkin",
+            "dinner plate"
+          ],
+          "object_action": "Lukas lays the second fork on a folded napkin left of the second plate."
+        },
+        {
+          "speaker": "marta",
+          "de": "Das Messer gehört auf die rechte Seite.",
+          "fa": "کارد باید در سمت راست باشد.",
+          "scene": "Only marta is visible in a medium action shot at the same dining table. Clearly show a table knife to the right of a dinner plate in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta gently sets a blunt table knife to the right of a plate. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "table knife",
+            "dinner plate"
+          ],
+          "object_action": "Marta gently sets a blunt table knife to the right of a plate."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Die Schneide zeigt dabei zum Teller.",
+          "fa": "لبهٔ کارد رو به بشقاب است.",
+          "scene": "Only lukas is visible in a medium action shot at the same dining table. Clearly show a blunt table knife beside a plate in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas turns the second table knife so its cutting edge faces the plate. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "table knife",
+            "dinner plate"
+          ],
+          "object_action": "Lukas turns the second table knife so its cutting edge faces the plate."
+        },
+        {
+          "speaker": "marta",
+          "de": "Stell die Gläser oben rechts hin.",
+          "fa": "لیوان‌ها را بالا سمت راست بگذار.",
+          "scene": "Only marta is visible in a medium action shot at the same dining table. Clearly show two clear drinking glasses near the plates in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta indicates the upper-right position above each plate using an open hand. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "drinking glasses",
+            "dinner plates"
+          ],
+          "object_action": "Marta indicates the upper-right position above each plate using an open hand."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ich trage jedes Glas einzeln.",
+          "fa": "هر لیوان را جداگانه می‌آورم.",
+          "scene": "Only lukas is visible in a medium action shot at the same dining table. Clearly show a single clear drinking glass in his hand in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas sets one glass above and to the right of the second plate. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "drinking glass",
+            "dinner plate"
+          ],
+          "object_action": "Lukas sets one glass above and to the right of the second plate."
+        },
+        {
+          "speaker": "marta",
+          "de": "Fehlen uns noch die Servietten?",
+          "fa": "هنوز دستمال کم داریم؟",
+          "scene": "Only marta is visible in a medium action shot at the same dining table. Clearly show a napkin under the second fork, plus a spare folded napkin and two plates in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Marta lifts a spare folded napkin and checks the two place settings. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "napkin",
+            "dinner plates"
+          ],
+          "object_action": "Marta lifts a spare folded napkin and checks the two place settings."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Nein, jetzt ist der Tisch fertig.",
+          "fa": "نه، حالا میز آماده است.",
+          "scene": "Only lukas is visible in a medium action shot at the same dining table. Clearly show two completed place settings with plates utensils and glasses in the foreground beside the unobstructed face. Keep the same room and place settings across all shots. Listener fully off-camera.",
+          "motion": "Lukas settles the remaining folded napkin into place and shows the completed table. Natural speech-driven lip motion, gentle real-time blinking, only one simple object action, no slow motion.",
+          "visible_objects": [
+            "napkin",
+            "dinner plates",
+            "drinking glasses"
+          ],
+          "object_action": "Lukas settles the remaining folded napkin into place and shows the completed table."
+        }
+      ],
+      "lesson_format": "object-and-action-practical-dialogue",
+      "deferred_scenes": [
         {
           "speaker": "marta",
           "de": "Wir brauchen noch diese Packung Hafermilch für morgen.",
@@ -580,126 +733,6 @@
             "oat milk carton"
           ],
           "object_action": "Lukas carries the wire basket containing the groceries and points down the aisle."
-        },
-        {
-          "speaker": "marta",
-          "de": "Deine Schuhe sind noch ganz nass.",
-          "fa": "کفش‌هایت هنوز کاملاً خیس‌اند.",
-          "scene": "Only marta is visible in a medium action shot at the apartment entrance. Clearly show wet shoes and a doormat in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Marta points to the wet shoes on the doormat. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "wet shoes",
-            "doormat"
-          ],
-          "object_action": "Marta points to the wet shoes on the doormat."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Ich stelle sie auf die Matte.",
-          "fa": "آن‌ها را روی پادری می‌گذارم.",
-          "scene": "Only lukas is visible in a medium action shot at the same apartment entrance. Clearly show wet shoes and a doormat in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Lukas sets one wet shoe onto the doormat. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "wet shoes",
-            "doormat"
-          ],
-          "object_action": "Lukas sets one wet shoe onto the doormat."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Kannst du das Handy kurz weglegen?",
-          "fa": "می‌توانی گوشی را کمی کنار بگذاری؟",
-          "scene": "Only lukas is visible in a medium action shot at the shared kitchen beside a breakfast table. Clearly show a smartphone beside an empty dinner plate in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Lukas points gently to the smartphone beside the plate. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "smartphone",
-            "dinner plate"
-          ],
-          "object_action": "Lukas points gently to the smartphone beside the plate."
-        },
-        {
-          "speaker": "marta",
-          "de": "Ja, ich decke jetzt den Tisch.",
-          "fa": "بله، حالا میز را می‌چینم.",
-          "scene": "Only marta is visible in a medium action shot at the same shared kitchen table. Clearly show a smartphone and an empty dinner plate in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Marta places the smartphone face-down beside the plate. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "smartphone",
-            "dinner plate"
-          ],
-          "object_action": "Marta places the smartphone face-down beside the plate."
-        },
-        {
-          "speaker": "marta",
-          "de": "Der Topf ist noch nicht sauber.",
-          "fa": "قابلمه هنوز تمیز نشده است.",
-          "scene": "Only marta is visible in a medium action shot at the shared kitchen sink. Clearly show a used cooking pot and a sponge in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Marta holds the pot by its handle and points to its inside. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "cooking pot",
-            "sponge"
-          ],
-          "object_action": "Marta holds the pot by its handle and points to its inside."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Ich spüle ihn vor dem Kochen.",
-          "fa": "قبل از آشپزی آن را می‌شویم.",
-          "scene": "Only lukas is visible in a medium action shot at the same shared kitchen sink. Clearly show the cooking pot and a sponge in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Lukas gently wipes the inside of the pot with the sponge. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "cooking pot",
-            "sponge"
-          ],
-          "object_action": "Lukas gently wipes the inside of the pot with the sponge."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Ist diese Wäsche schon trocken?",
-          "fa": "این لباس‌ها خشک شده‌اند؟",
-          "scene": "Only lukas is visible in a medium action shot at the apartment laundry corner. Clearly show a shirt on a drying rack in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Lukas lightly touches the shirt sleeve on the drying rack. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "shirt",
-            "drying rack"
-          ],
-          "object_action": "Lukas lightly touches the shirt sleeve on the drying rack."
-        },
-        {
-          "speaker": "marta",
-          "de": "Noch nicht, die Ärmel sind feucht.",
-          "fa": "هنوز نه، آستین‌ها نم دارند.",
-          "scene": "Only marta is visible in a medium action shot at the same apartment laundry corner. Clearly show the shirt on the drying rack in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Marta lifts the end of the shirt sleeve to check it. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "shirt",
-            "drying rack"
-          ],
-          "object_action": "Marta lifts the end of the shirt sleeve to check it."
-        },
-        {
-          "speaker": "marta",
-          "de": "Hast du den Wohnungsschlüssel dabei?",
-          "fa": "کلید خانه را همراه داری؟",
-          "scene": "Only Marta is visible in a medium action shot at the apartment front door. Show the empty key hook and the door clearly beside her unobstructed face. Lukas and his keys are off-camera.",
-          "motion": "Marta points toward the key hook beside the door. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "key hook",
-            "front door"
-          ],
-          "object_action": "Marta points toward the key hook beside the door."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Ja, er ist in meiner Jackentasche.",
-          "fa": "بله، در جیب کتم است.",
-          "scene": "Only lukas is visible in a medium action shot at the same apartment front door. Clearly show a small set of house keys and a jacket pocket in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
-          "motion": "Lukas lifts his house keys from his jacket pocket. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
-          "visible_objects": [
-            "house keys",
-            "jacket pocket"
-          ],
-          "object_action": "Lukas lifts his house keys from his jacket pocket."
         }
       ]
     },
