@@ -113,8 +113,9 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history):
-    if plan.get('episode') != episode or len(plan.get('scenes', [])) != 13:
-        raise ValueError('A new episode must contain exactly thirteen five-second scenes')
+    expected = 12 if episode >= 5 else 13
+    if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
+        raise ValueError(f'Episode {episode} must contain exactly {expected} five-second scenes')
     if episode >= 3:
         if plan.get('series_version') != 'wg-alltag-v1':
             raise ValueError('New episodes must belong to the 3D cartoon everyday-life series')
@@ -155,7 +156,7 @@ def validate_plan(plan, episode, history):
         if len(textwrap.wrap(s['de'], 36)) > 2 or len(textwrap.wrap(s['fa'], 40)) > 2:
             raise ValueError('Bilingual captions must fit two separate non-overlapping lines each')
         lines.append(s['de'].strip().lower())
-    if len(set(lines)) != 13:
+    if len(set(lines)) != expected:
         raise ValueError('Repeated dialogue inside episode')
     if sum(l in old_lines for l in lines) >= 4:
         raise ValueError('Episode repeats too much previous dialogue')
@@ -211,6 +212,8 @@ def groq_model(key):
 
 def make_plan(state):
     episode = state['next_episode']
+    if episode == 5:
+        return validate_plan(load_json(ROOT / 'ai-cast/everyday-micro-dialogues.json'), episode, state['history'])
     if episode == 3:
         return validate_plan(load_json(ROOT / 'ai-cast/everyday-pilot.json'), episode, state['history'])
     if episode == 1:
@@ -228,12 +231,16 @@ def make_plan(state):
               'Continue only this everyday-life series history. Do not continue the robot-vacuum comedy or taxi season. '
               'If the latest history entry has deferred_scenes, use those unshown dialogue and object actions '
               'as the opening steps of this episode before continuing to the next practical activity. '
+              'Use SIX short everyday situations, each with TWO five-second speaking shots: '
+              'one character states a concrete issue or question, the other responds with a visible action. '
+              'Keep each sentence brief and quick to understand. Change the setting clearly between pairs. '
+              'Show the actual objects and a credible reaction, not an identical standing portrait. '
               'No long introductions. Both flatmates listen and respond naturally. '
               'Return ONLY valid JSON: episode (integer), title_de, title_fa, summary (English), '
               'cliffhanger (an ordinary next step, not a dramatic cliffhanger), '
               'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
               'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution '
-              '(specific credible actions in English), scenes (EXACTLY 13 objects). '
+              '(specific credible actions in English), scenes (EXACTLY 12 objects). '
               'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
               'For every scene include visible_objects (1-3 concrete physical objects named or directly referenced in '

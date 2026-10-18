@@ -1,0 +1,163 @@
+{
+  "episode": 5,
+  "series_version": "wg-alltag-v1",
+  "series_name": "Marta & Lukas: Alltag in Deutschland",
+  "content_basis": "everyday-reenactment",
+  "title_de": "Kleine Gespräche im Alltag",
+  "title_fa": "گفتگوهای کوتاه روزمره",
+  "summary": "Six short practical exchanges: finish buying oat milk, put away wet shoes, set down a phone at the table, wash a cooking pot, check drying laundry, and remember the house keys. Each exchange visibly features its relevant objects.",
+  "cliffhanger": "Their next ordinary day starts after they leave the apartment with the keys.",
+  "visual_hook": "Marta lifts the oat-milk carton close enough to recognize while Lukas readies the shopping basket.",
+  "everyday_problem": "Small everyday coordination tasks need short clear exchanges between two adult flatmates.",
+  "practical_resolution": "Each pair of lines shows the named object and a simple helpful response or physical action.",
+  "reference": {
+    "url": "https://www.tiktok.com/@famdeutsch/video/7676239151297006880",
+    "reviewed": "cover and German timed captions; video playback unavailable",
+    "adaptation": "Six original short everyday exchanges with our established adult cartoon cast. No copied dialogue or artwork."
+  },
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Wir brauchen noch diese Packung Hafermilch für morgen.",
+      "fa": "ما هنوز برای فردا به این پاکت شیر جو دوسر احتیاج داریم.",
+      "scene": "Closer framing of Marta reaching toward the plant milk display and lifting a carton.",
+      "motion": "Marta takes a carton of oat milk from the shelf and holds it upright.",
+      "visible_objects": [
+        "oat milk carton"
+      ],
+      "object_action": "Marta holds an oat milk carton in her left hand."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Alles ist bereit, wir können jetzt zur Kasse gehen.",
+      "fa": "همه‌چیز آماده است، الان می‌توانیم برویم سمت صندوق.",
+      "scene": "Medium shot of Lukas holding the filled shopping basket and gesturing forward along the aisle.",
+      "motion": "Lukas shifts the basket comfortably onto his forearm and gestures forward.",
+      "visible_objects": [
+        "wire shopping basket",
+        "oat milk carton"
+      ],
+      "object_action": "Lukas carries the wire basket containing the groceries and points down the aisle."
+    },
+    {
+      "speaker": "marta",
+      "de": "Deine Schuhe sind noch ganz nass.",
+      "fa": "کفش‌هایت هنوز کاملاً خیس‌اند.",
+      "scene": "Only marta is visible in a medium action shot at the apartment entrance. Clearly show wet shoes and a doormat in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Marta points to the wet shoes on the doormat. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "wet shoes",
+        "doormat"
+      ],
+      "object_action": "Marta points to the wet shoes on the doormat."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Ich stelle sie auf die Matte.",
+      "fa": "آن‌ها را روی پادری می‌گذارم.",
+      "scene": "Only lukas is visible in a medium action shot at the same apartment entrance. Clearly show wet shoes and a doormat in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Lukas sets one wet shoe onto the doormat. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "wet shoes",
+        "doormat"
+      ],
+      "object_action": "Lukas sets one wet shoe onto the doormat."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Kannst du das Handy kurz weglegen?",
+      "fa": "می‌توانی گوشی را کمی کنار بگذاری؟",
+      "scene": "Only lukas is visible in a medium action shot at the shared kitchen beside a breakfast table. Clearly show a smartphone beside an empty dinner plate in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Lukas points gently to the smartphone beside the plate. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "smartphone",
+        "dinner plate"
+      ],
+      "object_action": "Lukas points gently to the smartphone beside the plate."
+    },
+    {
+      "speaker": "marta",
+      "de": "Ja, ich decke jetzt den Tisch.",
+      "fa": "بله، حالا میز را می‌چینم.",
+      "scene": "Only marta is visible in a medium action shot at the same shared kitchen table. Clearly show a smartphone and an empty dinner plate in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Marta places the smartphone face-down beside the plate. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "smartphone",
+        "dinner plate"
+      ],
+      "object_action": "Marta places the smartphone face-down beside the plate."
+    },
+    {
+      "speaker": "marta",
+      "de": "Der Topf ist noch nicht sauber.",
+      "fa": "قابلمه هنوز تمیز نشده است.",
+      "scene": "Only marta is visible in a medium action shot at the shared kitchen sink. Clearly show a used cooking pot and a sponge in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Marta holds the pot by its handle and points to its inside. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "cooking pot",
+        "sponge"
+      ],
+      "object_action": "Marta holds the pot by its handle and points to its inside."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Ich spüle ihn vor dem Kochen.",
+      "fa": "قبل از آشپزی آن را می‌شویم.",
+      "scene": "Only lukas is visible in a medium action shot at the same shared kitchen sink. Clearly show the cooking pot and a sponge in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Lukas gently wipes the inside of the pot with the sponge. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "cooking pot",
+        "sponge"
+      ],
+      "object_action": "Lukas gently wipes the inside of the pot with the sponge."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Ist diese Wäsche schon trocken?",
+      "fa": "این لباس‌ها خشک شده‌اند؟",
+      "scene": "Only lukas is visible in a medium action shot at the apartment laundry corner. Clearly show a shirt on a drying rack in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Lukas lightly touches the shirt sleeve on the drying rack. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "shirt",
+        "drying rack"
+      ],
+      "object_action": "Lukas lightly touches the shirt sleeve on the drying rack."
+    },
+    {
+      "speaker": "marta",
+      "de": "Noch nicht, die Ärmel sind feucht.",
+      "fa": "هنوز نه، آستین‌ها نم دارند.",
+      "scene": "Only marta is visible in a medium action shot at the same apartment laundry corner. Clearly show the shirt on the drying rack in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Marta lifts the end of the shirt sleeve to check it. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "shirt",
+        "drying rack"
+      ],
+      "object_action": "Marta lifts the end of the shirt sleeve to check it."
+    },
+    {
+      "speaker": "marta",
+      "de": "Hast du den Wohnungsschlüssel dabei?",
+      "fa": "کلید خانه را همراه داری؟",
+      "scene": "Only Marta is visible in a medium action shot at the apartment front door. Show the empty key hook and the door clearly beside her unobstructed face. Lukas and his keys are off-camera.",
+      "motion": "Marta points toward the key hook beside the door. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "key hook",
+        "front door"
+      ],
+      "object_action": "Marta points toward the key hook beside the door."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Ja, er ist in meiner Jackentasche.",
+      "fa": "بله، در جیب کتم است.",
+      "scene": "Only lukas is visible in a medium action shot at the same apartment front door. Clearly show a small set of house keys and a jacket pocket in the foreground alongside the speaker's unobstructed face. One face only; listener off-camera.",
+      "motion": "Lukas lifts his house keys from his jacket pocket. Natural German dialogue, real-time movement and gentle blinking. Keep the object stable and the mouth unobstructed.",
+      "visible_objects": [
+        "house keys",
+        "jacket pocket"
+      ],
+      "object_action": "Lukas lifts his house keys from his jacket pocket."
+    }
+  ]
+}
