@@ -533,7 +533,7 @@
       "format": "55 seconds of native-speed dialogue plus 5-second silent vocabulary recap"
     },
     "date": "2026-10-18",
-    "status": "exporting",
+    "status": "dispatching",
     "platform_receipts": {
       "tiktok": 2460
     },
@@ -541,8 +541,8 @@
       "tiktok": "renders/cinematic-series/e0004/tiktok/e0004-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0004/instagram/e0004-instagram-60s.mp4"
     },
-    "file": "renders/cinematic-series/e0004/tiktok/e0004-tiktok-60s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0004/instagram/e0004-instagram-60s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
