@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 4,
+  "next_episode": 5,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -28,6 +28,14 @@
       "platforms": {
         "tiktok": 2454,
         "instagram": 2455
+      }
+    },
+    "2026-10-18": {
+      "episode": 4,
+      "message_id": 2460,
+      "platforms": {
+        "tiktok": 2460,
+        "instagram": 2461
       }
     }
   },
@@ -363,10 +371,8 @@
           "asset": null
         }
       ]
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 4,
       "title_de": "Im Supermarkt",
       "title_fa": "در سوپرمارکت",
@@ -531,20 +537,9 @@
         }
       ],
       "format": "55 seconds of native-speed dialogue plus 5-second silent vocabulary recap"
-    },
-    "date": "2026-10-18",
-    "status": "exporting",
-    "platform_receipts": {
-      "tiktok": 2460,
-      "instagram": 2461
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0004/tiktok/e0004-tiktok-60s.mp4",
-      "instagram": "renders/cinematic-series/e0004/instagram/e0004-instagram-60s.mp4"
-    },
-    "file": "renders/cinematic-series/e0004/instagram/e0004-instagram-60s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -554,10 +549,5 @@
   },
   "manual_recovery": {
     "2026-10-16": 1
-  },
-  "quota_recovery": {
-    "date": "2026-10-18",
-    "not_before": "2026-10-19T11:45:20.866570+00:00",
-    "reason": "ZeroGPU quota exhausted"
   }
 }
