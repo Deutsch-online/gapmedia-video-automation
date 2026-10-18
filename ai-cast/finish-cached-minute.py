@@ -31,6 +31,8 @@ if len(plan['scenes']) == 13:
 plan['summary'] = 'Marta and Lukas choose tomatoes, spaghetti and an intact egg carton at the supermarket. They check a cracked egg and safely pack the replacement. The oat-milk purchase and checkout conversation continue in the next episode.'
 plan['cliffhanger'] = 'Next, they still need oat milk before walking to the checkout; continue the two deferred scenes first.'
 plan['format'] = '55 seconds of native-speed dialogue plus 5-second silent vocabulary recap'
+plan['scenes'][7]['fa'] = 'صبر کن، باید ببینیم تخم‌مرغ‌ها سالم‌اند.'
+plan['scenes'][10]['fa'] = 'عالیه، جعبه را بااحتیاط روی بقیه می‌گذارم.'
 state['pending'] = {**pending, 'plan': plan, 'status': 'rendering'}
 m.checkpoint(state)
 parts = []
