@@ -216,7 +216,7 @@ def make_plan(state):
     if episode == 1:
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
-               'cliffhanger': h['cliffhanger']} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
+               'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', [])} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
     prompt = ('Write the NEXT 60-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. They are ordinary young adult flatmates in Berlin. '
               'Use a familiar real-life activity: groceries, commuting, laundry, a medical appointment, '
@@ -226,6 +226,8 @@ def make_plan(state):
               'These are illustrative everyday reenactments, NOT documented true events. Never claim that a specific '
               'real person experienced this or invent a source, quote, current price or legal requirement. '
               'Continue only this everyday-life series history. Do not continue the robot-vacuum comedy or taxi season. '
+              'If the latest history entry has deferred_scenes, use those unshown dialogue and object actions '
+              'as the opening steps of this episode before continuing to the next practical activity. '
               'No long introductions. Both flatmates listen and respond naturally. '
               'Return ONLY valid JSON: episode (integer), title_de, title_fa, summary (English), '
               'cliffhanger (an ordinary next step, not a dramatic cliffhanger), '

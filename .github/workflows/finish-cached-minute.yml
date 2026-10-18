@@ -1,0 +1,53 @@
+name: Finish episode 4 from cached scenes
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/finish-cached-minute.py]
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          python -m pip install pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+          python -m py_compile ai-cast/finish-cached-minute.py
+          python -m unittest discover -s tests -p test_cinematic_series.py -q
+          node --check ai-cast/send-object-preview.mjs
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-39124318830
+          fail-on-cache-miss: true
+      - name: Finish requested minute and privately deliver both platforms
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python ai-cast/finish-cached-minute.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: episode4-cached-minute
+          path: |
+            renders/cinematic-series/e0004/*-cinematic-fa-de.mp4
+            renders/cinematic-series/e0004/**/*-60s.mp4
+            renders/cinematic-series/e0004/**/quality.json
+            renders/cinematic-series/e0004/**/delivery-*.json
+            renders/cinematic-series/e0004/episode.json
+          retention-days: 14
