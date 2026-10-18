@@ -370,8 +370,8 @@
       "episode": 4,
       "title_de": "Im Supermarkt",
       "title_fa": "در سوپرمارکت",
-      "summary": "Inside the supermarket, Marta and Lukas pick up the few essential ingredients they need for dinner. While selecting eggs, they notice a cracked shell in the first carton and carefully replace it with an intact one before heading to the register.",
-      "cliffhanger": "They walk toward the checkout lane to pay for the groceries.",
+      "summary": "Marta and Lukas choose tomatoes, spaghetti and an intact egg carton at the supermarket. They check a cracked egg and safely pack the replacement. The oat-milk purchase and checkout conversation continue in the next episode.",
+      "cliffhanger": "Next, they still need oat milk before walking to the checkout; continue the two deferred scenes first.",
       "series_version": "wg-alltag-v1",
       "series_name": "Marta & Lukas: Alltag in Deutschland",
       "content_basis": "everyday-reenactment",
@@ -503,7 +503,9 @@
             "wire shopping basket"
           ],
           "object_action": "Lukas rests the egg carton securely on top inside the wire shopping basket."
-        },
+        }
+      ],
+      "deferred_scenes": [
         {
           "speaker": "marta",
           "de": "Wir brauchen noch diese Packung Hafermilch für morgen.",
@@ -527,10 +529,11 @@
           ],
           "object_action": "Lukas carries the wire basket containing the groceries and points down the aisle."
         }
-      ]
+      ],
+      "format": "55 seconds of native-speed dialogue plus 5-second silent vocabulary recap"
     },
     "date": "2026-10-18",
-    "status": "render-failed"
+    "status": "rendering"
   },
   "attempts": {
     "2026-10-15": 2,
