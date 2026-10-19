@@ -25,7 +25,7 @@ function save() {
 for (const platform of ['tiktok', 'instagram']) {
   if (state.receipts[platform]) continue;
   state.status = 'dispatching'; state.platform = platform; save();
-  const caption = `Marta & Lukas: Alltag in Deutschland · Vorschau\nWir decken den Tisch · 45 Sekunden Vorschau · Szenen 1–9\n${platform === 'tiktok' ? 'TikTok-Version' : 'Instagram-Reels-Version'}\n\n#DeutschLernen #AlltagInDeutschland #Animation #DeutschDialoge ${platform === 'tiktok' ? '#TikTok' : '#Reels'}`;
+  const caption = `Wir decken den Tisch · Vorschau\n\n#DeutschLernen #DeutschA1 #Alltagsdeutsch #DeutschDialoge`;
   const result = await sendVideo({token: tg.token, chatId: tg.reviewChatId, file: manifest.files[platform], attempts: 1, caption});
   if (!result?.message_id) throw new Error('Preview delivery receipt missing');
   state.receipts[platform] = result.message_id; state.status = 'ready'; save();
