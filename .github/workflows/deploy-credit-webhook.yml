@@ -2,7 +2,8 @@ name: Deploy Telegram chatbot to active webhook
 on:
   push:
     branches: [main]
-    paths: [worker/src/credit.js, worker/src/index.js, worker/set-commands.mjs, worker/test-chatbot.mjs]
+    paths: [worker/src/credit.js, worker/src/index.js, worker/set-commands.mjs, worker/test-chatbot.mjs, .github/workflows/deploy-credit-webhook.yml]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -13,16 +14,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check deployment credentials
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
-        run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::error::Cloudflare deployment token is not configured; webhook code cannot be deployed."
-            exit 1
-          fi
       - run: npm ci
         working-directory: worker
+      - name: Select valid Cloudflare credential
+        working-directory: worker
+        env:
+          CF_TOKEN_PRIMARY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_TOKEN_FALLBACK: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          for candidate in "$CF_TOKEN_PRIMARY" "$CF_TOKEN_FALLBACK"; do
+            if [ -z "$candidate" ]; then continue; fi
+            if CLOUDFLARE_API_TOKEN="$candidate" npx wrangler whoami >/dev/null 2>&1; then
+              printf 'CLOUDFLARE_API_TOKEN=%s\n' "$candidate" >> "$GITHUB_ENV"
+              echo "A valid Cloudflare credential was selected."
+              exit 0
+            fi
+          done
+          echo "::error::Neither GitHub Cloudflare token is accepted by Cloudflare."
+          exit 1
       - name: Verify Telegram command and chat behavior
         run: |
           node worker/test-commands.mjs
@@ -30,7 +40,6 @@ jobs:
       - name: Deploy existing worker
         working-directory: worker
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy
 
