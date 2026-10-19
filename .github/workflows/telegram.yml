@@ -40,9 +40,13 @@ on:
     # and a real Telegram command arrives through that push, not by waiting for
     # this. Slowing the unreliable half removes ~11 of every 12 evictions and
     # changes no delivery state or serialization.
-    - cron: "7 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
+      credit_wait:
+        description: Wait briefly for a pending credit-button response
+        type: boolean
+        default: false
       action:
         description: "Command sent by the real-time Telegram Worker"
         required: false
@@ -148,18 +152,6 @@ jobs:
         with:
           node-version: "22"
 
-      # Manual Telegram builds use the same mandatory Persian narration gate
-      # as scheduled videos. Model cache keeps repeated commands practical.
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/whisper
-          key: whisper-medium-v1
-      - name: Install Persian narration quality gate
-        run: python -m pip install --disable-pip-version-check --quiet openai-whisper
-
       # remembers the last message id so one order never runs twice
       - name: Restore command cursor
         uses: actions/cache@v4
@@ -196,6 +188,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+          CREDIT_WAIT_SECONDS: ${{ inputs.credit_wait && '600' || '0' }}
           INPUT_ACTION: ${{ inputs.action }}
           INPUT_PICK: ${{ inputs.pick }}
           INPUT_PAYLOAD: ${{ inputs.payload }}
@@ -263,7 +256,7 @@ jobs:
             case "$INPUT_VOICE_MODE" in on|off) safe_voice_mode="$INPUT_VOICE_MODE" ;; *) safe_voice_mode="on" ;; esac
             printf 'ACTION=%s\nPICK=%s\nPAYLOAD=%s\nVOICE_ID=%s\nVOICE_MODE=%s\n' "$INPUT_ACTION" "${safe_pick:-1}" "$safe_payload" "$safe_voice" "$safe_voice_mode" >> "$GITHUB_OUTPUT"
           else
-            cl_out=$(node cloud-listen.mjs)
+            cl_out=$(node credit-listen.mjs)
             echo "$cl_out"
             printf '%s\n' "$cl_out" >> "$GITHUB_OUTPUT"
             cl_action=$(printf '%s\n' "$cl_out" | sed -n 's/^ACTION=//p' | tail -1)
@@ -295,6 +288,22 @@ jobs:
               fi
             fi
           fi
+
+      # Manual Telegram builds use the same mandatory Persian narration gate
+      # as scheduled videos. Model cache keeps repeated commands practical.
+      - uses: actions/setup-python@v5
+        if: steps.cmd.outputs.ACTION != 'none' && steps.cmd.outputs.CREDIT_APPROVED != 'true'
+        with:
+          python-version: "3.11"
+      - uses: actions/cache@v4
+        if: steps.cmd.outputs.ACTION != 'none' && steps.cmd.outputs.CREDIT_APPROVED != 'true'
+        with:
+          path: ~/.cache/whisper
+          key: whisper-medium-v1
+      - name: Install Persian narration quality gate
+        if: steps.cmd.outputs.ACTION != 'none' && steps.cmd.outputs.CREDIT_APPROVED != 'true'
+        run: python -m pip install --disable-pip-version-check --quiet openai-whisper
+
 
       - name: Remember the bot chat the poll learned
         if: always()

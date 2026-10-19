@@ -24,6 +24,7 @@ on:
         default: false
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: gapmedia-lesson
   cancel-in-progress: false
@@ -88,6 +89,7 @@ jobs:
       - name: Make, check and deliver the next 60-second episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
