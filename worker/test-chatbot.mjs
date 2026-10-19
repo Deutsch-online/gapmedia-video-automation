@@ -38,6 +38,16 @@ await send('/status');
 assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('قسمت بعدی: 6')),'status reports real repository state');
 await send('/new');
 assert.equal(kv.has('chat:7'),false,'new clears the chat');
+// Credit replies take priority over a draft's pending text prompt.
+kv.set('pending:7',JSON.stringify({action:'content-search-live'}));
+const code='cc-'+'a'.repeat(32);
+await send('تایید '+code);
+const creditPush=calls.filter(c=>c.url.includes('.video-request.json')&&c.init.method==='PUT').at(-1);
+assert.ok(creditPush,'credit command is forwarded');
+const pushed=JSON.parse(decodeURIComponent(escape(atob(JSON.parse(creditPush.init.body).content))));
+assert.equal(pushed.action,'approved-feature');
+assert.equal(pushed.payload,'تایید '+code);
+kv.delete('pending:7');
 await send('/episode');
 assert.ok(calls.some(c=>c.url.includes('.cinematic-series-request.json')&&c.init.method==='PUT'),'episode requests the dedicated quota-gated workflow');
 globalThis.fetch=saved;
