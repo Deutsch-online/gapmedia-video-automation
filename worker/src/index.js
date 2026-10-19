@@ -677,7 +677,8 @@ export default {
       let command = chosen ? { action: chosen.action, voiceMode: chosen.voiceMode || "on" } : null;
       // Controls stay available while a draft is waiting for its next message.
       const control = videoAction(input);
-      if (!command && control && ["help","commands","status","credit-status","reset-chat","series-episode"].includes(control.action)) command = control;
+      if (!command && control && (["help","commands","status","credit-status","reset-chat","series-episode"].includes(control.action)
+        || /^(?:تایید|تأیید|رد) cc-[a-f0-9]{32}$/.test(normalize(input)))) command = control;
       if (!command) {
         const pending = await pendingFor(env, chatId);
         if (pending) {
