@@ -901,7 +901,7 @@
       ]
     },
     "date": "2026-10-20",
-    "status": "exporting",
+    "status": "dispatching",
     "platform_receipts": {
       "tiktok": 2475
     },
@@ -909,8 +909,8 @@
       "tiktok": "renders/cinematic-series/e0006/tiktok/e0006-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0006/instagram/e0006-instagram-60s.mp4"
     },
-    "file": "renders/cinematic-series/e0006/tiktok/e0006-tiktok-60s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0006/instagram/e0006-instagram-60s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
