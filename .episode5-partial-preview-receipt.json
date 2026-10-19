@@ -1,5 +1,7 @@
 {
-  "receipts": {},
-  "status": "dispatching",
+  "receipts": {
+    "tiktok": 2463
+  },
+  "status": "ready",
   "platform": "tiktok"
 }
