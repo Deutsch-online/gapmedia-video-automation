@@ -1,6 +1,6 @@
 {
   "id": "4e8d99f313f6889ed1846b2d",
-  "status": "sending",
+  "status": "pending",
   "plan_sha": "416138957718943bf6f4faa9de1ba1d723539727337ca4b0c970475ea9c3e4ab",
   "kind": "preview",
   "episode": 9002,
@@ -10,5 +10,6 @@
     2
   ],
   "chat_id": "7993801735",
-  "expires_at": "2026-10-20T17:57:45.490Z"
+  "expires_at": "2026-10-20T17:57:45.490Z",
+  "message_id": 2469
 }
