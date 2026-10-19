@@ -901,9 +901,10 @@
       ]
     },
     "date": "2026-10-20",
-    "status": "dispatching",
+    "status": "exporting",
     "platform_receipts": {
-      "tiktok": 2475
+      "tiktok": 2475,
+      "instagram": 2476
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0006/tiktok/e0006-tiktok-60s.mp4",
