@@ -5,39 +5,28 @@ import {handleCredit} from './credit.js';
 const TG = "https://api.telegram.org";
 const MAX_HISTORY = 8;
 
-const HELP = `🤖 <b>منوی GapMedia — اول جستجو، بعد ساخت</b>
+const HELP = `🤖 <b>دستیار GapMedia</b>
 
-🇩🇪 <b>درس آلمانی A1</b>
-<b>۱۱</b> ساخت درس بعدی آلمانی با صدا — هم برای TikTok و هم Instagram
-یا بنویسید: <code>درس آلمانی بساز</code>
+هر پرسشی دربارهٔ آلمانی، ایدهٔ داستان، ویدیو یا کارهای روزمره دارید، عادی بنویسید. پاسخ در همین گفتگو می‌آید.
 
-🎬 <b>ویدیوی آموزشی</b>
-<b>۱</b> جستجوی زندهٔ موضوع‌های روز
-<b>۲</b> جستجوی دقیق با عبارت خودت
-<b>۳</b> تحلیل موضوع یا متن آمادهٔ من
-<b>۴</b> نمایش پیش‌نویس فعلی
-<b>۵</b> ادیت قلاب
-<b>۶</b> ادیت اسلایدها
-<b>۷</b> تأیید و ساخت با صدا
-<b>۸</b> رادار ترندهای بررسی‌شده
-<b>۹</b> تقاضای واقعی مردم برای یک موضوع
-<b>۱۰</b> فهرست صداها
-<b>۲۶</b> ساخت مستقیم از متن و عکس یا ویدیو
+<b>فرمان‌های اصلی</b>
+/status — وضعیت واقعی ساخت و اعتبار
+/episode — درخواست قسمت بعدی، تابع سهمیهٔ GPU
+/credit — وضعیت درخواست مصرف اعتبار
+/new — شروع گفتگوی تازه
+/help — همین راهنما
 
-<i>روش کار: ۱ یا ۲ ← انتخاب شمارهٔ موضوع ← پیش‌نویس ← ۵ یا ۶ برای ادیت ← ۷ برای ساخت.</i>
+<b>فرمان‌های ویدیو</b>
+«درس آلمانی بساز»، «جستجوی محتوا»، «نمایش محتوا»، «تأیید محتوا»، یا «ویدیو مستقیم: موضوع | گام یک | گام دو».
 
-🔎 <b>رادار روزانه</b>
-<b>۲۷</b> رادار محتوا (GapMedia)
+برای تأیید یا رد مصرف اعتبار، متن کامل و کد اختصاصی را از پیام همان درخواست کپی کنید. یک «تایید» تنها اعتبار مصرف نمی‌کند.
 
-📡 <b>سرویس‌ها</b>
-<b>۲۸</b> Provider List و وضعیت جایگزین‌ها
+فرمان‌های قدیمی شماره‌ای هم فعال‌اند؛ برای دیدنشان /commands را بفرستید.`;
 
-⚙️ <b>مدیریت</b>
-<b>۱۹</b> وضعیت
-<b>۲۰</b> حذف ۳ ویدیوی آموزشی آخر
-<b>۰</b> نمایش دوبارهٔ این منو
+const LEGACY_HELP = `📋 <b>فرمان‌های شماره‌ای</b>
+۱ جستجوی محتوا · ۲ جستجو با عبارت شما · ۳ تحلیل متن/رسانه · ۴ پیش‌نویس · ۵ ویرایش قلاب · ۶ ویرایش اسلاید · ۷ تأیید پیش‌نویس · ۸ رادار · ۹ تحقیق تقاضا · ۱۰ صداها · ۱۱ درس آلمانی · ۱۹ وضعیت · ۲۰ حذف ارسال‌های آخر · ۲۶ ساخت از عکس/ویدیو · ۲۷ رادار · ۲۸ سرویس‌ها · ۰ راهنما.
 
-برای گزینهٔ ۲۶، عکس یا ویدیو را همراه کپشن بفرستید: <code>موضوع | گام یک | گام دو | گام سه</code> — بدون تأیید دوباره ساخته می‌شود.`;
+ساخت سری کارتونی: /episode. وضعیت اعتبار: /credit.`;
 
 const NUMBERED_ACTIONS = {
   "1": { action: "content-search" },
@@ -56,6 +45,8 @@ const NUMBERED_ACTIONS = {
   // photo sent after choosing ۲۶ was acknowledged but never built.
   "26": { pending: "custom-content-media", ask: "📷 عکس یا ویدیو را همراه کپشن بفرستید: موضوع | گام یک | گام دو | گام سه\nاگر کیفیت، اندازه و ارتباط تصویر با موضوع تأیید شود، ویدیو خودکار ساخته می‌شود؛ تأیید دستی لازم نیست." },
   "19": { action: "status" },
+  "12": { action: "series-episode" },
+  "13": { action: "credit-status" },
   "20": { action: "undo" },
   "27": { action: "content-radar" },
   "28": { action: "providers" },
@@ -77,17 +68,20 @@ function audioFor(text) {
 
 function videoAction(text) {
   const c = normalize(text);
-  const any = (...words) => words.some((word) => c.includes(word));
   const audio = audioFor(text);
   const withAudio = (action) => ({ action, ...audio });
-  if (any("راهنما", "دستورها", "دستورات", "کمک", "help", "start")) return { action: "help" };
-  if (/^(وضعیت|status)$/.test(c)) return { action: "status" };
-  if (any("پاک کن", "حذف کن", "پاکش کن", "delete", "undo")) return { action: "undo" };
-  if (any("صداها", "صدا minimax", "minimax voice", "voice list")) return { action: "voice-list" };
-  if (any("پروایدر", "provider", "provider list", "سرویس پروایدر")) return { action: "providers" };
+  if (/^(?:راهنما|دستورها|دستورات|کمک|help|start|menu)$/.test(c)) return { action: "help" };
+  if (/^commands$/.test(c)) return { action: "commands" };
+  if (/^(?:new|reset|گفتگوی تازه|گفتگو تازه|شروع دوباره)$/.test(c)) return { action: "reset-chat" };
+  if (/^(?:credit|اعتبار|وضعیت اعتبار|درخواست اعتبار)$/.test(c)) return { action: "credit-status" };
+  if (/^(?:episode|قسمت بعد بساز|قسمت بعدی بساز|ساخت قسمت بعد)$/.test(c)) return { action: "series-episode" };
+  if (/^(?:وضعیت|status|وضعیت ساخت|وضعیت ویدیو|چرا ویدیو ساخته نشد[؟?]?|نتیجه[؟?]?)$/.test(c) || /^(?:ساخت ویدیو را بررسی کن|وضعیت ساخت ویدیو چیست[؟?]?)$/.test(c)) return { action: "status" };
+  if (/^(?:حذف سه ویدیو|حذف ارسال های آخر|undo)$/.test(c)) return { action: "undo" };
+  if (/^(?:صداها|صدا minimax|minimax voice|voice list)$/.test(c)) return { action: "voice-list" };
+  if (/^(?:پروایدر|provider|provider list|سرویس پروایدر)$/.test(c)) return { action: "providers" };
   if (/^(?:ادیت|ویرایش)\s*قلاب\s*[:：]/i.test(c)) return { action: "content-edit-hook", payload: cleanEdit(text, "قلاب") };
   if (/^(?:ادیت|ویرایش)\s*(?:متن|محتوا|اسلاید)\s*[:：]/i.test(c)) return { action: "content-edit-steps", payload: cleanEdit(text, "(?:متن|محتوا|اسلاید)") };
-  if (any("درس آلمانی", "آلمانی بساز", "german lesson", "german a1") && any("بساز", "ساخت", "ویدیو", "make", "build")) return withAudio("build-german-lesson");
+  if (/^(?:درس آلمانی بساز|آلمانی بساز|ساخت درس آلمانی|german lesson|german a1)$/.test(c)) return withAudio("build-german-lesson");
   if (/^(?:تأیید|تایید)\s*(?:محتوا|ویدیو|پیش\s*نویس)$/i.test(c)) return withAudio("content-approve");
   if (/^(?:پیش\s*نویس|نمایش محتوا|دیدن محتوا)$/i.test(c)) return { action: "content-preview" };
   if (/^(?:ویدیو مستقیم|ساخت مستقیم|direct video)\s*[:：]/i.test(c)) {
@@ -97,7 +91,7 @@ function videoAction(text) {
   // Immediate editorial builds used by the production operator. These have
   // fixed, source-checked packs in the repository; they are not vague topic
   // requests and therefore do not need to go through the draft queue.
-  if (any("اپ کاربردی بساز", "نمونه اپ بساز", "اپ جدید بساز")) return withAudio("build-app-pair");
+  if (/^(?:اپ کاربردی بساز|نمونه اپ بساز|اپ جدید بساز)$/.test(c)) return withAudio("build-app-pair");
   if (/^(?:محتوا|ویدیو|ساخت محتوا|custom content|موضوع)\s*[:：]/i.test(c)) {
     const payload = cleanContent(text);
     return payload.trim().length >= 25
@@ -126,31 +120,31 @@ function videoAction(text) {
   // the rule this whole function follows.
   if (/^(تایید|تأیید|approve)\s+تصویر\s+[a-z0-9-]+\s+[۰-۹0-9]+$/i.test(c)) return { action: "approved-screen", payload: c };
   if (/^(تایید|تأیید|approve)\s+(?=[a-z0-9-]*[a-z])[a-z0-9-]+$/i.test(c)) return { action: "approved-feature", payload: c };
-  if (any("تغییر موضوع امروز", "موضوع امروز تغییر", "ایده تازه امروز")) return { action: "plan-today" };
-  if (any("تغییر موضوع فردا", "موضوع فردا تغییر", "ایده تازه فردا")) return { action: "plan-tomorrow" };
-  if (any("برنامه هفته", "موضوعات هفته")) return { action: "plan-week" };
-  if (any("موضوع فردا", "برنامه فردا")) return { action: "plan-tomorrow" };
+  if (/^(?:تغییر موضوع امروز|موضوع امروز تغییر|ایده تازه امروز)$/.test(c)) return { action: "plan-today" };
+  if (/^(?:تغییر موضوع فردا|موضوع فردا تغییر|ایده تازه فردا)$/.test(c)) return { action: "plan-tomorrow" };
+  if (/^(?:برنامه هفته|موضوعات هفته)$/.test(c)) return { action: "plan-week" };
+  if (/^(?:موضوع فردا|برنامه فردا)$/.test(c)) return { action: "plan-tomorrow" };
   if (/^(?:جستجوی جدید|جستجو جدید|جستجوی محتوا|جستجو محتوا|جستجو)\s*[:：]\s*.+/i.test(c)) {
     const payload = String(text).replace(/^\s*(?:جستجوی جدید|جستجو جدید|جستجوی محتوا|جستجو محتوا|جستجو)\s*[:：]\s*/i, "").replace(/[\r\n]+/g, " ").trim().slice(0, 300);
     return payload ? { action: "content-search-live", payload } : { action: "content-search" };
   }
-  if (any("جستجوی محتوا", "جستجو محتوا", "ایده محتوا", "ترند محتوا", "موضوع بیشتر")) return { action: "content-search" };
-  if (any("تحقیق", "اپدیت", "آپدیت", "قابلیت تازه", "research")) return { action: "research" };
+  if (/^(?:جستجوی محتوا|جستجو محتوا|ایده محتوا|ترند محتوا|موضوع بیشتر)$/.test(c)) return { action: "content-search" };
+  if (/^(?:تحقیق|اپدیت|آپدیت|قابلیت تازه|research)$/.test(c)) return { action: "research" };
   // The scored daily shortlist — a distinct question from "research" (what
   // shipped) and from "content-search" (search on a topic I already typed):
   // "of what's out there, which candidate actually clears the bar". "رادار"
   // is a new word specifically so it never collides with either of those.
-  if (any("رادار محتوا", "رادار موضوع", "content radar")) return { action: "content-radar" };
+  if (/^(?:رادار محتوا|رادار موضوع|content radar)$/.test(c)) return { action: "content-radar" };
 
-  if (any("تیک تاک", "تیکتاک", "tiktok", "tik tok") && !any("بساز", "ساخت", "ویدیو", "make", "build")) return { action: "plan-tiktok" };
-  if (any("انستا", "اینستا", "instagram", "insta") && !any("بساز", "ساخت", "ویدیو", "make", "build")) return { action: "plan-instagram" };
-  if (any("ابزار", "هوش مصنوعی", " ai", "tool") && !any("بساز", "ساخت", "ویدیو", "make", "build")) return { action: "plan-tools" };
-  if (any("تیک تاک", "تیکتاک", "tiktok", "tik tok") && any("بساز", "ساخت", "ویدیو", "make", "build")) return withAudio("build-tiktok");
-  if (any("انستا", "اینستا", "instagram", "insta") && any("بساز", "ساخت", "ویدیو", "make", "build")) return withAudio("build-instagram");
-  if (any("ابزار", "هوش مصنوعی", " ai", "tool") && any("بساز", "ساخت", "ویدیو", "make", "build")) return withAudio("build-tools");
+  if (/^(?:تیک تاک|تیکتاک|tiktok|tik tok)$/.test(c)) return { action: "plan-tiktok" };
+  if (/^(?:انستا|اینستا|instagram|insta)$/.test(c)) return { action: "plan-instagram" };
+  if (/^(?:ابزار|هوش مصنوعی|ai tools|tools)$/.test(c)) return { action: "plan-tools" };
+  if (/^(?:تیک تاک|تیکتاک|tiktok|tik tok) بساز$/.test(c)) return withAudio("build-tiktok");
+  if (/^(?:انستا|اینستا|instagram|insta) بساز$/.test(c)) return withAudio("build-instagram");
+  if (/^(?:ابزار|هوش مصنوعی|ai tools|tools) بساز$/.test(c)) return withAudio("build-tools");
   if (/^(فردا|برای فردا|فردا بساز)$/.test(c)) return { action: "build-tomorrow" };
   if (/^(بفرست|ارسال کن|send)$/.test(c)) return { action: "resend" };
-  if (/^(بساز|ساخت همه|هر سه|make|build)(?:\s|$)/.test(c)) return withAudio("build-all");
+  if (/^(?:بساز|ساخت همه|هر سه|make|build)$/.test(c)) return withAudio("build-all");
   return null;
 }
 
@@ -192,6 +186,44 @@ async function telegram(env, method, body) {
 
 async function reply(env, chatId, text) {
   return telegram(env, "sendMessage", { chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true });
+}
+
+async function replyText(env, chatId, body) {
+  // Model output is plain text. Telegram HTML parsing otherwise rejects < or &.
+  const safe = String(body || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return reply(env, chatId, safe.slice(0, 3800));
+}
+
+async function repositoryJson(env, path) {
+  if (!env.GITHUB_TOKEN) return null;
+  const owner = env.GITHUB_OWNER || 'Deutsch-online';
+  const repo = env.GITHUB_REPO || 'gapmedia-video-automation';
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=main`;
+  const result = await fetch(url, {headers:githubHeaders(env)});
+  if (!result.ok) return null;
+  const data = await result.json();
+  if (!data.content || data.encoding !== 'base64') return null;
+  const bytes = Uint8Array.from(atob(data.content.replace(/\s+/g,'')), c => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+async function creditStatus(env, chatId) {
+  const request = await repositoryJson(env,'.cinematic-credit-request.json');
+  if (!request || String(request.chat_id) !== String(chatId)) return 'درخواست اعتبار فعالی برای این گفتگو پیدا نشد.';
+  const labels = {sending:'در حال ارسال',pending:'منتظر پاسخ شما',approved:'تأیید ثبت شده',rejected:'رد شده',running:'در حال اجرا',completed:'تمام شده',expired:'منقضی',superseded:'جایگزین شده','attempt-failed':'تلاش ناموفق'};
+  const expired = ['pending','approved'].includes(request.status) && Date.parse(request.expires_at) <= Date.now();
+  return `اعتبار قسمت ${Number(request.episode) || '?'}: ${expired ? 'منقضی' : labels[request.status] || 'نامشخص'}.\nتنها پاسخ به درخواست فعلی معتبر است؛ /status وضعیت ساخت را نشان می‌دهد.`;
+}
+
+async function seriesStatus(env, chatId) {
+  const state = await repositoryJson(env,'.cinematic-series-state.json');
+  if (!state) return 'فعلاً وضعیت زندهٔ ساخت خوانده نشد؛ کمی بعد دوباره /status را بفرستید.';
+  const episode = Number(state.next_episode) || '?';
+  const phases = {'waiting-for-quota':'منتظر سهمیهٔ GPU','waiting-credit-approval':'منتظر تأیید اعتبار',rendering:'در حال ساخت',paused:'متوقف'};
+  const pending = state.pending?.status ? `؛ وضعیت: ${phases[state.pending.status] || 'در انتظار ادامه'}` : '';
+  const reset=Date.parse(state.quota_recovery?.not_before || '');
+  const quota=Number.isFinite(reset) && reset>Date.now() ? `\nنوبت بعدی سهمیهٔ GPU: ${new Intl.DateTimeFormat('fa-IR',{timeZone:'Europe/Berlin',dateStyle:'short',timeStyle:'short'}).format(reset)} به وقت آلمان.` : '';
+  return `قسمت بعدی: ${episode}${pending}.${quota}\n${await creditStatus(env,chatId)}`;
 }
 
 function githubHeaders(env) {
@@ -321,19 +353,21 @@ function acknowledgementFor(command) {
     return "✅ ساخت واقعی با صدا در فضای ابری شروع شد؛ ویدیوی نهایی پس از موفق‌شدن رندر همین‌جا فرستاده می‌شود.";
   }
   if (action === "build-german-lesson") {
-    return "✅ ساخت درس بعدی آلمانی با صدا شروع شد. نسخه‌های مستقل TikTok و Instagram پس از رندر، همین‌جا ارسال می‌شوند.";
+    return "✅ درخواست درس آلمانی ثبت شد. نتیجهٔ ساخت پس از آماده‌شدن همین‌جا فرستاده می‌شود.";
   }
   return "✅ دستور دریافت شد و در فضای ابری اجرا می‌شود؛ نتیجه همین‌جا ارسال خواهد شد.";
 }
 
 async function history(env, chatId) {
-  if (!env.CHAT_HISTORY) return [];
-  const stored = await env.CHAT_HISTORY.get(`chat:${chatId}`, "json");
+  const storage = env.CHAT_HISTORY || env.BOT_STATE;
+  if (!storage) return [];
+  const stored = await storage.get(`chat:${chatId}`, "json");
   return Array.isArray(stored) ? stored.slice(-MAX_HISTORY) : [];
 }
 
 async function saveHistory(env, chatId, messages) {
-  if (env.CHAT_HISTORY) await env.CHAT_HISTORY.put(`chat:${chatId}`, JSON.stringify(messages.slice(-MAX_HISTORY)), { expirationTtl: 7 * 24 * 60 * 60 });
+  const storage = env.CHAT_HISTORY || env.BOT_STATE;
+  if (storage) await storage.put(`chat:${chatId}`, JSON.stringify(messages.slice(-MAX_HISTORY)), { expirationTtl: 7 * 24 * 60 * 60 });
 }
 
 function menuCode(text) {
@@ -447,7 +481,7 @@ function prepareTopicLocally(raw) {
   return [topic, ...(steps.length ? steps : TOPIC_SCAFFOLD)].join(" | ");
 }
 
-const SYSTEM = `تو دستیار فارسی/دری GapMedia هستی. قانون‌نامهٔ واحد پروژه الزام‌آور است: قبل از ساخت، تاریخچهٔ کامل را برای موضوع، اپ، قابلیت، قلاب و ساختار تکراری بررسی کن. فقط موضوعِ منبع‌دار و مفید؛ هیچ تضمین درآمد، ویو یا وایرال‌شدن؛ و تصویر/ویدیو فقط پس از گیت کیفیت واقعی، مرتبط و کافی. رسانهٔ واقعی پیدا نشد یعنی ابتدا منبع رسمی و مسیر جایگزین را جستجو کن، نه اینکه رابط حدسی یا تصویر ساختگی بسازی. برای ساخت ویدیو از فرمان‌های روشن استفاده می‌شود؛ اگر کاربر دستور مبهم ویدیویی داد، نمونه بده: «تیک‌تاک بساز»، «انستا بساز»، «ابزار بساز»، یا «بساز». اگر کاربر یک متن خام فرستاد و خواست از آن ویدیو/اسلاید بسازی ولی درخواست ناقص بود (مثلاً متن خیلی کوتاه بود یا نکتهٔ واقعی نداشت)، دقیقاً همین فرمت را نشانش بده: «موضوع | نکتهٔ یک | نکتهٔ دو | نکتهٔ سه» و بگو اگر عکس یا اسکرین‌شات واقعیِ همان موضوع را هم همراه پیام بفرستد، ویدیو با همان تصویر ساخته می‌شود؛ بدون عکس واقعی، گیت کیفیت رد می‌کند. هرگز کلید، توکن یا اطلاعات محرمانه را درخواست یا نمایش نده. پاسخ نهایی را مستقیم، در حداکثر چهار خط، در فیلد پاسخ بنویس و فرایند فکرکردن را توضیح نده.`;
+const SYSTEM = `تو دستیار خصوصی فارسی/دری پروژهٔ GapMedia هستی. روشن، دوستانه و کوتاه پاسخ بده؛ برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت اصلی دقیقاً ۶۰ ثانیه است و یک جملهٔ کاربردی آلمانی دارد. دربارهٔ وضعیت اجرا، سهمیه، قیمت یا مشکل فنی اگر دادهٔ زنده در گفتگو نداری، ادعای قطعی نکن؛ کاربر را به /status یا /credit راهنمایی کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده مگر وضعیت تأیید کرده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. هیچ فرمان ساخت، انتشار، حذف یا مصرف اعتبار را از متن گفتگوی عادی اجرا نکن؛ فقط پاسخ بده و اگر لازم است فرمان صریح را معرفی کن. برای اطلاعات متغیر، منبع یا دسترسی زنده نداری؛ این محدودیت را کوتاه بگو. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
 
 function textFromWorkersAI(data) {
   // Workers AI models have used both native `response` and OpenAI-compatible
@@ -524,7 +558,7 @@ action فقط یکی از این‌ها باشد: content-search-live، content-
 }
 
 async function chat(env, chatId, userText) {
-  if (!env.AI) throw new Error("Workers AI binding is unavailable");
+  if (!env.AI) return "پاسخ‌گویی هوشمند موقتاً در دسترس نیست. برای فرمان‌ها /help را بفرستید.";
   const prior = await history(env, chatId);
   const messages = [{ role: "system", content: SYSTEM }, ...prior, { role: "user", content: userText.slice(0, 2000) }];
   // Llama 4 Scout returns direct `response` text (unlike reasoning-first
@@ -533,7 +567,7 @@ async function chat(env, chatId, userText) {
   const data = await env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
     messages,
     max_tokens: 420,
-    temperature: 0.65,
+    temperature: 0.45,
   });
   const answer = textFromWorkersAI(data) || "فعلاً پاسخ آماده نشد؛ دوباره بنویسید.";
   await saveHistory(env, chatId, [...prior, { role: "user", content: userText.slice(0, 2000) }, { role: "assistant", content: answer }]);
@@ -585,7 +619,9 @@ export default {
     const input = message?.text || message?.caption || "";
     if (!input || !message?.chat?.id) return new Response("ok");
     const chatId = String(message.chat.id);
-    if (env.ALLOWED_CHAT_ID && chatId !== String(env.ALLOWED_CHAT_ID)) return new Response("ok");
+    if (message.chat?.type && message.chat.type !== "private") return new Response("ok");
+    const owner = env.ALLOWED_CHAT_ID || (await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
+    if (!owner || chatId !== String(owner)) return new Response("ok");
     // The bot's updates arrive HERE, by webhook — which is exactly why the
     // repo cannot discover this chat for itself: Telegram answers getUpdates
     // with «Conflict: can't use getUpdates method while webhook is active»
@@ -639,6 +675,9 @@ export default {
         return new Response("ok");
       }
       let command = chosen ? { action: chosen.action, voiceMode: chosen.voiceMode || "on" } : null;
+      // Controls stay available while a draft is waiting for its next message.
+      const control = videoAction(input);
+      if (!command && control && ["help","commands","status","credit-status","reset-chat","series-episode"].includes(control.action)) command = control;
       if (!command) {
         const pending = await pendingFor(env, chatId);
         if (pending) {
@@ -671,18 +710,30 @@ export default {
       // request to make that media into a video.  Do not route it through the
       // generic chat or make the creator repeat «ویدیو مستقیم». The media is
       // still checked for quality by the render-time visual gate.
-      if (!command && (message.photo?.length || message.video || message.animation || (message.document?.mime_type || "").startsWith("video/")) && input.trim().length >= 25) {
+      if (!command && (message.photo?.length || message.video || message.animation || (message.document?.mime_type || "").startsWith("video/")) && input.trim().length >= 25 && input.includes("|")) {
         command = { action: "custom-content-media", payload: input, ...audioFor(input) };
       }
-      if (!command) command = videoAction(input);
+      if (!command) command = control || videoAction(input);
       // Conversational requests are classified only after all explicit menu,
       // pending-state, media and command paths have had priority.
-      if (!command) command = await chatIntent(env, input);
+      // Free-form questions remain questions. The model never authorizes a build.
       if (command) {
         if (command.action === "help") {
           await reply(env, chatId, HELP);
+        } else if (command.action === "commands") {
+          await reply(env, chatId, LEGACY_HELP);
+        } else if (command.action === "reset-chat") {
+          await (env.CHAT_HISTORY || env.BOT_STATE)?.delete(`chat:${chatId}`);
+          await clearPending(env, chatId);
+          await clearSelection(env, chatId);
+          await reply(env, chatId, "گفتگوی تازه شروع شد. پرسشتان را بنویسید.");
+        } else if (command.action === "credit-status") {
+          await reply(env, chatId, await creditStatus(env, chatId));
+        } else if (command.action === "series-episode") {
+          await writeGithubRequest(env, ".cinematic-series-request.json", {requestedAt:new Date().toISOString(),source:"telegram-cloud-worker",requestId:crypto.randomUUID()}, "telegram: request next cartoon episode");
+          await reply(env, chatId, "✅ درخواست قسمت بعد ثبت شد؛ اجرا به سهمیهٔ GPU و تأیید جداگانهٔ اعتبار وابسته است.");
         } else if (command.action === "status") {
-          await reply(env, chatId, "✅ بات آنلاین است. چت فوری و فرمان ساخت ویدیو فعال‌اند.");
+          await reply(env, chatId, await seriesStatus(env, chatId));
         } else if (command.action === "custom-help") {
           await reply(env, chatId, "برای ساخت مستقیم، عکس یا ویدیو را همراه کپشن بفرستید — موضوع و گام‌ها را با «|» جدا کنید:\n\n<code>موضوع | گام یک | گام دو | گام سه</code>\n\nاگر گیت کیفیت تصویر واقعی، اندازه و ارتباط با موضوع را تأیید کند، بدون تأیید دستی ساخته می‌شود.");
         } else {
@@ -713,7 +764,7 @@ export default {
           await reply(env, chatId, acknowledgementFor(command));
         }
       } else {
-        await reply(env, chatId, await chat(env, chatId, input));
+        await replyText(env, chatId, await chat(env, chatId, input));
       }
     } catch (error) {
       console.error(error);
@@ -725,3 +776,4 @@ export default {
 
 // Kept outside the HTTP handler solely for deterministic local command tests.
 export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch };
+

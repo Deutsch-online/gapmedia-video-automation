@@ -1,8 +1,8 @@
-name: Deploy credit buttons to active Telegram webhook
+name: Deploy Telegram chatbot to active webhook
 on:
   push:
     branches: [main]
-    paths: [worker/src/credit.js]
+    paths: [worker/src/credit.js, worker/src/index.js, worker/set-commands.mjs, worker/test-chatbot.mjs]
 permissions:
   contents: read
 jobs:
@@ -23,9 +23,18 @@ jobs:
           fi
       - run: npm ci
         working-directory: worker
+      - name: Verify Telegram command and chat behavior
+        run: |
+          node worker/test-commands.mjs
+          node worker/test-chatbot.mjs
       - name: Deploy existing worker
         working-directory: worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy
+
+      - name: Update Telegram command menu
+        run: node worker/set-commands.mjs
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
