@@ -1,6 +1,78 @@
 {
-  "at": "2026-10-17T05:31:23.660Z",
+  "at": "2026-10-19T06:10:29.137Z",
   "rows": [
+    {
+      "cat": "instagram",
+      "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
+      "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/",
+      "date": "2026-10-19",
+      "sources": 8,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram's new feature shows users who appear most ...",
+      "url": "https://mashable.com/article/instagram-accounts-see-most-often-transparency",
+      "date": "2026-10-18",
+      "sources": 8,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "tools",
+      "title": "Creative AI Briefing: October 18, 2026 (Morning) | Fervor Creative AI",
+      "url": "https://fervorcreativeai.com/briefings/2026-10-18-0513/",
+      "date": "2026-10-18",
+      "sources": 7,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Seedance 2.5 is here: video with its own sound, dialogue and up to 30 seconds a shot | Studio Pro",
+      "url": "https://nanostudiopro.com/blog/seedance-2-5-video-with-sound-dialogue-and-up-to-30-seconds",
+      "date": "2026-10-17",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "The Edits assistant is live for creators in the US. — P2P Labs",
+      "url": "https://p2plabs.asia/blog/en/the-edits-assistant-is-live-for-us-creators/",
+      "date": "2026-10-16",
+      "sources": 6,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Comment Update: What Brands Need to Know | Escapade",
+      "url": "https://escapadepr.com/tiktok-comment-update-brand-marketing-trends/",
+      "date": "2026-10-16",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "Brands Can Now Find Fast-Growing TikTok Creators with Tiger Finder’s Rising Stars - EIN Presswire",
+      "url": "https://www.einnews.com/pr_news/950141376/brands-can-now-find-fast-growing-tiktok-creators-with-tiger-finder-s-rising-stars",
+      "date": "2026-10-16",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "H3 Max, Wan 3.0 and GPT Image 2.5: one puddle, five video models — ChatPlus Blog",
+      "url": "https://chatplus.com/blog/h3-max-wan-3-gpt-image-2-5",
+      "date": "2026-10-16",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
     {
       "cat": "instagram",
       "title": "Meta adds audio links and reference Reels to Edits | Social Media Today",
@@ -8,52 +80,7 @@
       "date": "2026-10-15",
       "sources": 8,
       "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "instagram",
-      "title": "The Edits assistant is live for creators in the US. — P2P Labs",
-      "url": "https://p2plabs.asia/blog/en/the-edits-assistant-is-live-for-us-creators/",
-      "date": "2026-10-16",
-      "sources": 8,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tools",
-      "title": "Six AI video tools to try this week, and one deadline",
-      "url": "https://sloptvnews.com/what-to-try-this-week-ai-video-six-picks-october-16-2026/",
-      "date": "2026-10-16",
-      "sources": 8,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tools",
-      "title": "ByteDance Omnihuman 2.0: What the New AI Avatar Model Can Actually Do | MindStudio",
-      "url": "https://www.mindstudio.ai/blog/bytedance-omnihuman-2-avatar-video",
-      "date": "2026-10-16",
-      "sources": 7,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tools",
-      "title": "Kandinsky 6.0: Free MIT AI Video With Sound and Lip-Sync",
-      "url": "https://creativeaishow.com/kandinsky-6-0-is-free-and-mit-open-ai-video-with-synced-sound-and-lip-sync-plus-a-16-gb-gpu-path/",
-      "date": "2026-10-16",
-      "sources": 8,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram Reels Gets Smarter with First Draft, Edits App & Analytics",
-      "url": "https://www.creatornewsdesk.com/platforms/instagram/instagram-reels-gets-smarter-with-first-draft-edits-app-analytics/",
-      "date": "2026-10-15",
-      "sources": 8,
-      "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "instagram",
@@ -62,43 +89,25 @@
       "date": "2026-10-14",
       "sources": 6,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tiktok",
       "title": "TikTok Smart+ Creative Selection explained | Firebelly Media",
       "url": "https://firebellymedia.co.uk/news/tiktok-smart-plus-creative-selection/",
       "date": "2026-10-14",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "Brands Can Now Find Fast-Growing TikTok Creators with Tiger Finder’s Rising Stars - The Courier Journal",
-      "url": "https://www.courier-journal.com/press-release/story/243042/brands-can-now-find-fast-growing-tiktok-creators-with-tiger-finders-rising-stars/",
-      "date": "2026-10-16",
-      "sources": 8,
-      "clear": false,
-      "score": 26
+      "score": 25
     },
     {
       "cat": "tools",
       "title": "Higgsfield takes AI video from 1 minute to over 10 | OpenAI",
       "url": "https://openai.com/index/higgsfield-longer-videos-voice/",
       "date": "2026-10-13",
-      "sources": 7,
-      "clear": true,
-      "score": 26
-    },
-    {
-      "cat": "tools",
-      "title": "‎Gemini Apps' release updates & improvements",
-      "url": "https://gemini.google/release-notes/",
-      "date": "2026-10-13",
       "sources": 6,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tiktok",
@@ -107,7 +116,7 @@
       "date": "2026-10-12",
       "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "tiktok",
@@ -116,81 +125,72 @@
       "date": "2026-10-12",
       "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 23
     },
     {
-      "cat": "instagram",
-      "title": "A Creator Spotted It First: Instagram Is Quietly Testing a Netflix-Style Way to Binge Your Reels | The Coaching Times",
-      "url": "https://www.thecoaching-times.com/story/a-creator-spotted-it-first-instagram-is-quietly-testing-a-netflix-style-way-to-b",
-      "date": "2026-10-14",
-      "sources": 7,
-      "clear": false,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Folds Creator Videos Into AI Ad Pipeline",
-      "url": "https://www.parasocialmagazine.com/news/tiktok-folds-creator-videos-into-ai-ad-pipeline/",
-      "date": "2026-10-11",
-      "sources": 8,
+      "cat": "tools",
+      "title": "eroq V2: a whole new studio, and now it sings",
+      "url": "https://eroq.ai/blog/eroq-v2",
+      "date": "2026-10-16",
+      "sources": 1,
       "clear": true,
-      "score": 24
+      "score": 11
     }
   ],
   "shown": [
     {
       "n": 1,
       "cat": "instagram",
-      "title": "Meta adds audio links and reference Reels to Edits | Social Media Today",
-      "url": "https://www.socialmediatoday.com/news/meta-adds-audio-links-and-reference-reels-to-edits/833192/"
+      "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
+      "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/"
     },
     {
       "n": 2,
+      "cat": "instagram",
+      "title": "Instagram's new feature shows users who appear most ...",
+      "url": "https://mashable.com/article/instagram-accounts-see-most-often-transparency"
+    },
+    {
+      "n": 3,
       "cat": "instagram",
       "title": "The Edits assistant is live for creators in the US. — P2P Labs",
       "url": "https://p2plabs.asia/blog/en/the-edits-assistant-is-live-for-us-creators/"
     },
     {
-      "n": 3,
-      "cat": "instagram",
-      "title": "Instagram Reels Gets Smarter with First Draft, Edits App & Analytics",
-      "url": "https://www.creatornewsdesk.com/platforms/instagram/instagram-reels-gets-smarter-with-first-draft-edits-app-analytics/"
-    },
-    {
       "n": 4,
       "cat": "tools",
-      "title": "Six AI video tools to try this week, and one deadline",
-      "url": "https://sloptvnews.com/what-to-try-this-week-ai-video-six-picks-october-16-2026/"
+      "title": "Creative AI Briefing: October 18, 2026 (Morning) | Fervor Creative AI",
+      "url": "https://fervorcreativeai.com/briefings/2026-10-18-0513/"
     },
     {
       "n": 5,
       "cat": "tools",
-      "title": "ByteDance Omnihuman 2.0: What the New AI Avatar Model Can Actually Do | MindStudio",
-      "url": "https://www.mindstudio.ai/blog/bytedance-omnihuman-2-avatar-video"
+      "title": "Seedance 2.5 is here: video with its own sound, dialogue and up to 30 seconds a shot | Studio Pro",
+      "url": "https://nanostudiopro.com/blog/seedance-2-5-video-with-sound-dialogue-and-up-to-30-seconds"
     },
     {
       "n": 6,
       "cat": "tools",
-      "title": "Kandinsky 6.0: Free MIT AI Video With Sound and Lip-Sync",
-      "url": "https://creativeaishow.com/kandinsky-6-0-is-free-and-mit-open-ai-video-with-synced-sound-and-lip-sync-plus-a-16-gb-gpu-path/"
+      "title": "H3 Max, Wan 3.0 and GPT Image 2.5: one puddle, five video models — ChatPlus Blog",
+      "url": "https://chatplus.com/blog/h3-max-wan-3-gpt-image-2-5"
     },
     {
       "n": 7,
       "cat": "tiktok",
-      "title": "TikTok Smart+ Creative Selection explained | Firebelly Media",
-      "url": "https://firebellymedia.co.uk/news/tiktok-smart-plus-creative-selection/"
+      "title": "TikTok Comment Update: What Brands Need to Know | Escapade",
+      "url": "https://escapadepr.com/tiktok-comment-update-brand-marketing-trends/"
     },
     {
       "n": 8,
       "cat": "tiktok",
-      "title": "Brands Can Now Find Fast-Growing TikTok Creators with Tiger Finder’s Rising Stars - The Courier Journal",
-      "url": "https://www.courier-journal.com/press-release/story/243042/brands-can-now-find-fast-growing-tiktok-creators-with-tiger-finders-rising-stars/"
+      "title": "Brands Can Now Find Fast-Growing TikTok Creators with Tiger Finder’s Rising Stars - EIN Presswire",
+      "url": "https://www.einnews.com/pr_news/950141376/brands-can-now-find-fast-growing-tiktok-creators-with-tiger-finder-s-rising-stars"
     },
     {
       "n": 9,
       "cat": "tiktok",
-      "title": "TikTok Introduces AI Creator Search: Could It Change How Influencers Get Brand Deals?",
-      "url": "https://www.theinfluencerpost.com/p/tiktok-introduces-ai-creator-search"
+      "title": "TikTok Smart+ Creative Selection explained | Firebelly Media",
+      "url": "https://firebellymedia.co.uk/news/tiktok-smart-plus-creative-selection/"
     }
   ]
 }
