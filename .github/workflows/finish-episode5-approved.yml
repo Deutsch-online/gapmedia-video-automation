@@ -1,0 +1,101 @@
+name: Finish authorized episode five final fifteen seconds
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/finish-episode5-approved.py]
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check schedule, continuity and delivery safeguards
+        run: |
+          python -m py_compile ai-cast/cinematic-series.py
+          python -m unittest discover -s tests -p test_cinematic_series.py -v
+          python -m unittest discover -s tests -p test_wan2gp_backend.py -v
+          python -m unittest discover -s tests -p test_cinematic_budget.py -v
+          python -m py_compile ai-cast/wan2gp_worker.py
+          python ai-cast/cinematic-series.py check
+          node --check ai-cast/cinematic-series-bot.mjs
+      - name: Select one undelivered Berlin day
+        id: gate
+        env:
+          INPUT_FORCE: 'true'
+          CINEMATIC_CREDIT_APPROVAL: episode5-final15s-20261019
+        run: |
+          set -euo pipefail
+          force=false
+          if [[ "${INPUT_FORCE:-false}" == true ]]; then force=true; fi
+          if [[ "$GITHUB_EVENT_NAME" == push ]] && git diff --name-only HEAD~1 HEAD | grep -Fxq .cinematic-series-request.json; then
+            force=true
+          fi
+          echo "force=$force" >> "$GITHUB_OUTPUT"
+          if [[ "$force" == true ]]; then
+            python ai-cast/cinematic-series.py gate --force
+          else
+            python ai-cast/cinematic-series.py gate
+          fi
+      - uses: actions/setup-node@v4
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        with:
+          node-version: '22'
+      - name: Install production media tools
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8' gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Restore completed cinematic scenes
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-39209194055
+          fail-on-cache-miss: true
+      - name: Make, check and deliver the next 60-second episode
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PAID_FALLBACK: 'off'
+          CINEMATIC_CREDIT_APPROVAL: episode5-final15s-20261019
+          REQUIRE_VOICE: 'on'
+          FORCE_TODAY: ${{ steps.gate.outputs.force }}
+          PYTHONUNBUFFERED: '1'
+        run: python ai-cast/finish-episode5-approved.py
+      - name: Save completed scenes for bounded recovery
+        if: always() && github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Keep final episodes and quality evidence
+        if: always() && github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cinematic-series-${{ github.run_id }}
+          path: |
+            renders/cinematic-series/**/e*-cinematic-fa-de.mp4
+            renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/delivery-*.json
+            renders/cinematic-series/**/quality.json
+            renders/cinematic-series/**/episode.json
+            renders/cinematic-series/**/contact.jpg
+          if-no-files-found: warn
+          retention-days: 14

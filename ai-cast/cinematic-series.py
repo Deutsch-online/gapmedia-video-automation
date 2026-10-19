@@ -74,6 +74,9 @@ def due(state, config, now=None, force=False):
     if (state.get('pending') or {}).get('status') == 'dispatching':
         return False, 'delivery-needs-reconciliation', date
     recovery = min(1, max(0, int(state.get('manual_recovery', {}).get(date, 0))))
+    # Explicit one-off completion authorization; delivery reconciliation above still applies.
+    if force and os.getenv('CINEMATIC_CREDIT_APPROVAL') == 'episode5-final15s-20261019' and state.get('next_episode') == 5:
+        return True, 'authorized-final-three-takes', date
     quota = state.get('quota_recovery', {})
     quota_extra = 0
     if quota and (state.get('pending') or {}).get('status') == 'render-failed':
@@ -432,6 +435,7 @@ def render(plan, config, preview=False):
     sys.path.insert(0, str(ROOT / 'ai-cast'))
     import shots
     import cinematic_speech as speech
+    import cinematic_budget as budget
     from gradio_client import handle_file
     from PIL import Image
     ep = ('preview-' if preview else '') + f"e{plan['episode']:04}"
@@ -470,6 +474,7 @@ def render(plan, config, preview=False):
         audios.append(aligned)
     parts = []
     for i, scene in enumerate(plan['scenes']):
+        budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
         signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
@@ -499,7 +504,7 @@ def render(plan, config, preview=False):
                         {'input_image': handle_file(str(speaker_refs[scene['speaker']])), 'prompt': prompt,
                          'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
-                result = shots.run_free(create_still)
+                result = budget.run_gpu(create_still, required_seconds=120)
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
@@ -509,13 +514,17 @@ def render(plan, config, preview=False):
                            plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
+        print(f'Cached scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
+    # Finish all GPU work before spending CPU time on layout and muxing.
+    for i, scene in enumerate(plan['scenes']):
+        clip = cache / f'{i:02}.mp4'
         part = folder / f'part-{i:02}.mp4'
         command(['ffmpeg', '-y', '-v', 'error', '-i', clip, '-i', audios[i], '-filter_complex',
                  '[0:v]' + scene_layout() + '[v];'
                  '[1:a]atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         parts.append(part)
-        print(f'Completed scene {i+1}/13 of episode {plan["episode"]}', flush=True)
+        print(f'Completed scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
     ass = build_subtitles(plan)
     subs = folder / 'subtitles.ass'
     subs.write_text(ass, encoding='utf-8')
@@ -641,12 +650,22 @@ def production(force=False):
         final = render(plan, config)
     except Exception as exc:
         state['pending']['status'] = 'render-failed'
+        if 'credit approval required' in str(exc):
+            state['pending']['credit_approval_required'] = True
+            state['pending']['credit_reason'] = str(exc)[:500]
         if 'quota' in str(exc).lower():
             # One deferred continuation per day; never occupy a runner waiting for GPU credits.
             state['quota_recovery'] = {'date': date, 'not_before':
                 gpu_retry_at(str(exc)).isoformat(),
                 'reason': 'ZeroGPU quota exhausted'}
         checkpoint(state)
+        if state['pending'].get('credit_approval_required') and not state['pending'].get('credit_notice_status'):
+            state['pending']['credit_notice_status'] = 'dispatching'
+            checkpoint(state)
+            notice = bot('request-credit')
+            state['pending']['credit_notice_status'] = 'sent'
+            state['pending']['credit_notice_message_id'] = notice['message_id']
+            checkpoint(state)
         raise
     # Complete media preparation before declaring an uncertain upload intent.
     conform_duration(final)

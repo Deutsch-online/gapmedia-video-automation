@@ -29,11 +29,19 @@ def audio_sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 def aligned_audio(source, target):
+    target = Path(target)
+    marker = target.with_suffix('.alignment.json')
+    signature = {'source': audio_sha(source), 'timing': '120ms-5s-mono48k-v1'}
+    if target.exists() and marker.exists():
+        saved = json.loads(marker.read_text())
+        if saved.get('signature') == signature and saved.get('wav') == audio_sha(target):
+            return str(target)
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', str(source), '-af',
                     'adelay=120|120,apad,atrim=duration=5,aresample=48000',
                     '-ar', '48000', '-ac', '1', '-c:a', 'pcm_s16le', str(target)], check=True)
     if abs(float(probe(target)['format']['duration']) - 5) > .00001:
         raise RuntimeError('The speaking model and final mix require the same exact five-second WAV')
+    marker.write_text(json.dumps({'signature': signature, 'wav': audio_sha(target)}))
     return str(target)
 
 def generate(png, audio, output, motion, seed):
@@ -61,7 +69,8 @@ def generate(png, audio, output, motion, seed):
             if isinstance(result, dict):
                 result = result.get('path')
         shutil.copyfile(result, output)
-    shots.run_free(call)
+    from cinematic_budget import run_gpu
+    run_gpu(call, required_seconds=480)
 
 def ensure_clip(png, audio, output, motion, seed):
     output = Path(output)
