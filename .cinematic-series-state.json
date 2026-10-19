@@ -737,7 +737,7 @@
       ]
     },
     "date": "2026-10-19",
-    "status": "rendering"
+    "status": "render-failed"
   },
   "attempts": {
     "2026-10-15": 2,
@@ -752,7 +752,7 @@
   },
   "quota_recovery": {
     "date": "2026-10-19",
-    "not_before": "2026-10-19T11:45:20.866570+00:00",
-    "reason": "Provider reset from episode-four generation; resume the newly requested micro-dialogue episode only after that reset"
+    "not_before": "2026-10-20T13:17:56.706957+00:00",
+    "reason": "ZeroGPU quota exhausted"
   }
 }
