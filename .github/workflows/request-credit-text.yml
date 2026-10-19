@@ -1,0 +1,27 @@
+name: Send private text credit approval request
+on:
+  push:
+    paths: ['ai-cast/request-credit-text.mjs']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-telegram
+  cancel-in-progress: false
+jobs:
+  request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/test-credit-text.mjs
+      - run: node ai-cast/request-credit-text.mjs
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}

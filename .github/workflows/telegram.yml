@@ -221,6 +221,14 @@ jobs:
             if printf '%s\n' "$changed" | grep -qx '\.video-request\.json'; then IS_VIDEO_REQUEST_PUSH=true; fi
           fi
           if [ "$EVENT_NAME" = "push" ] && [ "$IS_VIDEO_REQUEST_PUSH" = "true" ]; then
+            # Intercept scoped credit commands before legacy feature/topic routing.
+            if node ai-cast/consume-credit-text.mjs > /tmp/credit-result; then
+              cat /tmp/credit-result >> "$GITHUB_OUTPUT"
+              exit 0
+            else
+              credit_status=$?
+              if [ "$credit_status" != "3" ]; then exit "$credit_status"; fi
+            fi
             request_action=$(jq -r '.action // "none"' .video-request.json)
             # jq emits a final newline.  Trim after flattening it, otherwise
             # a catalogue id such as "tts-voice" reaches the renderer as
@@ -718,3 +726,4 @@ jobs:
           else
             gh workflow run cinematic-series.yml --repo "$REPO" --ref main -f force=true
           fi
+

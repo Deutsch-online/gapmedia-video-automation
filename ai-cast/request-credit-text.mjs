@@ -1,0 +1,10 @@
+import {readFileSync} from 'node:fs';
+import {telegramConfig,verifyDelivery} from '../lib/telegram.mjs';
+import {requestCredit} from '../lib/cinematic-credit.mjs';
+const tg=telegramConfig(process.env);
+const check=await verifyDelivery({token:tg.token,chatId:tg.reviewChatId,requirePrivate:true});
+if (!check.ok || check.chat?.type !== 'private' || String(check.chat.id)!==String(tg.reviewChatId)) throw new Error('Private owner chat verification required');
+const plan=JSON.parse(readFileSync('ai-cast/newcomer-preview-plan.json','utf8'));
+process.env.CREDIT_REPLACE_PENDING='true';
+const result=await requestCredit(tg,{kind:'preview',plan,credit_from_scene:0});
+console.log('TEXT_CREDIT_PROMPT_MESSAGE_ID='+result.message_id);
