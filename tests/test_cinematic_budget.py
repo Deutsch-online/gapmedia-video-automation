@@ -29,11 +29,38 @@ class BudgetTests(unittest.TestCase):
             read.assert_not_called()
             b.guard('token', 480)
 
-    def test_authorization_cannot_leak_to_other_episodes_or_finished_takes(self):
-        with patch.dict(os.environ, {'CINEMATIC_CREDIT_APPROVAL': 'episode5-final15s-20261019'}):
-            for episode, index, allowed in [(5, 8, False), (5, 9, True), (5, 11, True), (5, 12, False), (6, 9, False)]:
-                b.set_scene(episode, index)
-                self.assertEqual(b.credit_authorized(), allowed)
+    def test_old_environment_permissions_no_longer_authorize_spending(self):
+        for permission in ('episode5-final15s-20261019', 'door-style-preview-20261019'):
+            with patch.dict(os.environ, {'CINEMATIC_CREDIT_APPROVAL': permission}):
+                b.set_scene(5, 9)
+                self.assertFalse(b.credit_authorized())
+
+    def test_only_claimed_same_run_and_plan_can_spend(self):
+        import tempfile, json, hashlib
+        from pathlib import Path
+        plan = {'episode': 6, 'scenes': [{'de': 'Hallo', 'fa': 'سلام'}]}
+        digest = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as directory:
+            old = os.getcwd()
+            try:
+                os.chdir(directory)
+                Path('.cinematic-series-state.json').write_text(json.dumps({'pending': {'plan': plan}}))
+                request = {'status': 'running', 'active_run': '100:1', 'plan_sha': digest, 'episode': 6, 'scenes': [0]}
+                def save():
+                    Path('.cinematic-credit-request.json').write_text(json.dumps(request))
+                save()
+                with patch.dict(os.environ, {'GITHUB_RUN_ID': '100', 'GITHUB_RUN_ATTEMPT': '1'}):
+                    b.set_scene(6, 0)
+                    self.assertTrue(b.credit_authorized())
+                    b.set_scene(6, 1)
+                    self.assertFalse(b.credit_authorized())
+                    b.set_scene(6, 0)
+                    request['active_run'] = '101:1'; save()
+                    self.assertFalse(b.credit_authorized())
+                    request['active_run'] = '100:1'; request['status'] = 'approved'; save()
+                    self.assertFalse(b.credit_authorized())
+            finally:
+                os.chdir(old)
 
 
 if __name__ == '__main__':

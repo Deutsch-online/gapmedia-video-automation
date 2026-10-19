@@ -47,6 +47,7 @@ jobs:
           python -m py_compile ai-cast/wan2gp_worker.py
           python ai-cast/cinematic-series.py check
           node --check ai-cast/cinematic-series-bot.mjs
+          node --test tests/test-cinematic-credit.mjs
       - name: Select one undelivered Berlin day
         id: gate
         env:

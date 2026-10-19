@@ -62,6 +62,30 @@ def local_date(now=None):
     now = now or datetime.now(timezone.utc)
     return now.astimezone(ZoneInfo('Europe/Berlin'))
 
+CREDIT_REQUEST = Path('.cinematic-credit-request.json')
+
+
+def approved_credit(state):
+    request = load_json(CREDIT_REQUEST, {})
+    plan = (state.get('pending') or {}).get('plan')
+    if not plan or request.get('status') != 'approved':
+        return False
+    try:
+        digest = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        return (request['plan_sha'] == digest and request['episode'] == state['next_episode']
+                and datetime.fromisoformat(request['expires_at'].replace('Z', '+00:00')) > datetime.now(timezone.utc))
+    except (ValueError, TypeError, KeyError):
+        return False
+
+
+def close_credit_attempt(status):
+    request = load_json(CREDIT_REQUEST, {})
+    run = os.getenv('GITHUB_RUN_ID', '') + ':' + os.getenv('GITHUB_RUN_ATTEMPT', '1')
+    if request.get('status') == 'running' and request.get('active_run') == run:
+        request['status'] = status
+        atomic_json(CREDIT_REQUEST, request)
+
+
 def due(state, config, now=None, force=False):
     local = local_date(now)
     date = local.date().isoformat()
@@ -74,9 +98,8 @@ def due(state, config, now=None, force=False):
     if (state.get('pending') or {}).get('status') == 'dispatching':
         return False, 'delivery-needs-reconciliation', date
     recovery = min(1, max(0, int(state.get('manual_recovery', {}).get(date, 0))))
-    # Explicit one-off completion authorization; delivery reconciliation above still applies.
-    if force and os.getenv('CINEMATIC_CREDIT_APPROVAL') == 'episode5-final15s-20261019' and state.get('next_episode') == 5:
-        return True, 'authorized-final-three-takes', date
+    if approved_credit(state):
+        return True, 'telegram-approved-credit', date
     quota = state.get('quota_recovery', {})
     quota_extra = 0
     if quota and (state.get('pending') or {}).get('status') == 'render-failed':
@@ -304,6 +327,8 @@ def checkpoint(state):
     command(['git', 'config', 'user.name', 'github-actions[bot]'])
     command(['git', 'config', 'user.email', 'github-actions[bot]@users.noreply.github.com'])
     command(['git', 'add', '-f', STATE])
+    if CREDIT_REQUEST.exists():
+        command(['git', 'add', '-f', CREDIT_REQUEST])
     diff = subprocess.run(['git', 'diff', '--cached', '--quiet'])
     if diff.returncode == 0:
         return
@@ -655,12 +680,26 @@ def production(force=False):
     plan = pending['plan'] if pending else make_plan(state)
     validate_plan(plan, state['next_episode'], state['history'])
     state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
+    if approved_credit(state):
+        if not os.getenv('GITHUB_RUN_ID'):
+            raise RuntimeError('Credit authorization requires a durable workflow run')
+        request = load_json(CREDIT_REQUEST)
+        request['status'] = 'running'
+        request['active_run'] = os.environ['GITHUB_RUN_ID'] + ':' + os.getenv('GITHUB_RUN_ATTEMPT', '1')
+        atomic_json(CREDIT_REQUEST, request)
+        for key in ('credit_approval_required', 'credit_notice_status', 'credit_notice_message_id'):
+            state['pending'].pop(key, None)
     checkpoint(state)
     try:
         final = render(plan, config)
     except Exception as exc:
+        close_credit_attempt('attempt-failed')
         state['pending']['status'] = 'render-failed'
-        if 'credit approval required' in str(exc):
+        if 'quota' in str(exc).lower():
+            import cinematic_budget
+            if cinematic_budget.SCENE is None:
+                raise RuntimeError('Cannot determine the credit request scene scope') from exc
+            state['pending']['credit_from_scene'] = cinematic_budget.SCENE[1]
             state['pending']['credit_approval_required'] = True
             state['pending']['credit_reason'] = str(exc)[:500]
         if 'quota' in str(exc).lower():
@@ -677,6 +716,8 @@ def production(force=False):
             state['pending']['credit_notice_message_id'] = notice['message_id']
             checkpoint(state)
         raise
+    close_credit_attempt('completed')
+    checkpoint(state)
     # Complete media preparation before declaring an uncertain upload intent.
     conform_duration(final)
     quality_path = Path(final).parent / 'quality.json'

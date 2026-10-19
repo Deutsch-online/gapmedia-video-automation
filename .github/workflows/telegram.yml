@@ -195,6 +195,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
           INPUT_ACTION: ${{ inputs.action }}
           INPUT_PICK: ${{ inputs.pick }}
           INPUT_PAYLOAD: ${{ inputs.payload }}
@@ -695,3 +696,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: node undo-send.mjs 3 --daily
+
+      - name: Resume a specifically approved cinematic episode
+        if: steps.cmd.outputs.CREDIT_APPROVED == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: gh workflow run cinematic-series.yml --repo "$REPO" --ref main -f force=true

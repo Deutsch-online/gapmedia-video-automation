@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { loadEnv, telegramConfig, sendMessage, getUpdates } from "./lib/telegram.mjs";
 import { rememberBotChat, readBotChat } from "./lib/bot-chat.mjs";
+import { handleCreditCallback } from './lib/cinematic-credit.mjs';
 import { parseCommand, HELP_TEXT } from "./lib/commands.mjs";
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
@@ -93,6 +94,7 @@ const cleanPayload = (t) =>
 
 for (const u of updates) {
   highest = Math.max(highest, u.update_id);
+  if (u.callback_query && await handleCreditCallback(u.callback_query, tg)) continue;
   const msg = u.message || u.channel_post;
   if (!msg) continue;
   // The bot only ever listened to TELEGRAM_CHAT_ID, which is the channel — so a
@@ -184,4 +186,3 @@ if (action === "help") {
 } else {
   console.log("ACTION=none");
 }
-

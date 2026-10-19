@@ -16,10 +16,20 @@ def set_scene(episode, index):
 
 
 def credit_authorized():
-    approval = os.getenv('CINEMATIC_CREDIT_APPROVAL')
-    if approval == 'door-style-preview-20261019':
-        return SCENE in ((9001, 0), (9001, 1), (9001, 2))
-    return approval == 'episode5-final15s-20261019' and SCENE in ((5, 9), (5, 10), (5, 11))
+    import hashlib
+    from pathlib import Path
+    run = os.getenv('GITHUB_RUN_ID')
+    if not run or SCENE is None:
+        return False
+    try:
+        request = json.loads(Path('.cinematic-credit-request.json').read_text())
+        state = json.loads(Path('.cinematic-series-state.json').read_text())
+        plan = state['pending']['plan']
+        digest = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+        return (request['status'] == 'running' and request['active_run'] == run + ':' + os.getenv('GITHUB_RUN_ATTEMPT', '1')
+                and request['plan_sha'] == digest and request['episode'] == SCENE[0] and SCENE[1] in request['scenes'])
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
 
 
 def read_quota(token):

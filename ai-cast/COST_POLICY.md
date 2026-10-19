@@ -30,3 +30,12 @@ allowance is a goal, not a guarantee with the current hosted model.
 The 480p, native-speed single-speaker model and quality gates stay in force.
 Reducing inference steps or changing models needs an actual quality comparison;
 unverified speed estimates are not presented as savings.
+
+## Telegram approval supersedes old environment permissions
+
+Credit requests now have inline Approve/Reject buttons in the verified private chat.
+Only the matching owner, message, nonce, unexpired request and unchanged plan can approve.
+Approval is claimed for one workflow attempt and only the requested remaining scenes;
+rejection or silence never authorizes credit use. Old hardcoded sample/episode environment
+permissions are retired. The existing Telegram poller handles callbacks; delivery of a
+click to the workflow depends on that poller and GitHub scheduling, not an instant webhook.
