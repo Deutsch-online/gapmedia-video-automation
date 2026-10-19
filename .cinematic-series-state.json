@@ -737,9 +737,10 @@
       ]
     },
     "date": "2026-10-19",
-    "status": "dispatching",
+    "status": "exporting",
     "platform_receipts": {
-      "tiktok": 2465
+      "tiktok": 2465,
+      "instagram": 2466
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0005/tiktok/e0005-tiktok-60s.mp4",
