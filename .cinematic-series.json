@@ -16,10 +16,17 @@
     "instagram"
   ],
   "series_version": "wg-alltag-v1",
-  "genre": "3d-cartoon-everyday-life",
+  "genre": "3d-cartoon-newcomer-everyday-sitcom",
   "single_speaker_takes": false,
   "manual_request": {
     "id": "full-episode3-approved-style",
     "episode": 3
+  },
+  "content_direction": {
+    "from_episode": 6,
+    "premise": "Marta is new to everyday life in Germany; she and her flatmate Lukas solve relatable problems with warm situational comedy.",
+    "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
+    "continuity": "Recurring adult characters, coherent daily situations, short comic payoff and a playful bridge to the next episode.",
+    "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over."
   }
 }
