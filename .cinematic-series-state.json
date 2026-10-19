@@ -743,7 +743,166 @@
       ]
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 6,
+      "title_de": "An der Kasse",
+      "title_fa": "پای صندوق",
+      "summary": "At the supermarket checkout, Marta and Lukas unload their basket onto the conveyor belt. Marta encounters the checkout divider stick for the first time and wonders if it is an item to buy, until Lukas explains its everyday practical purpose.",
+      "cliffhanger": "Now that the groceries are paid for, they need to sort their empty Pfand bottles next time.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta holds up a supermarket conveyor belt divider stick like a purchased item and checks for a barcode.",
+      "everyday_problem": "A newcomer does not recognize the checkout divider (Warentrenner) and wonders if it is for sale or obligatory.",
+      "practical_resolution": "Lukas clarifies that the divider simply separates different shoppers' items on the belt, and Marta lays it neatly behind their groceries.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Wir brauchen noch diese Packung Hafermilch für morgen.",
+          "fa": "ما هنوز برای فردا به این پاکت شیر جو دوسر احتیاج داریم.",
+          "scene": "Closer framing of Marta reaching toward the plant milk display and lifting a carton.",
+          "motion": "Marta takes a carton of oat milk from the shelf and holds it upright.",
+          "visible_objects": [
+            "oat milk carton"
+          ],
+          "object_action": "Marta holds an oat milk carton in her left hand."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Alles ist bereit, wir können jetzt zur Kasse gehen.",
+          "fa": "همه‌چیز آماده است، الان می‌توانیم برویم سمت صندوق.",
+          "scene": "Medium shot of Lukas holding the filled shopping basket and gesturing forward along the aisle.",
+          "motion": "Lukas shifts the basket comfortably onto his forearm and gestures forward.",
+          "visible_objects": [
+            "wire shopping basket",
+            "oat milk carton"
+          ],
+          "object_action": "Lukas carries the wire basket containing the groceries and points down the aisle."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich lege die Hafermilch jetzt auf das Kassenband.",
+          "fa": "من شیر جو دوسر را الان روی نوار صندوق می‌گذارم.",
+          "scene": "Closer framing of Marta beside the metal edge of the supermarket conveyor belt.",
+          "motion": "Marta bends slightly and carefully sets the oat milk upright onto the moving belt.",
+          "visible_objects": [
+            "oat milk carton",
+            "conveyor belt"
+          ],
+          "object_action": "Marta places the oat milk carton gently onto the conveyor belt."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Sehr gut, jetzt fehlt nur noch der Warentrenner.",
+          "fa": "بسیار خوب، حالا فقط این جداکننده خرید کم است.",
+          "scene": "Medium shot of Lukas standing beside the checkout rail, reaching for the plastic divider bar.",
+          "motion": "Lukas picks up the triangular plastic divider bar from the metal side rail.",
+          "visible_objects": [
+            "checkout divider",
+            "wire shopping basket"
+          ],
+          "object_action": "Lukas lifts the triangular checkout divider from its rack beside the belt."
+        },
+        {
+          "speaker": "marta",
+          "de": "Kostet dieser kleine Stab extra an der Kasse?",
+          "fa": "آیا این میله کوچک دم صندوق هزینه جداگانه دارد؟",
+          "scene": "Closer framing of Marta holding the checkout divider and turning it around looking for a price tag.",
+          "motion": "Marta turns the plastic divider in her hands with a quizzical expression.",
+          "visible_objects": [
+            "checkout divider"
+          ],
+          "object_action": "Marta turns the triangular divider bar in her hands to inspect both sides."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Nein, der Warentrenner trennt nur unsere Einkäufe ab.",
+          "fa": "نه، جداکننده خرید فقط خریدهای ما را جدا می‌کند.",
+          "scene": "Medium shot of Lukas smiling reassuringly next to the checkout lane.",
+          "motion": "Lukas shakes his head warmly and points toward the gap behind their groceries.",
+          "visible_objects": [
+            "checkout divider",
+            "conveyor belt"
+          ],
+          "object_action": "Lukas gestures toward the conveyor belt with an open palm."
+        },
+        {
+          "speaker": "marta",
+          "de": "Verstehe, damit niemand unsere Einkäufe verwechselt!",
+          "fa": "فهمیدم، تا کسی خریدهای ما را اشتباه نگیرد!",
+          "scene": "Closer framing of Marta laying the divider down onto the black belt surface.",
+          "motion": "Marta lays the plastic bar horizontally across the belt behind the oat milk carton.",
+          "visible_objects": [
+            "checkout divider",
+            "conveyor belt"
+          ],
+          "object_action": "Marta positions the divider bar horizontally across the belt behind the carton."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, man legt ihn einfach hinter die Waren.",
+          "fa": "دقیقاً، آدم آن را خیلی ساده پشت کالاها می‌گذارد.",
+          "scene": "Medium shot of Lukas taking a box of pasta out of the shopping basket.",
+          "motion": "Lukas places the rectangular box of pasta onto the conveyor belt in front of the divider.",
+          "visible_objects": [
+            "spaghetti box",
+            "conveyor belt"
+          ],
+          "object_action": "Lukas sets a box of spaghetti neatly onto the moving belt."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich lege den Holzstab direkt hinter unsere Milch.",
+          "fa": "من این میله چوبی را مستقیم پشت شیرمان می‌گذارم.",
+          "scene": "Closer framing of Marta aligning the divider neatly so it rests flat.",
+          "motion": "Marta straightens the divider bar so it sits flush against the rubber belt.",
+          "visible_objects": [
+            "checkout divider",
+            "oat milk carton"
+          ],
+          "object_action": "Marta nudges the divider bar straight with both index fingers."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Hier kommt noch vorsichtig der Karton mit Eiern.",
+          "fa": "اینجا هم با احتیاط کارتن تخم‌مرغ‌ها قرار می‌گیرد.",
+          "scene": "Medium shot of Lukas handling the grey cardboard egg carton with care.",
+          "motion": "Lukas carefully sets the closed egg carton down onto the conveyor belt beside the pasta.",
+          "visible_objects": [
+            "egg carton",
+            "conveyor belt"
+          ],
+          "object_action": "Lukas places the egg carton gently onto the conveyor belt."
+        },
+        {
+          "speaker": "marta",
+          "de": "Alles liegt bereit, die Kasse piept schon leise.",
+          "fa": "همه‌چیز آماده است، صندوق هم آرام بوق می‌زند.",
+          "scene": "Closer framing of Marta holding her debit card in hand, ready to pay.",
+          "motion": "Marta smiles with satisfaction and holds her blue payment card ready between two fingers.",
+          "visible_objects": [
+            "payment card",
+            "conveyor belt"
+          ],
+          "object_action": "Marta holds her debit card upright near the front of the conveyor belt."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Sehr gut, gleich packen wir alles in die Tasche.",
+          "fa": "عالی، الان همه‌چیز را داخل کیسه می‌چینیم.",
+          "scene": "Medium shot of Lukas opening a reusable beige canvas bag with both hands.",
+          "motion": "Lukas gives the cloth bag a gentle shake and holds its handles wide open.",
+          "visible_objects": [
+            "reusable canvas bag"
+          ],
+          "object_action": "Lukas shakes open the reusable canvas bag ready for packing."
+        }
+      ]
+    },
+    "date": "2026-10-20",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
