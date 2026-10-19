@@ -1,0 +1,64 @@
+name: Door lesson cinematic 3D style preview
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/door-style-preview.py]
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check preview code
+        run: |
+          python -m py_compile ai-cast/cinematic-series.py ai-cast/cinematic_speech.py ai-cast/door-style-preview.py
+          node --check ai-cast/send-door-style-preview.mjs
+      - name: Install media tools
+        run: |
+          python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8' gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: door-style-preview-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: door-style-preview-
+      - name: Animate and export single-speaker dialogue for visual review
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+          PREVIEW_REVIEW_ONLY: '0'
+          CINEMATIC_CREDIT_APPROVAL: door-style-preview-20261019
+          PAID_FALLBACK: 'off'
+          PYTHONUNBUFFERED: '1'
+        run: python ai-cast/door-style-preview.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: renders/cinematic-series-cache
+          key: door-style-preview-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: door-style-preview
+          path: |
+            renders/cinematic-series/preview-*/**/*.mp4
+            renders/cinematic-series/preview-*/quality.json
+            renders/cinematic-series/preview-*/preview-exports.json
+            renders/cinematic-series/preview-*/contact.jpg
+          retention-days: 14

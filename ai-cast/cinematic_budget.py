@@ -1,6 +1,6 @@
 """Check included ZeroGPU allowance before authenticated generation.
 
-Only episode 5 scenes 10-12 have explicit one-off credit authorization.
+Explicit owner approvals are scoped to particular episodes and scene indices.
 Remote calls are sequential; other account users can still consume quota concurrently.
 """
 import json
@@ -16,7 +16,10 @@ def set_scene(episode, index):
 
 
 def credit_authorized():
-    return os.getenv('CINEMATIC_CREDIT_APPROVAL') == 'episode5-final15s-20261019' and SCENE in ((5, 9), (5, 10), (5, 11))
+    approval = os.getenv('CINEMATIC_CREDIT_APPROVAL')
+    if approval == 'door-style-preview-20261019':
+        return SCENE in ((9001, 0), (9001, 1), (9001, 2))
+    return approval == 'episode5-final15s-20261019' and SCENE in ((5, 9), (5, 10), (5, 11))
 
 
 def read_quota(token):

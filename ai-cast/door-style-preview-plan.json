@@ -1,0 +1,46 @@
+{
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Die Tür ist zu. Reicht das?",
+      "fa": "در بسته است. همین کافی است؟",
+      "scene": "A polished 3D cartoon entryway at warm golden-hour light. ONLY Marta, waist-up in a dynamic three-quarter composition, her expressive face high in frame and a large brushed-brass door handle clearly visible next to her hand. The CLOSED teal apartment door and brass lock are sharply readable. She is already lightly touching the handle. Clear silhouette, strong warm-cool contrast, uncluttered background, foreground depth. No other person.",
+      "motion": "Marta asks with genuine curious eyebrow movement and accurate speech. She lightly points at the closed door once, then glances toward her flatmate off camera. Normal speed; one clear action, no idle waving, stable door geometry.",
+      "visible_objects": [
+        "closed teal door",
+        "brass door handle",
+        "brass keyhole"
+      ],
+      "object_action": "Marta points toward the closed door handle.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Nein. Du musst sie auch abschließen.",
+      "fa": "نه. باید آن را قفل هم بکنی.",
+      "scene": "Same teal apartment door and warm entryway, matching brass hardware. ONLY Lukas, expressive copper-haired adult cartoon with turquoise glasses. A tighter three-quarter medium shot shows his unobstructed face and right hand together. A SINGLE brass key is ALREADY inserted in the clearly visible lock below the handle, his hand lightly gripping the key bow. Side light gives readable metal reflections. No floating key or second person.",
+      "motion": "Lukas replies clearly while turning the already-inserted key once in the lock with a small realistic wrist rotation; he then pauses his hand. Accurate German mouth movement only on Lukas. Stable fingers, no duplicate keys, no camera shake, natural speed.",
+      "visible_objects": [
+        "brass key inserted in lock",
+        "teal door",
+        "brass door handle"
+      ],
+      "object_action": "Lukas turns the already-inserted key once to lock the door.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Zu heißt nicht abgeschlossen!",
+      "fa": "بسته بودن یعنی قفل بودن نیست!",
+      "scene": "Same warm entryway and CLOSED teal door, same brass handle. ONLY Marta in a confident, clean waist-up three-quarter composition. Her unobstructed face, right hand on the door handle, and lock are all clearly visible in the upper picture area. The door remains closed. Crisp material textures, appealing 3D facial acting, strong visual hierarchy, uncluttered depth. No text in scene.",
+      "motion": "Marta gently tests the handle once; the locked door stays closed. She then smiles in recognition as she says the short learning takeaway. Small purposeful hand movement, precise lip sync, a clear relaxed final pose. Normal speed, no extra gestures.",
+      "visible_objects": [
+        "locked teal door",
+        "brass handle",
+        "brass lock"
+      ],
+      "object_action": "Marta tests the handle once and the locked door stays closed.",
+      "asset": null
+    }
+  ]
+}
