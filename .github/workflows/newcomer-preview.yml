@@ -1,0 +1,71 @@
+name: Newcomer comedy preview with Telegram credit approval
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/request-newcomer-preview.mjs]
+  workflow_dispatch:
+    inputs:
+      approved:
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Send confirmation buttons without generating media
+        if: inputs.approved != true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: node ai-cast/request-newcomer-preview.mjs
+      - uses: actions/setup-python@v5
+        if: inputs.approved == true
+        with:
+          python-version: '3.11'
+      - name: Install media tools
+        if: inputs.approved == true
+        run: |
+          python -m pip install 'edge-tts>=7.2,<8' gradio_client pillow 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - uses: actions/cache/restore@v4
+        if: inputs.approved == true
+        with:
+          path: renders/cinematic-series-cache
+          key: newcomer-preview-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: newcomer-preview-
+      - name: Render only after matching Telegram approval
+        if: inputs.approved == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+          PAID_FALLBACK: 'off'
+          PYTHONUNBUFFERED: '1'
+        run: python ai-cast/newcomer-preview.py
+      - uses: actions/cache/save@v4
+        if: always() && inputs.approved == true
+        with:
+          path: renders/cinematic-series-cache
+          key: newcomer-preview-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always() && inputs.approved == true
+        with:
+          name: newcomer-comedy-preview
+          path: renders/cinematic-series/preview-e9002
+          retention-days: 14

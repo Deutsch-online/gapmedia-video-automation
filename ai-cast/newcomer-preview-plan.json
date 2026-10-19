@@ -1,0 +1,53 @@
+{
+  "episode": 9002,
+  "series_version": "wg-alltag-v1",
+  "series_name": "Marta & Lukas: Alltag in Deutschland",
+  "content_basis": "everyday-reenactment",
+  "title_de": "Mein erster Einkauf",
+  "title_fa": "اولین خرید من",
+  "summary": "Newcomer Marta mistakes the checkout divider for a tiny fence on sale. Lukas explains its purpose and she jokes about her bread not needing a garden.",
+  "cliffhanger": "Next time Marta meets the Pfand machine.",
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Ist dieser Mini-Zaun auch im Angebot?",
+      "fa": "این حصار کوچولو هم تخفیف دارد؟",
+      "scene": "Polished expressive 3D cartoon supermarket checkout. Only Marta, young adult newcomer with mustard sweatshirt and teal dungarees. Medium three-quarter view with her expressive unobstructed face and right hand visible together. She holds a short bright yellow plastic checkout divider just above the belt, studying it with playful genuine curiosity. A loaf of bread in plain paper rests beside it. The divider is clearly a small checkout bar with triangular cross-section, not an actual garden fence. Warm overhead light, teal checkout, shallow background, clear object silhouettes, no other face.",
+      "motion": "Marta lifts the small yellow checkout divider a few centimeters and tilts her head inquisitively while speaking. One controlled lift, a brief raised eyebrow, natural lip sync. No frantic waving or extra fingers.",
+      "visible_objects": [
+        "yellow checkout divider",
+        "loaf of bread",
+        "checkout belt"
+      ],
+      "object_action": "Marta lifts the checkout divider next to her bread.",
+      "asset": null
+    },
+    {
+      "speaker": "lukas",
+      "de": "Das ist ein Warentrenner. Der bleibt hier.",
+      "fa": "این جداکنندهٔ خرید است. همین‌جا می‌ماند.",
+      "scene": "Same supermarket checkout and identical yellow divider. Only Lukas, copper-haired young adult with turquoise glasses and coral hoodie. A tighter medium three-quarter shot includes face, right hand, and divider already resting flat on the belt between a loaf of bread and a plain milk carton. The rectangular divider clearly separates the two purchases. Clean colorful 3D lighting and readable composition, no other person or face.",
+      "motion": "Lukas smiles gently and slides the yellow divider a short distance into place between the bread and milk while explaining. He looks toward Marta off camera, without laughing at her. Natural speech-driven lips and a single purposeful hand action.",
+      "visible_objects": [
+        "yellow checkout divider",
+        "loaf of bread",
+        "milk carton"
+      ],
+      "object_action": "Lukas slides the divider between the two purchases.",
+      "asset": null
+    },
+    {
+      "speaker": "marta",
+      "de": "Dann braucht mein Brot wohl keinen Garten!",
+      "fa": "پس نانم ظاهراً به باغچه نیاز ندارد!",
+      "scene": "Same checkout, same yellow divider lying on the belt beside the bread. Only Marta visible in a medium three-quarter shot, her face expressive and mouth unobstructed, bread and divider prominent beside her hand. Appealing theatrical 3D facial acting, bright warm-cool colors, strong visual hierarchy. She is amused at her own misunderstanding, not embarrassed. No garden, fantasy props or second face.",
+      "motion": "Marta glances once from the divider to her bread, gives a small self-aware smile and delivers the friendly joke. She gently nudges her loaf toward the divider then rests her hand. Natural lips, a brief amused eyebrow movement, stable objects, no exaggerated laughter.",
+      "visible_objects": [
+        "loaf of bread",
+        "yellow checkout divider"
+      ],
+      "object_action": "Marta nudges her bread beside the divider and smiles at her misunderstanding.",
+      "asset": null
+    }
+  ]
+}

@@ -702,4 +702,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-        run: gh workflow run cinematic-series.yml --repo "$REPO" --ref main -f force=true
+          CREDIT_WORKFLOW: ${{ steps.cmd.outputs.CREDIT_WORKFLOW }}
+        run: |
+          if [ "$CREDIT_WORKFLOW" = newcomer-preview.yml ]; then
+            gh workflow run newcomer-preview.yml --repo "$REPO" --ref main -f approved=true
+          else
+            gh workflow run cinematic-series.yml --repo "$REPO" --ref main -f force=true
+          fi

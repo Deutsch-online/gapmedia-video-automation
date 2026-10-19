@@ -24,7 +24,8 @@ def credit_authorized():
     try:
         request = json.loads(Path('.cinematic-credit-request.json').read_text())
         state = json.loads(Path('.cinematic-series-state.json').read_text())
-        plan = state['pending']['plan']
+        plan = (json.loads(Path('ai-cast/newcomer-preview-plan.json').read_text())
+                if request.get('kind') == 'preview' else state['pending']['plan'])
         digest = hashlib.sha256(json.dumps(plan, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
         return (request['status'] == 'running' and request['active_run'] == run + ':' + os.getenv('GITHUB_RUN_ATTEMPT', '1')
                 and request['plan_sha'] == digest and request['episode'] == SCENE[0] and SCENE[1] in request['scenes'])
