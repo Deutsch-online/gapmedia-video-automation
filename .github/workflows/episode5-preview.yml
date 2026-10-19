@@ -1,0 +1,47 @@
+name: Episode 5 completed scenes private preview
+on:
+  push:
+    branches: [main]
+    paths: [ai-cast/export-episode5-preview.py]
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          python -m pip install pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+          python -m py_compile ai-cast/export-episode5-preview.py
+          node --check ai-cast/send-episode5-preview.mjs
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-39209194055
+          fail-on-cache-miss: true
+      - name: Export cached takes and send requested private sample
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python ai-cast/export-episode5-preview.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: episode5-partial-preview
+          path: renders/object-preview-e0005
+          retention-days: 14
