@@ -737,7 +737,14 @@
       ]
     },
     "date": "2026-10-19",
-    "status": "rendering"
+    "status": "dispatching",
+    "platform_receipts": {},
+    "platform_files": {
+      "tiktok": "renders/cinematic-series/e0005/tiktok/e0005-tiktok-60s.mp4",
+      "instagram": "renders/cinematic-series/e0005/instagram/e0005-instagram-60s.mp4"
+    },
+    "file": "renders/cinematic-series/e0005/tiktok/e0005-tiktok-60s.mp4",
+    "platform": "tiktok"
   },
   "attempts": {
     "2026-10-15": 2,
