@@ -40,7 +40,7 @@ on:
     # and a real Telegram command arrives through that push, not by waiting for
     # this. Slowing the unreliable half removes ~11 of every 12 evictions and
     # changes no delivery state or serialization.
-    - cron: "*/5 * * * *"
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       credit_wait:

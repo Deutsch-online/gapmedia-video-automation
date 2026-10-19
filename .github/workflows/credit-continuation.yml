@@ -1,0 +1,28 @@
+name: Continue Telegram-approved credit request
+on:
+  push:
+    branches: [main]
+    paths: [.cinematic-credit-request.json]
+permissions:
+  contents: read
+  actions: write
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Dispatch only an approved request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          status=$(jq -r '.status' .cinematic-credit-request.json)
+          if [ "$status" != approved ]; then exit 0; fi
+          kind=$(jq -r '.kind' .cinematic-credit-request.json)
+          if [ "$kind" = preview ]; then
+            gh workflow run newcomer-preview.yml --repo "$REPO" --ref main -f approved=true
+          else
+            gh workflow run cinematic-series.yml --repo "$REPO" --ref main -f force=true
+          fi

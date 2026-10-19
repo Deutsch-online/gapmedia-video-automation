@@ -1,3 +1,4 @@
+import {handleCredit} from './credit.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
@@ -572,6 +573,14 @@ export default {
     if (request.method !== "POST") return new Response("GapMedia Telegram worker", { status: 200 });
     if (env.TELEGRAM_WEBHOOK_SECRET && request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== env.TELEGRAM_WEBHOOK_SECRET) return new Response("Unauthorized", { status: 401 });
     const update = await request.json().catch(() => null);
+    if (update?.callback_query?.data?.startsWith('cc:')) {
+      try {
+        await handleCredit(update.callback_query, env, telegram, githubHeaders(env));
+        return new Response('ok');
+      } catch {
+        return new Response('Credit decision temporarily unavailable', {status:503});
+      }
+    }
     const message = update?.message;
     const input = message?.text || message?.caption || "";
     if (!input || !message?.chat?.id) return new Response("ok");
