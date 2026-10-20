@@ -1,3 +1,4 @@
+import {handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './project-diagnostics.js';
 import {publicPage} from './public-pages.js';
 import {handleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
@@ -40,6 +41,9 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 /mcp_fetch نشانی — خواندن صفحه با Exa MCP
 /runs — پنج اجرای اخیر GitHub
 /jobs شماره‌اجرا — مرحله‌های اجرا و خطا
+/diagnose — علت واقعی خطا و تحلیل پروژه
+/python tests — اجرای آزمون‌های پایتون در GitHub
+/repair — بازیابی محدود و آزمایش‌شده
 /edit مسیر/فایل دستور — ویرایش محدود فایل متنی
 /addcmd نام دستور — نصب میان‌بر؛ نمونه: /addcmd check status
 /delcmd نام — حذف میان‌بر نصب‌شده
@@ -672,6 +676,16 @@ export default {
     if(request.method==='GET'&&route==='/monitor-health')return Response.json(await monitorHealth(env));
     if(route.startsWith('/internal/')){
       if(!env.TELEGRAM_BOT_TOKEN||request.headers.get('X-Project-Authorization')!==await monitorSignature(env.TELEGRAM_BOT_TOKEN))return new Response('Unauthorized',{status:401});
+      if(request.method==='POST'&&route==='/internal/diagnostic-result'){
+        try{
+          if(Number(request.headers.get('content-length')||0)>16000)return new Response('Too large',{status:413});
+          const report=validateDiagnostic(await request.json(),`${env.GITHUB_OWNER||'Deutsch-online'}/${env.GITHUB_REPO||'gapmedia-video-automation'}`);
+          await env.BOT_STATE.put('project:diagnostic-latest',JSON.stringify(report),{expirationTtl:7*86400});
+          const owner=env.ALLOWED_CHAT_ID||await env.BOT_STATE.get('social:owner')||(await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
+          if(owner)await replyText(env,owner,formatDiagnostic(report));
+          return Response.json({ok:true});
+        }catch{return new Response('Diagnostic report rejected or delivery failed',{status:400});}
+      }
       if(request.method==='GET'&&route==='/internal/creative-feedback')return Response.json(await creativeFeedback(env));
       if(request.method==='POST'&&route==='/internal/render-audit'){
         try{return Response.json(await storeRenderAudit(env,await request.json()));}
@@ -776,6 +790,12 @@ export default {
         return new Response('ok');
       }
       input = await resolveAlias(env,chatId,input) || input;
+      const diagnosticAnswer=await handleProjectDiagnostics(env,input,(path,value,message)=>writeGithubRequest(env,path,value,message));
+      if(diagnosticAnswer){
+        await rememberExchange(env,chatId,input,diagnosticAnswer);
+        await replyText(env,chatId,diagnosticAnswer);
+        return new Response('ok');
+      }
       const socialAnswer=await handleSocialConversation(env,chatId,input);
       if(socialAnswer){
         await rememberExchange(env,chatId,input,socialAnswer);

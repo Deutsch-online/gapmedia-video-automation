@@ -1,0 +1,36 @@
+name: Project Python diagnostics
+on:
+  workflow_run:
+    workflows: [Daily cinematic German Persian serial]
+    types: [completed]
+  push:
+    branches: [main]
+    paths: [.project-diagnostic-request.json]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: project-python-diagnostics
+  cancel-in-progress: false
+jobs:
+  diagnose:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Diagnose real logs, run fixed Python checks and deliver privately
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          DIAGNOSTIC_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node scripts/project-diagnostics.mjs

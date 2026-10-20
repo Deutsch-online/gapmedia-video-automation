@@ -25,6 +25,9 @@ export const BASE_COMMANDS = [
   {command:'mcp',description:'ابزارهای MCP متصل'},
   {command:'mcp_search',description:'جست‌وجو با Exa MCP'},
   {command:'mcp_fetch',description:'خواندن صفحه با Exa MCP'},
+  {command:'diagnose',description:'علت واقعی خطا و تحلیل پروژه'},
+  {command:'python',description:'اجرای آزمون‌های پایتون در GitHub'},
+  {command:'repair',description:'بازیابی محدود با حفظ سهمیه'},
   {command:'runs',description:'آخرین اجراهای GitHub'},
   {command:'jobs',description:'جزئیات یک اجرا در GitHub'},
   {command:'edit',description:'ویرایش فایل متنی در GitHub'},
@@ -36,7 +39,7 @@ export const BASE_COMMANDS = [
   {command:'synccmds',description:'همگام‌سازی منوی دستورها'},
 ];
 
-const TARGETS = new Set(['help','chat','status','credit','episode','queue','scenario','prompt','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands','insights','review','strategy','monitor']);
+const TARGETS = new Set(['diagnose','python','repair','help','chat','status','credit','episode','queue','scenario','prompt','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands','insights','review','strategy','monitor']);
 const RESERVED = new Set([...BASE_COMMANDS.map(item=>item.command),'ls','cat','web','actions','reset','menu','undo','repo_search','edit']);
 const ALIAS_KEY = chatId => `command-aliases:${chatId}`;
 const MENU_VERSION = BASE_COMMANDS.map(item=>item.command).join(',');

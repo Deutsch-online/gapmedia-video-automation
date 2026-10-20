@@ -25,6 +25,7 @@ jobs:
           node worker/test-tools.mjs
           node worker/test-research-agent.mjs
           node worker/test-free-diagnostics.mjs
+          node worker/test-project-diagnostics.mjs
           node worker/test-mcp.mjs
           node worker/test-command-registry.mjs
           node worker/test-series-assistant.mjs
