@@ -1,0 +1,45 @@
+name: Verify live Telegram bot webhook
+on:
+  push:
+    paths: [.github/workflows/bot-webhook-check.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check bot identity and webhook destination
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from urllib.parse import urlparse
+
+          token = os.environ.get("TELEGRAM_BOT_TOKEN")
+          if not token:
+              raise SystemExit("Bot token is unavailable")
+          def telegram(method):
+              with urllib.request.urlopen(f"https://api.telegram.org/bot{token}/{method}", timeout=12) as response:
+                  data = json.load(response)
+              if not data.get("ok"):
+                  raise SystemExit(f"Telegram {method} rejected the request")
+              return data["result"]
+          me = telegram("getMe")
+          hook = telegram("getWebhookInfo")
+          username = me.get("username", "")
+          host = urlparse(hook.get("url", "")).hostname or ""
+          print("Bot username:", username)
+          print("Webhook host:", host or "(none)")
+          if username.lower() != "afgsocial_bot":
+              raise SystemExit("Configured token is not for @afgsocial_bot")
+          if not host:
+              raise SystemExit("No active webhook")
+          try:
+              with urllib.request.urlopen(f"https://{host}/health", timeout=12) as response:
+                  health = json.load(response)
+              print("Worker health:", {k: health.get(k) for k in ("worker", "telegramTokenValid", "webhookConfigured")})
+          except Exception:
+              print("Worker health endpoint unavailable")
+          PY
