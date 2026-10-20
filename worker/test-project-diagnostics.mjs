@@ -9,6 +9,8 @@ assert.equal(diagnosticIntent('/python import os'),'help');
 assert.equal(diagnosticIntent('یک قسمت بساز'),null);
 assert.equal(diagnoseLog('Story provider failed: beatapi-free: TimeoutError').kind,'temporary_provider');
 assert.equal(diagnoseLog('HTTP 429 rate_limit_exceeded').kind,'rate_limit');
+assert.equal(diagnoseLog('Story provider failed: TimeoutError\nHTTP 429\nRuntimeError: German narration does not fit scene 0').kind,'narration_timing');
+assert.equal(diagnoseLog('RuntimeError: Narration timing: automatic free repair exhausted').recoverable,true);
 const narrowed=failedStepLog('2026-10-20T10:00:00Z ValueError: intentionally mocked\n2026-10-20T10:02:10Z RuntimeError: TimeoutError', [{conclusion:'failure',started_at:'2026-10-20T10:02:00Z',completed_at:'2026-10-20T10:03:00Z'}]);
 assert.equal(diagnoseLog(narrowed).kind,'temporary_provider','earlier successful test fixtures cannot masquerade as the production failure');
 assert.equal(diagnoseLog('ZeroGPU quota exhausted').transient,false);

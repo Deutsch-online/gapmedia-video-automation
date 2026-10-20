@@ -165,5 +165,6 @@ jobs:
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/episode.json
             renders/cinematic-series/**/contact.jpg
+          renders/cinematic-series-cache/**/narration-timing.json
           if-no-files-found: warn
           retention-days: 14

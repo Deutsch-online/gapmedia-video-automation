@@ -15,6 +15,8 @@ export function redact(text,env=process.env) {
     .replace(/https?:\/\/[^\s]+/g,'[URL]');
 }
 export function diagnoseLog(log) {
+  // Prefer the terminal narration failure over earlier recovered provider errors.
+  if(/German narration does not fit scene|Narration timing:/i.test(log))return {kind:'narration_timing',cause:'گفتار یک یا چند صحنه در زمان مجاز جا نشده است؛ این خطا مربوط به سهمیهٔ GPU نیست.',remedy:'پیش از GPU صدای همهٔ صحنه‌ها اندازه‌گیری می‌شود؛ حداکثر دو اصلاح با مدل رایگان، ترجمهٔ هماهنگ و آزمون مجدد صدا مجاز است. اگر اصلاح شکست بخورد گزارش می‌شود؛ صدا بریده یا زمان ویدیو تغییر نمی‌کند.',transient:false,recoverable:true};
   if(/429|rate.limit.exceeded|requests per minute/i.test(log))return {kind:'rate_limit',cause:'سرویس درخواست را به‌دلیل محدودیت نرخ رد کرده است؛ این خطا به‌تنهایی نشانهٔ مشکل GPU نیست.',remedy:'زمان Retry-After رعایت و درخواست آزمایشی اضافه حذف شود؛ جایگزین پولی اجرا نشود.',transient:true};
   if(/ZeroGPU.*quota|quota.*exhaust|GPU quota/i.test(log))return {kind:'gpu_quota',cause:'سهمیهٔ GPU برای ادامه کافی نبوده است.',remedy:'خروجی‌های آماده حفظ و تا موعد سهمیه صبر شود؛ اعتبار بدون تأیید مصرف نشود.',transient:false};
   if(/ModuleNotFoundError|ImportError/i.test(log))return {kind:'dependency',cause:'ماژول یا وابستگی پایتون بارگذاری نشده است.',remedy:'نسخه و نصب وابستگی در workflow بررسی شود؛ نصب دلخواه از متن لاگ انجام نمی‌شود.',transient:false};
@@ -89,10 +91,10 @@ async function main() {
   const diagnosis=diagnoseLog(log),python=pythonChecks();
   if(!log.trim()&&failed.length)diagnosis.cause='لاگ مرحلهٔ ناموفق دریافت یا استخراج نشد؛ علت اجرا قابل تأیید نیست. دسترسی Actions logs بررسی شود.';
   let repair={message:'لاگ و آزمون بررسی شد؛ کد یا گیت کیفیت خودکار تغییر نکرد.'};
-  if(request.mode==='repair'&&diagnosis.transient&&python.status==='passed'&&selected.id===runs[0]?.id&&['failure','timed_out'].includes(selected.conclusion)){
+  if(request.mode==='repair'&&(diagnosis.transient||diagnosis.recoverable)&&python.status==='passed'&&selected.id===runs[0]?.id&&['failure','timed_out'].includes(selected.conclusion)){
     const gate=spawnSync('python',['ai-cast/cinematic-series.py','gate','--force'],{encoding:'utf8',timeout:15000,env:{PATH:process.env.PATH,PYTHONIOENCODING:'utf-8'}});
     let allowed=false;try{allowed=gate.status===0&&JSON.parse(gate.stdout).go===true;}catch{}
-    if(allowed){await api('actions/workflows/cinematic-series.yml/dispatches',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({ref:'main',inputs:{force:true}})});repair.message='اجرای تازهٔ خطای موقت درخواست شد؛ موفقیت آن هنوز تأیید نشده و گیت سهمیه و اعتبار برقرار است.';}
+    if(allowed){await api('actions/workflows/cinematic-series.yml/dispatches',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({ref:'main',inputs:{force:true}})});repair.message='اجرای تازه با بازیابی آزمایش‌شده درخواست شد؛ موفقیت آن هنوز تأیید نشده و گیت سهمیه و اعتبار برقرار است.';}
     else repair.message='تکرار مجاز نبود: سقف تلاش، قفل ارسال یا زمان سهمیه مانع است. محدودیت دور زده نشد.';
   }
   let providerAttempts=[];

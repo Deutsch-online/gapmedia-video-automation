@@ -13,6 +13,82 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_narration_cache_is_measured_and_never_crops_speech(self):
+        from unittest.mock import patch
+        scene = m.first_episode()['scenes'][0]
+        with tempfile.TemporaryDirectory() as tmp:
+            audio = Path(tmp) / '00.mp3'
+            audio.write_bytes(b'cached')
+            audio.with_suffix('.audio.sig').write_text(m.narration_signature(scene))
+            with patch.object(m, 'seconds', side_effect=[5.2, 5.1, 4.7]), patch.object(m, 'command') as command:
+                self.assertEqual(m.measured_narration(scene, audio), 4.7)
+                self.assertFalse(audio.with_suffix('.audio.sig').exists())
+                self.assertEqual(command.call_count, 2)
+                self.assertEqual([c.args[0][-3] for c in command.call_args_list], ['--rate=-5%', '--rate=+3%'])
+                self.assertTrue(all('edge_tts' in c.args[0] for c in command.call_args_list))
+
+    def test_narration_shortening_rejects_changes_outside_dialogue(self):
+        from unittest.mock import patch
+        plan = m.first_episode()
+        edits = {'lines': [{'index': 0, 'de': 'Fahren Sie zum Bahnhof?', 'fa': 'به ایستگاه می‌روید؟', 'speaker': 'lukas'}]}
+        response = {'model': 'test-free', 'choices': [{'message': {'content': json.dumps(edits)}}]}
+        with patch.object(m, 'beatapi_story_request', return_value=response):
+            with self.assertRaisesRegex(ValueError, 'unrelated change'):
+                m.shorten_narration(plan, {0: 5.1}, 'test-free', 'test')
+        self.assertEqual(plan, m.first_episode())
+
+    def test_all_audio_is_measured_before_repair_and_only_valid_plan_is_persisted(self):
+        from unittest.mock import patch, Mock
+        plan = m.first_episode()
+        candidate = copy.deepcopy(plan)
+        candidate['scenes'][0].update(de='Fahren Sie zum Bahnhof?', fa='به ایستگاه می‌روید؟')
+        measured = []
+        def measure(scene, audio):
+            measured.append(scene['de'])
+            audio.write_bytes(b'audio')
+            audio.with_suffix('.audio.sig').write_text(m.narration_signature(scene))
+            return 5.2 if scene['de'] == plan['scenes'][0]['de'] else 3.5
+        persist = Mock()
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'BEATAPI_KEY':'test'}, clear=True), \
+             patch.object(m, 'measured_narration', side_effect=measure), patch.object(m, 'seconds', return_value=3.5), \
+             patch.object(m, 'beatapi_free_models', return_value=['test-free']), \
+             patch.object(m, 'shorten_narration', return_value=candidate) as repair:
+            files = m.prepare_narration(plan, tmp, {}, persist=persist)
+            self.assertEqual(len(files), 13)
+            self.assertEqual(measured[:13], [s['de'] for s in m.first_episode()['scenes']])
+            self.assertEqual(plan, candidate)
+            persist.assert_called_once_with(candidate)
+            repair.assert_called_once()
+            self.assertTrue(json.loads((Path(tmp)/'narration-timing.json').read_text())['status']=='repaired')
+
+    def test_narration_repair_is_bounded_and_failure_preserves_saved_plan(self):
+        from unittest.mock import patch, Mock
+        plan = m.first_episode(); original = copy.deepcopy(plan)
+        candidate = copy.deepcopy(plan)
+        candidate['scenes'][0].update(de='Fahren Sie zum Bahnhof?', fa='به ایستگاه می‌روید؟')
+        persist = Mock()
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'BEATAPI_KEY':'test', 'GEMINI_API_KEY':'paid-key'}, clear=True), \
+             patch.object(m, 'measured_narration', side_effect=lambda scene, audio: 5.2 if scene['de'] in (original['scenes'][0]['de'], candidate['scenes'][0]['de']) else 3), \
+             patch.object(m, 'beatapi_free_models', return_value=['a-free','b-free','c-free']), \
+             patch.object(m, 'shorten_narration', return_value=candidate) as repair:
+            with self.assertRaisesRegex(m.NarrationTimingError, 'no GPU requested'):
+                m.prepare_narration(plan, tmp, {}, persist=persist)
+            self.assertEqual(repair.call_count, 2)
+            self.assertEqual(plan, original)
+            persist.assert_not_called()
+            report = json.loads((Path(tmp)/'narration-timing.json').read_text())
+            self.assertEqual(report['status'], 'blocked')
+            self.assertFalse(report['paid_authorized'])
+
+    def test_narration_with_no_verified_free_provider_stops_without_paid_fallback(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'GEMINI_API_KEY':'paid-key'}, clear=True), \
+             patch.object(m, 'measured_narration', return_value=5.2), \
+             patch.object(m, 'shorten_narration') as repair, patch.object(m, 'beatapi_free_models') as catalog:
+            with self.assertRaises(m.NarrationTimingError):
+                m.prepare_narration(m.first_episode(), tmp, {})
+            repair.assert_not_called(); catalog.assert_not_called()
+
     def test_free_chain_continues_after_timeout_and_invalid_plan(self):
         from unittest.mock import patch
         state = m.new_state(); state['next_episode'] = 2
