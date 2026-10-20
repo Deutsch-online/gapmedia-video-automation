@@ -17,9 +17,11 @@ jobs:
           import json, os, urllib.request
           from urllib.parse import urlparse
 
-          token = os.environ.get("TELEGRAM_BOT_TOKEN")
+          token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
           if not token:
               raise SystemExit("Bot token is unavailable")
+          import re
+          print("Bot token format:", "plausible" if re.fullmatch(r"[0-9]+:[A-Za-z0-9_-]+", token) else "invalid")
           def telegram(method):
               with urllib.request.urlopen(f"https://api.telegram.org/bot{token}/{method}", timeout=12) as response:
                   data = json.load(response)
