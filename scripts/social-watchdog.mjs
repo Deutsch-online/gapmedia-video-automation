@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 import {setTimeout as delay} from 'node:timers/promises';
 
@@ -27,6 +27,7 @@ export async function checkMonitor({token,githubToken,fetchImpl=fetch,now=Date.n
     const starting=health.status==='running'&&now-Date.parse(health.last_attempt)<5*60000;
     if(!starting&&(!health.last_completed||now-Date.parse(health.last_completed)>3*3600000))problems.push('پایش در سه ساعت گذشته کامل نشده؛ Cron، KV و خطای آخر Worker بررسی شود.');
     if(health.status==='failed')problems.push('پایش با خطا تمام شده؛ دادهٔ قبلی حفظ شده و تلاش بعد با فاصلهٔ بیشتر انجام می‌شود.');
+    if(health.notification_status==='unknown_or_failed')problems.push('ارسال آخرین گزارش پایش به تلگرام تأیید نشد؛ دسترسی بات و خطای Telegram بررسی شود.');
   }catch{problems.push('دسترسی به Worker/پایش برقرار نشد؛ اتصال شبکه، انتشار Cloudflare و webhook بررسی شود.');}
   if(githubToken){
     try{
@@ -68,6 +69,6 @@ async function main() {
       }
     }
   }
-  if(!result.problems.length&&existsSync(STATE)){mkdirSync('.cache',{recursive:true});writeFileSync(STATE,JSON.stringify({healthy_at:result.checked_at}));}
+  if(!result.problems.length){mkdirSync('.cache',{recursive:true});writeFileSync(STATE,JSON.stringify({healthy_at:result.checked_at}));}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(()=>{console.error('Social watchdog could not complete; inspect this workflow run.');process.exitCode=1;});

@@ -92,7 +92,7 @@ export async function monitorHealth(env) {
   const health=await env.BOT_STATE?.get(HEALTH,'json');
   const lease=await env.BOT_STATE?.get('social:lease','json');
   const inProgress=lease?.until>Date.now()&&Date.parse(lease.attempted_at)>Date.parse(health?.last_attempt||'1970-01-01');
-  return {enabled:true,last_attempt:inProgress?lease.attempted_at:health?.last_attempt||null,last_completed:health?.last_completed||null,next_due:health?.next_due||null,requested_at:await env.BOT_STATE?.get('social:review-requested')||null,status:inProgress?'running':health?.status||'not_started',failures:health?.failures||0,heartbeat:inProgress?lease.attempted_at:health?.heartbeat||null};
+  return {enabled:true,last_attempt:inProgress?lease.attempted_at:health?.last_attempt||null,last_completed:health?.last_completed||null,next_due:health?.next_due||null,requested_at:await env.BOT_STATE?.get('social:review-requested')||null,status:inProgress?'running':health?.status||'not_started',failures:health?.failures||0,heartbeat:inProgress?lease.attempted_at:health?.heartbeat||null,notification_status:health?.notification_status||null};
 }
 
 export async function creativeFeedback(env) {
