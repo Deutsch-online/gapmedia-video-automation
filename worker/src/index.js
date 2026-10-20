@@ -1,5 +1,5 @@
 import {handleCredit} from './credit.js';
-import {handleAssistantTool} from './assistant-tools.js';
+import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
@@ -384,6 +384,28 @@ async function saveHistory(env, chatId, messages) {
   if (storage) await storage.put(`chat:${chatId}`, JSON.stringify(messages.slice(-MAX_HISTORY)), { expirationTtl: 7 * 24 * 60 * 60 });
 }
 
+async function rememberExchange(env, chatId, userText, answer) {
+  const prior = await history(env, chatId);
+  await saveHistory(env, chatId, [...prior, {role:'user',content:userText.slice(0, 2000)}, {role:'assistant',content:answer.slice(0, 2000)}]);
+}
+
+async function recentGithubLink(env, chatId) {
+  const remembered = await env.BOT_STATE?.get(`recent-github:${chatId}`);
+  if (githubRepositoryLink(remembered)) return githubRepositoryLink(remembered);
+  const prior = await history(env, chatId);
+  for (const turn of [...prior].reverse()) {
+    if (turn.role === 'user') {
+      const link = githubRepositoryLink(turn.content);
+      if (link) return link;
+    }
+  }
+  return null;
+}
+
+async function rememberGithubLink(env, chatId, link) {
+  if (env.BOT_STATE) await env.BOT_STATE.put(`recent-github:${chatId}`, link, {expirationTtl:30 * 24 * 60 * 60});
+}
+
 function menuCode(text) {
   const code = String(text || "").trim().replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
   return code === "0" || Object.hasOwn(NUMBERED_ACTIONS, code) ? code : null;
@@ -495,7 +517,7 @@ function prepareTopicLocally(raw) {
   return [topic, ...(steps.length ? steps : TOPIC_SCAFFOLD)].join(" | ");
 }
 
-const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. روشن، دوستانه و کوتاه پاسخ بده؛ برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. دربارهٔ وضعیت اجرا، سهمیه، قیمت یا مشکل فنی اگر دادهٔ زنده در گفتگو نداری، ادعای قطعی نکن؛ کاربر را به /status یا /credit راهنمایی کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده مگر وضعیت تأیید کرده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. اجرای ساخت، انتشار، حذف یا مصرف اعتبار فقط از مسیر فرمان‌های اختصاصی مجاز است. برای جست‌وجوی وب و خواندن/ویرایش محدود فایل‌های مخزن ابزار جداگانه فعال است؛ اگر این گفتگو خروجی آن ابزار را ندارد، ادعای جست‌وجو یا ویرایش نکن. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
+const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. به سؤالِ واقعیِ کاربر مستقیم و مشخص پاسخ بده و از زمینهٔ پیام‌های قبلی استفاده کن؛ جواب تکراری یا ارجاع بی‌ربط به فرمان‌ها نده. برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. فقط اگر سؤال واقعاً دربارهٔ وضعیت زندهٔ ساخت یا اعتبار است و دادهٔ زنده نداری، به‌ترتیب /status یا /credit را پیشنهاد کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده یا لینکی ثبت/بررسی شده مگر واقعاً در همین گفتگو انجام شده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. اجرای ساخت، انتشار، حذف یا مصرف اعتبار فقط از مسیر فرمان‌های اختصاصی مجاز است. برای جست‌وجوی وب و خواندن/ویرایش محدود فایل‌های مخزن ابزار جداگانه فعال است؛ اگر این گفتگو خروجی آن ابزار را ندارد، ادعای جست‌وجو یا ویرایش نکن. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
 
 function textFromWorkersAI(data) {
   // Workers AI models have used both native `response` and OpenAI-compatible
@@ -741,6 +763,7 @@ export default {
           await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید. برای کار با مخزن و وب، /files، /read، /find، /search و /edit هم فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
         } else if (command.action === "reset-chat") {
           await (env.CHAT_HISTORY || env.BOT_STATE)?.delete(`chat:${chatId}`);
+          await env.BOT_STATE?.delete(`recent-github:${chatId}`);
           await clearPending(env, chatId);
           await clearSelection(env, chatId);
           await reply(env, chatId, "گفتگوی تازه شروع شد. پرسشتان را بنویسید.");
@@ -782,11 +805,29 @@ export default {
         }
       } else {
         let handled = false;
+        const directLink = githubRepositoryLink(input);
         try {
-          const result = await handleAssistantTool(env, input);
-          if (result) {
+          const referencedLink = directLink || (/(?:این|آن|همان|لینک|آدرس|ادرس|چکار|کاربرد|برای چه|چه کار|چک کن|بررسی کن)/.test(input) ? await recentGithubLink(env, chatId) : null);
+          if (directLink && /(?:ثبت کن|ذخیره کن|یادداشت کن)/.test(input)) {
+            const answer = `✅ لینک ${directLink} برای این گفتگو ثبت شد. اگر بخواهید، می‌توانم کاربرد آن را بررسی کنم.`;
+            await rememberGithubLink(env, chatId, directLink);
+            await rememberExchange(env, chatId, input, answer);
+            await replyText(env, chatId, answer);
+            handled = true;
+          } else if (referencedLink && (directLink || /(?:چک|بررسی|برای چه|چه کار|چکار|کاربرد|استفاده|چیست|چیه|توضیح)/.test(input))) {
+            const result = await inspectGithubRepository(env, referencedLink);
+            await rememberGithubLink(env, chatId, referencedLink);
+            await rememberExchange(env, chatId, input, result);
             await reply(env, chatId, result);
             handled = true;
+          }
+          if (!handled) {
+            const result = await handleAssistantTool(env, input);
+            if (result) {
+              await rememberExchange(env, chatId, input, result);
+              await reply(env, chatId, result);
+              handled = true;
+            }
           }
         } catch (error) {
           await replyText(env, chatId, `⚠️ ${error.message || 'ابزار در دسترس نیست.'}`);

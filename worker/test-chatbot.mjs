@@ -22,6 +22,10 @@ const encoded=x=>btoa(unescape(encodeURIComponent(JSON.stringify(x))));
 globalThis.fetch=async (url,init={})=>{
   calls.push({url:String(url),init});
   if(String(url).includes('api.github.com/')){
+    if(String(url).endsWith('/repos/morluto/rea'))return Response.json({full_name:'morluto/rea',description:'Reverse engineer anything with agents',language:'TypeScript',topics:['reverse-engineering']});
+    if(String(url).endsWith('/repos/morluto/rea/readme'))return new Response('# REA\nAn MCP for reverse engineering apps and binaries.');
+    if(String(url).includes('/git/trees/main'))return Response.json({tree:[{type:'blob',path:'README.md'}]});
+    if(String(url).includes('/contents/README.md'))return Response.json({encoding:'base64',size:12,sha:'readme',content:btoa('Hello owner!')});
     if(init.method==='PUT')return Response.json({content:{sha:'new'}},{status:201});
     const value=String(url).includes('.cinematic-credit-request.json')?credit:state;
     return Response.json({encoding:'base64',content:encoded(value),sha:'old'});
@@ -39,8 +43,19 @@ await send('ممنون');
 assert.equal(JSON.parse(kv.get('chat:7')).length,4,'the next answer retains prior turns');
 await send('/status');
 assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('قسمت بعدی: 6')),'status reports real repository state');
+await send('/files');
+assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('README.md')),'bot lists GitHub files');
+await send('/read README.md');
+assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('Hello owner!')),'bot reads GitHub files');
+await send('این آدرس را ثبت کن https://github.com/morluto/rea');
+assert.ok(JSON.parse(kv.get('chat:7')).some(turn=>turn.role==='user'&&turn.content.includes('morluto/rea')),'linked repository is retained in conversation');
+assert.equal(kv.get('recent-github:7'),'https://github.com/morluto/rea','explicitly saved link survives chat history turnover');
+await send('چک کن برای چکار استفاده می شود؟');
+assert.ok(calls.some(c=>c.url.endsWith('/repos/morluto/rea/readme')),'follow-up inspects the actual linked repository');
+assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('morluto/rea')),'follow-up names the inspected repository');
 await send('/new');
 assert.equal(kv.has('chat:7'),false,'new clears the chat');
+assert.equal(kv.has('recent-github:7'),false,'new clears the saved repository context');
 // Credit replies take priority over a draft's pending text prompt.
 kv.set('pending:7',JSON.stringify({action:'content-search-live'}));
 const code='cc-'+'a'.repeat(32);
