@@ -1,3 +1,4 @@
+import {publicPage} from './public-pages.js';
 import {handleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
 import {runResearchAgent} from './research-agent.js';
@@ -655,6 +656,8 @@ export default {
     ]));
   },
   async fetch(request, env) {
+    const page=publicPage(request);
+    if(page)return page;
     const route=new URL(request.url).pathname;
     if(request.method==='GET'&&route.startsWith('/social/')){
       return await socialAuth(request,env)||new Response('Not found',{status:404});
