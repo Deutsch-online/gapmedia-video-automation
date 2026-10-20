@@ -13,6 +13,41 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_free_chain_continues_after_timeout_and_invalid_plan(self):
+        from unittest.mock import patch
+        state = m.new_state(); state['next_episode'] = 2
+        plan = m.first_episode(); plan['episode'] = 2
+        models = ['first-free', 'second-free', 'third-free']
+        bad = {'model': 'second-free', 'choices': [{'message': {'content': '{"episode":2}'}}]}
+        good = {'model': 'third-free', 'choices': [{'message': {'content': json.dumps(plan)}}]}
+        with patch.dict(os.environ, {'BEATAPI_KEY':'test', 'CINEMATIC_FREE_PLANNING_ONLY':'on'}, clear=True), \
+             patch.object(m, 'beatapi_free_models', return_value=models), \
+             patch.object(m, 'beatapi_story_request', side_effect=[TimeoutError(), bad, good]) as request, \
+             patch.object(m, 'report_story_attempts') as report:
+            self.assertEqual(m.make_plan(state)['episode'], 2)
+            self.assertEqual([call.args[0]['model'] for call in request.call_args_list], models)
+            report.assert_called_once()
+            attempts, status = report.call_args.args
+            self.assertEqual(status, 'succeeded')
+            self.assertEqual([a['status'] for a in attempts if a['provider'].startswith('beatapi-free:')], ['failed','failed','succeeded'])
+
+    def test_free_chain_reports_exhaustion_only_after_every_candidate(self):
+        from unittest.mock import patch
+        state = m.new_state(); state['next_episode'] = 2
+        models = ['first-free','second-free','third-free']
+        with patch.dict(os.environ, {'BEATAPI_KEY':'test', 'GEMINI_API_KEY':'test', 'GROQ_API_KEY':'test', 'CINEMATIC_FREE_PLANNING_ONLY':'on'}, clear=True), \
+             patch.object(m, 'beatapi_free_models', return_value=models), \
+             patch.object(m, 'beatapi_story_request', side_effect=TimeoutError()) as request, \
+             patch.object(m, 'report_story_attempts') as report:
+            with self.assertRaisesRegex(RuntimeError, 'exhausted all eligible free candidates'):
+                m.make_plan(state)
+            self.assertEqual(request.call_count, len(models))
+            report.assert_called_once()
+            attempts, status = report.call_args.args
+            self.assertEqual(status, 'exhausted')
+            self.assertEqual(sum(a['status']=='failed' for a in attempts), len(models))
+            self.assertTrue(all(a['status']=='skipped' for a in attempts if a['provider'].endswith('-direct')))
+
     def test_free_story_rate_limit_retries_once_and_honors_delay(self):
         from unittest.mock import patch
         error = m.urllib.error.HTTPError('https://example.test', 429, 'rate limit', {'Retry-After': '60'}, None)
@@ -38,7 +73,7 @@ class SeriesTests(unittest.TestCase):
         with patch.dict(os.environ, {'CINEMATIC_FREE_PLANNING_ONLY': 'on',
                                     'BEATAPI_KEY': 'test-free', 'GEMINI_API_KEY': 'test',
                                     'GROQ_API_KEY': 'test'}, clear=True), \
-             patch.object(m, 'beatapi_free_model', side_effect=ValueError('free model unavailable')), \
+             patch.object(m, 'beatapi_free_models', side_effect=ValueError('free model unavailable')), \
              patch.object(m, 'request_json') as request:
             with self.assertRaisesRegex(RuntimeError, 'Story providers'):
                 m.make_plan(state)
@@ -178,7 +213,7 @@ class ProviderDiagnosticsTests(unittest.TestCase):
         plan['episode'] = 2
         response = {'model': 'glm-5.3-flash-free', 'choices': [{'message': {'content': json.dumps(plan)}}]}
         with patch.dict(os.environ, {'BEATAPI_API_KEY': 'test-key'}, clear=True), \
-             patch.object(m, 'beatapi_free_model', return_value='glm-5.3-flash-free'), \
+             patch.object(m, 'beatapi_free_models', return_value=['glm-5.3-flash-free']), \
              patch.object(m, 'request_json', return_value=response) as request:
             self.assertEqual(m.make_plan(state)['episode'], 2)
         self.assertEqual(request.call_args.args[1]['model'], 'glm-5.3-flash-free')
@@ -208,7 +243,7 @@ class ProviderDiagnosticsTests(unittest.TestCase):
         with patch.dict(os.environ, {'GEMINI_API_KEY': 'test-one', 'GROQ_API_KEY': 'test-two'}), patch.object(m, 'groq_model', return_value='available-model'), patch.object(m, 'request_json', side_effect=[error, response]) as request, patch('builtins.print') as report:
             self.assertEqual(m.make_plan(state)['episode'], 2)
         self.assertEqual(request.call_count, 2)
-        self.assertIn('HTTP 429', report.call_args.args[0])
+        self.assertTrue(any('HTTP 429' in str(call.args[0]) for call in report.call_args_list))
 
 
 class RecoveryTests(unittest.TestCase):

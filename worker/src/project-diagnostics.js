@@ -20,6 +20,7 @@ export function formatDiagnostic(report) {
     ...(report.failed_steps.length?[`مرحله: ${report.failed_steps.join('، ')}`]:[]),
     `آزمون پایتون: ${report.python.status==='passed'?'موفق':report.python.status==='failed'?'ناموفق':'اجرا نشده'}`,
     `اقدام: ${report.repair.message}`,
+    ...(report.provider_attempts?.length?['مسیرهای بررسی‌شده:',...report.provider_attempts.slice(0,12).map(a=>`${a.provider}: ${a.status==='failed'?'ناموفق':a.status==='succeeded'?'موفق':a.status==='skipped'?'اجرا نشد':'در دسترس نبود'}؛ ${a.reason.slice(0,100)}`)]:[]),
     ...(report.evidence.length?[`شاهد لاگ: ${report.evidence.join('\n')}`]:[]),report.run_url].join('\n');
 }
 
@@ -31,10 +32,15 @@ export function validateDiagnostic(raw,repository='Deutsch-online/gapmedia-video
     checked_at:new Date().toISOString(),diagnosis:{kind:text(raw.diagnosis?.kind,80),cause:text(raw.diagnosis?.cause),remedy:text(raw.diagnosis?.remedy)},
     failed_steps:(Array.isArray(raw.failed_steps)?raw.failed_steps:[]).slice(0,3).map(v=>text(v,160)),
     evidence:(Array.isArray(raw.evidence)?raw.evidence:[]).slice(0,3).map(v=>text(v,300)),
+    provider_attempts:(Array.isArray(raw.provider_attempts)?raw.provider_attempts:[]).slice(0,32).map(a=>({provider:text(a.provider,140),status:text(a.status,30),reason:text(a.reason,200)})),
     python:{status:raw.python.status},repair:{message:text(raw.repair?.message)},source:'github-actions-diagnostics'};
 }
 
 export async function handleProjectDiagnostics(env,input,writeRequest) {
+  if(/^\/fallbacks$/i.test(String(input).trim())||/(?:کدام|کدوم).*(?:ابزار|مدل|سرویس).*(?:امتحان|تلاش|اجرا)/.test(input)){
+    const report=await env.BOT_STATE?.get('project:provider-latest','json');
+    return report?['آخرین چرخهٔ ابزارها — '+report.reported_at,'نتیجه: '+(report.status==='succeeded'?'یک گزینه موفق شد':'گزینه‌های مجاز تمام شدند'),...report.attempts.map(a=>`${a.provider}: ${a.status} — ${a.reason}`)].join('\n'):'هنوز چرخهٔ تازهٔ سرویس‌ها ثبت نشده است.';
+  }
   const mode=diagnosticIntent(input);
   if(!mode)return null;
   if(mode==='help')return 'فرمان‌های مجاز: /diagnose، /python tests و /repair. اجرای کد یا shell دلخواه از چت فعال نیست.';

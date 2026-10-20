@@ -684,6 +684,18 @@ export default {
           return Response.json(await memoryTransfer(env,JSON.parse(text)));
         }catch{return new Response('Private memory transfer failed',{status:400});}
       }
+      if(route==='/internal/provider-report'){
+        if(request.method==='GET')return Response.json(await env.BOT_STATE.get('project:provider-latest','json')||{});
+        if(request.method==='POST'){
+          try{
+            const value=await request.json();
+            if(!/^\d{1,20}$/.test(String(value.run_id||''))||!['succeeded','exhausted'].includes(value.status)||!Array.isArray(value.attempts)||value.attempts.length>100)return new Response('Invalid provider report',{status:400});
+            const attempts=value.attempts.map(a=>({provider:String(a.provider||'').slice(0,140),status:['failed','succeeded','skipped','unavailable'].includes(a.status)?a.status:'unavailable',reason:String(a.reason||'').slice(0,400)}));
+            await env.BOT_STATE.put('project:provider-latest',JSON.stringify({run_id:String(value.run_id),status:value.status,attempts,reported_at:new Date().toISOString()}),{expirationTtl:7*86400});
+            return Response.json({ok:true});
+          }catch{return new Response('Invalid provider report',{status:400});}
+        }
+      }
       if(request.method==='POST'&&route==='/internal/diagnostic-result'){
         try{
           if(Number(request.headers.get('content-length')||0)>16000)return new Response('Too large',{status:413});

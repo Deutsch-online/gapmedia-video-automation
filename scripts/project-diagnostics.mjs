@@ -95,7 +95,17 @@ async function main() {
     if(allowed){await api('actions/workflows/cinematic-series.yml/dispatches',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({ref:'main',inputs:{force:true}})});repair.message='اجرای تازهٔ خطای موقت درخواست شد؛ موفقیت آن هنوز تأیید نشده و گیت سهمیه و اعتبار برقرار است.';}
     else repair.message='تکرار مجاز نبود: سقف تلاش، قفل ارسال یا زمان سهمیه مانع است. محدودیت دور زده نشد.';
   }
-  const report={run_id:String(selected.id),failed_steps:failed.flatMap(j=>(j.steps||[]).filter(s=>s.conclusion==='failure').map(s=>s.name)).slice(0,3),diagnosis,python:{status:python.status},repair,evidence:[...evidenceLines(log),...python.failures].slice(0,3)};
+  let providerAttempts=[];
+  try{
+    const auth=createHash('sha256').update('gapmedia-monitor-v1:'+process.env.TELEGRAM_BOT_TOKEN).digest('hex');
+    const response=await fetch(ROOT+'/internal/provider-report',{headers:{'X-Project-Authorization':auth},signal:AbortSignal.timeout(10000)});
+    const providers=response.ok?await response.json():null;
+    if(providers?.run_id===String(selected.id)&&providers.status==='exhausted'){
+      providerAttempts=(providers.attempts||[]).map(a=>({...a,reason:redact(a.reason).slice(0,200)}));
+      diagnosis.cause='همهٔ گزینه‌های رایگانِ مجاز این مرحله بررسی شدند و هیچ طرحی کنترل کیفیت را پاس نکرد. دلیل هر گزینه در فهرست آمده است.';
+    }
+  }catch{}
+  const report={run_id:String(selected.id),failed_steps:failed.flatMap(j=>(j.steps||[]).filter(s=>s.conclusion==='failure').map(s=>s.name)).slice(0,3),diagnosis,provider_attempts:providerAttempts,python:{status:python.status},repair,evidence:[...evidenceLines(log),...python.failures].slice(0,3)};
   const signature=createHash('sha256').update('gapmedia-monitor-v1:'+process.env.TELEGRAM_BOT_TOKEN).digest('hex');
   // A newly deployed Worker may still be building; retry the report endpoint
   // only, never replay Python repairs or production dispatch here.

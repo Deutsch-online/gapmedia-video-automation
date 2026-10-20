@@ -53,8 +53,8 @@ jobs:
               series = importlib.util.module_from_spec(spec)
               spec.loader.exec_module(series)
               try:
-                  model = series.beatapi_free_model()
-                  print('BeatAPI free text: available (' + model + ')')
+                  models = series.beatapi_free_models()
+                  print('BeatAPI eligible zero-price text candidates: ' + ', '.join(models))
                   # Catalog-only preflight: a ping consumes the free request/minute.
               except Exception as exc:
                   print('BeatAPI free text: unavailable (' + series.provider_error(exc) + ')')

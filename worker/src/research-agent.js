@@ -38,7 +38,7 @@ async function useTool(env, step) {
   if (step.tool === 'social_strategy') return {text:JSON.stringify(await creativeFeedback(env)),source:'برنامهٔ آزمایش‌های محتوایی؛ نتیجهٔ قطعی نیست'};
   if (step.tool === 'series_state') return {text:JSON.stringify(snapshotSummary(await seriesSnapshot(env))),source:'وضعیت زندهٔ سریال در GitHub'};
   if (step.tool === 'web_search') return {text:await webSearch(step.arg), source:'جست‌وجوی وب'};
-  if (step.tool === 'mcp_exa_search') return {text:await mcpExaSearch(step.arg),source:'Exa MCP'};
+  if (step.tool === 'mcp_exa_search'){try{return {text:await mcpExaSearch(step.arg),source:'Exa MCP'};}catch{return {text:await webSearch(step.arg),source:'جست‌وجوی وب جایگزین پس از شکست MCP'};}}
   if (step.tool === 'mcp_exa_fetch') return {text:await mcpExaFetch(step.arg),source:step.arg};
   if (step.tool === 'github_list') return {text:await githubList(env, step.arg), source:'فهرست مخزن'};
   if (step.tool === 'github_find') return {text:await githubFind(env, step.arg), source:'جست‌وجوی فایل'};

@@ -48,5 +48,15 @@ const diagnosticEnv = {...env,AI:{run:async()=>({response:diagnosis.shift()})}};
 assert.match(await runResearchAgent(diagnosticEnv,'چرا آخرین اجرای GitHub شکست خورد؟'),/نصب وابستگی/);
 assert.equal(diagnosis.length,0,'agent inspects the actual failed job before answering');
 
+const alternateSteps=['{"tool":"mcp_exa_search","arg":"official GitHub documentation"}','{"tool":"final","answer":"منبع رسمی از جست‌وجوی جایگزین پیدا شد."}'];
+let alternateCalled=false;
+globalThis.fetch=async(url)=>{
+  if(String(url).includes('mcp.exa.ai'))throw new Error('MCP unavailable');
+  if(String(url).includes('duckduckgo.com')){alternateCalled=true;return new Response('<a class="result__a" href="https://docs.github.com/en/actions">Official Actions docs</a>');}
+  throw new Error('Unexpected request');
+};
+const alternate=await runResearchAgent({AI:{run:async()=>({response:alternateSteps.shift()})}},'در وب درباره GitHub بررسی کن');
+assert.ok(alternateCalled,'unavailable MCP automatically tries the next free web tool');
+assert.match(alternate,/جایگزین/);
 globalThis.fetch = savedFetch;
 console.log('bounded multi-step research and live run lookup hold');

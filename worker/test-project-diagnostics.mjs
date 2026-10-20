@@ -26,6 +26,7 @@ assert.equal(childCalls,3);assert.equal(tests.status,'passed');
 const raw={run_id:'123',python:{status:'passed'},diagnosis:{cause:'لاگ می‌گوید timeout',remedy:'بررسی سرویس'},evidence:['RuntimeError: TimeoutError'],failed_steps:['Make'],repair:{message:'تغییری اجرا نشد'}};
 assert.throws(()=>validateDiagnostic({...raw,run_id:'123;rm -rf /'}));
 assert.match(formatDiagnostic(validateDiagnostic(raw)),/timeout/);
+assert.match(formatDiagnostic(validateDiagnostic({...raw,provider_attempts:[{provider:'first-free',status:'failed',reason:'TimeoutError'},{provider:'paid-direct',status:'skipped',reason:'cost not verified'}]})),/اجرا نشد/);
 const downloaded=await readJobLog(123,async(url)=>{assert.equal(url,'https://api.github.com/repos/Deutsch-online/gapmedia-video-automation/actions/jobs/123/logs');return new Response('2026-10-20T14:39:52.0882240Z RuntimeError: TimeoutError');});
 assert.match(downloaded,/TimeoutError/);
 await assert.rejects(readJobLog('123/../../secrets'));

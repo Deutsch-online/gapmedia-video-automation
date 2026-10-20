@@ -54,3 +54,24 @@ Approval is claimed for one workflow attempt and only the requested remaining sc
 rejection or silence never authorizes credit use. Old hardcoded sample/episode environment
 permissions are retired. The existing Telegram poller handles callbacks; delivery of a
 click to the workflow depends on that poller and GitHub scheduling, not an instant webhook.
+
+## Exhaust eligible free choices before reporting (2026-10-20)
+
+Story planning snapshots the live BeatAPI catalog, filters only zero-price text
+IDs ending in `-free`, and tries them sequentially until one unchanged quality
+validation passes. Timeout, rate-limit failure, malformed JSON and quality rejection
+advance to the next eligible model within the same production attempt. The
+existing bounded Retry-After handling remains per model. Catalog models without
+`-free`, image/audio/video models and unverified direct account credits are not
+submitted. A failed preferred model does not force a paid sibling.
+
+Only the final success or exhausted-cycle summary is sent to private Worker
+storage. The post-failure diagnostic bot lists attempted failures separately from
+unconfigured or cost-unverified skips, after the complete cycle. `/fallbacks` reads
+that summary. This does not reset daily attempts or remove duration, lip-sync,
+quality or GPU allowance gates. Available moving-video backends still require an
+approved compatible GPU environment; an unavailable backend is not claimed tested.
+
+For read-only web research, a failed keyless Exa MCP search falls back to the
+existing free DuckDuckGo search tool. Existing official-source research already
+checks its configured official alternatives before giving up.

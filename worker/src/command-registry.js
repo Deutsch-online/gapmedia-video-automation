@@ -25,6 +25,7 @@ export const BASE_COMMANDS = [
   {command:'mcp',description:'ابزارهای MCP متصل'},
   {command:'mcp_search',description:'جست‌وجو با Exa MCP'},
   {command:'mcp_fetch',description:'خواندن صفحه با Exa MCP'},
+  {command:'fallbacks',description:'نتیجهٔ گزینه‌های جایگزین امتحان‌شده'},
   {command:'diagnose',description:'علت واقعی خطا و تحلیل پروژه'},
   {command:'python',description:'اجرای آزمون‌های پایتون در GitHub'},
   {command:'repair',description:'بازیابی محدود با حفظ سهمیه'},
