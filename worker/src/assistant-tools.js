@@ -1,5 +1,6 @@
 // Bounded, owner-only tools for the Telegram assistant. No shell, arbitrary
 // URL fetch, secret-file reads, or model-chosen paid provider calls.
+import {mcpTools, mcpExaSearch, mcpExaFetch} from './mcp-tools.js';
 const MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';
 const MAX_FILE = 24000;
 
@@ -208,6 +209,9 @@ export async function handleAssistantTool(env, text) {
   if ((match = input.match(/^\/(?:files|ls)(?:\s+(.+))?$/i))) task = {tool:'github_list',path:match[1] || ''};
   else if (/^\/(?:runs|actions)$/i.test(input)) task = {tool:'github_runs'};
   else if ((match = input.match(/^\/jobs\s+([0-9]+)$/i))) task = {tool:'github_run_jobs',query:match[1]};
+  else if (/^\/mcp$/i.test(input)) task = {tool:'mcp_list'};
+  else if ((match = input.match(/^\/mcp[_-]search\s+(.+)$/i))) task = {tool:'mcp_search',query:match[1]};
+  else if ((match = input.match(/^\/mcp[_-]fetch\s+(.+)$/i))) task = {tool:'mcp_fetch',query:match[1]};
   else if ((match = input.match(/^\/(?:read|cat)\s+(.+)$/i))) task = {tool:'github_read',path:match[1]};
   else if ((match = input.match(/^\/(?:find|repo-search)\s+(.+)$/i))) task = {tool:'github_find',query:match[1]};
   else if ((match = input.match(/^\/(?:search|web)\s+(.+)$/i))) task = {tool:'web_search',query:match[1]};
@@ -218,6 +222,12 @@ export async function handleAssistantTool(env, text) {
   if (tool === 'github_list') return githubList(env, task.path || '');
   if (tool === 'github_runs') return githubRuns(env);
   if (tool === 'github_run_jobs') return githubRunJobs(env,task.query);
+  if (tool === 'mcp_list') {
+    const tools = await mcpTools();
+    return `ابزارهای MCP فعال (فقط خواندن):\n${tools.map(item => `• <code>${html(item.name)}</code>`).join('\n') || 'فعلاً ابزاری پاسخ نداد.'}`;
+  }
+  if (tool === 'mcp_search') return html((await mcpExaSearch(task.query)).slice(0, 3700));
+  if (tool === 'mcp_fetch') return html((await mcpExaFetch(task.query)).slice(0, 3700));
   if (tool === 'github_find') return githubFind(env, task.query || '');
   if (tool === 'github_read') {
     const file = await githubFile(env, task.path);
