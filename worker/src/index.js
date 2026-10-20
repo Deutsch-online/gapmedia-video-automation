@@ -1,3 +1,4 @@
+import {runAssistantAI,veniceStatus,formatVeniceStatus} from './venice-ai.js';
 import {memoryTransfer,memoryContext,handleMemory,resolveFollowup} from './project-memory.js';
 import {handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './project-diagnostics.js';
 import {publicPage} from './public-pages.js';
@@ -622,7 +623,7 @@ action فقط یکی از این‌ها باشد: content-search-live، content-
 «قلاب امروز را کوتاه‌تر و هیجان‌انگیزتر کن» => {"action":"content-edit-hook","payload":"قلاب را کوتاه‌تر، پرانرژی‌تر و بدون افشای پاسخ بازنویسی کن"}
 «این متن را آرایش کن و با چهار اسلاید ویدیو بساز: تلگرام قابلیت جدیدی به نام Tags اضافه کرده که با آن می‌شود مخاطبان را دسته‌بندی کرد. با این قابلیت، پیام هدفمند به هر گروه فرستاده می‌شود. همچنین آمار هر تگ به‌طور جداگانه نمایش داده می‌شود.» => {"action":"custom-content","payload":"قابلیت تازهٔ Tags در تلگرام | مخاطبان را با تگ دسته‌بندی کن | برای هر گروه پیام هدفمند بفرست | آمار هر تگ را جدا ببین"}
 اگر پیام فقط گفت‌وگو، سؤال یا درخواست مبهم است، {} بده.`;
-  const data = await env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
+  const data = await runAssistantAI(env,"@cf/meta/llama-4-scout-17b-16e-instruct", {
     messages: [{ role: "system", content: instruction }, ...prior.slice(-4), { role: "user", content: userText.slice(0, 6000) }],
     max_tokens: 420,
     temperature: 0.1,
@@ -637,7 +638,7 @@ async function chat(env, chatId, userText) {
   // Llama 4 Scout returns direct `response` text (unlike reasoning-first
   // models), which keeps short Telegram replies reliable on the Free plan.
   // MiniMax remains reserved for the video narration pipeline in GitHub Actions.
-  const data = await env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
+  const data = await runAssistantAI(env,"@cf/meta/llama-4-scout-17b-16e-instruct", {
     messages,
     max_tokens: 650,
     temperature: 0.4,
@@ -684,6 +685,7 @@ export default {
           return Response.json(await memoryTransfer(env,JSON.parse(text)));
         }catch{return new Response('Private memory transfer failed',{status:400});}
       }
+      if(request.method==='GET'&&route==='/internal/venice-status')return Response.json(await veniceStatus(env));
       if(route==='/internal/provider-report'){
         if(request.method==='GET')return Response.json(await env.BOT_STATE.get('project:provider-latest','json')||{});
         if(request.method==='POST'){
@@ -810,6 +812,7 @@ export default {
         return new Response('ok');
       }
       input = await resolveAlias(env,chatId,input) || input;
+      if(/^\/venice$/i.test(input.trim())){await replyText(env,chatId,formatVeniceStatus(await veniceStatus(env)));return new Response('ok');}
       const memoryAnswer=await handleMemory(env,input);
       if(memoryAnswer){await rememberExchange(env,chatId,input,memoryAnswer);await replyText(env,chatId,memoryAnswer);return new Response('ok');}
       input=resolveFollowup(input,await history(env,chatId));

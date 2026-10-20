@@ -27,6 +27,7 @@ jobs:
           node worker/test-free-diagnostics.mjs
           node worker/test-project-diagnostics.mjs
           node worker/test-project-memory.mjs
+          node worker/test-venice.mjs
           node worker/test-mcp.mjs
           node worker/test-command-registry.mjs
           node worker/test-series-assistant.mjs

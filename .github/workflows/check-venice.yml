@@ -1,0 +1,31 @@
+name: Verify Venice free access without inference
+on:
+  push:
+    branches: [main]
+    paths: [worker/src/venice-ai.js, .github/workflows/check-venice.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read provider metadata only from authenticated Worker
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          node --input-type=module <<'JS'
+          import {createHash} from 'node:crypto';
+          const signature=createHash('sha256').update('gapmedia-monitor-v1:'+process.env.TELEGRAM_BOT_TOKEN).digest('hex');
+          let done=false;
+          for(let attempt=0;attempt<16;attempt++){
+            const response=await fetch('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/venice-status',{headers:{'X-Project-Authorization':signature},signal:AbortSignal.timeout(30000)});
+            if(response.ok){console.log(JSON.stringify(await response.json()));done=true;break;}
+            if(![404,503].includes(response.status))throw new Error('Venice status unavailable: '+response.status);
+            await new Promise(resolve=>setTimeout(resolve,15000));
+          }
+          if(!done)throw new Error('Worker publication still pending');
+          JS
