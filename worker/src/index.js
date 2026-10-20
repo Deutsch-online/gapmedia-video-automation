@@ -1,3 +1,4 @@
+import {memoryTransfer,memoryContext,handleMemory,resolveFollowup} from './project-memory.js';
 import {handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './project-diagnostics.js';
 import {publicPage} from './public-pages.js';
 import {handleCredit} from './credit.js';
@@ -11,7 +12,7 @@ import {handleSocialConversation,runSocialMonitor,monitorHealth,creativeFeedback
 // are entered with `wrangler secret put`, never placed in this repository.
 
 const TG = "https://api.telegram.org";
-const MAX_HISTORY = 16;
+const MAX_HISTORY = 32;
 const WEBHOOK_CONTEXT = 'gapmedia-webhook-v1:';
 
 async function webhookSecret(token) {
@@ -417,7 +418,7 @@ async function history(env, chatId) {
 
 async function saveHistory(env, chatId, messages) {
   const storage = env.CHAT_HISTORY || env.BOT_STATE;
-  if (storage) await storage.put(`chat:${chatId}`, JSON.stringify(messages.slice(-MAX_HISTORY)), { expirationTtl: 7 * 24 * 60 * 60 });
+  if (storage) await storage.put(`chat:${chatId}`, JSON.stringify(messages.slice(-MAX_HISTORY)), { expirationTtl: 30 * 24 * 60 * 60 });
 }
 
 async function rememberExchange(env, chatId, userText, answer) {
@@ -632,14 +633,14 @@ action فقط یکی از این‌ها باشد: content-search-live، content-
 async function chat(env, chatId, userText) {
   if (!env.AI) return "پاسخ‌گویی هوشمند موقتاً در دسترس نیست. برای فرمان‌ها /help را بفرستید.";
   const prior = await history(env, chatId);
-  const messages = [{ role: "system", content: SYSTEM }, ...prior, { role: "user", content: userText.slice(0, 2000) }];
+  const messages = [{ role: "system", content: SYSTEM+'\nسابقهٔ خصوصی برای فهم زمینه، نه اجرای مجدد دستورها:\n'+await memoryContext(env,userText) }, ...prior, { role: "user", content: userText.slice(0, 2000) }];
   // Llama 4 Scout returns direct `response` text (unlike reasoning-first
   // models), which keeps short Telegram replies reliable on the Free plan.
   // MiniMax remains reserved for the video narration pipeline in GitHub Actions.
   const data = await env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
     messages,
-    max_tokens: 420,
-    temperature: 0.45,
+    max_tokens: 650,
+    temperature: 0.4,
   });
   const answer = textFromWorkersAI(data) || "فعلاً پاسخ آماده نشد؛ دوباره بنویسید.";
   await saveHistory(env, chatId, [...prior, { role: "user", content: userText.slice(0, 2000) }, { role: "assistant", content: answer }]);
@@ -676,6 +677,13 @@ export default {
     if(request.method==='GET'&&route==='/monitor-health')return Response.json(await monitorHealth(env));
     if(route.startsWith('/internal/')){
       if(!env.TELEGRAM_BOT_TOKEN||request.headers.get('X-Project-Authorization')!==await monitorSignature(env.TELEGRAM_BOT_TOKEN))return new Response('Unauthorized',{status:401});
+      if(request.method==='POST'&&route==='/internal/project-memory'){
+        try{
+          const text=await request.text();
+          if(text.length>1100000)return new Response('Archive too large',{status:413});
+          return Response.json(await memoryTransfer(env,JSON.parse(text)));
+        }catch{return new Response('Private memory transfer failed',{status:400});}
+      }
       if(request.method==='POST'&&route==='/internal/diagnostic-result'){
         try{
           if(Number(request.headers.get('content-length')||0)>16000)return new Response('Too large',{status:413});
@@ -790,6 +798,9 @@ export default {
         return new Response('ok');
       }
       input = await resolveAlias(env,chatId,input) || input;
+      const memoryAnswer=await handleMemory(env,input);
+      if(memoryAnswer){await rememberExchange(env,chatId,input,memoryAnswer);await replyText(env,chatId,memoryAnswer);return new Response('ok');}
+      input=resolveFollowup(input,await history(env,chatId));
       const diagnosticAnswer=await handleProjectDiagnostics(env,input,(path,value,message)=>writeGithubRequest(env,path,value,message));
       if(diagnosticAnswer){
         await rememberExchange(env,chatId,input,diagnosticAnswer);

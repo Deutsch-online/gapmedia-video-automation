@@ -1,0 +1,24 @@
+name: Private bot memory transfer
+on:
+  push:
+    branches: [main]
+    paths: [.bot-memory-transfer.json]
+permissions:
+  contents: write
+concurrency:
+  group: private-bot-memory-transfer
+  cancel-in-progress: false
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Transfer private memory without plaintext in repository
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/bot-memory-transfer.mjs
