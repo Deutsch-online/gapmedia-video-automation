@@ -47,6 +47,7 @@ jobs:
           name: finished-episode-${{ github.run_id }}
           path: |
             renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/*-cinematic-fa-de.mp4
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/delivery-*.json
           if-no-files-found: warn

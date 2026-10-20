@@ -748,7 +748,7 @@ def conform_duration(path, target_seconds=DEFAULT_SECONDS):
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = float(video.get('duration') or info['format']['duration'])
     if abs(duration - target_seconds) > .00001:
-        raise RuntimeError(f'Episode video must be exactly {target_seconds} seconds; no cuts or speed changes')
+        raise RuntimeError(f'Episode video must be exactly {target_seconds} seconds; actual video={video.get("duration")}s; no cuts or speed changes')
     if abs(float(info['format']['duration']) - target_seconds) > .00001:
         target = path.with_name(path.stem + f'-audio{target_seconds}.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-c:v', 'copy',
@@ -926,15 +926,19 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                  '[0:v]' + scene_layout() + '[v];'
                  '[1:a]atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
+        part_video = next(s for s in ffprobe(part)['streams'] if s['codec_type'] == 'video')
+        if int(part_video.get('nb_frames', 0)) != 150:
+            raise RuntimeError('A five-second scene must retain exactly 150 frames')
         parts.append(part)
         print(f'Completed scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
     subs = folder / 'subtitles.ass'
     subs.write_text(ass, encoding='utf-8')
     concat = folder / 'concat.txt'
-    concat.write_text(''.join(f"file '{p.resolve()}'\n" for p in parts))
+    # AAC packet padding must not shift the start of each five-second picture.
+    concat.write_text(''.join(f"file '{p.resolve()}'\nduration 5.000000\n" for p in parts))
     final = folder / f'{ep}-cinematic-fa-de.mp4'
     command(['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', concat,
-             '-vf', f'ass={subs}',
+             '-vf', f'ass={subs},setpts=N/(30*TB)', '-r', '30', '-fps_mode', 'cfr',
              '-af', 'loudnorm=I=-16:TP=-1.5:LRA=9', '-c:v', 'libx264', '-crf', '18', '-preset', 'fast',
              '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', final])
     if final.stat().st_size > 45 * 1024 * 1024:
