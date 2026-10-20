@@ -45,6 +45,8 @@ def aligned_audio(source, target):
     return str(target)
 
 def generate(png, audio, output, motion, seed):
+    if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
+        raise RuntimeError('Cached-only finishing cannot generate speaking clips')
     prompt = ('One visible speaking adult cartoon character. Accurate lip and jaw movement driven by the supplied German speech. '
               'Natural real-time blinking, breathing and small grounded body and hand gestures. No slow motion, no exaggerated acting. '
               'The listener is off-camera. Keep identity and facial anatomy stable. ' + motion)

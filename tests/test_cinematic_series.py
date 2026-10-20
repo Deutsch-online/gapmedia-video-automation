@@ -13,6 +13,36 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec('PIL') and m.shutil.which('fc-match'), 'font tools required')
+    def test_long_persian_caption_fits_two_large_lines_without_covering_action(self):
+        from PIL import ImageFont
+        family = 'Noto Naskh Arabic:style=Bold'
+        path = m.subprocess.check_output(['fc-match','-f','%{file}',family], text=True).strip()
+        if 'NotoNaskh' not in path:
+            self.skipTest('Production Persian font required')
+        text = 'این بلیت برای قطار منطقه‌ای معتبر است، نه برای قطار سریع‌السیر.'
+        caption, size = m.caption_text(text, family, 92)
+        self.assertGreaterEqual(size, 72)
+        self.assertLessEqual(len(caption.split(r'\N')), 2)
+        font = ImageFont.truetype(path, size)
+        self.assertTrue(all(font.getlength(line) <= 950 for line in caption.split(r'\N')))
+        self.assertEqual(' '.join(caption.split(r'\N')), text)
+
+    def test_cached_finish_requires_explicit_no_generation_mode(self):
+        from unittest.mock import patch
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(RuntimeError, 'no-generation'):
+                m.finish_cached()
+
+    def test_cached_finish_does_not_replay_started_delivery(self):
+        from unittest.mock import patch
+        state = m.new_state()
+        state['pending'] = {'status':'render-failed', 'date':'today', 'plan':m.first_episode(),
+                            'platform_receipts':{'tiktok':123}}
+        with patch.dict(os.environ, {'CINEMATIC_CACHED_ONLY':'on'}, clear=True), patch.object(m, 'load_json', side_effect=[state,{}]):
+            with self.assertRaisesRegex(RuntimeError, 'reconcile'):
+                m.finish_cached()
+
     def test_narration_cache_is_measured_and_never_crops_speech(self):
         from unittest.mock import patch
         scene = m.first_episode()['scenes'][0]

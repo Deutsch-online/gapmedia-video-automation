@@ -89,6 +89,8 @@ def run_gpu(fn, required_seconds):
     No automatic transition to paid credits. guard() retains exact owner-approved
     scene exceptions. False disables huggingface_hub implicit token discovery.
     """
+    if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
+        raise RuntimeError('Cached-only finishing cannot request GPU generation')
     import build
     token = os.getenv('HF_TOKEN') or None
     previous = build.TOKEN

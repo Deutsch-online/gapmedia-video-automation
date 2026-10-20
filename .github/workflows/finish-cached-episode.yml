@@ -1,0 +1,52 @@
+name: Finish generated episode without GPU
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/finish-cached-episode.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  finish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CINEMATIC_CACHED_ONLY: 'on'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install CPU media tools
+        run: |
+          python -m pip install --disable-pip-version-check pillow gradio_client
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-cpu-finish-${{ github.run_id }}
+          restore-keys: cinematic-series-v2-
+      - name: Finish only existing signed clips and deliver
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python ai-cast/cinematic-series.py finish-cached
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: finished-episode-${{ github.run_id }}
+          path: |
+            renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/quality.json
+            renders/cinematic-series/**/delivery-*.json
+          if-no-files-found: warn

@@ -607,6 +607,8 @@ def measured_narration(scene, audio):
         if .4 < duration <= 4.5:
             return duration
     marker.unlink(missing_ok=True)
+    if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
+        raise RuntimeError('Cached-only finish requires validated existing narration')
     for rate in ('-5%', '+3%'):
         command(['python3', '-m', 'edge_tts', '--voice', VOICES[scene['speaker']],
                  '--text', scene['de'], '--rate=' + rate, '--write-media', audio])
@@ -765,7 +767,9 @@ def caption_text(text, family, size, width=950):
     """Fit whole words to two large lines using actual font widths."""
     from PIL import ImageFont
     path = subprocess.check_output(['fc-match', '-f', '%{file}', family], text=True).strip()
-    for point_size in range(size, size-11, -2):
+    # Persian letters need more horizontal room; 72px remains larger than DE.
+    minimum = 72 if size == 92 else size - 10
+    for point_size in range(size, minimum-1, -2):
         font = ImageFont.truetype(path, point_size)
         words = text.split()
         if font.getlength(text) <= width:
@@ -856,6 +860,8 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     speaker_refs = {name: art / (name + '-speaking.png') for name in VOICES}
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
+    # Fail layout before requesting any GPU, using the final spoken text.
+    ass = build_subtitles(plan)
     atomic_json(folder / 'episode.json', plan)
     audios = []
     for i, audio in enumerate(audio_files):
@@ -922,7 +928,6 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         parts.append(part)
         print(f'Completed scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
-    ass = build_subtitles(plan)
     subs = folder / 'subtitles.ass'
     subs.write_text(ass, encoding='utf-8')
     concat = folder / 'concat.txt'
@@ -1093,6 +1098,10 @@ def production(force=False):
         raise
     close_credit_attempt('completed')
     checkpoint(state)
+    finish_delivery(state, plan, config, final, date)
+
+
+def finish_delivery(state, plan, config, final, date):
     # Complete media preparation before declaring an uncertain upload intent.
     target_seconds = episode_seconds(plan['episode'], config) if plan['episode'] >= 7 else plan.get('duration_seconds', DEFAULT_SECONDS)
     conform_duration(final, target_seconds)
@@ -1113,14 +1122,35 @@ def production(force=False):
     print(f"Episode {plan['episode']} delivered in both formats: {receipts}", flush=True)
 
 
+def finish_cached():
+    """CPU-only completion of already generated, signed clips; no new approval."""
+    if os.getenv('CINEMATIC_CACHED_ONLY') != 'on':
+        raise RuntimeError('Cached finishing requires an explicit no-generation environment')
+    state, config = load_json(STATE), load_json(CONFIG)
+    pending = state.get('pending') or {}
+    if pending.get('status') != 'render-failed' or not pending.get('plan'):
+        raise RuntimeError('No failed render is available for cached finishing')
+    date = pending['date']
+    if date in state['deliveries'] or pending.get('platform_receipts'):
+        raise RuntimeError('Delivery already started; reconcile before replay')
+    plan = pending['plan']
+    validate_plan(plan, state['next_episode'], state['history'], config)
+    bot('verify')
+    final = render(plan, config, history=state['history'])
+    finish_delivery(state, plan, config, final, date)
+
+
 def main():
     os.chdir(ROOT)
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['gate', 'run', 'check', 'conform'])
+    parser.add_argument('action', choices=['gate', 'run', 'check', 'conform', 'finish-cached'])
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--file')
     parser.add_argument('--seconds', type=int, default=DEFAULT_SECONDS)
     args = parser.parse_args()
+    if args.action == 'finish-cached':
+        finish_cached()
+        return
     if args.action == 'conform':
         if not args.file:
             raise ValueError('A video file is required')

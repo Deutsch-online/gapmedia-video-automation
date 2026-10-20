@@ -10,6 +10,14 @@ spec.loader.exec_module(b)
 
 
 class BudgetTests(unittest.TestCase):
+    def test_cpu_finish_cannot_call_any_gpu_route_even_with_credit(self):
+        from unittest.mock import Mock
+        callback = Mock()
+        with patch.dict(os.environ, {'CINEMATIC_CACHED_ONLY': 'on', 'HF_TOKEN':'account'}):
+            with self.assertRaisesRegex(RuntimeError, 'cannot request GPU'):
+                b.run_gpu(callback, 480)
+        callback.assert_not_called()
+
     def test_hf_included_is_first_and_token_is_restored(self):
         import types, sys
         build = types.SimpleNamespace(TOKEN='previous')
