@@ -84,7 +84,7 @@ async function main() {
       const narrowed=failedStepLog(text,job.steps);
       console.log(JSON.stringify({job_id:job.id,log_bytes:text.length,failed_step_bytes:narrowed.length}));
       log+='\n'+redact(narrowed).slice(-80000);
-    }catch(error){console.log(JSON.stringify({job_id:job.id,log_status:'unavailable',reason:redact(error.message).slice(0,180)}));} 
+    }catch(error){console.log(JSON.stringify({job_id:job.id,log_status:'unavailable',reason:redact(error.message).slice(0,180)}));}
   }
   const diagnosis=diagnoseLog(log),python=pythonChecks();
   if(!log.trim()&&failed.length)diagnosis.cause='لاگ مرحلهٔ ناموفق دریافت یا استخراج نشد؛ علت اجرا قابل تأیید نیست. دسترسی Actions logs بررسی شود.';
