@@ -1,6 +1,7 @@
 import {handleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
 import {runResearchAgent} from './research-agent.js';
+import {manageCommands, resolveAlias} from './command-registry.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
@@ -33,6 +34,9 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 /runs — پنج اجرای اخیر GitHub
 /jobs شماره‌اجرا — مرحله‌های اجرا و خطا
 /edit مسیر/فایل دستور — ویرایش محدود فایل متنی
+/addcmd نام دستور — نصب میان‌بر؛ نمونه: /addcmd check status
+/delcmd نام — حذف میان‌بر نصب‌شده
+/mycmds — فهرست میان‌برهای شما
 /help — همین راهنما
 
 <b>فرمان‌های ویدیو</b>
@@ -658,7 +662,7 @@ export default {
       }
     }
     const message = update?.message;
-    const input = message?.text || message?.caption || "";
+    let input = message?.text || message?.caption || "";
     if (!input || !message?.chat?.id) return new Response("ok");
     const chatId = String(message.chat.id);
     if (message.chat?.type && message.chat.type !== "private") return new Response("ok");
@@ -689,6 +693,12 @@ export default {
       }
     }
     try {
+      const managed = await manageCommands(env,chatId,input,telegram);
+      if (managed) {
+        await reply(env,chatId,managed);
+        return new Response('ok');
+      }
+      input = await resolveAlias(env,chatId,input) || input;
       // A standalone number picks a just-offered content-search topic when
       // one is active (rule 12); otherwise it belongs to the fixed numbered
       // menu below. For menu options that need copy, KV keeps the selected
