@@ -10,6 +10,14 @@ export const BASE_COMMANDS = [
   {command:'queue',description:'محتوای واقعی در صف تولید'},
   {command:'scenario',description:'سناریوی یک قسمت'},
   {command:'prompt',description:'پرامپت صحنه‌های یک قسمت'},
+  {command:'insights',description:'مقایسهٔ آمار ویدیوها'},
+  {command:'review',description:'بررسی حساب‌های easydeutsches'},
+  {command:'strategy',description:'برنامهٔ بهبود محتوای بعد'},
+  {command:'references',description:'نمونه‌های پیدا‌شده برای بررسی'},
+  {command:'monitor',description:'وضعیت پایش خودکار'},
+  {command:'connect',description:'اتصال رسمی حساب اجتماعی'},
+  {command:'disconnect',description:'برداشتن اتصال حساب از بات'},
+  {command:'metrics',description:'ثبت آمار JSON با برچسب منبع'},
   {command:'files',description:'فهرست فایل‌های GitHub'},
   {command:'read',description:'خواندن فایل از GitHub'},
   {command:'find',description:'یافتن فایل در مخزن'},
@@ -28,7 +36,7 @@ export const BASE_COMMANDS = [
   {command:'synccmds',description:'همگام‌سازی منوی دستورها'},
 ];
 
-const TARGETS = new Set(['help','chat','status','credit','episode','queue','scenario','prompt','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands']);
+const TARGETS = new Set(['help','chat','status','credit','episode','queue','scenario','prompt','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands','insights','review','strategy','monitor']);
 const RESERVED = new Set([...BASE_COMMANDS.map(item=>item.command),'ls','cat','web','actions','reset','menu','undo','repo_search','edit']);
 const ALIAS_KEY = chatId => `command-aliases:${chatId}`;
 const MENU_VERSION = BASE_COMMANDS.map(item=>item.command).join(',');

@@ -1,0 +1,38 @@
+name: Social learning and independent watchdog
+on:
+  schedule:
+    - cron: '11 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/social-watchdog.yml, scripts/social-watchdog.mjs]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: social-learning-watchdog
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/social-watchdog.json
+          key: social-watchdog-v1-${{ github.run_id }}
+          restore-keys: social-watchdog-v1-
+      - name: Monitor accounts and report operational blockers
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/social-watchdog.mjs
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .cache/social-watchdog.json
+          key: social-watchdog-v1-${{ github.run_id }}

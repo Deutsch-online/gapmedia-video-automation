@@ -3,6 +3,8 @@ import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from
 import {runResearchAgent} from './research-agent.js';
 import {manageCommands, resolveAlias} from './command-registry.js';
 import {handleSeriesConversation} from './series-assistant.js';
+import {socialAuth,monitorSignature} from './social-accounts.js';
+import {handleSocialConversation,runSocialMonitor,monitorHealth,creativeFeedback,storeRenderAudit} from './social-monitor.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
@@ -41,6 +43,11 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 /addcmd نام دستور — نصب میان‌بر؛ نمونه: /addcmd check status
 /delcmd نام — حذف میان‌بر نصب‌شده
 /mycmds — فهرست میان‌برهای شما
+/insights — مقایسهٔ آمار ویدیوها
+/review — بررسی حساب‌های easydeutsches
+/strategy — برنامهٔ آزمایش برای محتوای بعد
+/monitor — وضعیت پایش خودکار
+/connect سرویس — اتصال رسمی tiktok یا instagram
 /help — همین راهنما
 
 <b>فرمان‌های ویدیو</b>
@@ -641,9 +648,34 @@ export default {
     ctx.waitUntil(Promise.allSettled([
       dueDailyDispatch(env),
       dueGermanLessonDispatch(env),
+      (async()=>{
+        const owner=env.ALLOWED_CHAT_ID||await env.BOT_STATE?.get('social:owner')||(await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
+        await runSocialMonitor(env,{owner,notify:async(id,text)=>replyText(env,id,text)});
+      })(),
     ]));
   },
   async fetch(request, env) {
+    const route=new URL(request.url).pathname;
+    if(request.method==='GET'&&route.startsWith('/social/')){
+      return await socialAuth(request,env)||new Response('Not found',{status:404});
+    }
+    if(request.method==='GET'&&route==='/monitor-health')return Response.json(await monitorHealth(env));
+    if(route.startsWith('/internal/')){
+      if(!env.TELEGRAM_BOT_TOKEN||request.headers.get('X-Project-Authorization')!==await monitorSignature(env.TELEGRAM_BOT_TOKEN))return new Response('Unauthorized',{status:401});
+      if(request.method==='GET'&&route==='/internal/creative-feedback')return Response.json(await creativeFeedback(env));
+      if(request.method==='POST'&&route==='/internal/render-audit'){
+        try{return Response.json(await storeRenderAudit(env,await request.json()));}
+        catch{return new Response('Invalid audit',{status:400});}
+      }
+      if(request.method==='POST'&&route==='/internal/social-run'){
+        try{
+          const owner=env.ALLOWED_CHAT_ID||await env.BOT_STATE?.get('social:owner')||(await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
+          await runSocialMonitor(env,{owner,notify:async(id,text)=>replyText(env,id,text)});
+          return Response.json(await monitorHealth(env));
+        }catch{return new Response('Monitor failed; see /monitor-health',{status:503});}
+      }
+      return new Response('Not found',{status:404});
+    }
     // Non-sensitive operational health check.  It never returns a token,
     // username, chat id, or Telegram error body; it only lets us distinguish
     // an invalid token from a missing/mispointed webhook.
@@ -682,6 +714,10 @@ export default {
     if (message.chat?.type && message.chat.type !== "private") return new Response("ok");
     const owner = env.ALLOWED_CHAT_ID || (await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
     if (!owner || chatId !== String(owner)) return new Response("ok");
+    if(/(?:password|access_token|client_secret|پسورد|رمز عبور)\s*["']?\s*[:=]/i.test(input)){
+      await replyText(env,chatId,'رمز یا توکن را در چت نفرستید. این پیام در حافظهٔ گفتگو ذخیره یا برای مدل ارسال نشد. برای اتصال رسمی از /connect استفاده کنید.');
+      return new Response('ok');
+    }
     // The bot's updates arrive HERE, by webhook — which is exactly why the
     // repo cannot discover this chat for itself: Telegram answers getUpdates
     // with «Conflict: can't use getUpdates method while webhook is active»
@@ -707,12 +743,19 @@ export default {
       }
     }
     try {
+      if(env.BOT_STATE&&!(await env.BOT_STATE.get('social:owner')))await env.BOT_STATE.put('social:owner',chatId);
       const managed = await manageCommands(env,chatId,input,telegram);
       if (managed) {
         await reply(env,chatId,managed);
         return new Response('ok');
       }
       input = await resolveAlias(env,chatId,input) || input;
+      const socialAnswer=await handleSocialConversation(env,chatId,input);
+      if(socialAnswer){
+        await rememberExchange(env,chatId,input,socialAnswer);
+        await replyText(env,chatId,socialAnswer);
+        return new Response('ok');
+      }
       try {
         const seriesAnswer = await handleSeriesConversation(env,chatId,input);
         if (seriesAnswer) {

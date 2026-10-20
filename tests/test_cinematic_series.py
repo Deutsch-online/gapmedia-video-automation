@@ -1,6 +1,7 @@
 import copy
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -12,6 +13,26 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_social_feedback_is_private_bounded_and_optional(self):
+        import io
+        from unittest.mock import patch
+        with patch.dict(os.environ, {}, clear=True), patch.object(m.urllib.request, 'urlopen') as request:
+            self.assertEqual(m.social_learning_context(), {})
+            request.assert_not_called()
+        value = {'status': 'available', 'evidence_level': 'hypotheses_only',
+                 'experiments': [{'change': 'Show the visible daily problem immediately.',
+                                  'measure': 'Compare like-age retention.', 'evidence': 'proposed_test',
+                                  'secret': 'must not be copied'}]}
+        with patch.dict(os.environ, {'TELEGRAM_BOT_TOKEN': 'private-test'}, clear=True), \
+             patch.object(m.urllib.request, 'urlopen', return_value=io.BytesIO(json.dumps(value).encode())) as request:
+            context = m.social_learning_context()
+            self.assertEqual(len(context['experiments']), 1)
+            self.assertNotIn('secret', context['experiments'][0])
+            self.assertNotIn('private-test', str(request.call_args))
+        with patch.dict(os.environ, {'TELEGRAM_BOT_TOKEN': 'private-test'}, clear=True), \
+             patch.object(m.urllib.request, 'urlopen', side_effect=OSError('unavailable')):
+            self.assertEqual(m.social_learning_context(), {})
+
     def test_new_episode_requires_visible_props_and_physical_action(self):
         plan = json.loads((m.ROOT / 'ai-cast/everyday-pilot.json').read_text())
         plan['episode'] = 4
