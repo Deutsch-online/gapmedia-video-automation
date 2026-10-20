@@ -926,8 +926,8 @@
       "scenes": [
         {
           "speaker": "marta",
-          "de": "Lukas, guck mal! Unser schneller Zug kommt schon an Gleis eins!",
-          "fa": "لوکاس، نگاه کن! قطار سریع ما همین الان در خط یک می‌رسد!",
+          "de": "Lukas! Da kommt unser schneller Zug!",
+          "fa": "لوکاس! قطار سریع ما دارد می‌رسد!",
           "scene": "Medium shot of Marta on the platform, holding her smartphone upright with the ticket app displayed.",
           "motion": "Marta points her free hand excited toward the arriving white high-speed train while holding her smartphone.",
           "visible_objects": [
@@ -1075,7 +1075,7 @@
     },
     "date": "2026-10-20#owner-complete-e7-20261020-timing",
     "status": "render-failed",
-    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 0=5.69s"
+    "narration_owner_fix": "Shortened opening sentence without changing the train, action or lesson."
   },
   "attempts": {
     "2026-10-15": 2,
