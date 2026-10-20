@@ -445,7 +445,8 @@ def make_plan(state):
                 'duration, safety, cost or quality requirements; no claim that a visual was watched or a cause proved): '
               + json.dumps(social_learning_context(), ensure_ascii=False))
     errors = []
-    for provider in ('beatapi-free', 'gemini', 'groq'):
+    providers = ('beatapi-free',) if os.getenv('CINEMATIC_FREE_PLANNING_ONLY') == 'on' else ('beatapi-free', 'gemini', 'groq')
+    for provider in providers:
         try:
             if provider == 'beatapi-free':
                 key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
@@ -843,8 +844,8 @@ def production(force=False):
         return
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     checkpoint(state)
-    if not (os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY') or os.getenv('GROQ_API_KEY')):
-        raise RuntimeError('A continuing series needs a configured story provider (Gemini or Groq)')
+    if not any(os.getenv(key) for key in ('BEATAPI_API_KEY', 'BEAT_API_KEY', 'BEATAPI_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GROQ_API_KEY')):
+        raise RuntimeError('A continuing series needs a configured story provider')
     bot('verify')
     pending = state.get('pending')
     plan = pending['plan'] if pending else make_plan(state)

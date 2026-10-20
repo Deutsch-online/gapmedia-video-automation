@@ -142,6 +142,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CINEMATIC_FREE_PLANNING_ONLY: 'on'
           PAID_FALLBACK: 'off'
           REQUIRE_VOICE: 'on'
           FORCE_TODAY: ${{ steps.gate.outputs.force }}

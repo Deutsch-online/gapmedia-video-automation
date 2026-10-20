@@ -1,6 +1,10 @@
 {
-  "request": "resume-cached-episode-4-after-gpu-reset",
-  "requested_at": "2026-10-18T11:42:00Z",
+  "requestedAt": "2026-10-20T14:34:04.808568+00:00",
+  "requestId": "analytics-episode-7-20261020",
+  "episode": 7,
+  "source": "owner-chat-analytics-request",
   "minimum_seconds": 60,
-  "maximum_seconds": 60
+  "maximum_seconds": 60,
+  "paid_authorized": false,
+  "analytics_note": "Use private current account feedback; 20 videos observed, no matched-age cohorts or watch time yet. Treat creative changes as hypotheses, not proven causes."
 }

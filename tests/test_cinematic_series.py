@@ -13,6 +13,19 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_free_only_story_never_falls_back_to_unverified_credit_keys(self):
+        from unittest.mock import patch
+        state = m.new_state()
+        state['next_episode'] = 2
+        with patch.dict(os.environ, {'CINEMATIC_FREE_PLANNING_ONLY': 'on',
+                                    'BEATAPI_KEY': 'test-free', 'GEMINI_API_KEY': 'test',
+                                    'GROQ_API_KEY': 'test'}, clear=True), \
+             patch.object(m, 'beatapi_free_model', side_effect=ValueError('free model unavailable')), \
+             patch.object(m, 'request_json') as request:
+            with self.assertRaisesRegex(RuntimeError, 'Story providers'):
+                m.make_plan(state)
+            request.assert_not_called()
+
     def test_social_feedback_is_private_bounded_and_optional(self):
         import io
         from unittest.mock import patch
