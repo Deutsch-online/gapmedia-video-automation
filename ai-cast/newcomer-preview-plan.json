@@ -3,50 +3,39 @@
   "series_version": "wg-alltag-v1",
   "series_name": "Marta & Lukas: Alltag in Deutschland",
   "content_basis": "everyday-reenactment",
-  "title_de": "Mein erster Einkauf",
-  "title_fa": "اولین خرید من",
-  "summary": "Newcomer Marta mistakes the checkout divider for a tiny fence on sale. Lukas explains its purpose and she jokes about her bread not needing a garden.",
-  "cliffhanger": "Next time Marta meets the Pfand machine.",
+  "title_de": "Der Einkaufswagen klemmt",
+  "title_fa": "چرخ خرید گیر کرده",
+  "summary": "At a German supermarket, newcomer Marta finds that the shopping cart is chained. Lukas shows her the coin slot. She unlocks the cart with her last euro, then sees her empty purse. The coin is refundable when the cart is returned; her immediate dilemma is the joke.",
+  "cliffhanger": "Next time Marta returns the cart and gets her euro back.",
   "scenes": [
     {
       "speaker": "marta",
-      "de": "Ist dieser Mini-Zaun auch im Angebot?",
-      "fa": "این حصار کوچولو هم تخفیف دارد؟",
-      "scene": "Polished expressive 3D cartoon supermarket checkout. Only Marta, young adult newcomer with mustard sweatshirt and teal dungarees. Medium three-quarter view with her expressive unobstructed face and right hand visible together. She holds a short bright yellow plastic checkout divider just above the belt, studying it with playful genuine curiosity. A loaf of bread in plain paper rests beside it. The divider is clearly a small checkout bar with triangular cross-section, not an actual garden fence. Warm overhead light, teal checkout, shallow background, clear object silhouettes, no other face.",
-      "motion": "Marta lifts the small yellow checkout divider a few centimeters and tilts her head inquisitively while speaking. One controlled lift, a brief raised eyebrow, natural lip sync. No frantic waving or extra fingers.",
-      "visible_objects": [
-        "yellow checkout divider",
-        "loaf of bread",
-        "checkout belt"
-      ],
-      "object_action": "Marta lifts the checkout divider next to her bread.",
+      "de": "Warum hängt der Wagen fest?",
+      "fa": "چرا این چرخ گیر کرده؟",
+      "scene": "Premium expressive 3D cartoon, ordinary German supermarket entrance in daylight. Only adult newcomer Marta visible, mustard top and teal dungarees. Medium three-quarter framing shows her face, hand, front shopping cart and a short, visibly attached metal cart chain. She pulls once and the chain stops the cart. The coin lock and its one-euro icon are visible on the handle. Grounded physical comedy, clear silhouettes, no fantasy props, no other face.",
+      "motion": "Marta gives the cart one natural tug; it moves a few centimeters and stops against the taut chain. She looks down at the lock and speaks with natural German lip sync. Only Marta's mouth moves.",
+      "visible_objects": ["shopping cart", "taut cart chain", "coin lock"],
+      "object_action": "Marta pulls the chained cart and it stops visibly.",
       "asset": null
     },
     {
       "speaker": "lukas",
-      "de": "Das ist ein Warentrenner. Der bleibt hier.",
-      "fa": "این جداکنندهٔ خرید است. همین‌جا می‌ماند.",
-      "scene": "Same supermarket checkout and identical yellow divider. Only Lukas, copper-haired young adult with turquoise glasses and coral hoodie. A tighter medium three-quarter shot includes face, right hand, and divider already resting flat on the belt between a loaf of bread and a plain milk carton. The rectangular divider clearly separates the two purchases. Clean colorful 3D lighting and readable composition, no other person or face.",
-      "motion": "Lukas smiles gently and slides the yellow divider a short distance into place between the bread and milk while explaining. He looks toward Marta off camera, without laughing at her. Natural speech-driven lips and a single purposeful hand action.",
-      "visible_objects": [
-        "yellow checkout divider",
-        "loaf of bread",
-        "milk carton"
-      ],
-      "object_action": "Lukas slides the divider between the two purchases.",
+      "de": "Ein Euro oder ein Chip löst die Kette.",
+      "fa": "یک یورو یا چیپ، زنجیر را باز می‌کند.",
+      "scene": "Same supermarket entrance, same cart, chain and coin lock. Only adult Lukas visible, copper hair, turquoise glasses and coral hoodie. Tight medium three-quarter view keeps his face, index finger, lock and one-euro symbol simultaneously readable. He points to the lock while Marta stays off camera. Polished 3D cartoon lighting, physically plausible mechanism, no other face.",
+      "motion": "Lukas points once to the coin slot while speaking, then drops his hand. Natural German lip sync on Lukas alone. The cart stays chained and motionless during this explanation.",
+      "visible_objects": ["shopping cart", "coin lock", "one-euro symbol", "cart chain"],
+      "object_action": "Lukas points at the cart's coin slot.",
       "asset": null
     },
     {
       "speaker": "marta",
-      "de": "Dann braucht mein Brot wohl keinen Garten!",
-      "fa": "پس نانم ظاهراً به باغچه نیاز ندارد!",
-      "scene": "Same checkout, same yellow divider lying on the belt beside the bread. Only Marta visible in a medium three-quarter shot, her face expressive and mouth unobstructed, bread and divider prominent beside her hand. Appealing theatrical 3D facial acting, bright warm-cool colors, strong visual hierarchy. She is amused at her own misunderstanding, not embarrassed. No garden, fantasy props or second face.",
-      "motion": "Marta glances once from the divider to her bread, gives a small self-aware smile and delivers the friendly joke. She gently nudges her loaf toward the divider then rests her hand. Natural lips, a brief amused eyebrow movement, stable objects, no exaggerated laughter.",
-      "visible_objects": [
-        "loaf of bread",
-        "yellow checkout divider"
-      ],
-      "object_action": "Marta nudges her bread beside the divider and smiles at her misunderstanding.",
+      "de": "Super. Ein Wagen, aber kein Geld fürs Brot!",
+      "fa": "عالی! حالا چرخ دارم، اما برای نان پول ندارم!",
+      "scene": "Same entrance, only Marta visible. Medium three-quarter shot shows her face and hand, unlocked shopping cart, short released chain, one-euro coin seated in the lock, and her open visibly empty purse. Her surprised glance from cart to purse carries the joke. No other person or face. Premium expressive 3D cartoon, readable action, subtitle-safe lower margin.",
+      "motion": "Marta inserts her one-euro coin, the chain releases, and she rolls the cart a short distance. She opens her purse, sees it is empty, glances at the cart, and delivers the dry punchline with natural lip sync. No second speaker, no slow motion.",
+      "visible_objects": ["unlocked shopping cart", "released chain", "one-euro coin in lock", "empty purse"],
+      "object_action": "Marta unlocks the cart, opens her empty purse, and reacts to losing access to her only coin until she returns the cart.",
       "asset": null
     }
   ]
