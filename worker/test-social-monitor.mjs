@@ -98,5 +98,24 @@ globalThis.fetch=async(url)=>{
 };
 await assert.rejects(accountVideos(env,'tiktok'),/تعلق ندارد/);
 memory.delete('social-grant:tiktok');
+// A grant added after the cached report must refresh inside the cooldown.
+await storeGrant(env,'tiktok',{access_token:'new-private',expires_at:Date.now()+3600000});
+assert.match(await handleSocialConversation(env,'7','/insights'),/گزارش قبلی/);
+assert.match(await handleSocialConversation(env,'7','/review'),/درخواست بررسی ثبت شد/);
+// Simulate expiry of the preceding collection's short lease.
+memory.delete('social:lease');
+let reads=0;
+globalThis.fetch=async(url)=>{
+  if(String(url).includes('/user/info/'))return Response.json({data:{user:{open_id:'owner',username:'easydeutsches'}},error:{code:'ok'}});
+  if(String(url).includes('/video/list/')){reads++;return Response.json({data:{videos:[]},error:{code:'ok'}});}
+  throw new Error('Unexpected network request');
+};
+const refreshed=await runSocialMonitor(env,{owner:'7',notify:async(_id,text)=>reports.push(text)});
+assert.equal(refreshed.accounts.tiktok.status,'connected','new grant bypasses stale needs-connection cache and cooldown');
+assert.equal(reads,1);
+assert.equal(reports.length,2,'new connection delivers an updated report even if the previous overall status was limited');
+await runSocialMonitor(env);
+assert.equal(reads,1,'new connection refresh is not an unlimited polling bypass');
+assert.match(await handleSocialConversation(env,'7','/insights'),/متصل به API رسمی/);
 globalThis.fetch=original;
 console.log('same-age social comparisons, missing-data honesty, encrypted read-only grants and bounded monitoring hold');

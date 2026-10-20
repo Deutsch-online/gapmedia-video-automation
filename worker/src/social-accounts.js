@@ -103,6 +103,9 @@ export async function socialAuth(request,env) {
     if(!grant.account_id||!Number.isFinite(grant.expires_at))throw new Error('شناسه یا تاریخ اعتبار اتصال تأیید نشد.');
     grant.handle=ACCOUNTS[platform].handle;
     await storeGrant(env,platform,grant);
+    const connectedAt=new Date().toISOString();
+    await env.BOT_STATE.put('social:connection-changed',connectedAt);
+    await env.BOT_STATE.put('social:review-requested',connectedAt);
     return new Response('Connected read-only to @easydeutsches. Return to Telegram and use /review.',{headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store','set-cookie':'social_oauth=; Secure; HttpOnly; Path=/social; Max-Age=0','referrer-policy':'no-referrer'}});
   }catch(error){return new Response(error.message,{status:400,headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store'}});}
 }

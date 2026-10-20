@@ -168,15 +168,27 @@ export function formatReport(report) {
   return lines.join('\n');
 }
 
+// A successful new grant invalidates the old "not connected" snapshot. It
+// permits one collection even inside the normal 15-minute review cooldown.
+export async function hasUncollectedConnection(env,report) {
+  const changed=Date.parse(await env.BOT_STATE?.get('social:connection-changed')||'');
+  if(Number.isFinite(changed)&&changed>Date.parse(report?.updated_at||'1970-01-01'))return true;
+  for(const platform of Object.keys(ACCOUNTS)) {
+    if((!report||report.accounts?.[platform]?.status==='needs_connection')&&await env.BOT_STATE?.get('social-grant:'+platform))return true;
+  }
+  return false;
+}
+
 export async function runSocialMonitor(env,{force=false,notify=null,owner=null}={}) {
   if(!env.BOT_STATE)return null;
   const now=new Date().toISOString(),previous=await env.BOT_STATE.get(HEALTH,'json')||{};
   const lease=await env.BOT_STATE.get('social:lease','json');
   const due=Date.parse(previous.next_due||'');
   const requested=Date.parse(await env.BOT_STATE.get('social:review-requested')||'');
-  const requestedDue=Number.isFinite(requested)&&requested>Date.parse(previous.last_attempt||'1970-01-01')&&Date.now()-Date.parse(previous.last_attempt||'1970-01-01')>=15*60000;
+  const connectionChanged=await hasUncollectedConnection(env,await env.BOT_STATE.get(REPORT,'json'));
+  const requestedDue=connectionChanged||Number.isFinite(requested)&&requested>Date.parse(previous.last_attempt||'1970-01-01')&&Date.now()-Date.parse(previous.last_attempt||'1970-01-01')>=15*60000;
   if(lease?.until>Date.now()||(!force&&Number.isFinite(due)&&due>Date.now()&&!requestedDue))return env.BOT_STATE.get(REPORT,'json');
-  if(force&&Date.now()-Date.parse(previous.last_attempt||'')<15*60000)return env.BOT_STATE.get(REPORT,'json');
+  if(force&&!connectionChanged&&Date.now()-Date.parse(previous.last_attempt||'')<15*60000)return env.BOT_STATE.get(REPORT,'json');
   const running={...previous,last_attempt:now,heartbeat:now,status:'running',lease_until:Date.now()+180000};
   await env.BOT_STATE.put('social:lease',JSON.stringify({attempted_at:now,until:Date.now()+180000}),{expirationTtl:180});
   try{
@@ -244,11 +256,19 @@ export async function handleSocialConversation(env,chatId,input) {
   }
   if(/^\/review$/i.test(text)||/(?:حساب|اکانت|اکونت|پیج).*(?:بررسی کن|تحلیل کن)/.test(text)){
     const previous=await env.BOT_STATE.get(HEALTH,'json');
-    if(Date.now()-Date.parse(previous?.last_attempt||'')<15*60000)return formatReport(await env.BOT_STATE.get(REPORT,'json'));
+    const report=await env.BOT_STATE.get(REPORT,'json');
+    if(!await hasUncollectedConnection(env,report)&&Date.now()-Date.parse(previous?.last_attempt||'')<15*60000)return formatReport(report);
     await env.BOT_STATE.put('social:review-requested',new Date().toISOString());
     return 'درخواست بررسی ثبت شد؛ در نزدیک‌ترین نوبت زمان‌بندی (معمولاً تا پنج دقیقه) اجرا و نتیجه همین‌جا گزارش می‌شود. /insights آخرین گزارش و /monitor وضعیت را نشان می‌دهد.';
   }
-  if(/^\/insights$/i.test(text)||/(?:تحلیل|آمار|بازدید).*(?:ویدیو|حساب|پیج)|(?:چرا|چطور).*(?:وایرال نشده|مخاطب.*نماند)/.test(text))return formatReport(await env.BOT_STATE.get(REPORT,'json'));
+  if(/^\/insights$/i.test(text)||/(?:تحلیل|آمار|بازدید).*(?:ویدیو|حساب|پیج)|(?:چرا|چطور).*(?:وایرال نشده|مخاطب.*نماند)/.test(text)){
+    const report=await env.BOT_STATE.get(REPORT,'json');
+    if(await hasUncollectedConnection(env,report)){
+      await env.BOT_STATE.put('social:review-requested',new Date().toISOString());
+      return 'اتصال تازه ثبت شده، اما گزارش قبلی مربوط به پیش از اتصال است. بررسی تازه درخواست شد؛ نتیجه پس از خواندن API همین‌جا ارسال می‌شود. نیاز به اتصال دوباره نیست.';
+    }
+    return formatReport(report);
+  }
   if(/^\/strategy$/i.test(text)||/(?:برنامه|استراتژی).*(?:بهبود|رشد|محتوای بعد)/.test(text)){
     const learning=await creativeFeedback(env),trends=await env.BOT_STATE.get('social:trends','json');
     const experiments=learning.experiments.length?learning.experiments:defaultExperiments({cohorts:[]});

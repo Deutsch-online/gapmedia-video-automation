@@ -655,12 +655,19 @@ export default {
       })(),
     ]));
   },
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const page=publicPage(request);
     if(page)return page;
     const route=new URL(request.url).pathname;
     if(request.method==='GET'&&route.startsWith('/social/')){
-      return await socialAuth(request,env)||new Response('Not found',{status:404});
+      const response=await socialAuth(request,env);
+      if(response?.ok&&route.startsWith('/social/callback/')&&ctx?.waitUntil){
+        ctx.waitUntil((async()=>{
+          const owner=env.ALLOWED_CHAT_ID||await env.BOT_STATE?.get('social:owner');
+          await runSocialMonitor(env,{owner,notify:async(id,text)=>replyText(env,id,text)});
+        })().catch(()=>console.error('Post-connection collection failed; scheduled retry remains enabled.')));
+      }
+      return response||new Response('Not found',{status:404});
     }
     if(request.method==='GET'&&route==='/monitor-health')return Response.json(await monitorHealth(env));
     if(route.startsWith('/internal/')){
@@ -757,6 +764,10 @@ export default {
       if(socialAnswer){
         await rememberExchange(env,chatId,input,socialAnswer);
         await replyText(env,chatId,socialAnswer);
+        if(ctx?.waitUntil&&await env.BOT_STATE?.get('social:review-requested')){
+          ctx.waitUntil(runSocialMonitor(env,{owner:chatId,notify:async(id,text)=>replyText(env,id,text)})
+            .catch(()=>console.error('Requested collection failed; scheduled retry remains enabled.')));
+        }
         return new Response('ok');
       }
       try {
