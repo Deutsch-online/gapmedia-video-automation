@@ -101,6 +101,37 @@ import unittest
 from unittest.mock import patch
 
 class ProviderDiagnosticsTests(unittest.TestCase):
+    def test_beatapi_never_selects_a_paid_model_or_unlisted_free_model(self):
+        from unittest.mock import MagicMock
+        catalog = json.dumps({'data': {'enabled': True, 'models': [
+            {'id': 'glm-5.3-flash'}, {'id': 'glm-5.3-flash-free'}]}})
+        def fresh_response(*_args, **_kwargs):
+            response = MagicMock()
+            response.__enter__.return_value = io.StringIO(catalog)
+            return response
+        with patch.object(m.urllib.request, 'urlopen', side_effect=fresh_response):
+            with patch.dict(os.environ, {'BEATAPI_FREE_MODEL': 'glm-5.3-flash'}):
+                with self.assertRaisesRegex(ValueError, '-free suffix'):
+                    m.beatapi_free_model()
+            with patch.dict(os.environ, {'BEATAPI_FREE_MODEL': 'missing-free'}):
+                with self.assertRaisesRegex(ValueError, 'not currently listed'):
+                    m.beatapi_free_model()
+            with patch.dict(os.environ, {'BEATAPI_FREE_MODEL': 'glm-5.3-flash-free'}):
+                self.assertEqual(m.beatapi_free_model(), 'glm-5.3-flash-free')
+
+    def test_beatapi_free_text_precedes_other_story_providers(self):
+        state = m.new_state()
+        state['next_episode'] = 2
+        plan = m.first_episode()
+        plan['episode'] = 2
+        response = {'choices': [{'message': {'content': json.dumps(plan)}}]}
+        with patch.dict(os.environ, {'BEATAPI_API_KEY': 'test-key'}, clear=True), \
+             patch.object(m, 'beatapi_free_model', return_value='glm-5.3-flash-free'), \
+             patch.object(m, 'request_json', return_value=response) as request:
+            self.assertEqual(m.make_plan(state)['episode'], 2)
+        self.assertEqual(request.call_args.args[1]['model'], 'glm-5.3-flash-free')
+        self.assertEqual(request.call_args.args[2]['Authorization'], 'Bearer test-key')
+
     def test_http_status_and_message_preserved_but_credentials_removed(self):
         body = b'{"error":{"code":"invalid_api_key","message":"key=private-value https://example.com/?key=private-value"}}'
         error = m.urllib.error.HTTPError('https://example.com', 401, 'Unauthorized', {}, io.BytesIO(body))

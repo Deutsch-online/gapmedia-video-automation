@@ -312,6 +312,21 @@ def groq_model(key):
             return candidate
     raise ValueError('No supported German/Persian story model in the Groq model catalog')
 
+def beatapi_free_model():
+    """Select only a zero-price text ID; free-credit access to paid IDs is unsafe."""
+    requested = os.getenv('BEATAPI_FREE_MODEL', 'glm-5.3-flash-free')
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+-free', requested):
+        raise ValueError('BeatAPI model must have the -free suffix')
+    req = urllib.request.Request('https://api.beatapi.io/v1/free-tier',
+                                 headers={'User-Agent': 'GapMedia-CinematicSeries/1.0'})
+    with urllib.request.urlopen(req, timeout=20) as response:
+        catalog = json.load(response)
+    available = {entry.get('id') for entry in catalog.get('data', {}).get('models', [])
+                 if isinstance(entry, dict) and str(entry.get('id', '')).endswith('-free')}
+    if not catalog.get('data', {}).get('enabled') or requested not in available:
+        raise ValueError('BeatAPI zero-price text model is not currently listed')
+    return requested
+
 def make_plan(state):
     episode = state['next_episode']
     if episode == 5:
@@ -381,9 +396,19 @@ def make_plan(state):
               'Use its verified real-world context; do not copy its prose or infer prices, laws or universal rules: '
               + json.dumps(research, ensure_ascii=False) + '. Story history: ' + json.dumps(memory, ensure_ascii=False))
     errors = []
-    for provider in ('gemini', 'groq'):
+    for provider in ('beatapi-free', 'gemini', 'groq'):
         try:
-            if provider == 'gemini':
+            if provider == 'beatapi-free':
+                key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY')
+                if not key:
+                    continue
+                model = beatapi_free_model()
+                r = request_json('https://api.beatapi.io/v1/chat/completions',
+                                 {'model': model, 'messages': [{'role': 'user', 'content': prompt}],
+                                  'temperature': .7, 'max_tokens': 5000},
+                                 {'Authorization': 'Bearer ' + key})
+                raw = r['choices'][0]['message']['content']
+            elif provider == 'gemini':
                 key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
                 if not key:
                     continue

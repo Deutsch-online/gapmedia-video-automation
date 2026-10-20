@@ -31,6 +31,21 @@ The 480p, native-speed single-speaker model and quality gates stay in force.
 Reducing inference steps or changing models needs an actual quality comparison;
 unverified speed estimates are not presented as savings.
 
+## Free provider routing (2026-10-20)
+
+Story planning first tries BeatAPI only when a GitHub Actions key is configured.
+It reads BeatAPI's live free-tier catalog and permits only a listed text model
+whose ID ends in `-free`. A paid sibling, promotional balance, image task or
+video task is never treated as zero cost. If BeatAPI is unavailable, the existing
+Gemini/Groq planning fallbacks remain. The moving video shots still use the
+quota-guarded ZeroGPU route, and the series uses Edge's German TTS.
+
+Google Veo is not a free-tier video API. MiniMax credits or a monthly plan are
+eligible for automatic use only after the specific account and request can be
+verified as included with no extra charge. A configured MiniMax API key or a
+positive balance alone does not prove that. Do not start a billable generation
+request to test a supposed free grant.
+
 ## Telegram approval supersedes old environment permissions
 
 Credit requests now have inline Approve/Reject buttons in the verified private chat.
