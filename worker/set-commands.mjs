@@ -11,6 +11,8 @@ const commands=[
   {command:'read',description:'خواندن فایل از GitHub'},
   {command:'find',description:'یافتن فایل در مخزن'},
   {command:'search',description:'جست‌وجوی وب'},
+  {command:'runs',description:'آخرین اجراهای GitHub'},
+  {command:'jobs',description:'جزئیات یک اجرا در GitHub'},
   {command:'edit',description:'ویرایش فایل متنی در GitHub'},
   {command:'new',description:'گفتگوی تازه'},
   {command:'commands',description:'همه فرمان‌های شماره‌ای'},

@@ -32,7 +32,10 @@ globalThis.fetch=async (url,init={})=>{
   }
   return Response.json({ok:true,result:{message_id:1}});
 };
-const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages.at(-1).content.includes('قلاب امروز را کوتاه‌تر کن')?'{"action":"content-edit-hook","payload":"قلاب تازه"}':input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
+let researchStep=0;
+const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages[0].content.includes('تو دستیار پژوهشی')
+  ? ['{"tool":"github_find","arg":"README"}','{"tool":"github_read","arg":"README.md"}','{"tool":"final","answer":"README توضیح پروژه را دارد."}'][researchStep++]
+  : input.messages.at(-1).content.includes('قلاب امروز را کوتاه‌تر کن')?'{"action":"content-edit-hook","payload":"قلاب تازه"}':input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
 const signature=await webhookSecret('test');
 const send=async text=>worker.fetch(new Request('https://worker.test/',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':signature},body:JSON.stringify({message:{chat:{id:7,type:'private'},text}})}),env);
 assert.equal((await worker.fetch(new Request('https://worker.test/',{method:'POST',body:'{}'}),env)).status,401,'unsigned requests cannot impersonate owner chat');
@@ -47,6 +50,9 @@ await send('/files');
 assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('README.md')),'bot lists GitHub files');
 await send('/read README.md');
 assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('Hello owner!')),'bot reads GitHub files');
+await send('فایل README را پیدا کن و توضیح بده');
+assert.equal(researchStep,3,'bot executes a bounded find-read-answer cycle');
+assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('README توضیح پروژه را دارد')),'bot sends the researched answer');
 await send('این آدرس را ثبت کن https://github.com/morluto/rea');
 assert.ok(JSON.parse(kv.get('chat:7')).some(turn=>turn.role==='user'&&turn.content.includes('morluto/rea')),'linked repository is retained in conversation');
 assert.equal(kv.get('recent-github:7'),'https://github.com/morluto/rea','explicitly saved link survives chat history turnover');

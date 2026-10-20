@@ -91,6 +91,33 @@ async function webSearch(query) {
   return `🔎 <b>${html(query)}</b>\n${results.map(item => `${item.number}. ${html(item.title)}\n${html(item.url)}`).join('\n\n')}`.slice(0, 3700);
 }
 
+export async function githubRuns(env) {
+  let response = await fetch(githubUrl(env, 'actions/runs?per_page=5'), {
+    headers:env.GITHUB_TOKEN ? githubHeaders(env) : {'user-agent':'GapMedia-Owner-Assistant','accept':'application/vnd.github+json'},
+  });
+  // A Contents-only token may lack Actions read permission. Public runs can
+  // still be read anonymously, without broadening the bot's write token.
+  if (response.status === 403 && env.GITHUB_TOKEN) response = await fetch(githubUrl(env, 'actions/runs?per_page=5'), {headers:{'user-agent':'GapMedia-Owner-Assistant','accept':'application/vnd.github+json'}});
+  if (!response.ok) throw new Error(`خواندن اجراهای GitHub ناموفق بود (${response.status}).`);
+  const runs = (await response.json()).workflow_runs || [];
+  return `اجراهای اخیر مخزن:\n${runs.slice(0, 5).map(run => `• #${Number(run.id) || '?'} ${html(run.name)} — ${html(run.conclusion || run.status)} — ${html(run.html_url)}`).join('\n') || 'اجرایی پیدا نشد.'}`;
+}
+
+export async function githubRunJobs(env, runId) {
+  const id = String(runId || '').trim();
+  if (!/^[0-9]{1,20}$/.test(id)) throw new Error('شناسهٔ اجرای GitHub معتبر نیست.');
+  const url = githubUrl(env, `actions/runs/${id}/jobs?per_page=20`);
+  let response = await fetch(url, {headers:env.GITHUB_TOKEN ? githubHeaders(env) : {'user-agent':'GapMedia-Owner-Assistant','accept':'application/vnd.github+json'}});
+  if (response.status === 403 && env.GITHUB_TOKEN) response = await fetch(url, {headers:{'user-agent':'GapMedia-Owner-Assistant','accept':'application/vnd.github+json'}});
+  if (!response.ok) throw new Error(`خواندن مرحله‌های اجرا ناموفق بود (${response.status}).`);
+  const jobs = (await response.json()).jobs || [];
+  const lines = jobs.slice(0, 12).map(job => {
+    const failed = (job.steps || []).filter(step => step.conclusion === 'failure').map(step => step.name).slice(0, 3);
+    return `• ${html(job.name)} — ${html(job.conclusion || job.status)}${failed.length ? `؛ مرحلهٔ ناموفق: ${html(failed.join('، '))}` : ''}`;
+  });
+  return `جزئیات اجرای #${id}:\n${lines.join('\n') || 'مرحله‌ای پیدا نشد.'}\nhttps://github.com/${encodeURIComponent(env.GITHUB_OWNER || 'Deutsch-online')}/${encodeURIComponent(env.GITHUB_REPO || 'gapmedia-video-automation')}/actions/runs/${id}`;
+}
+
 export function githubRepositoryLink(text) {
   const match = String(text || '').match(/https?:\/\/(?:www\.)?github\.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9._-]+)(?:[/?#\s]|$)/i);
   if (!match) return null;
@@ -179,6 +206,8 @@ export async function handleAssistantTool(env, text) {
   let task;
   let match;
   if ((match = input.match(/^\/(?:files|ls)(?:\s+(.+))?$/i))) task = {tool:'github_list',path:match[1] || ''};
+  else if (/^\/(?:runs|actions)$/i.test(input)) task = {tool:'github_runs'};
+  else if ((match = input.match(/^\/jobs\s+([0-9]+)$/i))) task = {tool:'github_run_jobs',query:match[1]};
   else if ((match = input.match(/^\/(?:read|cat)\s+(.+)$/i))) task = {tool:'github_read',path:match[1]};
   else if ((match = input.match(/^\/(?:find|repo-search)\s+(.+)$/i))) task = {tool:'github_find',query:match[1]};
   else if ((match = input.match(/^\/(?:search|web)\s+(.+)$/i))) task = {tool:'web_search',query:match[1]};
@@ -187,6 +216,8 @@ export async function handleAssistantTool(env, text) {
   if (!task) return null;
   const tool = task.tool;
   if (tool === 'github_list') return githubList(env, task.path || '');
+  if (tool === 'github_runs') return githubRuns(env);
+  if (tool === 'github_run_jobs') return githubRunJobs(env,task.query);
   if (tool === 'github_find') return githubFind(env, task.query || '');
   if (tool === 'github_read') {
     const file = await githubFile(env, task.path);
@@ -201,4 +232,4 @@ export async function handleAssistantTool(env, text) {
   return null;
 }
 
-export { safePath, writablePath, decode64, encode64, githubFile, githubEdit, webSearch };
+export { safePath, writablePath, decode64, encode64, githubFile, githubList, githubFind, githubEdit, webSearch };

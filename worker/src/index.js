@@ -1,5 +1,6 @@
 import {handleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
+import {runResearchAgent} from './research-agent.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
@@ -26,6 +27,8 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 /read مسیر/فایل — خواندن فایل
 /find واژه — یافتن نام فایل در مخزن
 /search موضوع — جست‌وجوی وب
+/runs — پنج اجرای اخیر GitHub
+/jobs شماره‌اجرا — مرحله‌های اجرا و خطا
 /edit مسیر/فایل دستور — ویرایش محدود فایل متنی
 /help — همین راهنما
 
@@ -760,7 +763,7 @@ export default {
         } else if (command.action === "commands") {
           await reply(env, chatId, LEGACY_HELP);
         } else if (command.action === "chat-help") {
-          await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید. برای کار با مخزن و وب، /files، /read، /find، /search و /edit هم فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
+          await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید. دستیار می‌تواند چند گام پژوهش وب و مخزن را پشت‌سرهم انجام دهد. /files، /read، /find، /search، /runs، /jobs و /edit نیز فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
         } else if (command.action === "reset-chat") {
           await (env.CHAT_HISTORY || env.BOT_STATE)?.delete(`chat:${chatId}`);
           await env.BOT_STATE?.delete(`recent-github:${chatId}`);
@@ -822,10 +825,14 @@ export default {
             handled = true;
           }
           if (!handled) {
-            const result = await handleAssistantTool(env, input);
+            let researched = null;
+            try { researched = await runResearchAgent(env, input, await history(env, chatId)); }
+            catch (error) { console.error('Research agent unavailable:', error); }
+            const result = researched || await handleAssistantTool(env, input);
             if (result) {
               await rememberExchange(env, chatId, input, result);
-              await reply(env, chatId, result);
+              if (researched) await replyText(env, chatId, result);
+              else await reply(env, chatId, result);
               handled = true;
             }
           }
