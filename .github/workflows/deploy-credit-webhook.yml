@@ -2,7 +2,7 @@ name: Validate Telegram chatbot
 on:
   push:
     branches: [main]
-    paths: [worker/src/credit.js, worker/src/index.js, worker/set-commands.mjs, worker/test-chatbot.mjs, .github/workflows/deploy-credit-webhook.yml]
+    paths: [worker/src/credit.js, worker/src/index.js, worker/src/assistant-tools.js, worker/set-commands.mjs, worker/test-chatbot.mjs, worker/test-tools.mjs, .github/workflows/deploy-credit-webhook.yml]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,3 +22,4 @@ jobs:
         run: |
           node worker/test-commands.mjs
           node worker/test-chatbot.mjs
+          node worker/test-tools.mjs

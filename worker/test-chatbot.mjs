@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import worker,{videoAction} from './src/index.js';
+import worker,{videoAction,webhookSecret} from './src/index.js';
 
 for (const question of ['آیا این ابزار به مهاجران کمک می‌کند؟','برنامه هفته من چیست؟','چگونه تحقیق کنم؟','آیا ساخت درس آلمانی زمان می‌برد؟']) {
   assert.equal(videoAction(question),null,`question must stay chat: ${question}`);
@@ -29,7 +29,9 @@ globalThis.fetch=async (url,init={})=>{
   return Response.json({ok:true,result:{message_id:1}});
 };
 const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
-const send=async text=>worker.fetch(new Request('https://worker.test/',{method:'POST',body:JSON.stringify({message:{chat:{id:7,type:'private'},text}})}),env);
+const signature=await webhookSecret('test');
+const send=async text=>worker.fetch(new Request('https://worker.test/',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':signature},body:JSON.stringify({message:{chat:{id:7,type:'private'},text}})}),env);
+assert.equal((await worker.fetch(new Request('https://worker.test/',{method:'POST',body:'{}'}),env)).status,401,'unsigned requests cannot impersonate owner chat');
 await send('آیا ابزار یادگیری آلمانی کمک می‌کند؟');
 assert.equal(calls.filter(c=>c.url.includes('.video-request.json')&&c.init.method==='PUT').length,0,'question must not request a build');
 assert.ok(kv.has('chat:7'),'conversation history should use configured BOT_STATE');

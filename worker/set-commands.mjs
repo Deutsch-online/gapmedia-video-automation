@@ -7,6 +7,11 @@ const commands=[
   {command:'status',description:'وضعیت ساخت ویدیو'},
   {command:'credit',description:'وضعیت تأیید اعتبار'},
   {command:'episode',description:'درخواست قسمت بعدی'},
+  {command:'files',description:'فهرست فایل‌های GitHub'},
+  {command:'read',description:'خواندن فایل از GitHub'},
+  {command:'find',description:'یافتن فایل در مخزن'},
+  {command:'search',description:'جست‌وجوی وب'},
+  {command:'edit',description:'ویرایش فایل متنی در GitHub'},
   {command:'new',description:'گفتگوی تازه'},
   {command:'commands',description:'همه فرمان‌های شماره‌ای'},
 ];

@@ -19,6 +19,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import hashlib
           import os
           import urllib.parse
           import urllib.request
@@ -45,8 +46,11 @@ jobs:
               raise SystemExit("GitHub token belongs to a different bot")
           before = api("getWebhookInfo").get("url", "")
           print("Previous webhook host:", urllib.parse.urlparse(before).hostname or "(none)")
-          if before != target:
-              api("setWebhook", {"url": target, "drop_pending_updates": "false"})
+          # The Worker checks this header before trusting a claimed private
+          # chat ID. Derive it from the existing bot token, so deployment does
+          # not depend on a second Cloudflare secret being set manually.
+          secret = hashlib.sha256(("gapmedia-webhook-v1:" + token).encode()).hexdigest()
+          api("setWebhook", {"url": target, "secret_token": secret, "drop_pending_updates": "false"})
           after = api("getWebhookInfo").get("url", "")
           if after != target:
               raise SystemExit("Webhook did not point to the active Worker")

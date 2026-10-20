@@ -10,22 +10,17 @@
 
 ```powershell
 npx wrangler secret put TELEGRAM_BOT_TOKEN
-npx wrangler secret put TELEGRAM_WEBHOOK_SECRET
 npx wrangler secret put ALLOWED_CHAT_ID
 npx wrangler secret put GITHUB_TOKEN
 ```
 
 `GITHUB_TOKEN` باید یک Fine-grained Personal Access Token با دسترسی **Contents: Read and write** برای همین repository باشد. بات با یک Push امن، ساخت درس آلمانی را آغاز می‌کند؛ بنابراین به دسترسی Actions وابسته نیست. چت از سهمیهٔ رایگان روزانهٔ Workers AI استفاده می‌کند؛ MiniMax برای پاسخ‌گویی این بات لازم نیست.
 
-4. اجرا کنید: `npm run deploy`
-5. URL نمایش‌داده‌شده را برای webhook ثبت کنید (SECRET همان مقدار `TELEGRAM_WEBHOOK_SECRET`):
+4. اجرا کنید: `npm run deploy`. Workflow `connect-telegram-webhook.yml` نشانی و امضای webhook را با توکن موجود بات تنظیم می‌کند. Worker درخواست بدون امضای صحیح را رد می‌کند.
 
-```powershell
-$token = Read-Host 'Telegram bot token'
-$url = Read-Host 'Worker URL'
-$secret = Read-Host 'Webhook secret'
-Invoke-RestMethod -Method Post -Uri "https://api.telegram.org/bot$token/setWebhook" -Body @{ url=$url; secret_token=$secret }
-```
+## ابزارهای دستیار
+
+در گفت‌وگوی خصوصی: `/files` یا `/files پوشه` فهرست مخزن، `/read مسیر/فایل` محتوای فایل، `/find واژه` نام فایل‌ها، `/search موضوع` جست‌وجوی وب و `/edit مسیر/فایل دستور دقیق` ویرایش فایل متنی را اجرا می‌کند. درخواست طبیعی نیز برای همین ابزارها دسته‌بندی می‌شود. ویرایش کد اجرایی در branch جداگانه برای بررسی می‌ماند؛ فایل‌های حساس امنیت، اعتبار و workflow به‌صورت خودکار ویرایش نمی‌شوند. دستیار فرمان shell آزاد ندارد و مصرف اعتبار پولی را از متن چت فعال نمی‌کند.
 
 بعد از webhook، دیگر هیچ listener زمان‌بندی‌شده‌ای پیام‌ها را نمی‌خواند؛ فقط Worker پاسخ می‌دهد تا پیام‌ها دو بار پردازش نشوند.
 

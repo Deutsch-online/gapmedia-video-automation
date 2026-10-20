@@ -2,7 +2,7 @@
 // local-PC bot test: the phone uses worker/src/index.js, so it needs its own
 // regression test for the exact commands the creator actually types.
 import assert from "node:assert/strict";
-import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch, dueGermanLessonDispatch } from "./src/index.js";
+import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch, dueGermanLessonDispatch, webhookSecret } from "./src/index.js";
 
 assert.equal(videoAction("تیک تاک بساز").action, "build-tiktok");
 assert.equal(videoAction("انستا بساز").action, "build-instagram");
@@ -80,6 +80,7 @@ globalThis.fetch = async (url, init = {}) => {
 };
 const response = await worker.fetch(new Request("https://worker.test/", {
   method: "POST",
+  headers: { 'X-Telegram-Bot-Api-Secret-Token': await webhookSecret('test') },
   body: JSON.stringify({ message: {
     chat: { id: 7 },
     caption: "یک موضوع واقعی | گام یک | گام دو | گام سه",
@@ -106,6 +107,7 @@ globalThis.fetch = async (url, init = {}) => {
 };
 const germanResponse = await worker.fetch(new Request("https://worker.test/", {
   method: "POST",
+  headers: { 'X-Telegram-Bot-Api-Secret-Token': await webhookSecret('test') },
   body: JSON.stringify({ message: { chat: { id: 7 }, text: "درس آلمانی بساز" } }),
 }), { ALLOWED_CHAT_ID: "7", TELEGRAM_BOT_TOKEN: "test", GITHUB_TOKEN: "test" });
 globalThis.fetch = savedFetch;

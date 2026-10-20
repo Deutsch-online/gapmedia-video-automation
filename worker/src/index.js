@@ -1,9 +1,16 @@
 import {handleCredit} from './credit.js';
+import {handleAssistantTool} from './assistant-tools.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
 const TG = "https://api.telegram.org";
 const MAX_HISTORY = 8;
+const WEBHOOK_CONTEXT = 'gapmedia-webhook-v1:';
+
+async function webhookSecret(token) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(WEBHOOK_CONTEXT + token));
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
 const HELP = `🤖 <b>ویدیو آلمانی</b>
 
@@ -15,6 +22,11 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 /credit — وضعیت درخواست مصرف اعتبار
 /new — شروع گفتگوی تازه
 /chat — راهنمای گفت‌وگوی آزاد
+/files — فهرست فایل‌های GitHub
+/read مسیر/فایل — خواندن فایل
+/find واژه — یافتن نام فایل در مخزن
+/search موضوع — جست‌وجوی وب
+/edit مسیر/فایل دستور — ویرایش محدود فایل متنی
 /help — همین راهنما
 
 <b>فرمان‌های ویدیو</b>
@@ -483,7 +495,7 @@ function prepareTopicLocally(raw) {
   return [topic, ...(steps.length ? steps : TOPIC_SCAFFOLD)].join(" | ");
 }
 
-const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. روشن، دوستانه و کوتاه پاسخ بده؛ برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. دربارهٔ وضعیت اجرا، سهمیه، قیمت یا مشکل فنی اگر دادهٔ زنده در گفتگو نداری، ادعای قطعی نکن؛ کاربر را به /status یا /credit راهنمایی کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده مگر وضعیت تأیید کرده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. هیچ فرمان ساخت، انتشار، حذف یا مصرف اعتبار را از متن گفتگوی عادی اجرا نکن؛ فقط پاسخ بده و اگر لازم است فرمان صریح را معرفی کن. برای اطلاعات متغیر، منبع یا دسترسی زنده نداری؛ این محدودیت را کوتاه بگو. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
+const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. روشن، دوستانه و کوتاه پاسخ بده؛ برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. دربارهٔ وضعیت اجرا، سهمیه، قیمت یا مشکل فنی اگر دادهٔ زنده در گفتگو نداری، ادعای قطعی نکن؛ کاربر را به /status یا /credit راهنمایی کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده مگر وضعیت تأیید کرده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. اجرای ساخت، انتشار، حذف یا مصرف اعتبار فقط از مسیر فرمان‌های اختصاصی مجاز است. برای جست‌وجوی وب و خواندن/ویرایش محدود فایل‌های مخزن ابزار جداگانه فعال است؛ اگر این گفتگو خروجی آن ابزار را ندارد، ادعای جست‌وجو یا ویرایش نکن. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
 
 function textFromWorkersAI(data) {
   // Workers AI models have used both native `response` and OpenAI-compatible
@@ -607,7 +619,7 @@ export default {
       return Response.json({ worker: true, telegramTokenValid: tokenValid, webhookConfigured });
     }
     if (request.method !== "POST") return new Response("GapMedia Telegram worker", { status: 200 });
-    if (env.TELEGRAM_WEBHOOK_SECRET && request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== env.TELEGRAM_WEBHOOK_SECRET) return new Response("Unauthorized", { status: 401 });
+    if (!env.TELEGRAM_BOT_TOKEN || request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== await webhookSecret(env.TELEGRAM_BOT_TOKEN)) return new Response("Unauthorized", { status: 401 });
     const update = await request.json().catch(() => null);
     if (update?.callback_query?.data?.startsWith('cc:')) {
       try {
@@ -726,7 +738,7 @@ export default {
         } else if (command.action === "commands") {
           await reply(env, chatId, LEGACY_HELP);
         } else if (command.action === "chat-help") {
-          await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید؛ مثلاً «فرق Termin و Anmeldung چیست؟». برای اجرای کار، فرمان صریحی مانند /episode یا /status بفرستید.");
+          await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید. برای کار با مخزن و وب، /files، /read، /find، /search و /edit هم فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
         } else if (command.action === "reset-chat") {
           await (env.CHAT_HISTORY || env.BOT_STATE)?.delete(`chat:${chatId}`);
           await clearPending(env, chatId);
@@ -769,7 +781,18 @@ export default {
           await reply(env, chatId, acknowledgementFor(command));
         }
       } else {
-        await replyText(env, chatId, await chat(env, chatId, input));
+        let handled = false;
+        try {
+          const result = await handleAssistantTool(env, input);
+          if (result) {
+            await reply(env, chatId, result);
+            handled = true;
+          }
+        } catch (error) {
+          await replyText(env, chatId, `⚠️ ${error.message || 'ابزار در دسترس نیست.'}`);
+          handled = true;
+        }
+        if (!handled) await replyText(env, chatId, await chat(env, chatId, input));
       }
     } catch (error) {
       console.error(error);
@@ -780,5 +803,5 @@ export default {
 };
 
 // Kept outside the HTTP handler solely for deterministic local command tests.
-export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch };
+export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch, webhookSecret };
 
