@@ -6,6 +6,7 @@ assert.throws(() => safePath('../secrets.txt'));
 assert.throws(() => safePath('.telegram-bot-chat.json'));
 assert.throws(() => writablePath('.github/workflows/daily.yml'));
 assert.throws(() => writablePath('worker/src/index.js'));
+assert.throws(() => writablePath('PROJECT_RULES.md'));
 
 const saved = globalThis.fetch;
 const calls = [];

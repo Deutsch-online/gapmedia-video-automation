@@ -21,7 +21,7 @@ function safePath(path) {
 
 function writablePath(path) {
   const value = safePath(path);
-  if (/^(\.github\/|worker\/src\/(?:credit|index|assistant-tools)\.js$|wrangler\.toml$|worker\/wrangler\.jsonc$|\.cinematic-|\.video-request\.json$|\.telegram-)/.test(value)) throw new Error('ویرایش خودکار این فایل حساس مجاز نیست.');
+  if (/^(\.github\/|AGENTS\.md$|PROJECT_RULES\.md$|ai-cast\/COST_POLICY\.md$|worker\/src\/(?:credit|index|assistant-tools)\.js$|wrangler\.toml$|worker\/wrangler\.jsonc$|\.cinematic-|\.video-request\.json$|\.telegram-)/.test(value)) throw new Error('ویرایش خودکار این فایل حساس مجاز نیست.');
   if (!/\.(md|txt|json|js|mjs|py|html|css|yml|yaml)$/.test(value)) throw new Error('این نوع فایل برای ویرایش متنی پشتیبانی نمی‌شود.');
   return value;
 }
