@@ -4,7 +4,7 @@ import {handleAssistantTool, githubRunJobs} from './src/assistant-tools.js';
 
 assert.equal(needsResearchAgent('فایل README را پیدا کن و توضیح بده'),true);
 assert.equal(needsResearchAgent('فایل را ویرایش کن'),false);
-assert.equal(needsResearchAgent('سلام'),false);
+assert.equal(needsResearchAgent('سلام'),true,'all ordinary chat reaches the conversational router');
 assert.equal(decision('{"tool":"github_edit","arg":"README.md"}'),null,'agent cannot invent write tools');
 
 const savedFetch = globalThis.fetch;
@@ -32,6 +32,9 @@ assert.ok(calls.every(call=>!call.init.method || call.init.method==='GET'),'rese
 assert.match(await handleAssistantTool(env,'/runs'),/Build/);
 assert.match(await handleAssistantTool(env,'/jobs 123'),/Install deps/);
 await assert.rejects(githubRunJobs(env,'123abc'));
+const beforeChat=calls.length;
+assert.match(await runResearchAgent({AI:{run:async()=>({response:'{"tool":"final","answer":"سلام! چگونه کمک کنم؟"}'})}},'سلام'),/سلام/);
+assert.equal(calls.length,beforeChat,'ordinary conversation answers without needless web or repository calls');
 
 const diagnosis = [
   '{"tool":"github_runs","arg":""}',

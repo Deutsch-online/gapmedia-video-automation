@@ -7,6 +7,9 @@ export const BASE_COMMANDS = [
   {command:'status',description:'وضعیت ساخت ویدیو'},
   {command:'credit',description:'وضعیت تأیید اعتبار'},
   {command:'episode',description:'درخواست قسمت بعدی'},
+  {command:'queue',description:'محتوای واقعی در صف تولید'},
+  {command:'scenario',description:'سناریوی یک قسمت'},
+  {command:'prompt',description:'پرامپت صحنه‌های یک قسمت'},
   {command:'files',description:'فهرست فایل‌های GitHub'},
   {command:'read',description:'خواندن فایل از GitHub'},
   {command:'find',description:'یافتن فایل در مخزن'},
@@ -25,9 +28,10 @@ export const BASE_COMMANDS = [
   {command:'synccmds',description:'همگام‌سازی منوی دستورها'},
 ];
 
-const TARGETS = new Set(['help','chat','status','credit','episode','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands']);
+const TARGETS = new Set(['help','chat','status','credit','episode','queue','scenario','prompt','files','read','find','search','mcp','mcp_search','mcp_fetch','runs','jobs','new','commands']);
 const RESERVED = new Set([...BASE_COMMANDS.map(item=>item.command),'ls','cat','web','actions','reset','menu','undo','repo_search','edit']);
 const ALIAS_KEY = chatId => `command-aliases:${chatId}`;
+const MENU_VERSION = BASE_COMMANDS.map(item=>item.command).join(',');
 const NAME = /^[a-z][a-z0-9_]{0,31}$/;
 const TARGET_WORDS = {وضعیت:'status',اعتبار:'credit',قسمت:'episode',اجراها:'runs',راهنما:'help'};
 const guidance = 'نمونه: <code>/addcmd check status</code>؛ سپس <code>/check</code>. حذف: <code>/delcmd check</code>. فهرست: /mycmds.';
@@ -57,11 +61,17 @@ async function syncMenu(env, chatId, entries, telegram) {
     command,description:`میان‌بر /${target}`,
   }))];
   await telegram(env,'setMyCommands',{scope,commands});
+  await env.BOT_STATE?.put(`command-menu-version:${chatId}`,MENU_VERSION);
 }
 
 export async function manageCommands(env, chatId, raw, telegram) {
   const task = parseCommandManagement(raw);
-  if (!task) return null;
+  if (!task) {
+    if (env.BOT_STATE && await env.BOT_STATE.get(`command-menu-version:${chatId}`) !== MENU_VERSION) {
+      try { await syncMenu(env,chatId,await aliases(env,chatId),telegram); } catch { /* Menu repair must not block chat. */ }
+    }
+    return null;
+  }
   if (task.action === 'help') return guidance;
   const current = await aliases(env,chatId);
   if (task.action === 'mycmds') {

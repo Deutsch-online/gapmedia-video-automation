@@ -2,11 +2,12 @@ import {handleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
 import {runResearchAgent} from './research-agent.js';
 import {manageCommands, resolveAlias} from './command-registry.js';
+import {handleSeriesConversation} from './series-assistant.js';
 // Real-time Telegram gateway. Hosting is free on Cloudflare Workers; secrets
 // are entered with `wrangler secret put`, never placed in this repository.
 
 const TG = "https://api.telegram.org";
-const MAX_HISTORY = 8;
+const MAX_HISTORY = 16;
 const WEBHOOK_CONTEXT = 'gapmedia-webhook-v1:';
 
 async function webhookSecret(token) {
@@ -21,6 +22,9 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 <b>فرمان‌های اصلی</b>
 /status — وضعیت واقعی ساخت و اعتبار
 /episode — درخواست قسمت بعدی، تابع سهمیهٔ GPU
+/queue — محتوای واقعی در صف
+/scenario شماره — سناریوی قسمت؛ مثلاً /scenario 7
+/prompt شماره — پرامپت صحنه‌های همان قسمت
 /credit — وضعیت درخواست مصرف اعتبار
 /new — شروع گفتگوی تازه
 /chat — راهنمای گفت‌وگوی آزاد
@@ -213,9 +217,19 @@ async function reply(env, chatId, text) {
 }
 
 async function replyText(env, chatId, body) {
-  // Model output is plain text. Telegram HTML parsing otherwise rejects < or &.
-  const safe = String(body || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  return reply(env, chatId, safe.slice(0, 3800));
+  // Long scenarios must arrive in full. Plain Telegram messages also accept
+  // model text containing < or & without interpreting it as HTML.
+  let remaining = String(body || '');
+  while (remaining.length) {
+    let end = Math.min(3500,remaining.length);
+    if (end < remaining.length) {
+      const newline = remaining.lastIndexOf('\n',end);
+      if (newline > end / 2) end = newline + 1;
+      if (/[\uD800-\uDBFF]/.test(remaining[end-1])) end -= 1;
+    }
+    await telegram(env,'sendMessage',{chat_id:chatId,text:remaining.slice(0,end),disable_web_page_preview:true});
+    remaining = remaining.slice(end);
+  }
 }
 
 async function repositoryJson(env, path) {
@@ -585,7 +599,7 @@ function parseChatIntent(raw) {
   } catch { return null; }
 }
 
-async function chatIntent(env, userText) {
+async function chatIntent(env, userText, prior = []) {
   if (!env.AI) return null;
   const instruction = `پیام کاربر را فقط به یک JSON تبدیل کن. هیچ متن دیگری ننویس.
 action فقط یکی از این‌ها باشد: content-search-live، content-edit-hook، content-edit-steps، custom-content، plan-today، plan-tomorrow، plan-week، build-tiktok، build-instagram، build-tools، build-all.
@@ -596,7 +610,7 @@ action فقط یکی از این‌ها باشد: content-search-live، content-
 «این متن را آرایش کن و با چهار اسلاید ویدیو بساز: تلگرام قابلیت جدیدی به نام Tags اضافه کرده که با آن می‌شود مخاطبان را دسته‌بندی کرد. با این قابلیت، پیام هدفمند به هر گروه فرستاده می‌شود. همچنین آمار هر تگ به‌طور جداگانه نمایش داده می‌شود.» => {"action":"custom-content","payload":"قابلیت تازهٔ Tags در تلگرام | مخاطبان را با تگ دسته‌بندی کن | برای هر گروه پیام هدفمند بفرست | آمار هر تگ را جدا ببین"}
 اگر پیام فقط گفت‌وگو، سؤال یا درخواست مبهم است، {} بده.`;
   const data = await env.AI.run("@cf/meta/llama-4-scout-17b-16e-instruct", {
-    messages: [{ role: "system", content: instruction }, { role: "user", content: userText.slice(0, 6000) }],
+    messages: [{ role: "system", content: instruction }, ...prior.slice(-4), { role: "user", content: userText.slice(0, 6000) }],
     max_tokens: 420,
     temperature: 0.1,
   });
@@ -699,6 +713,17 @@ export default {
         return new Response('ok');
       }
       input = await resolveAlias(env,chatId,input) || input;
+      try {
+        const seriesAnswer = await handleSeriesConversation(env,chatId,input);
+        if (seriesAnswer) {
+          await rememberExchange(env,chatId,input,seriesAnswer);
+          await replyText(env,chatId,seriesAnswer);
+          return new Response('ok');
+        }
+      } catch (error) {
+        await replyText(env,chatId,`⚠️ ${error.message || 'خواندن اطلاعات سریال ناموفق بود.'}`);
+        return new Response('ok');
+      }
       // A standalone number picks a just-offered content-search topic when
       // one is active (rule 12); otherwise it belongs to the fixed numbered
       // menu below. For menu options that need copy, KV keeps the selected
@@ -771,27 +796,32 @@ export default {
       // pending-state, media and command paths have had priority.
       // Free-form questions remain questions. The model never authorizes a build.
       if (command) {
+        const commandReply = async text => {
+          if (command.action !== 'reset-chat') await rememberExchange(env,chatId,input,text);
+          await reply(env,chatId,text);
+        };
         if (command.action === "help") {
-          await reply(env, chatId, HELP);
+          await commandReply(HELP);
         } else if (command.action === "commands") {
-          await reply(env, chatId, LEGACY_HELP);
+          await commandReply(LEGACY_HELP);
         } else if (command.action === "chat-help") {
-          await reply(env, chatId, "💬 سؤال خود را مستقیم بنویسید. دستیار می‌تواند چند گام پژوهش وب و مخزن را پشت‌سرهم انجام دهد و Exa MCP هم متصل است. /mcp، /mcp_search، /mcp_fetch، /files، /read، /find، /runs، /jobs و /edit فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
+          await commandReply("💬 سؤال خود را مستقیم بنویسید. دستیار می‌تواند چند گام پژوهش وب و مخزن را پشت‌سرهم انجام دهد و Exa MCP هم متصل است. /mcp، /mcp_search، /mcp_fetch، /files، /read، /find، /runs، /jobs و /edit فعال‌اند. ساخت ویدیو با /episode و وضعیت با /status است.");
         } else if (command.action === "reset-chat") {
           await (env.CHAT_HISTORY || env.BOT_STATE)?.delete(`chat:${chatId}`);
           await env.BOT_STATE?.delete(`recent-github:${chatId}`);
+          await env.BOT_STATE?.delete(`series-conversation:${chatId}`);
           await clearPending(env, chatId);
           await clearSelection(env, chatId);
-          await reply(env, chatId, "گفتگوی تازه شروع شد. پرسشتان را بنویسید.");
+          await commandReply("گفتگوی تازه شروع شد. پرسشتان را بنویسید.");
         } else if (command.action === "credit-status") {
-          await reply(env, chatId, await creditStatus(env, chatId));
+          await commandReply(await creditStatus(env, chatId));
         } else if (command.action === "series-episode") {
           await writeGithubRequest(env, ".cinematic-series-request.json", {requestedAt:new Date().toISOString(),source:"telegram-cloud-worker",requestId:crypto.randomUUID()}, "telegram: request next cartoon episode");
-          await reply(env, chatId, "✅ درخواست قسمت بعد ثبت شد؛ اجرا به سهمیهٔ GPU و تأیید جداگانهٔ اعتبار وابسته است.");
+          await commandReply("✅ درخواست قسمت بعد ثبت شد؛ اجرا به سهمیهٔ GPU و تأیید جداگانهٔ اعتبار وابسته است.");
         } else if (command.action === "status") {
-          await reply(env, chatId, await seriesStatus(env, chatId));
+          await commandReply(await seriesStatus(env, chatId));
         } else if (command.action === "custom-help") {
-          await reply(env, chatId, "برای ساخت مستقیم، عکس یا ویدیو را همراه کپشن بفرستید — موضوع و گام‌ها را با «|» جدا کنید:\n\n<code>موضوع | گام یک | گام دو | گام سه</code>\n\nاگر گیت کیفیت تصویر واقعی، اندازه و ارتباط با موضوع را تأیید کند، بدون تأیید دستی ساخته می‌شود.");
+          await commandReply("برای ساخت مستقیم، عکس یا ویدیو را همراه کپشن بفرستید — موضوع و گام‌ها را با «|» جدا کنید:\n\n<code>موضوع | گام یک | گام دو | گام سه</code>\n\nاگر گیت کیفیت تصویر واقعی، اندازه و ارتباط با موضوع را تأیید کند، بدون تأیید دستی ساخته می‌شود.");
         } else {
           // custom-content.mjs and content-draft.mjs both read «|» separated
           // steps, so the separating happens here for every route that can send
@@ -803,7 +833,7 @@ export default {
             const video = message.video || message.animation || ((message.document?.mime_type || "").startsWith("video/") ? message.document : null);
             const fileId = message.photo?.at(-1)?.file_id || video?.file_id;
             if (!fileId) {
-              await reply(env, chatId, "⚠️ برای ساخت مستقیم، عکس یا ویدیو را همراه همان متن بفرستید.");
+              await commandReply("⚠️ برای ساخت مستقیم، عکس یا ویدیو را همراه همان متن بفرستید.");
               return new Response("ok");
             }
             command.payload = JSON.stringify({
@@ -817,13 +847,16 @@ export default {
           // ITS topics, not the fixed menu — see bareTopicPick() below.
           if (["content-search", "content-search-live"].includes(command.action)) await setSelection(env, chatId, "search");
           await dispatchWorkflow(env, command);
-          await reply(env, chatId, acknowledgementFor(command));
+          await commandReply(acknowledgementFor(command));
         }
       } else {
         let handled = false;
         const directLink = githubRepositoryLink(input);
         try {
-          const referencedLink = directLink || (/(?:این|آن|همان|لینک|آدرس|ادرس|چکار|کاربرد|برای چه|چه کار|چک کن|بررسی کن)/.test(input) ? await recentGithubLink(env, chatId) : null);
+          const prior = await history(env,chatId);
+          const immediateLink = prior.slice(-2).some(turn=>githubRepositoryLink(turn.content));
+          const explicitLinkReference = /(?:این|آن|همان)\s*(?:لینک|آدرس|ادرس|مخزن)|(?:کاربرد|کارش)/.test(input);
+          const referencedLink = directLink || ((immediateLink || explicitLinkReference) ? await recentGithubLink(env, chatId) : null);
           if (directLink && /(?:ثبت کن|ذخیره کن|یادداشت کن)/.test(input)) {
             const answer = `✅ لینک ${directLink} برای این گفتگو ثبت شد. اگر بخواهید، می‌توانم کاربرد آن را بررسی کنم.`;
             await rememberGithubLink(env, chatId, directLink);
@@ -856,7 +889,7 @@ export default {
         if (!handled) {
           const operational = /(?:بساز|بفرست|پیدا کن|برنامه(?:‌|\s)?ریزی کن|تغییر بده|ویرایش کن|اصلاح کن|کوتاه‌تر کن|آماده کن|build|create|make|update)/i.test(input)
             && !/^(?:آیا|چطور|چگونه|میشه|می‌شود|can you|how|why)/i.test(input.trim());
-          const intent = operational ? await chatIntent(env, input) : null;
+          const intent = operational ? await chatIntent(env, input, await history(env,chatId)) : null;
           if (intent) {
             if (intent.action === 'custom-content') intent.payload = prepareTopicLocally(intent.payload);
             if (['content-search-live'].includes(intent.action)) await setSelection(env, chatId, 'search');

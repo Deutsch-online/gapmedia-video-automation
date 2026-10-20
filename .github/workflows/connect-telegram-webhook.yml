@@ -1,7 +1,7 @@
 name: Connect Telegram webhook to active Worker
 on:
   push:
-    paths: [.github/workflows/connect-telegram-webhook.yml, worker/set-commands.mjs, worker/src/index.js]
+    paths: [.github/workflows/connect-telegram-webhook.yml, worker/set-commands.mjs, worker/src/index.js, worker/src/command-registry.js]
   workflow_dispatch:
 permissions:
   contents: read

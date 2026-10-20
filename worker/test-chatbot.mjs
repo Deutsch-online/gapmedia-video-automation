@@ -34,7 +34,9 @@ globalThis.fetch=async (url,init={})=>{
 };
 let researchStep=0;
 const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages[0].content.includes('تو دستیار پژوهشی')
-  ? ['{"tool":"github_find","arg":"README"}','{"tool":"github_read","arg":"README.md"}','{"tool":"final","answer":"README توضیح پروژه را دارد."}'][researchStep++]
+  ? input.messages[0].content.includes('پرسش:\nفایل README')
+    ? ['{"tool":"github_find","arg":"README"}','{"tool":"github_read","arg":"README.md"}','{"tool":"final","answer":"README توضیح پروژه را دارد."}'][researchStep++]
+    : JSON.stringify({tool:'final',answer:input.messages[0].content.includes('پرسش:\nممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})
   : input.messages.at(-1).content.includes('قلاب امروز را کوتاه‌تر کن')?'{"action":"content-edit-hook","payload":"قلاب تازه"}':input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
 const signature=await webhookSecret('test');
 const send=async text=>worker.fetch(new Request('https://worker.test/',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':signature},body:JSON.stringify({message:{chat:{id:7,type:'private'},text}})}),env);
@@ -67,6 +69,10 @@ assert.equal(kv.get('recent-github:7'),'https://github.com/morluto/rea','explici
 await send('چک کن برای چکار استفاده می شود؟');
 assert.ok(calls.some(c=>c.url.endsWith('/repos/morluto/rea/readme')),'follow-up inspects the actual linked repository');
 assert.ok(calls.some(c=>c.url.includes('/sendMessage')&&String(c.init.body).includes('morluto/rea')),'follow-up names the inspected repository');
+const linkedInspections=calls.filter(c=>c.url.endsWith('/repos/morluto/rea/readme')).length;
+await send('ممنون');
+await send('این راه حل را بررسی کن');
+assert.equal(calls.filter(c=>c.url.endsWith('/repos/morluto/rea/readme')).length,linkedInspections,'an old saved GitHub link cannot hijack unrelated later conversation');
 await send('/new');
 assert.equal(kv.has('chat:7'),false,'new clears the chat');
 assert.equal(kv.has('recent-github:7'),false,'new clears the saved repository context');
