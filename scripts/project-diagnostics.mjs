@@ -1,3 +1,4 @@
+import {formatDiagnostic,validateDiagnostic} from '../worker/src/project-diagnostics.js';
 import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
@@ -84,7 +85,18 @@ async function main() {
   if(![404,503].includes(result.status)||attempt===11)break;
   await new Promise(resolve=>setTimeout(resolve,15000));
   }
-  if(!result?.ok)throw new Error('Private diagnostic delivery failed '+result?.status);
-  console.log(JSON.stringify({run_id:report.run_id,kind:diagnosis.kind,python:python.status,delivered:true}));
+  let delivery='worker';
+  if(!result?.ok&&result?.status===404){
+    // A confirmed missing route made no delivery. Independently notify only
+    // the recorded private owner, without waiting for a Cloudflare build.
+    const owner=JSON.parse(readFileSync('.telegram-bot-chat.json','utf8'));
+    if(owner.type!=='private'||!owner.id)throw new Error('No verified private diagnostic recipient');
+    const response=await fetch('https://api.telegram.org/bot'+process.env.TELEGRAM_BOT_TOKEN+'/sendMessage',{
+      method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({chat_id:owner.id,text:formatDiagnostic(validateDiagnostic(report))+'\nانتشار Worker هنوز آماده نیست؛ این گزارش مستقل از GitHub فرستاده شد.',disable_web_page_preview:true}),signal:AbortSignal.timeout(20000)});
+    if(!response.ok||(await response.json()).ok!==true)throw new Error('Independent diagnostic delivery not confirmed');
+    delivery='telegram-direct';
+  }else if(!result?.ok)throw new Error('Private diagnostic delivery failed '+result?.status);
+  console.log(JSON.stringify({run_id:report.run_id,kind:diagnosis.kind,python:python.status,delivered:true,delivery}));
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(error=>{console.error(redact(error.message));process.exitCode=1;});
