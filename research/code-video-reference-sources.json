@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "added_at": "2026-10-20",
+  "sources": [
+    {
+      "name": "video-shotcraft",
+      "url": "https://github.com/Vincentwei1021/video-shotcraft",
+      "category": "primary-promo-reference",
+      "purpose": "Real product screenshots, shot recipe cards and deterministic Remotion product promos",
+      "repository_license_metadata": "Apache-2.0",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "PDoomVideo",
+      "url": "https://github.com/JohnHeibel/PDoomVideo",
+      "category": "animation-example",
+      "purpose": "Study p5.js scene transitions and music-driven character animation",
+      "repository_license_metadata": null,
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "awesome-opus5-5-videos",
+      "url": "https://github.com/yihui-dev/awesome-opus5-5-videos",
+      "category": "prompt-library",
+      "purpose": "Discover source-linked coded video examples and prompts",
+      "repository_license_metadata": "MIT",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "tidewater",
+      "url": "https://github.com/dgreenheck/tidewater",
+      "category": "3d-game-reference",
+      "purpose": "Study browser 3D lighting, water and environment rendering; not a video production pipeline",
+      "repository_license_metadata": "MIT",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "claude-opus-5-5-demo",
+      "url": "https://github.com/riba2534/claude-opus-5-5-demo",
+      "category": "3d-game-reference",
+      "purpose": "Study procedural browser game scenes and camera techniques",
+      "repository_license_metadata": null,
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "lemo-opuscar",
+      "url": "https://github.com/lemomo-ai/lemo-opuscar",
+      "category": "visual-style-library",
+      "purpose": "Study coded films and reusable visual style directions",
+      "repository_license_metadata": "MIT",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "ClaudeAnimationBase",
+      "url": "https://github.com/JohnHeibel/ClaudeAnimationBase",
+      "category": "cartoon-reference",
+      "purpose": "p5.js and p5.brush starter for expressive hand-painted 2D characters",
+      "repository_license_metadata": "MIT",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "awesome-claude-5-5-videos",
+      "url": "https://github.com/athemeroy/awesome-claude-5-5-videos",
+      "category": "production-research",
+      "purpose": "Source-linked workflow examples, prompts and production evidence",
+      "repository_license_metadata": "CC-BY-4.0",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "shipvideo",
+      "url": "https://github.com/diggerhq/shipvideo",
+      "category": "promo-architecture-reference",
+      "purpose": "HTML product videos rendered with Chromium and ffmpeg via an OpenComputer agent; hosted usage is not verified free",
+      "repository_license_metadata": null,
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "motion-graphics-music-video-skill",
+      "url": "https://github.com/makevoid/motion-graphics-music-video-skill",
+      "category": "paid-adapter-reference",
+      "purpose": "Music-video toolkit including FAL image, video and audio calls; no automatic activation",
+      "repository_license_metadata": "MIT",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "opus-video-skills",
+      "url": "https://github.com/tuzhechen2005/opus-video-skills",
+      "category": "coded-animation-reference",
+      "purpose": "Hand-painted animation and kinetic typography skills using browser rendering",
+      "repository_license_metadata": "NOASSERTION",
+      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or services activated"
+    }
+  ],
+  "production_notes": [
+    "Prefer real product material and deterministic, reproducible motion for promos",
+    "Browser-rendered motion can avoid image/video inference calls, but rendering time and hardware needs still apply",
+    "Game examples are references for lighting and camera work, not direct replacements for the existing 3D dialogue pipeline",
+    "Named model provenance and benchmark or virality claims remain author reports unless independently verified",
+    "Check each copied code and media license separately; GitHub license metadata is not a full asset audit",
+    "No external paid API calls, subscriptions or generated media without the project cost controls"
+  ],
+  "promo_status": {
+    "requested_tool": "video-shotcraft",
+    "skill_read": "https://github.com/Vincentwei1021/video-shotcraft/blob/main/SKILL.md",
+    "product_details": "pending owner response to product/link/benefit question",
+    "render_started": false
+  }
+}

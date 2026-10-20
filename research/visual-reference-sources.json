@@ -4,14 +4,51 @@
   "added_at": "2026-10-20",
   "purpose": "Primary visual-design reference catalog for the Marta and Lukas 3D everyday-life series",
   "content_review_status": "Catalog supplied by owner; individual pages and examples have not been visually reviewed",
-  "workflow": ["Find a relevant visual reference", "Name the technique", "Write a concrete original shot prompt", "Review the rendered result"],
+  "workflow": [
+    "Find a relevant visual reference",
+    "Name the technique",
+    "Write a concrete original shot prompt",
+    "Review the rendered result"
+  ],
   "sources": [
-    {"name": "ShotCafe", "url": "https://shot.cafe/", "role": "Shot references, composition and framing"},
-    {"name": "FilmGrab", "url": "https://film-grab.com/", "role": "Color, lighting, shadows and cinematic composition"},
-    {"name": "Eyecannndy", "url": "https://eyecannndy.com/", "role": "Names and examples of visual techniques, effects and transitions"},
-    {"name": "Melies", "url": "https://melies.co/", "role": "Translate camera, lighting, lens and transition terminology into precise shot prompts", "note": "Owner supplied a truncated article URL; homepage retained until the exact article is verified"},
-    {"name": "AI Camera Movements", "url": "https://aicameramovements.com/", "role": "Precise descriptions of dolly, orbit and tracking movements"},
-    {"name": "GrokFilm", "url": "https://grokfilm.app/", "role": "Shot sizes, camera angles and filmmaking terminology for prompts"}
+    {
+      "name": "ShotCafe",
+      "url": "https://shot.cafe/",
+      "role": "Shot references, composition and framing"
+    },
+    {
+      "name": "FilmGrab",
+      "url": "https://film-grab.com/",
+      "role": "Color, lighting, shadows and cinematic composition"
+    },
+    {
+      "name": "Eyecannndy",
+      "url": "https://eyecannndy.com/",
+      "role": "Names and examples of visual techniques, effects and transitions"
+    },
+    {
+      "name": "Melies",
+      "url": "https://melies.co/",
+      "role": "Translate camera, lighting, lens and transition terminology into precise shot prompts",
+      "note": "Owner supplied a truncated article URL; homepage retained until the exact article is verified"
+    },
+    {
+      "name": "AI Camera Movements",
+      "url": "https://aicameramovements.com/",
+      "role": "Precise descriptions of dolly, orbit and tracking movements"
+    },
+    {
+      "name": "GrokFilm",
+      "url": "https://grokfilm.app/",
+      "role": "Shot sizes, camera angles and filmmaking terminology for prompts"
+    },
+    {
+      "name": "video-shotcraft",
+      "url": "https://vincentwei1021.github.io/video-shotcraft/",
+      "repository": "https://github.com/Vincentwei1021/video-shotcraft",
+      "role": "Product-promo shot recipes, real-page composition, deterministic motion, beat timing and sound design",
+      "review": "README and SKILL.md read; sample videos not visually reviewed; no product promo rendered yet"
+    }
   ],
   "application": [
     "Keep the recurring original 3D cartoon characters and believable everyday German setting",
