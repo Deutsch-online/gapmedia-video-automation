@@ -36,7 +36,7 @@ export function parseCommandManagement(raw) {
   const text = String(raw || '').trim();
   let match = text.match(/^\/addcmd\s+\/?([^\s=]+)\s*(?:=|->)?\s*\/?([^\s]+)\s*$/i)
     || text.match(/^دستور\s+\/?([a-z][a-z0-9_]*)\s+را\s+برای\s+\/?([a-z_]+|وضعیت|اعتبار|قسمت|اجراها|راهنما)\s+(?:نصب|اضافه)\s+کن$/i);
-  if (match) return {action:'add',name:match[1].toLowerCase(),target:(TARGET_WORDS[match[2]] || match[2]).toLowerCase()};
+  if (match) return {action:'add',name:match[1].toLowerCase(),target:(Object.hasOwn(TARGET_WORDS,match[2]) ? TARGET_WORDS[match[2]] : match[2]).toLowerCase()};
   match = text.match(/^\/delcmd\s+\/?([^\s]+)\s*$/i)
     || text.match(/^دستور\s+\/?([a-z][a-z0-9_]*)\s+را\s+حذف\s+کن$/i);
   if (match) return {action:'delete',name:match[1].toLowerCase()};
