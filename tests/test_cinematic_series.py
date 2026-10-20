@@ -412,6 +412,21 @@ class ExactDurationTests(unittest.TestCase):
         self.assertEqual(m.due(state, CONFIG, datetime(2026, 10, 17, 0, 30, tzinfo=timezone.utc), force=True)[1], 'waiting-for-gpu-quota')
 
     @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
+    def test_audio_padding_tail_is_repaired_without_touching_video_frames(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'audio-tail.mp4'
+            m.command(['ffmpeg','-y','-v','error','-f','lavfi','-i',
+                       'testsrc2=size=32x32:rate=30:duration=60','-f','lavfi','-i',
+                       'sine=frequency=440:sample_rate=48000:duration=60.009',
+                       '-c:v','libx264','-preset','ultrafast','-c:a','aac',path])
+            before = next(s for s in m.ffprobe(path)['streams'] if s['codec_type']=='video')
+            self.assertEqual(m.conform_duration(path),60)
+            info = m.ffprobe(path)
+            after = next(s for s in info['streams'] if s['codec_type']=='video')
+            self.assertEqual(before['nb_frames'],after['nb_frames'])
+            self.assertEqual(float(info['format']['duration']),60)
+
+    @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
     def test_default_sixty_seconds_and_explicit_sixty_five_preserve_audio(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / 'episode.mp4'

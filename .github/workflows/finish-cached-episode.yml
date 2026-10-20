@@ -30,6 +30,10 @@ jobs:
           python -m pip install --disable-pip-version-check pillow gradio_client
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Verify exact audio tail repair on runner FFmpeg
+        env:
+          CINEMATIC_CACHED_ONLY: 'off'
+        run: python -m unittest discover -s tests -p test_cinematic_series.py
       - uses: actions/cache/restore@v4
         with:
           path: renders/cinematic-series-cache

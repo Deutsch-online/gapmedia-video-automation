@@ -752,14 +752,16 @@ def conform_duration(path, target_seconds=DEFAULT_SECONDS):
     if abs(float(info['format']['duration']) - target_seconds) > .00001:
         target = path.with_name(path.stem + f'-audio{target_seconds}.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-c:v', 'copy',
-                 '-af', f'aresample=48000,atrim=duration={target_seconds}', '-ar', '48000',
+                 '-af', f'aresample=48000,apad,atrim=end_sample={target_seconds*48000},asetpts=N/SR/TB', '-ar', '48000',
                  '-c:a', 'aac', '-b:a', '192k', '-t', str(target_seconds),
                  '-movflags', '+faststart', target])
         target.replace(path)
         info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
     if abs(float(video['duration']) - target_seconds) > .00001 or abs(float(info['format']['duration']) - target_seconds) > .00001:
-        raise RuntimeError(f'Output must be exactly {target_seconds} seconds')
+        audio = next(s for s in info['streams'] if s['codec_type'] == 'audio')
+        raise RuntimeError(f'Output must be exactly {target_seconds} seconds; '
+                           f'video={video.get("duration")}, audio={audio.get("duration")}, container={info["format"]["duration"]}')
     return float(target_seconds)
 
 
