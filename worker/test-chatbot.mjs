@@ -5,6 +5,7 @@ for (const question of ['آیا این ابزار به مهاجران کمک م�
   assert.equal(videoAction(question),null,`question must stay chat: ${question}`);
 }
 assert.equal(videoAction('/episode').action,'series-episode');
+assert.equal(videoAction('/chat').action,'chat-help');
 assert.equal(videoAction('چرا ویدیو ساخته نشد؟').action,'status');
 
 const saved=globalThis.fetch;

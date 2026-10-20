@@ -87,3 +87,8 @@ Single-speaker takes use the approved individual portraits directly to avoid int
 ### نمایش موضوع گفتگو — اصلاح صاحب پروژه، ۲۰۲۶-۱۰-۱۷
 
 از قسمت چهارم، گفتگو تنها به پرترهٔ گوینده محدود نمی‌شود. هر صحنه یک تا سه شیء واقعیِ همان موقعیت را در `visible_objects` و کنش ملموس مرتبط را در `object_action` مشخص می‌کند. اجناس مورد بحث باید در پیش‌زمینه و قابل تشخیص باشند و شخصیت آن‌ها را نشان دهد، بردارد، مقایسه کند یا جابه‌جا کند. اشیای غایب نباید حاضر نشان داده شوند؛ متن و مکان باید با موجود بودن آن‌ها سازگار باشد. تصویر هر صحنه از مرجع تک‌گوینده با ترکیب و پس‌زمینهٔ متناسب ساخته می‌شود، نه کپی ثابت مرجع. فقط یک چهرهٔ گوینده دیده می‌شود؛ لب‌خوانی شرطی به همان صوت، ۶۰ ثانیه، زیرنویس و دو خروجی حفظ می‌شوند. اثرانگشت صحنه و حالت ساخت تصویر مانع استفادهٔ کش پرترهٔ قدیمی می‌شود. وجود فیلدها تأیید بصریِ خروجی نیست؛ نتیجهٔ رندر باید از نظر دیده‌شدن اشیا بررسی شود.
+
+
+## 2026-10-20 direction (episode 7 onward)
+
+The bot's display name is **ویدیو آلمانی**. Private text is a conversation; explicit commands remain available through `/help`, `/chat`, `/status`, `/episode`, and `/credit`. Future episodes are exactly **65 seconds**: 13 distinct five-second audio-conditioned speaking shots. Neither speech nor lip motion is retimed to meet delivery length. Each platform export is checked separately. Before drafting, the runner retrieves an official Goethe-Institut, Deutsche Bahn, or VBB page, records its URL, excerpt and retrieval time in `episode.json`, and stops if research cannot be verified. The source informs the real-world context; the plot remains an original everyday reenactment, usually comic and occasionally poignant. Paid generation remains disabled without a specific approval.

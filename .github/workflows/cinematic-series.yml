@@ -86,7 +86,7 @@ jobs:
             cinematic-series-v2-
             comedy-preview-
             cinematic-series-v1-
-      - name: Make, check and deliver the next 60-second episode
+      - name: Make, check and deliver the next 65-second episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -120,7 +120,7 @@ jobs:
           name: cinematic-series-${{ github.run_id }}
           path: |
             renders/cinematic-series/**/e*-cinematic-fa-de.mp4
-            renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/*-65s.mp4
             renders/cinematic-series/**/delivery-*.json
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/episode.json

@@ -188,18 +188,22 @@ class ExactDurationTests(unittest.TestCase):
         self.assertEqual(m.due(state, CONFIG, datetime(2026, 10, 17, 0, 30, tzinfo=timezone.utc), force=True)[1], 'waiting-for-gpu-quota')
 
     @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
-    def test_real_sixty_second_output_preserves_video_and_audio(self):
+    def test_real_sixty_five_second_output_preserves_video_and_audio(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / 'episode.mp4'
             m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
                        'testsrc2=size=64x64:rate=30:duration=65', '-f', 'lavfi', '-i',
                        'sine=frequency=440:sample_rate=96000:duration=65', '-c:v', 'libx264', '-preset', 'ultrafast',
                        '-c:a', 'aac', '-t', '65', path])
-            self.assertEqual(m.conform_duration(path), 60)
+            self.assertEqual(m.conform_duration(path), 65)
             info = m.ffprobe(path)
-            self.assertEqual(float(info['format']['duration']), 60)
+            self.assertEqual(float(info['format']['duration']), 65)
             self.assertEqual({x['codec_type'] for x in info['streams']}, {'video', 'audio'})
-            self.assertEqual(m.conform_duration(path), 60)
+            self.assertEqual(m.conform_duration(path), 65)
+            short = Path(d) / 'short.mp4'
+            m.command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-t', '60', '-c', 'copy', short])
+            with self.assertRaisesRegex(RuntimeError, 'exactly 65 seconds'):
+                m.conform_duration(short)
 
 
 class PlatformDeliveryTests(unittest.TestCase):
@@ -235,6 +239,24 @@ class PlatformDeliveryTests(unittest.TestCase):
 
 
 class EverydayLifeTests(unittest.TestCase):
+    def test_future_story_needs_thirteen_shots_and_a_retrieved_official_source(self):
+        plan = m.load_json(m.ROOT / 'ai-cast/everyday-pilot.json')
+        plan['episode'] = 7
+        for scene in plan['scenes']:
+            scene['visible_objects'] = ['shopping bag']
+            scene['object_action'] = 'The speaker raises the shopping bag into view.'
+        with self.assertRaisesRegex(ValueError, 'research source'):
+            m.validate_plan(plan, 7, [])
+        plan['research_source'] = {'url': 'https://invalid.example/', 'excerpt': 'fabricated'}
+        plan['mood'] = 'comic'
+        with self.assertRaisesRegex(ValueError, 'research source'):
+            m.validate_plan(plan, 7, [])
+        plan['research_source']['url'] = m.TRUSTED_RESEARCH[0][1]
+        self.assertIs(m.validate_plan(plan, 7, []), plan)
+        plan['scenes'].pop()
+        with self.assertRaisesRegex(ValueError, 'exactly 13'):
+            m.validate_plan(plan, 7, [])
+
     def test_cartoon_pilot_is_a_new_nonrepeating_story(self):
         state = m.new_state()
         state['next_episode'] = 3

@@ -1,4 +1,4 @@
-name: Deploy Telegram chatbot to active webhook
+name: Validate Telegram chatbot
 on:
   push:
     branches: [main]
@@ -18,34 +18,7 @@ jobs:
         working-directory: worker
       - name: Check root Worker build
         run: worker/node_modules/.bin/wrangler deploy --dry-run --outdir /tmp/gapmedia-worker-dry-run
-      - name: Select valid Cloudflare credential
-        working-directory: worker
-        env:
-          CF_TOKEN_PRIMARY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CF_TOKEN_FALLBACK: ${{ secrets.CF_API_TOKEN }}
-        run: |
-          set -euo pipefail
-          for candidate in "$CF_TOKEN_PRIMARY" "$CF_TOKEN_FALLBACK"; do
-            if [ -z "$candidate" ]; then continue; fi
-            if CLOUDFLARE_API_TOKEN="$candidate" npx wrangler whoami >/dev/null 2>&1; then
-              printf 'CLOUDFLARE_API_TOKEN=%s\n' "$candidate" >> "$GITHUB_ENV"
-              echo "A valid Cloudflare credential was selected."
-              exit 0
-            fi
-          done
-          echo "::error::Neither GitHub Cloudflare token is accepted by Cloudflare."
-          exit 1
       - name: Verify Telegram command and chat behavior
         run: |
           node worker/test-commands.mjs
           node worker/test-chatbot.mjs
-      - name: Deploy existing worker
-        working-directory: worker
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler deploy
-
-      - name: Update Telegram command menu
-        run: node worker/set-commands.mjs
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

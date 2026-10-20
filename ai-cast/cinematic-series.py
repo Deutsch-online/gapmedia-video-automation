@@ -13,6 +13,7 @@ import sys
 import textwrap
 import urllib.error
 import urllib.request
+from html.parser import HTMLParser
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -35,6 +36,54 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'He is a friendly, ordinary young adult flatmate. '
         'They are equal adult roommates, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
+EPISODE_SECONDS = 65
+TRUSTED_RESEARCH = (
+    ('Everyday German: shopping, doctor and train', 'https://www.goethe.de/de/spr/ueb/lua.html', 'Einkaufen, Arztbesuch, Zug fahren'),
+    ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
+    ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
+    ('Posting a letter', 'https://www.deutschepost.de/de/b/briefmarken.html', 'Briefmarken'),
+    ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
+)
+
+class _PageText(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.hidden = 0
+        self.text = []
+    def handle_starttag(self, tag, attrs):
+        if tag in ('script', 'style', 'noscript'):
+            self.hidden += 1
+    def handle_endtag(self, tag):
+        if tag in ('script', 'style', 'noscript'):
+            self.hidden = max(0, self.hidden - 1)
+    def handle_data(self, data):
+        if not self.hidden:
+            self.text.append(data)
+
+def research_source(episode):
+    """Fetch an official page before drafting; never substitute an invented source."""
+    failures = []
+    for offset in range(len(TRUSTED_RESEARCH)):
+        topic, url, anchor = TRUSTED_RESEARCH[(episode - 7 + offset) % len(TRUSTED_RESEARCH)]
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-StoryResearch/1.0'})
+            with urllib.request.urlopen(req, timeout=18) as response:
+                if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
+                    raise ValueError('official page did not return HTML')
+                page = response.read(750_000).decode('utf-8', 'ignore')
+            parsed = _PageText()
+            parsed.feed(page)
+            body = re.sub(r'\s+', ' ', ' '.join(parsed.text)).strip()
+            position = body.lower().find(anchor.lower())
+            if position < 0:
+                raise ValueError('expected source topic is absent')
+            excerpt = body[max(0, position - 100):position + 550]
+            if len(excerpt) < 90:
+                raise ValueError('source excerpt is too short')
+            return {'topic': topic, 'url': url, 'excerpt': excerpt, 'retrieved_at': datetime.now(timezone.utc).isoformat()}
+        except (OSError, ValueError) as exc:
+            failures.append(f'{topic}: {type(exc).__name__}')
+    raise RuntimeError('Official story research unavailable: ' + ', '.join(failures))
 
 def command(args, **kwargs):
     return subprocess.run([str(a) for a in args], check=True, **kwargs)
@@ -139,7 +188,7 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history):
-    expected = 12 if episode >= 5 else 13
+    expected = 13 if episode >= 7 or episode < 5 else 12
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
         raise ValueError(f'Episode {episode} must contain exactly {expected} five-second scenes')
     if episode >= 3:
@@ -152,6 +201,12 @@ def validate_plan(plan, episode, history):
                 raise ValueError('Everyday stories need a concrete situation, problem and practical resolution: ' + key)
         if any(scene.get('asset') for scene in plan.get('scenes', [])):
             raise ValueError('Do not reuse the old taxi-season scene assets')
+    if episode >= 7:
+        source = plan.get('research_source')
+        if not isinstance(source, dict) or source.get('url') not in [item[1] for item in TRUSTED_RESEARCH]:
+            raise ValueError('A fetched official research source is required')
+        if plan.get('mood') not in ('comic', 'poignant'):
+            raise ValueError('Story mood must be comic or poignant')
     if episode >= 4:
         for scene in plan['scenes']:
             props = scene.get('visible_objects')
@@ -246,13 +301,16 @@ def make_plan(state):
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
                'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', [])} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
-    prompt = ('Write the NEXT 60-second German A1/A2 animated everyday-life conversation. '
+    research = research_source(episode) if episode >= 7 else None
+    mood = 'poignant' if episode >= 7 and episode % 5 == 0 else 'comic'
+    prompt = ('Write the NEXT 65-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. From episode 6 onward this is a warm recurring 3D sitcom about starting life in Germany. '
               'Marta is a recently arrived adult immigrant learning everyday German and local routines; Lukas is her supportive flatmate. '
               'Keep their established visual identities and equal adult agency. Do not invent a nationality or migration status. '
               'Use a familiar real-life activity: groceries, commuting, laundry, a medical appointment, '
               'cooking, housework or a practical administrative task. Natural speech and credible actions only. '
               'Use recognizable situational comedy: an understandable language misunderstanding, a visual reveal, and a short friendly payoff. '
+              'For a poignant episode, make the daily difficulty emotionally honest and end with a small humane act, without forced jokes. '
               'Humor comes from confusing everyday routines, never from mocking accents, nationality or immigrants. '
               'No fantasy gadgets, implausible accidents, humiliation or lectures. '
               'Open immediately with a visually funny everyday problem faced by a newcomer; make the relevant object visible. '
@@ -263,8 +321,8 @@ def make_plan(state):
               'Continue only this everyday-life series history. Do not continue the robot-vacuum comedy or taxi season. '
               'If the latest history entry has deferred_scenes, use those unshown dialogue and object actions '
               'only if they fit this new sitcom premise; otherwise keep them deferred instead of forcing unrelated grocery dialogue. '
-              'Use a clear practical German teaching format with twelve five-second speaking shots. '
-              'Prefer one coherent comic situation across twelve natural-speed shots, not six repetitive instruction drills. '
+              'Use a clear practical German teaching format with thirteen five-second speaking shots, exactly 65 seconds. '
+              'Prefer one coherent situation across thirteen natural-speed shots, not repetitive instruction drills. '
               'Use short spoken lines and genuine reaction pauses; do not add dialogue just to fill time. '
               'Good recurring situations include a supermarket checkout divider, Pfand returns, appointment terminology, '
               'public transport, a parcel pickup, laundry rules or sorting household rubbish. Do not invent legal rules or uniform local policies. '
@@ -278,7 +336,7 @@ def make_plan(state):
               'cliffhanger (a short playful bridge to the next everyday newcomer situation), '
               'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
               'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution '
-              '(specific credible actions in English), scenes (EXACTLY 12 objects). '
+              '(specific credible actions in English), scenes (EXACTLY 13 objects). '
               'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
               'For every scene include visible_objects (1-3 concrete physical objects named or directly referenced in '
@@ -290,7 +348,9 @@ def make_plan(state):
               'Alternate medium action shots and closer product-and-speaker framing, not thirteen identical portraits. '
               'Only one visible face per speaking shot; the listener and all other people remain off-camera. '
               'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
-              f'Episode number: {episode}. Story history: ' + json.dumps(memory, ensure_ascii=False))
+              f'Episode number: {episode}. Requested mood: {mood}. '
+              'Use this freshly retrieved official source only for its real-world context; do not copy its prose or infer prices, laws or universal rules: '
+              + json.dumps(research, ensure_ascii=False) + '. Story history: ' + json.dumps(memory, ensure_ascii=False))
     errors = []
     for provider in ('gemini', 'groq'):
         try:
@@ -313,7 +373,11 @@ def make_plan(state):
                                   'response_format': {'type': 'json_object'}, 'temperature': .7, 'max_tokens': 5000},
                                  {'Authorization': 'Bearer ' + key})
                 raw = r['choices'][0]['message']['content']
-            return validate_plan(json.loads(raw), episode, state['history'])
+            plan = json.loads(raw)
+            if research:
+                plan['research_source'] = research
+                plan['mood'] = mood
+            return validate_plan(plan, episode, state['history'])
         except Exception as exc:
             detail = provider + ': ' + provider_error(exc)
             print('Story provider failed: ' + detail, flush=True)
@@ -361,38 +425,25 @@ def gpu_retry_at(message, now=None):
     return now + delay + timedelta(minutes=2)
 
 def conform_duration(path):
-    """Fit the full story and all spoken lines to exactly sixty seconds."""
+    """Reject short/long video; repair only AAC container tail without retiming lips."""
     path = Path(path)
     info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = float(video.get('duration') or info['format']['duration'])
-    if abs(duration - 60) > .00001:
-        if not 60 < duration <= 65.3:
-            raise RuntimeError('Unexpected source duration; refusing to cut or pad the story')
-        target = path.with_name(path.stem + '-60s.mp4')
-        speed = duration / 60
-        command(['ffmpeg', '-y', '-v', 'error', '-i', path,
-                 '-vf', f'setpts=(PTS-STARTPTS)/{speed:.12f},fps=30',
-                 '-af', f'atempo={speed:.12f},apad,atrim=duration=60',
-                 '-t', '60', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
-                 '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '48000', '-b:a', '192k',
-                 '-movflags', '+faststart', target])
-        target.replace(path)
-    info = ffprobe(path)
-    if abs(float(info['format']['duration']) - 60) > .00001:
-        # AAC at 96 kHz can leave an 8 ms tail even with -t 60.
-        # Keep the already exact video and remux a 48 kHz audio track.
-        target = path.with_name(path.stem + '-audio60.mp4')
+    if abs(duration - EPISODE_SECONDS) > .00001:
+        raise RuntimeError('Episode video must be exactly 65 seconds; no cuts or speed changes')
+    if abs(float(info['format']['duration']) - EPISODE_SECONDS) > .00001:
+        target = path.with_name(path.stem + '-audio65.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-c:v', 'copy',
-                 '-af', 'aresample=48000,atrim=duration=60', '-ar', '48000',
-                 '-c:a', 'aac', '-b:a', '192k', '-t', '60',
+                 '-af', 'aresample=48000,atrim=duration=65', '-ar', '48000',
+                 '-c:a', 'aac', '-b:a', '192k', '-t', '65',
                  '-movflags', '+faststart', target])
         target.replace(path)
         info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
-    if abs(float(video['duration']) - 60) > .00001 or abs(float(info['format']['duration']) - 60) > .00001:
-        raise RuntimeError('Output must be exactly sixty seconds')
-    return 60.0
+    if abs(float(video['duration']) - EPISODE_SECONDS) > .00001 or abs(float(info['format']['duration']) - EPISODE_SECONDS) > .00001:
+        raise RuntimeError('Output must be exactly 65 seconds')
+    return float(EPISODE_SECONDS)
 
 
 def caption_text(text, family, size, width=950):
@@ -583,7 +634,7 @@ def render(plan, config, preview=False):
     info = ffprobe(final)
     v = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = seconds(final)
-    duration_ok = (15 <= duration <= 15.3) if preview else abs(duration - 60) <= .00001
+    duration_ok = (15 <= duration <= 15.3) if preview else abs(duration - EPISODE_SECONDS) <= .00001
     if not duration_ok or (v['width'], v['height']) != (1080, 1920):
         raise RuntimeError('Episode failed duration or frame quality requirements')
     if not any(s['codec_type'] == 'audio' for s in info['streams']):
@@ -605,19 +656,19 @@ PLATFORM_PROFILES = {'tiktok': ('4500k', '5000k'), 'instagram': ('3500k', '4000k
 def export_platforms(master):
     master = Path(master)
     quality = load_json(master.parent / 'quality.json')
-    if quality.get('duration') != 60 or not all(quality.get(k) for k in
+    if quality.get('duration') != EPISODE_SECONDS or not all(quality.get(k) for k in
             ('genuine_motion', 'German_audio', 'bilingual_subtitles', 'audio_conditioned_lips', 'no_slow_motion')):
-        raise RuntimeError('Platform exports require an approved sixty-second master')
+        raise RuntimeError('Platform exports require an approved sixty-five-second master')
     files = {}
     for platform, (bitrate, maximum) in PLATFORM_PROFILES.items():
         folder = master.parent / platform
         folder.mkdir(parents=True, exist_ok=True)
-        target = folder / (master.name.split('-')[0] + '-' + platform + '-60s.mp4')
+        target = folder / (master.name.split('-')[0] + '-' + platform + '-65s.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', master,
                  '-vf', 'scale=1080:1920,setsar=1,fps=30',
                  '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.2',
                  '-preset', 'fast', '-b:v', bitrate, '-maxrate', maximum, '-bufsize', '10000k',
-                 '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-t', '60',
+                 '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-t', '65',
                  '-map_metadata', '-1', '-movflags', '+faststart', target])
         conform_duration(target)
         info = ffprobe(target)
@@ -629,7 +680,7 @@ def export_platforms(master):
             raise RuntimeError('Platform frame rate or audio codec failed')
         if target.stat().st_size > 45 * 1024 * 1024:
             raise RuntimeError('Platform export exceeds the private bot upload budget')
-        atomic_json(folder / 'quality.json', {**quality, 'duration': 60.0, 'platform': platform,
+        atomic_json(folder / 'quality.json', {**quality, 'duration': 65.0, 'platform': platform,
                                              'width': 1080, 'height': 1920, 'fps': 30})
         files[platform] = str(target)
     return files
@@ -722,7 +773,7 @@ def production(force=False):
     conform_duration(final)
     quality_path = Path(final).parent / 'quality.json'
     quality = load_json(quality_path)
-    quality['duration'] = 60.0
+    quality['duration'] = 65.0
     atomic_json(quality_path, quality)
     receipts = deliver_platforms(state, final)
     state['deliveries'][date] = {'episode': plan['episode'],
@@ -756,8 +807,8 @@ def main():
     if args.action == 'check':
         validate_plan(first_episode(), 1, [])
         config = load_json(CONFIG)
-        if config['minimum_seconds'] != 60 or config.get('maximum_seconds') != 60 or config['target_seconds'] != 60:
-            raise ValueError('Every episode must be exactly sixty seconds')
+        if config['minimum_seconds'] != 65 or config.get('maximum_seconds') != 65 or config['target_seconds'] != 65:
+            raise ValueError('Every episode must be exactly sixty-five seconds')
         print('Cinematic series plan and duration contract verified')
     elif args.action == 'gate':
         go, reason, date = due(load_json(STATE, new_state()), load_json(CONFIG), force=args.force)

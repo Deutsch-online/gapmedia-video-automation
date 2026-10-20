@@ -1,7 +1,7 @@
 name: Connect Telegram webhook to active Worker
 on:
   push:
-    paths: [.github/workflows/connect-telegram-webhook.yml]
+    paths: [.github/workflows/connect-telegram-webhook.yml, worker/set-commands.mjs, worker/src/index.js]
   workflow_dispatch:
 permissions:
   contents: read
@@ -9,6 +9,10 @@ jobs:
   connect:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Validate target and connect bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -48,3 +52,7 @@ jobs:
               raise SystemExit("Webhook did not point to the active Worker")
           print("Webhook host:", urllib.parse.urlparse(after).hostname)
           PY
+      - name: Update bot display name and command menu
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node worker/set-commands.mjs

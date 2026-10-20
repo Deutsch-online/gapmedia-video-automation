@@ -26,11 +26,11 @@ if (action === 'verify') {
       p.platform !== platform || p.platform_files?.[platform] !== file ||
       p.platform_receipts?.[platform])) throw new Error('Invalid or already delivered platform');
   const qualityPath = file.replace(/[^/]+$/, 'quality.json');
-  // A running legacy renderer may still hand over its 65-second master.
-  // Preserve its complete story while enforcing the current delivery duration.
+  // The full 65-second master is required; never shorten speech or lip motion.
+  // Validate duration before private delivery.
   execFileSync('python3', ['ai-cast/cinematic-series.py', 'conform', '--file', file], { stdio: ['ignore', 'ignore', 'pipe'] });
   const qc = JSON.parse(readFileSync(qualityPath, 'utf8'));
-  if (qc.duration !== 60 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion || !qc.pause_music || qc.music_during_speech_samples !== 0) {
+  if (qc.duration !== 65 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion || !qc.pause_music || qc.music_during_speech_samples !== 0) {
     throw new Error('Video quality gates did not pass');
   }
   // Metadata stays German; Persian belongs only to the in-video subtitles.
