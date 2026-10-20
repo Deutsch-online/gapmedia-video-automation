@@ -251,7 +251,7 @@ class EverydayLifeTests(unittest.TestCase):
         for scene in plan['scenes']:
             scene['visible_objects'] = ['shopping bag']
             scene['object_action'] = 'The speaker raises the shopping bag into view.'
-        plan['scenes'].pop()
+        removed_scene = plan['scenes'].pop(-2)
         plan['duration_seconds'] = 60
         with self.assertRaisesRegex(ValueError, 'research source'):
             m.validate_plan(plan, 7, [])
@@ -260,13 +260,18 @@ class EverydayLifeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'research source'):
             m.validate_plan(plan, 7, [])
         plan['research_source']['url'] = m.TRUSTED_RESEARCH[0][1]
+        plan['marta_goal'] = 'Marta wants to find the right shopping bag at the counter.'
+        plan['marta_decision'] = 'Marta picks up the bag and asks for the item herself.'
+        plan['visual_payoff'] = 'Marta places the correct bag on the counter and laughs.'
         self.assertIs(m.validate_plan(plan, 7, []), plan)
+        passive = copy.deepcopy(plan)
+        passive['scenes'][0]['speaker'] = 'lukas'
+        with self.assertRaisesRegex(ValueError, 'opening problem'):
+            m.validate_plan(passive, 7, [])
         plan['duration_seconds'] = 65
         with self.assertRaisesRegex(ValueError, 'duration'):
             m.validate_plan(plan, 7, [])
-        plan['scenes'].append(copy.deepcopy(m.load_json(m.ROOT / 'ai-cast/everyday-pilot.json')['scenes'][-1]))
-        plan['scenes'][-1]['visible_objects'] = ['shopping bag']
-        plan['scenes'][-1]['object_action'] = 'The speaker raises the shopping bag into view.'
+        plan['scenes'].insert(-1, removed_scene)
         self.assertIs(m.validate_plan(plan, 7, [], {'duration_exceptions': [7]}), plan)
 
     def test_cartoon_pilot_is_a_new_nonrepeating_story(self):

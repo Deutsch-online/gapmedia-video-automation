@@ -96,3 +96,7 @@ The bot's display name is **ویدیو آلمانی**. Private text is a convers
 ## Duration correction, 2026-10-20
 
 Every ordinary new episode and both exports are exactly **60 seconds** (12 distinct five-second shots). An explicitly authorized episode number in `.cinematic-series.json` `duration_exceptions` may instead be exactly **65 seconds** (13 shots). The list is empty by default; a model cannot opt itself into the exception. Final media gates reject any other length without retiming speech or lip motion.
+
+## Character-led comedy direction, 2026-10-20
+
+Marta is the adult newcomer protagonist. The first two seconds show her ordinary problem and its physical object; two credible escalations lead to a self-directed choice and a visual payoff. Lukas supports the scene without solving everything for her. Most episodes use warm situational comedy, with occasional poignant stories. The planner now records her goal, decision and payoff, checks that she owns the opening and closing shots, and keeps her in the majority of shots. Medium action, close face-and-object, and reaction framings alternate while the mouth, hands and relevant object stay readable above the caption area. These are creative and structural checks; actual audience views cannot be guaranteed.

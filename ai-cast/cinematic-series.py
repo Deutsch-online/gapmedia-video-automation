@@ -23,18 +23,20 @@ STATE = Path('.cinematic-series-state.json')
 CONFIG = Path('.cinematic-series.json')
 STYLE = ('Polished original theatrical 3D CARTOON everyday-life animation, appealing exaggerated adult cartoon proportions, '
          'large expressive eyes and eyebrows, clear readable comic silhouettes, rounded shapes, tactile colorful clothing, '
-         'warm contemporary Berlin shared apartment, vibrant mustard teal and coral palette, '
-         'beautiful dimensional light and rich environmental depth, vertical 9:16. '
-         'Natural believable real-time everyday actions, grounded expressive facial reactions and genuine character acting. '
+         'credible contemporary German everyday locations matching each scene, vibrant mustard teal and coral palette, '
+         'premium feature-animation finish, detailed everyday props, textured materials, clean cinematic lighting, '
+         'strong depth separation and crisp facial detail in vertical 9:16. '
+         'An instantly readable physical problem and lively but credible reaction in each shot; '
+         'clear hand-to-object action and natural speed, with meaningful framing changes between shots. '
          'No live action, no photorealistic adults, no elderly grandmother, no vintage taxi, no flat vectors, '
          'no stick figures, no writing, no watermark. ')
 CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive skin, large brown eyes, '
         'dark chestnut wavy bob, expressive eyebrows, mustard sweatshirt, teal dungarees and coral sneakers. '
-        'She is a practical, friendly young adult flatmate. '
+        'She is the recurring protagonist: a practical, friendly adult newcomer facing ordinary problems in Germany. '
         'Lukas is the tall lanky young adult man on the RIGHT, messy copper-red quiff, turquoise round glasses, '
         'coral hoodie, navy joggers and white sneakers outdoors or soft white slippers at home. '
-        'He is a friendly, ordinary young adult flatmate. '
-        'They are equal adult roommates, never grandmother and taxi driver. Preserve exact reference identity. ')
+        'He is a supportive flatmate, never the solver of every problem. '
+        'They are equal adults, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
 DEFAULT_SECONDS = 60
 EXCEPTION_SECONDS = 65
@@ -218,6 +220,14 @@ def validate_plan(plan, episode, history, config=None):
             raise ValueError('A fetched official research source is required')
         if plan.get('mood') not in ('comic', 'poignant'):
             raise ValueError('Story mood must be comic or poignant')
+        for key in ('marta_goal', 'marta_decision', 'visual_payoff'):
+            if not isinstance(plan.get(key), str) or len(plan[key].strip()) < 25:
+                raise ValueError('The newcomer must have a concrete goal, decision and visual payoff: ' + key)
+        scenes = plan['scenes']
+        if scenes[0].get('speaker') != 'marta' or scenes[-1].get('speaker') != 'marta':
+            raise ValueError('Marta must own the opening problem and closing reaction')
+        if sum(scene.get('speaker') == 'marta' for scene in scenes) < (len(scenes) // 2 + 1):
+            raise ValueError('The newcomer must remain the focus of the episode')
     if episode >= 4:
         for scene in plan['scenes']:
             props = scene.get('visible_objects')
@@ -317,15 +327,20 @@ def make_plan(state):
     mood = 'poignant' if episode >= 7 and episode % 5 == 0 else 'comic'
     prompt = (f'Write the NEXT {target}-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. From episode 6 onward this is a warm recurring 3D sitcom about starting life in Germany. '
-              'Marta is a recently arrived adult immigrant learning everyday German and local routines; Lukas is her supportive flatmate. '
+              'Marta is THE clear protagonist: a recently arrived adult immigrant learning everyday German and local routines; Lukas is her supportive flatmate. '
+              'Marta encounters the problem, attempts a solution, makes the deciding action and owns the final reaction. '
+              f'Give Marta at least {(target // 5) // 2 + 1} of the {target // 5} speaking shots, including the first and last; '
+              'Lukas may help but cannot resolve everything for her. '
               'Keep their established visual identities and equal adult agency. Do not invent a nationality or migration status. '
               'Use a familiar real-life activity: groceries, commuting, laundry, a medical appointment, '
               'cooking, housework or a practical administrative task. Natural speech and credible actions only. '
               'Use recognizable situational comedy: an understandable language misunderstanding, a visual reveal, and a short friendly payoff. '
+              'For comic episodes, make the physical complication visible in the first 2 seconds, build two small believable escalations, '
+              'then land a clean visual joke from an object or routine the audience has already seen. Let a reaction carry part of the joke. '
               'For a poignant episode, make the daily difficulty emotionally honest and end with a small humane act, without forced jokes. '
               'Humor comes from confusing everyday routines, never from mocking accents, nationality or immigrants. '
               'No fantasy gadgets, implausible accidents, humiliation or lectures. '
-              'Open immediately with a visually funny everyday problem faced by a newcomer; make the relevant object visible. '
+              'Open immediately with Marta facing a visually legible everyday problem; make the relevant object visible. '
               'Use one clear setup, a small escalation, a helpful correction and a memorable comic payoff. '
               'Teach only ONE useful German phrase or distinction through the action. Avoid dense explanations and unrelated vocabulary. '
               'These are illustrative everyday reenactments, NOT documented true events. Never claim that a specific '
@@ -347,8 +362,9 @@ def make_plan(state):
               'Return ONLY valid JSON: episode (integer), title_de, title_fa, summary (English), '
               'cliffhanger (a short playful bridge to the next everyday newcomer situation), '
               'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
-              'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution '
-              f'(specific credible actions in English), scenes (EXACTLY {target // 5} objects). '
+              'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution, '
+              'marta_goal, marta_decision, visual_payoff (specific visible actions in English), '
+              f'scenes (EXACTLY {target // 5} objects). '
               'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
               'For every scene include visible_objects (1-3 concrete physical objects named or directly referenced in '
@@ -361,7 +377,8 @@ def make_plan(state):
               'Only one visible face per speaking shot; the listener and all other people remain off-camera. '
               'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
               f'Episode number: {episode}. Requested mood: {mood}. '
-              'Use this freshly retrieved official source only for its real-world context; do not copy its prose or infer prices, laws or universal rules: '
+              'The episode situation must match this freshly retrieved official source topic. '
+              'Use its verified real-world context; do not copy its prose or infer prices, laws or universal rules: '
               + json.dumps(research, ensure_ascii=False) + '. Story history: ' + json.dumps(memory, ensure_ascii=False))
     errors = []
     for provider in ('gemini', 'groq'):
@@ -589,10 +606,16 @@ def render(plan, config, preview=False):
             elif scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
             else:
+                framing = ('medium action shot with clear hand and object',
+                           'closer face-and-object shot with the hand still visible',
+                           'medium reaction shot retaining the relevant object')[i % 3]
+                story_beat = ('Opening frame: ' + plan['visual_hook'] + '. ') if i == 0 and plan['episode'] >= 7 else ''
+                if i == len(plan['scenes']) - 1 and plan['episode'] >= 7:
+                    story_beat = 'Final visual payoff: ' + plan['visual_payoff'] + '. '
                 prompt = ('Keep ONLY the one young cartoon speaker from this single-person reference: '
                           'identical face, hair, clothes and age. Never add another person or visible listener. ' + STYLE + 'Scene: ' + scene['scene'] +
                           ' For this dialogue shot show ONLY the speaking character, ' + scene['speaker'] +
-                          ', with one unobstructed face in a medium waist-up shot. The listener stays off camera. '
+                          ', with one unobstructed face in a ' + framing + '. The listener stays off camera. ' + story_beat +
                           'Keep visible hands and the practical action, no second face. '
                           'Clearly show these specific physical objects in the foreground, large enough to recognize: ' +
                           ', '.join(scene.get('visible_objects', [])) + '. Starting action: ' +
@@ -611,6 +634,7 @@ def render(plan, config, preview=False):
             sigfile.write_text(signature)
         speech.ensure_clip(png, audios[i], clip,
                            scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
+                           ' Start the physical action promptly; add a readable natural facial reaction. '
                            ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])),
                            plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
