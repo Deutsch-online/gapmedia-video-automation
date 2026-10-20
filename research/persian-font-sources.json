@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "added_at": "2026-10-20",
+  "approved_by": "project-owner",
+  "sources": [
+    {
+      "name": "FarsiUI Fonts",
+      "url": "https://farsiui.ir/fonts",
+      "purpose": "Discover and preview Persian fonts for bilingual video captions",
+      "verification": "Owner-supplied catalog; page contents and individual font licenses not independently verified",
+      "candidate": "Vazirmatn Bold",
+      "integration": "Prefer a locally stored versioned TTF or OTF for ffmpeg/libass; keep its license alongside the font",
+      "requirements": ["Check actual font license and upstream source before bundling", "Verify Persian shaping and punctuation", "Measure real glyph widths", "Keep captions within their safe area and away from faces, hands and props", "Run subtitle layout checks before GPU generation"]
+    }
+  ]
+}
