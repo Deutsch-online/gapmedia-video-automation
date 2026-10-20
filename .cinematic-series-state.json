@@ -1086,7 +1086,7 @@
     "2026-10-19": 2,
     "2026-10-20": 1,
     "2026-10-20#analytics-episode-7-20261020": 3,
-    "2026-10-20#owner-complete-e7-20261020-timing": 1
+    "2026-10-20#owner-complete-e7-20261020-timing": 2
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -1103,7 +1103,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-10-20T18:59:31.913220+00:00",
+    "checked_at": "2026-10-20T19:04:52.275402+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
