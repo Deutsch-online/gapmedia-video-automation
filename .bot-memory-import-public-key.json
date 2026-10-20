@@ -1,0 +1,14 @@
+{
+  "key_id": "133e79fc-460e-4faf-a929-1b62292095e6",
+  "public_key": {
+    "kty": "RSA",
+    "key_ops": [
+      "encrypt"
+    ],
+    "alg": "RSA-OAEP-256",
+    "ext": true,
+    "n": "ntFWGhFdHSUACbF88w2EKWqJtN8oWQoQuO6B6yX-1SrotMiVbptgKMKuQoYdQ5llj5oK4dI8-ynA63dVpAh2TYHfulh19OflFkwMBh-tBAxBXzwh_YJO9JGgXgShyYWvz2PM-nvf1FiZjCsF1DNbzQygfKpzWnc3l3I50Tw4MedlF5YgcnPhNVB_KtkwWEAlMri2fX-bnI6k6bHL08iJ_sqWa1oinUTZtNKKccNhtfOWRs_V_j717Nca_0bsrtJ3ibtAb-DkyhYdRsu_fsdTew66Jwk_8a7OzNxwxUc_5X1bBA_Ya92W_ljBywcW8Wm2Fyp5cyxJdC4hGlhiGy-bQQ",
+    "e": "AQAB"
+  },
+  "expires_at": "2026-10-20T18:10:50.306Z"
+}
