@@ -26,11 +26,16 @@ if (action === 'verify') {
       p.platform !== platform || p.platform_files?.[platform] !== file ||
       p.platform_receipts?.[platform])) throw new Error('Invalid or already delivered platform');
   const qualityPath = file.replace(/[^/]+$/, 'quality.json');
-  // The full 65-second master is required; never shorten speech or lip motion.
+  const config = JSON.parse(readFileSync('.cinematic-series.json', 'utf8'));
+  const expected = p.plan.duration_seconds ?? 60;
+  if (![60, 65].includes(expected) || (expected === 65 && !config.duration_exceptions?.includes(p.plan.episode))) {
+    throw new Error('A 65-second delivery requires an explicit episode exception');
+  }
+  // Never shorten speech or lip motion to fit the delivery contract.
   // Validate duration before private delivery.
-  execFileSync('python3', ['ai-cast/cinematic-series.py', 'conform', '--file', file], { stdio: ['ignore', 'ignore', 'pipe'] });
+  execFileSync('python3', ['ai-cast/cinematic-series.py', 'conform', '--file', file, '--seconds', String(expected)], { stdio: ['ignore', 'ignore', 'pipe'] });
   const qc = JSON.parse(readFileSync(qualityPath, 'utf8'));
-  if (qc.duration !== 65 || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion || !qc.pause_music || qc.music_during_speech_samples !== 0) {
+  if (qc.duration !== expected || !qc.genuine_motion || !qc.German_audio || !qc.bilingual_subtitles || !qc.audio_conditioned_lips || !qc.no_slow_motion || !qc.pause_music || qc.music_during_speech_samples !== 0) {
     throw new Error('Video quality gates did not pass');
   }
   // Metadata stays German; Persian belongs only to the in-video subtitles.

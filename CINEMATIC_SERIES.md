@@ -92,3 +92,7 @@ Single-speaker takes use the approved individual portraits directly to avoid int
 ## 2026-10-20 direction (episode 7 onward)
 
 The bot's display name is **ویدیو آلمانی**. Private text is a conversation; explicit commands remain available through `/help`, `/chat`, `/status`, `/episode`, and `/credit`. Future episodes are exactly **65 seconds**: 13 distinct five-second audio-conditioned speaking shots. Neither speech nor lip motion is retimed to meet delivery length. Each platform export is checked separately. Before drafting, the runner retrieves an official Goethe-Institut, Deutsche Bahn, or VBB page, records its URL, excerpt and retrieval time in `episode.json`, and stops if research cannot be verified. The source informs the real-world context; the plot remains an original everyday reenactment, usually comic and occasionally poignant. Paid generation remains disabled without a specific approval.
+
+## Duration correction, 2026-10-20
+
+Every ordinary new episode and both exports are exactly **60 seconds** (12 distinct five-second shots). An explicitly authorized episode number in `.cinematic-series.json` `duration_exceptions` may instead be exactly **65 seconds** (13 shots). The list is empty by default; a model cannot opt itself into the exception. Final media gates reject any other length without retiming speech or lip motion.

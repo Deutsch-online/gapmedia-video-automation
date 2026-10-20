@@ -36,7 +36,15 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'He is a friendly, ordinary young adult flatmate. '
         'They are equal adult roommates, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
-EPISODE_SECONDS = 65
+DEFAULT_SECONDS = 60
+EXCEPTION_SECONDS = 65
+
+def episode_seconds(episode, config=None):
+    config = config if config is not None else load_json(CONFIG)
+    exceptions = config.get('duration_exceptions', [])
+    if not isinstance(exceptions, list) or any(not isinstance(n, int) or isinstance(n, bool) or n < 7 for n in exceptions):
+        raise ValueError('Duration exceptions must be explicit future episode numbers')
+    return EXCEPTION_SECONDS if episode in exceptions else DEFAULT_SECONDS
 TRUSTED_RESEARCH = (
     ('Everyday German: shopping, doctor and train', 'https://www.goethe.de/de/spr/ueb/lua.html', 'Einkaufen, Arztbesuch, Zug fahren'),
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
@@ -187,10 +195,13 @@ def first_episode():
             'scenes': [dict(speaker=s, de=d, fa=f, scene=p, motion=m, asset=a)
                        for s, d, f, p, m, a in SEED_LINES]}
 
-def validate_plan(plan, episode, history):
-    expected = 13 if episode >= 7 or episode < 5 else 12
+def validate_plan(plan, episode, history, config=None):
+    target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
+    expected = target // 5
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
         raise ValueError(f'Episode {episode} must contain exactly {expected} five-second scenes')
+    if episode >= 7 and plan.get('duration_seconds') != target:
+        raise ValueError('Episode duration does not match its explicit exception setting')
     if episode >= 3:
         if plan.get('series_version') != 'wg-alltag-v1':
             raise ValueError('New episodes must belong to the 3D cartoon everyday-life series')
@@ -301,9 +312,10 @@ def make_plan(state):
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
                'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', [])} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
+    target = episode_seconds(episode) if episode >= 7 else 60
     research = research_source(episode) if episode >= 7 else None
     mood = 'poignant' if episode >= 7 and episode % 5 == 0 else 'comic'
-    prompt = ('Write the NEXT 65-second German A1/A2 animated everyday-life conversation. '
+    prompt = (f'Write the NEXT {target}-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. From episode 6 onward this is a warm recurring 3D sitcom about starting life in Germany. '
               'Marta is a recently arrived adult immigrant learning everyday German and local routines; Lukas is her supportive flatmate. '
               'Keep their established visual identities and equal adult agency. Do not invent a nationality or migration status. '
@@ -321,8 +333,8 @@ def make_plan(state):
               'Continue only this everyday-life series history. Do not continue the robot-vacuum comedy or taxi season. '
               'If the latest history entry has deferred_scenes, use those unshown dialogue and object actions '
               'only if they fit this new sitcom premise; otherwise keep them deferred instead of forcing unrelated grocery dialogue. '
-              'Use a clear practical German teaching format with thirteen five-second speaking shots, exactly 65 seconds. '
-              'Prefer one coherent situation across thirteen natural-speed shots, not repetitive instruction drills. '
+              f'Use a clear practical German teaching format with exactly {target // 5} five-second speaking shots, exactly {target} seconds. '
+              'Prefer one coherent situation across those natural-speed shots, not repetitive instruction drills. '
               'Use short spoken lines and genuine reaction pauses; do not add dialogue just to fill time. '
               'Good recurring situations include a supermarket checkout divider, Pfand returns, appointment terminology, '
               'public transport, a parcel pickup, laundry rules or sorting household rubbish. Do not invent legal rules or uniform local policies. '
@@ -336,7 +348,7 @@ def make_plan(state):
               'cliffhanger (a short playful bridge to the next everyday newcomer situation), '
               'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
               'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution '
-              '(specific credible actions in English), scenes (EXACTLY 13 objects). '
+              f'(specific credible actions in English), scenes (EXACTLY {target // 5} objects). '
               'Each scene has speaker (marta or lukas), de (natural German, 4-12 words, under 4.4 seconds), '
               'fa (accurate natural Persian translation), scene (English composition), motion (English action). '
               'For every scene include visible_objects (1-3 concrete physical objects named or directly referenced in '
@@ -345,7 +357,7 @@ def make_plan(state):
               'open a reusable bag. Objects must be recognizable in the foreground beside the speaker, never '
               'merely mentioned or hidden in scenery. Keep the location and object ownership consistent across cuts. '
               'Choose dialogue about items physically available in the setting; do not show an absent item as present. '
-              'Alternate medium action shots and closer product-and-speaker framing, not thirteen identical portraits. '
+              'Alternate medium action shots and closer product-and-speaker framing, not identical portraits. '
               'Only one visible face per speaking shot; the listener and all other people remain off-camera. '
               'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
               f'Episode number: {episode}. Requested mood: {mood}. '
@@ -377,6 +389,7 @@ def make_plan(state):
             if research:
                 plan['research_source'] = research
                 plan['mood'] = mood
+                plan['duration_seconds'] = target
             return validate_plan(plan, episode, state['history'])
         except Exception as exc:
             detail = provider + ': ' + provider_error(exc)
@@ -424,26 +437,28 @@ def gpu_retry_at(message, now=None):
         delay = timedelta(hours=hours, minutes=minutes, seconds=seconds)
     return now + delay + timedelta(minutes=2)
 
-def conform_duration(path):
+def conform_duration(path, target_seconds=DEFAULT_SECONDS):
     """Reject short/long video; repair only AAC container tail without retiming lips."""
+    if target_seconds not in (DEFAULT_SECONDS, EXCEPTION_SECONDS):
+        raise ValueError('Only exact 60-second or approved 65-second output is allowed')
     path = Path(path)
     info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = float(video.get('duration') or info['format']['duration'])
-    if abs(duration - EPISODE_SECONDS) > .00001:
-        raise RuntimeError('Episode video must be exactly 65 seconds; no cuts or speed changes')
-    if abs(float(info['format']['duration']) - EPISODE_SECONDS) > .00001:
-        target = path.with_name(path.stem + '-audio65.mp4')
+    if abs(duration - target_seconds) > .00001:
+        raise RuntimeError(f'Episode video must be exactly {target_seconds} seconds; no cuts or speed changes')
+    if abs(float(info['format']['duration']) - target_seconds) > .00001:
+        target = path.with_name(path.stem + f'-audio{target_seconds}.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', path, '-c:v', 'copy',
-                 '-af', 'aresample=48000,atrim=duration=65', '-ar', '48000',
-                 '-c:a', 'aac', '-b:a', '192k', '-t', '65',
+                 '-af', f'aresample=48000,atrim=duration={target_seconds}', '-ar', '48000',
+                 '-c:a', 'aac', '-b:a', '192k', '-t', str(target_seconds),
                  '-movflags', '+faststart', target])
         target.replace(path)
         info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
-    if abs(float(video['duration']) - EPISODE_SECONDS) > .00001 or abs(float(info['format']['duration']) - EPISODE_SECONDS) > .00001:
-        raise RuntimeError('Output must be exactly 65 seconds')
-    return float(EPISODE_SECONDS)
+    if abs(float(video['duration']) - target_seconds) > .00001 or abs(float(info['format']['duration']) - target_seconds) > .00001:
+        raise RuntimeError(f'Output must be exactly {target_seconds} seconds')
+    return float(target_seconds)
 
 
 def caption_text(text, family, size, width=950):
@@ -628,13 +643,13 @@ def render(plan, config, preview=False):
                  '-c:a', 'copy', '-movflags', '+faststart', smaller])
         smaller.replace(final)
     if not preview:
-        conform_duration(final)
+        conform_duration(final, plan.get('duration_seconds', DEFAULT_SECONDS))
     from cinematic_music import add_pause_music
     music_report = add_pause_music(final)
     info = ffprobe(final)
     v = next(s for s in info['streams'] if s['codec_type'] == 'video')
     duration = seconds(final)
-    duration_ok = (15 <= duration <= 15.3) if preview else abs(duration - EPISODE_SECONDS) <= .00001
+    duration_ok = (15 <= duration <= 15.3) if preview else abs(duration - plan.get('duration_seconds', DEFAULT_SECONDS)) <= .00001
     if not duration_ok or (v['width'], v['height']) != (1080, 1920):
         raise RuntimeError('Episode failed duration or frame quality requirements')
     if not any(s['codec_type'] == 'audio' for s in info['streams']):
@@ -656,21 +671,23 @@ PLATFORM_PROFILES = {'tiktok': ('4500k', '5000k'), 'instagram': ('3500k', '4000k
 def export_platforms(master):
     master = Path(master)
     quality = load_json(master.parent / 'quality.json')
-    if quality.get('duration') != EPISODE_SECONDS or not all(quality.get(k) for k in
+    target_seconds = quality.get('duration')
+    if target_seconds not in (DEFAULT_SECONDS, EXCEPTION_SECONDS) or not all(quality.get(k) for k in
             ('genuine_motion', 'German_audio', 'bilingual_subtitles', 'audio_conditioned_lips', 'no_slow_motion')):
-        raise RuntimeError('Platform exports require an approved sixty-five-second master')
+        raise RuntimeError('Platform exports require an approved exact-duration master')
+    target_seconds = int(target_seconds)
     files = {}
     for platform, (bitrate, maximum) in PLATFORM_PROFILES.items():
         folder = master.parent / platform
         folder.mkdir(parents=True, exist_ok=True)
-        target = folder / (master.name.split('-')[0] + '-' + platform + '-65s.mp4')
+        target = folder / (master.name.split('-')[0] + '-' + platform + f'-{target_seconds}s.mp4')
         command(['ffmpeg', '-y', '-v', 'error', '-i', master,
                  '-vf', 'scale=1080:1920,setsar=1,fps=30',
                  '-c:v', 'libx264', '-profile:v', 'high', '-level:v', '4.2',
                  '-preset', 'fast', '-b:v', bitrate, '-maxrate', maximum, '-bufsize', '10000k',
-                 '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-t', '65',
+                 '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-t', str(target_seconds),
                  '-map_metadata', '-1', '-movflags', '+faststart', target])
-        conform_duration(target)
+        conform_duration(target, target_seconds)
         info = ffprobe(target)
         video = next(x for x in info['streams'] if x['codec_type'] == 'video')
         audio = next(x for x in info['streams'] if x['codec_type'] == 'audio')
@@ -680,7 +697,7 @@ def export_platforms(master):
             raise RuntimeError('Platform frame rate or audio codec failed')
         if target.stat().st_size > 45 * 1024 * 1024:
             raise RuntimeError('Platform export exceeds the private bot upload budget')
-        atomic_json(folder / 'quality.json', {**quality, 'duration': 65.0, 'platform': platform,
+        atomic_json(folder / 'quality.json', {**quality, 'duration': float(target_seconds), 'platform': platform,
                                              'width': 1080, 'height': 1920, 'fps': 30})
         files[platform] = str(target)
     return files
@@ -770,10 +787,11 @@ def production(force=False):
     close_credit_attempt('completed')
     checkpoint(state)
     # Complete media preparation before declaring an uncertain upload intent.
-    conform_duration(final)
+    target_seconds = episode_seconds(plan['episode'], config) if plan['episode'] >= 7 else plan.get('duration_seconds', DEFAULT_SECONDS)
+    conform_duration(final, target_seconds)
     quality_path = Path(final).parent / 'quality.json'
     quality = load_json(quality_path)
-    quality['duration'] = 65.0
+    quality['duration'] = float(target_seconds)
     atomic_json(quality_path, quality)
     receipts = deliver_platforms(state, final)
     state['deliveries'][date] = {'episode': plan['episode'],
@@ -794,11 +812,12 @@ def main():
     parser.add_argument('action', choices=['gate', 'run', 'check', 'conform'])
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--file')
+    parser.add_argument('--seconds', type=int, default=DEFAULT_SECONDS)
     args = parser.parse_args()
     if args.action == 'conform':
         if not args.file:
             raise ValueError('A video file is required')
-        duration = conform_duration(args.file)
+        duration = conform_duration(args.file, args.seconds)
         quality_path = Path(args.file).parent / 'quality.json'
         quality = load_json(quality_path)
         quality['duration'] = duration
@@ -807,8 +826,9 @@ def main():
     if args.action == 'check':
         validate_plan(first_episode(), 1, [])
         config = load_json(CONFIG)
-        if config['minimum_seconds'] != 65 or config.get('maximum_seconds') != 65 or config['target_seconds'] != 65:
-            raise ValueError('Every episode must be exactly sixty-five seconds')
+        if config['minimum_seconds'] != 60 or config.get('maximum_seconds') != 60 or config['target_seconds'] != 60:
+            raise ValueError('Ordinary episodes must be exactly sixty seconds')
+        episode_seconds(7, config)
         print('Cinematic series plan and duration contract verified')
     elif args.action == 'gate':
         go, reason, date = due(load_json(STATE, new_state()), load_json(CONFIG), force=args.force)
