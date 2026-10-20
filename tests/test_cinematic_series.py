@@ -124,7 +124,7 @@ class ProviderDiagnosticsTests(unittest.TestCase):
         state['next_episode'] = 2
         plan = m.first_episode()
         plan['episode'] = 2
-        response = {'choices': [{'message': {'content': json.dumps(plan)}}]}
+        response = {'model': 'glm-5.3-flash-free', 'choices': [{'message': {'content': json.dumps(plan)}}]}
         with patch.dict(os.environ, {'BEATAPI_API_KEY': 'test-key'}, clear=True), \
              patch.object(m, 'beatapi_free_model', return_value='glm-5.3-flash-free'), \
              patch.object(m, 'request_json', return_value=response) as request:

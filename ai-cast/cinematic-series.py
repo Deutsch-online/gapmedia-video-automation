@@ -407,6 +407,8 @@ def make_plan(state):
                                  {'model': model, 'messages': [{'role': 'user', 'content': prompt}],
                                   'temperature': .7, 'max_tokens': 5000},
                                  {'Authorization': 'Bearer ' + key})
+                if r.get('model') != model:
+                    raise ValueError('BeatAPI response did not confirm the zero-price model')
                 raw = r['choices'][0]['message']['content']
             elif provider == 'gemini':
                 key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
