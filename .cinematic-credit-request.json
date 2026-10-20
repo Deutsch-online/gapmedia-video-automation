@@ -1,6 +1,6 @@
 {
   "id": "ec35e0d294d24934ee91a363",
-  "status": "running",
+  "status": "attempt-failed",
   "plan_sha": "da4c56906573ac237c6497ba6b28b0fc25eff1c26f802087653784388691c60f",
   "simple_text_approval": true,
   "kind": "episode",
