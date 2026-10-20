@@ -43,11 +43,12 @@ jobs:
         env:
           BEATAPI_API_KEY: ${{ secrets.BEATAPI_API_KEY }}
           BEAT_API_KEY: ${{ secrets.BEAT_API_KEY }}
+          BEATAPI_KEY: ${{ secrets.BEATAPI_KEY }}
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           python - <<'PY'
           import importlib.util, os
-          if os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY'):
+          if os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY'):
               spec = importlib.util.spec_from_file_location('series', 'ai-cast/cinematic-series.py')
               series = importlib.util.module_from_spec(spec)
               spec.loader.exec_module(series)
@@ -117,6 +118,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           BEATAPI_API_KEY: ${{ secrets.BEATAPI_API_KEY }}
           BEAT_API_KEY: ${{ secrets.BEAT_API_KEY }}
+          BEATAPI_KEY: ${{ secrets.BEATAPI_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}

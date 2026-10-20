@@ -399,7 +399,7 @@ def make_plan(state):
     for provider in ('beatapi-free', 'gemini', 'groq'):
         try:
             if provider == 'beatapi-free':
-                key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY')
+                key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
                 if not key:
                     continue
                 model = beatapi_free_model()
