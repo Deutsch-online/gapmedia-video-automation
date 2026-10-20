@@ -1,0 +1,55 @@
+name: Connect Telegram webhook to active Worker
+on:
+  push:
+    paths: [.github/workflows/connect-telegram-webhook.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  connect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate target and connect bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+
+          target = "https://afghanfollowers-telegram.afghan-video-bot.workers.dev/"
+          token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
+          if not token:
+              raise SystemExit("TELEGRAM_BOT_TOKEN is missing")
+
+          def api(method, params=None):
+              url = "https://api.telegram.org/bot" + token + "/" + method
+              data = urllib.parse.urlencode(params).encode() if params else None
+              try:
+                  with urllib.request.urlopen(url, data=data, timeout=15) as response:
+                      result = json.load(response)
+              except Exception:
+                  raise SystemExit("Telegram API request failed: " + method) from None
+              if not result.get("ok"):
+                  raise SystemExit("Telegram rejected: " + method)
+              return result["result"]
+
+          with urllib.request.urlopen(target + "health", timeout=15) as response:
+              health = json.load(response)
+          if health.get("worker") is not True or health.get("telegramTokenValid") is not True:
+              raise SystemExit("Target Worker or its Telegram token is not ready")
+
+          me = api("getMe")
+          if me.get("username", "").lower() != "afgsocial_bot":
+              raise SystemExit("GitHub token belongs to a different bot")
+          before = api("getWebhookInfo").get("url", "")
+          print("Previous webhook host:", urllib.parse.urlparse(before).hostname or "(none)")
+          if before != target:
+              api("setWebhook", {"url": target, "drop_pending_updates": "false"})
+          after = api("getWebhookInfo").get("url", "")
+          if after != target:
+              raise SystemExit("Webhook did not point to the active Worker")
+          print("Webhook host:", urllib.parse.urlparse(after).hostname)
+          PY
