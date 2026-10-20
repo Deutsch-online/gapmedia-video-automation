@@ -9,7 +9,9 @@ const pages={
 
 export function publicPage(request) {
   if(request.method!=='GET'&&request.method!=='HEAD')return null;
-  const page=pages[new URL(request.url).pathname];
+  const path=new URL(request.url).pathname;
+  if(path==='/tiktok8OEptQeE5srYSGoXVgITg1X4poBtIT2J.txt')return new Response(request.method==='HEAD'?null:"tiktok-developers-site-verification=8OEptQeE5srYSGoXVgITg1X4poBtIT2J",{headers:{'content-type':'text/plain; charset=utf-8','x-content-type-options':'nosniff','cache-control':'public, max-age=300'}});
+  const page=pages[path];
   if(!page)return null;
   const [title,body]=page;
   const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{font:17px/1.65 system-ui,sans-serif;color:#182436;background:#f5f7fb;margin:0}main{max-width:760px;margin:40px auto;padding:30px;background:white;border-radius:18px}h1{line-height:1.2}h2{font-size:1.2rem;margin-top:28px}a{color:#165ec4}nav{display:flex;gap:22px;flex-wrap:wrap;border-bottom:1px solid #ddd;padding-bottom:18px}@media(max-width:820px){main{margin:12px;padding:22px}}</style></head><body><main><nav><a href="${ROOT}/app">About</a><a href="${ROOT}/terms">Terms</a><a href="${ROOT}/privacy">Privacy</a></nav><h1>${title}</h1>${body}</main></body></html>`;
