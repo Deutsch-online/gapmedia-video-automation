@@ -1074,7 +1074,7 @@
       "duration_seconds": 60
     },
     "date": "2026-10-20#owner-complete-e7-20261020-timing",
-    "status": "render-failed",
+    "status": "rendering",
     "narration_owner_fix": "Shortened opening sentence without changing the train, action or lesson."
   },
   "attempts": {
