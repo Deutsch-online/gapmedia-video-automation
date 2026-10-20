@@ -719,11 +719,27 @@ export default {
     }
     const message = update?.message;
     let input = message?.text || message?.caption || "";
-    if (!input || !message?.chat?.id) return new Response("ok");
+    const uploadedVideo=message?.video||((message?.document?.mime_type||'').startsWith('video/')?message.document:null);
+    if ((!input&&!uploadedVideo) || !message?.chat?.id) return new Response("ok");
     const chatId = String(message.chat.id);
     if (message.chat?.type && message.chat.type !== "private") return new Response("ok");
     const owner = env.ALLOWED_CHAT_ID || (await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
     if (!owner || chatId !== String(owner)) return new Response("ok");
+    if(uploadedVideo&&!input.trim()){
+      if(!env.BOT_STATE){
+        await replyText(env,chatId,'ویدیو دریافت شد، اما حافظهٔ ثبت فایل در دسترس نیست؛ دریافت برای بررسی ذخیره نشد.');
+        return new Response('ok');
+      }
+      await env.BOT_STATE.put(`received-video:${chatId}`,JSON.stringify({
+        file_id:uploadedVideo.file_id,file_unique_id:uploadedVideo.file_unique_id,
+        message_id:message.message_id,file_name:uploadedVideo.file_name||null,
+        mime_type:uploadedVideo.mime_type||null,file_size:uploadedVideo.file_size||null,
+        duration:uploadedVideo.duration||null,received_at:new Date().toISOString(),
+        status:'received_not_reviewed',
+      }),{expirationTtl:7*24*60*60});
+      await replyText(env,chatId,'ویدیو دریافت و شناسهٔ آن برای هفت روز ثبت شد. هنوز دانلود، تدوین یا بررسی نشده است. برای آماده‌سازی دیمو در گفت‌وگوی Codex، خود فایل را همان‌جا هم پیوست کنید؛ ارسال به این بات فایل را خودکار به Codex منتقل نمی‌کند.');
+      return new Response('ok');
+    }
     if(/(?:password|access_token|client_secret|پسورد|رمز عبور)\s*["']?\s*[:=]/i.test(input)){
       await replyText(env,chatId,'رمز یا توکن را در چت نفرستید. این پیام در حافظهٔ گفتگو ذخیره یا برای مدل ارسال نشد. برای اتصال رسمی از /connect استفاده کنید.');
       return new Response('ok');
