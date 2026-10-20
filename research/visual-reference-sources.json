@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "approved_by": "project-owner",
+  "added_at": "2026-10-20",
+  "purpose": "Primary visual-design reference catalog for the Marta and Lukas 3D everyday-life series",
+  "content_review_status": "Catalog supplied by owner; individual pages and examples have not been visually reviewed",
+  "workflow": ["Find a relevant visual reference", "Name the technique", "Write a concrete original shot prompt", "Review the rendered result"],
+  "sources": [
+    {"name": "ShotCafe", "url": "https://shot.cafe/", "role": "Shot references, composition and framing"},
+    {"name": "FilmGrab", "url": "https://film-grab.com/", "role": "Color, lighting, shadows and cinematic composition"},
+    {"name": "Eyecannndy", "url": "https://eyecannndy.com/", "role": "Names and examples of visual techniques, effects and transitions"},
+    {"name": "Melies", "url": "https://melies.co/", "role": "Translate camera, lighting, lens and transition terminology into precise shot prompts", "note": "Owner supplied a truncated article URL; homepage retained until the exact article is verified"},
+    {"name": "AI Camera Movements", "url": "https://aicameramovements.com/", "role": "Precise descriptions of dolly, orbit and tracking movements"},
+    {"name": "GrokFilm", "url": "https://grokfilm.app/", "role": "Shot sizes, camera angles and filmmaking terminology for prompts"}
+  ],
+  "application": [
+    "Keep the recurring original 3D cartoon characters and believable everyday German setting",
+    "Make the problem and relevant prop visible immediately; keep the speaker's face, hands and object readable",
+    "Use a medium action shot, a closer object-and-reaction shot and a visible payoff when the story needs them",
+    "Prefer one restrained, purposeful camera movement per shot; preserve the mouth and object in frame",
+    "Preserve consistent lighting, color, object ownership and screen direction across cuts"
+  ],
+  "limits": [
+    "A catalog entry is not evidence that a page, film frame or motion sample was fetched or watched",
+    "These are visual-design references, not factual authorities for German transport, laws or everyday rules",
+    "Reference availability does not grant permission to reuse film frames, clips or character designs",
+    "Do not download media, install integrations, subscribe or spend paid credits automatically",
+    "Retain exact episode duration, one-speaker audio-driven lip sync, caption safe areas and existing quality gates"
+  ]
+}
