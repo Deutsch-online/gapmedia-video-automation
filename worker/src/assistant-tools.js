@@ -148,7 +148,7 @@ export async function handleAssistantTool(env, text) {
   else if ((match = input.match(/^\/(?:find|repo-search)\s+(.+)$/i))) task = {tool:'github_find',query:match[1]};
   else if ((match = input.match(/^\/(?:search|web)\s+(.+)$/i))) task = {tool:'web_search',query:match[1]};
   else if ((match = input.match(/^\/edit\s+([^\s]+)\s+([\s\S]+)$/i))) task = {tool:'github_edit',path:match[1],query:match[2]};
-  else if (/(گیت.?هاب|مخزن|فایل|جستجو|جست‌وجو|سرچ|ویرایش|ادیت|اصلاح|تغییر بده|بررسی کن|اینترنت|در وب|github|repository|file|search|edit)/i.test(input)) task = await classify(env,input);
+  else if (/(گیت.?هاب|مخزن|فایل|جستجو|جست‌وجو|سرچ|اینترنت|در وب|github|repository|file|web search)/i.test(input)) task = await classify(env,input);
   if (!task) return null;
   const tool = task.tool;
   if (tool === 'github_list') return githubList(env, task.path || '');

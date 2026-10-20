@@ -792,7 +792,19 @@ export default {
           await replyText(env, chatId, `⚠️ ${error.message || 'ابزار در دسترس نیست.'}`);
           handled = true;
         }
-        if (!handled) await replyText(env, chatId, await chat(env, chatId, input));
+        if (!handled) {
+          const operational = /(?:بساز|بفرست|پیدا کن|برنامه(?:‌|\s)?ریزی کن|تغییر بده|ویرایش کن|اصلاح کن|کوتاه‌تر کن|آماده کن|build|create|make|update)/i.test(input)
+            && !/^(?:آیا|چطور|چگونه|میشه|می‌شود|can you|how|why)/i.test(input.trim());
+          const intent = operational ? await chatIntent(env, input) : null;
+          if (intent) {
+            if (intent.action === 'custom-content') intent.payload = prepareTopicLocally(intent.payload);
+            if (['content-search-live'].includes(intent.action)) await setSelection(env, chatId, 'search');
+            await dispatchWorkflow(env, intent);
+            await reply(env, chatId, acknowledgementFor(intent));
+          } else {
+            await replyText(env, chatId, await chat(env, chatId, input));
+          }
+        }
       }
     } catch (error) {
       console.error(error);

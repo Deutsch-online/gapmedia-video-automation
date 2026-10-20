@@ -28,7 +28,7 @@ globalThis.fetch=async (url,init={})=>{
   }
   return Response.json({ok:true,result:{message_id:1}});
 };
-const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
+const env={ALLOWED_CHAT_ID:'7',TELEGRAM_BOT_TOKEN:'test',GITHUB_TOKEN:'test',BOT_STATE,AI:{run:async(_model,input)=>({response:input.messages.at(-1).content.includes('قلاب امروز را کوتاه‌تر کن')?'{"action":"content-edit-hook","payload":"قلاب تازه"}':input.messages.at(-1).content.includes('ممنون')?'خواهش می‌کنم':'پاسخ کوتاه'})}};
 const signature=await webhookSecret('test');
 const send=async text=>worker.fetch(new Request('https://worker.test/',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':signature},body:JSON.stringify({message:{chat:{id:7,type:'private'},text}})}),env);
 assert.equal((await worker.fetch(new Request('https://worker.test/',{method:'POST',body:'{}'}),env)).status,401,'unsigned requests cannot impersonate owner chat');
@@ -53,5 +53,9 @@ assert.equal(pushed.payload,'تایید '+code);
 kv.delete('pending:7');
 await send('/episode');
 assert.ok(calls.some(c=>c.url.includes('.cinematic-series-request.json')&&c.init.method==='PUT'),'episode requests the dedicated quota-gated workflow');
+await send('قلاب امروز را کوتاه‌تر کن');
+const natural=calls.filter(c=>c.url.includes('.video-request.json')&&c.init.method==='PUT').at(-1);
+const routed=JSON.parse(decodeURIComponent(escape(atob(JSON.parse(natural.init.body).content))));
+assert.equal(routed.action,'content-edit-hook','clear natural instruction routes to an existing bounded workflow');
 globalThis.fetch=saved;
 console.log('chat, memory, status and episode routing hold');
