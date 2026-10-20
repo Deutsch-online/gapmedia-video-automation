@@ -2,7 +2,7 @@ import {runAssistantAI,veniceStatus,formatVeniceStatus} from './venice-ai.js';
 import {memoryTransfer,memoryContext,handleMemory,resolveFollowup} from './project-memory.js';
 import {handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './project-diagnostics.js';
 import {publicPage} from './public-pages.js';
-import {handleCredit} from './credit.js';
+import {handleCredit,handleSimpleCredit} from './credit.js';
 import {handleAssistantTool, githubRepositoryLink, inspectGithubRepository} from './assistant-tools.js';
 import {runResearchAgent} from './research-agent.js';
 import {manageCommands, resolveAlias} from './command-registry.js';
@@ -60,7 +60,7 @@ const HELP = `🤖 <b>ویدیو آلمانی</b>
 <b>فرمان‌های ویدیو</b>
 «درس آلمانی بساز»، «جستجوی محتوا»، «نمایش محتوا»، «تأیید محتوا»، یا «ویدیو مستقیم: موضوع | گام یک | گام دو».
 
-برای تأیید یا رد مصرف اعتبار، متن کامل و کد اختصاصی را از پیام همان درخواست کپی کنید. یک «تایید» تنها اعتبار مصرف نمی‌کند.
+برای درخواست فعال مصرف اعتبار، فقط «تایید» یا «رد» را در همین چت خصوصی بفرستید.
 
 فرمان‌های قدیمی شماره‌ای هم فعال‌اند؛ برای دیدنشان /commands را بفرستید.`;
 
@@ -557,7 +557,7 @@ function prepareTopicLocally(raw) {
   return [topic, ...(steps.length ? steps : TOPIC_SCAFFOLD)].join(" | ");
 }
 
-const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. به سؤالِ واقعیِ کاربر مستقیم و مشخص پاسخ بده و از زمینهٔ پیام‌های قبلی استفاده کن؛ جواب تکراری یا ارجاع بی‌ربط به فرمان‌ها نده. اگر دستور کاربر مبهم است یا معلوم نیست کدام کار باید اجرا شود، یک سؤال کوتاه و مشخص بپرس و هیچ اجرایی را حدس نزن. برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. فقط اگر سؤال واقعاً دربارهٔ وضعیت زندهٔ ساخت یا اعتبار است و دادهٔ زنده نداری، به‌ترتیب /status یا /credit را پیشنهاد کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده یا لینکی ثبت/بررسی شده مگر واقعاً در همین گفتگو انجام شده باشد. مصرف اعتبار فقط با متن تأیید و کد همان درخواست مجاز است؛ حرف عادیِ «تایید» کافی نیست. اجرای ساخت، انتشار، حذف یا مصرف اعتبار فقط از مسیر فرمان‌های اختصاصی مجاز است. برای جست‌وجوی وب و خواندن/ویرایش محدود فایل‌های مخزن ابزار جداگانه فعال است؛ اگر این گفتگو خروجی آن ابزار را ندارد، ادعای جست‌وجو یا ویرایش نکن. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
+const SYSTEM = `تو دستیار خصوصی فارسی/دری «ویدیو آلمانی» هستی. به سؤالِ واقعیِ کاربر مستقیم و مشخص پاسخ بده و از زمینهٔ پیام‌های قبلی استفاده کن؛ جواب تکراری یا ارجاع بی‌ربط به فرمان‌ها نده. اگر دستور کاربر مبهم است یا معلوم نیست کدام کار باید اجرا شود، یک سؤال کوتاه و مشخص بپرس و هیچ اجرایی را حدس نزن. برای سؤال‌های آلمانی، یک مثال آلمانی و معنی فارسی بده. پروژه یک سریال کارتونی سه‌بعدی روزمره دربارهٔ مارتا، مهاجر تازه‌وارد، و لوکاس در آلمان می‌سازد. هر قسمت عادی دقیقاً ۶۰ ثانیه است؛ ۶۵ ثانیه فقط برای استثنای ثبت‌شده و یک جملهٔ کاربردی آلمانی دارد. فقط اگر سؤال واقعاً دربارهٔ وضعیت زندهٔ ساخت یا اعتبار است و دادهٔ زنده نداری، به‌ترتیب /status یا /credit را پیشنهاد کن. هرگز ادعا نکن ویدیویی ساخته/ارسال شده یا لینکی ثبت/بررسی شده مگر واقعاً در همین گفتگو انجام شده باشد. مصرف اعتبار فقط با پاسخ «تایید» صاحب حساب به درخواست فعال اعتبار در چت خصوصی و ثبت تصمیم از مسیر اختصاصی مجاز است؛ مدل زبانی حق صدور مجوز ندارد. اجرای ساخت، انتشار، حذف یا مصرف اعتبار فقط از مسیر فرمان‌های اختصاصی مجاز است. برای جست‌وجوی وب و خواندن/ویرایش محدود فایل‌های مخزن ابزار جداگانه فعال است؛ اگر این گفتگو خروجی آن ابزار را ندارد، ادعای جست‌وجو یا ویرایش نکن. توکن یا رمز را نخواه و نمایش نده. پاسخ را حداکثر در ۶ خط، بدون HTML، بده.`;
 
 function textFromWorkersAI(data) {
   // Workers AI models have used both native `response` and OpenAI-compatible
@@ -742,7 +742,7 @@ export default {
         }
 
       } catch { /* report the safe false values below */ }
-      return Response.json({ worker: true, telegramTokenValid: tokenValid, webhookConfigured });
+      return Response.json({ worker: true, telegramTokenValid: tokenValid, webhookConfigured, simple_credit_approval: true });
     }
     if (request.method !== "POST") return new Response("GapMedia Telegram worker", { status: 200 });
     if (!env.TELEGRAM_BOT_TOKEN || request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== await webhookSecret(env.TELEGRAM_BOT_TOKEN)) return new Response("Unauthorized", { status: 401 });
@@ -807,6 +807,7 @@ export default {
       }
     }
     try {
+      if(await handleSimpleCredit(message,env,telegram,githubHeaders(env)))return new Response('ok');
       if(env.BOT_STATE&&!(await env.BOT_STATE.get('social:owner')))await env.BOT_STATE.put('social:owner',chatId);
       const managed = await manageCommands(env,chatId,input,telegram);
       if (managed) {

@@ -4,6 +4,43 @@ export function canonical(value) {
   if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + canonical(value[k])).join(',') + '}';
   return JSON.stringify(value);
 }
+
+export async function decideSimpleCredit(request, message, plan, now=Date.now()) {
+  const word=String(message?.text||'').trim().replace(/ي/g,'ی');
+  if(!['تایید','تأیید','رد'].includes(word)||request?.simple_text_approval!==true||request.status!=='pending')return null;
+  if(message.chat?.type!=='private'||String(message.chat.id)!==request.chat_id||String(message.from?.id)!==request.chat_id||message.forward_origin)return null;
+  if(!(Date.parse(request.expires_at)>now)||!Number.isFinite(Date.parse(request.created_at)))return null;
+  if(!Number.isInteger(message.message_id)||!Number.isInteger(request.message_id)||message.message_id<=request.message_id)return null;
+  const sent=Number(message.date)*1000;
+  if(!Number.isFinite(sent)||sent<Math.floor(Date.parse(request.created_at)/1000)*1000||sent>now+60000)return null;
+  if(message.reply_to_message&&message.reply_to_message.message_id!==request.message_id)return null;
+  if(!plan)return null;
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical(plan)));
+  if(Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('')!==request.plan_sha)return null;
+  return {...request,status:word==='رد'?'rejected':'approved',decided_at:new Date(now).toISOString(),decision_method:'telegram-simple-text',decision_message_id:message.message_id};
+}
+
+export async function handleSimpleCredit(message,env,telegram,headers) {
+  if(!/^(?:تایید|تأیید|رد)$/.test(String(message?.text||'').trim().replace(/ي/g,'ی')))return false;
+  const base=`https://api.github.com/repos/${env.GITHUB_OWNER||'Deutsch-online'}/${env.GITHUB_REPO||'gapmedia-video-automation'}/contents/`;
+  const read=async path=>{
+    const response=await fetch(base+path+'?ref=main',{headers});
+    if(!response.ok)throw new Error('Credit record unavailable');
+    const file=await response.json();
+    const bytes=Uint8Array.from(atob(file.content.replace(/\s/g,'')),c=>c.charCodeAt(0));
+    return {sha:file.sha,value:JSON.parse(new TextDecoder().decode(bytes))};
+  };
+  const file=await read('.cinematic-credit-request.json'),request=file.value;
+  const plan=request.kind==='preview'?(await read('ai-cast/newcomer-preview-plan.json')).value:(await read('.cinematic-series-state.json')).value.pending?.plan;
+  const decision=await decideSimpleCredit(request,message,plan);
+  if(!decision){await telegram(env,'sendMessage',{chat_id:message.chat.id,text:'درخواست اعتبار فعالی برای این پاسخ پیدا نشد یا قبلاً پاسخ داده شده است. /credit'});return true;}
+  const content=btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(decision,null,2)+'\n')));
+  const saved=await fetch(base+'.cinematic-credit-request.json',{method:'PUT',headers,body:JSON.stringify({branch:'main',sha:file.sha,content,message:'Telegram owner '+decision.status+' scoped credit request'})});
+  // Never retry a conflicting write with a newer SHA: another decision won.
+  if(!saved.ok)throw new Error('Credit decision was not saved; retry /credit');
+  await telegram(env,'sendMessage',{chat_id:message.chat.id,text:decision.status==='approved'?'✅ تأیید مصرف اعتبار ثبت شد؛ ادامهٔ همین صحنه‌ها در صف اجرا قرار گرفت.':'❌ مصرف اعتبار رد شد.'});
+  return true;
+}
 export async function handleCredit(query, env, telegram, headers) {
   const match = /^cc:([yn]):([a-f0-9]{24})$/.exec(query?.data || '');
   if (!match) return false;

@@ -26,6 +26,7 @@ jobs:
           node worker/test-research-agent.mjs
           node worker/test-free-diagnostics.mjs
           node worker/test-project-diagnostics.mjs
+          node worker/test-credit-simple.mjs
           node worker/test-project-memory.mjs
           node worker/test-venice.mjs
           node worker/test-mcp.mjs
