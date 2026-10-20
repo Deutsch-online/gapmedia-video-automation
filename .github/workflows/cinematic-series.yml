@@ -47,7 +47,7 @@ jobs:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           python - <<'PY'
-          import importlib.util, os
+          import importlib.util, json, os, urllib.request
           if os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY'):
               spec = importlib.util.spec_from_file_location('series', 'ai-cast/cinematic-series.py')
               series = importlib.util.module_from_spec(spec)
@@ -68,7 +68,18 @@ jobs:
           else:
               print('BeatAPI free text: no GitHub Actions key configured')
           print('MiniMax key: configured' if os.getenv('MINIMAX_API_KEY') else 'MiniMax key: absent')
-          print('MiniMax included allowance: unverified; automatic paid-key use remains disabled')
+          if os.getenv('MINIMAX_API_KEY') and os.getenv('GITHUB_EVENT_NAME') == 'push':
+              try:
+                  req = urllib.request.Request('https://www.minimax.io/v1/token_plan/remains',
+                      headers={'Authorization': 'Bearer ' + os.environ['MINIMAX_API_KEY']})
+                  with urllib.request.urlopen(req, timeout=15) as response:
+                      balance = json.load(response)
+                  subscription = balance.get('base_resp', {}).get('status_code') == 0
+                  print('MiniMax subscription allowance: readable' if subscription else
+                        'MiniMax subscription allowance: could not verify')
+              except Exception:
+                  print('MiniMax subscription allowance: could not verify')
+          print('MiniMax paid-key use: disabled until included allowance and request pricing are proven')
           PY
       - name: Check schedule, continuity and delivery safeguards
         run: |
