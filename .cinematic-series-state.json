@@ -1073,8 +1073,8 @@
       "mood": "comic",
       "duration_seconds": 60
     },
-    "date": "2026-10-20#analytics-episode-7-20261020",
-    "status": "render-failed"
+    "date": "2026-10-20#owner-complete-e7-20261020-timing",
+    "status": "rendering"
   },
   "attempts": {
     "2026-10-15": 2,
