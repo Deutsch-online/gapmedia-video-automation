@@ -55,14 +55,7 @@ jobs:
               try:
                   model = series.beatapi_free_model()
                   print('BeatAPI free text: available (' + model + ')')
-                  if os.getenv('GITHUB_EVENT_NAME') == 'push':
-                      key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
-                      answer = series.request_json('https://api.beatapi.io/v1/chat/completions',
-                          {'model': model, 'messages': [{'role': 'user', 'content': 'Reply with OK.'}], 'max_tokens': 12},
-                          {'Authorization': 'Bearer ' + key})
-                      returned = answer.get('model', '')
-                      print('BeatAPI zero-price test: passed' if returned == model else
-                            'BeatAPI zero-price test: response model could not be verified')
+                  # Catalog-only preflight: a ping consumes the free request/minute.
               except Exception as exc:
                   print('BeatAPI free text: unavailable (' + series.provider_error(exc) + ')')
           else:

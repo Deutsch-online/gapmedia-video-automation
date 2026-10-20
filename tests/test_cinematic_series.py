@@ -13,6 +13,24 @@ spec.loader.exec_module(m)
 CONFIG = {'time': '17:30', 'max_daily_attempts': 2}
 
 class SeriesTests(unittest.TestCase):
+    def test_free_story_rate_limit_retries_once_and_honors_delay(self):
+        from unittest.mock import patch
+        error = m.urllib.error.HTTPError('https://example.test', 429, 'rate limit', {'Retry-After': '60'}, None)
+        payload = {'model': 'glm-5.3-flash-free'}
+        with patch.object(m, 'request_json', side_effect=[error, {'ok': True}]) as request, \
+             patch.object(m.time, 'sleep') as wait:
+            self.assertEqual(m.beatapi_story_request(payload, 'test'), {'ok': True})
+            self.assertEqual(request.call_count, 2)
+            wait.assert_called_once_with(60)
+        with patch.object(m, 'request_json', side_effect=error) as request, patch.object(m.time, 'sleep'):
+            with self.assertRaises(m.urllib.error.HTTPError):
+                m.beatapi_story_request(payload, 'test')
+            self.assertEqual(request.call_count, 2)
+        with patch.object(m, 'request_json') as request:
+            with self.assertRaises(ValueError):
+                m.beatapi_story_request({'model': 'paid-model'}, 'test')
+            request.assert_not_called()
+
     def test_free_only_story_never_falls_back_to_unverified_credit_keys(self):
         from unittest.mock import patch
         state = m.new_state()

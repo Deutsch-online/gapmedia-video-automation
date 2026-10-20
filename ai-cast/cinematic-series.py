@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import textwrap
+import time
 import urllib.error
 import urllib.request
 from html.parser import HTMLParser
@@ -327,6 +328,27 @@ def beatapi_free_model():
         raise ValueError('BeatAPI zero-price text model is not currently listed')
     return requested
 
+def beatapi_story_request(payload, key):
+    """One bounded retry for the verified free model, never a paid fallback."""
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+-free', str(payload.get('model', ''))):
+        raise ValueError('Story request requires a zero-price model')
+    for attempt in range(2):
+        try:
+            return request_json('https://api.beatapi.io/v1/chat/completions', payload,
+                                {'Authorization': 'Bearer ' + key})
+        except urllib.error.HTTPError as exc:
+            if exc.code != 429 or attempt:
+                raise
+            try:
+                wait = int(float((exc.headers or {}).get('Retry-After', '61')))
+            except (TypeError, ValueError, OverflowError):
+                wait = 61
+            if wait < 0 or wait > 65:
+                raise
+            print('Free story rate limit: waiting before one bounded retry.', flush=True)
+            time.sleep(max(1, wait))
+
+
 def social_learning_context():
     """Private, read-only feedback; unavailable analytics never block production."""
     token = os.getenv('TELEGRAM_BOT_TOKEN')
@@ -453,10 +475,9 @@ def make_plan(state):
                 if not key:
                     continue
                 model = beatapi_free_model()
-                r = request_json('https://api.beatapi.io/v1/chat/completions',
-                                 {'model': model, 'messages': [{'role': 'user', 'content': prompt}],
-                                  'temperature': .7, 'max_tokens': 5000},
-                                 {'Authorization': 'Bearer ' + key})
+                r = beatapi_story_request(
+                    {'model': model, 'messages': [{'role': 'user', 'content': prompt}],
+                     'temperature': .7, 'max_tokens': 5000}, key)
                 if r.get('model') != model:
                     raise ValueError('BeatAPI response did not confirm the zero-price model')
                 raw = r['choices'][0]['message']['content']
