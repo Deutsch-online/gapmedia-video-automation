@@ -1,0 +1,18 @@
+name = "afghanfollowers-telegram"
+main = "worker.js"
+compatibility_date = "2026-08-28"
+
+[vars]
+GITHUB_OWNER = "Deutsch-online"
+GITHUB_REPO = "gapmedia-video-automation"
+GITHUB_WORKFLOW = "telegram.yml"
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "BOT_STATE"
+id = "b9d8cdbf80af49b7987f59b7a9b09c01"
+
+[triggers]
+crons = ["*/5 * * * *"]
