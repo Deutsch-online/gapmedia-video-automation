@@ -1,5 +1,6 @@
 // Bounded, owner-only tools for the Telegram assistant. No shell, arbitrary
 // URL fetch, secret-file reads, or model-chosen paid provider calls.
+import {consultFreeTools, formatConsultation} from './free-diagnostics.js';
 import {mcpTools, mcpExaSearch, mcpExaFetch} from './mcp-tools.js';
 const MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';
 const MAX_FILE = 24000;
@@ -116,7 +117,9 @@ export async function githubRunJobs(env, runId) {
     const failed = (job.steps || []).filter(step => step.conclusion === 'failure').map(step => step.name).slice(0, 3);
     return `• ${html(job.name)} — ${html(job.conclusion || job.status)}${failed.length ? `؛ مرحلهٔ ناموفق: ${html(failed.join('، '))}` : ''}`;
   });
-  return `جزئیات اجرای #${id}:\n${lines.join('\n') || 'مرحله‌ای پیدا نشد.'}\nhttps://github.com/${encodeURIComponent(env.GITHUB_OWNER || 'Deutsch-online')}/${encodeURIComponent(env.GITHUB_REPO || 'gapmedia-video-automation')}/actions/runs/${id}`;
+  const failed = jobs.some(job => ['failure','timed_out'].includes(job.conclusion));
+  const consultation = failed ? formatConsultation(await consultFreeTools(lines.join('\n'), {kv:env.BOT_STATE})) : '';
+  return `جزئیات اجرای #${id}:\n${lines.join('\n') || 'مرحله‌ای پیدا نشد.'}\nhttps://github.com/${encodeURIComponent(env.GITHUB_OWNER || 'Deutsch-online')}/${encodeURIComponent(env.GITHUB_REPO || 'gapmedia-video-automation')}/actions/runs/${id}${consultation}`;
 }
 
 export function githubRepositoryLink(text) {

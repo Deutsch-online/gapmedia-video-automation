@@ -46,3 +46,17 @@ OAuth لینک ده‌دقیقه‌ای، state تصادفی، کوکی امن H
 - https://developers.tiktok.com/docs/en/tiktok-api-v2-video-list
 - https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login/
 - https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/insights/
+
+## از کجا اتصال را تکمیل کنم؟
+
+۱. TikTok: https://developers.tiktok.com/apps/ — برنامه بسازید؛ Login Kit (Web) و Display API را اضافه و callback و scopeهای بالا را ثبت کنید. Client key و Client secret در همان پنل‌اند. حالت آزمایشی فقط برای حساب‌های آزمایشگر مجاز است؛ استفادهٔ عمومی به تأیید پلتفرم نیاز دارد.
+
+۲. Instagram: https://developers.facebook.com/apps/ — برنامه‌ای با Instagram API / Instagram Login بسازید؛ callback بالا، حساب حرفه‌ای easydeutsches و مجوز insights را تنظیم کنید. برای تست حساب باید نقش/دعوت آزمایشگر را پذیرفته باشد؛ دسترسی عمومی به بررسی Meta نیاز دارد.
+
+۳. Cloudflare: https://dash.cloudflare.com/ — Workers & Pages → afghanfollowers-telegram → Settings → Variables and Secrets. چهار کلید بالا را با نوع Secret و نسخهٔ Graph را با نوع Text ثبت و Deploy کنید. کلیدها را در چت نفرستید. سپس در چت خصوصی بات `/connect tiktok` و `/connect instagram` را جداگانه بفرستید و لینک رسمی ده‌دقیقه‌ای را باز کنید.
+
+## کمک بیرونی رایگان برای خطا
+
+خواندن `/jobs ID` یا ابزار github_run_jobs در دستیار، برای اجرای واقعاً ناموفق مشورت بیرونی را فعال می‌کند. نگهبان مستقل نیز پیش از ارسال هشدار تازه، همین مشورت را انجام می‌دهد. فقط عبارت عمومی و ثابت از یک فهرست محدود (KV، سهمیه، نصب، OAuth، GitHub Actions) به Exa MCP بدون کلید فرستاده می‌شود؛ هیچ لاگ، محتوای مخزن، چت، رمز یا توکنی ارسال نمی‌شود. فقط لینک‌های بدون query/fragment از دامنه‌های رسمی نگهداری می‌شوند؛ محتوای بیرونی دستور اجرایی نیست. کش بات شش‌ساعته و هشدار نگهبان دارای فاصلهٔ شش‌ساعته است. شکست ابزار باعث خرید، تغییر سرویس به پولی یا توقف تولید نمی‌شود.
+
+این قابلیت جست‌وجوی مستندات است، نه تضمین تشخیص علت یا اجرای اصلاح. مسیر Auto Fix همچنان فقط اصلاح‌های ازپیش‌آزموده و حداکثر دو تلاش هر نوبت را اجرا می‌کند؛ پیشنهاد وب اجازهٔ تغییر آزاد کد، کلیدها یا گیت کیفیت نیست. اتصال هیچ اجینت ثالث با کلید پولی به‌طور خودکار ایجاد نمی‌شود.

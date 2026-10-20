@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {consultFreeTools,diagnosticTopic,officialReferences,formatConsultation} from './src/free-diagnostics.js';
+assert.equal(diagnosticTopic('KV namespace 10041 token=private').id,'kv');
+assert.deepEqual(officialReferences('https://evil.example/ https://docs.github.com/en/actions https://docs.github.com/en/actions?token=secret'),['https://docs.github.com/en/actions']);
+const memory=new Map();
+const kv={get:async k=>memory.has(k)?JSON.parse(memory.get(k)):null,put:async(k,v)=>memory.set(k,v)};
+let calls=0;
+const search=async query=>{calls++;assert.ok(!query.includes('private'));assert.ok(!query.includes('some-repository'));return 'https://developers.cloudflare.com/kv/';};
+const report=await consultFreeTools('KV 10041 token=private some-repository',{search,kv});
+assert.equal(report.status,'references_found');
+assert.equal(report.repair_executed,false);
+assert.ok(!JSON.stringify(report).includes('private'));
+await consultFreeTools('KV new log',{search,kv});
+assert.equal(calls,1,'same topic consults at most once per six hours');
+const failed=await consultFreeTools('install',{search:async()=>{throw new Error('secret');}});
+assert.equal(failed.status,'unavailable');
+assert.match(formatConsultation(failed),/پولی/);
+console.log('free diagnostics use fixed queries, official references, bounded cache and no paid fallback');

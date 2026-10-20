@@ -1,3 +1,4 @@
+import {consultFreeTools,formatConsultation} from '../worker/src/free-diagnostics.js';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
@@ -61,10 +62,12 @@ async function main() {
       let owner;
       try{const saved=JSON.parse(readFileSync('.telegram-bot-chat.json','utf8'));if(saved.type==='private')owner=saved.id;}catch{}
       if(owner){
+        // Bounded public-doc consultation; the query contains no incident data.
+        const consultation=await consultFreeTools(result.problems.join('\n'));
         // Mark intent first. Unknown delivery is not automatically repeated.
         previous={fingerprint,notified_at:new Date().toISOString(),delivery:'attempted'};
         mkdirSync('.cache',{recursive:true});writeFileSync(STATE,JSON.stringify(previous));
-        const send=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:owner,text:('هشدار پایش و بهبود پروژه\n'+result.problems.join('\n\n')).slice(0,3800),disable_web_page_preview:true}),signal:AbortSignal.timeout(15000)});
+        const send=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:owner,text:('هشدار پایش و بهبود پروژه\n'+result.problems.join('\n\n')+formatConsultation(consultation)).slice(0,3800),disable_web_page_preview:true}),signal:AbortSignal.timeout(15000)});
         if(!send.ok)throw new Error('Telegram watchdog notification failed: '+send.status);
       }
     }
