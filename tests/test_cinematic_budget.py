@@ -10,6 +10,60 @@ spec.loader.exec_module(b)
 
 
 class BudgetTests(unittest.TestCase):
+    def test_hf_included_is_first_and_token_is_restored(self):
+        import types, sys
+        build = types.SimpleNamespace(TOKEN='previous')
+        with patch.dict(os.environ, {'HF_TOKEN':'account-token'}), patch.dict(sys.modules, {'build':build}), patch.object(b,'guard') as guard:
+            observed=[]
+            self.assertEqual(b.run_gpu(lambda: observed.append(build.TOKEN) or 'ok',480),'ok')
+            self.assertEqual(observed,['account-token'])
+            guard.assert_called_once_with('account-token',480,allow_credit=False)
+            self.assertEqual(build.TOKEN,'previous')
+
+    def test_low_account_allowance_uses_explicit_anonymous_route(self):
+        import types, sys
+        build = types.SimpleNamespace(TOKEN='previous')
+        with patch.dict(os.environ, {'HF_TOKEN':'account-token'}), patch.dict(sys.modules, {'build':build}), patch.object(b,'read_quota',return_value=0):
+            observed=[]
+            b.run_gpu(lambda: observed.append(build.TOKEN),480)
+            self.assertEqual(observed,[False], 'False disables implicit account-token discovery; None is insufficient')
+            self.assertEqual(build.TOKEN,'previous')
+
+    def test_gpu_failure_tries_next_route_then_reports_exhaustion(self):
+        import types, sys
+        build = types.SimpleNamespace(TOKEN=None)
+        with patch.dict(os.environ, {'HF_TOKEN':'account-token'}), patch.dict(sys.modules, {'build':build}), patch.object(b,'guard'):
+            observed=[]
+            def call():
+                observed.append(build.TOKEN)
+                raise RuntimeError('Unavailable account-token')
+            with self.assertRaisesRegex(RuntimeError,'All eligible free GPU routes exhausted') as error:
+                b.run_gpu(call,480)
+            self.assertEqual(observed,['account-token',False])
+            self.assertNotIn('account-token',str(error.exception))
+
+    def test_even_scoped_credit_approval_waits_until_free_routes_fail(self):
+        import types, sys
+        build = types.SimpleNamespace(TOKEN='previous')
+        with patch.dict(os.environ, {'HF_TOKEN':'account-token'}), patch.dict(sys.modules, {'build':build}), patch.object(b,'read_quota',return_value=0), patch.object(b,'credit_authorized',return_value=True):
+            observed=[]
+            def call():
+                observed.append(build.TOKEN)
+                if build.TOKEN is False:
+                    raise RuntimeError('quota: anonymous spent')
+                return 'scoped-approved'
+            self.assertEqual(b.run_gpu(call,480),'scoped-approved')
+            self.assertEqual(observed,[False,'account-token'])
+
+    def test_read_only_preflight_does_not_claim_full_video_fits(self):
+        with patch.object(b,'read_quota',return_value=600):
+            result=b.preflight('token')
+            self.assertEqual(result['remaining_seconds'],600)
+            self.assertTrue(result['can_admit_one_speaking_take'])
+            self.assertFalse(result['generation_requested'])
+        with patch.object(b,'read_quota',side_effect=ValueError()):
+            self.assertEqual(b.preflight('token')['status'],'unverified')
+
     def setUp(self):
         b.set_scene(6, 0)
 

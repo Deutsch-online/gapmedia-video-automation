@@ -911,6 +911,9 @@ def production(force=False):
     if not go:
         print(json.dumps({'go': False, 'reason': reason, 'date': date}))
         return
+    import cinematic_budget
+    state['gpu_preflight'] = cinematic_budget.preflight()
+    print('HF allowance preflight: ' + json.dumps(state['gpu_preflight']), flush=True)
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     checkpoint(state)
     if not any(os.getenv(key) for key in ('BEATAPI_API_KEY', 'BEAT_API_KEY', 'BEATAPI_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GROQ_API_KEY')):

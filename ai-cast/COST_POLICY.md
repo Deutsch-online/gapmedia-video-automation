@@ -75,3 +75,19 @@ approved compatible GPU environment; an unavailable backend is not claimed teste
 For read-only web research, a failed keyless Exa MCP search falls back to the
 existing free DuckDuckGo search tool. Existing official-source research already
 checks its configured official alternatives before giving up.
+
+## Hugging Face allowance is primary (owner, 2026-10-20)
+
+Before story planning, a metadata-only HF quota preflight is checkpointed. It
+reports allowance for admitting one speaking take, not a promise that a whole
+minute fits. During every cinematic GPU call, the authenticated included account
+allowance is checked first. If unavailable, insufficient, or that route fails,
+explicitly unauthenticated public free access is tried next with token=False
+(to disable implicit token discovery). Both preserve the same approved model,
+audio, character identity and quality gates. Only after free routes fail may
+an existing, claimed exact-scene credit approval apply. No permission is inferred.
+
+Free story LLMs remain a separate text stage; they cannot replace speaking-video
+GPU generation. No other compatible zero-cost video backend is currently configured
+on the CPU runner. Unknown third-party video costs and static/loop substitutes
+are not fallbacks. Cache/state are preserved when no eligible route succeeds.

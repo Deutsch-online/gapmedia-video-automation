@@ -5,6 +5,9 @@ Remote calls are sequential; other account users can still consume quota concurr
 """
 import json
 import os
+import re
+import math
+from datetime import datetime, timezone
 import urllib.request
 
 SCENE = None
@@ -38,16 +41,20 @@ def read_quota(token):
                                  headers={'Authorization': 'Bearer ' + token})
     with urllib.request.urlopen(req, timeout=20) as response:
         data = json.load(response)
+    if isinstance(data.get('current'), bool):
+        raise ValueError('Invalid quota value')
     remaining = float(data['current'])
+    if not math.isfinite(remaining):
+        raise ValueError('Quota is not finite')
     if remaining < 0:
         remaining = 0
     return remaining
 
 
-def guard(token, required_seconds):
+def guard(token, required_seconds, allow_credit=True):
     if not token:
         return  # Anonymous calls cannot bill the account.
-    if credit_authorized():
+    if allow_credit and credit_authorized():
         return  # Scope is explicitly limited to the three remaining takes.
     try:
         remaining = read_quota(token)
@@ -58,10 +65,55 @@ def guard(token, required_seconds):
         raise RuntimeError(f'quota: included allowance {remaining:.0f}s below safe request {required_seconds + 30}s; credit approval required')
 
 
+def preflight(token=None):
+    """Read account allowance before planning. This never starts a GPU task."""
+    token = token or os.getenv('HF_TOKEN')
+    result = {'checked_at': datetime.now(timezone.utc).isoformat(),
+              'generation_requested': False, 'order': ['hf-included', 'hf-anonymous-free']}
+    if not token:
+        return {**result, 'status': 'missing_token', 'remaining_seconds': None,
+                'can_admit_one_speaking_take': False, 'fallback': 'hf-anonymous-free'}
+    try:
+        remaining = read_quota(token)
+        return {**result, 'status': 'verified', 'remaining_seconds': remaining,
+                'can_admit_one_speaking_take': remaining >= 510,
+                'fallback': 'hf-anonymous-free' if remaining < 510 else None}
+    except Exception:
+        return {**result, 'status': 'unverified', 'remaining_seconds': None,
+                'can_admit_one_speaking_take': False, 'fallback': 'hf-anonymous-free'}
+
+
 def run_gpu(fn, required_seconds):
-    import shots
+    """Account included allowance first, then explicitly unauthenticated free use.
+
+    No automatic transition to paid credits. guard() retains exact owner-approved
+    scene exceptions. False disables huggingface_hub implicit token discovery.
+    """
     import build
-    def checked():
-        guard(build.TOKEN, required_seconds)
-        return fn()
-    return shots.run_free(checked)
+    token = os.getenv('HF_TOKEN') or None
+    previous = build.TOKEN
+    errors = []
+    for name, credential in ([('hf-included', token)] if token else []) + [('hf-anonymous-free', False)]:
+        try:
+            build.TOKEN = credential
+            guard(credential, required_seconds, allow_credit=False)
+            return fn()
+        except Exception as exc:
+            detail = str(exc)
+            if token:
+                detail = detail.replace(token, '[REDACTED]')
+            detail = re.sub(r'https?://[^\s]+', '[URL]', detail)
+            errors.append(name + ': ' + detail[:300])
+            print('GPU route unavailable: ' + name + '; trying next eligible free route.', flush=True)
+        finally:
+            build.TOKEN = previous
+    # A valid, already-claimed per-scene approval may be used only AFTER both
+    # free routes fail. This does not create or infer a credit authorization.
+    if token and credit_authorized():
+        try:
+            build.TOKEN = token
+            return fn()
+        finally:
+            build.TOKEN = previous
+    prefix = 'quota: ' if any('quota' in error.lower() for error in errors) else ''
+    raise RuntimeError(prefix + 'All eligible free GPU routes exhausted: ' + ' | '.join(errors))

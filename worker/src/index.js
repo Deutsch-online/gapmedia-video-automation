@@ -275,7 +275,9 @@ async function seriesStatus(env, chatId) {
   const pending = state.pending?.status ? `؛ وضعیت: ${phases[state.pending.status] || 'در انتظار ادامه'}` : '';
   const reset=Date.parse(state.quota_recovery?.not_before || '');
   const quota=Number.isFinite(reset) && reset>Date.now() ? `\nنوبت بعدی سهمیهٔ GPU: ${new Intl.DateTimeFormat('fa-IR',{timeZone:'Europe/Berlin',dateStyle:'short',timeStyle:'short'}).format(reset)} به وقت آلمان.` : '';
-  return `قسمت بعدی: ${episode}${pending}.${quota}\n${await creditStatus(env,chatId)}`;
+  const gpu=state.gpu_preflight;
+  const allowance=gpu?`\nآخرین بررسی سهمیهٔ HF: ${gpu.status==='verified'?`${gpu.remaining_seconds} ثانیه در آن زمان`: 'موجودی تأیید نشده'}؛ زمان بررسی: ${gpu.checked_at}. ترتیب: سهمیهٔ حساب، سپس مسیر رایگان بدون ورود.`:'';
+  return `قسمت بعدی: ${episode}${pending}.${quota}${allowance}\n${await creditStatus(env,chatId)}`;
 }
 
 function githubHeaders(env) {
