@@ -919,11 +919,17 @@
     "2026-10-20#analytics-episode-7-20261020": 2
   },
   "manual_recovery": {
-    "2026-10-16": 1
+    "2026-10-16": 1,
+    "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
     "date": "2026-10-19",
     "not_before": "2026-10-20T13:17:56.706957+00:00",
     "reason": "ZeroGPU quota exhausted"
+  },
+  "manual_recovery_reason": {
+    "slot": "2026-10-20#analytics-episode-7-20261020",
+    "reason": "owner-requested-hf-first-free-recovery",
+    "paid_authorized": false
   }
 }
