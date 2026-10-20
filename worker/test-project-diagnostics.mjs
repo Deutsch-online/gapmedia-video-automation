@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {diagnosticIntent,handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './src/project-diagnostics.js';
-import {redact,diagnoseLog,evidenceLines,pythonChecks,failedStepLog} from '../scripts/project-diagnostics.mjs';
+import {redact,diagnoseLog,evidenceLines,pythonChecks,failedStepLog,readJobLog} from '../scripts/project-diagnostics.mjs';
 assert.equal(diagnosticIntent('چرا خطا داد؟'),'diagnose');
 assert.equal(diagnosticIntent('چرا ویدیو ساخته نشد؟'),'diagnose');
 assert.equal(diagnosticIntent('مشکل پروژه را رفع کن'),'repair');
@@ -26,6 +26,9 @@ assert.equal(childCalls,3);assert.equal(tests.status,'passed');
 const raw={run_id:'123',python:{status:'passed'},diagnosis:{cause:'لاگ می‌گوید timeout',remedy:'بررسی سرویس'},evidence:['RuntimeError: TimeoutError'],failed_steps:['Make'],repair:{message:'تغییری اجرا نشد'}};
 assert.throws(()=>validateDiagnostic({...raw,run_id:'123;rm -rf /'}));
 assert.match(formatDiagnostic(validateDiagnostic(raw)),/timeout/);
+const downloaded=await readJobLog(123,async(url)=>{assert.equal(url,'https://api.github.com/repos/Deutsch-online/gapmedia-video-automation/actions/jobs/123/logs');return new Response('2026-10-20T14:39:52.0882240Z RuntimeError: TimeoutError');});
+assert.match(downloaded,/TimeoutError/);
+await assert.rejects(readJobLog('123/../../secrets'));
 const original=globalThis.fetch;
 let readCalls=0;
 globalThis.fetch=async()=>{readCalls++;return Response.json({workflow_runs:[{id:123,conclusion:'failure',html_url:'https://github.com/o/r/actions/runs/123'}]});};

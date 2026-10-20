@@ -39,7 +39,7 @@ export async function handleProjectDiagnostics(env,input,writeRequest) {
   if(!mode)return null;
   if(mode==='help')return 'فرمان‌های مجاز: /diagnose، /python tests و /repair. اجرای کد یا shell دلخواه از چت فعال نیست.';
   const headers={accept:'application/vnd.github+json','user-agent':'GapMedia-Diagnostics',...(env.GITHUB_TOKEN?{authorization:'Bearer '+env.GITHUB_TOKEN}:{})};
-  const endpoint=`https://api.github.com/repos/${repo(env)}/actions/workflows/cinematic-series.yml/runs?branch=main&per_page=6`;
+  const endpoint=`https://api.github.com/repos/${repo(env)}/actions/workflows/cinematic-series.yml/runs?branch=main&status=failure&per_page=6`;
   let response=await fetch(endpoint,{headers,signal:AbortSignal.timeout(12000)});
   if(response.status===403&&env.GITHUB_TOKEN)response=await fetch(endpoint,{headers:{accept:headers.accept,'user-agent':headers['user-agent']},signal:AbortSignal.timeout(12000)});
   if(!response.ok)throw new Error('وضعیت واقعی GitHub خوانده نشد؛ علت حدس زده نشد.');

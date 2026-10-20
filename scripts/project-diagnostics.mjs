@@ -34,6 +34,16 @@ export function failedStepLog(log,steps) {
     return Number.isFinite(time)&&windows.some(([a,b])=>time>=a&&time<=b+1000);
   }).join('\n');
 }
+export async function readJobLog(jobId,fetchImpl=fetch) {
+  if(!/^\d+$/.test(String(jobId)))throw new Error('Invalid job ID');
+  const response=await fetchImpl(`https://api.github.com/repos/${REPO}/actions/jobs/${jobId}/logs`,{
+    headers:{authorization:'Bearer '+process.env.GH_TOKEN,accept:'application/vnd.github+json','user-agent':'GapMedia-Project-Diagnostics'},
+    signal:AbortSignal.timeout(30000)});
+  if(!response.ok)throw new Error('Job logs HTTP '+response.status);
+  const text=await response.text();
+  if(text.length>3000000)throw new Error('Job log exceeds diagnostic size bound');
+  return text;
+}
 export function pythonChecks(run=spawnSync) {
   const env={PATH:process.env.PATH,PYTHONDONTWRITEBYTECODE:'1',PYTHONIOENCODING:'utf-8'};
   const checks=[['-m','py_compile','ai-cast/cinematic-series.py','ai-cast/cinematic_budget.py','ai-cast/cinematic_speech.py'],
@@ -54,7 +64,15 @@ async function main() {
     if(!['diagnose','tests','repair'].includes(request.mode)||Date.now()-Date.parse(request.requested_at)>3600000||!Number.isFinite(Date.parse(request.requested_at)))throw new Error('Invalid diagnostic request');
   }
   const runs=(await api('actions/workflows/cinematic-series.yml/runs?branch=main&per_page=20')).workflow_runs||[];
-  const selected=request.run_id?runs.find(r=>String(r.id)===String(request.run_id)):runs.find(r=>r.conclusion==='failure')||runs[0];
+  let selected;
+  if(request.run_id){
+    if(!/^\d{1,20}$/.test(String(request.run_id)))throw new Error('Invalid production run ID');
+    selected=await api('actions/runs/'+request.run_id);
+    const workflow=await api('actions/workflows/cinematic-series.yml');
+    if(selected.workflow_id!==workflow.id||selected.head_branch!=='main')throw new Error('Run is not a main production run');
+  }else{
+    selected=(await api('actions/workflows/cinematic-series.yml/runs?branch=main&status=failure&per_page=1')).workflow_runs?.[0]||runs[0];
+  }
   if(!selected)throw new Error('No matching production run');
   const jobs=(await api(`actions/runs/${selected.id}/jobs?per_page=30`)).jobs||[];
   const failed=jobs.filter(j=>['failure','timed_out'].includes(j.conclusion));
@@ -62,11 +80,14 @@ async function main() {
   for(const job of failed.slice(0,2)){
     try{
       // Fixed numeric job IDs from GitHub, never command text from Telegram.
-      const result=spawnSync('gh',['api',`repos/${REPO}/actions/jobs/${job.id}/logs`],{encoding:'utf8',timeout:30000,maxBuffer:3000000});
-      if(result.status===0)log+='\n'+redact(failedStepLog(result.stdout,job.steps)).slice(-80000);
-    }catch{}
+      const text=await readJobLog(job.id);
+      const narrowed=failedStepLog(text,job.steps);
+      console.log(JSON.stringify({job_id:job.id,log_bytes:text.length,failed_step_bytes:narrowed.length}));
+      log+='\n'+redact(narrowed).slice(-80000);
+    }catch(error){console.log(JSON.stringify({job_id:job.id,log_status:'unavailable',reason:redact(error.message).slice(0,180)}));} 
   }
   const diagnosis=diagnoseLog(log),python=pythonChecks();
+  if(!log.trim()&&failed.length)diagnosis.cause='لاگ مرحلهٔ ناموفق دریافت یا استخراج نشد؛ علت اجرا قابل تأیید نیست. دسترسی Actions logs بررسی شود.';
   let repair={message:'لاگ و آزمون بررسی شد؛ کد یا گیت کیفیت خودکار تغییر نکرد.'};
   if(request.mode==='repair'&&diagnosis.transient&&python.status==='passed'&&selected.id===runs[0]?.id&&['failure','timed_out'].includes(selected.conclusion)){
     const gate=spawnSync('python',['ai-cast/cinematic-series.py','gate','--force'],{encoding:'utf8',timeout:15000,env:{PATH:process.env.PATH,PYTHONIOENCODING:'utf-8'}});
