@@ -1,10 +1,5 @@
 {
-  "requestedAt": "2026-10-20T14:34:04.808568+00:00",
-  "requestId": "analytics-episode-7-20261020",
-  "episode": 7,
-  "source": "owner-chat-analytics-request",
-  "minimum_seconds": 60,
-  "maximum_seconds": 60,
-  "paid_authorized": false,
-  "analytics_note": "Use private current account feedback; 20 videos observed, no matched-age cohorts or watch time yet. Treat creative changes as hypotheses, not proven causes."
+  "requestedAt": "2026-10-20T15:24:39.707Z",
+  "source": "telegram-cloud-worker",
+  "requestId": "fb5ffeaa-8b38-4a5a-968f-fb8de0c4bbd5"
 }
