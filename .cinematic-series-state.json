@@ -1091,7 +1091,7 @@
     "2026-10-19": 2,
     "2026-10-20": 1,
     "2026-10-20#analytics-episode-7-20261020": 3,
-    "2026-10-20#owner-complete-e7-20261020-timing": 2
+    "2026-10-20#owner-complete-e7-20261020-timing": 3
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -1108,15 +1108,15 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-10-20T19:04:52.275402+00:00",
+    "checked_at": "2026-10-20T19:47:35.869154+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
       "hf-anonymous-free"
     ],
     "status": "verified",
-    "remaining_seconds": 2400.0,
-    "can_admit_one_speaking_take": true,
-    "fallback": null
+    "remaining_seconds": 418.21595599999955,
+    "can_admit_one_speaking_take": false,
+    "fallback": "hf-anonymous-free"
   }
 }
