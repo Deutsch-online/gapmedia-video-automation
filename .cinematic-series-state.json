@@ -907,7 +907,175 @@
       ]
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 7,
+      "title_de": "Regionalbahn oder ICE?",
+      "title_fa": "قطار منطقه‌ای یا قطار سریع‌السیر؟",
+      "summary": "At the railway platform, Marta is excited to board a sleek white ICE train with her monthly ticket. Lukas clarifies that the ticket is valid for regional trains rather than high-speed services, prompting Marta to spot their red Regionalbahn on the opposite track and board it herself.",
+      "cliffhanger": "Next time, Marta learns what to do when a train delay changes their connection.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta points her glowing smartphone ticket eagerly at an incoming high-speed white ICE train on track one.",
+      "everyday_problem": "Marta assumes her regional transit ticket is valid on all German trains, including fast ICE express services.",
+      "practical_resolution": "Marta learns the practical distinction between Regionalbahn and ICE, checks the platform display, and boards the correct regional train.",
+      "marta_goal": "Take the correct train home using her monthly transit ticket.",
+      "marta_decision": "Marta turns away from the fast ICE train, identifies the red Regionalbahn on track two, and opens the carriage door herself.",
+      "visual_payoff": "Marta presses the illuminated green door button on the red Regionalbahn with a confident smile, happily claiming the regional train is cozier anyway.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Lukas, guck mal! Unser schneller Zug kommt schon an Gleis eins!",
+          "fa": "لوکاس، نگاه کن! قطار سریع ما همین الان در خط یک می‌رسد!",
+          "scene": "Medium shot of Marta on the platform, holding her smartphone upright with the ticket app displayed.",
+          "motion": "Marta points her free hand excited toward the arriving white high-speed train while holding her smartphone.",
+          "visible_objects": [
+            "smartphone",
+            "backpack"
+          ],
+          "object_action": "Marta lifts her smartphone showing the ticket screen and gestures toward track one."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Warte kurz, Marta, das ist ein weißer ICE-Zug.",
+          "fa": "یک لحظه صبر کن مارتا، این یک قطار سریع‌السیر سفید است.",
+          "scene": "Medium framing of Lukas on the platform adjusting his shoulder strap with a calm, friendly expression.",
+          "motion": "Lukas shakes his head gently and glances toward the smartphone screen.",
+          "visible_objects": [
+            "backpack"
+          ],
+          "object_action": "Lukas tightens his backpack strap with both hands while speaking."
+        },
+        {
+          "speaker": "marta",
+          "de": "Mein Deutschland-Ticket gilt doch überall, oder nicht?",
+          "fa": "مگر بلیت آلمان من همه‌جا معتبر نیست؟",
+          "scene": "Closer shot of Marta looking puzzled as she turns her phone around to inspect the digital ticket.",
+          "motion": "Marta taps the smartphone glass with her index finger and tilts her head in question.",
+          "visible_objects": [
+            "smartphone"
+          ],
+          "object_action": "Marta taps the screen of her smartphone and rotates it slightly forward."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Das Ticket gilt für die Regionalbahn, nicht für den ICE.",
+          "fa": "این بلیت برای قطار منطقه‌ای معتبر است، نه برای قطار سریع‌السیر.",
+          "scene": "Medium shot of Lukas holding a folded paper timetable pocket guide.",
+          "motion": "Lukas points to printed red letters on the paper timetable guide.",
+          "visible_objects": [
+            "paper timetable",
+            "backpack"
+          ],
+          "object_action": "Lukas unfolds the paper timetable and taps the letters with his finger."
+        },
+        {
+          "speaker": "marta",
+          "de": "Also kein ICE, sondern nur die rote Regionalbahn?",
+          "fa": "پس قطار سریع‌السیر نه، فقط قطار منطقه‌ای قرمز؟",
+          "scene": "Closer shot of Marta comparing her phone with the timetable Lukas holds off-screen.",
+          "motion": "Marta lowers her phone and raises her eyebrows in sudden understanding.",
+          "visible_objects": [
+            "smartphone",
+            "paper timetable"
+          ],
+          "object_action": "Marta holds her smartphone in one hand and touches the edge of the paper timetable."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, die Regionalbahn fährt direkt auf Gleis zwei ein!",
+          "fa": "دقیقاً، قطار منطقه‌ای درست در خط دو وارد می‌شود!",
+          "scene": "Medium shot of Lukas turning his torso toward the opposite platform track.",
+          "motion": "Lukas folds the paper guide neatly and points across the platform.",
+          "visible_objects": [
+            "paper timetable"
+          ],
+          "object_action": "Lukas slides the folded paper timetable smoothly into his jacket pocket."
+        },
+        {
+          "speaker": "marta",
+          "de": "Da drüben hält tatsächlich ein schöner roter Zug!",
+          "fa": "آن طرف واقعاً یک قطار قرمز زیبا می‌ایستد!",
+          "scene": "Medium shot of Marta turning to face track two with widening eyes and a pleased smile.",
+          "motion": "Marta secures her backpack strap on her shoulder and turns toward track two.",
+          "visible_objects": [
+            "smartphone",
+            "backpack"
+          ],
+          "object_action": "Marta clutches her smartphone safely in her right hand and adjusts her backpack."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Perfekt, dieser Regional-Express bringt uns direkt nach Hause.",
+          "fa": "عالی است، این اکسپرس منطقه‌ای ما را مستقیم به خانه می‌برد.",
+          "scene": "Medium shot of Lukas stepping forward toward track two with a reassuring nod.",
+          "motion": "Lukas walks a step forward while keeping his travel bag securely tucked against his side.",
+          "visible_objects": [
+            "backpack"
+          ],
+          "object_action": "Lukas pats his backpack comfortably with one hand."
+        },
+        {
+          "speaker": "marta",
+          "de": "Wir dürfen also ganz entspannt hier einsteigen?",
+          "fa": "پس اجازه داریم با خیال راحت اینجا سوار شویم؟",
+          "scene": "Closer framing of Marta approaching the red train carriage side.",
+          "motion": "Marta looks up at the train door with visible relief and steps closer to the carriage.",
+          "visible_objects": [
+            "smartphone",
+            "backpack"
+          ],
+          "object_action": "Marta holds her smartphone firmly at chest height while stepping forward."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ja, einfach den grünen Knopf an der Tür drücken.",
+          "fa": "بله، فقط دکمه سبز روی در را فشار بده.",
+          "scene": "Medium shot of Lukas standing back to let Marta take the lead at the train entrance.",
+          "motion": "Lukas gestures toward the door handle area with an encouraging smile.",
+          "visible_objects": [
+            "backpack"
+          ],
+          "object_action": "Lukas points directly forward toward the carriage door mechanism."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich drücke auf den Knopf für unsere Regionalbahn!",
+          "fa": "من دکمه را برای قطار منطقه‌ای‌مان فشار می‌دهم!",
+          "scene": "Medium close-up of Marta reaching toward the illuminated circular door button beside the carriage entrance.",
+          "motion": "Marta places her thumb firmly onto the glowing door opener button.",
+          "visible_objects": [
+            "train door button",
+            "smartphone"
+          ],
+          "object_action": "Marta presses the green train door button with her thumb while holding her phone."
+        },
+        {
+          "speaker": "marta",
+          "de": "Unser roter Zug ist sowieso viel gemütlicher als der ICE!",
+          "fa": "قطار قرمز ما به هر حال خیلی دنج‌تر از قطار سریع‌السیر است!",
+          "scene": "Medium shot of Marta stepping across the train threshold into the well-lit carriage, looking back over her shoulder with an amused grin.",
+          "motion": "Marta steps inside the train, holds the doorway handle lightly, and winks playfully.",
+          "visible_objects": [
+            "train door button",
+            "backpack"
+          ],
+          "object_action": "Marta grips the yellow doorway grab handle and steps smoothly into the carriage."
+        }
+      ],
+      "research_source": {
+        "topic": "Travel by regional train",
+        "url": "https://www.bahn.de/angebot/regio/deutschland-ticket",
+        "excerpt": "Deutschland-Ticket 63 Euro — Kauf, Gültigkeit & Kündigung | bahn.de Zu den Hauptinhalten springen Privatreisen Geschäftsreisen Hilfe & Kontakt Verkehrsmeldungen Baustellen Suchbegriff Hauptnavigation Suchbegriff Tickets & Angebote Info & Services Meine Reisen Suchbegriff Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ändern sich die Konditionen, der Preis erhöht sich auf 66,80 Euro. Stand: Oktober",
+        "retrieved_at": "2026-10-20T18:16:35.356139+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 60
+    },
+    "date": "2026-10-20#analytics-episode-7-20261020",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
