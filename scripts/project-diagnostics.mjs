@@ -78,10 +78,10 @@ async function main() {
   // A newly deployed Worker may still be building; retry the report endpoint
   // only, never replay Python repairs or production dispatch here.
   let result;
-  for(let attempt=0;attempt<4;attempt++){
+  for(let attempt=0;attempt<12;attempt++){
   result=await fetch(ROOT+'/internal/diagnostic-result',{method:'POST',headers:{'content-type':'application/json','X-Project-Authorization':signature},body:JSON.stringify(report),signal:AbortSignal.timeout(20000)});
   if(result.ok)break;
-  if(![404,503].includes(result.status)||attempt===3)break;
+  if(![404,503].includes(result.status)||attempt===11)break;
   await new Promise(resolve=>setTimeout(resolve,15000));
   }
   if(!result?.ok)throw new Error('Private diagnostic delivery failed '+result?.status);
