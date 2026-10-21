@@ -1080,7 +1080,188 @@
       "duration_seconds": 60
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 8,
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "title_de": "Frühstück mit Verspätung",
+      "title_fa": "صبحانه با تأخیر",
+      "summary": "A delayed regional train gives Marta time to unpack breakfast on the platform. A runaway bread roll and an unexpectedly arriving train turn a quiet break into a scramble; she catches her breakfast and learns zum Mitnehmen.",
+      "cliffhanger": "Next time, Marta brings her takeaway breakfast home and faces the apartment building recycling bins.",
+      "visual_hook": "Marta checks a delayed train on her phone while her uncovered coffee steams beside her; she immediately decides to eat breakfast.",
+      "everyday_problem": "A newcomer unpacks breakfast while waiting for a delayed train, then must quickly pack her food when the train arrives.",
+      "practical_resolution": "Marta catches her bread roll, puts the lid on her coffee and safely takes her breakfast aboard; zum Mitnehmen is demonstrated with real props.",
+      "marta_goal": "Use the unexpected station wait to eat breakfast without losing her train or food.",
+      "marta_decision": "Marta rescues the sliding bread roll herself, packs the food and secures the coffee lid before boarding.",
+      "visual_payoff": "Marta proudly treats the rescued bread bag as another passenger, then enjoys her takeaway breakfast safely seated.",
+      "mood": "comic",
+      "duration_seconds": 60,
+      "research_source": {
+        "topic": "Everyday German: shopping, doctor and train",
+        "url": "https://www.goethe.de/de/spr/ueb/lua.html",
+        "excerpt": "lle Niveaustufen. Grafik: © Goethe-Institut Grafik: © Goethe-Institut Übungen ab A1 Fotogeschichten Einkaufen, Arztbesuch, Zug fahren: Trainiere dein Hörverstehen anhand einfacher, lebensnaher Dialoge und erhalte Einblicke in den deutschen Alltag. Mache die passenden Übungen dazu. © Goethe-Institut © Goethe-Institut interaktive Übungen DeutschLandStadt Deutsch lernen: vom Einwohnermeldeamt bis zum Arzt - in einer virtuellen Stadt lernst du spielerisch die ersten Schritte im Alltag in Deutschland. Das interaktive Lernspiel vermittelt praxisnahes Wissen und ist ideal für Deutschlernende auf B1/B2. © Goethe-Institut Izmir © Goethe-Institut Izmir",
+        "retrieved_at": "2026-10-21T16:39:36.766711+00:00"
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Zug verspätet? Mein Kaffee wird kalt!",
+          "fa": "قطار تأخیر دارد؟ قهوه‌ام سرد می‌شود!",
+          "visible_objects": [
+            "smartphone",
+            "takeaway coffee cup"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Marta tilts her smartphone toward herself, then gives her steaming takeaway cup a worried look. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta tilts her smartphone toward herself, then gives her steaming takeaway cup a worried look. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta checks the rail app and protects the open cup with her free hand."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Laut App: noch zwanzig Minuten.",
+          "fa": "طبق برنامه: هنوز بیست دقیقه مانده.",
+          "visible_objects": [
+            "smartphone",
+            "backpack"
+          ],
+          "scene": "Original established high-quality 3D cartoon lukas, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Lukas consults his phone and raises his eyebrows sympathetically. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Lukas consults his phone and raises his eyebrows sympathetically. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Lukas taps his phone screen once while adjusting his backpack."
+        },
+        {
+          "speaker": "marta",
+          "de": "Dann frühstücke ich eben hier!",
+          "fa": "پس همین‌جا صبحانه می‌خورم!",
+          "visible_objects": [
+            "paper bread bag",
+            "coffee cup",
+            "paper napkin"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Marta briskly spreads a napkin on the station bench and opens her breakfast bag with theatrical determination. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta briskly spreads a napkin on the station bench and opens her breakfast bag with theatrical determination. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta places the bag and cup on the bench beside the napkin."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Pass auf, dein Brötchen rollt!",
+          "fa": "مواظب باش، نانت دارد قل می‌خورد!",
+          "visible_objects": [
+            "bread roll",
+            "paper napkin"
+          ],
+          "scene": "Original established high-quality 3D cartoon lukas, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Lukas spots the loose bread roll starting to slide along the bench and points urgently. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Lukas spots the loose bread roll starting to slide along the bench and points urgently. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Lukas reaches one hand toward the sliding bread roll without touching it."
+        },
+        {
+          "speaker": "marta",
+          "de": "Halt! Du fährst nicht ohne mich!",
+          "fa": "وایسا! بدون من راه نمی‌افتی!",
+          "visible_objects": [
+            "bread roll",
+            "paper napkin"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Marta lunges sideways and catches the bread roll with the napkin before it reaches the bench edge; relieved comic reaction. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta lunges sideways and catches the bread roll with the napkin before it reaches the bench edge; relieved comic reaction. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta scoops the bread roll into the napkin with both hands."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Geschafft! Jetzt kommt unser Zug.",
+          "fa": "گرفتیش! حالا قطار ما می‌رسد.",
+          "visible_objects": [
+            "backpack",
+            "smartphone"
+          ],
+          "scene": "Original established high-quality 3D cartoon lukas, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Lukas looks up from his phone toward the arriving regional train in the background and steps back from the platform edge. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Lukas looks up from his phone toward the arriving regional train in the background and steps back from the platform edge. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Lukas pockets his phone and lifts his backpack strap."
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt? Mein Frühstück ist noch unterwegs!",
+          "fa": "حالا؟ صبحانه‌ام هنوز راه نیفتاده!",
+          "visible_objects": [
+            "bread roll",
+            "paper bag",
+            "coffee cup"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Marta looks between her unpacked breakfast and the arriving train, then swiftly stuffs the wrapped roll into its bag. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta looks between her unpacked breakfast and the arriving train, then swiftly stuffs the wrapped roll into its bag. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta packs the napkin-wrapped bread roll back into the paper bag."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Den Kaffee kannst du mitnehmen.",
+          "fa": "قهوه را می‌توانی با خودت ببری.",
+          "visible_objects": [
+            "coffee cup lid",
+            "backpack"
+          ],
+          "scene": "Original established high-quality 3D cartoon lukas, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Lukas retrieves the matching coffee lid from a clean paper sleeve and offers it into off-camera Marta hands. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Lukas retrieves the matching coffee lid from a clean paper sleeve and offers it into off-camera Marta hands. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Lukas holds out the matching lid without blocking his mouth."
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut. Erst Deckel, dann einsteigen.",
+          "fa": "خوب. اول درپوش، بعد سوارشدن.",
+          "visible_objects": [
+            "coffee cup",
+            "coffee cup lid",
+            "paper bag"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Marta carefully snaps the lid onto her coffee cup, then lifts the bread bag with a decisive nod. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta carefully snaps the lid onto her coffee cup, then lifts the bread bag with a decisive nod. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta presses the lid securely onto the cup with both thumbs."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Und das Brötchen?",
+          "fa": "و نانت چی؟",
+          "visible_objects": [
+            "backpack"
+          ],
+          "scene": "Original established high-quality 3D cartoon lukas, matching the approved adult cast reference exactly. On the same German regional railway platform with wooden bench and a red regional train arriving safely; Lukas pauses by the open regional train door, gives an amused questioning glance toward Marta off-camera. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Lukas pauses by the open regional train door, gives an amused questioning glance toward Marta off-camera. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Lukas lifts his backpack away from the doorway to make room."
+        },
+        {
+          "speaker": "marta",
+          "de": "Das fährt natürlich auch mit!",
+          "fa": "معلوم است، آن هم همراهم می‌آید!",
+          "visible_objects": [
+            "paper bread bag",
+            "coffee cup"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. At or inside the same red regional train; Marta proudly raises the crinkled bread bag like a tiny passenger, then steps safely through the stationary open train door. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Marta proudly raises the crinkled bread bag like a tiny passenger, then steps safely through the stationary open train door. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta holds up the bread bag while keeping her lidded cup upright."
+        },
+        {
+          "speaker": "marta",
+          "de": "Frühstück zum Mitnehmen. Ich lerne schnell!",
+          "fa": "صبحانهٔ بیرون‌بر. زود یاد می‌گیرم!",
+          "visible_objects": [
+            "paper bread bag",
+            "coffee cup"
+          ],
+          "scene": "Original established high-quality 3D cartoon marta, matching the approved adult cast reference exactly. At or inside the same red regional train; Seated safely inside the regional train, Marta places her lidded coffee beside the paper bag and gives her saved breakfast a triumphant smile. Medium or closer action framing with mouth, hands and props clearly readable. Only the named speaker face is visible; the other character is completely off-camera. No generated lettering.",
+          "motion": "Seated safely inside the regional train, Marta places her lidded coffee beside the paper bag and gives her saved breakfast a triumphant smile. Natural real-time body motion, clear expressive eyebrows, normal blinking, synchronized speech only from this visible speaker. Camera follows the physical action gently.",
+          "object_action": "Marta opens the paper bag to reveal her rescued bread roll and lifts it with comic pride."
+        }
+      ],
+      "production_notes": {
+        "authored_by": "project-assistant",
+        "reason": "Owner requested continuation; free external story providers exhausted before planning. Original illustrative everyday situation; twenty minutes is a fictional app estimate, not a railway promise.",
+        "visual_style": "Existing original 3D Marta and Lukas references; independent 2D experiment stays paused.",
+        "teaching_phrase": "zum Mitnehmen"
+      }
+    },
+    "status": "planned",
+    "date": "2026-10-21#owner-resume-3d-e8-20261021"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
