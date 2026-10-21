@@ -1259,7 +1259,7 @@
         "teaching_phrase": "zum Mitnehmen"
       }
     },
-    "status": "exporting",
+    "status": "dispatching",
     "date": "2026-10-22#owner-resume-3d-e8-20261021",
     "credit_from_scene": 9,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 506s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
@@ -1272,8 +1272,8 @@
       "tiktok": "renders/cinematic-series/e0008/tiktok/e0008-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0008/instagram/e0008-instagram-60s.mp4"
     },
-    "file": "renders/cinematic-series/e0008/tiktok/e0008-tiktok-60s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0008/instagram/e0008-instagram-60s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
