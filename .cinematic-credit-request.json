@@ -1,6 +1,6 @@
 {
   "id": "ff271ab5b7dc643b25ffae29",
-  "status": "running",
+  "status": "rejected",
   "plan_sha": "1619b848f37ba3191a323a613404596a253bbb1fb26ba3be25550c26ccff66da",
   "simple_text_approval": true,
   "kind": "episode",
@@ -25,8 +25,7 @@
   "text_reject_sha": "dcadbda5bdc6a3083cc11d57c8877a02a9b73fa4e0ffef02149a360ab2699e93",
   "created_at": "2026-10-21T16:42:55.190Z",
   "message_id": 2598,
-  "decided_at": "2026-10-21T16:44:14.863764+00:00",
-  "decision_source": "explicit-owner-chat-instruction",
-  "decision_note": "Owner explicitly approved the pending production credit and requested no repeated confirmation.",
-  "active_run": "39637487262:1"
+  "decided_at": "2026-10-21T16:45:51.751786+00:00",
+  "decision_source": "explicit-owner-chat-revocation",
+  "decision_note": "Owner clarified previous approval was not for paid credits. Paid generation prohibited; free quota only."
 }
