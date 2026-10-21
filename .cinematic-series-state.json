@@ -1259,13 +1259,15 @@
         "teaching_phrase": "zum Mitnehmen"
       }
     },
-    "status": "dispatching",
+    "status": "exporting",
     "date": "2026-10-22#owner-resume-3d-e8-20261021",
     "credit_from_scene": 9,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 506s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
     "credit_revoked_at": "2026-10-21T16:46:36.126125+00:00",
     "last_interruption": "Owner clarified no credit authorization; workflow 39637487262 cancelled. Continue only with verified included allowance or anonymous free routes.",
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2606
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0008/tiktok/e0008-tiktok-60s.mp4",
       "instagram": "renders/cinematic-series/e0008/instagram/e0008-instagram-60s.mp4"
