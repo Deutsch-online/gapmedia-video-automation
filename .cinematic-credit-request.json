@@ -1,6 +1,6 @@
 {
   "id": "be0117f5f43ec77b78e87988",
-  "status": "approved",
+  "status": "running",
   "kind": "episode",
   "episode": 8,
   "scenes": [
@@ -14,5 +14,6 @@
   "decided_at": "2026-10-21T23:00:34.228425+00:00",
   "expires_at": "2026-10-22T23:00:34.228425+00:00",
   "decision_source": "explicit-owner-chat-15-seconds-only",
-  "decision_note": "Owner authorized paid credits only for remaining three five-second scenes of episode 8. Existing 45 seconds must be reused. No approval prompt needed."
+  "decision_note": "Owner authorized paid credits only for remaining three five-second scenes of episode 8. Existing 45 seconds must be reused. No approval prompt needed.",
+  "active_run": "39690538843:1"
 }
