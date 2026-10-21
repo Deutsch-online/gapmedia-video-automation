@@ -100,6 +100,30 @@
       "repository_license_metadata": "NOASSERTION",
       "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
       "integration_status": "reference-only; no dependencies installed or services activated"
+    },
+    {
+      "name": "pdoom-video",
+      "url": "https://github.com/mexicat/pdoom-video",
+      "category": "music-video-render-reference",
+      "purpose": "Deterministic Three.js music-video renderer, timed typography and optional true 4K60 export; high render time and memory usage reported by the author",
+      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or external services activated"
+    },
+    {
+      "name": "mg-styles-15",
+      "url": "https://github.com/Vincentwei1021/mg-styles-15",
+      "category": "motion-style-library",
+      "purpose": "15 ten-second coded motion-design films with source, style notes and prompts; browser rendering and a Blender-based 3D example",
+      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or external services activated"
+    },
+    {
+      "name": "opus-video-prompts",
+      "url": "https://github.com/joeseesun/opus-video-prompts",
+      "category": "prompt-library",
+      "purpose": "Source-linked prompt collection for explainers, product promos, animation and coded video",
+      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
+      "integration_status": "reference-only; no dependencies installed or external services activated"
     }
   ],
   "production_notes": [
@@ -115,5 +139,6 @@
     "skill_read": "https://github.com/Vincentwei1021/video-shotcraft/blob/main/SKILL.md",
     "product_details": "pending owner response to product/link/benefit question",
     "render_started": false
-  }
+  },
+  "updated_at": "2026-10-21"
 }
