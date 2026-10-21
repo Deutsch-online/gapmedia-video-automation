@@ -1259,8 +1259,8 @@
         "teaching_phrase": "zum Mitnehmen"
       }
     },
-    "status": "render-failed",
-    "date": "2026-10-21#owner-resume-3d-e8-20261021",
+    "status": "rendering",
+    "date": "2026-10-22#owner-resume-3d-e8-20261021",
     "credit_from_scene": 0,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 0s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
     "credit_approval_required": false,
