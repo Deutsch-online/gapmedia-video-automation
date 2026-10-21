@@ -1,6 +1,6 @@
 {
   "id": "ff271ab5b7dc643b25ffae29",
-  "status": "approved",
+  "status": "running",
   "plan_sha": "1619b848f37ba3191a323a613404596a253bbb1fb26ba3be25550c26ccff66da",
   "simple_text_approval": true,
   "kind": "episode",
@@ -27,5 +27,6 @@
   "message_id": 2598,
   "decided_at": "2026-10-21T16:44:14.863764+00:00",
   "decision_source": "explicit-owner-chat-instruction",
-  "decision_note": "Owner explicitly approved the pending production credit and requested no repeated confirmation."
+  "decision_note": "Owner explicitly approved the pending production credit and requested no repeated confirmation.",
+  "active_run": "39637487262:1"
 }
