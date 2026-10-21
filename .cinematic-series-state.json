@@ -1259,11 +1259,11 @@
         "teaching_phrase": "zum Mitnehmen"
       }
     },
-    "status": "rendering",
+    "status": "render-failed",
     "date": "2026-10-22#owner-resume-3d-e8-20261021",
-    "credit_from_scene": 0,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 0s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_approval_required": false,
+    "credit_from_scene": 9,
+    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 506s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
+    "credit_approval_required": true,
     "credit_revoked_at": "2026-10-21T16:46:36.126125+00:00",
     "last_interruption": "Owner clarified no credit authorization; workflow 39637487262 cancelled. Continue only with verified included allowance or anonymous free routes."
   },
@@ -1286,8 +1286,8 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-10-21#owner-resume-3d-e8-20261021",
-    "not_before": "2026-10-21T21:44:51.264682+00:00",
+    "date": "2026-10-22#owner-resume-3d-e8-20261021",
+    "not_before": "2026-10-22T03:50:01.974287+00:00",
     "reason": "ZeroGPU quota exhausted"
   },
   "manual_recovery_reason": {
