@@ -1274,7 +1274,173 @@
       }
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 9,
+      "title_de": "Nicht stempeln!",
+      "title_fa": "مهر نزن!",
+      "summary": "On the train platform, Marta tries to shove her plastic Deutschlandticket chip card into the narrow slot of a yellow ticket validator. Lukas warns her in time, explaining that monthly chip cards are already valid and do not need stamping.",
+      "cliffhanger": "Next time, Marta checks the carriage doors to find the quiet zone compartment.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta firmly trying to push a rigid plastic card into the thin paper slit of a yellow platform stamping box.",
+      "everyday_problem": "Newcomers often mistake regional transit validators as mandatory for all tickets, risking damage to plastic chip cards or mobile phones.",
+      "practical_resolution": "Lukas clarifies that the subscription chip card is already valid without mechanical validation.",
+      "marta_goal": "Validate her new transit ticket correctly before boarding the train.",
+      "marta_decision": "Pull the plastic chip card safely away from the narrow slot and put it in her jacket pocket ready for ticket inspection.",
+      "visual_payoff": "Marta inspects her intact plastic card with relief, taps it playfully against her palm, and leads the way onto the arriving train.",
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Hier ist der gelbe Kasten!",
+          "fa": "اینجا جعبه زرد هست!",
+          "scene": "Medium shot of Marta on the sunlit station platform, pointing her rigid chip card toward the yellow ticket punch box mounted on a metal pole.",
+          "motion": "Marta steps up toward the yellow validator post and raises her plastic card proudly.",
+          "visible_objects": [
+            "ticket validator",
+            "plastic chip card"
+          ],
+          "object_action": "Marta points her plastic chip card at the slot of the yellow ticket validator."
+        },
+        {
+          "speaker": "marta",
+          "de": "Meine Karte passt nicht hinein.",
+          "fa": "کارت من تویش جا نمی‌شود.",
+          "scene": "Close-up framing of Marta's hand and face as she attempts to force the thick plastic edge into the paper slit.",
+          "motion": "Marta wiggles the plastic card firmly against the narrow metal opening with a puzzled frown.",
+          "visible_objects": [
+            "ticket validator",
+            "plastic chip card"
+          ],
+          "object_action": "Marta presses the plastic card against the validator slot, failing to slide it in."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Marta, halt! Bitte nicht stempeln!",
+          "fa": "مارتا، صبر کن! لطفاً مهر نزن!",
+          "scene": "Medium shot of Lukas standing on the platform, eyes wide, raising an open palm to halt her.",
+          "motion": "Lukas lifts both hands in a friendly stop gesture, shaking his head quickly.",
+          "visible_objects": [
+            "ticket validator"
+          ],
+          "object_action": "Lukas extends an open hand toward the yellow validator to stop the action."
+        },
+        {
+          "speaker": "marta",
+          "de": "Muss ich kein Ticket stempeln?",
+          "fa": "نباید بلیط را مهر بزنم؟",
+          "scene": "Closer framing of Marta turning toward the camera, holding the card suspended millimeters before the slot.",
+          "motion": "Marta pauses her hand, tilting her head with an inquiring expression.",
+          "visible_objects": [
+            "plastic chip card",
+            "ticket validator"
+          ],
+          "object_action": "Marta holds the plastic card steady right in front of the validator opening."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Nein, dieses Ticket ist schon gültig.",
+          "fa": "نه، این بلیط از قبل معتبر است.",
+          "scene": "Medium close-up of Lukas pulling his own identical transit chip card out of his jacket.",
+          "motion": "Lukas displays his flat chip card horizontally with a calm, reassuring smile.",
+          "visible_objects": [
+            "transit chip card"
+          ],
+          "object_action": "Lukas holds his transit chip card flat between his thumb and index finger."
+        },
+        {
+          "speaker": "marta",
+          "de": "Also brauche ich keinen Stempel?",
+          "fa": "پس به هیچ مهری نیاز ندارم؟",
+          "scene": "Closer framing of Marta pulling her card back toward her chest and examining both sides.",
+          "motion": "Marta turns the plastic card over in her fingers, looking over the smooth printed surface.",
+          "visible_objects": [
+            "plastic chip card"
+          ],
+          "object_action": "Marta flips the plastic card over in both hands."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Richtig, du zeigst es nur vor.",
+          "fa": "درست است، فقط آن را نشان می‌دهی.",
+          "scene": "Medium shot of Lukas miming a ticket inspection by presenting his card outward at chest height.",
+          "motion": "Lukas holds his card forward as if showing it to a train conductor.",
+          "visible_objects": [
+            "transit chip card"
+          ],
+          "object_action": "Lukas presents his card forward toward an imaginary inspector."
+        },
+        {
+          "speaker": "marta",
+          "de": "Und was macht dieser Kasten?",
+          "fa": "پس این جعبه چه کار می‌کند؟",
+          "scene": "Medium framing of Marta pointing one index finger directly at the mechanical stamp slot.",
+          "motion": "Marta leans slightly forward and taps the outer metal casing of the yellow box gently.",
+          "visible_objects": [
+            "ticket validator"
+          ],
+          "object_action": "Marta touches the outer side of the yellow ticket validator."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Der entwertet normale Papier-Fahrscheine.",
+          "fa": "این فقط بلیط‌های کاغذی معمولی را باطل می‌کند.",
+          "scene": "Medium shot of Lukas producing an old paper ticket slip from his pocket to demonstrate its thin strip.",
+          "motion": "Lukas wiggles the flexible paper strip in the air beside the validator post.",
+          "visible_objects": [
+            "paper ticket",
+            "ticket validator"
+          ],
+          "object_action": "Lukas holds a small paper ticket next to the yellow validator post."
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, meine Chipkarte bleibt heil!",
+          "fa": "خوب است، کارت تراشه‌دارم سالم می‌ماند!",
+          "scene": "Closer framing of Marta inspecting the corners of her plastic card with an amused grin.",
+          "motion": "Marta wipes a tiny dust speck off her card and slides it securely into her coat pocket.",
+          "visible_objects": [
+            "plastic chip card"
+          ],
+          "object_action": "Marta slips the plastic chip card into her front coat pocket."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Schau mal, unsere Bahn kommt!",
+          "fa": "ببین، قطار ما دارد می‌آید!",
+          "scene": "Medium shot of Lukas glancing up at the glowing overhead platform display board.",
+          "motion": "Lukas points up toward the platform indicator board as train headlights reflect along the tracks.",
+          "visible_objects": [
+            "train display board"
+          ],
+          "object_action": "Lukas points his hand toward the overhead platform display board."
+        },
+        {
+          "speaker": "marta",
+          "de": "Klasse, jetzt steigen wir ein!",
+          "fa": "عالیه، حالا سوار می‌شویم!",
+          "scene": "Medium shot of Marta turning toward the arriving train with confident posture, tapping her jacket pocket.",
+          "motion": "Marta pats her coat pocket where the ticket rests, smiles broadly, and steps forward toward the opening train doors.",
+          "visible_objects": [
+            "plastic chip card",
+            "train doors"
+          ],
+          "object_action": "Marta pats the pocket containing her plastic chip card and reaches for the train door button."
+        }
+      ],
+      "research_source": {
+        "topic": "Public transport in Berlin and Brandenburg",
+        "url": "https://www.vbb.de/abonnements/deutschlandticket/",
+        "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB Zum Inhalt springen Zur Suche springen VBB-Fahrinfo Leichte Sprache Kontakt English Toggle theme Lightmodus Dunkelmodus imPuls Magazin Unternehmen VBB Mobilität mit Zukunft Hauptmenu öffnen VBB-Fahrinfo Unterwegs im VBB Fahrplanauskunft in App & Web Fahrplanänderungen Baustellen bei Regional- und S-Bahn Liniennetze Flughafen BER Regionalbahnlinien Freizeitangebote Bauinfo: Berlin Stadtbahn Tickets Einzelfahrausweise Tages- und Wochentickets Monatskarten Gruppenkarten Fahrradkarten Tarifi",
+        "retrieved_at": "2026-10-22T22:39:46.514446+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 60
+    },
+    "date": "2026-10-23",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
