@@ -1287,7 +1287,8 @@
     "2026-10-20#owner-complete-e7-20261020-timing": 3,
     "2026-10-21": 2,
     "2026-10-21#owner-resume-3d-e8-20261021": 2,
-    "2026-10-22#owner-resume-3d-e8-20261021": 2
+    "2026-10-22#owner-resume-3d-e8-20261021": 2,
+    "2026-10-23": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -1304,15 +1305,15 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-10-21T23:01:38.341193+00:00",
+    "checked_at": "2026-10-22T22:39:41.062120+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
       "hf-anonymous-free"
     ],
     "status": "verified",
-    "remaining_seconds": 505.7648460000005,
-    "can_admit_one_speaking_take": false,
-    "fallback": "hf-anonymous-free"
+    "remaining_seconds": 2400.0,
+    "can_admit_one_speaking_take": true,
+    "fallback": null
   }
 }
