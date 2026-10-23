@@ -8,7 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {request as httpRequest} from 'node:http';
 test('local control requires a token; OBS state hides answers; live mode needs verified gifts',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'driving-quiz-test-')),runtime=join(dir,'runtime.json');const port=32000+Math.floor(Math.random()*20000);
- const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),QUIZ_RUNTIME_PATH:runtime},stdio:'ignore'});
+ const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),QUIZ_RUNTIME_PATH:runtime,QUIZ_SETTINGS_PATH:join(dir,'settings.json')},stdio:'ignore'});
  try {
   let settings;for(let i=0;i<80;i++){try{settings=JSON.parse(readFileSync(runtime,'utf8'));break;}catch{await delay(100);}}
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
@@ -22,11 +22,19 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await fetch(base+'/data/questions.json')).status,404);
   assert.equal((await post('start',{}, {authorization:''})).status,401);
   assert.equal((await post('start',{}, {origin:'https://untrusted.example'})).status,403);
+  const presetState=await(await fetch(base+'/api/state')).json();assert.deepEqual(['A','B','C'].map(k=>presetState.gifts[k].id),['5655','5269','6064']);
+  assert.equal(presetState.answerInput,'comments');
+  assert.equal((await post('guest-add',{username:'guest',userId:'123'})).status,200);
+  const guestKey=(await(await fetch(base+'/api/state')).json()).guests[0].key;
+  assert.equal((await post('simulate-guest-gift',{key:guestKey})).status,200);
   assert.equal((await post('mode',{mode:'live'})).status,400);
   assert.equal((await post('manual-gifts',{confirmed:true,gifts:[{id:'1',name:'هدیه A'},{id:'1',name:'هدیه B'},{id:'3',name:'هدیه C'},{}]})).status,400);
   assert.equal((await post('manual-gifts',{confirmed:true,gifts:[{id:'1',name:'هدیه A'},{id:'2',name:'هدیه B'},{id:'3',name:'هدیه C'},{}]})).status,200);
   assert.equal((await post('mode',{mode:'live'})).status,400,'manual choices alone never claim a live connection');
   assert.equal((await post('start')).status,200);
+  assert.equal((await post('answer-input',{input:'gifts'})).status,400);
+  assert.equal((await post('simulate-comment',{comment:'1',name:'comment-person'})).status,200);
+  await post('pause');assert.equal((await post('answer-input',{input:'gifts'})).status,200);assert.equal((await post('simulate-comment',{comment:'1'})).status,400);await post('start');
   let state=await (await fetch(base+'/api/state')).json();assert.equal(state.phase,'open');assert.equal(state.question.correct,undefined);
   assert.equal((await post('gifts',{ids:['1','2','3']})).status,400);
   for(const choice of first.correct)assert.equal((await post('simulate',{choice,name:'آزمایش'})).status,200);
@@ -37,7 +45,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
 test('public hosting accepts only configured hosts and never prints the private control token',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'driving-public-test-')),runtime=join(dir,'runtime.json');const port=32000+Math.floor(Math.random()*20000);
  const token='private-test-token-'.repeat(3);let output='';
- const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),PUBLIC_URL:'https://quiz.example',QUIZ_BIND_HOST:'127.0.0.1',QUIZ_ADMIN_TOKEN:token,QUIZ_RUNTIME_PATH:runtime},stdio:['ignore','pipe','pipe']});
+ const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),PUBLIC_URL:'https://quiz.example',QUIZ_BIND_HOST:'127.0.0.1',QUIZ_ADMIN_TOKEN:token,QUIZ_RUNTIME_PATH:runtime,QUIZ_SETTINGS_PATH:join(dir,'settings.json')},stdio:['ignore','pipe','pipe']});
  child.stdout.on('data',d=>{output+=d.toString();});child.stderr.on('data',d=>{output+=d.toString();});
  try{
   let ready=false;for(let i=0;i<80;i++){try{readFileSync(runtime);ready=true;break;}catch{await delay(100);}}

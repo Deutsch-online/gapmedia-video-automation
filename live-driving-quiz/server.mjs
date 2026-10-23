@@ -10,6 +10,9 @@ import {Quiz,LETTERS} from './quiz.mjs';
 import {hostingConfig} from './hosting.mjs';
 import {loadBankMedia} from './bank-media.mjs';
 import {serveMedia} from './media-response.mjs';
+import {GIFT_PRESET_VERSION,presetGifts,configuredGift,observeGift} from './gifts.mjs';
+import {SupporterWall} from './supporters.mjs';
+import {GuestSupport} from './guests.mjs';
 
 // The dependency otherwise discovers SIGN_API_KEY from the environment.
 // This application deliberately permits anonymous/free signing only.
@@ -20,12 +23,17 @@ SignConfig.cachedInstance=undefined;
 const root=fileURLToPath(new URL('.',import.meta.url));
 const hosting=hostingConfig();
 const {token,port,base}=hosting;
-const settingsFile=join(root,'settings.json');
-const defaults={username:'easydeutsches',gifts:{...Object.fromEntries(LETTERS.map((k,i)=>[k,{id:String(101+i),name:`هدیهٔ تمرینی ${k}`,coins:null,verified:false}])),ALL:{id:null,name:'هدیهٔ هر سه گزینه',coins:null,verified:false}}};
-let settings=existsSync(settingsFile)?{...defaults,...JSON.parse(readFileSync(settingsFile,'utf8'))}:defaults;
+const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
+const defaults={answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
+let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
+if((stored&&stored.giftPreset!==GIFT_PRESET_VERSION)||Object.values(settings.gifts).some(g=>g?.id==='101')){settings.gifts=presetGifts(settings.username);settings.giftPreset=GIFT_PRESET_VERSION;save();}
 const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'utf8')));
 const bankMedia=loadBankMedia(quiz.questions);
+const supporters=new SupporterWall();
+const guests=new GuestSupport(settings.guests||[]);
+function saveGuests(){settings.guests=guests.guests;save();}
 let mode='demo',autoplay=false,advanceAt=null,connection=null,connecting=false;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;
@@ -35,17 +43,19 @@ function catalogFrom(raw) {
   return [...new Map(list.slice(0,10000).map(g=>({id:String(g.id??g.giftId??''),name:String(g.name??g.describe??'').slice(0,80),coins:Number(g.diamondCount??g.diamond_count)})).filter(g=>/^\d+$/.test(g.id)&&g.name&&Number.isFinite(g.coins)&&g.coins>0).map(g=>[g.id,g])).values()];
 }
 function ready() {
+  if(live.status!=='connected')return false;
+  if(settings.answerInput==='comments')return true;
   const selected=LETTERS.map(k=>settings.gifts[k]);
-  return live.status==='connected' && new Set(selected.map(g=>g?.id)).size===3 && selected.every(g=>g?.verified && (live.catalog.some(c=>c.id===g.id)||(g.source==='owner-manual'&&g.bound_username===settings.username)));
+  return live.status==='connected' && new Set(selected.map(g=>g?.id)).size===3 && selected.every(g=>g?.verified && (live.catalog.some(c=>c.id===g.id)||configuredGift(g,settings.username)));
 }
 function publicState() {
-  return {...quiz.snapshot(),mode,autoplay,username:settings.username,gifts:settings.gifts,liveReady:ready(),
+  return {...quiz.snapshot(),mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),supporters:supporters.snapshot(),guests:guests.snapshot(),
     connection:{status:live.status,message:live.message,giftCount:live.catalog.length},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){supporters.clear();guests.clear();quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -60,7 +70,7 @@ async function disconnect() {
 async function connect(username,startOnConnect=false) {
   if(connecting||connection)throw Error('ابتدا اتصال قبلی را قطع کنید.');
   if(!/^@?[A-Za-z0-9_.]{1,30}$/.test(username))throw Error('نام کاربری معتبر نیست.');
-  settings.username=username.replace(/^@/,'');save();connecting=true;autoplay=false;quiz.pause();
+  supporters.clear();settings.username=username.replace(/^@/,'');for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
   live={status:'connecting',message:'در حال اتصال ناشناس به لایو…',catalog:[]};broadcast();
   const proxy=process.env.HTTPS_PROXY||process.env.HTTP_PROXY;
   const agent=proxy?{http:new HttpProxyAgent({proxy}),https:new HttpsProxyAgent({proxy})}:null;
@@ -78,13 +88,24 @@ async function connect(username,startOnConnect=false) {
     if(/^\d+$/.test(id)&&name){
       const gift={id,name,coins:Number.isFinite(cost)&&cost>0?cost:null,source:'live-event'};
       const i=live.catalog.findIndex(g=>g.id===id);if(i<0&&live.catalog.length<1000)live.catalog.push(gift);else if(i>=0)live.catalog[i]=gift;
-      for(const k of [...LETTERS,'ALL'])if(settings.gifts[k].id===id)settings.gifts[k]={...gift,verified:true};
+      for(const k of [...LETTERS,'ALL'])if(settings.gifts[k].id===id)settings.gifts[k]=observeGift(settings.gifts[k],gift);
     }
-    if(mode!=='live'||!ready()||connection!==client){broadcast();return;}
+    let guestResult;
+    if(live.status==='connected'){if(guests.observe(data.user))saveGuests();if(guests.observe(data.toUser))saveGuests();guestResult=guests.gift(data);supporters.gift(data,settings.gifts);}
+    if(guestResult?.accepted){broadcast();return;}
+    if(mode!=='live'||settings.answerInput!=='gifts'||!ready()||connection!==client){broadcast();return;}
     const result=quiz.gift(data,Object.fromEntries(Object.entries(settings.gifts).filter(([,g])=>g.verified)));
     if(result.accepted) {recent.push({...quiz.lastAnswer,at:Date.now()});recent=recent.slice(-12);lastReject=null;}
     else if(!['unmapped_gift','streak_not_finished','duplicate_event','already_selected'].includes(result.reason))lastReject=result.reason;
     broadcast();
+  });
+  client.on(WebcastEvent.CHAT,data=>{
+    if(connection===client&&guests.observe(data.user)){saveGuests();broadcast();}
+    if(connection!==client||mode!=='live'||settings.answerInput!=='comments'||!ready())return;
+    const result=quiz.comment(data);
+    if(result.accepted){recent.push({...quiz.lastAnswer,at:Date.now()});recent=recent.slice(-12);lastReject=null;}
+    else if(!['irrelevant_comment','duplicate_event','already_selected'].includes(result.reason))lastReject=result.reason;
+    if(result.reason!=='irrelevant_comment')broadcast();
   });
   let timeout;
   try {
@@ -94,8 +115,8 @@ async function connect(username,startOnConnect=false) {
     live={status:'connected',message:'متصل؛ هدایا از رویدادهای همین لایو شناخته می‌شوند. می‌توانید نام و شناسهٔ هدایا را هم دستی ثبت کنید.',catalog};
     for(const k of [...LETTERS,'ALL']){
       const current=catalog.find(g=>g.id===settings.gifts[k].id);
-      const manual=settings.gifts[k].source==='owner-manual'&&settings.gifts[k].bound_username===settings.username;
-      settings.gifts[k]=current?{...current,verified:true}:{...settings.gifts[k],verified:manual};
+      const manual=configuredGift(settings.gifts[k],settings.username);
+      settings.gifts[k]=current?observeGift(settings.gifts[k],current):{...settings.gifts[k],verified:Boolean(manual)};
     }
     save();
     if(startOnConnect&&ready()){changeMode('live');autoplay=true;startRound();}
@@ -104,7 +125,7 @@ async function connect(username,startOnConnect=false) {
     live={status:'error',message:safeError(error),catalog:[]};
   } finally {clearTimeout(timeout);connecting=false;broadcast();}
 }
-function startRound() {if(mode==='live'&&!ready())throw Error('ابتدا اتصال زنده و سه هدیهٔ معتبر را تنظیم کنید.');quiz.start();advanceAt=null;broadcast();}
+function startRound() {if(mode==='live'&&!ready())throw Error('ابتدا لایو را وصل کنید و روش پاسخ را تنظیم کنید.');quiz.start();advanceAt=null;broadcast();}
 function authenticated(req) {
   const value=req.headers.authorization?.replace(/^Bearer /,'')||'';
   const a=Buffer.from(value),b=Buffer.from(token);
@@ -120,11 +141,11 @@ async function body(req) {
   return JSON.parse(text||'{}');
 }
 const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2'};
-const assets=new Map([['/','screen.html'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
+const assets=new Map([['/','screen.html'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
 function json(res,status,data) {res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
-  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws:; img-src 'self' data:; font-src 'self'; frame-ancestors 'self'");
+  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws:; img-src 'self' data: https://*.tiktokcdn.com https://*.tiktokcdn-us.com https://*.tiktokcdn-eu.com https://*.byteimg.com https://*.ibyteimg.com https://*.ibytedtos.com; font-src 'self'; frame-ancestors 'self'");
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
@@ -136,7 +157,14 @@ const server=http.createServer(async(req,res)=>{
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
       const data=await body(req);const action=url.pathname.split('/').at(-1);
-      if(action==='start')startRound();
+      if(action==='guest-add'){guests.add(data.username,data.userId);saveGuests();}
+      else if(action==='guest-remove'){guests.remove(String(data.key));saveGuests();}
+      else if(action==='simulate-guest-gift'){
+        if(mode!=='demo')throw Error('فقط در حالت آزمایشی مجاز است.');
+        const guest=guests.guests.find(g=>g.key===data.key);if(!guest?.userId)throw Error('شناسهٔ عددی مهمان برای آزمایش لازم است.');
+        const result=guests.gift({receiverUserId:guest.userId,giftId:'demo-guest-gift',giftName:'هدیهٔ آزمایشی',diamondCount:500,repeatCount:1,user:{id:'demo-donor',nickname:'حامی آزمایشی'},common:{msgId:randomUUID(),createTime:Date.now()}});if(!result.accepted)throw Error(result.reason);
+      }
+      else if(action==='start')startRound();
       else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');quiz.reveal();advanceAt=Date.now()+12000;}
       else if(action==='select'){quiz.select(String(data.id));advanceAt=null;}
       else if(action==='next'){quiz.next();advanceAt=null;}
@@ -145,9 +173,15 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='mode'){
         if(!['demo','live'].includes(data.mode))throw Error('حالت معتبر نیست.');
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
-        if(data.mode==='live'&&!ready())throw Error('اتصال زنده و سه هدیهٔ معتبر لازم است.');
+        if(data.mode==='live'&&!ready())throw Error('اتصال لایو و آماده‌بودن روش پاسخ لازم است.');
         changeMode(data.mode);autoplay=false;quiz.pause();
       }
+      else if(action==='answer-input'){
+        if(!['comments','gifts'].includes(data.input))throw Error('روش پاسخ معتبر نیست.');
+        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');
+        settings.answerInput=data.input;lastReject=null;save();
+      }
+      else if(action==='gift-preset'){if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');settings.gifts=presetGifts(settings.username);settings.giftPreset=GIFT_PRESET_VERSION;save();}
       else if(action==='gifts'){
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر هدایا سؤال را متوقف کنید.');
         if(!Array.isArray(data.ids)||![3,4].includes(data.ids.length)||data.ids.slice(0,3).some(id=>!id)||new Set(data.ids.filter(Boolean).map(String)).size!==data.ids.filter(Boolean).length)throw Error('سه هدیهٔ متفاوت و در صورت تمایل یک هدیهٔ جدا برای هر سه انتخاب کنید.');
@@ -163,10 +197,22 @@ const server=http.createServer(async(req,res)=>{
         if(rows.slice(0,3).some(g=>!/^\d{1,20}$/.test(g.id)||g.id==='0'||!g.name)||rows[3]&&(!/^\d{1,20}$/.test(rows[3].id)||rows[3].id==='0'||!rows[3].name)||new Set(rows.filter(Boolean).map(g=>g.id)).size!==rows.filter(Boolean).length)throw Error('نام و شناسهٔ معتبر و متفاوت برای هدایا لازم است.');
         settings.gifts=Object.fromEntries([...LETTERS,'ALL'].map((k,i)=>[k,rows[i]||defaults.gifts.ALL]));save();
       }
+      else if(action==='simulate-comment'){
+        if(mode!=='demo'||settings.answerInput!=='comments')throw Error('این آزمایش فقط در حالت آزمایشی کامنت مجاز است.');
+        const name=String(data.name||'بینندهٔ آزمایشی').slice(0,40);
+        const result=quiz.comment({comment:String(data.comment||''),user:{id:name,nickname:name,profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}});
+        if(!result.accepted)throw Error('کامنت ثبت نشد: '+result.reason);
+      }
+      else if(action==='simulate-supporter'){
+        if(mode!=='demo')throw Error('آزمایش حلقه فقط در حالت آزمایشی مجاز است.');
+        const result=supporters.gift({giftId:'demo-outside-gifts',giftName:'هدیهٔ آزمایشی',diamondCount:Number(data.coins),repeatCount:1,user:{id:String(data.name||'demo-supporter'),nickname:String(data.name||'حامی آزمایشی'),profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}},settings.gifts);
+        if(!result.accepted)throw Error('ثبت آزمایشی انجام نشد.');
+      }
+      else if(action==='clear-supporters'){if(mode!=='demo')throw Error('پاک‌کردن آزمایش فقط در حالت آزمایشی است.');supporters.clear();}
       else if(action==='simulate'){
         if(mode!=='demo')throw Error('شبیه‌سازی در حالت واقعی ممنوع است.');
         const choice=String(data.choice);const userId=String(data.name||'بینندهٔ آزمایشی').slice(0,40);
-        const result=quiz.submit({id:'demo-'+randomUUID(),userId,name:userId,choice,time:Date.now(),roundId:quiz.round?.id});
+        const result=quiz.submit({id:'demo-'+randomUUID(),userId,name:userId,avatar:data.avatar,choice,time:Date.now(),roundId:quiz.round?.id});
         if(!result.accepted)throw Error('پاسخ ثبت نشد: '+result.reason);
         recent.push({...quiz.lastAnswer,at:Date.now()});recent=recent.slice(-12);
       }

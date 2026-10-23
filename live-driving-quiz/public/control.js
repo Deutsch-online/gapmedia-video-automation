@@ -1,3 +1,4 @@
+import {renderGuests} from './guests-ui.js';
 const $=id=>document.getElementById(id);const token=decodeURIComponent(location.hash.slice(1));
 history.replaceState(null,'',location.pathname);
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
@@ -42,6 +43,9 @@ async function loadCatalog(){try{const r=await fetch('/api/admin/catalog',{heade
 function render(s){
  if(!s)return;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
  $('connectionStatus').textContent=s.connection.message;
+ renderGuests($('guestList'),s.guests||[],{remove:key=>api('guest-remove',{key}),simulate:key=>api('simulate-guest-gift',{key})});
+ $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت ۱،۲،۳':'روش فعال: رز / تیک‌تاک / GG';
+ $('commentsInput').classList.toggle('secondary',s.answerInput!=='comments');$('giftInput').classList.toggle('secondary',s.answerInput!=='gifts');
  $('autoplay').checked=s.autoplay;
  const p={watching:'نمایش فیلم · هنوز پاسخ ندهید',waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
  $('status').textContent=`حالت: ${s.mode==='demo'?'آزمایشی':'واقعی'}\nسؤال: ${s.index+1} از ${s.total}\nوضعیت: ${p[s.phase]}\nبینندگان پاسخ‌دهنده: ${s.voters}\nآمادگی گیفت واقعی: ${s.liveReady?'آماده':'تنظیم لازم دارد'}${s.lastReject?'\nآخرین پاسخ ثبت‌نشده: '+({watching_video:'ابتدا فیلم را ببینید؛ پاسخ‌گویی پس از فیلم آغاز می‌شود.',round_closed:'زمان سؤال تمام شده یا دریافت پاسخ متوقف است.',one_answer_only:'بیننده قبلاً گزینهٔ دیگری را انتخاب کرده است.',all_not_allowed:'این سؤال فقط یک پاسخ دارد.',late_or_old_event:'پیام هدیه برای این سؤال دیر رسیده یا مربوط به قبل است.',invalid_event:'اطلاعات لازم برای ثبت پاسخ دریافت نشد.'}[s.lastReject]||'پاسخ تکراری یا نامعتبر بود.'):''}`;
@@ -63,3 +67,13 @@ const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location
 
 async function loadQuestions(){try{const response=await fetch('/api/admin/questions',{headers:{Authorization:'Bearer '+token}});if(!response.ok)return;const data=await response.json();$('questionSelect').replaceChildren(...data.questions.map(q=>{const o=document.createElement('option');o.value=q.id;o.textContent=`${q.video?'🎬 ':'🖼 '}${q.id} · ${q.topic}`;return o;}));}catch{notice('فهرست سؤال‌ها دریافت نشد.',true);}}
 $('selectQuestion').addEventListener('click',()=>api('select',{id:$('questionSelect').value}));if(token)void loadQuestions();
+
+$('giftPreset').addEventListener('click',async()=>{const result=await api('gift-preset');if(result){mappingDirty=false;manualDirty=false;mappings();notice('A: Rose 5655 · B: TikTok 5269 · C: GG 6064 ذخیره شد.');}});
+
+document.querySelectorAll('[data-supporter]').forEach(button=>button.addEventListener('click',()=>api('simulate-supporter',{coins:Number(button.dataset.supporter),name:'آزمایش '+button.textContent})));
+$('clearSupporters').addEventListener('click',()=>api('clear-supporters'));
+
+for(const [id,input] of [['commentsInput','comments'],['giftInput','gifts']])$(id).addEventListener('click',async()=>{if(await api('pause'))await api('answer-input',{input});});
+$('simulateComment').addEventListener('click',()=>api('simulate-comment',{comment:$('demoComment').value,name:$('demoName').value}));
+
+$('addGuest').addEventListener('click',()=>api('guest-add',{username:$('guestUsername').value,userId:$('guestUserId').value}));
