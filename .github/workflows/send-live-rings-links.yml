@@ -1,0 +1,48 @@
+name: Send Live Rings links to private owner Telegram
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/send-live-rings-links.yml
+permissions:
+  contents: read
+jobs:
+  send:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Deliver requested private panel and live output links
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,hmac,hashlib,urllib.request,urllib.error
+          bot=os.environ['TELEGRAM_BOT_TOKEN']
+          chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or os.environ['TELEGRAM_CHAT_ID']
+          def call(method,payload):
+              req=urllib.request.Request('https://api.telegram.org/bot'+bot+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as response:data=json.load(response)
+              except urllib.error.HTTPError as exc:
+                  raise RuntimeError('Telegram HTTP '+str(exc.code)) from None
+              if not data.get('ok'):raise RuntimeError('Telegram delivery failed')
+              return data['result']
+          if call('getChat',{'chat_id':chat}).get('type')!='private':
+              raise RuntimeError('Private owner chat required')
+          repo='afgtakrun/live-rings-studio'
+          token=hmac.new(os.environ['HF_TOKEN'].encode(),('live-rings-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
+          base='https://afgtakrun-live-rings-studio.hf.space'
+          request=urllib.request.Request(base+'/api/not-an-action',data=b'{}',headers={'Content-Type':'application/json','Authorization':'Bearer '+token})
+          try:
+              urllib.request.urlopen(request,timeout=20)
+              raise RuntimeError('Unexpected authorization response')
+          except urllib.error.HTTPError as error:
+              if error.code!=404:raise RuntimeError('Panel key verification failed') from None
+          text='✨ پنل حلقه‌های مهمان لایو\n\n🔐 لینک خصوصی مدیریت:\n'+base+'/?panel=1#'+token+'\n\n🎥 لینک خروجی شفاف برای لایو:\n'+base+'/screen\n\nگیفت‌دهنده‌ها با پروفایل درخشان بالا، تا ۱۰ لایک‌کننده پایین، و تاج ویژه برای نفر اول لایک. حلقهٔ مهمان فقط به کسی می‌رسد که بیشترین کوین دریافتی را دارد.\n\nدر پنل، یوزرنیم میزبان و مهمان‌ها را وارد کن. خروجی لایو: عرض 1080 و ارتفاع 1920.\n\nلینک مدیریت خصوصی است؛ در لایو فقط لینک خروجی را نمایش بده.'
+          result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+          print('RINGS_LINKS_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
+          PY
