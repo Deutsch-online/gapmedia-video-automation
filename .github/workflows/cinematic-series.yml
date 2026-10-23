@@ -160,6 +160,7 @@ jobs:
           path: |
             renders/cinematic-series/**/e*-cinematic-fa-de.mp4
             renders/cinematic-series/**/*-60s.mp4
+            renders/cinematic-series/**/*-45s.mp4
             renders/cinematic-series/**/*-65s.mp4
             renders/cinematic-series/**/delivery-*.json
             renders/cinematic-series/**/quality.json

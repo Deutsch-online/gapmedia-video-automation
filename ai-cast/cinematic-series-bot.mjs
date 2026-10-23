@@ -27,9 +27,11 @@ if (action === 'verify') {
       p.platform_receipts?.[platform])) throw new Error('Invalid or already delivered platform');
   const qualityPath = file.replace(/[^/]+$/, 'quality.json');
   const config = JSON.parse(readFileSync('.cinematic-series.json', 'utf8'));
-  const expected = p.plan.duration_seconds ?? 60;
-  if (![60, 65].includes(expected) || (expected === 65 && !config.duration_exceptions?.includes(p.plan.episode))) {
-    throw new Error('A 65-second delivery requires an explicit episode exception');
+  const expected = p.plan.duration_seconds;
+  const contract = config.duration_exceptions?.includes(p.plan.episode) ? 65
+    : p.plan.episode >= (config.duration_from_episode ?? 9) ? config.target_seconds : 60;
+  if (![45, 60, 65].includes(expected) || expected !== contract) {
+    throw new Error('Delivery duration must match the versioned episode contract');
   }
   // Never shorten speech or lip motion to fit the delivery contract.
   // Validate duration before private delivery.

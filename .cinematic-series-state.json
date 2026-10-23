@@ -1279,17 +1279,17 @@
       "episode": 9,
       "title_de": "Nicht stempeln!",
       "title_fa": "مهر نزن!",
-      "summary": "On the train platform, Marta tries to shove her plastic Deutschlandticket chip card into the narrow slot of a yellow ticket validator. Lukas warns her in time, explaining that monthly chip cards are already valid and do not need stamping.",
-      "cliffhanger": "Next time, Marta checks the carriage doors to find the quiet zone compartment.",
+      "summary": "On the platform Marta mistakes the yellow ticket validator for a machine needed by every ticket. Her rigid monthly chip card will not fit. With a short clarification she rescues her card, gives the machine an amused farewell and safely puts the chip card away.",
+      "cliffhanger": "Next time, Marta returns home and faces the separate recycling bins.",
       "series_version": "wg-alltag-v1",
       "series_name": "Marta & Lukas: Alltag in Deutschland",
       "content_basis": "everyday-reenactment",
       "visual_hook": "Marta firmly trying to push a rigid plastic card into the thin paper slit of a yellow platform stamping box.",
       "everyday_problem": "Newcomers often mistake regional transit validators as mandatory for all tickets, risking damage to plastic chip cards or mobile phones.",
-      "practical_resolution": "Lukas clarifies that the subscription chip card is already valid without mechanical validation.",
+      "practical_resolution": "Marta learns that her already-valid monthly chip card needs no mechanical stamping, takes the card away from the validator and safely stores it herself.",
       "marta_goal": "Validate her new transit ticket correctly before boarding the train.",
       "marta_decision": "Pull the plastic chip card safely away from the narrow slot and put it in her jacket pocket ready for ticket inspection.",
-      "visual_payoff": "Marta inspects her intact plastic card with relief, taps it playfully against her palm, and leads the way onto the arriving train.",
+      "visual_payoff": "Marta protectively hugs her intact chip card, raises one eyebrow at the stamping machine as if declining its invitation, and confidently slips the card into her wallet.",
       "scenes": [
         {
           "speaker": "marta",
@@ -1383,68 +1383,57 @@
           "object_action": "Marta touches the outer side of the yellow ticket validator."
         },
         {
-          "speaker": "lukas",
-          "de": "Der entwertet normale Papier-Fahrscheine.",
-          "fa": "این فقط بلیط‌های کاغذی معمولی را باطل می‌کند.",
-          "scene": "Medium shot of Lukas producing an old paper ticket slip from his pocket to demonstrate its thin strip.",
-          "motion": "Lukas wiggles the flexible paper strip in the air beside the validator post.",
-          "visible_objects": [
-            "paper ticket",
-            "ticket validator"
-          ],
-          "object_action": "Lukas holds a small paper ticket next to the yellow validator post."
-        },
-        {
           "speaker": "marta",
-          "de": "Gut, meine Chipkarte bleibt heil!",
-          "fa": "خوب است، کارت تراشه‌دارم سالم می‌ماند!",
-          "scene": "Closer framing of Marta inspecting the corners of her plastic card with an amused grin.",
-          "motion": "Marta wipes a tiny dust speck off her card and slides it securely into her coat pocket.",
+          "de": "Stempel? Nicht auf meine Chipkarte!",
+          "fa": "مهر؟ روی کارت من نه!",
+          "scene": "Only original young adult 3D Marta is visible in a medium face-and-hands shot beside the same yellow ticket validator on the same station platform. She holds her intact monthly transit chip card well away from the narrow slot, inspects it with comic relief, then turns her body toward the approaching train off-camera. Her mouth, hands and chip card are fully visible; no listener or second face. No generated lettering.",
+          "motion": "Marta promptly pulls her intact chip card protectively against her chest, gives the yellow validator a playful raised-eyebrow farewell and slips the card safely into her wallet. She smiles confidently toward the platform exit. Lively natural-speed upper-body movement and expressive relief; stable props, one speaking face.",
           "visible_objects": [
-            "plastic chip card"
+            "plastic transit chip card",
+            "yellow ticket validator",
+            "wallet"
           ],
-          "object_action": "Marta slips the plastic chip card into her front coat pocket."
-        },
-        {
-          "speaker": "lukas",
-          "de": "Schau mal, unsere Bahn kommt!",
-          "fa": "ببین، قطار ما دارد می‌آید!",
-          "scene": "Medium shot of Lukas glancing up at the glowing overhead platform display board.",
-          "motion": "Lukas points up toward the platform indicator board as train headlights reflect along the tracks.",
-          "visible_objects": [
-            "train display board"
-          ],
-          "object_action": "Lukas points his hand toward the overhead platform display board."
-        },
-        {
-          "speaker": "marta",
-          "de": "Klasse, jetzt steigen wir ein!",
-          "fa": "عالیه، حالا سوار می‌شویم!",
-          "scene": "Medium shot of Marta turning toward the arriving train with confident posture, tapping her jacket pocket.",
-          "motion": "Marta pats her coat pocket where the ticket rests, smiles broadly, and steps forward toward the opening train doors.",
-          "visible_objects": [
-            "plastic chip card",
-            "train doors"
-          ],
-          "object_action": "Marta pats the pocket containing her plastic chip card and reaches for the train door button."
+          "object_action": "Marta protects her intact chip card from the validator slot, then places it safely into her open wallet."
         }
       ],
       "research_source": {
         "topic": "Public transport in Berlin and Brandenburg",
         "url": "https://www.vbb.de/abonnements/deutschlandticket/",
-        "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB Zum Inhalt springen Zur Suche springen VBB-Fahrinfo Leichte Sprache Kontakt English Toggle theme Lightmodus Dunkelmodus imPuls Magazin Unternehmen VBB Mobilität mit Zukunft Hauptmenu öffnen VBB-Fahrinfo Unterwegs im VBB Fahrplanauskunft in App & Web Fahrplanänderungen Baustellen bei Regional- und S-Bahn Liniennetze Flughafen BER Regionalbahnlinien Freizeitangebote Bauinfo: Berlin Stadtbahn Tickets Einzelfahrausweise Tages- und Wochentickets Monatskarten Gruppenkarten Fahrradkarten Tarifi",
-        "retrieved_at": "2026-10-22T22:39:46.514446+00:00"
+        "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB © VBB Das Deutschlandticket als Abo © PhotoGranary - stock.adobe.com Das bundesweit gültige Deutschlandticket wird für monatlich 63 Euro und nur im Abonnement mit monatlicher Kündigungsmöglichkeit angeboten. Für das Deutschlandticket haben Bund und Länder besondere Regularien vorgegeben. Das Deutschlandticket ist nicht frei verkäuflich am Automaten erhältlich und muss beantragt werden . Dementsprechend wird ein Vertrag zwischen Verkehrsunternehmen und Fahrgast geschlossen, inkl. Übermitt",
+        "retrieved_at": "2026-10-23T04:37:26.786234+00:00"
       },
       "mood": "comic",
-      "duration_seconds": 60
+      "duration_seconds": 45,
+      "creative_review": {
+        "previous_weakness_addressed": "Remove three repeated closing shots and finish a complete nine-shot story; retain eight already-generated matching scenes to avoid wasting quota.",
+        "visible_comic_action": "Marta treats the stamping machine like an overenthusiastic host, protects her chip card with a playful eyebrow reaction and puts it away herself.",
+        "next_experiment": "In the next fresh episode, replace repeated clarification questions with two visibly different prop actions and a payoff that works even with the sound muted."
+      }
     },
     "date": "2026-10-23",
     "status": "render-failed",
-    "credit_from_scene": 9,
-    "credit_approval_required": true,
+    "credit_from_scene": 8,
+    "credit_approval_required": false,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 432s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
     "credit_notice_status": "sent",
-    "credit_notice_message_id": 2609
+    "credit_notice_message_id": 2609,
+    "duration_revision": {
+      "from": 60,
+      "to": 45,
+      "owner_requested": true,
+      "reused_scene_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "new_ending_scene_index": 8,
+      "note": "First eight signed scenes unchanged; new closing shot required. No clips shortened or sped up."
+    }
   },
   "attempts": {
     "2026-10-15": 2,

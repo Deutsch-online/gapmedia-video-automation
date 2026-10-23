@@ -1,0 +1,135 @@
+{
+  "episode": 9,
+  "title_de": "Nicht stempeln!",
+  "title_fa": "مهر نزن!",
+  "summary": "On the platform Marta mistakes the yellow ticket validator for a machine needed by every ticket. Her rigid monthly chip card will not fit. With a short clarification she rescues her card, gives the machine an amused farewell and safely puts the chip card away.",
+  "cliffhanger": "Next time, Marta returns home and faces the separate recycling bins.",
+  "series_version": "wg-alltag-v1",
+  "series_name": "Marta & Lukas: Alltag in Deutschland",
+  "content_basis": "everyday-reenactment",
+  "visual_hook": "Marta firmly trying to push a rigid plastic card into the thin paper slit of a yellow platform stamping box.",
+  "everyday_problem": "Newcomers often mistake regional transit validators as mandatory for all tickets, risking damage to plastic chip cards or mobile phones.",
+  "practical_resolution": "Marta learns that her already-valid monthly chip card needs no mechanical stamping, takes the card away from the validator and safely stores it herself.",
+  "marta_goal": "Validate her new transit ticket correctly before boarding the train.",
+  "marta_decision": "Pull the plastic chip card safely away from the narrow slot and put it in her jacket pocket ready for ticket inspection.",
+  "visual_payoff": "Marta protectively hugs her intact chip card, raises one eyebrow at the stamping machine as if declining its invitation, and confidently slips the card into her wallet.",
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Hier ist der gelbe Kasten!",
+      "fa": "اینجا جعبه زرد هست!",
+      "scene": "Medium shot of Marta on the sunlit station platform, pointing her rigid chip card toward the yellow ticket punch box mounted on a metal pole.",
+      "motion": "Marta steps up toward the yellow validator post and raises her plastic card proudly.",
+      "visible_objects": [
+        "ticket validator",
+        "plastic chip card"
+      ],
+      "object_action": "Marta points her plastic chip card at the slot of the yellow ticket validator."
+    },
+    {
+      "speaker": "marta",
+      "de": "Meine Karte passt nicht hinein.",
+      "fa": "کارت من تویش جا نمی‌شود.",
+      "scene": "Close-up framing of Marta's hand and face as she attempts to force the thick plastic edge into the paper slit.",
+      "motion": "Marta wiggles the plastic card firmly against the narrow metal opening with a puzzled frown.",
+      "visible_objects": [
+        "ticket validator",
+        "plastic chip card"
+      ],
+      "object_action": "Marta presses the plastic card against the validator slot, failing to slide it in."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Marta, halt! Bitte nicht stempeln!",
+      "fa": "مارتا، صبر کن! لطفاً مهر نزن!",
+      "scene": "Medium shot of Lukas standing on the platform, eyes wide, raising an open palm to halt her.",
+      "motion": "Lukas lifts both hands in a friendly stop gesture, shaking his head quickly.",
+      "visible_objects": [
+        "ticket validator"
+      ],
+      "object_action": "Lukas extends an open hand toward the yellow validator to stop the action."
+    },
+    {
+      "speaker": "marta",
+      "de": "Muss ich kein Ticket stempeln?",
+      "fa": "نباید بلیط را مهر بزنم؟",
+      "scene": "Closer framing of Marta turning toward the camera, holding the card suspended millimeters before the slot.",
+      "motion": "Marta pauses her hand, tilting her head with an inquiring expression.",
+      "visible_objects": [
+        "plastic chip card",
+        "ticket validator"
+      ],
+      "object_action": "Marta holds the plastic card steady right in front of the validator opening."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Nein, dieses Ticket ist schon gültig.",
+      "fa": "نه، این بلیط از قبل معتبر است.",
+      "scene": "Medium close-up of Lukas pulling his own identical transit chip card out of his jacket.",
+      "motion": "Lukas displays his flat chip card horizontally with a calm, reassuring smile.",
+      "visible_objects": [
+        "transit chip card"
+      ],
+      "object_action": "Lukas holds his transit chip card flat between his thumb and index finger."
+    },
+    {
+      "speaker": "marta",
+      "de": "Also brauche ich keinen Stempel?",
+      "fa": "پس به هیچ مهری نیاز ندارم؟",
+      "scene": "Closer framing of Marta pulling her card back toward her chest and examining both sides.",
+      "motion": "Marta turns the plastic card over in her fingers, looking over the smooth printed surface.",
+      "visible_objects": [
+        "plastic chip card"
+      ],
+      "object_action": "Marta flips the plastic card over in both hands."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Richtig, du zeigst es nur vor.",
+      "fa": "درست است، فقط آن را نشان می‌دهی.",
+      "scene": "Medium shot of Lukas miming a ticket inspection by presenting his card outward at chest height.",
+      "motion": "Lukas holds his card forward as if showing it to a train conductor.",
+      "visible_objects": [
+        "transit chip card"
+      ],
+      "object_action": "Lukas presents his card forward toward an imaginary inspector."
+    },
+    {
+      "speaker": "marta",
+      "de": "Und was macht dieser Kasten?",
+      "fa": "پس این جعبه چه کار می‌کند؟",
+      "scene": "Medium framing of Marta pointing one index finger directly at the mechanical stamp slot.",
+      "motion": "Marta leans slightly forward and taps the outer metal casing of the yellow box gently.",
+      "visible_objects": [
+        "ticket validator"
+      ],
+      "object_action": "Marta touches the outer side of the yellow ticket validator."
+    },
+    {
+      "speaker": "marta",
+      "de": "Stempel? Nicht auf meine Chipkarte!",
+      "fa": "مهر؟ روی کارت من نه!",
+      "scene": "Only original young adult 3D Marta is visible in a medium face-and-hands shot beside the same yellow ticket validator on the same station platform. She holds her intact monthly transit chip card well away from the narrow slot, inspects it with comic relief, then turns her body toward the approaching train off-camera. Her mouth, hands and chip card are fully visible; no listener or second face. No generated lettering.",
+      "motion": "Marta promptly pulls her intact chip card protectively against her chest, gives the yellow validator a playful raised-eyebrow farewell and slips the card safely into her wallet. She smiles confidently toward the platform exit. Lively natural-speed upper-body movement and expressive relief; stable props, one speaking face.",
+      "visible_objects": [
+        "plastic transit chip card",
+        "yellow ticket validator",
+        "wallet"
+      ],
+      "object_action": "Marta protects her intact chip card from the validator slot, then places it safely into her open wallet."
+    }
+  ],
+  "research_source": {
+    "topic": "Public transport in Berlin and Brandenburg",
+    "url": "https://www.vbb.de/abonnements/deutschlandticket/",
+    "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB © VBB Das Deutschlandticket als Abo © PhotoGranary - stock.adobe.com Das bundesweit gültige Deutschlandticket wird für monatlich 63 Euro und nur im Abonnement mit monatlicher Kündigungsmöglichkeit angeboten. Für das Deutschlandticket haben Bund und Länder besondere Regularien vorgegeben. Das Deutschlandticket ist nicht frei verkäuflich am Automaten erhältlich und muss beantragt werden . Dementsprechend wird ein Vertrag zwischen Verkehrsunternehmen und Fahrgast geschlossen, inkl. Übermitt",
+    "retrieved_at": "2026-10-23T04:37:26.786234+00:00"
+  },
+  "mood": "comic",
+  "duration_seconds": 45,
+  "creative_review": {
+    "previous_weakness_addressed": "Remove three repeated closing shots and finish a complete nine-shot story; retain eight already-generated matching scenes to avoid wasting quota.",
+    "visible_comic_action": "Marta treats the stamping machine like an overenthusiastic host, protects her chip card with a playful eyebrow reaction and puts it away herself.",
+    "next_experiment": "In the next fresh episode, replace repeated clarification questions with two visibly different prop actions and a payoff that works even with the sound muted."
+  }
+}

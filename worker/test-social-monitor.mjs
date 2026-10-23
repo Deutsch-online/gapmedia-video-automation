@@ -80,6 +80,8 @@ await storeRenderAudit(env,{episode:7,duration_seconds:60,width:1080,height:1920
 assert.equal((await creativeFeedback(env)).render_qc.source,'local-ffmpeg-qc');
 assert.equal((await creativeFeedback(env)).experiments[1].evidence,'render_qc_not_a_causal_claim');
 await assert.rejects(storeRenderAudit(env,{episode:7,duration_seconds:59,width:1080,height:1920,frozen_seconds:0}));
+await storeRenderAudit(env,{episode:9,duration_seconds:45,width:1080,height:1920,frozen_seconds:1,caption_design:'cream-large-v2'});
+assert.equal(JSON.parse(memory.get('social:render-audits')).at(-1).duration_seconds,45,'45-second production measurements are retained for future feedback');
 const imported=await handleSocialConversation(env,'7','/metrics '+JSON.stringify(sample(55,55)));
 assert.match(imported,/ثبت شد/);
 assert.equal(JSON.parse(memory.get('social:dataset')).media['tiktok:55'].latest.source,'owner-reported');

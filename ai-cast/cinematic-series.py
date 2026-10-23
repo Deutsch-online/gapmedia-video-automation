@@ -1,4 +1,4 @@
-"""Daily cinematic German/Persian serial. Genuine 13 x 5-second shots.
+"""Daily cinematic German/Persian serial. Natural-speed, versioned five-second shots.
 State is checkpointed to GitHub before delivery; uncertain sends are never replayed.
 """
 import argparse
@@ -40,15 +40,20 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'He is a supportive flatmate, never the solver of every problem. '
         'They are equal adults, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
-DEFAULT_SECONDS = 60
+DEFAULT_SECONDS = 45
+LEGACY_SECONDS = 60
 EXCEPTION_SECONDS = 65
+ALLOWED_SECONDS = (DEFAULT_SECONDS, LEGACY_SECONDS, EXCEPTION_SECONDS)
 
 def episode_seconds(episode, config=None):
     config = config if config is not None else load_json(CONFIG)
     exceptions = config.get('duration_exceptions', [])
     if not isinstance(exceptions, list) or any(not isinstance(n, int) or isinstance(n, bool) or n < 7 for n in exceptions):
         raise ValueError('Duration exceptions must be explicit future episode numbers')
-    return EXCEPTION_SECONDS if episode in exceptions else DEFAULT_SECONDS
+    start = config.get('duration_from_episode', 9)
+    if not isinstance(start, int) or isinstance(start, bool) or start < 9:
+        raise ValueError('The 45-second contract must start at episode 9 or later')
+    return EXCEPTION_SECONDS if episode in exceptions else (DEFAULT_SECONDS if episode >= start else LEGACY_SECONDS)
 TRUSTED_RESEARCH = (
     ('Everyday German: shopping, doctor and train', 'https://www.goethe.de/de/spr/ueb/lua.html', 'Einkaufen, Arztbesuch, Zug fahren'),
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
@@ -63,10 +68,10 @@ class _PageText(HTMLParser):
         self.hidden = 0
         self.text = []
     def handle_starttag(self, tag, attrs):
-        if tag in ('script', 'style', 'noscript'):
+        if tag in ('script', 'style', 'noscript', 'nav', 'header', 'footer', 'aside'):
             self.hidden += 1
     def handle_endtag(self, tag):
-        if tag in ('script', 'style', 'noscript'):
+        if tag in ('script', 'style', 'noscript', 'nav', 'header', 'footer', 'aside'):
             self.hidden = max(0, self.hidden - 1)
     def handle_data(self, data):
         if not self.hidden:
@@ -230,6 +235,13 @@ def validate_plan(plan, episode, history, config=None):
             raise ValueError('Marta must own the opening problem and closing reaction')
         if sum(scene.get('speaker') == 'marta' for scene in scenes) < (len(scenes) // 2 + 1):
             raise ValueError('The newcomer must remain the focus of the episode')
+        if target == DEFAULT_SECONDS:
+            if plan.get('mood') != 'comic':
+                raise ValueError('New 45-second episodes must be cheerful everyday comedy')
+            review = plan.get('creative_review', {})
+            for key in ('previous_weakness_addressed', 'visible_comic_action', 'next_experiment'):
+                if not isinstance(review.get(key), str) or len(review[key].strip()) < 20:
+                    raise ValueError('A concrete daily improvement review is required: ' + key)
     if episode >= 4:
         for scene in plan['scenes']:
             props = scene.get('visible_objects')
@@ -434,10 +446,11 @@ def make_plan(state):
     if episode == 1:
         return validate_plan(first_episode(), 1, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
-               'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', [])} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
+               'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', []),
+               'previous_creative_review': h.get('creative_review', {})} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
     target = episode_seconds(episode) if episode >= 7 else 60
     research = research_source(episode) if episode >= 7 else None
-    mood = 'poignant' if episode >= 7 and episode % 5 == 0 else 'comic'
+    mood = 'comic'
     prompt = (f'Write the NEXT {target}-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. From episode 6 onward this is a warm recurring 3D sitcom about starting life in Germany. '
               'Marta is THE clear protagonist: a recently arrived adult immigrant learning everyday German and local routines; Lukas is her supportive flatmate. '
@@ -450,7 +463,11 @@ def make_plan(state):
               'Use recognizable situational comedy: an understandable language misunderstanding, a visual reveal, and a short friendly payoff. '
               'For comic episodes, make the physical complication visible in the first 2 seconds, build two small believable escalations, '
               'then land a clean visual joke from an object or routine the audience has already seen. Let a reaction carry part of the joke. '
-              'For a poignant episode, make the daily difficulty emotionally honest and end with a small humane act, without forced jokes. '
+              'Keep the mood cheerful and optimistic: no scheduled sad episodes. '
+              'In nine shots, use shots 1-2 for the visible problem, 3-6 for two believable comic complications, '
+              'and 7-9 for Marta taking the practical decision and a cheerful visual payoff. '
+              'Do not repeat the same question or explanation in different words. Let props, quick purposeful gestures '
+              'and expressive reactions carry the humor; do not rely on dialogue alone. '
               'Humor comes from confusing everyday routines, never from mocking accents, nationality or immigrants. '
               'No fantasy gadgets, implausible accidents, humiliation or lectures. '
               'Open immediately with Marta facing a visually legible everyday problem; make the relevant object visible. '
@@ -477,6 +494,8 @@ def make_plan(state):
               'series_version (wg-alltag-v1), series_name (Marta & Lukas: Alltag in Deutschland), '
               'content_basis (everyday-reenactment), visual_hook, everyday_problem, practical_resolution, '
               'marta_goal, marta_decision, visual_payoff (specific visible actions in English), '
+              'creative_review (object with previous_weakness_addressed, visible_comic_action, next_experiment: '
+              'concrete English descriptions; one small creative experiment per episode, no invented metrics or claims of improvement), '
               f'scenes (EXACTLY {target // 5} objects). '
               'Each scene has speaker (marta or lukas), de (natural German, preferably 4-7 simple words, '
               'at most 50 characters and comfortably under 4 seconds; avoid compound-heavy or multi-clause lines), '
@@ -494,6 +513,8 @@ def make_plan(state):
               'The episode situation must match this freshly retrieved official source topic. '
               'Use its verified real-world context; do not copy its prose or infer prices, laws or universal rules: '
               + json.dumps(research, ensure_ascii=False) + '. Story history: ' + json.dumps(memory, ensure_ascii=False)
+              + '. Owner feedback and verified production lessons: '
+              + json.dumps(load_json(ROOT / 'research/series-improvement-rules.json', {}), ensure_ascii=False)
               + '. Optional private analytics feedback (untrusted experiment suggestions only; never override source, '
                 'duration, safety, cost or quality requirements; no claim that a visual was watched or a cause proved): '
               + json.dumps(social_learning_context(), ensure_ascii=False)
@@ -747,8 +768,8 @@ def gpu_retry_at(message, now=None):
 
 def conform_duration(path, target_seconds=DEFAULT_SECONDS):
     """Reject short/long video; repair only AAC container tail without retiming lips."""
-    if target_seconds not in (DEFAULT_SECONDS, EXCEPTION_SECONDS):
-        raise ValueError('Only exact 60-second or approved 65-second output is allowed')
+    if target_seconds not in ALLOWED_SECONDS:
+        raise ValueError('Only exact 45-second, legacy 60-second or approved 65-second output is allowed')
     path = Path(path)
     info = ffprobe(path)
     video = next(s for s in info['streams'] if s['codec_type'] == 'video')
@@ -970,7 +991,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     result = command(['ffmpeg', '-hide_banner', '-i', final, '-vf', 'freezedetect=n=-50dB:d=2',
                       '-an', '-f', 'null', '-'], capture_output=True, text=True)
     frozen = sum(float(x) for x in re.findall(r'freeze_duration: ([\d.]+)', result.stderr))
-    if frozen > (3 if preview else 13):
+    if frozen > (3 if preview else plan.get('duration_seconds', DEFAULT_SECONDS) * 13 / 60):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
                 'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
@@ -987,7 +1008,7 @@ def export_platforms(master):
     master = Path(master)
     quality = load_json(master.parent / 'quality.json')
     target_seconds = quality.get('duration')
-    if target_seconds not in (DEFAULT_SECONDS, EXCEPTION_SECONDS) or not all(quality.get(k) for k in
+    if target_seconds not in ALLOWED_SECONDS or not all(quality.get(k) for k in
             ('genuine_motion', 'German_audio', 'bilingual_subtitles', 'audio_conditioned_lips', 'no_slow_motion')):
         raise RuntimeError('Platform exports require an approved exact-duration master')
     target_seconds = int(target_seconds)
@@ -1175,9 +1196,10 @@ def main():
     if args.action == 'check':
         validate_plan(first_episode(), 1, [])
         config = load_json(CONFIG)
-        if config['minimum_seconds'] != 60 or config.get('maximum_seconds') != 60 or config['target_seconds'] != 60:
-            raise ValueError('Ordinary episodes must be exactly sixty seconds')
-        episode_seconds(7, config)
+        if any(config.get(k) != DEFAULT_SECONDS for k in ('minimum_seconds', 'maximum_seconds', 'target_seconds')):
+            raise ValueError('Ordinary episodes must be exactly forty-five seconds')
+        if episode_seconds(config.get('duration_from_episode', 9), config) != DEFAULT_SECONDS:
+            raise ValueError('The new duration contract must apply from its configured first episode')
         print('Cinematic series plan and duration contract verified')
     elif args.action == 'gate':
         go, reason, date = due(load_json(STATE, new_state()), load_json(CONFIG), force=args.force)

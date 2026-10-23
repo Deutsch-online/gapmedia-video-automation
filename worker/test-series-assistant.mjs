@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import worker,{webhookSecret} from './src/index.js';
-import {seriesRequest} from './src/series-assistant.js';
+import {seriesRequest,validateDraft} from './src/series-assistant.js';
 
 assert.equal(seriesRequest('پرامیت ویدیوی بعدی را بفرست').kind,'prompt');
 assert.equal(seriesRequest('قسمت ۷',{kind:'prompt',episode:7}).episode,7);
@@ -20,6 +20,10 @@ const plan = {
 };
 const state={next_episode:7,pending:null,history:[{episode:6,title_de:'Im Supermarkt',summary:'Marta buys oat milk.',scenes:[{speaker:'marta',de:'Diese Milch, bitte.',fa:'این شیر لطفاً.',scene:'Marta holds a milk carton.'}]}]};
 const config={target_seconds:60,schedule_mode:'gpu-availability',content_direction:{genre:'everyday-comic'}};
+const shortPlan={...plan,episode:9,duration_seconds:45,scenes:plan.scenes.slice(0,9)};
+assert.equal(validateDraft(shortPlan,9).scenes.length,9);
+assert.throws(()=>validateDraft({...shortPlan,duration_seconds:60},9));
+assert.throws(()=>validateDraft({...shortPlan,scenes:plan.scenes},9));
 const calls=[];
 const savedFetch=globalThis.fetch;
 let failState=false;

@@ -2,14 +2,14 @@
   "series": "Marta & Lukas: Alltag in Deutschland",
   "timezone": "Europe/Berlin",
   "time": "00:00",
-  "minimum_seconds": 60,
-  "target_seconds": 60,
+  "minimum_seconds": 45,
+  "target_seconds": 45,
   "daily_episodes": 1,
   "max_daily_attempts": 2,
   "reference_dir": "public/ai-cast/wg-chaos",
   "style": "wg-alltag-3d-v1",
   "paid_fallback": false,
-  "maximum_seconds": 60,
+  "maximum_seconds": 45,
   "schedule_mode": "gpu-availability",
   "outputs": [
     "tiktok",
@@ -26,8 +26,10 @@
     "from_episode": 6,
     "premise": "Marta is the clear protagonist: a recently arrived adult newcomer facing relatable everyday problems in Germany. Lukas supports her without replacing her choices.",
     "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
-    "continuity": "Mostly visual situational comedy: Marta owns the opening problem, two credible escalations, a practical decision and a readable visual payoff. Occasional poignant episodes stay grounded and humane.",
-    "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over."
+    "continuity": "Cheerful original 3D everyday comedy: one visible problem, two short believable physical complications, Marta makes the practical decision, and a clear happy visual payoff. Nine natural-speed shots, no repetitive teaching drills.",
+    "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over.",
+    "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
-  "duration_exceptions": []
+  "duration_exceptions": [],
+  "duration_from_episode": 9
 }

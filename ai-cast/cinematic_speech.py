@@ -48,7 +48,8 @@ def generate(png, audio, output, motion, seed):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finishing cannot generate speaking clips')
     prompt = ('One visible speaking adult cartoon character. Accurate lip and jaw movement driven by the supplied German speech. '
-              'Natural real-time blinking, breathing and small grounded body and hand gestures. No slow motion, no exaggerated acting. '
+              'Natural real-time blinking and breathing, lively purposeful upper-body and hand actions, '
+              'clear expressive comic reactions without distorting facial anatomy. No slow motion or idle portrait posing. '
               'The listener is off-camera. Keep identity and facial anatomy stable. ' + motion)
     if backend() == 'wan2gp':
         root = Path(os.environ.get('WAN2GP_ROOT', '/workspace/Wan2GP')).resolve()

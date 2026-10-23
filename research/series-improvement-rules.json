@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "owner_instruction_date": "2026-10-23",
+  "duration": "Exactly 45 seconds from episode 9: nine five-second shots at natural speed, with a complete ending.",
+  "tone": "Cheerful, warm, recognizable situational comedy about an adult newcomer in Germany. Original established 3D Marta and Lukas; separate 2D work stays separate.",
+  "owner_feedback": [
+    {"problem": "Repetitive or implausible conversation was not funny.", "action": "One believable daily problem, two short physical complications and a visible cheerful payoff; avoid restating the lesson in several lines."},
+    {"problem": "Static body motion and dialogue without visible objects.", "action": "Each shot needs a purposeful hand-to-object action, an expressive reaction and framing that shows hands and props."},
+    {"problem": "Both characters appeared to speak simultaneously.", "action": "Only the current speaker face is visible; the listener remains off-camera. Use the exact same aligned German WAV for lip conditioning and final audio."},
+    {"problem": "Large subtitle backgrounds obscured the scene.", "action": "Retain the separate lower caption area and readable bilingual captions; never cover the hands or the object."}
+  ],
+  "verified_technical_lessons": [
+    "Measure every narration line and subtitle layout before GPU generation. Short German lines, preferably 4–7 words; never cut or speed speech to fit.",
+    "Reuse signed completed scenes. Included HF allowance first, anonymous free route second. Never consume paid credits without a new scoped owner authorization.",
+    "Preserve 150 frames per shot, explicit concat durations and exact audio sample count to avoid accumulated AAC padding.",
+    "Apply one small creative experiment per episode and record it in creative_review. Use actual available account feedback; do not fabricate retention metrics or claim that a change caused more views."
+  ],
+  "quality_statement": "These are production requirements and testable experiments, not a promise of daily quality gains or virality."
+}

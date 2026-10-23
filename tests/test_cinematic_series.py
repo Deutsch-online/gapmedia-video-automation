@@ -420,25 +420,25 @@ class ExactDurationTests(unittest.TestCase):
                        'sine=frequency=440:sample_rate=48000:duration=60.009',
                        '-c:v','libx264','-preset','ultrafast','-c:a','aac',path])
             before = next(s for s in m.ffprobe(path)['streams'] if s['codec_type']=='video')
-            self.assertEqual(m.conform_duration(path),60)
+            self.assertEqual(m.conform_duration(path,60),60)
             info = m.ffprobe(path)
             after = next(s for s in info['streams'] if s['codec_type']=='video')
             self.assertEqual(before['nb_frames'],after['nb_frames'])
             self.assertEqual(float(info['format']['duration']),60)
 
     @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
-    def test_default_sixty_seconds_and_explicit_sixty_five_preserve_audio(self):
+    def test_legacy_sixty_seconds_and_explicit_sixty_five_preserve_audio(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / 'episode.mp4'
             m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
                        'testsrc2=size=64x64:rate=30:duration=60', '-f', 'lavfi', '-i',
                        'sine=frequency=440:sample_rate=96000:duration=60', '-c:v', 'libx264', '-preset', 'ultrafast',
                        '-c:a', 'aac', '-t', '60', path])
-            self.assertEqual(m.conform_duration(path), 60)
+            self.assertEqual(m.conform_duration(path,60), 60)
             info = m.ffprobe(path)
             self.assertEqual(float(info['format']['duration']), 60)
             self.assertEqual({x['codec_type'] for x in info['streams']}, {'video', 'audio'})
-            self.assertEqual(m.conform_duration(path), 60)
+            self.assertEqual(m.conform_duration(path,60), 60)
             long = Path(d) / 'exception.mp4'
             m.command(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i',
                        'testsrc2=size=64x64:rate=30:duration=65', '-f', 'lavfi', '-i',
@@ -446,7 +446,7 @@ class ExactDurationTests(unittest.TestCase):
                        '-c:a', 'aac', '-t', '65', long])
             self.assertEqual(m.conform_duration(long, 65), 65)
             with self.assertRaisesRegex(RuntimeError, 'exactly 60 seconds'):
-                m.conform_duration(long)
+                m.conform_duration(long,60)
             with self.assertRaisesRegex(RuntimeError, 'exactly 65 seconds'):
                 m.conform_duration(path, 65)
 
@@ -484,6 +484,50 @@ class PlatformDeliveryTests(unittest.TestCase):
 
 
 class EverydayLifeTests(unittest.TestCase):
+    def test_official_research_text_ignores_navigation_and_script_noise(self):
+        parsed=m._PageText()
+        parsed.feed('<header>Navigation</header><nav>Menu Deutschlandticket</nav><main>Chipkarten im Alltag<script>hidden()</script></main><footer>Cookie links</footer>')
+        text=' '.join(parsed.text)
+        self.assertIn('Chipkarten im Alltag',text)
+        self.assertNotIn('Navigation',text)
+        self.assertNotIn('Menu',text)
+        self.assertNotIn('hidden()',text)
+
+    def test_new_contract_requires_nine_shots_and_retains_legacy_history(self):
+        plan = m.load_json(m.ROOT / 'ai-cast/episodes/e09-not-stamping-45s.json')
+        self.assertEqual(m.episode_seconds(8), 60)
+        self.assertEqual(m.episode_seconds(9), 45)
+        self.assertEqual(m.episode_seconds(10), 45)
+        self.assertIs(m.validate_plan(plan,9,[]),plan)
+        broken = copy.deepcopy(plan)
+        broken['scenes'].append(copy.deepcopy(broken['scenes'][-1]))
+        with self.assertRaisesRegex(ValueError,'exactly 9'):
+            m.validate_plan(broken,9,[])
+        broken = copy.deepcopy(plan)
+        broken['mood']='poignant'
+        with self.assertRaisesRegex(ValueError,'cheerful'):
+            m.validate_plan(broken,9,[])
+        broken = copy.deepcopy(plan)
+        broken.pop('creative_review')
+        with self.assertRaisesRegex(ValueError,'improvement review'):
+            m.validate_plan(broken,9,[])
+
+    @unittest.skipUnless(m.shutil.which('ffmpeg') and m.shutil.which('ffprobe'), 'media tools required')
+    def test_forty_five_second_default_preserves_all_1350_frames(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'forty-five.mp4'
+            m.command(['ffmpeg','-y','-v','error','-f','lavfi','-i',
+                'testsrc2=size=32x32:rate=30:duration=45','-f','lavfi','-i',
+                'sine=frequency=440:sample_rate=48000:duration=45.009',
+                '-c:v','libx264','-preset','ultrafast','-c:a','aac',path])
+            self.assertEqual(m.conform_duration(path),45)
+            info=m.ffprobe(path)
+            video=next(x for x in info['streams'] if x['codec_type']=='video')
+            self.assertEqual(int(video['nb_frames']),1350)
+            self.assertEqual(float(info['format']['duration']),45)
+            with self.assertRaisesRegex(RuntimeError,'exactly 60'):
+                m.conform_duration(path,60)
+
     def test_future_story_defaults_to_twelve_shots_with_explicit_exception_only(self):
         plan = m.load_json(m.ROOT / 'ai-cast/everyday-pilot.json')
         plan['episode'] = 7
