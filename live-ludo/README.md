@@ -32,3 +32,6 @@ Automated checks cover model rules, shared authenticated server state, free comm
 
 ## One-click demo
 The owner panel has a prominent Start demo button and a connection guide. Demo runs automatic sample gifts, requests and pawn animations with no TikTok connection and no spending. Demo state is not saved over real state. Stop demo restores the pre-demo game and request selections; connecting to a real LIVE also stops and restores the demo first. Demo cannot start while LIVE is connected/connecting and expires automatically after roughly 144 seconds.
+
+## Flags and compact mobile display
+All fourteen default country flags are bundled SVG assets sourced from flagcdn.com and served locally. The country frames, request queue and supporter dialog use images rather than platform-dependent flag emoji. Mobile opens directly in compact LIVE view, with smaller player cards and a two-column request list. The live canvas fits the available viewport height and restores normal scrolling when Settings is opened.
