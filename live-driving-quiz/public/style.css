@@ -209,7 +209,7 @@
 .winner-celebration{margin-top:24px;background:#e4eee4;border:1px solid #9cbcaa;padding:16px 18px;border-radius:22px}
 
 /* The activity rail is a faint glass surface; the question remains its own column. */
-.screen-body .supporter-rail{left:38px;top:220px;bottom:180px;width:242px;gap:20px;align-items:stretch;direction:ltr}
+.screen-body .supporter-rail{left:62px;top:220px;bottom:180px;width:242px;gap:20px;align-items:stretch;direction:ltr}
 .screen-body .supporter{box-sizing:border-box;width:242px;min-height:94px;display:flex;align-items:center;gap:9px;text-align:left;padding:10px 8px;background:rgba(18,39,31,.09);border:1px solid rgba(255,255,255,.3);border-radius:22px;backdrop-filter:blur(8px);box-shadow:0 3px 12px #18372b0a}
 .screen-body .supporter .supporter-orb{width:76px;flex:0 0 76px}
 .screen-body .supporter.activity-gift{min-height:128px;padding:12px 8px;background:rgba(18,39,31,.13)}
