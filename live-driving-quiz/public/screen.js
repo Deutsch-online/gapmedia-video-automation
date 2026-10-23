@@ -19,7 +19,7 @@ function render(s){
   const img=$('bankImage');if(q.image&&img.getAttribute('src')!==q.image){$('imageFailure').classList.add('hidden');img.src=q.image;img.alt=q.de||q.id;}
   $('bankImageLabel').textContent=`${q.id}`;
 
-  $('modeLabel').textContent=s.mode==='demo'?'Demo':s.liveReady?(s.answerInput==='comments'?'LIVE · Kommentare':'LIVE · Geschenke'):'Nicht verbunden';
+  $('modeLabel').textContent=s.mode==='demo'?(s.connection.autoReconnect?'Demo · LIVE nicht verbunden':'Demo'):s.liveReady?(s.answerInput==='comments'?'LIVE · Kommentare':'LIVE · Geschenke'):'Nicht verbunden';
   $('modeLabel').classList.toggle('real',s.mode==='live');
   $('topic').textContent='Führerschein-Theorie';
   $('questionNumber').textContent=s.session?`Sitzung ${s.session.number} · ${s.session.review?'Auswahl':s.session.position+' / '+s.session.size}${s.session.finished?' · Beendet':''}`:`${s.index+1} / ${s.total}`;

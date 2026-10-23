@@ -45,9 +45,10 @@ export class Quiz {
   }
   select(id){if(['open','watching'].includes(this.phase))throw Error('Pause this question first');const index=this.questions.findIndex(q=>q.id===id);if(index<0)throw Error('Unknown question');this.index=index;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null;}
   tick() { if(this.phase==='watching'&&this.now()>=this.round.opened)this.phase='open';if(this.phase==='open' && this.now()>=this.round.closes) this.reveal(); }
-  submit({id,userId,name,choice,time,roundId,avatar}) {
+  submit({id,userId,name,choice,time,roundId,avatar,commentChoices}) {
     this.tick();
     if(!id || !userId || ![...LETTERS,'ALL'].includes(choice) || !Number.isFinite(time)) return {accepted:false,reason:'invalid_event'};
+    if(commentChoices!==undefined&&(!Array.isArray(commentChoices)||!commentChoices.length||commentChoices.length>3||commentChoices.some(k=>!LETTERS.includes(k))||new Set(commentChoices).size!==commentChoices.length))return {accepted:false,reason:'invalid_event'};
     if(this.seen.has(id)) return {accepted:false,reason:'duplicate_event'};
     this.seen.set(id,this.now());
     if(this.seen.size>20000) this.seen.delete(this.seen.keys().next().value);
@@ -57,21 +58,23 @@ export class Quiz {
     const answer=this.answers.get(userId)||{publicId:randomUUID(),name:String(name||'Zuschauer').slice(0,40),avatar:safeAvatarURL(avatar),choices:new Set()};
     const multiple=this.questions[this.index].correct.length>1;
     if(choice==='ALL'&&!multiple)return {accepted:false,reason:'all_not_allowed'};
-    const choices=choice==='ALL'?LETTERS:[choice];
+    const choices=commentChoices||(choice==='ALL'?LETTERS:[choice]);
     if(choices.every(k=>answer.choices.has(k))) return {accepted:false,reason:'already_selected'};
-    if(!multiple && answer.choices.size) return {accepted:false,reason:'one_answer_only'};
+    if(!multiple && answer.choices.size&&!commentChoices) return {accepted:false,reason:'one_answer_only'};
     if(safeAvatarURL(avatar))answer.avatar=safeAvatarURL(avatar);
     for(const k of choices)answer.choices.add(k); this.answers.set(userId,answer);
-    this.lastAnswer={name:answer.name,avatar:answer.avatar,choice};
-    return {accepted:true,choice};
+    const recorded=commentChoices?choices.join('+'):choice;
+    this.lastAnswer={name:answer.name,avatar:answer.avatar,choice:recorded};
+    return {accepted:true,choice:recorded};
   }
   comment(event){
     const text=String(event.content??event.comment??event.text??'').trim().replace(/[۱۲۳١٢٣]/g,c=>({'۱':'1','۲':'2','۳':'3','١':'1','٢':'2','٣':'3'}[c]));
-    if(!/^[123]$/.test(text))return {accepted:false,reason:'irrelevant_comment'};
+    const commentChoices=[...new Set((text.match(/[123]/g)||[]).map(n=>'ABC'[Number(n)-1]))];
+    if(!commentChoices.length)return {accepted:false,reason:'irrelevant_comment'};
     const userId=String(event.user?.id??event.user?.userId??event.user?.idStr??event.userId??'');
     const raw=Number(event.common?.createTime??event.createTime),time=raw<1e12?raw*1000:raw;
     const message=String(event.common?.msgId??event.msgId??'');
-    return this.submit({id:message?'comment:'+message:'',userId,name:event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice:'ABC'[Number(text)-1],time});
+    return this.submit({id:message?'comment:'+message:'',userId,name:event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice:commentChoices[0],commentChoices,time});
   }
   gift(event,mapping) {
     const giftId=String(event.giftId??event.gift?.id??event.gift?.gift_id??'');

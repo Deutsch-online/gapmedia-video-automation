@@ -38,7 +38,7 @@ test('comment answers accept exact Latin/Persian/Arabic digits, retain portrait 
   const event={comment,user:{id:'comment-user'+i,nickname:'نظر',avatarThumb:{urlList:[avatar]}},common:{msgId:'comment'+i,createTime:now}};
   assert.equal(quiz.comment(event).accepted,true);assert.equal(quiz.comment(event).reason,'duplicate_event');assert.equal(quiz.snapshot().participants['ABC'[i]][0].avatar,avatar);
  }
- assert.equal(quiz.comment({comment:'hello 1'}).reason,'irrelevant_comment');quiz.pause();assert.equal(quiz.comment({comment:'1',user:{id:'late'},common:{msgId:'late',createTime:now}}).accepted,false);
+ assert.equal(quiz.comment({comment:'hello'}).reason,'irrelevant_comment');quiz.pause();assert.equal(quiz.comment({comment:'1',user:{id:'late'},common:{msgId:'late',createTime:now}}).accepted,false);
 });
 
 test('installed v3 protobuf chat content and gifts pass the actual schema instead of legacy-only chat names',async()=>{
@@ -70,4 +70,21 @@ test('last correct responder remains visible across questions until another corr
  quiz.reveal();assert.equal(quiz.snapshot().celebration.people[0].key,key,'a round with no correct responses does not erase the prior winner');
  quiz.next();quiz.start();for(const choice of quiz.questions[quiz.index].correct)quiz.submit({id:'new'+choice,userId:'new',name:'New winner',choice,time:now});quiz.reveal();
  s=quiz.snapshot();assert.equal(s.celebration.people[0].name,'New winner');assert.notEqual(s.celebration.people[0].key,key);assert.equal(s.celebration.questionId,s.question.id);
+});
+
+test('combined comment digits register all valid options atomically, independent of order and with one portrait per option',()=>{
+ const now=Date.now();
+ for(const [text,expected] of [['12',['A','B']],['123',['A','B','C']],['13',['A','C']],['14',['A']],['32',['B','C']],['23',['B','C']],['جواب ۲، ۳',['B','C']],['١٣',['A','C']],['112233',['A','B','C']]]){
+  const quiz=new Quiz(bank,{now:()=>now});quiz.start();const e={content:text,user:{id:'combo',nickname:'Combination',avatarThumb:{urlList:[avatar]}},common:{msgId:'combined',createTime:now}};
+  assert.equal(quiz.comment(e).accepted,true,text);assert.equal(quiz.snapshot().voters,1);assert.equal(quiz.comment(e).reason,'duplicate_event');
+  assert.deepEqual([...quiz.answers.get('combo').choices].sort(),expected,text);
+  for(const k of 'ABC')assert.equal(quiz.snapshot().participants[k].length,expected.includes(k)?1:0,text);
+ }
+});
+test('combined comments need the exact answer set to win and retain closed-round and stale-event protections',()=>{
+ const now=Date.now(),single=bank.find(q=>q.correct.length===1),quiz=new Quiz([single],{now:()=>now});quiz.start();
+ const e={content:'123',user:{id:'all'},common:{msgId:'all',createTime:now}};
+ assert.equal(quiz.comment(e).accepted,true);quiz.reveal();assert.equal(quiz.snapshot().winnerCount,0,'selecting all options never wins a single-answer question');
+ quiz.next();quiz.start();assert.equal(quiz.comment({...e,common:{msgId:'old',createTime:now-1000000}}).reason,'late_or_old_event');
+ quiz.pause();assert.equal(quiz.comment({...e,common:{msgId:'paused',createTime:now}}).reason,'round_closed');assert.equal(quiz.comment({content:'456'}).reason,'irrelevant_comment');
 });
