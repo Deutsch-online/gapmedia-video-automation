@@ -1,3 +1,6 @@
+const frameArt=new Map();
+export function setFrameArt(id,image){frameArt.set(id,image);}
+if(typeof Image!=='undefined')for(const id of ['gold','ice','fire']){const img=new Image();img.onload=()=>setFrameArt(id,img);img.src='/frames/'+id+'.png';}
 const palettes={simple:['#bbbcc8','#ffffff','#707582'],glow:['#c9a3ff','#fff3ff','#7941dd'],silver:['#a8c1d8','#ffffff','#667d95'],gold:['#f2b839','#fff3ba','#b87613'],ice:['#58d8ff','#efffff','#477be6'],fire:['#ff5c19','#ffe88e','#bc1123']};
 const ranks={simple:0,glow:1,silver:2,gold:3,ice:4,fire:5};
 const TAU=Math.PI*2;
@@ -27,7 +30,7 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
   const phase=i*2.39996+layer*1.77,a=i/banks*TAU+t*(layer%2?-.13:.11)+Math.sin(phase+t*.45)*.13;
   const breath=.5+.5*Math.sin(phase*1.6+t*.95),radius=r+size*(.018+layer*.022+breath*(.015+rank*.006));
   const puff=size*(.034+rank*.006+breath*.022)*(1+layer*.12);
-  cloud(ctx,Math.cos(a)*radius,Math.sin(a)*radius,puff,p[(i+layer)%3===0?1:0],(.12+rank*.025)*power*(.6+.4*breath));
+  cloud(ctx,Math.cos(a)*radius,Math.sin(a)*radius,puff,p[(i+layer)%3===0?1:0],(.16+rank*.035)*power*(.6+.4*breath));
  }
  // Continuous ripples travel around the halo, rather than a static border.
  const waves=1+Math.floor(rank/2);
@@ -69,5 +72,12 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  }
  ctx.globalAlpha=.8;ctx.strokeStyle=p[1];ctx.lineWidth=size*.007;ctx.shadowColor=p[0];ctx.shadowBlur=size*.025;ctx.rotate(t*.35);
  for(let j=0;j<(rank?3:1);j++){ctx.beginPath();ctx.arc(0,0,r+size*.006,j*TAU/3,j*TAU/3+.3+rank*.04);ctx.stroke();}
+ // Neon circuit ornaments and energy nodes intensify above the simple tier.
+ if(rank>0){ctx.shadowBlur=size*.035;ctx.strokeStyle=p[1];ctx.fillStyle=p[1];ctx.lineWidth=size*.004;const nodes=6+rank*2;
+  for(let i=0;i<nodes;i++){ctx.save();ctx.rotate(i/nodes*TAU-t*.12);const q=r+size*(.045+.015*Math.sin(t+i));ctx.globalAlpha=.45+.4*Math.sin(t*1.8+i)**2;ctx.beginPath();ctx.moveTo(q-size*.02,-size*.012);ctx.lineTo(q,0);ctx.lineTo(q+size*.015,0);ctx.stroke();ctx.translate(q+size*.02,0);ctx.rotate(Math.PI/4);ctx.fillRect(-size*.004,-size*.004,size*.008,size*.008);ctx.restore();}
+ }
  ctx.restore();
+ // AI-painted transparent ornaments sit over the animated mist and energy ring.
+ const art=frameArt.get(id);
+ if(art){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,size*.32,0,TAU);ctx.clip('evenodd');const breathe=1+Math.sin(t*.9)*.007,span=size*1.61*breathe;ctx.rotate(Math.sin(t*.6)*(id==='gold'?.002:.006));ctx.shadowColor=p[0];ctx.shadowBlur=size*(.025+.012*Math.sin(t*1.6)**2)*power;ctx.drawImage(art,-span/2,-span/2,span,span);ctx.restore();}
 }
