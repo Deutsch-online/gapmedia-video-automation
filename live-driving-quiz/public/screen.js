@@ -13,6 +13,7 @@ function render(s){
   if(activeBuild&&s.build&&activeBuild!==s.build){location.reload();return;}activeBuild=s.build;
   state=s;receivedAt=performance.now();const q=s.question;
   $('show').classList.toggle('has-activity',Boolean(s.supporters?.length));
+  $('show').classList.toggle('answer-comments',s.answerInput==='comments');
   $('show').classList.toggle('revealed',s.phase==='revealed');
   const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);$('show').classList.toggle('watching',s.phase==='watching');
   $('bankMedia').classList.toggle('hidden',!q.image);$('bankImage').classList.toggle('hidden',Boolean(q.video));$('bankVideo').classList.toggle('hidden',!q.video);
@@ -76,8 +77,8 @@ function adjustBankLayout(){
  const show=$('show');if(!show.classList.contains('bank-question'))return;
  // Preserve the source picture's size when a translation adds more text.
  $('bankImage').style.removeProperty('height');$('bankVideo').style.removeProperty('height');
- show.classList.remove('bank-compact','bank-crowded','bank-tight');
- for(const variant of ['bank-compact','bank-crowded','bank-tight'])if(show.scrollHeight>show.clientHeight)show.classList.add(variant);
+ show.classList.remove('bank-compact','bank-crowded','bank-tight','bank-full');
+ for(const variant of ['bank-compact','bank-crowded','bank-tight','bank-full'])if(show.scrollHeight>show.clientHeight)show.classList.add(variant);
 }
 document.fonts.ready.then(adjustBankLayout);
 

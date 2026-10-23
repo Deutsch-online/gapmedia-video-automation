@@ -270,3 +270,37 @@
 .screen-body .supporter-coins,.screen-body .newest .supporter-coins{font-size:25px}
 .screen-body .supporter-gift{font-size:19px}
 .screen-body .activity-rank{font-size:23px;order:2}
+
+/* Larger mobile question type with space reserved for the full-size image. */
+.screen-body .bank-question h1{font-size:52px}
+.screen-body .bank-question .question>p{font-size:40px;line-height:1.35}
+.screen-body .bank-question .option-de{font-size:40px;line-height:1.24}
+.screen-body .bank-question .option-fa{font-size:36px;line-height:1.3}
+.screen-body .bank-question.bank-compact h1{font-size:48px}
+.screen-body .bank-question.bank-compact .question>p{font-size:36px}
+.screen-body .bank-question.bank-compact .option-de{font-size:37px}
+.screen-body .bank-question.bank-compact .option-fa{font-size:33px}
+.screen-body .bank-question.bank-crowded h1{font-size:44px}
+.screen-body .bank-question.bank-crowded .question>p{font-size:32px}
+.screen-body .bank-question.bank-crowded .option-de{font-size:34px}
+.screen-body .bank-question.bank-crowded .option-fa{font-size:30px}
+.screen-body .bank-question.bank-tight h1{font-size:38px}
+.screen-body .bank-question.bank-tight .question>p{font-size:30px}
+.screen-body .bank-question.bank-tight .option-de{font-size:31px}
+.screen-body .bank-question.bank-tight .option-fa{font-size:28px}
+.screen-body .answer-comments .gift-info{display:none}
+.screen-body .answer-comments .gift-pill:not(:has(.answer-participants)){display:none}
+.screen-body .bank-question.bank-tight .question{padding:8px 12px;margin-bottom:8px}
+.screen-body .bank-question.bank-tight .option{padding:8px 12px}
+.screen-body .bank-question.bank-tight .option-fa{margin-top:4px}
+.screen-body .bank-question.bank-tight .gift-pill{margin-top:2px}
+.screen-body .bank-question.bank-tight .gift-info{font-size:16px;line-height:1;gap:4px}
+.screen-body .bank-question.bank-tight .gift-icon,.screen-body .bank-question.bank-tight .gift-symbol{height:24px;width:24px}
+/* Keep the longest bilingual questions readable when all answer photos appear. */
+.screen-body .bank-question.bank-full h1{font-size:36px;line-height:1.18;margin:6px 0}
+.screen-body .bank-question.bank-full .question>p{font-size:29px;line-height:1.25}
+.screen-body .bank-question.bank-full .option-de{font-size:29px;line-height:1.18}
+.screen-body .bank-question.bank-full .option-fa{font-size:26px;line-height:1.23}
+.screen-body .bank-question.bank-full .options{gap:6px}
+.screen-body .bank-question.bank-full .question{margin-bottom:6px}
+.screen-body .bank-question.bank-full .bank-media{margin-bottom:14px}
