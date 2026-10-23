@@ -14,6 +14,7 @@ export function validateQuestions(questions) {
       if(!/^\d+\.\d+\.\d+-\d+(?:-[BM])?$/.test(q.id)||!/^https:\/\/www\.clickclickdrive\.de\/fragenkatalog\//.test(q.source)||!q.source.endsWith('/'+q.id)||!/^\/media\/[0-9A-Za-z_-]+\.png$/.test(q.image)||q.translation_kind!=='educational-fa')throw Error('Imported question provenance or image missing');
     }else if (!/^https:\/\/www\.gesetze-im-internet\.de\/stvo_2013\/__[0-9]+\.html$/.test(q.source)) throw Error('Official legal source required');
   }
+  for(const q of questions)if(q.video&&(!/^\/media\/[0-9A-Za-z_-]+\.mp4$/.test(q.video)||!Number.isInteger(q.video_duration_ms)||q.video_duration_ms<1000||q.video_duration_ms>30000))throw Error('Invalid question video');
   return questions;
 }
 
@@ -24,11 +25,12 @@ export class Quiz {
     this.seen=new Map(); this.groups=new Map(); this.leaderboard=new Map(); this.lastAnswer=null;
   }
   start() {
-    if (this.phase==='open') throw Error('Round already open');
-    this.round={id:randomUUID(),opened:this.now(),closes:this.now()+this.seconds*1000};
-    this.phase='open'; this.answers=new Map(); this.lastAnswer=null;
+    if (['open','watching'].includes(this.phase)) throw Error('Round already open');
+    const q=this.questions[this.index],watch=q.video?q.video_duration_ms+2000:0;
+    this.round={id:randomUUID(),opened:this.now()+watch,closes:this.now()+watch+this.seconds*1000,videoStarted:q.video?this.now()+2000:null};
+    this.phase=q.video?'watching':'open'; this.answers=new Map(); this.lastAnswer=null;
   }
-  next() { if(this.phase==='open') throw Error('Reveal or pause this question first'); this.index=(this.index+1)%this.questions.length;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null; }
+  next() { if(['open','watching'].includes(this.phase)) throw Error('Reveal or pause this question first'); this.index=(this.index+1)%this.questions.length;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null; }
   pause() { this.phase='paused'; }
   reveal() {
     if(this.phase!=='open') return;
@@ -39,13 +41,15 @@ export class Quiz {
       if(ok) { const row=this.leaderboard.get(id)||{name:answer.name,score:0}; row.name=answer.name;row.score++;this.leaderboard.set(id,row); }
     }
   }
-  tick() { if(this.phase==='open' && this.now()>=this.round.closes) this.reveal(); }
+  select(id){if(['open','watching'].includes(this.phase))throw Error('Pause this question first');const index=this.questions.findIndex(q=>q.id===id);if(index<0)throw Error('Unknown question');this.index=index;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null;}
+  tick() { if(this.phase==='watching'&&this.now()>=this.round.opened)this.phase='open';if(this.phase==='open' && this.now()>=this.round.closes) this.reveal(); }
   submit({id,userId,name,choice,time,roundId}) {
     this.tick();
     if(!id || !userId || ![...LETTERS,'ALL'].includes(choice) || !Number.isFinite(time)) return {accepted:false,reason:'invalid_event'};
     if(this.seen.has(id)) return {accepted:false,reason:'duplicate_event'};
     this.seen.set(id,this.now());
     if(this.seen.size>20000) this.seen.delete(this.seen.keys().next().value);
+    if(this.phase==='watching')return {accepted:false,reason:'watching_video'};
     if(this.phase!=='open' || (roundId && roundId!==this.round.id)) return {accepted:false,reason:'round_closed'};
     if(time<Math.floor(this.round.opened/1000)*1000 || time>this.round.closes || time>this.now()+5000) return {accepted:false,reason:'late_or_old_event'};
     const answer=this.answers.get(userId)||{name:String(name||'بیننده').slice(0,40),choices:new Set()};
@@ -79,9 +83,9 @@ export class Quiz {
   snapshot() {
     this.tick();
     const q=this.questions[this.index];
-    const question={id:q.id,de:q.de,fa:q.fa,options:q.options,topic:q.topic,visual:q.visual,multiple:q.correct.length>1,source_kind:q.source_kind||'authored-practice',image:q.image||null,image_alt:q.image_alt||null,points:q.points||null};
+    const question={id:q.id,de:q.de,fa:q.fa,options:q.options,topic:q.topic,visual:q.visual,multiple:q.correct.length>1,source_kind:q.source_kind||'authored-practice',image:q.image||null,image_alt:q.image_alt||null,points:q.points||null,video:q.video||null,video_duration_ms:q.video_duration_ms||null};
     if(this.phase==='revealed') Object.assign(question,{correct:q.correct,explanation_de:q.explanation_de,explanation_fa:q.explanation_fa,source:q.source});
-    return {index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),question,
+    return {index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
       voters:this.answers.size,counts:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).length])),lastAnswer:this.lastAnswer,
       leaderboard:[...this.leaderboard.values()].sort((a,b)=>b.score-a.score).slice(0,5)};
   }

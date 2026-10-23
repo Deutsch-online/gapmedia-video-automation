@@ -9,6 +9,7 @@ import {HttpProxyAgent,HttpsProxyAgent} from 'hpagent';
 import {Quiz,LETTERS} from './quiz.mjs';
 import {hostingConfig} from './hosting.mjs';
 import {loadBankMedia} from './bank-media.mjs';
+import {serveMedia} from './media-response.mjs';
 
 // The dependency otherwise discovers SIGN_API_KEY from the environment.
 // This application deliberately permits anonymous/free signing only.
@@ -127,26 +128,28 @@ const server=http.createServer(async(req,res)=>{
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,verified_images:bankMedia.size});
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
     if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,publicState());
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
+      if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video)}))});
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
       const data=await body(req);const action=url.pathname.split('/').at(-1);
       if(action==='start')startRound();
-      else if(action==='reveal'){quiz.reveal();advanceAt=Date.now()+12000;}
+      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');quiz.reveal();advanceAt=Date.now()+12000;}
+      else if(action==='select'){quiz.select(String(data.id));advanceAt=null;}
       else if(action==='next'){quiz.next();advanceAt=null;}
       else if(action==='pause'){autoplay=false;quiz.pause();}
-      else if(action==='autoplay'){autoplay=Boolean(data.enabled);if(autoplay&&quiz.phase!=='open'){if(quiz.phase==='revealed')quiz.next();startRound();}}
+      else if(action==='autoplay'){autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed')quiz.next();startRound();}}
       else if(action==='mode'){
         if(!['demo','live'].includes(data.mode))throw Error('حالت معتبر نیست.');
-        if(quiz.phase==='open')throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
+        if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
         if(data.mode==='live'&&!ready())throw Error('اتصال زنده و سه هدیهٔ معتبر لازم است.');
         changeMode(data.mode);autoplay=false;quiz.pause();
       }
       else if(action==='gifts'){
-        if(quiz.phase==='open')throw Error('پیش از تغییر هدایا سؤال را متوقف کنید.');
+        if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر هدایا سؤال را متوقف کنید.');
         if(!Array.isArray(data.ids)||![3,4].includes(data.ids.length)||data.ids.slice(0,3).some(id=>!id)||new Set(data.ids.filter(Boolean).map(String)).size!==data.ids.filter(Boolean).length)throw Error('سه هدیهٔ متفاوت و در صورت تمایل یک هدیهٔ جدا برای هر سه انتخاب کنید.');
         const selected=data.ids.slice(0,3).map(id=>live.catalog.find(g=>g.id===String(id)));
         const all=data.ids[3]?live.catalog.find(g=>g.id===String(data.ids[3])):null;
@@ -154,7 +157,7 @@ const server=http.createServer(async(req,res)=>{
         settings.gifts={...Object.fromEntries(LETTERS.map((k,i)=>[k,{...selected[i],verified:true}])),ALL:all?{...all,verified:true}:defaults.gifts.ALL};save();
       }
       else if(action==='manual-gifts'){
-        if(quiz.phase==='open')throw Error('پیش از تغییر هدایا سؤال را متوقف کنید.');
+        if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر هدایا سؤال را متوقف کنید.');
         if(!data.confirmed||!Array.isArray(data.gifts)||data.gifts.length!==4)throw Error('نام و شناسهٔ سه هدیه و انتخاب اختیاری هر سه را تأیید کنید.');
         const rows=data.gifts.map((g,i)=>!g.id&&i===3?null:{id:String(g.id||''),name:String(g.name||'').trim().slice(0,80),coins:null,verified:true,source:'owner-manual',bound_username:settings.username});
         if(rows.slice(0,3).some(g=>!/^\d{1,20}$/.test(g.id)||g.id==='0'||!g.name)||rows[3]&&(!/^\d{1,20}$/.test(rows[3].id)||rows[3].id==='0'||!rows[3].name)||new Set(rows.filter(Boolean).map(g=>g.id)).size!==rows.filter(Boolean).length)throw Error('نام و شناسهٔ معتبر و متفاوت برای هدایا لازم است.');
@@ -172,7 +175,7 @@ const server=http.createServer(async(req,res)=>{
       else return json(res,404,{error:'Unknown command'});
       broadcast();return json(res,200,{ok:true,state:publicState()});
     }
-    if(req.method==='GET'&&bankMedia.has(url.pathname)){res.writeHead(200,{'content-type':'image/png','cache-control':'public, max-age=3600'});return res.end(bankMedia.get(url.pathname));}
+    if(['GET','HEAD'].includes(req.method)&&bankMedia.has(url.pathname))return serveMedia(req,res,bankMedia.get(url.pathname),url.pathname.endsWith('.mp4')?'video/mp4':'image/png');
     const asset=assets.get(url.pathname);
     if(req.method==='GET'&&asset) {
       const ext='.'+asset.split('.').at(-1);res.writeHead(200,{'content-type':contentTypes[ext]||'application/octet-stream','cache-control':'no-store'});return res.end(readFileSync(join(root,'public',asset)));
@@ -185,7 +188,7 @@ server.on('upgrade',(req,socket,head)=>{
   wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);ws.send(JSON.stringify(publicState()));});
 });
 const tick=setInterval(()=>{
-  const before=quiz.phase;quiz.tick();if(before==='open'&&quiz.phase==='revealed')advanceAt=Date.now()+12000;
+  quiz.tick();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+12000;
   if(autoplay&&quiz.phase==='revealed'&&Date.now()>=advanceAt){quiz.next();try{startRound();}catch{autoplay=false;quiz.pause();}}
   broadcast();
 },500);

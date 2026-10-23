@@ -43,8 +43,8 @@ function render(s){
  if(!s)return;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
  $('connectionStatus').textContent=s.connection.message;
  $('autoplay').checked=s.autoplay;
- const p={waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
- $('status').textContent=`حالت: ${s.mode==='demo'?'آزمایشی':'واقعی'}\nسؤال: ${s.index+1} از ${s.total}\nوضعیت: ${p[s.phase]}\nبینندگان پاسخ‌دهنده: ${s.voters}\nآمادگی گیفت واقعی: ${s.liveReady?'آماده':'تنظیم لازم دارد'}${s.lastReject?'\nآخرین پاسخ ثبت‌نشده: '+({round_closed:'زمان سؤال تمام شده یا دریافت پاسخ متوقف است.',one_answer_only:'بیننده قبلاً گزینهٔ دیگری را انتخاب کرده است.',all_not_allowed:'این سؤال فقط یک پاسخ دارد.',late_or_old_event:'پیام هدیه برای این سؤال دیر رسیده یا مربوط به قبل است.',invalid_event:'اطلاعات لازم برای ثبت پاسخ دریافت نشد.'}[s.lastReject]||'پاسخ تکراری یا نامعتبر بود.'):''}`;
+ const p={watching:'نمایش فیلم · هنوز پاسخ ندهید',waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
+ $('status').textContent=`حالت: ${s.mode==='demo'?'آزمایشی':'واقعی'}\nسؤال: ${s.index+1} از ${s.total}\nوضعیت: ${p[s.phase]}\nبینندگان پاسخ‌دهنده: ${s.voters}\nآمادگی گیفت واقعی: ${s.liveReady?'آماده':'تنظیم لازم دارد'}${s.lastReject?'\nآخرین پاسخ ثبت‌نشده: '+({watching_video:'ابتدا فیلم را ببینید؛ پاسخ‌گویی پس از فیلم آغاز می‌شود.',round_closed:'زمان سؤال تمام شده یا دریافت پاسخ متوقف است.',one_answer_only:'بیننده قبلاً گزینهٔ دیگری را انتخاب کرده است.',all_not_allowed:'این سؤال فقط یک پاسخ دارد.',late_or_old_event:'پیام هدیه برای این سؤال دیر رسیده یا مربوط به قبل است.',invalid_event:'اطلاعات لازم برای ثبت پاسخ دریافت نشد.'}[s.lastReject]||'پاسخ تکراری یا نامعتبر بود.'):''}`;
  $('leaderboard').replaceChildren(...s.leaderboard.map((row,i)=>{const p=document.createElement('p');p.textContent=`${i+1}. ${row.name} — ${row.score} پاسخ درست`;return p;}));
  savedGifts();if(changed)void loadCatalog();
 }
@@ -60,3 +60,6 @@ $('demoMode').addEventListener('click',()=>api('mode',{mode:'demo'}));
 if(!token)notice('لینک خصوصی پنل را از پیام تلگرام باز کنید؛ بخش بعد از # لازم است.',true);else notice('آماده؛ ابتدا یک سؤال آزمایشی اجرا کنید.');
 fetch('/api/state').then(r=>r.json()).then(render);
 const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>notice('ارتباط پنل قطع شد؛ نشانی خصوصی پنل را دوباره باز کنید.',true);
+
+async function loadQuestions(){try{const response=await fetch('/api/admin/questions',{headers:{Authorization:'Bearer '+token}});if(!response.ok)return;const data=await response.json();$('questionSelect').replaceChildren(...data.questions.map(q=>{const o=document.createElement('option');o.value=q.id;o.textContent=`${q.video?'🎬 ':'🖼 '}${q.id} · ${q.topic}`;return o;}));}catch{notice('فهرست سؤال‌ها دریافت نشد.',true);}}
+$('selectQuestion').addEventListener('click',()=>api('select',{id:$('questionSelect').value}));if(token)void loadQuestions();

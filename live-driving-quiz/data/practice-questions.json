@@ -458,7 +458,7 @@
       "B"
     ],
     "explanation_de": "Wer abbiegt, muss Fahrräder in gleicher Richtung auf oder neben der Fahrbahn durchfahren lassen. Ein Blinker gibt keinen Vorrang.",
-    "explanation_fa": "راننده هنگام گردش باید به دوچرخه‌ای که روی سواره‌رو یا کنار آن هم‌جهت حرکت می‌کند اجازهٔ عبور بدهد. راهنما حق تقدم ایجاد نمی‌کند.",
+    "explanation_fa": "راننده هنگام گردش باید به دوچرخه‌ای که روی جاده یا کنار آن هم‌جهت حرکت می‌کند اجازهٔ عبور بدهد. راهنما حق تقدم ایجاد نمی‌کند.",
     "source": "https://www.gesetze-im-internet.de/stvo_2013/__9.html"
   },
   {
@@ -505,7 +505,7 @@
       },
       {
         "de": "Bei freier Fahrbahn gilt die normale Höchstgeschwindigkeit.",
-        "fa": "اگر سواره‌رو خالی است، سرعت عادی مجاز است."
+        "fa": "اگر جاده خالی است، سرعت عادی مجاز است."
       }
     ],
     "correct": [
@@ -513,7 +513,7 @@
       "B"
     ],
     "explanation_de": "Bei haltendem Linienbus mit Warnblinklicht gilt Schrittgeschwindigkeit, auch im Gegenverkehr auf derselben Fahrbahn. Fahrgäste dürfen weder gefährdet noch behindert werden.",
-    "explanation_fa": "کنار اتوبوس خطیِ ایستاده با فلاشر، سرعت قدم‌زدن لازم است؛ حتی برای ترافیک روبه‌رو روی همان سواره‌رو. نباید مسافران را به خطر انداخت یا مانعشان شد.",
+    "explanation_fa": "کنار اتوبوس خطیِ ایستاده با فلاشر، سرعت قدم‌زدن لازم است؛ حتی برای ترافیک روبه‌رو روی همان جاده. نباید مسافران را به خطر انداخت یا مانعشان شد.",
     "source": "https://www.gesetze-im-internet.de/stvo_2013/__20.html"
   },
   {
@@ -529,7 +529,7 @@
       },
       {
         "de": "Nur halten, wenn die Person schon auf der Fahrbahn ist.",
-        "fa": "فقط وقتی عابر وارد سواره‌رو شده توقف می‌کنم."
+        "fa": "فقط وقتی عابر وارد جاده شده توقف می‌کنم."
       },
       {
         "de": "Hupen und unverändert weiterfahren.",

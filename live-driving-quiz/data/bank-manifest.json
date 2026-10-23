@@ -2,7 +2,7 @@
   "upstream_repository": "yowmamasita/driving-theory",
   "upstream_commit": "bbdfe728a9c19c427f67bff45ed54780248b1aeb",
   "retrieved_at": "2026-10-23T08:31:38.677675+00:00",
-  "question_count": 20,
+  "question_count": 24,
   "source_question_count": 2413,
   "catalog_version": "not independently established",
   "rights_basis": "Project owner explicitly confirmed permission to use the bank and requested integration on 2026-10-23; not an independently verified publisher grant.",
@@ -227,6 +227,69 @@
       "width": 640,
       "height": 384,
       "text_key_sha256": "0f359dd5881c07ed638b15a1a4d603c9288a178fbcd3991a74aa974d8027968f"
+    },
+    {
+      "question_id": "1.1.07-019-M",
+      "file": "1_1_07-019-M.png",
+      "url": "https://storage.googleapis.com/theory-svc-production-media/media/de/2024-10-01/1.1.07-019-M.png",
+      "sha256": "c44079503d05b29bf578ff45eabbbb3ab95a4068db6e2bbdf47dec570b904e48",
+      "bytes": 1293095,
+      "width": 2400,
+      "height": 1440,
+      "text_key_sha256": "325203a84dea6890a2864e514e1cf773b4092537aa764cefe2d12ba5915e6666"
+    },
+    {
+      "question_id": "1.2.09-021-M",
+      "file": "1_2_09-021-M.png",
+      "url": "https://storage.googleapis.com/theory-svc-production-media/media/de/2024-10-01/1.2.09-021-M.png",
+      "sha256": "ac91a5d71141918dbda1df6b9b77e0a1fc6542a065b33979cb065c684d802860",
+      "bytes": 1386793,
+      "width": 2400,
+      "height": 1440,
+      "text_key_sha256": "298115d855f9412be11ab1a81b9169fee8e8c74129e1fd2fac5fafd8f0ba9c8d"
+    },
+    {
+      "file": "1_1_02-049.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_02-049.png",
+      "bytes": 103719,
+      "sha256": "4a674813277f5d8b43240075dfdb2c261ab18536289acc117b34f16b52ea1f16",
+      "question_id": "1.1.02-049",
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "c9e7e26577a5433e1e8c22adc20d0d66d03d97b6b34f4e951e584a0bb9cd7d4b"
+    },
+    {
+      "file": "1_1_02-050-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_02-050-M.png",
+      "bytes": 118015,
+      "sha256": "5cf96106b5fb944f9eeadacff34021c4f3fe4077b089227416b7a9622e7a949c",
+      "question_id": "1.1.02-050-M",
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "0924cb8383848c8a8086de9ee22387b0422fdc57ba4f56a9a1997e7f2ebdea09"
     }
-  ]
+  ],
+  "videos": [
+    {
+      "question_id": "1.1.02-049",
+      "file": "1_1_02-049.mp4",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/videos/1_1_02-049.mp4",
+      "bytes": 1667113,
+      "sha256": "da673bef645cf043846617db54030600a2d734692ed31b3b38ec8ce6343cd3b1",
+      "duration_ms": 15040,
+      "width": 640,
+      "height": 384
+    },
+    {
+      "question_id": "1.1.02-050-M",
+      "file": "1_1_02-050-M.mp4",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/videos/1_1_02-050-M.mp4",
+      "bytes": 1565178,
+      "sha256": "b124d1bb7eeaaa491266c54e7be76b4cf4c70651347b868774a8bfbc8d1d1183",
+      "duration_ms": 15040,
+      "width": 640,
+      "height": 384
+    }
+  ],
+  "quality_note": "Original source media only. No generative reconstruction of road signs or traffic situations."
 }

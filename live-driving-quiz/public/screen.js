@@ -1,15 +1,15 @@
 function fitScreen(){document.documentElement.style.setProperty('--screen-scale',Math.min(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fitScreen);fitScreen();
 const $=id=>document.getElementById(id);
-let state;
+let state,receivedAt=0;
 const fa=new Intl.NumberFormat('fa-IR');
 const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋',bus:'BUS',crossing:'🚶'};
 function element(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function render(s){
-  state=s;const q=s.question;
+  state=s;receivedAt=performance.now();const q=s.question;
   $('show').classList.toggle('revealed',s.phase==='revealed');
-  const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);
-  $('bankMedia').classList.toggle('hidden',!q.image);
+  const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);$('show').classList.toggle('watching',s.phase==='watching');
+  $('bankMedia').classList.toggle('hidden',!q.image);$('bankImage').classList.toggle('hidden',Boolean(q.video));$('bankVideo').classList.toggle('hidden',!q.video);
   const img=$('bankImage');if(q.image&&img.getAttribute('src')!==q.image){$('imageFailure').classList.add('hidden');img.src=q.image;img.alt=q.image_alt||q.id;}
   $('bankImageLabel').textContent=`${q.id}${q.points?' · '+q.points+' Punkte':''}`;
 
@@ -37,15 +37,16 @@ function render(s){
   $('allGift').textContent=s.mode==='demo'?'انتخاب «هر سه»: A + B + C':`هدیهٔ ${all?.name||''} = انتخاب هر سه گزینه${all?.coins?` · ${fa.format(all.coins)} Coin`:''}`;
   $('explainDe').textContent=q.explanation_de||'';$('explainFa').textContent=q.explanation_fa||'';
   if(q.source)$('source').href=q.source;else $('source').removeAttribute('href');
-  const labels={waiting:'آمادهٔ سؤال بعد',open:s.mode==='demo'?'پاسخ آزمایشی را انتخاب کنید':'حالا با هدیهٔ گزینه‌تان پاسخ دهید',revealed:'پاسخ درست را یاد بگیریم',paused:'توقف • دریافت پاسخ غیرفعال'};
+  const labels={watching:'ابتدا فیلم را ببینید · هنوز گیفت نفرستید',waiting:'آمادهٔ سؤال بعد',open:s.mode==='demo'?'پاسخ آزمایشی را انتخاب کنید':'حالا با هدیهٔ گزینه‌تان پاسخ دهید',revealed:'پاسخ درست را یاد بگیریم',paused:'توقف • دریافت پاسخ غیرفعال'};
   $('phaseLabel').textContent=labels[s.phase]||s.phase;
   $('voters').textContent=`${fa.format(s.voters)} شرکت‌کننده`;
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name} ${s.lastAnswer.choice==='ALL'?'هر سه گزینه':`گزینهٔ ${s.lastAnswer.choice}`} را انتخاب کرد.`:'اول فکر کن؛ بعد گزینه‌ات را انتخاب کن.';
-  $('giftNote').textContent=s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
-  updateTimer();requestAnimationFrame(adjustBankLayout);
+  $('giftNote').textContent=s.phase==='watching'?'هنگام نمایش فیلم پاسخ ثبت نمی‌شود؛ پس از پایان فیلم ۳۰ ثانیه فرصت دارید.':s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
+  syncVideo();updateTimer();requestAnimationFrame(adjustBankLayout);
 }
-function updateTimer(){if(!state)return;const left=state.phase==='open'?Math.max(0,Math.ceil((state.closesAt-Date.now())/1000)):0;
- $('timer').replaceChildren(document.createTextNode(fa.format(left)),element('span','',state.phase==='revealed'?'پاسخ':'ثانیه'));
+function serverNow(){return state.serverTime+performance.now()-receivedAt;}
+function updateTimer(){if(!state)return;const target=state.phase==='watching'?state.opensAt:state.closesAt;const left=['open','watching'].includes(state.phase)?Math.max(0,Math.ceil((target-serverNow())/1000)):0;
+ $('timer').replaceChildren(document.createTextNode(fa.format(left)),element('span','',state.phase==='watching'?'فیلم':state.phase==='revealed'?'پاسخ':'ثانیه'));
  $('progressBar').style.width=state.phase==='open'?`${Math.max(0,Math.min(100,left/30*100))}%`:state.phase==='revealed'?'100%':'0%';}
 setInterval(updateTimer,250);
 let reconnect;
@@ -56,3 +57,17 @@ $('bankImage').addEventListener('error',()=>{$('imageFailure').classList.remove(
 
 function adjustBankLayout(){const show=$('show');if(!show.classList.contains('bank-question'))return;show.classList.remove('bank-compact');if(show.scrollHeight>show.clientHeight)show.classList.add('bank-compact');}
 document.fonts.ready.then(adjustBankLayout);
+
+function syncVideo(){
+ if(!state)return;const video=$('bankVideo'),q=state.question;
+ if(!q.video){video.pause();if(video.hasAttribute('src')){video.removeAttribute('src');video.load();}return;}
+ if(video.getAttribute('src')!==q.video){video.src=q.video;video.poster=q.image;video.load();}
+ if(!video.readyState)return;
+ if(state.phase==='watching'){
+  const elapsed=(serverNow()-state.videoStartedAt)/1000;const target=Math.max(0,Math.min(elapsed,q.video_duration_ms/1000-.05));
+  if(Math.abs(video.currentTime-target)>.8)video.currentTime=target;
+  if(elapsed<0)video.pause();else if(video.paused)void video.play().catch(()=>{$('imageFailure').textContent='پخش خودکار فیلم ممکن نشد؛ پنل را بررسی کنید.';$('imageFailure').classList.remove('hidden');});
+ }else{video.pause();if(['open','revealed'].includes(state.phase))video.currentTime=Math.max(0,Math.min(video.duration,q.video_duration_ms/1000)-.05);}
+}
+$('bankVideo').addEventListener('loadedmetadata',syncVideo);
+$('bankVideo').addEventListener('error',()=>{$('imageFailure').textContent='فیلم دریافت نشد؛ این سؤال را متوقف کنید.';$('imageFailure').classList.remove('hidden');});

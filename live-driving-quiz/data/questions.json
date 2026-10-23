@@ -1,5 +1,71 @@
 [
   {
+    "id": "1.2.09-021-M",
+    "topic": "Kreisverkehr · خروج از میدان",
+    "de": "Sie möchten den Kreisverkehr an dieser Ausfahrt verlassen. Was ist richtig?",
+    "fa": "می‌خواهید از این خروجیِ میدان خارج شوید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Ich muss [die Fußgängerin] die Fahrbahn überqueren lassen",
+        "fa": "باید اجازه بدهم عابر زن از جاده عبور کند."
+      },
+      {
+        "de": "Ich muss [den Radfahrer] die Fahrbahn überqueren lassen",
+        "fa": "باید اجازه بدهم دوچرخه‌سوار از جاده عبور کند."
+      },
+      {
+        "de": "Ich habe Vorrang vor den die Fahrbahn überquerenden Verkehrsteilnehmern",
+        "fa": "من نسبت به کاربران راه که از جاده عبور می‌کنند حق تقدم دارم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-021-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-021-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-021-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-019-M",
+    "topic": "Abbiegen · گردش به راست",
+    "de": "Sie möchten an der Kreuzung nach rechts abbiegen. Was ist richtig?",
+    "fa": "می‌خواهید در تقاطع به راست بپیچید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Ich wechsle den Fahrstreifen möglichst frühzeitig",
+        "fa": "تا حد ممکن زودتر خط حرکت خود را عوض کنم."
+      },
+      {
+        "de": "Ich darf Radfahrer auf dem Schutzstreifen nicht behindern",
+        "fa": "نباید مانع دوچرخه‌سوارانِ مسیر مشخص‌شدهٔ دوچرخه شوم."
+      },
+      {
+        "de": "Ich darf den Schutzstreifen für Radfahrer nur mit Schrittgeschwindigkeit überqueren",
+        "fa": "فقط با سرعت قدم‌زدن اجازه دارم از مسیر مشخص‌شدهٔ دوچرخه عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-019-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-019-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-019-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
     "id": "1.1.02-009-B",
     "topic": "Verhalten Gegenueber Fussgaengern · عابران و کودکان",
     "visual": "bank",
@@ -36,7 +102,7 @@
     "topic": "Fahrbahn / Witterungsverhaeltnisse · شرایط راه",
     "visual": "bank",
     "de": "Auf der Fahrbahn befindet sich Öl. Wie sollten Sie sich jetzt verhalten?",
-    "fa": "روی سواره‌رو روغن ریخته است. اکنون چگونه باید رفتار کنید؟",
+    "fa": "روی جاده روغن ریخته است. اکنون چگونه باید رفتار کنید؟",
     "options": [
       {
         "de": "Ich informiere die Feuerwehr",
@@ -48,7 +114,7 @@
       },
       {
         "de": "Ich weiche auf die linke Fahrbahnhälfte aus",
-        "fa": "به نیمهٔ چپ سواره‌رو منحرف شوم."
+        "fa": "به نیمهٔ چپ جاده منحرف شوم."
       }
     ],
     "correct": [
@@ -73,7 +139,7 @@
     "options": [
       {
         "de": "Zum rechten Fahrbahnrand schauen",
-        "fa": "به لبهٔ راست سواره‌رو نگاه کنم."
+        "fa": "به لبهٔ راست جاده نگاه کنم."
       },
       {
         "de": "Geschwindigkeit notfalls vermindern",
@@ -110,7 +176,7 @@
       },
       {
         "de": "Dass Einmündungen übersehen werden",
-        "fa": "ورودی خیابان‌ها دیده نشوند."
+        "fa": "ورودی جاده‌های فرعی از نظر رانندگان پنهان بماند."
       },
       {
         "de": "Dass Kinder auf die Straße laufen",
@@ -148,7 +214,7 @@
       },
       {
         "de": "Weil der Straßenbelag auf der linken Fahrbahnhälfte sehr schlecht ist",
-        "fa": "چون سطح نیمهٔ چپ سواره‌رو بسیار خراب است."
+        "fa": "چون سطح نیمهٔ چپ جاده بسیار خراب است."
       }
     ],
     "correct": [
@@ -202,7 +268,7 @@
     "topic": "Strassenbenutzung · استفاده از راه",
     "visual": "bank",
     "de": "Wozu darf der rechte Seitenstreifen benutzt werden?",
-    "fa": "از شانهٔ سمت راست راه برای چه کارهایی می‌توان استفاده کرد؟",
+    "fa": "از شانهٔ سمت راست جاده برای چه کارهایی می‌توان استفاده کرد؟",
     "options": [
       {
         "de": "Zum Halten und Parken",
@@ -300,7 +366,7 @@
     "topic": "Abbiegen Wenden / Rueckwaertsfahren · گردش",
     "visual": "bank",
     "de": "Sie möchten nach links abbiegen. Welche Fahrlinie müssen Sie einhalten?",
-    "fa": "می‌خواهید به چپ بپیچید. کدام مسیر حرکت را باید دنبال کنید؟",
+    "fa": "می‌خواهید به چپ بپیچید. کدام خطِ مسیرِ نشان‌داده‌شده در تصویر را باید دنبال کنید؟",
     "options": [
       {
         "de": "Die rechte Fahrlinie",
@@ -466,7 +532,7 @@
     "options": [
       {
         "de": "Ich verzichte mit eindeutigem Handzeichen auf meine Vorfahrt",
-        "fa": "با علامت واضح دست از حق تقدمم بگذرم."
+        "fa": "با اشارهٔ واضح دست، از حق تقدم خود بگذرم."
       },
       {
         "de": "Ich fahre als Erster bis zur Mitte der Kreuzung vor und halte an",
@@ -494,7 +560,7 @@
     "topic": "Verhalten An Fussgaengerueberwegen / Gegenueber Fussgaengern · عبور عابران",
     "visual": "bank",
     "de": "Womit müssen Sie bei derartigen Querungshilfen rechnen?",
-    "fa": "در کنار چنین جزیره‌های کمکیِ عبور، باید انتظار چه چیزهایی را داشته باشید؟",
+    "fa": "در کنار چنین جزیره‌های میانی برای عبور عابران، باید انتظار چه چیزهایی را داشته باشید؟",
     "options": [
       {
         "de": "Fußgänger nehmen an, dass sie Vorrang vor dem Verkehr haben",
@@ -527,11 +593,11 @@
     "topic": "Unfall · تصادف و مواد خطرناک",
     "visual": "bank",
     "de": "Sie sind an einem Unfall mit einem Fahrzeug beteiligt, an dem die dargestellte orangefarbene Tafel angebracht ist. Sie sehen, dass aus dem Fahrzeug eine Flüssigkeit austritt. Wie verhalten Sie sich richtig?",
-    "fa": "در تصادفی با خودروی دارای تابلوی نارنجیِ تصویر شرکت دارید. می‌بینید از خودرو مایع نشت می‌کند. رفتار درست چیست؟",
+    "fa": "با خودرویی تصادف کرده‌اید که تابلوی نارنجیِ تصویر را دارد. از آن مایع نشت می‌کند. رفتار درست چیست؟",
     "options": [
       {
         "de": "Ich gebe beim Notruf die Zahlen auf der orangefarbenen Tafel an",
-        "fa": "هنگام تماس اضطراری، شماره‌های روی تابلو را بگویم."
+        "fa": "هنگام تماس با امداد، شماره‌های روی تابلوی نارنجی را اعلام کنم."
       },
       {
         "de": "Ich vermeide es, den Bereich mit der ausgelaufenen Flüssigkeit zu betreten",
@@ -653,5 +719,74 @@
     "image": "/media/1_3_01-007-M.png",
     "image_alt": "Verkehrssituation zur Frage 1.3.01-007-M",
     "points": 5
+  },
+  {
+    "id": "1.1.02-049",
+    "topic": "Gefahrenbremsung · ترمز اضطراری",
+    "de": "Wie verhalten Sie sich in dieser Situation?",
+    "fa": "در این وضعیت چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Ich führe eine Gefahrenbremsung durch",
+        "fa": "ترمز اضطراری می‌کنم."
+      },
+      {
+        "de": "Ich hupe und fahre weiter",
+        "fa": "بوق می‌زنم و ادامه می‌دهم."
+      },
+      {
+        "de": "Ich beschleunige",
+        "fa": "سرعت را زیاد می‌کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-049",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-049.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-049",
+    "points": 4,
+    "visual": "bank",
+    "video": "/media/1_1_02-049.mp4",
+    "video_duration_ms": 15040
+  },
+  {
+    "id": "1.1.02-050-M",
+    "topic": "Kinder · کودکان در جاده",
+    "de": "Warum müssen Sie hier langsam und bremsbereit fahren?",
+    "fa": "چرا در اینجا باید آهسته برانید و آمادهٔ ترمز باشید؟",
+    "options": [
+      {
+        "de": "Weil die Verkehrssituation unübersichtlich ist",
+        "fa": "چون دید و وضعیت ترافیک روشن و قابل پیش‌بینی نیست."
+      },
+      {
+        "de": "Weil sich ein Kind auf der Fahrbahn befindet",
+        "fa": "چون کودکی در جاده است."
+      },
+      {
+        "de": "Weil [der weiße Transporter] anfährt",
+        "fa": "چون وانت سفید شروع به حرکت می‌کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-050-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-050-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-050-M",
+    "points": 5,
+    "visual": "bank",
+    "video": "/media/1_1_02-050-M.mp4",
+    "video_duration_ms": 15040
   }
 ]

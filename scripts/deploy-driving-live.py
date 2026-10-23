@@ -39,6 +39,11 @@ def free_runtime(api,repo):
     return runtime
 
 
+def deployment_ready(runtime,health,build,space_commit):
+    stage=str(getattr(runtime.stage,'value',runtime.stage))
+    return stage=='RUNNING' and runtime.raw.get('sha')==space_commit and health.get('ok') is True and health.get('version')=='fahrfit-online-v1' and health.get('build')==build
+
+
 def deploy():
     from huggingface_hub import HfApi,CommitOperationAdd,SpaceHardware
     from huggingface_hub.errors import RepositoryNotFoundError
@@ -70,7 +75,7 @@ def deploy():
             front='---\ntitle: FahrFit LIVE\nemoji: 🚦\ncolorFrom: green\ncolorTo: blue\nsdk: docker\napp_port: 7860\npinned: false\nlicense: agpl-3.0\n---\n\n'
             operations.append(CommitOperationAdd(path_in_repo=name,path_or_fileobj=(front+file.read_text()).encode()))
         else:operations.append(CommitOperationAdd(path_in_repo=name,path_or_fileobj=str(file)))
-    api.create_commit(repo,repo_type='space',operations=operations,commit_message='Deploy tested FahrFit source '+build[:12])
+    uploaded=api.create_commit(repo,repo_type='space',operations=operations,commit_message='Deploy tested FahrFit source '+build[:12])
     report={'repo':repo,'url':url,'hardware':'cpu-basic','paid_requested':False,'gpu_requested':False,'build':build,'status':'building'}
     write_report(report)
     ready=False
@@ -82,7 +87,7 @@ def deploy():
         if stage in ('BUILD_ERROR','CONFIG_ERROR','RUNTIME_ERROR'):raise RuntimeError('Free Space build/runtime failed')
         try:
             with urllib.request.urlopen(url+'/health',timeout=15) as response:health=json.load(response)
-            if health.get('ok') and health.get('version')=='fahrfit-online-v1' and health.get('build')==build:
+            if deployment_ready(runtime,health,build,uploaded.oid):
                 ready=True;break
         except (OSError,ValueError):pass
         time.sleep(8)

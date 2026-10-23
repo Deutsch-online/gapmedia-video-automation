@@ -8,4 +8,5 @@ fi
 if [[ ! -d node_modules ]]; then
   npm ci --ignore-scripts --no-audit --no-fund
 fi
+node bank-media.mjs
 exec node server.mjs

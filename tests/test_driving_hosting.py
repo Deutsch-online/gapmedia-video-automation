@@ -23,3 +23,18 @@ class FreeCPUHostingTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class DeploymentReadinessTests(unittest.TestCase):
+    def test_requires_running_exact_space_commit_even_when_build_env_is_new(self):
+        import importlib.util
+        from pathlib import Path
+        from types import SimpleNamespace
+        spec=importlib.util.spec_from_file_location('driving_ready',Path(__file__).resolve().parents[1]/'scripts/deploy-driving-live.py')
+        mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+        health={'ok':True,'version':'fahrfit-online-v1','build':'new-build'}
+        old=SimpleNamespace(stage='RUNNING',raw={'sha':'old-commit'})
+        building=SimpleNamespace(stage='BUILDING',raw={'sha':'new-commit'})
+        ready=SimpleNamespace(stage='RUNNING',raw={'sha':'new-commit'})
+        self.assertFalse(mod.deployment_ready(old,health,'new-build','new-commit'))
+        self.assertFalse(mod.deployment_ready(building,health,'new-build','new-commit'))
+        self.assertTrue(mod.deployment_ready(ready,health,'new-build','new-commit'))

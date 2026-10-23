@@ -13,5 +13,10 @@ if not exist node_modules (
     exit /b 1
   )
 )
+call npm run prepare:media
+if errorlevel 1 (
+  pause
+  exit /b 1
+)
 call npm start
 pause
