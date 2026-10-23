@@ -14,7 +14,7 @@ export class GuestSupport {
  }
  remove(key){this.guests=this.guests.filter(g=>g.key!==key);this.donors.delete(key);}
  observe(user){
-  if(!user)return false;const name=String(user.uniqueId||'').toLowerCase(),id=String(user.id??user.userId??'');
+  if(!user)return false;const name=String(user.displayId||user.uniqueId||'').toLowerCase(),id=String(user.id??user.userId??'');
   const guest=this.guests.find(g=>name&&g.username===name);
   if(!guest||!/^\d{1,30}$/.test(id)||guest.userId&&guest.userId!==id||this.guests.some(g=>g!==guest&&g.userId===id))return false;
   const avatar=profileAvatar({user});const changed=guest.userId!==id||avatar&&guest.avatar!==avatar;guest.userId=id;if(avatar)guest.avatar=avatar;return Boolean(changed);

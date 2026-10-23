@@ -20,3 +20,7 @@ test('username resolves through exact event identity, never nickname, and streak
  const donor=ledger.snapshot()[0].supporters[0];assert.equal(donor.unknownValue,true);assert.equal(donor.totalCoins,0);assert.equal(donor.tier,'bubble');
  assert.throws(()=>ledger.add('another','123'));assert.throws(()=>ledger.add('bad/name'));
 });
+
+test('v3 guest displayId resolves the registered username without relying on legacy uniqueId',()=>{
+ const ledger=new GuestSupport();ledger.add('guest');assert.equal(ledger.observe({id:'123',displayId:'guest'}),true);assert.equal(ledger.snapshot()[0].resolved,true);
+});

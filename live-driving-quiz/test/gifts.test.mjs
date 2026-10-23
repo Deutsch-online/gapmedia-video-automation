@@ -40,3 +40,12 @@ test('comment answers accept exact Latin/Persian/Arabic digits, retain portrait 
  }
  assert.equal(quiz.comment({comment:'hello 1'}).reason,'irrelevant_comment');quiz.pause();assert.equal(quiz.comment({comment:'1',user:{id:'late'},common:{msgId:'late',createTime:now}}).accepted,false);
 });
+
+test('installed v3 protobuf chat content and gifts pass the actual schema instead of legacy-only chat names',async()=>{
+ const {WebcastChatMessage,WebcastGiftMessage}=await import('tiktok-live-proto/v3');
+ const now=Date.now(),quiz=new Quiz(bank,{now:()=>now});quiz.start();
+ const comment=Object.assign(WebcastChatMessage.decode(new Uint8Array()),{content:'2',user:{id:'123',displayId:'real_schema',avatarThumb:{urlList:[avatar]}},common:{msgId:'protobuf-chat',createTime:String(Math.floor(now/1000))}});
+ assert.equal(comment.comment,undefined);assert.equal(quiz.comment(comment).accepted,true);assert.equal(quiz.snapshot().participants.B[0].name,'real_schema');
+ const gift=Object.assign(WebcastGiftMessage.decode(new Uint8Array()),{giftId:'5655',repeatEnd:0,repeatCount:1,groupId:'7',user:{id:'124',nickname:'gift user'},gift:{id:'5655',type:1,combo:true,diamondCount:1,name:'Rose'},common:{msgId:'protobuf-gift',createTime:String(Math.floor(now/1000))}});
+ assert.equal(quiz.gift(gift,presetGifts('easydeutsches')).reason,'streak_not_finished');gift.repeatEnd=1;assert.equal(quiz.gift(gift,presetGifts('easydeutsches')).accepted,true);
+});

@@ -52,14 +52,14 @@ function render(s){
   $('phaseLabel').textContent=labels[s.phase]||s.phase;
   $('voters').textContent=`${fa.format(s.voters)} شرکت‌کننده`;
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name} ${s.lastAnswer.choice==='ALL'?'هر سه گزینه':`گزینهٔ ${s.lastAnswer.choice}`} را انتخاب کرد.`:'اول فکر کن؛ بعد گزینه‌ات را انتخاب کن.';
-  $('giftNote').textContent=s.phase==='watching'?'هنگام نمایش فیلم پاسخ ثبت نمی‌شود؛ پس از پایان فیلم 30 ثانیه فرصت دارید.':s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
+  $('giftNote').textContent=s.phase==='watching'?'هنگام نمایش فیلم پاسخ ثبت نمی‌شود؛ پس از پایان فیلم زمان پاسخ آغاز می‌شود.':s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
   const gs=JSON.stringify(s.guests||[]);if(gs!==guestSignature){guestSignature=gs;renderGuests($('guestList'),s.guests||[]);}
   renderSupporters(s.supporters||[]);syncVideo();updateTimer();requestAnimationFrame(adjustBankLayout);
 }
 function serverNow(){return state.serverTime+performance.now()-receivedAt;}
 function updateTimer(){if(!state)return;const target=state.phase==='watching'?state.opensAt:state.closesAt;const left=['open','watching'].includes(state.phase)?Math.max(0,Math.ceil((target-serverNow())/1000)):0;
  $('timer').replaceChildren(document.createTextNode(fa.format(left)),element('span','',state.phase==='watching'?'فیلم':state.phase==='revealed'?'پاسخ':'ثانیه'));
- $('progressBar').style.width=state.phase==='open'?`${Math.max(0,Math.min(100,left/30*100))}%`:state.phase==='revealed'?'100%':'0%';}
+ $('progressBar').style.width=state.phase==='open'?`${Math.max(0,Math.min(100,left/(state.questionSeconds||30)*100))}%`:state.phase==='revealed'?'100%':'0%';}
 setInterval(updateTimer,250);
 let reconnect;
 function connect(){const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>{$('phaseLabel').textContent='ارتباط با برنامه قطع شد؛ هدیه ارسال نکنید.';clearTimeout(reconnect);reconnect=setTimeout(connect,2000);};}

@@ -25,12 +25,13 @@ const root=fileURLToPath(new URL('.',import.meta.url));
 const hosting=hostingConfig();
 const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
-const defaults={answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
 if((stored&&stored.giftPreset!==GIFT_PRESET_VERSION)||Object.values(settings.gifts).some(g=>g?.id==='101')){settings.gifts=presetGifts(settings.username);settings.giftPreset=GIFT_PRESET_VERSION;save();}
 const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'utf8')));
+quiz.seconds=Number.isInteger(settings.questionSeconds)&&settings.questionSeconds>=10&&settings.questionSeconds<=300?settings.questionSeconds:30;
 const bankMedia=loadBankMedia(quiz.questions);
 const supporters=new SupporterWall();
 const guests=new GuestSupport(settings.guests||[]);
@@ -106,7 +107,7 @@ async function connect(username,startOnConnect=false) {
   client.on(WebcastEvent.CHAT,data=>{
     if(connection!==client)return;
     traffic.commentsReceived++;
-    if(/^[123۱۲۳١٢٣]$/.test(String(data.comment??data.text??'').trim()))traffic.answerCommentsReceived++;
+    if(/^[123۱۲۳١٢٣]$/.test(String(data.content??data.comment??data.text??'').trim()))traffic.answerCommentsReceived++;
     if(connection===client&&guests.observe(data.user)){saveGuests();broadcast();}
     if(connection!==client||mode!=='live'||settings.answerInput!=='comments'||!ready())return;
     const result=quiz.comment(data);
@@ -182,6 +183,11 @@ const server=http.createServer(async(req,res)=>{
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
         if(data.mode==='live'&&!ready())throw Error('اتصال لایو و آماده‌بودن روش پاسخ لازم است.');
         changeMode(data.mode);autoplay=false;quiz.pause();
+      }
+      else if(action==='question-time'){
+        const seconds=Number(data.seconds);if(!Number.isInteger(seconds)||seconds<10||seconds>300)throw Error('زمان پاسخ باید عدد صحیح بین 10 و 300 ثانیه باشد.');
+        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');
+        settings.questionSeconds=seconds;quiz.seconds=seconds;save();
       }
       else if(action==='answer-input'){
         if(!['comments','gifts'].includes(data.input))throw Error('روش پاسخ معتبر نیست.');

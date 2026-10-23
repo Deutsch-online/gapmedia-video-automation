@@ -65,12 +65,12 @@ export class Quiz {
     return {accepted:true,choice};
   }
   comment(event){
-    const text=String(event.comment??event.text??'').trim().replace(/[۱۲۳١٢٣]/g,c=>({'۱':'1','۲':'2','۳':'3','١':'1','٢':'2','٣':'3'}[c]));
+    const text=String(event.content??event.comment??event.text??'').trim().replace(/[۱۲۳١٢٣]/g,c=>({'۱':'1','۲':'2','۳':'3','١':'1','٢':'2','٣':'3'}[c]));
     if(!/^[123]$/.test(text))return {accepted:false,reason:'irrelevant_comment'};
     const userId=String(event.user?.id??event.user?.userId??event.user?.idStr??event.userId??'');
     const raw=Number(event.common?.createTime??event.createTime),time=raw<1e12?raw*1000:raw;
     const message=String(event.common?.msgId??event.msgId??'');
-    return this.submit({id:message?'comment:'+message:'',userId,name:event.user?.nickname||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice:'ABC'[Number(text)-1],time});
+    return this.submit({id:message?'comment:'+message:'',userId,name:event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice:'ABC'[Number(text)-1],time});
   }
   gift(event,mapping) {
     const giftId=String(event.giftId??event.gift?.id??event.gift?.gift_id??'');
@@ -88,14 +88,14 @@ export class Quiz {
     }
     const id=group || String(event.orderId||event.common?.msgId||event.msgId||'');
     const firstTime=group && this.groups.has(group)?this.groups.get(group):time;
-    return this.submit({id,userId,name:event.user?.nickname||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice,time:firstTime});
+    return this.submit({id,userId,name:event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId,avatar:profileAvatar(event),choice,time:firstTime});
   }
   snapshot() {
     this.tick();
     const q=this.questions[this.index];
     const question={id:q.id,de:q.de,fa:q.fa,options:q.options,topic:q.topic,visual:q.visual,multiple:q.correct.length>1,source_kind:q.source_kind||'authored-practice',image:q.image||null,image_alt:q.image_alt||null,points:q.points||null,video:q.video||null,video_duration_ms:q.video_duration_ms||null};
     if(this.phase==='revealed') Object.assign(question,{correct:q.correct,explanation_de:q.explanation_de,explanation_fa:q.explanation_fa,source:q.source});
-    return {index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
+    return {questionSeconds:this.seconds,index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
       voters:this.answers.size,participants:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).slice(-6).reverse().map(a=>({key:a.publicId,name:a.name,avatar:a.avatar}))])),counts:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).length])),lastAnswer:this.lastAnswer,
       leaderboard:[...this.leaderboard.values()].sort((a,b)=>b.score-a.score).slice(0,5)};
   }

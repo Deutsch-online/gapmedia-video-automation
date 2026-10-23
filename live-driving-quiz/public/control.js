@@ -1,6 +1,7 @@
 import {renderGuests} from './guests-ui.js';
 const $=id=>document.getElementById(id);const token=decodeURIComponent(location.hash.slice(1));
 history.replaceState(null,'',location.pathname);
+let timeDirty=false;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
 for(const k of giftKeys){
@@ -47,6 +48,9 @@ function render(s){
  $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت 1،2،3':'روش فعال: رز / تیک‌تاک / GG';
  $('commentsInput').classList.toggle('secondary',s.answerInput!=='comments');$('giftInput').classList.toggle('secondary',s.answerInput!=='gifts');
  $('autoplay').checked=s.autoplay;
+ if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
+ $('questionTimeStatus').textContent=`زمان فعلی پاسخ: ${s.questionSeconds} ثانیه؛ فیلم سؤال جداگانه و کامل پخش می‌شود.`;
+ $('startQuestion').textContent=`شروع سؤال · ${s.questionSeconds} ثانیه`;
  const t=s.traffic||{};$('trafficStatus').textContent=`دریافت واقعی از اتصال فعلی: ${t.commentsReceived||0} کامنت، ${t.answerCommentsReceived||0} کامنت عددی، ${t.commentsAccepted||0} پاسخ ثبت‌شده؛ ${t.giftsReceived||0} رویداد گیفت، ${t.giftsAccepted||0} پاسخ گیفت ثبت‌شده.${t.lastCommentReject?' علت آخرین کامنت ثبت‌نشده: '+t.lastCommentReject:''}${t.lastGiftReject?' علت آخرین گیفت ثبت‌نشده: '+t.lastGiftReject:''}`;
  const p={watching:'نمایش فیلم · هنوز پاسخ ندهید',waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
  $('status').textContent=`حالت: ${s.mode==='demo'?'آزمایشی':'واقعی'}\nسؤال: ${s.index+1} از ${s.total}\nوضعیت: ${p[s.phase]}\nبینندگان پاسخ‌دهنده: ${s.voters}\nآمادگی گیفت واقعی: ${s.liveReady?'آماده':'تنظیم لازم دارد'}${s.lastReject?'\nآخرین پاسخ ثبت‌نشده: '+({watching_video:'ابتدا فیلم را ببینید؛ پاسخ‌گویی پس از فیلم آغاز می‌شود.',round_closed:'زمان سؤال تمام شده یا دریافت پاسخ متوقف است.',one_answer_only:'بیننده قبلاً گزینهٔ دیگری را انتخاب کرده است.',all_not_allowed:'این سؤال فقط یک پاسخ دارد.',late_or_old_event:'پیام هدیه برای این سؤال دیر رسیده یا مربوط به قبل است.',invalid_event:'اطلاعات لازم برای ثبت پاسخ دریافت نشد.'}[s.lastReject]||'پاسخ تکراری یا نامعتبر بود.'):''}`;
@@ -78,3 +82,6 @@ for(const [id,input] of [['commentsInput','comments'],['giftInput','gifts']])$(i
 $('simulateComment').addEventListener('click',()=>api('simulate-comment',{comment:$('demoComment').value,name:$('demoName').value}));
 
 $('addGuest').addEventListener('click',()=>api('guest-add',{username:$('guestUsername').value,userId:$('guestUserId').value}));
+
+$('questionSeconds').addEventListener('input',()=>{timeDirty=true;});
+$('saveQuestionTime').addEventListener('click',async()=>{const seconds=Number($('questionSeconds').value);if(!Number.isInteger(seconds)||seconds<10||seconds>300){notice('زمان باید بین 10 و 300 ثانیه باشد.',true);return;}if(await api('pause')){const result=await api('question-time',{seconds});if(result){timeDirty=false;render(result.state);notice('زمان ذخیره شد؛ برای ادامه شروع سؤال را بزنید.');}}});

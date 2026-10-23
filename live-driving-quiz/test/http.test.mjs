@@ -23,7 +23,9 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('start',{}, {authorization:''})).status,401);
   assert.equal((await post('start',{}, {origin:'https://untrusted.example'})).status,403);
   const presetState=await(await fetch(base+'/api/state')).json();assert.deepEqual(['A','B','C'].map(k=>presetState.gifts[k].id),['5655','5269','6064']);
-  assert.equal(presetState.answerInput,'comments');
+  assert.equal(presetState.answerInput,'comments');assert.equal(presetState.questionSeconds,30);
+  assert.equal((await post('question-time',{seconds:9})).status,400);assert.equal((await post('question-time',{seconds:301})).status,400);
+  assert.equal((await post('question-time',{seconds:45})).status,200);
   assert.equal((await post('guest-add',{username:'guest',userId:'123'})).status,200);
   const guestKey=(await(await fetch(base+'/api/state')).json()).guests[0].key;
   assert.equal((await post('simulate-guest-gift',{key:guestKey})).status,200);
@@ -32,6 +34,8 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('manual-gifts',{confirmed:true,gifts:[{id:'1',name:'هدیه A'},{id:'2',name:'هدیه B'},{id:'3',name:'هدیه C'},{}]})).status,200);
   assert.equal((await post('mode',{mode:'live'})).status,400,'manual choices alone never claim a live connection');
   assert.equal((await post('start')).status,200);
+  assert.equal((await post('question-time',{seconds:60})).status,400);
+  const timedState=await(await fetch(base+'/api/state')).json();assert.equal(timedState.questionSeconds,45);assert.equal(timedState.closesAt-timedState.opensAt,45000);
   assert.equal((await post('answer-input',{input:'gifts'})).status,400);
   assert.equal((await post('simulate-comment',{comment:'1',name:'comment-person'})).status,200);
   await post('pause');assert.equal((await post('answer-input',{input:'gifts'})).status,200);assert.equal((await post('simulate-comment',{comment:'1'})).status,400);await post('start');
