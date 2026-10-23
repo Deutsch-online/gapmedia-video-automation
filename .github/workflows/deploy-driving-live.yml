@@ -1,0 +1,49 @@
+name: Deploy driving LIVE on free CPU hosting
+on:
+  push:
+    branches: [main]
+    paths:
+      - live-driving-quiz/**
+      - scripts/deploy-driving-live.py
+      - .github/workflows/deploy-driving-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: driving-live-free-hosting
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify quiz and public hosting boundaries
+        working-directory: live-driving-quiz
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install official hosting client
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2'
+      - name: Verify that paid and unknown hardware are refused
+        run: python -m unittest discover -s tests -p test_driving_hosting.py
+      - name: Publish explicitly free CPU-basic Space and deliver the private owner link
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/deploy-driving-live.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: driving-live-deployment
+          path: /tmp/driving-live-deployment.json
+          if-no-files-found: ignore
+          retention-days: 14

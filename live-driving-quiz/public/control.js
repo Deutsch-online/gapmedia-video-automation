@@ -1,6 +1,13 @@
 const $=id=>document.getElementById(id);const token=decodeURIComponent(location.hash.slice(1));
 history.replaceState(null,'',location.pathname);
 let state,catalog=[];
+const giftKeys=['A','B','C','ALL'];
+for(const k of giftKeys){
+ const label=document.createElement('label');label.textContent=k==='ALL'?'هر سه · اختیاری':`گزینهٔ ${k}`;
+ const name=document.createElement('input');name.id='manualName'+k;name.placeholder='نام هدیه';name.maxLength=80;
+ const id=document.createElement('input');id.id='manualId'+k;id.placeholder='شناسهٔ عددی هدیه';id.inputMode='numeric';id.dir='ltr';id.maxLength=20;
+ label.append(name,id);$('manualGifts').append(label);
+}
 $('screenUrl').textContent=location.origin+'/screen';
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(action,data={}){
@@ -14,13 +21,13 @@ function mappings(){
   const label=document.createElement('label');label.append(document.createTextNode(k==='ALL'?'هر سه گزینه · اختیاری':`گزینهٔ ${k}`));
   const select=document.createElement('select');select.dataset.key=k;
   const blank=document.createElement('option');blank.value='';blank.textContent='از فهرست زنده انتخاب کنید';select.append(blank);
-  for(const gift of catalog){const option=document.createElement('option');option.value=gift.id;option.textContent=`${gift.name} · ${gift.coins} Coin · #${gift.id}`;select.append(option);}
+  for(const gift of catalog){const option=document.createElement('option');option.value=gift.id;option.textContent=`${gift.name} · ${gift.coins?gift.coins+' Coin':'قیمت داخل TikTok'} · #${gift.id}`;select.append(option);}
   select.value=state?.gifts[k]?.id||'';label.append(select);return label;
  }));
 }
 async function loadCatalog(){try{const r=await fetch('/api/admin/catalog',{headers:{Authorization:'Bearer '+token}});if(!r.ok)throw Error('نشانی پنل کنترل را همراه رمز بعد از # از ترمینال باز کنید.');catalog=(await r.json()).gifts;mappings();}catch(e){notice(e.message,true);}}
 function render(s){
- if(!s)return;const changed=state?.connection.status!==s.connection.status;state=s;
+ if(!s)return;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
  $('connectionStatus').textContent=s.connection.message;
  $('autoplay').checked=s.autoplay;
  const p={waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
@@ -31,10 +38,11 @@ function render(s){
 document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>api(b.dataset.command)));
 document.querySelectorAll('[data-choice]').forEach(b=>b.addEventListener('click',()=>api('simulate',{choice:b.dataset.choice,name:$('demoName').value})));
 $('autoplay').addEventListener('change',e=>api('autoplay',{enabled:e.target.checked}));
-$('connect').addEventListener('click',async()=>{notice('اتصال در حال بررسی است…');await api('connect',{username:$('username').value});await loadCatalog();});
+$('connect').addEventListener('click',async()=>{notice('اتصال در حال بررسی است…');await api('connect',{username:$('username').value,startOnConnect:$('startOnConnect').checked});await loadCatalog();});
 $('saveGifts').addEventListener('click',()=>api('gifts',{ids:[...document.querySelectorAll('#giftMapping select')].map(s=>s.value)}));
+$('saveManualGifts').addEventListener('click',()=>api('manual-gifts',{confirmed:$('manualConfirmed').checked,gifts:giftKeys.map(k=>({name:$('manualName'+k).value,id:$('manualId'+k).value.trim()}))}));
 $('liveMode').addEventListener('click',()=>api('mode',{mode:'live'}));
 $('demoMode').addEventListener('click',()=>api('mode',{mode:'demo'}));
 if(!token)notice('نشانی خصوصی پنل کنترل را از ترمینال کپی کنید؛ رمز بعد از # لازم است.',true);else notice('آماده؛ ابتدا یک سؤال آزمایشی اجرا کنید.');
 fetch('/api/state').then(r=>r.json()).then(render);
-const ws=new WebSocket(`ws://${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>notice('ارتباط پنل قطع شد؛ نشانی خصوصی پنل را دوباره باز کنید.',true);
+const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>notice('ارتباط پنل قطع شد؛ نشانی خصوصی پنل را دوباره باز کنید.',true);
