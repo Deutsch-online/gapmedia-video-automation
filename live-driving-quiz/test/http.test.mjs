@@ -23,6 +23,11 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('start',{}, {authorization:''})).status,401);
   assert.equal((await post('start',{}, {origin:'https://untrusted.example'})).status,403);
   const presetState=await(await fetch(base+'/api/state')).json();assert.deepEqual(['A','B','C'].map(k=>presetState.gifts[k].id),['5655','5269','6064']);
+  assert.equal((await post('celebration-audio',{enabled:true,volume:101})).status,400);
+  assert.equal((await post('celebration-audio',{enabled:true,volume:18})).status,200);
+  assert.equal((await post('timer-sound',{enabled:'yes'})).status,400);assert.equal((await post('timer-sound',{enabled:false})).status,200);
+  const musicState=await(await fetch(base+'/api/state')).json();assert.equal(musicState.celebrationMusic,true);assert.equal(musicState.musicVolume,18);assert.equal(musicState.timerSound,false);
+  assert.equal(presetState.showPersian,false);assert.equal((await post('display-language',{showPersian:'yes'})).status,400);assert.equal((await post('display-language',{showPersian:true})).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).showPersian,true);
   assert.equal(presetState.answerInput,'comments');assert.equal(presetState.questionSeconds,30);
   assert.equal((await post('question-time',{seconds:9})).status,400);assert.equal((await post('question-time',{seconds:301})).status,400);
   assert.equal((await post('question-time',{seconds:45})).status,200);

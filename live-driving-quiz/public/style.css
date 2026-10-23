@@ -136,3 +136,40 @@
 .supporter-gift{display:block;font-size:17px;line-height:1.3;color:#334e5b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
 .supporter-coins{font-size:19px;line-height:1.3}.newest .supporter-coins{font-size:21px}
 .guest-public{left:196px}
+
+/* Muted sage: one calm background with readable deep-ink typography. */
+.screen-body,.screen-body .show,.screen-body .option,.screen-body .option.correct,.screen-body .bank-media{background:#e6efe9}
+.screen-body .option{border-color:#a8beb2}.screen-body .option.correct{border-color:#218052}
+.winner-celebration{margin:14px 0 0;padding:12px 14px;border:2px solid #87b8a0;border-radius:20px;background:#e6efe9;position:relative}
+.winner-heading{display:flex;align-items:center;justify-content:space-between;color:#185439;font-size:26px;margin-bottom:8px}
+.winner-heading>span{font-size:22px}.winner-profiles{display:flex;justify-content:center;gap:12px;direction:rtl;min-height:140px}
+.winner-profile{position:relative;width:112px;min-width:0;text-align:center;animation:winner-enter .5s both;animation-delay:calc(var(--winner-i)*65ms)}
+.winner-face{margin:0 auto;width:86px;height:86px;border-radius:50%;border:4px solid #dfb84b;background:#c4e0ce;display:grid;place-items:center;font-size:34px;color:#174d37;position:relative;box-shadow:0 0 0 5px #f8e6a866;animation:winner-float 1.5s ease-in-out infinite;animation-delay:calc(var(--winner-i)*.12s)}
+.winner-face img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%}
+.winner-check{position:absolute;top:62px;right:8px;border:2px solid #fff;background:#207b4e;color:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;font:bold 21px Arial}
+.winner-profile>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:21px;color:#173d2c;font-weight:700;margin-top:11px}
+.enable-music{position:absolute;bottom:125px;right:36px;font:20px Vazir,Arial;border:1px solid #8eb09c;background:#d4e4d9;color:#204b36;border-radius:14px;padding:7px 13px;cursor:pointer;z-index:25}
+@keyframes winner-enter{from{opacity:0;transform:translateY(15px) scale(.75)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes winner-float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+@media(prefers-reduced-motion:reduce){.winner-profile,.winner-face{animation:none}}
+
+/* Separate soft shadows for German and Persian text. */
+.screen-body #questionDe,.screen-body .option-de{text-shadow:0 2px 3px #345c8040}
+.screen-body #questionFa,.screen-body .option-fa{text-shadow:0 2px 3px #59704c45}
+/* Prefer larger complete source pictures; reduce only for dense questions. */
+.screen-body .bank-question .bank-media img,.screen-body .bank-question .bank-media video{height:480px}
+.screen-body .bank-question.bank-compact .bank-media img,.screen-body .bank-question.bank-compact .bank-media video{height:390px}
+.screen-body .bank-question.bank-crowded .bank-media img,.screen-body .bank-question.bank-crowded .bank-media video{height:290px}
+.screen-body .bank-question.watching .bank-media video{height:560px}
+
+.screen-body #questionFa{direction:rtl;text-align:right}.screen-body .gift-pill{direction:ltr}.screen-body .winner-profiles{direction:ltr}
+/* Shared media size also overrides the older reveal-state sizing rules. */
+.screen-body #show.bank-question{--question-media-height:480px}
+.screen-body #show.bank-question.bank-compact{--question-media-height:390px}
+.screen-body #show.bank-question.bank-crowded{--question-media-height:290px}
+.screen-body #show.bank-question.watching{--question-media-height:560px}
+.screen-body #bankMedia #bankImage,.screen-body #bankMedia #bankVideo{height:var(--question-media-height,480px)}
+/* Keep unusually long bilingual questions inside the mobile canvas. */
+.screen-body .bank-question.bank-crowded .option-de{font-size:29px}
+.screen-body .bank-question.bank-crowded .option-fa{font-size:26px}
+.screen-body .bank-question.bank-crowded h1{font-size:38px}

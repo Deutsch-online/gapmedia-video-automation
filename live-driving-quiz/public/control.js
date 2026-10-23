@@ -1,7 +1,7 @@
 import {renderGuests} from './guests-ui.js';
 const $=id=>document.getElementById(id);const token=decodeURIComponent(location.hash.slice(1));
 history.replaceState(null,'',location.pathname);
-let timeDirty=false;
+let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
 for(const k of giftKeys){
@@ -48,6 +48,9 @@ function render(s){
  $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت 1،2،3':'روش فعال: رز / تیک‌تاک / GG';
  $('commentsInput').classList.toggle('secondary',s.answerInput!=='comments');$('giftInput').classList.toggle('secondary',s.answerInput!=='gifts');
  $('autoplay').checked=s.autoplay;
+ if(!languageDirty)$('showPersian').checked=s.showPersian;
+ if(!timerSoundDirty)$('timerSound').checked=s.timerSound;
+ if(!musicDirty){$('celebrationMusic').checked=s.celebrationMusic;$('musicVolume').value=s.musicVolume;$('musicVolumeValue').textContent=s.musicVolume;}
  if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
  $('questionTimeStatus').textContent=`زمان فعلی پاسخ: ${s.questionSeconds} ثانیه؛ فیلم سؤال جداگانه و کامل پخش می‌شود.`;
  $('startQuestion').textContent=`شروع سؤال · ${s.questionSeconds} ثانیه`;
@@ -75,7 +78,7 @@ $('selectQuestion').addEventListener('click',()=>api('select',{id:$('questionSel
 
 $('giftPreset').addEventListener('click',async()=>{const result=await api('gift-preset');if(result){mappingDirty=false;manualDirty=false;mappings();notice('A: Rose 5655 · B: TikTok 5269 · C: GG 6064 ذخیره شد.');}});
 
-document.querySelectorAll('[data-supporter]').forEach(button=>button.addEventListener('click',()=>api('simulate-supporter',{coins:Number(button.dataset.supporter),name:'آزمایش '+button.textContent})));
+document.querySelectorAll('[data-supporter]').forEach(button=>button.addEventListener('click',()=>api('simulate-supporter',{coins:Number(button.dataset.supporter),name:'Test '+button.dataset.supporter})));
 $('clearSupporters').addEventListener('click',()=>api('clear-supporters'));
 
 for(const [id,input] of [['commentsInput','comments'],['giftInput','gifts']])$(id).addEventListener('click',async()=>{if(await api('pause'))await api('answer-input',{input});});
@@ -85,3 +88,13 @@ $('addGuest').addEventListener('click',()=>api('guest-add',{username:$('guestUse
 
 $('questionSeconds').addEventListener('input',()=>{timeDirty=true;});
 $('saveQuestionTime').addEventListener('click',async()=>{const seconds=Number($('questionSeconds').value);if(!Number.isInteger(seconds)||seconds<10||seconds>300){notice('زمان باید بین 10 و 300 ثانیه باشد.',true);return;}if(await api('pause')){const result=await api('question-time',{seconds});if(result){timeDirty=false;render(result.state);notice('زمان ذخیره شد؛ برای ادامه شروع سؤال را بزنید.');}}});
+
+$('musicVolume').addEventListener('input',()=>{musicDirty=true;$('musicVolumeValue').textContent=$('musicVolume').value;});
+$('celebrationMusic').addEventListener('change',()=>{musicDirty=true;});
+$('saveMusic').addEventListener('click',async()=>{const result=await api('celebration-audio',{enabled:$('celebrationMusic').checked,volume:Number($('musicVolume').value)});if(result){musicDirty=false;render(result.state);}});
+
+$('timerSound').addEventListener('change',()=>{timerSoundDirty=true;});
+$('saveTimerSound').addEventListener('click',async()=>{const result=await api('timer-sound',{enabled:$('timerSound').checked});if(result){timerSoundDirty=false;render(result.state);}});
+
+$('showPersian').addEventListener('change',()=>{languageDirty=true;});
+$('saveDisplayLanguage').addEventListener('click',async()=>{const result=await api('display-language',{showPersian:$('showPersian').checked});if(result){languageDirty=false;render(result.state);}});

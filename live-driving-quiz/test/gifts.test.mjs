@@ -49,3 +49,15 @@ test('installed v3 protobuf chat content and gifts pass the actual schema instea
  const gift=Object.assign(WebcastGiftMessage.decode(new Uint8Array()),{giftId:'5655',repeatEnd:0,repeatCount:1,groupId:'7',user:{id:'124',nickname:'gift user'},gift:{id:'5655',type:1,combo:true,diamondCount:1,name:'Rose'},common:{msgId:'protobuf-gift',createTime:String(Math.floor(now/1000))}});
  assert.equal(quiz.gift(gift,presetGifts('easydeutsches')).reason,'streak_not_finished');gift.repeatEnd=1;assert.equal(quiz.gift(gift,presetGifts('easydeutsches')).accepted,true);
 });
+
+test('winner portraits stay hidden until reveal and require the exact complete answer set',()=>{
+ let now=Date.now();const quiz=new Quiz(bank,{now:()=>now});quiz.index=bank.findIndex(q=>q.correct.length>1&&q.correct.length<3);quiz.start();
+ const correct=quiz.questions[quiz.index].correct;
+ for(let i=0;i<8;i++)for(const choice of correct)quiz.submit({id:'winner'+i+choice,userId:'winner'+i,name:'winner '+i,choice,time:now,avatar});
+ quiz.submit({id:'partial',userId:'partial',name:'partial',choice:correct[0],time:now});
+ for(const choice of 'ABC')quiz.submit({id:'extra'+choice,userId:'extra',name:'extra',choice,time:now});
+ assert.equal(quiz.snapshot().winnerCount,0);assert.deepEqual(quiz.snapshot().winners,[]);
+ quiz.reveal();const first=quiz.snapshot();assert.equal(first.winnerCount,8);assert.equal(first.winners.length,6);assert.equal(first.winners[0].avatar,avatar);assert.equal(first.winners[0].userId,undefined);
+ now+=2200;const second=quiz.snapshot();assert.equal(second.winners.length,2);assert.equal(second.winners[0].name,'winner 6');
+ quiz.next();assert.equal(quiz.snapshot().winnerCount,0);assert.deepEqual(quiz.snapshot().winners,[]);
+});

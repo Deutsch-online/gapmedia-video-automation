@@ -24,7 +24,7 @@ export class SupporterWall{
   const count=Number(event.repeatCount??gift.repeat_count??1);
   const coins=Number.isSafeInteger(value)&&value>0&&Number.isSafeInteger(count)&&count>0&&value*count<=1000000000?value*count:null;
   this.entries=this.entries.filter(row=>row.userId!==userId);
-  this.entries.unshift({userId,key:randomUUID(),name:String(event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId||'بیننده').slice(0,40),avatar:profileAvatar(event),giftName:String(gift.giftName||gift.name||event.giftName||'هدیه').slice(0,60),coins,count:Number.isSafeInteger(count)&&count>0?count:null,giftId,tier:supporterTier(coins),at:this.now()});
+  this.entries.unshift({userId,key:randomUUID(),name:String(event.user?.nickname||event.user?.displayId||event.user?.uniqueId||event.nickname||event.uniqueId||'Zuschauer').slice(0,40),avatar:profileAvatar(event),giftName:String(gift.giftName||gift.name||event.giftName||'Geschenk').slice(0,60),coins,count:Number.isSafeInteger(count)&&count>0?count:null,giftId,tier:supporterTier(coins),at:this.now()});
   this.entries=this.entries.slice(0,this.limit);return {accepted:true};
  }
  snapshot(){return this.entries.map(({userId,...row})=>row);}
