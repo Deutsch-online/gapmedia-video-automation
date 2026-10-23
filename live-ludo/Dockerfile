@@ -2,7 +2,7 @@ FROM node:24-bookworm-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
-COPY server.mjs seed.json ./
+COPY server.mjs model.mjs play.mjs seed.json ./
 COPY dist ./dist
 RUN chown -R node:node /app
 USER node

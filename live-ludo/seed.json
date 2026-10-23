@@ -1,1 +1,240 @@
-{"state": {"teams": [{"flag": "🇦🇫", "name": "افغانستان", "gift": "🌹 گل رز", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇮🇷", "name": "ایران", "gift": "💖 قلب", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇹🇷", "name": "ترکیه", "gift": "☕ قهوه", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇵🇰", "name": "پاکستان", "gift": "🎁 جعبه هدیه", "p": [-1, -1, -1, -1], "g": 0}], "queue": [{"flag": "🇹🇯", "name": "تاجیکستان", "gift": "🌹 گل رز", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇮🇳", "name": "هند", "gift": "💖 قلب", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇸🇦", "name": "عربستان", "gift": "☕ قهوه", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇦🇪", "name": "امارات", "gift": "🎁 جعبه هدیه", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇺🇿", "name": "ازبکستان", "gift": "🌹 گل رز", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇮🇶", "name": "عراق", "gift": "💖 قلب", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇩🇪", "name": "آلمان", "gift": "☕ قهوه", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇫🇷", "name": "فرانسه", "gift": "🎁 جعبه هدیه", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇬🇧", "name": "بریتانیا", "gift": "🌹 گل رز", "p": [-1, -1, -1, -1], "g": 0}, {"flag": "🇺🇸", "name": "آمریکا", "gift": "💖 قلب", "p": [-1, -1, -1, -1], "g": 0}], "turn": 0, "dice": 0, "round": 1, "winner": null}, "giftMap": ["5655", "5269", "6064", ""], "config": "🇦🇫|افغانستان|🌹 گل رز\n🇮🇷|ایران|💖 قلب\n🇹🇷|ترکیه|☕ قهوه\n🇵🇰|پاکستان|🎁 جعبه هدیه\n🇹🇯|تاجیکستان|🌹 گل رز\n🇮🇳|هند|💖 قلب\n🇸🇦|عربستان|☕ قهوه\n🇦🇪|امارات|🎁 جعبه هدیه\n🇺🇿|ازبکستان|🌹 گل رز\n🇮🇶|عراق|💖 قلب\n🇩🇪|آلمان|☕ قهوه\n🇫🇷|فرانسه|🎁 جعبه هدیه\n🇬🇧|بریتانیا|🌹 گل رز\n🇺🇸|آمریکا|💖 قلب", "likes": 0, "fans": [], "display": {"portrait": true, "bg": "#113a72", "volume": 20, "effects": true, "sound": false}}
+{
+  "state": {
+    "teams": [
+      {
+        "flag": "🇦🇫",
+        "name": "Afghanistan",
+        "gift": "🌹 Rose",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "noGiftTurns": 0,
+        "active": true,
+        "supporters": [],
+        "supporter": null,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇮🇷",
+        "name": "Iran",
+        "gift": "♪ TikTok",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "noGiftTurns": 0,
+        "active": true,
+        "supporters": [],
+        "supporter": null,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇹🇷",
+        "name": "Turkey",
+        "gift": "GG GG",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "noGiftTurns": 0,
+        "active": true,
+        "supporters": [],
+        "supporter": null,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇵🇰",
+        "name": "Pakistan",
+        "gift": "🍦 Ice Cream Cone",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "noGiftTurns": 0,
+        "active": true,
+        "supporters": [],
+        "supporter": null,
+        "teamAvatar": ""
+      }
+    ],
+    "queue": [
+      {
+        "flag": "🇹🇯",
+        "name": "Tajikistan",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 5,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇮🇳",
+        "name": "India",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 6,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇸🇦",
+        "name": "Saudi Arabia",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 7,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇦🇪",
+        "name": "UAE",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 8,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇺🇿",
+        "name": "Uzbekistan",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 9,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇮🇶",
+        "name": "Iraq",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 10,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇩🇪",
+        "name": "Germany",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 11,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇫🇷",
+        "name": "France",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 12,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇬🇧",
+        "name": "United Kingdom",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 13,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇺🇸",
+        "name": "USA",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 14,
+        "requests": 0,
+        "teamAvatar": ""
+      }
+    ],
+    "turn": 0,
+    "dice": 0,
+    "round": 1,
+    "winner": null,
+    "turnSerial": 0
+  },
+  "giftMap": [
+    "5655",
+    "5269",
+    "6064",
+    "5827"
+  ],
+  "config": "🇦🇫|Afghanistan|🌹 Rose\n🇮🇷|Iran|♪ TikTok\n🇹🇷|Turkey|GG GG\n🇵🇰|Pakistan|🍦 Ice Cream Cone\n🇹🇯|Tajikistan\n🇮🇳|India\n🇸🇦|Saudi Arabia\n🇦🇪|UAE\n🇺🇿|Uzbekistan\n🇮🇶|Iraq\n🇩🇪|Germany\n🇫🇷|France\n🇬🇧|United Kingdom\n🇺🇸|USA",
+  "likes": 0,
+  "fans": [],
+  "display": {
+    "portrait": true,
+    "bg": "#070b21",
+    "volume": 20,
+    "effects": true,
+    "sound": false
+  },
+  "schemaVersion": 5,
+  "inputMode": "comments",
+  "rosterMode": "countries"
+}

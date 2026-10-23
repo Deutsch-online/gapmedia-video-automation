@@ -21,7 +21,7 @@ api.add_space_variable(repo,key='PUBLIC_URL',value=url)
 build=os.environ.get('GITHUB_SHA','manual');api.add_space_variable(repo,key='LUDO_BUILD_SHA',value=build)
 public=serialization.load_pem_public_key((app/'delivery-public.pem').read_bytes());sealed=public.encrypt(admin.encode(),padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
 operations=[]
-for f in [app/'server.mjs',app/'seed.json',app/'Dockerfile',app/'package.json',app/'package-lock.json',*sorted((app/'dist').glob('*'))]:
+for f in [app/'server.mjs',app/'model.mjs',app/'play.mjs',app/'seed.json',app/'Dockerfile',app/'package.json',app/'package-lock.json',*sorted((app/'dist').glob('*'))]:
  operations.append(CommitOperationAdd(path_in_repo=f.relative_to(app).as_posix(),path_or_fileobj=str(f)))
 operations.append(CommitOperationAdd(path_in_repo='dist/delivery.json',path_or_fileobj=json.dumps({'url':url,'sealed':base64.b64encode(sealed).decode()}).encode()))
 operations.append(CommitOperationAdd(path_in_repo='README.md',path_or_fileobj='---\ntitle: Ludo LIVE Nations\nemoji: 🎲\ncolorFrom: blue\ncolorTo: green\nsdk: docker\napp_port: 7860\npinned: false\n---\n\nLudo LIVE country arena with integrated control panel.\n'.encode()))
