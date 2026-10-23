@@ -352,5 +352,222 @@
     "explanation_de": "§ 1 verlangt ständige Vorsicht und gegenseitige Rücksicht. Andere dürfen insbesondere nicht gefährdet werden. Hier sind alle drei Aussagen richtig.",
     "explanation_fa": "مادهٔ ۱ احتیاط همیشگی و رعایت متقابل را لازم می‌داند؛ دیگران نباید به خطر بیفتند. در این سؤال هر سه گزینه درست‌اند.",
     "source": "https://www.gesetze-im-internet.de/stvo_2013/__1.html"
+  },
+  {
+    "id": "cycle-clearance-town",
+    "topic": "Überholen · سبقت",
+    "visual": "distance",
+    "de": "Sie überholen mit dem Pkw innerorts ein Fahrrad auf freier Strecke. Welcher Seitenabstand gilt mindestens?",
+    "fa": "در مسیر باز داخل شهر با خودرو از دوچرخه سبقت می‌گیرید. حداقل فاصلهٔ جانبی چقدر است؟",
+    "options": [
+      {
+        "de": "1 Meter.",
+        "fa": "۱ متر."
+      },
+      {
+        "de": "1,5 Meter.",
+        "fa": "۱٫۵ متر."
+      },
+      {
+        "de": "Ein Abstand ist nur bei Gegenverkehr nötig.",
+        "fa": "فقط هنگام آمدن وسیله از روبه‌رو فاصله لازم است."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Beim Überholen von Radfahrenden mit Kraftfahrzeugen sind innerorts mindestens 1,5 m Seitenabstand nötig. Reicht der Platz nicht, warten.",
+    "explanation_fa": "هنگام سبقت با وسیلهٔ موتوری از دوچرخه‌سوار در شهر، حداقل ۱٫۵ متر فاصلهٔ جانبی لازم است؛ اگر جا نیست، صبر کنید.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
+  },
+  {
+    "id": "cycle-clearance-rural",
+    "topic": "Überholen · سبقت",
+    "visual": "distance",
+    "de": "Sie überholen mit dem Pkw außerorts ein Fahrrad. Welcher Seitenabstand gilt mindestens?",
+    "fa": "بیرون محدودهٔ شهر با خودرو از دوچرخه سبقت می‌گیرید. حداقل فاصلهٔ جانبی چقدر است؟",
+    "options": [
+      {
+        "de": "1 Meter.",
+        "fa": "۱ متر."
+      },
+      {
+        "de": "1,5 Meter.",
+        "fa": "۱٫۵ متر."
+      },
+      {
+        "de": "2 Meter.",
+        "fa": "۲ متر."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "explanation_de": "Außerorts beträgt der Mindestseitenabstand beim Überholen von Radfahrenden mit Kraftfahrzeugen 2 m.",
+    "explanation_fa": "بیرون شهر، حداقل فاصلهٔ جانبی هنگام سبقت با وسیلهٔ موتوری از دوچرخه‌سوار ۲ متر است.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
+  },
+  {
+    "id": "unclear-overtaking",
+    "topic": "Überholen · سبقت",
+    "visual": "distance",
+    "de": "Die Verkehrslage ist unklar. Dürfen Sie trotzdem überholen?",
+    "fa": "وضعیت ترافیک نامشخص است. آیا با این حال اجازهٔ سبقت دارید؟",
+    "options": [
+      {
+        "de": "Nein.",
+        "fa": "خیر."
+      },
+      {
+        "de": "Ja, wenn ich vorher hupe.",
+        "fa": "بله، اگر اول بوق بزنم."
+      },
+      {
+        "de": "Ja, wenn mein Auto schnell genug ist.",
+        "fa": "بله، اگر خودروی من به‌اندازهٔ کافی سریع باشد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Bei unklarer Verkehrslage ist Überholen unzulässig. Hupen oder Motorleistung ändern das nicht.",
+    "explanation_fa": "در وضعیت ترافیکی نامشخص، سبقت مجاز نیست. بوق‌زدن یا قدرت موتور این ممنوعیت را تغییر نمی‌دهد.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
+  },
+  {
+    "id": "turning-cycle",
+    "topic": "Abbiegen · گردش",
+    "visual": "junction",
+    "de": "Sie biegen rechts ab. Rechts neben Ihnen fährt ein Fahrrad geradeaus. Was tun Sie?",
+    "fa": "به راست می‌پیچید. کنار شما در سمت راست، دوچرخه‌ای مستقیم می‌رود. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Vor dem Fahrrad abbiegen, weil ich blinke.",
+        "fa": "چون راهنما زده‌ام، جلوی دوچرخه می‌پیچم."
+      },
+      {
+        "de": "Das Fahrrad durchfahren lassen und nötigenfalls warten.",
+        "fa": "اجازه می‌دهم دوچرخه عبور کند و در صورت لزوم صبر می‌کنم."
+      },
+      {
+        "de": "Mit Hupen zum Anhalten auffordern.",
+        "fa": "با بوق از او می‌خواهم توقف کند."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Wer abbiegt, muss Fahrräder in gleicher Richtung auf oder neben der Fahrbahn durchfahren lassen. Ein Blinker gibt keinen Vorrang.",
+    "explanation_fa": "راننده هنگام گردش باید به دوچرخه‌ای که روی سواره‌رو یا کنار آن هم‌جهت حرکت می‌کند اجازهٔ عبور بدهد. راهنما حق تقدم ایجاد نمی‌کند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__9.html"
+  },
+  {
+    "id": "bus-approach",
+    "topic": "Bus · اتوبوس",
+    "visual": "bus",
+    "de": "Ein Linienbus nähert sich mit Warnblinklicht einer Haltestelle. Dürfen Sie ihn überholen?",
+    "fa": "اتوبوس خطی با فلاشر به ایستگاه نزدیک می‌شود. آیا اجازهٔ سبقت دارید؟",
+    "options": [
+      {
+        "de": "Ja, mit Schrittgeschwindigkeit.",
+        "fa": "بله، با سرعت قدم‌زدن."
+      },
+      {
+        "de": "Ja, wenn niemand aussteigt.",
+        "fa": "بله، اگر کسی پیاده نمی‌شود."
+      },
+      {
+        "de": "Nein, jetzt besteht Überholverbot.",
+        "fa": "خیر، در این وضعیت سبقت ممنوع است."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "explanation_de": "Ein Linienbus, der sich mit Warnblinklicht einer gekennzeichneten Haltestelle nähert, darf nicht überholt werden.",
+    "explanation_fa": "از اتوبوس خطی که با فلاشر به ایستگاه مشخص‌شده نزدیک می‌شود، نباید سبقت گرفت.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__20.html"
+  },
+  {
+    "id": "bus-stopped",
+    "topic": "Bus · اتوبوس",
+    "visual": "bus",
+    "de": "Ein Linienbus hält mit Warnblinklicht an der Haltestelle. Was gilt beim Vorbeifahren?",
+    "fa": "اتوبوس خطی با فلاشر در ایستگاه ایستاده است. هنگام عبور چه قواعدی برقرار است؟",
+    "options": [
+      {
+        "de": "Nur Schrittgeschwindigkeit.",
+        "fa": "فقط با سرعت قدم‌زدن."
+      },
+      {
+        "de": "Fahrgäste weder gefährden noch behindern; nötigenfalls warten.",
+        "fa": "مسافران را به خطر نیندازم یا مانعشان نشوم؛ در صورت لزوم صبر کنم."
+      },
+      {
+        "de": "Bei freier Fahrbahn gilt die normale Höchstgeschwindigkeit.",
+        "fa": "اگر سواره‌رو خالی است، سرعت عادی مجاز است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Bei haltendem Linienbus mit Warnblinklicht gilt Schrittgeschwindigkeit, auch im Gegenverkehr auf derselben Fahrbahn. Fahrgäste dürfen weder gefährdet noch behindert werden.",
+    "explanation_fa": "کنار اتوبوس خطیِ ایستاده با فلاشر، سرعت قدم‌زدن لازم است؛ حتی برای ترافیک روبه‌رو روی همان سواره‌رو. نباید مسافران را به خطر انداخت یا مانعشان شد.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__20.html"
+  },
+  {
+    "id": "zebra-pedestrian",
+    "topic": "Zebrastreifen · خط عابر",
+    "visual": "crossing",
+    "de": "Am Zebrastreifen möchte erkennbar jemand zu Fuß die Straße überqueren. Was tun Sie?",
+    "fa": "کنار خط عابر، مشخص است که عابری می‌خواهد از خیابان عبور کند. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Mäßig heranfahren und nötigenfalls warten.",
+        "fa": "با سرعت متعادل نزدیک می‌شوم و در صورت لزوم صبر می‌کنم."
+      },
+      {
+        "de": "Nur halten, wenn die Person schon auf der Fahrbahn ist.",
+        "fa": "فقط وقتی عابر وارد سواره‌رو شده توقف می‌کنم."
+      },
+      {
+        "de": "Hupen und unverändert weiterfahren.",
+        "fa": "بوق می‌زنم و بدون تغییر ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Am Fußgängerüberweg ist erkennbar querungswilligen Fußgängern das Überqueren zu ermöglichen. Mäßig heranfahren und nötigenfalls warten.",
+    "explanation_fa": "در خط عابر باید امکان عبور را به عابری که قصد عبورش مشخص است بدهید؛ با سرعت متعادل نزدیک شوید و در صورت لزوم منتظر بمانید.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__26.html"
+  },
+  {
+    "id": "zebra-queue",
+    "topic": "Zebrastreifen · خط عابر",
+    "visual": "crossing",
+    "de": "Hinter dem Zebrastreifen staut sich der Verkehr. Sie müssten auf dem Überweg warten. Was ist richtig?",
+    "fa": "پس از خط عابر ترافیک است. اگر جلو بروید باید روی خط منتظر بمانید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Auf dem Zebrastreifen warten.",
+        "fa": "روی خط عابر منتظر می‌مانم."
+      },
+      {
+        "de": "Vor dem Zebrastreifen warten und ihn frei lassen.",
+        "fa": "پیش از خط عابر منتظر می‌مانم و آن را باز می‌گذارم."
+      },
+      {
+        "de": "Nur bei sichtbaren Fußgängern davor warten.",
+        "fa": "فقط در صورت دیدن عابر، پیش از خط منتظر می‌مانم."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Bei stockendem Verkehr darf nicht auf den Fußgängerüberweg gefahren werden, wenn dort gewartet werden müsste.",
+    "explanation_fa": "در ترافیک متوقف، اگر ناچار می‌شوید روی خط عابر منتظر بمانید نباید وارد آن شوید.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__26.html"
   }
 ]

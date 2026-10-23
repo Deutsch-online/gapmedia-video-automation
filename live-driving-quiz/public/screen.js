@@ -1,7 +1,9 @@
+function fitScreen(){document.documentElement.style.setProperty('--screen-scale',Math.min(innerWidth/1080,innerHeight/1920));}
+addEventListener('resize',fitScreen);fitScreen();
 const $=id=>document.getElementById(id);
 let state;
 const fa=new Intl.NumberFormat('fa-IR');
-const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋'};
+const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋',bus:'BUS',crossing:'🚶'};
 function element(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function render(s){
   state=s;const q=s.question;

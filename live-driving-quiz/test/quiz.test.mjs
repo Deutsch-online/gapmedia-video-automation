@@ -5,7 +5,7 @@ import {Quiz,validateQuestions} from '../quiz.mjs';
 const bank=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)));
 const mapping={A:{id:'11'},B:{id:'22'},C:{id:'33'}};
 function setup(index=0){let now=Date.now();const quiz=new Quiz(bank,{now:()=>now});quiz.index=index;quiz.start();return {quiz,advance:n=>{now+=n;},gift:(id,choice='A',extra={})=>({giftId:mapping[choice].id,user:{id:'user1',nickname:'آزمایش'},common:{msgId:id,createTime:String(Math.floor(now/1000))},gift:{type:0},...extra})};}
-test('all original questions have three bilingual options and legal references',()=>{assert.equal(validateQuestions(bank).length,13);assert.equal(bank.find(q=>q.id==='fog').correct.length,2);});
+test('all original questions have three bilingual options and legal references',()=>{assert.ok(validateQuestions(bank).length>=21);assert.equal(bank.find(q=>q.id==='fog').correct.length,2);});
 test('one separate ALL gift selects all three answers only on multiple-answer questions',()=>{
  const {quiz,gift}=setup(12);const map={...mapping,ALL:{id:'44'}};
  assert.equal(quiz.gift({...gift('all'),giftId:'44'},map).accepted,true);quiz.reveal();assert.equal(quiz.leaderboard.get('user1').score,1);
@@ -45,4 +45,11 @@ test('a streak started before a new question cannot answer that question',()=>{
 test('default zero group IDs do not block new real gift messages across questions',()=>{
  const {quiz,gift,advance}=setup();assert.equal(quiz.gift(gift('a','A',{groupId:'0'}),mapping).accepted,true);
  quiz.reveal();quiz.next();advance(31000);quiz.start();assert.equal(quiz.gift(gift('b','B',{groupId:'0'}),mapping).accepted,true);
+});
+
+test('each question cites an archived official law and new bus scenarios distinguish approaching from stopped',()=>{
+ const sources=JSON.parse(readFileSync(new URL('../data/legal-sources.json',import.meta.url)));
+ for(const q of bank)assert.ok(sources.some(s=>s.url===q.source&&s.text.length>100&&s.retrieved_at),q.id);
+ assert.deepEqual(bank.find(q=>q.id==='bus-approach').correct,['C']);
+ assert.deepEqual(bank.find(q=>q.id==='bus-stopped').correct,['A','B']);
 });

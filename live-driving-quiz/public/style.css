@@ -3,3 +3,24 @@
 .show.revealed .scene{display:none}.all-gift{margin-top:14px;padding:12px 18px;border:1px dashed #a4beb0;border-radius:16px;background:#eaf1e6;color:#38604f;font-size:clamp(13px,2vw,22px)}
 
 .episode-line span:last-child{direction:ltr;unicode-bidi:isolate}
+
+/* Canonical mobile broadcast canvas: scale the complete 1080 × 1920 layout. */
+.screen-body{height:100dvh;overflow:hidden}
+.screen-body .show{width:1080px;max-width:none;height:1920px;min-height:0;padding:56px 100px 170px 48px;position:fixed;top:50%;left:50%;margin:0;transform:translate(-50%,-50%) scale(var(--screen-scale,1));transform-origin:center}
+.screen-body .brand{gap:16px;padding:10px 0 24px}.screen-body .logo{width:62px;height:62px;font-size:38px;border-radius:19px}.screen-body .logo span{font-size:27px}
+.screen-body .brand strong{font-size:32px;letter-spacing:4px}.screen-body .brand small{font-size:16px}.screen-body .live-tag{font-size:18px;max-width:none;padding:10px 14px}
+.screen-body .episode-line{font-size:24px;padding:22px 0 16px}.screen-body .scene{height:175px;margin-bottom:20px}
+.screen-body .scene-note{font-size:18px}.screen-body .scene-symbol{font-size:64px}.screen-body .car{height:68px;bottom:44px}.screen-body .car:before{height:42px;top:-32px}.screen-body .glass{height:27px;top:-24px}.screen-body .car b{width:34px;height:34px;border-width:8px;bottom:-15px}
+.screen-body .signal{width:45px;padding:7px;top:13px;border-radius:15px}.screen-body .signal i{width:25px;height:25px;margin:4px auto}.screen-body .signal:after{left:19px;width:7px;height:55px}
+.screen-body .question-meta>span{font-size:23px}.screen-body .timer{font-size:42px}.screen-body .timer span{font-size:20px}
+.screen-body h1{font-size:42px;line-height:1.3;margin:18px 0}.screen-body .question>p{font-size:30px;line-height:1.6;margin:12px 0 23px}
+.screen-body .options{gap:14px}.screen-body .option{gap:18px;padding:18px 20px;border-radius:23px}.screen-body .option-key{height:52px;width:52px;min-width:52px;border-radius:15px;font-size:26px}
+.screen-body .option-de{font-size:28px}.screen-body .option-fa{font-size:25px}.screen-body .gift-pill{font-size:21px;color:#38604f}.screen-body .vote-count{font-size:22px;min-width:28px}
+.screen-body .participation{font-size:24px;margin:22px 0 14px}.screen-body .participation>span:last-child{font-size:22px}.screen-body .response-line{font-size:21px;padding:12px 0}
+.screen-body .all-gift{font-size:22px}.screen-body .explanation{padding:20px 23px}.screen-body .explanation b{font-size:28px}.screen-body .explanation p{font-size:25px}.screen-body .explanation a{font-size:20px}
+.screen-body footer b,.screen-body footer>span{font-size:18px}.screen-body footer small{font-size:16px}.screen-body footer{padding-top:16px}
+.gift-answer-preview{display:grid;gap:4px;font-size:13px;font-weight:400;color:#5b7072;line-height:1.6}.gift-answer-preview [lang=de]{direction:ltr}
+.saved-gifts{display:grid;gap:10px;padding:14px;background:#edf5ef;border-radius:14px}.saved-gift{display:flex;gap:12px;align-items:center}.saved-gift b{background:#137c68;color:#fff;min-width:36px;text-align:center;border-radius:9px;padding:5px}.manual-settings{margin-top:20px}.manual-settings summary{cursor:pointer;padding:12px 0;font-weight:700}
+@media(max-width:600px){.control .input-row>*{flex:1 1 140px}.control button{min-height:46px}.control .simulate input{width:100%}.control code{overflow-wrap:anywhere;word-break:break-all}.control header h1{font-size:30px}.control-card{padding:16px}.control .check{align-items:flex-start}}
+
+.screen-body .show.revealed .explanation p{font-size:24px;line-height:1.5}

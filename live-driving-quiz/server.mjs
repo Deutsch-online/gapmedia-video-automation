@@ -77,7 +77,7 @@ async function connect(username,startOnConnect=false) {
       const i=live.catalog.findIndex(g=>g.id===id);if(i<0&&live.catalog.length<1000)live.catalog.push(gift);else if(i>=0)live.catalog[i]=gift;
       for(const k of [...LETTERS,'ALL'])if(settings.gifts[k].id===id)settings.gifts[k]={...gift,verified:true};
     }
-    if(mode!=='live'||!ready()||connection!==client)return;
+    if(mode!=='live'||!ready()||connection!==client){broadcast();return;}
     const result=quiz.gift(data,Object.fromEntries(Object.entries(settings.gifts).filter(([,g])=>g.verified)));
     if(result.accepted) {recent.push({...quiz.lastAnswer,at:Date.now()});recent=recent.slice(-12);lastReject=null;}
     else if(!['unmapped_gift','streak_not_finished','duplicate_event','already_selected'].includes(result.reason))lastReject=result.reason;
