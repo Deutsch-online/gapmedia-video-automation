@@ -23,7 +23,7 @@ export function scheduleJingle(ctx,destination,start){
 }
 function stopMusic(){for(const voice of voices)try{voice.stop();}catch{}voices=[];}
 function play(){
- if(!current||current.phase!=='revealed'||!current.winnerCount||!current.celebrationMusic||!context||context.state!=='running'||lastPlayed===current.roundId)return;
+ if(!current||current.phase!=='revealed'||!current.celebration?.count||current.celebration.roundId!==current.roundId||!current.celebrationMusic||!context||context.state!=='running'||lastPlayed===current.roundId)return;
  stopMusic();lastPlayed=current.roundId;voices=scheduleJingle(context,master,context.currentTime+.04);
 }
 $('enableMusic').addEventListener('click',async()=>{
@@ -33,13 +33,15 @@ export function renderCelebration(state){
  if(!state)return;current=state;
  if(master)master.gain.setTargetAtTime(Math.max(0,Math.min(100,state.musicVolume??20))/100,context.currentTime,.03);
  $('enableMusic').classList.toggle('hidden',(!state.celebrationMusic&&!state.timerSound)||context?.state==='running');
- const visible=state.phase==='revealed'&&state.winnerCount>0;
+ const result=state.celebration;const visible=Boolean(result?.count);
  $('winnerCelebration').classList.toggle('hidden',!visible);
- if(!visible||!state.celebrationMusic)stopMusic();
+ if(!visible||!state.celebrationMusic||state.phase!=='revealed'||result.roundId!==state.roundId)stopMusic();
  if(!visible){signature=null;return;}
- $('winnerCount').textContent=state.winnerCount+' Teilnehmende';
- const next=JSON.stringify([state.roundId,state.winners]);
- if(next!==signature){signature=next;$('winnerProfiles').replaceChildren(...state.winners.map((person,index)=>{
+ $('winnerTitle').textContent=result.roundId===state.roundId&&state.phase==='revealed'?'Richtig beantwortet!':'Zuletzt richtig beantwortet';
+ $('winnerCount').textContent=result.count+(result.count===1?' Person':' Personen')+' · '+result.questionId;
+ $('winnerProfiles').classList.toggle('few',result.people.length<=3);
+ const next=JSON.stringify([result.roundId,result.people]);
+ if(next!==signature){signature=next;$('winnerProfiles').replaceChildren(...result.people.map((person,index)=>{
   const card=document.createElement('div');card.className='winner-profile';card.style.setProperty('--winner-i',index);
   const face=document.createElement('div');face.className='winner-face';face.textContent=Array.from(person.name)[0]||'✓';
   if(person.avatar){const img=document.createElement('img');img.src=person.avatar;img.alt=person.name;img.referrerPolicy='no-referrer';img.addEventListener('error',()=>img.remove(),{once:true});face.append(img);}

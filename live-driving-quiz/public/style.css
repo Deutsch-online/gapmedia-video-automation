@@ -176,3 +176,7 @@
 
 /* Clearly green, uniform and comfortable on bright mobile displays. */
 .screen-body,.screen-body .show,.screen-body .option,.screen-body .option.correct,.screen-body .bank-media,.winner-celebration{background:#c5ddc8}
+
+.screen-body .question-meta{justify-content:space-between;gap:12px}
+.screen-body #answerType{display:inline-block;font-size:23px;line-height:1.25;background:#b5d3bb;color:#234e34}
+.winner-profiles.few .winner-profile{width:170px}.winner-profiles.few .winner-face{width:130px;height:130px;font-size:44px}.winner-profiles.few .winner-check{top:103px;right:18px}.winner-profiles.few .winner-profile>span{font-size:24px}.winner-profiles.few{min-height:175px}

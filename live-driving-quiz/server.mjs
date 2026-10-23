@@ -59,7 +59,7 @@ function publicState() {
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){supporters.clear();guests.clear();quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){supporters.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.constructor?.name||error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -74,7 +74,7 @@ async function disconnect() {
 async function connect(username,startOnConnect=false) {
   if(connecting||connection)throw Error('ابتدا اتصال قبلی را قطع کنید.');
   if(!/^@?[A-Za-z0-9_.]{1,30}$/.test(username))throw Error('نام کاربری معتبر نیست.');
-  supporters.clear();traffic=freshTraffic();settings.username=username.replace(/^@/,'');for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
+  supporters.clear();quiz.lastWinningRound=null;traffic=freshTraffic();settings.username=username.replace(/^@/,'');for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
   live={status:'connecting',message:'در حال اتصال ناشناس به لایو…',catalog:[]};broadcast();
   const proxy=process.env.HTTPS_PROXY||process.env.HTTP_PROXY;
   const agent=proxy?{http:new HttpProxyAgent({proxy}),https:new HttpsProxyAgent({proxy})}:null;

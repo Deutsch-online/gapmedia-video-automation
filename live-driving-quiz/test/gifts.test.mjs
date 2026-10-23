@@ -61,3 +61,13 @@ test('winner portraits stay hidden until reveal and require the exact complete a
  now+=2200;const second=quiz.snapshot();assert.equal(second.winners.length,2);assert.equal(second.winners[0].name,'winner 6');
  quiz.next();assert.equal(quiz.snapshot().winnerCount,0);assert.deepEqual(quiz.snapshot().winners,[]);
 });
+
+test('last correct responder remains visible across questions until another correct group replaces it',()=>{
+ const now=Date.now(),quiz=new Quiz(bank,{now:()=>now});quiz.start();const original=quiz.questions[0].id;
+ for(const choice of quiz.questions[0].correct)quiz.submit({id:'first'+choice,userId:'first',name:'First winner',choice,time:now,avatar});
+ quiz.reveal();assert.equal(quiz.snapshot().celebration.count,1);const key=quiz.snapshot().celebration.people[0].key;
+ quiz.next();quiz.start();let s=quiz.snapshot();assert.equal(s.winnerCount,0);assert.equal(s.celebration.questionId,original);assert.equal(s.celebration.people[0].key,key);assert.equal(s.celebration.people[0].avatar,avatar);assert.equal(s.question.correct,undefined);
+ quiz.reveal();assert.equal(quiz.snapshot().celebration.people[0].key,key,'a round with no correct responses does not erase the prior winner');
+ quiz.next();quiz.start();for(const choice of quiz.questions[quiz.index].correct)quiz.submit({id:'new'+choice,userId:'new',name:'New winner',choice,time:now});quiz.reveal();
+ s=quiz.snapshot();assert.equal(s.celebration.people[0].name,'New winner');assert.notEqual(s.celebration.people[0].key,key);assert.equal(s.celebration.questionId,s.question.id);
+});
