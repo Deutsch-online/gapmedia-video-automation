@@ -43,3 +43,6 @@ LIVE view is a fixed 1080×1920 light glass canvas, scaled in full to the actual
 
 ## Full-frame LIVE Studio / OBS output
 Use `/screen` as the Browser / Website source at 1080×1920, with Fit/Contain and zero crop. This public display route never authenticates as the administrator and hides the control UI before scripts finish. The complete light glass canvas, including the game, liker rail and waiting list, scales to fit both viewport dimensions. The private panel exposes a copyable screen URL without the management key.
+
+## Two visible play choices
+The panel now offers exactly two play modes: Number / Teams and Gifts. Number mode shows large TEAM 1–4 badges instead of gift artwork and displays editable team names/photos instead of country names/flags. Gift mode shows the configured gift artwork and counts again. Team names are stored separately from country names and retained when an entrant is promoted from the request queue. The team name/photo editor is expanded by default.
