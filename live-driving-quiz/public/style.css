@@ -115,3 +115,15 @@
 .screen-body .bank-question.bank-crowded .gift-pill{font-size:21px}
 .supporter-rail{left:6px;width:136px;gap:16px}.guest-public{left:150px;right:36px}
 .control{font-size:18px}.control-card{padding:18px;margin:14px 0}.control p,.control li{line-height:1.6}.control h2{font-size:25px;margin-bottom:10px}.control .buttons,.control .input-row,.control .simulate{gap:8px;margin:10px 0}.control .gift-mapping{gap:10px;margin:12px 0}.control .saved-gifts{gap:7px;padding:10px}
+
+/* One solid white surface across the canvas and surrounding viewport. */
+.screen-body,.screen-body .show,.screen-body .option{background:#fff}
+.screen-body .show:before{display:none}
+.screen-body .option{border-color:#cad5dd}
+.screen-body .question h1,.screen-body .option-de{color:#102a3a}
+.screen-body .bank-question .question>p,.screen-body .bank-question .option-fa{color:#294552}
+.screen-body .bank-media{background:#fff}
+.screen-body .bank-media figcaption,.screen-body .episode-line,.screen-body .vote-count{color:#38505e}
+.screen-body .supporter-name,.screen-body .supporter-coins{color:#203947;text-shadow:none}
+/* Keep correctness legible through the green border and check mark. */
+.screen-body .option.correct{background:#fff;border-color:#218052}
