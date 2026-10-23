@@ -53,3 +53,14 @@ test('each question cites an archived official law and new bus scenarios disting
  assert.deepEqual(bank.find(q=>q.id==='bus-approach').correct,['C']);
  assert.deepEqual(bank.find(q=>q.id==='bus-stopped').correct,['A','B']);
 });
+
+test('manual reveal works for waiting and paused questions without double scoring',()=>{
+ let now=Date.now();const quiz=new Quiz(bank,{now:()=>now});quiz.start();
+ for(const choice of bank[0].correct)quiz.submit({id:'manual-'+choice,userId:'viewer',name:'Viewer',choice,time:now});
+ quiz.pause();quiz.reveal({manual:true});let s=quiz.snapshot();assert.equal(s.phase,'revealed');assert.deepEqual(s.question.correct,bank[0].correct);assert.equal(s.leaderboard[0].score,1);assert.equal(s.revealReason,'manual');
+ quiz.pause();quiz.reveal({manual:true});assert.equal(quiz.snapshot().leaderboard[0].score,1);
+ now+=100000;assert.equal(quiz.snapshot().revealReason,'manual');quiz.next();quiz.reveal({manual:true});s=quiz.snapshot();assert.equal(s.phase,'revealed');assert.ok(s.question.correct);assert.equal(s.voters,0);
+});
+test('natural expiry is distinct from a manual reveal',()=>{
+ let now=Date.now();const quiz=new Quiz(bank,{now:()=>now,seconds:10});quiz.start();now+=10001;assert.equal(quiz.snapshot().revealReason,'timer');
+});

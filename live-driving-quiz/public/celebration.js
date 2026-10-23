@@ -76,7 +76,7 @@ export function renderCelebration(state){
 export function soundCountdown(state,left){
  if(!state?.timerSound||!context||context.state!=='running'||!state.roundId)return;
  const tick=state.phase==='open'&&left>=1&&left<=5;
- const ended=state.phase==='revealed'&&state.serverTime>=state.closesAt;
+ const ended=state.phase==='revealed'&&state.revealReason!=='manual'&&state.serverTime>=state.closesAt;
  if(!tick&&!ended)return;
  const key=state.roundId+':'+(ended?'end':left);if(key===lastTimerCue)return;lastTimerCue=key;
  if(ended){timerTone(659.25,0,.16,.3);timerTone(1046.5,.16,.25,.26);}else timerTone(880,0,.07,.24);

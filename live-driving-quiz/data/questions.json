@@ -3305,5 +3305,1632 @@
     "image_alt": "Verkehrssituation zur Frage 1.2.26-119-M",
     "points": 4,
     "visual": "bank"
+  },
+  {
+    "id": "1.2.36-014-M",
+    "topic": "Zeichen Und Weisungen Der Polizeibeamten",
+    "de": "Wie verhalten Sie sich jetzt richtig?",
+    "fa": "اکنون رفتار درست چیست؟",
+    "options": [
+      {
+        "de": "Ich überquere die Kreuzung vorsichtig",
+        "fa": "با احتیاط از تقاطع عبور کنم."
+      },
+      {
+        "de": "Ich warte vor der Kreuzung auf weitere Weisungen des Polizeibeamten",
+        "fa": "پیش از تقاطع منتظر دستور بعدی مأمور پلیس بمانم."
+      },
+      {
+        "de": "Ich lasse [das blaue Fahrzeug] zuerst fahren",
+        "fa": "اجازه بدهم [خودروی آبی] اول حرکت کند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.36-zeichen-und-weisungen-der-polizeibeamten/1.2.36-014-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_36-014-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.36-014-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-007",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Was ist bei dieser Ampel mit Grünpfeilschild erlaubt?",
+    "fa": "در این چراغ راهنمایی با تابلوی فلش سبز چه کاری مجاز است؟",
+    "options": [
+      {
+        "de": "Rechtsabbiegen aus dem rechten Fahrstreifen nach vorherigem Anhalten, sofern niemand behindert oder gefährdet wird",
+        "fa": "پس از توقف، از خط سمت راست به راست بپیچم؛ به شرط آن‌که مزاحم یا موجب خطر برای کسی نشوم."
+      },
+      {
+        "de": "Rechtsabbiegen ohne anzuhalten",
+        "fa": "بدون توقف به راست بپیچم."
+      },
+      {
+        "de": "Rechtsabbiegen, nur wenn die Ampel „Grün“ zeigt",
+        "fa": "فقط وقتی چراغ سبز است به راست بپیچم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-007",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-007.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-007",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-013-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich darf als Erster die Kreuzung überqueren",
+        "fa": "اجازه دارم نخست از تقاطع عبور کنم."
+      },
+      {
+        "de": "Ich muss [den roten Lkw] abbiegen lassen",
+        "fa": "باید اجازه بدهم [کامیون قرمز] بپیچد."
+      },
+      {
+        "de": "Ich muss den [Radfahrer] abbiegen lassen",
+        "fa": "باید اجازه بدهم [دوچرخه‌سوار] بپیچد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-013-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-013-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-013-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-001",
+    "topic": "Gefahrzeichen",
+    "de": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "fa": "با دیدن این تابلو چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Geschwindigkeit vermindern",
+        "fa": "سرعت را کم کنم."
+      },
+      {
+        "de": "Bremsbereit sein",
+        "fa": "آمادهٔ ترمز باشم."
+      },
+      {
+        "de": "Nur den von rechts kommenden Verkehr beobachten",
+        "fa": "فقط ترافیک سمت راست را زیر نظر بگیرم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-001",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-001.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-001",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-001",
+    "topic": "Vorschriftzeichen",
+    "de": "In welchem Fall müssen Sie vor diesem Verkehrszeichen warten?",
+    "fa": "در کدام حالت باید پیش از این تابلو منتظر بمانید؟",
+    "options": [
+      {
+        "de": "Wenn ein Bahnbediensteter eine weiß-rot-weiße Fahne schwenkt",
+        "fa": "وقتی مأمور راه‌آهن پرچم سفید، قرمز و سفید را تکان می‌دهد."
+      },
+      {
+        "de": "Wenn Sie den Übergang nicht überqueren können, ohne auf ihm anhalten zu müssen",
+        "fa": "وقتی نمی‌توانم بدون توقف روی گذرگاه، از آن عبور کنم."
+      },
+      {
+        "de": "Wenn sich ein Schienenfahrzeug nähert",
+        "fa": "وقتی وسیلهٔ نقلیهٔ ریلی نزدیک می‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-001",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-001.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-001",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-005",
+    "topic": "Richtzeichen",
+    "de": "Worauf weist dieses Verkehrszeichen hin?",
+    "fa": "این تابلو چه چیزی را نشان می‌دهد؟",
+    "options": [
+      {
+        "de": "Auf den Anfang einer Autobahn",
+        "fa": "آغاز اتوبان."
+      },
+      {
+        "de": "Auf das Ende der Autobahn",
+        "fa": "پایان اتوبان."
+      },
+      {
+        "de": "Auf den Anfang einer Kraftfahrstraße",
+        "fa": "آغاز راه ویژهٔ وسایل نقلیهٔ موتوری."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-005",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-005.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-005",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.36-015-M",
+    "topic": "Zeichen Und Weisungen Der Polizeibeamten",
+    "de": "Wer darf zuerst fahren?",
+    "fa": "چه کسی می‌تواند اول حرکت کند؟",
+    "options": [
+      {
+        "de": "Der [rote] Pkw",
+        "fa": "[خودروی سواری قرمز]."
+      },
+      {
+        "de": "Das Motorrad",
+        "fa": "موتورسیکلت."
+      },
+      {
+        "de": "Ich",
+        "fa": "من."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.36-zeichen-und-weisungen-der-polizeibeamten/1.2.36-015-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_36-015-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.36-015-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-009",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Wo ist bei dieser Ampel mit Grünpfeilschild vor dem Abbiegen nach rechts anzuhalten?",
+    "fa": "در این چراغ با تابلوی فلش سبز، پیش از پیچیدن به راست کجا باید توقف کنید؟",
+    "options": [
+      {
+        "de": "An der Haltlinie",
+        "fa": "پشت خط توقف."
+      },
+      {
+        "de": "Wenn keine Haltlinie vorhanden ist, vor der Kreuzung oder Einmündung",
+        "fa": "اگر خط توقف وجود ندارد، پیش از تقاطع یا محل ورود جادهٔ فرعی."
+      },
+      {
+        "de": "Es muss nicht angehalten werden",
+        "fa": "توقف لازم نیست."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-009",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-009.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-009",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-016-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss [den blauen Lkw] durchfahren lassen",
+        "fa": "باید بگذارم [کامیون آبی] عبور کند."
+      },
+      {
+        "de": "Ich muss [den Traktor] abbiegen lassen",
+        "fa": "باید بگذارم [تراکتور] بپیچد."
+      },
+      {
+        "de": "[Der blaue Lkw] muss mich durchfahren lassen",
+        "fa": "[کامیون آبی] باید بگذارد من عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-016-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-016-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-016-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-002",
+    "topic": "Gefahrzeichen",
+    "de": "Was müssen Sie bei diesem Verkehrszeichen berücksichtigen?",
+    "fa": "با دیدن این تابلو چه نکاتی را باید در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Der Bremsweg ist im Gefälle länger als in der Ebene",
+        "fa": "مسافت ترمز در سرازیری از مسیر هموار بیشتر است."
+      },
+      {
+        "de": "Bei längerer Betätigung der Bremse kann die Bremswirkung nachlassen",
+        "fa": "ترمزگیری طولانی ممکن است قدرت ترمز را کاهش دهد."
+      },
+      {
+        "de": "Die Bremswirkung wird besser, wenn kein Getriebegang eingelegt ist",
+        "fa": "اگر دنده درگیر نباشد، قدرت ترمز بهتر می‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-002",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-002.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-002",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-004",
+    "topic": "Vorschriftzeichen",
+    "de": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "fa": "با دیدن این تابلو چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Sie müssen die Fahrtrichtungsänderung nach rechts anzeigen",
+        "fa": "باید تغییر جهت به راست را با راهنما اعلام کنم."
+      },
+      {
+        "de": "Sie dürfen nur nach rechts weiterfahren",
+        "fa": "فقط اجازه دارم به راست ادامه بدهم."
+      },
+      {
+        "de": "Sie dürfen nicht nach rechts abbiegen",
+        "fa": "اجازه ندارم به راست بپیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-004",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-004.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-004",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-101",
+    "topic": "Richtzeichen",
+    "de": "Welches Verkehrszeichen gibt an der nächsten Kreuzung Vorfahrt?",
+    "fa": "کدام تابلو در تقاطع بعدی حق‌تقدم می‌دهد؟",
+    "options": [
+      {
+        "de": "Verkehrszeichen 1",
+        "fa": "تابلوی 1."
+      },
+      {
+        "de": "Verkehrszeichen 2",
+        "fa": "تابلوی 2."
+      },
+      {
+        "de": "Verkehrszeichen 3",
+        "fa": "تابلوی 3."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-101.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-101",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.36-101-B",
+    "topic": "Zeichen Und Weisungen Der Polizeibeamten",
+    "de": "Was gilt hier?",
+    "fa": "در این‌جا چه مقرراتی برقرار است؟",
+    "options": [
+      {
+        "de": "Die Kreuzung darf überquert werden",
+        "fa": "عبور از تقاطع مجاز است."
+      },
+      {
+        "de": "Vor dem Einfahren in die Kreuzung muss auf weitere Zeichen des Polizeibeamten gewartet werden",
+        "fa": "پیش از ورود به تقاطع باید منتظر علامت بعدی مأمور پلیس بمانم."
+      },
+      {
+        "de": "Abbiegen ist nicht zulässig",
+        "fa": "پیچیدن مجاز نیست."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.36-zeichen-und-weisungen-der-polizeibeamten/1.2.36-101-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_36-101-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.36-101-B",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-010-M",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Wie verhalten Sie sich in dieser Situation?",
+    "fa": "در این وضعیت چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Die Kreuzung ohne anzuhalten überqueren",
+        "fa": "بدون توقف از تقاطع عبور کنم."
+      },
+      {
+        "de": "An der Sichtlinie anhalten",
+        "fa": "در محل دید کافی توقف کنم."
+      },
+      {
+        "de": "An der Haltlinie anhalten",
+        "fa": "پشت خط توقف کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-010-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-010-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-010-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-017-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss [das Motorrad] durchfahren lassen",
+        "fa": "باید اجازه بدهم [موتورسیکلت] عبور کند."
+      },
+      {
+        "de": "Ich fahre vor [dem Bus]",
+        "fa": "پیش از [اتوبوس] حرکت کنم."
+      },
+      {
+        "de": "Ich muss [den Bus] durchfahren lassen",
+        "fa": "باید اجازه بدهم [اتوبوس] عبور کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-017-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-017-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-017-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-004",
+    "topic": "Gefahrzeichen",
+    "de": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "fa": "با دیدن این تابلو چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Dem Gegenverkehr Vorrang einräumen",
+        "fa": "حق‌تقدم را به ترافیک روبه‌رو بدهم."
+      },
+      {
+        "de": "Bei zwei Fahrstreifen für eine Richtung das Reißverschlussverfahren anwenden",
+        "fa": "اگر در یک جهت دو خط عبور وجود دارد، به روش زیپی ادغام شویم."
+      },
+      {
+        "de": "Wenn Sie bei zwei Fahrstreifen für eine Richtung auf dem linken fahren, haben Sie absoluten Vorrang",
+        "fa": "اگر در دو خط هم‌جهت، در خط چپ باشم، حق‌تقدم مطلق دارم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-004",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-004.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-004",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-005",
+    "topic": "Vorschriftzeichen",
+    "de": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "fa": "با دیدن این تابلو چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Sie müssen die Fahrtrichtungsänderung nach links anzeigen",
+        "fa": "باید تغییر جهت به چپ را با راهنما اعلام کنم."
+      },
+      {
+        "de": "Sie dürfen nur nach links weiterfahren",
+        "fa": "فقط اجازه دارم به چپ ادامه بدهم."
+      },
+      {
+        "de": "Sie dürfen nicht nach links weiterfahren",
+        "fa": "اجازه ندارم به چپ ادامه بدهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-005",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-005.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-005",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-102",
+    "topic": "Richtzeichen",
+    "de": "Welches Verkehrszeichen gibt Vorfahrt?",
+    "fa": "کدام تابلو حق‌تقدم می‌دهد؟",
+    "options": [
+      {
+        "de": "Verkehrszeichen 2",
+        "fa": "تابلوی 2."
+      },
+      {
+        "de": "Verkehrszeichen 1",
+        "fa": "تابلوی 1."
+      },
+      {
+        "de": "Verkehrszeichen 3",
+        "fa": "تابلوی 3."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-102",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-102.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-102",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-011-M",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Wo müssen Sie warten?",
+    "fa": "کجا باید منتظر بمانید؟",
+    "options": [
+      {
+        "de": "An der Haltlinie",
+        "fa": "پشت خط توقف."
+      },
+      {
+        "de": "An der Sichtlinie",
+        "fa": "در محل دید کافی."
+      },
+      {
+        "de": "In Höhe der Ampel",
+        "fa": "هم‌ردیف چراغ راهنمایی."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-011-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-011-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-011-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-018-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss [das Motorrad] durchfahren lassen",
+        "fa": "باید اجازه بدهم [موتورسیکلت] عبور کند."
+      },
+      {
+        "de": "Ich fahre vor dem [Bus]",
+        "fa": "پیش از [اتوبوس] حرکت کنم."
+      },
+      {
+        "de": "Ich muss [den Bus] durchfahren lassen",
+        "fa": "باید اجازه بدهم [اتوبوس] عبور کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-018-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-018-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-018-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-005",
+    "topic": "Gefahrzeichen",
+    "de": "Sie sehen dieses Verkehrszeichen. Womit müssen Sie rechnen?",
+    "fa": "این تابلو را می‌بینید. انتظار چه چیزی را باید داشته باشید؟",
+    "options": [
+      {
+        "de": "Mit Gegenverkehr",
+        "fa": "ترافیک از روبه‌رو."
+      },
+      {
+        "de": "Mit Blendung durch den Gegenverkehr bei Nacht",
+        "fa": "خیره‌شدن چشم با نور خودروهای روبه‌رو در شب."
+      },
+      {
+        "de": "Mit Vorrang des Gegenverkehrs",
+        "fa": "حق‌تقدم ترافیک روبه‌رو."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-005",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-005.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-005",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-006",
+    "topic": "Vorschriftzeichen",
+    "de": "In welche Richtungen dürfen Sie weiterfahren?",
+    "fa": "اجازه دارید به کدام جهت‌ها ادامه دهید؟",
+    "options": [
+      {
+        "de": "Geradeaus",
+        "fa": "مستقیم."
+      },
+      {
+        "de": "Nach rechts",
+        "fa": "به راست."
+      },
+      {
+        "de": "Nach links",
+        "fa": "به چپ."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-006",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-006.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-006",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-104",
+    "topic": "Richtzeichen",
+    "de": "Was ist außerorts auf Vorfahrtstraßen erlaubt?",
+    "fa": "بیرون از شهر، در جاده‌های دارای حق‌تقدم چه کاری مجاز است؟",
+    "options": [
+      {
+        "de": "Halten am rechten Fahrbahnrand",
+        "fa": "توقف در لبهٔ راست جاده."
+      },
+      {
+        "de": "Parken auf dem Seitenstreifen",
+        "fa": "پارک روی شانهٔ جاده."
+      },
+      {
+        "de": "Parken auf der Fahrbahn",
+        "fa": "پارک روی سطح جاده."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-104",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-104.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-104",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-012-M",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Was gilt hier?",
+    "fa": "در این‌جا چه مقرراتی برقرار است؟",
+    "options": [
+      {
+        "de": "Rechtsabbieger dürfen fahren",
+        "fa": "وسایلی که به راست می‌پیچند می‌توانند حرکت کنند."
+      },
+      {
+        "de": "Geradeausfahrer dürfen fahren",
+        "fa": "وسایلی که مستقیم می‌روند می‌توانند حرکت کنند."
+      },
+      {
+        "de": "Linksabbieger dürfen fahren",
+        "fa": "وسایلی که به چپ می‌پیچند می‌توانند حرکت کنند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-012-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-012-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-012-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-034-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Wie verhalten Sie sich hier richtig?",
+    "fa": "در این‌جا رفتار درست چیست؟",
+    "options": [
+      {
+        "de": "Ich lasse [das gelbe Fahrzeug] durchfahren",
+        "fa": "بگذارم [خودروی زرد] عبور کند."
+      },
+      {
+        "de": "Ich biege vor dem [gelben Fahrzeug] ab",
+        "fa": "پیش از [خودروی زرد] بپیچم."
+      },
+      {
+        "de": "Ich biege vor dem [roten] Pkw ab",
+        "fa": "پیش از [خودروی سواری قرمز] بپیچم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-034-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-034-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-034-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-006",
+    "topic": "Gefahrzeichen",
+    "de": "Welches Verhalten verlangt dieses Verkehrszeichen von Ihnen?",
+    "fa": "این تابلو از شما چه رفتاری می‌خواهد؟",
+    "options": [
+      {
+        "de": "Höchste Aufmerksamkeit",
+        "fa": "بیشترین توجه و هوشیاری."
+      },
+      {
+        "de": "Bremsbereitschaft",
+        "fa": "آمادگی برای ترمز."
+      },
+      {
+        "de": "Geschwindigkeit vermindern",
+        "fa": "کم‌کردن سرعت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-006",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-006.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-006",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-007",
+    "topic": "Vorschriftzeichen",
+    "de": "Wie müssen Sie sich bei diesem Verkehrszeichen verhalten?",
+    "fa": "با دیدن این تابلو چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Sie müssen an Verkehrsinseln rechts vorbeifahren",
+        "fa": "باید از سمت راست جزیره‌های ترافیکی عبور کنم."
+      },
+      {
+        "de": "Sie sind verpflichtet, nach rechts abzubiegen",
+        "fa": "موظفم به راست بپیچم."
+      },
+      {
+        "de": "Sie dürfen vor diesem Zeichen nicht nach links abbiegen",
+        "fa": "پیش از این تابلو اجازه ندارم به چپ بپیچم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-007",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-007.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-007",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-106",
+    "topic": "Richtzeichen",
+    "de": "Was endet hier?",
+    "fa": "چه چیزی در این‌جا پایان می‌یابد؟",
+    "options": [
+      {
+        "de": "Eine Vorfahrtstraße",
+        "fa": "جادهٔ دارای حق‌تقدم."
+      },
+      {
+        "de": "Ein Zonenhaltverbot",
+        "fa": "محدودهٔ ممنوعیت توقف."
+      },
+      {
+        "de": "Vorausgegangene Streckenverbote",
+        "fa": "ممنوعیت‌های قبلیِ این مسیر."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-106",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-106.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-106",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-015",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Was gilt hier?",
+    "fa": "در این‌جا چه مقرراتی برقرار است؟",
+    "options": [
+      {
+        "de": "Ich darf ungehindert abbiegen",
+        "fa": "اجازه دارم بدون مانع بپیچم."
+      },
+      {
+        "de": "Ich muss den Gegenverkehr durchfahren lassen",
+        "fa": "باید اجازه بدهم ترافیک روبه‌رو عبور کند."
+      },
+      {
+        "de": "Ich muss in der Kreuzungsmitte anhalten",
+        "fa": "باید در میانهٔ تقاطع توقف کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-015",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-015.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-015",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-035-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich lasse den [grünen Pkw] durchfahren",
+        "fa": "بگذارم [خودروی سواری سبز] عبور کند."
+      },
+      {
+        "de": "Ich biege vor dem [grünen Pkw] links ab",
+        "fa": "پیش از [خودروی سواری سبز] به چپ بپیچم."
+      },
+      {
+        "de": "Ich muss den [roten Pkw] vorbeilassen",
+        "fa": "باید بگذارم [خودروی سواری قرمز] عبور کند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-035-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-035-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-035-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-008",
+    "topic": "Gefahrzeichen",
+    "de": "Worauf weist diese Kombination von Verkehrszeichen hin?",
+    "fa": "ترکیب این تابلوها چه چیزی را نشان می‌دهد؟",
+    "options": [
+      {
+        "de": "Auf eine Gefahrstelle im Zusammenhang mit Pferden",
+        "fa": "محل خطر در ارتباط با اسب‌ها."
+      },
+      {
+        "de": "Auf den Vorrang von Reitern vor Kraftfahrzeugen",
+        "fa": "حق‌تقدم سوارکاران بر وسایل نقلیهٔ موتوری."
+      },
+      {
+        "de": "Auf ein Durchfahrtsverbot wegen eines Reitweges",
+        "fa": "ممنوعیت عبور به دلیل وجود مسیر اسب‌سواری."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-008",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-008.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-008",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-008",
+    "topic": "Vorschriftzeichen",
+    "de": "Sie nähern sich einer so gekennzeichneten Haltestelle. Wie verhalten Sie sich, wenn Sie dort Kinder sehen?",
+    "fa": "به ایستگاهی با این علامت نزدیک می‌شوید. اگر آن‌جا کودک ببینید چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Geschwindigkeit vermindern und bremsbereit bleiben",
+        "fa": "سرعت را کم کنم و آمادهٔ ترمز بمانم."
+      },
+      {
+        "de": "Eine Verminderung der Geschwindigkeit ist nur erforderlich, wenn dort ein Schulbus hält",
+        "fa": "کم‌کردن سرعت فقط وقتی لازم است که اتوبوس مدرسه آن‌جا ایستاده باشد."
+      },
+      {
+        "de": "Die Geschwindigkeit muss nicht vermindert werden, wenn ein Bus in einer Haltebucht hält",
+        "fa": "اگر اتوبوس در محل فرورفتهٔ ایستگاه باشد، کم‌کردن سرعت لازم نیست."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-008",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-008.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-008",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-107",
+    "topic": "Richtzeichen",
+    "de": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "fa": "با دیدن این تابلو چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Ihren Vorrang dürfen Sie nur dann nutzen, wenn die Engstelle frei ist",
+        "fa": "فقط وقتی محل باریک‌شدن جاده خالی است از حق‌تقدمم استفاده کنم."
+      },
+      {
+        "de": "Trotz Vorrang müssen Sie sich auf ein Anhalten einstellen",
+        "fa": "با وجود حق‌تقدم، آمادهٔ توقف باشم."
+      },
+      {
+        "de": "Sie müssen dem Gegenverkehr Vorrang gewähren",
+        "fa": "باید به ترافیک روبه‌رو حق‌تقدم بدهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-107",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-107.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-107",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-016",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Sie wollen an dieser Ampel mit Grünpfeilschild nach rechts abbiegen. Welches Verhalten ist richtig?",
+    "fa": "می‌خواهید در این چراغ با تابلوی فلش سبز به راست بپیچید. کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich halte vor der Kreuzung an",
+        "fa": "پیش از تقاطع توقف کنم."
+      },
+      {
+        "de": "Ich muss eine Behinderung anderer Verkehrsteilnehmer ausschließen",
+        "fa": "باید مطمئن شوم مزاحم سایر کاربران جاده نمی‌شوم."
+      },
+      {
+        "de": "Ich darf auf jedem Fahrstreifen rechts abbiegen",
+        "fa": "از هر خط عبوری اجازه دارم به راست بپیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-016",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-016.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-016",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-038-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss das Motorrad durchfahren lassen",
+        "fa": "باید اجازه بدهم موتورسیکلت عبور کند."
+      },
+      {
+        "de": "Ich muss den [blauen Pkw] durchfahren lassen",
+        "fa": "باید اجازه بدهم [خودروی سواری آبی] عبور کند."
+      },
+      {
+        "de": "Ich darf vor dem [blauen Pkw] fahren",
+        "fa": "اجازه دارم پیش از [خودروی سواری آبی] حرکت کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-038-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-038-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-038-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-009",
+    "topic": "Gefahrzeichen",
+    "de": "Worauf weist diese Kombination von Verkehrszeichen hin?",
+    "fa": "ترکیب این تابلوها چه چیزی را نشان می‌دهد؟",
+    "options": [
+      {
+        "de": "Auf eine Gefahrstelle im Zusammenhang mit Gespannfuhrwerken",
+        "fa": "محل خطر در ارتباط با وسایل نقلیهٔ کشیده‌شده با حیوانات."
+      },
+      {
+        "de": "Auf den Vorrang von Gespannfuhrwerken vor Kraftfahrzeugen",
+        "fa": "حق‌تقدم این وسایل نقلیه بر وسایل نقلیهٔ موتوری."
+      },
+      {
+        "de": "Auf ein Durchfahrtsverbot für Gespannfuhrwerke",
+        "fa": "ممنوعیت عبور وسایل نقلیهٔ کشیده‌شده با حیوانات."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-009",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-009.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-009",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-010",
+    "topic": "Vorschriftzeichen",
+    "de": "Was müssen Sie bei diesem Verkehrszeichen beachten?",
+    "fa": "با دیدن این تابلو چه نکته‌ای را باید رعایت کنید؟",
+    "options": [
+      {
+        "de": "Diese Fußgängerzone dürfen Sie mit einem Kraftfahrzeug nicht befahren",
+        "fa": "اجازه ندارم با وسیلهٔ نقلیهٔ موتوری وارد این محدودهٔ ویژهٔ عابران پیاده شوم."
+      },
+      {
+        "de": "In dieser Fußgängerzone dürfen Sie mit einem Kraftfahrzeug mit Schrittgeschwindigkeit fahren",
+        "fa": "در این محدوده اجازه دارم با وسیلهٔ نقلیهٔ موتوری با سرعت قدم‌زدن حرکت کنم."
+      },
+      {
+        "de": "Als Anlieger dürfen Sie in dieser Fußgängerzone mit Kraftfahrzeugen fahren",
+        "fa": "به‌عنوان ساکن یا مراجعه‌کننده اجازه دارم با وسیلهٔ نقلیهٔ موتوری وارد شوم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-010",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-010.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-010",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-109",
+    "topic": "Richtzeichen",
+    "de": "Was ist bei diesen Verkehrszeichen erlaubt?",
+    "fa": "با دیدن این تابلوها چه کاری مجاز است؟",
+    "options": [
+      {
+        "de": "Bewohner mit entsprechend nummeriertem Parkausweis dürfen hier parken",
+        "fa": "ساکنان دارای مجوز پارک با شمارهٔ مشخص‌شده می‌توانند این‌جا پارک کنند."
+      },
+      {
+        "de": "Alle Bewohner dürfen jeden dieser Parkplätze benutzen",
+        "fa": "همهٔ ساکنان می‌توانند از هر یک از این پارکینگ‌ها استفاده کنند."
+      },
+      {
+        "de": "Solange noch andere Parkplätze frei sind, darf jeder diesen Parkplatz benutzen",
+        "fa": "تا وقتی جای پارک دیگری خالی است، هر کسی می‌تواند این‌جا پارک کند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-109",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-109.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-109",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-020-M",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "An dieser Ampel mit Grünpfeilschild möchten Sie jetzt nach rechts abbiegen. Wie verhalten Sie sich richtig?",
+    "fa": "می‌خواهید اکنون در این چراغ با تابلوی فلش سبز به راست بپیچید. رفتار درست چیست؟",
+    "options": [
+      {
+        "de": "Ich halte zunächst an der Haltlinie an",
+        "fa": "ابتدا پشت خط توقف بایستم."
+      },
+      {
+        "de": "Ich schließe eine Behinderung anderer Verkehrsteilnehmer aus",
+        "fa": "مطمئن شوم مزاحم سایر کاربران جاده نمی‌شوم."
+      },
+      {
+        "de": "Ich biege ohne anzuhalten mit Schrittgeschwindigkeit ab",
+        "fa": "بدون توقف با سرعت قدم‌زدن بپیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-020-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-020-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-020-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-039-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Wer darf hier zuerst fahren?",
+    "fa": "چه کسی می‌تواند در این‌جا اول حرکت کند؟",
+    "options": [
+      {
+        "de": "Der Elektroroller",
+        "fa": "اسکوتر برقی."
+      },
+      {
+        "de": "[Der rote Lkw]",
+        "fa": "[کامیون قرمز]."
+      },
+      {
+        "de": "Ich",
+        "fa": "من."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-039-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-039-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-039-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-010",
+    "topic": "Gefahrzeichen",
+    "de": "Womit müssen Sie bei diesem Verkehrszeichen rechnen?",
+    "fa": "با دیدن این تابلو انتظار چه چیزی را باید داشته باشید؟",
+    "options": [
+      {
+        "de": "Mit einem Fußgängerüberweg, der schwer zu erkennen ist",
+        "fa": "گذرگاه عابر پیاده‌ای که تشخیص آن دشوار است."
+      },
+      {
+        "de": "Mit Fußgängern, die möglicherweise die Fahrbahn überqueren",
+        "fa": "عابرانی که ممکن است از جاده عبور کنند."
+      },
+      {
+        "de": "Mit Fußgängern, die die Fahrbahn nur von rechts überqueren dürfen",
+        "fa": "عابرانی که فقط از سمت راست اجازه دارند از جاده عبور کنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-010",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-010.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-010",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-012",
+    "topic": "Vorschriftzeichen",
+    "de": "Womit darf man hier nicht fahren?",
+    "fa": "با کدام وسیله اجازه ندارید در این‌جا حرکت کنید؟",
+    "options": [
+      {
+        "de": "Mit Mofas",
+        "fa": "با موفا (Mofa)."
+      },
+      {
+        "de": "Mit Kleinkrafträdern",
+        "fa": "با موتورسیکلت کوچک (Kleinkraftrad)."
+      },
+      {
+        "de": "Mit Leichtkrafträdern",
+        "fa": "با موتورسیکلت سبک (Leichtkraftrad)."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-012",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-012.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-012",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-110",
+    "topic": "Richtzeichen",
+    "de": "Dürfen Sie hier parken?",
+    "fa": "آیا اجازه دارید این‌جا پارک کنید؟",
+    "options": [
+      {
+        "de": "Ja, als Schwerbehinderter mit amtlichem Parkausweis",
+        "fa": "بله، به‌عنوان فرد دارای معلولیت شدید با مجوز رسمی پارک."
+      },
+      {
+        "de": "Ja, als Begleitperson von Blinden mit amtlichem Parkausweis",
+        "fa": "بله، به‌عنوان همراه فرد نابینا با مجوز رسمی پارک."
+      },
+      {
+        "de": "Ja, für kurzfristige Einkäufe",
+        "fa": "بله، برای خرید کوتاه‌مدت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-110",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-110.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-110",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.37-102-B",
+    "topic": "Wechsellichtzeichen Und Dauerlichtzeichen",
+    "de": "Sie haben sich versehentlich rechts eingeordnet, obwohl Sie nach links abbiegen möchten. Wie dürfen Sie weiterfahren?",
+    "fa": "به اشتباه در سمت راست قرار گرفته‌اید، در حالی که می‌خواهید به چپ بپیچید. چگونه می‌توانید ادامه دهید؟",
+    "options": [
+      {
+        "de": "Geradeaus",
+        "fa": "مستقیم."
+      },
+      {
+        "de": "Nach rechts",
+        "fa": "به راست."
+      },
+      {
+        "de": "Nach links, sobald die Ampel dafür „Grün“ zeigt",
+        "fa": "به چپ، وقتی چراغ مخصوص آن سبز شد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-102-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-102-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-102-B",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-040-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist hier richtig?",
+    "fa": "در این‌جا کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Der [grüne] Pkw darf vor dem [roten] Pkw fahren",
+        "fa": "[خودروی سواری سبز] می‌تواند پیش از [خودروی سواری قرمز] حرکت کند."
+      },
+      {
+        "de": "Ich darf vor dem [roten] Pkw fahren",
+        "fa": "من می‌توانم پیش از [خودروی سواری قرمز] حرکت کنم."
+      },
+      {
+        "de": "Ich darf vor dem [grünen] Pkw fahren",
+        "fa": "من می‌توانم پیش از [خودروی سواری سبز] حرکت کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-040-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-040-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-040-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-012",
+    "topic": "Gefahrzeichen",
+    "de": "Vor welcher Gefahr warnt Sie dieses Verkehrszeichen?",
+    "fa": "این تابلو دربارهٔ چه خطری هشدار می‌دهد؟",
+    "options": [
+      {
+        "de": "Vor Seitenwind",
+        "fa": "باد جانبی."
+      },
+      {
+        "de": "Vor einem seitlichen Versetzen meines Fahrzeugs",
+        "fa": "منحرف‌شدن جانبی خودروی من."
+      },
+      {
+        "de": "Vor Flugbetrieb",
+        "fa": "فعالیت هواپیماها."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-012",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-012.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-012",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.41-013",
+    "topic": "Vorschriftzeichen",
+    "de": "Was müssen Sie bei diesem Verkehrszeichen beachten?",
+    "fa": "با دیدن این تابلو چه نکته‌ای را باید رعایت کنید؟",
+    "options": [
+      {
+        "de": "Aus dieser Straße können Fahrzeuge kommen",
+        "fa": "ممکن است خودرو از این جاده خارج شود."
+      },
+      {
+        "de": "Sie dürfen nicht in diese Straße einfahren",
+        "fa": "اجازه ندارم وارد این جاده شوم."
+      },
+      {
+        "de": "Sie dürfen in diese Straße einfahren",
+        "fa": "اجازه دارم وارد این جاده شوم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.41-vorschriftzeichen/1.4.41-013",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_41-013.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.41-013",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.42-111",
+    "topic": "Richtzeichen",
+    "de": "Was ist hier beim Parken zu beachten?",
+    "fa": "برای پارک در این‌جا چه نکته‌ای را باید رعایت کرد؟",
+    "options": [
+      {
+        "de": "Die auf dem Parkschein angegebene Parkzeit darf nicht überschritten werden",
+        "fa": "نباید از مدت پارک درج‌شده روی بلیت پارک بیشتر بمانم."
+      },
+      {
+        "de": "Der Parkschein muss für Kontrollen gut lesbar ausgelegt sein",
+        "fa": "بلیت پارک باید برای کنترل به‌خوبی خوانا قرار داده شود."
+      },
+      {
+        "de": "Parkschein und Parkscheibe sind gleichgestellt",
+        "fa": "بلیت پارک و دیسک زمان پارک یکسان محسوب می‌شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.42-richtzeichen/1.4.42-111",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_42-111.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.42-111",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.3.01-041-M",
+    "topic": "Vorfahrt Vorrang",
+    "de": "Welches Verhalten ist hier richtig?",
+    "fa": "در این‌جا کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich darf vor dem [roten Pkw] fahren",
+        "fa": "من می‌توانم پیش از [خودروی سواری قرمز] حرکت کنم."
+      },
+      {
+        "de": "[Der gelbe Pkw] darf vor dem [roten Pkw] fahren",
+        "fa": "[خودروی سواری زرد] می‌تواند پیش از [خودروی سواری قرمز] حرکت کند."
+      },
+      {
+        "de": "Ich darf vor dem [gelben Pkw] fahren",
+        "fa": "من می‌توانم پیش از [خودروی سواری زرد] حرکت کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-041-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-041-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-041-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.4.40-101",
+    "topic": "Gefahrzeichen",
+    "de": "Sie fahren außerorts an diesem Verkehrszeichen vorbei. In welcher Entfernung ist die Gefahrstelle zu erwarten?",
+    "fa": "بیرون از شهر از کنار این تابلو می‌گذرید. محل خطر در چه فاصله‌ای قرار دارد؟",
+    "options": [
+      {
+        "de": "Zwischen 150 m und 250 m",
+        "fa": "بین 150 و 250 متر."
+      },
+      {
+        "de": "Zwischen 50 m und 150 m",
+        "fa": "بین 50 و 150 متر."
+      },
+      {
+        "de": "Zwischen 250 m und 350 m",
+        "fa": "بین 250 و 350 متر."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.4.-verkehrszeichen/1.4.40-gefahrzeichen/1.4.40-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_4_40-101.png",
+    "image_alt": "Verkehrssituation zur Frage 1.4.40-101",
+    "points": 2,
+    "visual": "bank"
   }
 ]

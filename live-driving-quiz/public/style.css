@@ -304,3 +304,14 @@
 .screen-body .bank-question.bank-full .options{gap:6px}
 .screen-body .bank-question.bank-full .question{margin-bottom:6px}
 .screen-body .bank-question.bank-full .bank-media{margin-bottom:14px}
+
+/* Bigger floating reactions follow the question's right edge. */
+.edge-reactions{width:52px}
+.edge-right{right:12px}
+.has-activity .edge-right{right:262px}
+.screen-body .supporter-rail{right:18px}
+.edge-reactions span{width:44px;font-size:46px}
+.edge-reactions span:nth-child(2),.edge-reactions span:nth-child(5),.edge-reactions span:nth-child(6){font-size:42px}
+.edge-reactions span:nth-child(3),.edge-reactions span:nth-child(7){font-size:46px}
+.edge-reactions span:nth-child(4),.edge-reactions span:nth-child(8){font-size:38px}
+.screen-body .show.bank-full{padding-bottom:80px}

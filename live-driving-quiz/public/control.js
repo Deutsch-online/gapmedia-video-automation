@@ -67,7 +67,14 @@ function render(s){
  $('leaderboard').replaceChildren(...s.leaderboard.map((row,i)=>{const p=document.createElement('p');p.textContent=`${i+1}. ${row.name} — ${row.score} پاسخ درست`;return p;}));
  savedGifts();if(changed)void loadCatalog();
 }
-document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>api(b.dataset.command)));
+let manualBusy=false;
+async function manualCommand(action,data={}){
+ if(manualBusy)return;manualBusy=true;notice('در حال اجرای فرمان…');
+ const buttons=[...document.querySelectorAll('[data-command="start"],[data-command="reveal"],[data-command="next"],#selectQuestion,#questionSelect')];
+ for(const button of buttons)button.disabled=true;
+ try{return await api(action,data);}finally{manualBusy=false;for(const button of buttons)button.disabled=false;}
+}
+document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>['pause','disconnect'].includes(b.dataset.command)?api(b.dataset.command):manualCommand(b.dataset.command)));
 document.querySelectorAll('[data-choice]').forEach(b=>b.addEventListener('click',()=>api('simulate',{choice:b.dataset.choice,name:$('demoName').value})));
 $('autoplay').addEventListener('change',e=>api('autoplay',{enabled:e.target.checked}));
 $('connect').addEventListener('click',async()=>{notice('اتصال در حال بررسی است…');await api('connect',{username:$('username').value,startOnConnect:$('startOnConnect').checked});await loadCatalog();});
@@ -84,7 +91,7 @@ async function loadQuestions(){try{const response=await fetch('/api/admin/questi
  const groups=[['سؤال‌های جلسهٔ جاری',q=>q.planned&&!q.completed],['سؤال‌های تازه',q=>!q.planned&&!q.completed],['سؤال‌های انجام‌شده',q=>q.completed]];
  $('questionSelect').replaceChildren(...groups.map(([label,filter])=>{const group=document.createElement('optgroup');group.label=label;for(const q of data.questions.filter(filter)){const o=document.createElement('option');o.value=q.id;o.textContent=`${q.video?'🎬 ':'🖼 '}${q.id} · ${q.topic}`;o.disabled=q.completed&&!data.session.allowRepeat;group.append(o);}return group;}));if(selected)$('questionSelect').value=selected;
  }catch{notice('فهرست سؤال‌ها دریافت نشد.',true);}}
-$('selectQuestion').addEventListener('click',()=>api('select',{id:$('questionSelect').value}));if(token)void loadQuestions();
+$('selectQuestion').addEventListener('click',()=>manualCommand('select',{id:$('questionSelect').value}));if(token)void loadQuestions();
 
 $('giftPreset').addEventListener('click',async()=>{const result=await api('gift-preset');if(result){mappingDirty=false;manualDirty=false;mappings();notice('A: Rose 5655 · B: TikTok 5269 · C: GG 6064 ذخیره شد.');}});
 

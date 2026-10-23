@@ -1,6 +1,6 @@
 # FahrFit LIVE — بانک تصویری رانندگی
 
-نسخهٔ فعال دارای ۱۰۰ سؤال (۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
+نسخهٔ فعال دارای ۱۵۰ سؤال (۱۴۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
 
 شناسهٔ اصلی، متن آلمانی، ترتیب گزینه‌ها و کلید پاسخ در انتقال حفظ می‌شوند. تصویر همان شناسه، بدون برش، هنگام سؤال و نمایش پاسخ دیده می‌شود. ترجمهٔ فارسی رسمی نیست و این نرم‌افزار تأییدیهٔ TÜV/DEKRA را ادعا نمی‌کند.
 
@@ -105,11 +105,11 @@ The last successful correct-answer group stays on screen across subsequent quest
 
 ## Sessions and activity rail
 
-The private panel configures 50–100 questions per session (default 50), with a shuffled unique plan and an explicit repeat opt-in. A revealed question enters the completed group; completed questions are excluded from later sessions unless repeats are allowed. An insufficient fresh pool blocks a new session instead of silently repeating. Ending a plan stops autoplay. Manual selection is labelled as review, and demo progress never changes the real session history.
+The private panel configures 50–150 questions per session (default 50), with a shuffled unique plan and an explicit repeat opt-in. A revealed question enters the completed group; completed questions are excluded from later sessions unless repeats are allowed. An insufficient fresh pool blocks a new session instead of silently repeating. Ending a plan stops autoplay. Manual selection is labelled as review, and demo progress never changes the real session history.
 
 Real session plans and completed IDs are stored in a tiny private `fahrfit-quiz-state` Hugging Face Dataset, not a paid persistent disk. Deployments seed it only when absent. `HF_SESSION_REPO` and `HF_SESSION_TOKEN` are server-only; neither private dataset credentials nor progress files are public assets. Loading or saving failures block subsequent real rounds and appear in the panel. The dataset contains only question IDs, progress, timestamps and configuration, never participant profiles. Other settings and participant totals remain per-instance as described above.
 
-The left rail combines recent gift senders (larger portraits with existing coin tiers) and ranked likers, with faint translucent glass cards. Likes use the v3 message `count` sender delta, never the room `total`; duplicate/stale events are rejected. More than 100 likes gets a pink frame; 1000 or more gets a crown. Counts are English compact numbers (`1K`, `1.4K`, `2K`). A gift sender who also likes appears once, with both values. Eight rows are visible; gift rows reserve up to four slots when likers are present. Like counts cover only events received during this connection, not historic TikTok totals. Test buttons generate local demo events only and never send real likes or gifts.
+The right rail combines recent gift senders (larger portraits with existing coin tiers) and ranked likers, with faint translucent glass cards. Likes use the v3 message `count` sender delta, never the room `total`; duplicate/stale events are rejected. More than 100 likes gets a pink frame; 1000 or more gets a crown. Counts are English compact numbers (`1K`, `1.4K`, `2K`). A gift sender who also likes appears once, with both values. Eight rows are visible; gift rows reserve up to four slots when likers are present. Like counts cover only events received during this connection, not historic TikTok totals. Test buttons generate local demo events only and never send real likes or gifts.
 
 ## Stable mobile media, edge reactions and source audio
 
@@ -124,3 +124,11 @@ Audio tries to start automatically where browser-source autoplay is permitted, w
 Online hosting retries anonymous/free connections after startup or network/offline failure, with 15, 30, 60, then 120-second backoff (five minutes after rate limiting). The private panel shows the next attempt and allows disabling automatic reconnect. Manual disconnect or switching to demo stops retry. Profiles and counts survive a temporary disconnect within the same running process and room; a new room/account resets them. Deployment still resets in-memory participants. Connection recovery can display real gifts/likes even while questions remain paused; a session-storage failure does not invalidate a working TikTok connection.
 
 Comments register every distinct valid digit 1, 2 or 3 anywhere in the message. Examples: `12` selects A+B, `13` A+C, `23` or `32` B+C, and `123` selects all three. Persian/Arabic digits also work; other digits are ignored (`14` selects only A). One comment is submitted atomically with one event ID, one voter and at most one portrait per chosen option. Duplicate messages and late/closed-round comments remain rejected. Selecting additional options does not automatically earn a correct-answer score: the exact answer set must match, including single-answer questions. Gift answer rules remain unchanged.
+
+## Manual question controls
+
+Selecting a question opens its answer window with autoplay off. Manual Next reveals/records an open round, advances to a fresh planned question and opens that question without enabling autoplay; during video playback it explicitly skips the unfinished question without marking it completed. A repeated Start on an already open/viewing round is idempotent and preserves votes. Manual Reveal also works from waiting/paused states and scores a round at most once, including pause/reveal repetitions. A manual reveal never schedules the later natural-expiry sound. The private panel marks pending commands and disables repeated manual clicks; Pause and Disconnect can still cancel a pending round transition.
+
+A deployment tagged `[manual-driving-check]` checks real manual controls while leaving autoplay off. It observes received comments only and never sends real chat or gifts or simulates LIVE events. Real reception is only reported as verified when the actual accepted-comment counter increases.
+
+The current bank contains 150 distinct source IDs and 150 verified original images, including the two existing video questions. Session size can be configured up to 150; current plans and completed IDs survive the expansion. The larger decorative reaction stream follows the right edge of the question column, with a clear gutter before the right-side profiles; profile text sizes stay unchanged.

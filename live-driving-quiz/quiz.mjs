@@ -22,20 +22,23 @@ export function validateQuestions(questions) {
 export class Quiz {
   constructor(questions, {now=()=>Date.now(), seconds=30}={}) {
     this.questions=validateQuestions(questions); this.now=now; this.seconds=seconds;
-    this.lastWinningRound=null;this.revealedAt=null;this.index=0; this.phase='waiting'; this.round=null; this.answers=new Map();
+    this.lastWinningRound=null;this.revealedAt=null;this.revealReason=null;this.scoredRoundId=null;this.index=0; this.phase='waiting'; this.round=null; this.answers=new Map();
     this.seen=new Map(); this.groups=new Map(); this.leaderboard=new Map(); this.lastAnswer=null;
   }
   start() {
     if (['open','watching'].includes(this.phase)) throw Error('Round already open');
     const q=this.questions[this.index],watch=q.video?q.video_duration_ms+2000:0;
     this.round={id:randomUUID(),opened:this.now()+watch,closes:this.now()+watch+this.seconds*1000,videoStarted:q.video?this.now()+2000:null};
-    this.revealedAt=null;this.phase=q.video?'watching':'open'; this.answers=new Map(); this.lastAnswer=null;
+    this.revealedAt=null;this.revealReason=null;this.phase=q.video?'watching':'open'; this.answers=new Map(); this.lastAnswer=null;
   }
   next() { if(['open','watching'].includes(this.phase)) throw Error('Reveal or pause this question first'); this.index=(this.index+1)%this.questions.length;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null; }
   pause() { this.phase='paused'; }
-  reveal() {
-    if(this.phase!=='open') return;
-    this.phase='revealed';this.revealedAt=this.now();
+  reveal({manual=false,timed=false}={}) {
+    if(this.phase==='watching'||(this.phase!=='open'&&!manual))return;
+    this.round||={id:randomUUID(),opened:this.now(),closes:this.now()+this.seconds*1000,videoStarted:null};
+    this.phase='revealed';
+    if(this.scoredRoundId===this.round.id)return;
+    this.scoredRoundId=this.round.id;this.revealedAt=this.now();this.revealReason=timed?'timer':'manual';
     const correct=this.questions[this.index].correct.slice().sort().join(','),winning=[];
     for(const [id,answer] of this.answers) {
       const ok=[...answer.choices].sort().join(',')===correct;
@@ -44,7 +47,7 @@ export class Quiz {
     if(winning.length)this.lastWinningRound={roundId:this.round.id,questionId:this.questions[this.index].id,at:this.now(),people:winning};
   }
   select(id){if(['open','watching'].includes(this.phase))throw Error('Pause this question first');const index=this.questions.findIndex(q=>q.id===id);if(index<0)throw Error('Unknown question');this.index=index;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null;}
-  tick() { if(this.phase==='watching'&&this.now()>=this.round.opened)this.phase='open';if(this.phase==='open' && this.now()>=this.round.closes) this.reveal(); }
+  tick() { if(this.phase==='watching'&&this.now()>=this.round.opened)this.phase='open';if(this.phase==='open' && this.now()>=this.round.closes) this.reveal({timed:true}); }
   submit({id,userId,name,choice,time,roundId,avatar,commentChoices}) {
     this.tick();
     if(!id || !userId || ![...LETTERS,'ALL'].includes(choice) || !Number.isFinite(time)) return {accepted:false,reason:'invalid_event'};
@@ -104,7 +107,7 @@ export class Quiz {
     const winnerOffset=winners.length?Math.floor((this.now()-this.revealedAt)/2200)%Math.ceil(winners.length/6)*6:0;
     const last=this.lastWinningRound,offset=last?Math.floor((this.now()-last.at)/2200)%Math.ceil(last.people.length/6)*6:0;
     const celebration=last?{roundId:last.roundId,questionId:last.questionId,at:last.at,count:last.people.length,people:last.people.slice(offset,offset+6)}:null;
-    return {celebration,winnerCount:winners.length,winners:winners.slice(winnerOffset,winnerOffset+6).map(a=>({key:a.publicId,name:a.name,avatar:a.avatar})),revealedAt:this.phase==='revealed'?this.revealedAt:null,questionSeconds:this.seconds,index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
+    return {celebration,winnerCount:winners.length,winners:winners.slice(winnerOffset,winnerOffset+6).map(a=>({key:a.publicId,name:a.name,avatar:a.avatar})),revealedAt:this.phase==='revealed'?this.revealedAt:null,revealReason:this.phase==='revealed'?this.revealReason:null,questionSeconds:this.seconds,index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
       voters:this.answers.size,participants:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).slice(-6).reverse().map(a=>({key:a.publicId,name:a.name,avatar:a.avatar}))])),counts:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).length])),lastAnswer:this.lastAnswer,
       leaderboard:[...this.leaderboard.values()].sort((a,b)=>b.score-a.score).slice(0,5)};
   }

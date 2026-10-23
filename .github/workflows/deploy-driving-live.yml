@@ -47,9 +47,10 @@ jobs:
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
         run: python scripts/deploy-driving-live.py
       - name: Explicitly requested real LIVE reception check
-        if: inputs.verify_live == true || contains(github.event.head_commit.message, '[verify-driving-live]') || contains(github.event.head_commit.message, '[resume-driving-live]')
+        if: inputs.verify_live == true || contains(github.event.head_commit.message, '[verify-driving-live]') || contains(github.event.head_commit.message, '[resume-driving-live]') || contains(github.event.head_commit.message, '[manual-driving-check]')
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          DRIVING_LIVE_MANUAL_VERIFY: ${{ contains(github.event.head_commit.message, '[manual-driving-check]') }}
           DRIVING_LIVE_RESUME_ONLY: ${{ contains(github.event.head_commit.message, '[resume-driving-live]') }}
         run: python scripts/check-driving-live.py
       - uses: actions/upload-artifact@v4

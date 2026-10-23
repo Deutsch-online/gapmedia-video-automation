@@ -45,11 +45,12 @@ const ids=quiz.questions.map(q=>q.id);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{});
 let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat});
 const sessions=()=>mode==='live'?liveSessions:demoSessions;
-let completedRound=null,advancing=false,sessionError=null;
+let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
+function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(liveSessions.export());}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
 function recordCompleted(){if(quiz.phase==='revealed'&&quiz.round?.id!==completedRound){completedRound=quiz.round?.id;sessions().complete(quiz.questions[quiz.index].id);persistSession();}}
-async function nextRound(){recordCompleted();await flushSession();const id=sessions().next();persistSession();await flushSession();advanceAt=null;if(!id){autoplay=false;return false;}quiz.select(id);return true;}
+async function nextRound({generation=roundControlGeneration}={}){recordCompleted();await flushSession();checkRoundGeneration(generation);const id=sessions().next();persistSession();await flushSession();checkRoundGeneration(generation);advanceAt=null;if(!id){autoplay=false;return false;}quiz.select(id);return true;}
 
 const guests=new GuestSupport(settings.guests||[]);
 function saveGuests(){settings.guests=guests.guests;save();}
@@ -79,7 +80,7 @@ function publicState() {
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){roundControlGeneration++;supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.constructor?.name||error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -87,6 +88,7 @@ function safeError(error) {
   return 'اتصال ناموفق بود؛ وضعیت لایو، شبکه یا سرویس واسط را بررسی کنید.';
 }
 async function disconnect({manual=true}={}) {
+  roundControlGeneration++;
   if(manual){connectGeneration++;reconnect.disable();resumeOnReconnect=false;settings.autoReconnect=false;save();}
   const old=connection;connection=null;connecting=false;
   autoplay=false;quiz.pause();live={status:'disconnected',message:'اتصال قطع است؛ دریافت پاسخ غیرفعال است.',catalog:[]};broadcast();
@@ -164,12 +166,13 @@ async function connect(username,startOnConnect=false,automatic=false) {
   } finally {clearTimeout(timeout);if(generation===connectGeneration){connecting=false;broadcast();}}
 
 }
-async function startRound() {
+async function startRound({generation=roundControlGeneration}={}) {
+ if(['open','watching'].includes(quiz.phase))return;
  if(mode==='live'&&!ready())throw Error('ابتدا لایو را وصل کنید و روش پاسخ را تنظیم کنید.');
- await flushSession();let id=sessions().ensure();
- while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
+ await flushSession();checkRoundGeneration(generation);let id=sessions().ensure();
+ while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
- persistSession();await flushSession();sessionError=null;quiz.start();advanceAt=null;broadcast();
+ persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start();advanceAt=null;broadcast();
 }
 function authenticated(req) {
   const value=req.headers.authorization?.replace(/^Bearer /,'')||'';
@@ -215,12 +218,18 @@ const server=http.createServer(async(req,res)=>{
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
         await flushSession();const id=sessions().create();quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
       }
-      else if(action==='start')await startRound();
-      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');quiz.reveal();recordCompleted();advanceAt=Date.now()+12000;}
-      else if(action==='select'){if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');sessions().review(String(data.id));quiz.select(String(data.id));advanceAt=null;}
-      else if(action==='next'){if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');await nextRound();}
-      else if(action==='pause'){resumeOnReconnect=false;autoplay=false;quiz.pause();}
-      else if(action==='autoplay'){resumeOnReconnect=Boolean(data.enabled);autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed'&&!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');await startRound();}}
+      else if(action==='start'){const generation=++roundControlGeneration;await startRound({generation});}
+      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+12000;}
+      else if(action==='select'){
+        sessions().review(String(data.id));const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;quiz.pause();quiz.select(String(data.id));advanceAt=null;await startRound({generation});
+      }
+      else if(action==='next'){
+        const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;
+        if(quiz.phase==='open')quiz.reveal({manual:true});else if(quiz.phase==='watching')quiz.pause();
+        if(await nextRound({generation}))await startRound({generation});
+      }
+      else if(action==='pause'){roundControlGeneration++;resumeOnReconnect=false;autoplay=false;quiz.pause();}
+      else if(action==='autoplay'){const generation=++roundControlGeneration;resumeOnReconnect=Boolean(data.enabled);autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed'&&!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');await startRound();}}
       else if(action==='mode'){
         if(!['demo','live'].includes(data.mode))throw Error('حالت معتبر نیست.');
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');

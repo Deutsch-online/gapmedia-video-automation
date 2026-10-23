@@ -53,12 +53,24 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('session-settings',{size:49,allowRepeat:false})).status,400);
   assert.equal((await post('session-settings',{size:50,allowRepeat:true})).status,200);
   assert.equal((await post('new-session')).status,200);
-  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,100);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
+  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,150);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
   assert.equal((await post('simulate-like',{count:1000,name:'fan'})).status,200);
   state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters[0].tier,'crown');assert.equal(state.supporters[0].likeLabel,'1K');assert.equal(state.supporters[0].userId,undefined);
   assert.equal((await post('simulate-supporter',{coins:500,name:'fan'})).status,200);
   state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters.length,1);assert.equal(state.supporters[0].kind,'gift');assert.equal(state.supporters[0].likes,1000);
   assert.equal(JSON.parse(readFileSync(join(dir,'settings.json'))).sessionProgress,undefined,'demo questions never change durable real progress');
+  assert.equal((await post('answer-input',{input:'comments'})).status,200);
+  state=(await(await post('select',{id:first.id})).json()).state;
+  assert.equal(state.phase,'open');assert.equal(state.autoplay,false);
+  const manualRound=state.roundId;
+  assert.equal((await post('simulate-comment',{comment:first.correct.map(k=>'123'['ABC'.indexOf(k)]).join(''),name:'manual-user'})).status,200);
+  state=(await(await post('start')).json()).state;assert.equal(state.roundId,manualRound);assert.equal(state.voters,1,'repeated start never erases a manual answer');
+  await post('pause');state=(await(await post('reveal')).json()).state;assert.equal(state.phase,'revealed');assert.deepEqual(state.question.correct,first.correct);assert.equal(state.revealReason,'manual');
+  const score=state.leaderboard.find(p=>p.name==='manual-user').score;
+  await post('pause');state=(await(await post('reveal')).json()).state;assert.equal(state.leaderboard.find(p=>p.name==='manual-user').score,score);
+  state=(await(await post('next')).json()).state;assert.ok(['open','watching'].includes(state.phase));assert.equal(state.autoplay,false);assert.notEqual(state.question.id,first.id);
+  state=(await(await post('next')).json()).state;assert.ok(['open','watching'].includes(state.phase));assert.equal(state.autoplay,false,'manual next also works before the prior round closes');
+
  } finally {child.kill('SIGTERM');await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(3000)]);if(child.exitCode===null)child.kill('SIGKILL');rmSync(dir,{recursive:true,force:true});}
 });
 
