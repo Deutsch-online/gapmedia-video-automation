@@ -173,3 +173,6 @@
 .screen-body .bank-question.bank-crowded .option-de{font-size:29px}
 .screen-body .bank-question.bank-crowded .option-fa{font-size:26px}
 .screen-body .bank-question.bank-crowded h1{font-size:38px}
+
+/* Clearly green, uniform and comfortable on bright mobile displays. */
+.screen-body,.screen-body .show,.screen-body .option,.screen-body .option.correct,.screen-body .bank-media,.winner-celebration{background:#c5ddc8}

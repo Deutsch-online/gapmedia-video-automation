@@ -3,12 +3,14 @@ import {renderGuests} from './guests-ui.js';
 function fitScreen(){document.documentElement.style.setProperty('--screen-scale',Math.min(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fitScreen);fitScreen();
 const $=id=>document.getElementById(id);
+let activeBuild;
 let state,receivedAt=0,optionSignature,supporterSignature,guestSignature;
 const fa=new Intl.NumberFormat('en-US');
 const digits=text=>String(text).replace(/[۰-۹٠-٩]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.includes(c)?'۰۱۲۳۴۵۶۷۸۹'.indexOf(c):'٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
 const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋',bus:'BUS',crossing:'🚶'};
 function element(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function render(s){
+  if(activeBuild&&s.build&&activeBuild!==s.build){location.reload();return;}activeBuild=s.build;
   state=s;receivedAt=performance.now();const q=s.question;
   $('show').classList.toggle('revealed',s.phase==='revealed');
   const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);$('show').classList.toggle('watching',s.phase==='watching');

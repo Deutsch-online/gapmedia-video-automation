@@ -1,7 +1,9 @@
 import {renderGuests} from './guests-ui.js';
-const $=id=>document.getElementById(id);const token=decodeURIComponent(location.hash.slice(1));
+const $=id=>document.getElementById(id);let token=decodeURIComponent(location.hash.slice(1));
+try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=sessionStorage.getItem('fahrfit-control-token')||'';}catch{}
 history.replaceState(null,'',location.pathname);
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
+let activeBuild;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
 for(const k of giftKeys){
@@ -42,7 +44,7 @@ function savedGifts(){
 }
 async function loadCatalog(){try{const r=await fetch('/api/admin/catalog',{headers:{Authorization:'Bearer '+token}});if(!r.ok)throw Error('لینک خصوصی پنل را از پیام تلگرام باز کنید؛ بخش بعد از # باید در لینک باشد.');catalog=(await r.json()).gifts;mappings();}catch(e){notice(e.message,true);}}
 function render(s){
- if(!s)return;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
+ if(!s)return;if(activeBuild&&s.build&&activeBuild!==s.build){history.replaceState(null,'',location.pathname+'#'+encodeURIComponent(token));location.reload();return;}activeBuild=s.build;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
  $('connectionStatus').textContent=s.connection.message+(s.connection.diagnostics?.length?' '+s.connection.diagnostics.map(d=>`${d.route||'اتصال'}: ${d.reason}${d.httpStatus?' HTTP '+d.httpStatus:''}`).join(' · '):'');
  renderGuests($('guestList'),s.guests||[],{remove:key=>api('guest-remove',{key}),simulate:key=>api('simulate-guest-gift',{key})});
  $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت 1،2،3':'روش فعال: رز / تیک‌تاک / GG';
@@ -96,5 +98,8 @@ $('saveMusic').addEventListener('click',async()=>{const result=await api('celebr
 $('timerSound').addEventListener('change',()=>{timerSoundDirty=true;});
 $('saveTimerSound').addEventListener('click',async()=>{const result=await api('timer-sound',{enabled:$('timerSound').checked});if(result){timerSoundDirty=false;render(result.state);}});
 
-$('showPersian').addEventListener('change',()=>{languageDirty=true;});
-$('saveDisplayLanguage').addEventListener('click',async()=>{const result=await api('display-language',{showPersian:$('showPersian').checked});if(result){languageDirty=false;render(result.state);}});
+$('showPersian').addEventListener('change',async()=>{
+ const checkbox=$('showPersian');languageDirty=true;checkbox.disabled=true;$('languageSaveStatus').textContent='در حال اعمال…';
+ const result=await api('display-language',{showPersian:checkbox.checked});languageDirty=false;checkbox.disabled=false;
+ if(result){render(result.state);$('languageSaveStatus').textContent=result.state.showPersian?'ترجمهٔ فارسی روشن است.':'ترجمهٔ فارسی خاموش است.';}else{checkbox.checked=Boolean(state?.showPersian);$('languageSaveStatus').textContent='ذخیره نشد؛ دوباره امتحان کنید.';}
+});
