@@ -6,9 +6,12 @@
   "license": "AGPL-3.0-only",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "prepare:media": "node bank-media.mjs"
   },
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "hpagent": "1.2.0",
     "tiktok-live-connector": "2.5.0",

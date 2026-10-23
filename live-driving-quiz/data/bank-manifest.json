@@ -1,0 +1,232 @@
+{
+  "upstream_repository": "yowmamasita/driving-theory",
+  "upstream_commit": "bbdfe728a9c19c427f67bff45ed54780248b1aeb",
+  "retrieved_at": "2026-10-23T08:31:38.677675+00:00",
+  "question_count": 20,
+  "source_question_count": 2413,
+  "catalog_version": "not independently established",
+  "rights_basis": "Project owner explicitly confirmed permission to use the bank and requested integration on 2026-10-23; not an independently verified publisher grant.",
+  "persian_translation": "Educational project translation; not an official examination language.",
+  "images": [
+    {
+      "question_id": "1.1.02-009-B",
+      "file": "1_1_02-009-B.png",
+      "upstream_path": "images/1_1_02-009-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_02-009-B.png",
+      "sha256": "c0e2bb3b7b21b78a2a6e2aa4b712dd169aa8373b560760c6dafd937e17e3f3f1",
+      "bytes": 96692,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "12c028f82a6d3c4f2f30051b5094d46880ddc88fb521ef4cf9bc9fd65ac9a0a1"
+    },
+    {
+      "question_id": "1.1.03-005",
+      "file": "1_1_03-005.png",
+      "upstream_path": "images/1_1_03-005.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_03-005.png",
+      "sha256": "f5ed7b5fd49098820de7420c0767372b8f9f2e8125caf3fea3c206f152430df7",
+      "bytes": 119183,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "7cd7c8430ff866b04d1a5afbec06bbda78e31ae5b32b5dc89a8d3b27aebb8849"
+    },
+    {
+      "question_id": "1.1.04-103-B",
+      "file": "1_1_04-103-B.png",
+      "upstream_path": "images/1_1_04-103-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_04-103-B.png",
+      "sha256": "aba5c35f204fe77ac3130855432180ef27ec5477690105d6bc1e76be5b559fed",
+      "bytes": 62849,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "5f7e2215a023720d9d4507297438432aa74dd58e3ec72233775ac76145bbd20b"
+    },
+    {
+      "question_id": "1.1.05-107-M",
+      "file": "1_1_05-107-M.png",
+      "upstream_path": "images/1_1_05-107-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_05-107-M.png",
+      "sha256": "3e8b02635e987b7ebc717916487f071c6e5533c3ec57f8ff0ebae3ff8335ae3b",
+      "bytes": 112426,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "378c6c819dbfa91f81ab5d042a9949bd06a0a59d2747c69e775069924a7a279a"
+    },
+    {
+      "question_id": "1.1.06-005-M",
+      "file": "1_1_06-005-M.png",
+      "upstream_path": "images/1_1_06-005-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_06-005-M.png",
+      "sha256": "83a72bc65c49cff311e969590b9b8d5f99690cac9967b2f5ed9a7e262d133ec5",
+      "bytes": 136647,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "a03f4e729609f09dac0e6a084a4b14922d309abf92a5dc08278c5167c1fda4a6"
+    },
+    {
+      "question_id": "1.1.07-005-B",
+      "file": "1_1_07-005-B.png",
+      "upstream_path": "images/1_1_07-005-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_1_07-005-B.png",
+      "sha256": "25fc6bba47f3c276f6be338c64e221468b2c8a7d2016edaf815e3b7b7b519f74",
+      "bytes": 85474,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "8f27e7d52f472c2499f442aad927c58a00b4c7ba3828db57e64bf7efb89c5ec3"
+    },
+    {
+      "question_id": "1.2.02-101-B",
+      "file": "1_2_02-101-B.png",
+      "upstream_path": "images/1_2_02-101-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_02-101-B.png",
+      "sha256": "39bc8412be68b280e4cce0e3e75824e0ea621e711423ea941ea73453ae0d7723",
+      "bytes": 144073,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "b0b856e5a88cb6247cc676b48682806a8f8468c7f0232504db59c6fcb4864c75"
+    },
+    {
+      "question_id": "1.2.05-125-M",
+      "file": "1_2_05-125-M.png",
+      "upstream_path": "images/1_2_05-125-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_05-125-M.png",
+      "sha256": "66b7268461d8fe599cb48fe16bd996a18e93c23541c2fd04c4a759f23d7b9b98",
+      "bytes": 125329,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "ed6afeafbbdd25ba8d1a89af008d73383f4063074f313422b1728bdfe9dbd256"
+    },
+    {
+      "question_id": "1.2.06-101-M",
+      "file": "1_2_06-101-M.png",
+      "upstream_path": "images/1_2_06-101-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_06-101-M.png",
+      "sha256": "725e144edd7c8fb6878dfd6331a3468af0f4a16c86a4eda7d80759a355cc1d96",
+      "bytes": 112992,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "84103ad045a86775e789e87b92df9155f331bb0d24018f4fc1f22aab68ec5638"
+    },
+    {
+      "question_id": "1.2.09-019-M",
+      "file": "1_2_09-019-M.png",
+      "upstream_path": "images/1_2_09-019-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_09-019-M.png",
+      "sha256": "d47eca6a303e7143456763c3e17411d7232998676c047cd5537150f77c2e0ad0",
+      "bytes": 124518,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "47501e581233b7e589b6e22bd1149e21945a48ccb5bc8a2014dbf1a29e89087d"
+    },
+    {
+      "question_id": "1.2.10-108",
+      "file": "1_2_10-108.png",
+      "upstream_path": "images/1_2_10-108.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_10-108.png",
+      "sha256": "ba2f94bb2408612f0c88dc4ef4ad1ce523215b8785182e31ff37bd470457b60c",
+      "bytes": 138933,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "1d43aaf33751c6b17827fa2202c58f21454483595501023d38735424020fda89"
+    },
+    {
+      "question_id": "1.2.11-005-B",
+      "file": "1_2_11-005-B.png",
+      "upstream_path": "images/1_2_11-005-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_11-005-B.png",
+      "sha256": "730544615e3621257866552c5a8449c9c42074b08441e241c8da69b16a574722",
+      "bytes": 122818,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "d4176284265db315738505bf154b1a0b87bc273dcdbda731ff62fb7293ac00a7"
+    },
+    {
+      "question_id": "1.2.12-120-M",
+      "file": "1_2_12-120-M.png",
+      "upstream_path": "images/1_2_12-120-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_12-120-M.png",
+      "sha256": "d3444ef4254e28d34669008b38b62369be1f06aa4dade3ad1f46ed16b35742b6",
+      "bytes": 141361,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "334db6f4b5e1723d2d0d42a1aaaf3c43cc183e32facb5a3d0fa690c614364a4e"
+    },
+    {
+      "question_id": "1.2.19-009",
+      "file": "1_2_19-009.png",
+      "upstream_path": "images/1_2_19-009.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_19-009.png",
+      "sha256": "93160b271d70aae9ce42d27cabc1ac1f4b8ee7f906a3ad1d0cf1362ac55dbecd",
+      "bytes": 1381464,
+      "width": 2400,
+      "height": 1440,
+      "text_key_sha256": "8ed253508964acb85edbed141c26ec4ad7679a90f1057075c31d0be81bf8854f"
+    },
+    {
+      "question_id": "1.2.20-106",
+      "file": "1_2_20-106.png",
+      "upstream_path": "images/1_2_20-106.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_20-106.png",
+      "sha256": "a673e9de29e7bcafc7684f70769fcc80474b1fe0e063414e40b9332fa5b8726b",
+      "bytes": 100297,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "9b3ad60c3e6eaa8a98fd774e2a442f59f955cdb945e4649de81d089f15f6c68f"
+    },
+    {
+      "question_id": "1.2.26-009-M",
+      "file": "1_2_26-009-M.png",
+      "upstream_path": "images/1_2_26-009-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_26-009-M.png",
+      "sha256": "92bff98cfb30fb85fa0b49c69bebde26e864be36c989727aa02b1a60aafa977d",
+      "bytes": 116829,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "9a896819063f689776b92b084e844013b5f17dce0020d102b083dc1928f129b4"
+    },
+    {
+      "question_id": "1.2.34-010",
+      "file": "1_2_34-010.png",
+      "upstream_path": "images/1_2_34-010.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_34-010.png",
+      "sha256": "124b785adf8c0957e63d68fe1bfdf7d022b4bb33700f15c8e0b1ebe7c70bd23b",
+      "bytes": 29108,
+      "width": 2400,
+      "height": 1440,
+      "text_key_sha256": "e50e4b6b02618b771bd34b8ff35bcd26205093776983dcd00321f2774c13a123"
+    },
+    {
+      "question_id": "1.2.36-004-B",
+      "file": "1_2_36-004-B.png",
+      "upstream_path": "images/1_2_36-004-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_36-004-B.png",
+      "sha256": "ea8cca19818f9ebb6da06a0ad73632b5fe639d45773e1cb315acd3c96d4ba99c",
+      "bytes": 117359,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "b2eb46c53195e48e06795ba39ee3597b766bf035d2b5c8c0189b6882aa772017"
+    },
+    {
+      "question_id": "1.2.37-002-B",
+      "file": "1_2_37-002-B.png",
+      "upstream_path": "images/1_2_37-002-B.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_2_37-002-B.png",
+      "sha256": "a991f3ea4f36fb0d8a2854843da40a522f3c4ffe8059d9525c7d79589c8a0372",
+      "bytes": 123633,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "4a54747f25c700c45cf75add8d7894ca91b2fb256ce5ca1e6b913a4700ce86b5"
+    },
+    {
+      "question_id": "1.3.01-007-M",
+      "file": "1_3_01-007-M.png",
+      "upstream_path": "images/1_3_01-007-M.png",
+      "url": "https://raw.githubusercontent.com/yowmamasita/driving-theory/bbdfe728a9c19c427f67bff45ed54780248b1aeb/images/1_3_01-007-M.png",
+      "sha256": "91e950e26d693014910f14989859c3ddc2292c3113c80c82a3e2a4471a7eed51",
+      "bytes": 115447,
+      "width": 640,
+      "height": 384,
+      "text_key_sha256": "0f359dd5881c07ed638b15a1a4d603c9288a178fbcd3991a74aa974d8027968f"
+    }
+  ]
+}

@@ -8,6 +8,11 @@ function element(tag,className,text){const el=document.createElement(tag);el.cla
 function render(s){
   state=s;const q=s.question;
   $('show').classList.toggle('revealed',s.phase==='revealed');
+  const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);
+  $('bankMedia').classList.toggle('hidden',!q.image);
+  const img=$('bankImage');if(q.image&&img.getAttribute('src')!==q.image){$('imageFailure').classList.add('hidden');img.src=q.image;img.alt=q.image_alt||q.id;}
+  $('bankImageLabel').textContent=`${q.id}${q.points?' · '+q.points+' Punkte':''}`;
+
   $('modeLabel').textContent=s.mode==='demo'?'آزمایشی • بدون گیفت واقعی':'پاسخ با گیفت • LIVE';
   $('modeLabel').classList.toggle('real',s.mode==='live');
   $('topic').textContent=q.topic;
@@ -37,7 +42,7 @@ function render(s){
   $('voters').textContent=`${fa.format(s.voters)} شرکت‌کننده`;
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name} ${s.lastAnswer.choice==='ALL'?'هر سه گزینه':`گزینهٔ ${s.lastAnswer.choice}`} را انتخاب کرد.`:'اول فکر کن؛ بعد گزینه‌ات را انتخاب کن.';
   $('giftNote').textContent=s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
-  updateTimer();
+  updateTimer();requestAnimationFrame(adjustBankLayout);
 }
 function updateTimer(){if(!state)return;const left=state.phase==='open'?Math.max(0,Math.ceil((state.closesAt-Date.now())/1000)):0;
  $('timer').replaceChildren(document.createTextNode(fa.format(left)),element('span','',state.phase==='revealed'?'پاسخ':'ثانیه'));
@@ -46,3 +51,8 @@ setInterval(updateTimer,250);
 let reconnect;
 function connect(){const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>{$('phaseLabel').textContent='ارتباط با برنامه قطع شد؛ هدیه ارسال نکنید.';clearTimeout(reconnect);reconnect=setTimeout(connect,2000);};}
 fetch('/api/state').then(r=>r.json()).then(render);connect();
+
+$('bankImage').addEventListener('error',()=>{$('imageFailure').classList.remove('hidden');$('phaseLabel').textContent='تصویر سؤال آماده نیست؛ دریافت پاسخ را متوقف کنید.';});
+
+function adjustBankLayout(){const show=$('show');if(!show.classList.contains('bank-question'))return;show.classList.remove('bank-compact');if(show.scrollHeight>show.clientHeight)show.classList.add('bank-compact');}
+document.fonts.ready.then(adjustBankLayout);

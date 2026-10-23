@@ -8,6 +8,7 @@ import {TikTokLiveConnection,ControlEvent,WebcastEvent,SignConfig} from 'tiktok-
 import {HttpProxyAgent,HttpsProxyAgent} from 'hpagent';
 import {Quiz,LETTERS} from './quiz.mjs';
 import {hostingConfig} from './hosting.mjs';
+import {loadBankMedia} from './bank-media.mjs';
 
 // The dependency otherwise discovers SIGN_API_KEY from the environment.
 // This application deliberately permits anonymous/free signing only.
@@ -23,6 +24,7 @@ const defaults={username:'easydeutsches',gifts:{...Object.fromEntries(LETTERS.ma
 let settings=existsSync(settingsFile)?{...defaults,...JSON.parse(readFileSync(settingsFile,'utf8'))}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
 const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'utf8')));
+const bankMedia=loadBankMedia(quiz.questions);
 let mode='demo',autoplay=false,advanceAt=null,connection=null,connecting=false;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;
@@ -125,7 +127,7 @@ const server=http.createServer(async(req,res)=>{
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length});
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,verified_images:bankMedia.size});
     if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,publicState());
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
@@ -170,6 +172,7 @@ const server=http.createServer(async(req,res)=>{
       else return json(res,404,{error:'Unknown command'});
       broadcast();return json(res,200,{ok:true,state:publicState()});
     }
+    if(req.method==='GET'&&bankMedia.has(url.pathname)){res.writeHead(200,{'content-type':'image/png','cache-control':'public, max-age=3600'});return res.end(bankMedia.get(url.pathname));}
     const asset=assets.get(url.pathname);
     if(req.method==='GET'&&asset) {
       const ext='.'+asset.split('.').at(-1);res.writeHead(200,{'content-type':contentTypes[ext]||'application/octet-stream','cache-control':'no-store'});return res.end(readFileSync(join(root,'public',asset)));

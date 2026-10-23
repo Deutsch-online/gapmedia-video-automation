@@ -1,347 +1,120 @@
 [
   {
-    "id": "red-light",
-    "topic": "Ampel · چراغ راهنمایی",
-    "visual": "red",
-    "de": "Die Ampel ist rot, ohne Grünpfeil. Was tun Sie?",
-    "fa": "چراغ قرمز است و فلش سبز ندارد. چه می‌کنید؟",
+    "id": "1.1.02-009-B",
+    "topic": "Verhalten Gegenueber Fussgaengern · عابران و کودکان",
+    "visual": "bank",
+    "de": "Wie müssen Sie sich verhalten?",
+    "fa": "در این وضعیت چگونه باید رفتار کنید؟",
     "options": [
       {
-        "de": "Vor der Haltlinie warten.",
-        "fa": "پشت خط ایست منتظر می‌مانم."
+        "de": "Sofort stark bremsen und bremsbereit bleiben",
+        "fa": "فوراً محکم ترمز کنم و آمادهٔ ترمز بمانم."
       },
       {
-        "de": "Fahren, wenn niemand kommt.",
-        "fa": "اگر کسی نمی‌آید حرکت می‌کنم."
+        "de": "Mit gleicher Geschwindigkeit weiterfahren, weil die Kinder bestimmt stehen bleiben",
+        "fa": "با همان سرعت ادامه بدهم، چون کودکان حتماً می‌ایستند."
       },
       {
-        "de": "Hupen und weiterfahren.",
-        "fa": "بوق می‌زنم و عبور می‌کنم."
+        "de": "Mit gleicher Geschwindigkeit weiterfahren, um einen Nachfolgenden nicht zu behindern",
+        "fa": "با همان سرعت ادامه بدهم تا مزاحم خودروی پشت سر نشوم."
       }
     ],
     "correct": [
       "A"
     ],
-    "explanation_de": "Rot bedeutet: Halt vor der Kreuzung. Eine vorhandene Haltlinie beachten.",
-    "explanation_fa": "قرمز یعنی پیش از تقاطع توقف کنید و خط ایست موجود را رعایت کنید.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__37.html"
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-009-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-009-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-009-B",
+    "points": 5
   },
   {
-    "id": "yellow-light",
-    "topic": "Ampel · چراغ راهنمایی",
-    "visual": "yellow",
-    "de": "Die Ampel wird gelb. Sie können sicher anhalten. Was ist richtig?",
-    "fa": "چراغ زرد می‌شود و می‌توانید ایمن توقف کنید. کدام درست است؟",
+    "id": "1.1.03-005",
+    "topic": "Fahrbahn / Witterungsverhaeltnisse · شرایط راه",
+    "visual": "bank",
+    "de": "Auf der Fahrbahn befindet sich Öl. Wie sollten Sie sich jetzt verhalten?",
+    "fa": "روی سواره‌رو روغن ریخته است. اکنون چگونه باید رفتار کنید؟",
     "options": [
       {
-        "de": "Beschleunigen, um noch durchzukommen.",
-        "fa": "سرعت را زیاد می‌کنم تا برسم."
+        "de": "Ich informiere die Feuerwehr",
+        "fa": "به آتش‌نشانی اطلاع بدهم."
       },
       {
-        "de": "Vor der Kreuzung auf das nächste Zeichen warten.",
-        "fa": "پیش از تقاطع منتظر علامت بعدی می‌مانم."
+        "de": "Ich vermeide starkes Bremsen und ruckartiges Lenken",
+        "fa": "از ترمز شدید و چرخاندن ناگهانی فرمان خودداری کنم."
       },
       {
-        "de": "Gelb gilt nur für Fußgänger.",
-        "fa": "زرد فقط برای عابران است."
-      }
-    ],
-    "correct": [
-      "B"
-    ],
-    "explanation_de": "Gelb ordnet an, vor der Kreuzung auf das nächste Zeichen zu warten. Die Frage setzt voraus, dass sicheres Anhalten möglich ist.",
-    "explanation_fa": "زرد دستور انتظار پیش از تقاطع برای علامت بعدی است. در این سؤال فرض شده توقف ایمن ممکن است.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__37.html"
-  },
-  {
-    "id": "right-priority",
-    "topic": "Vorfahrt · حق تقدم",
-    "visual": "junction",
-    "de": "Gleichrangige Straßen: keine Ampel, keine Schilder, kein Feldweg. Wer hat Vorfahrt?",
-    "fa": "راه‌های هم‌رتبه، بدون چراغ و تابلو و راه مزرعه: حق تقدم با کیست؟",
-    "options": [
-      {
-        "de": "Das größere Fahrzeug.",
-        "fa": "خودروی بزرگ‌تر."
-      },
-      {
-        "de": "Das Fahrzeug von links.",
-        "fa": "خودروی سمت چپ."
-      },
-      {
-        "de": "Das Fahrzeug von rechts.",
-        "fa": "خودروی سمت راست."
-      }
-    ],
-    "correct": [
-      "C"
-    ],
-    "explanation_de": "An solchen Kreuzungen gilt rechts vor links. Besonders geregelte Vorfahrt und Feld- oder Waldwege sind Ausnahmen.",
-    "explanation_fa": "در چنین تقاطعی وسیلهٔ سمت راست حق تقدم دارد. مقررات خاص حق تقدم و راه‌های مزرعه یا جنگل استثنا هستند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__8.html"
-  },
-  {
-    "id": "field-road",
-    "topic": "Vorfahrt · حق تقدم",
-    "visual": "junction",
-    "de": "Ein Auto kommt rechts aus einem Feldweg auf die Straße. Gilt rechts vor links?",
-    "fa": "خودرویی از سمت راست، از راه مزرعه وارد خیابان می‌شود. آیا راست بر چپ مقدم است؟",
-    "options": [
-      {
-        "de": "Nein, für die Ausfahrt aus dem Feldweg gilt diese Regel nicht.",
-        "fa": "نه، این قاعده برای خروج از راه مزرعه نیست."
-      },
-      {
-        "de": "Ja, rechts hat ausnahmslos Vorfahrt.",
-        "fa": "بله، سمت راست همیشه و بدون استثنا مقدم است."
-      },
-      {
-        "de": "Nur die Fahrzeuggröße entscheidet.",
-        "fa": "فقط اندازهٔ خودرو تعیین‌کننده است."
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation_de": "Die Regel rechts vor links gilt nicht für Fahrzeuge, die aus einem Feld- oder Waldweg auf eine andere Straße kommen.",
-    "explanation_fa": "قاعدهٔ راست بر چپ برای وسیله‌ای که از راه مزرعه یا جنگل وارد راه دیگری می‌شود اعمال نمی‌شود.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__8.html"
-  },
-  {
-    "id": "fog",
-    "topic": "Sicht · دید راننده",
-    "visual": "fog",
-    "de": "Durch Nebel sehen Sie weniger als 50 Meter. Welche Aussagen stimmen?",
-    "fa": "در مه، دید شما کمتر از ۵۰ متر است. کدام عبارت‌ها درست‌اند؟",
-    "options": [
-      {
-        "de": "Nicht schneller als 50 km/h fahren.",
-        "fa": "بیشتر از ۵۰ کیلومتر در ساعت رانندگی نکنید."
-      },
-      {
-        "de": "Wenn nötig, noch langsamer fahren.",
-        "fa": "اگر لازم است، باز هم آهسته‌تر برانید."
-      },
-      {
-        "de": "100 km/h sind bei leerer Straße immer erlaubt.",
-        "fa": "در راه خلوت همیشه ۱۰۰ کیلومتر مجاز است."
+        "de": "Ich weiche auf die linke Fahrbahnhälfte aus",
+        "fa": "به نیمهٔ چپ سواره‌رو منحرف شوم."
       }
     ],
     "correct": [
       "A",
       "B"
     ],
-    "explanation_de": "Bei weniger als 50 m Sicht durch Nebel, Schnee oder Regen gilt höchstens 50 km/h, gegebenenfalls weniger. Innerhalb der übersehbaren Strecke muss Anhalten möglich sein.",
-    "explanation_fa": "در دید کمتر از ۵۰ متر بر اثر مه، برف یا باران، حداکثر سرعت ۵۰ است؛ در صورت لزوم کمتر. باید بتوانید در محدودهٔ دید توقف کنید.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__3.html"
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-005",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-005.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-005",
+    "points": 4
   },
   {
-    "id": "distance",
-    "topic": "Abstand · فاصله",
-    "visual": "distance",
-    "de": "Wie wählen Sie den Abstand zum vorausfahrenden Auto?",
-    "fa": "فاصله با خودروی جلویی را چگونه انتخاب می‌کنید؟",
+    "id": "1.1.04-103-B",
+    "topic": "Dunkelheit / Schlechte Sicht · دید در شب",
+    "visual": "bank",
+    "de": "Was müssen Sie hier tun, wenn Sie geblendet werden?",
+    "fa": "اگر در اینجا نور چشمتان را بزند، چه باید بکنید؟",
     "options": [
       {
-        "de": "So knapp wie möglich.",
-        "fa": "تا حد ممکن نزدیک."
+        "de": "Zum rechten Fahrbahnrand schauen",
+        "fa": "به لبهٔ راست سواره‌رو نگاه کنم."
       },
       {
-        "de": "So groß, dass ich bei plötzlichem Bremsen dahinter halten kann.",
-        "fa": "آن‌قدر که با ترمز ناگهانی او بتوانم پشتش توقف کنم."
+        "de": "Geschwindigkeit notfalls vermindern",
+        "fa": "در صورت نیاز سرعت را کم کنم."
       },
       {
-        "de": "Nur nach der Farbe des Autos.",
-        "fa": "فقط بر اساس رنگ خودرو."
+        "de": "Beschleunigen, um schneller aus dem Lichtkegel herauszukommen",
+        "fa": "سرعت بگیرم تا زودتر از محدودهٔ نور خارج شوم."
       }
     ],
     "correct": [
+      "A",
       "B"
     ],
-    "explanation_de": "Der Abstand muss in der Regel auch bei plötzlichem Bremsen des vorausfahrenden Fahrzeugs ausreichen.",
-    "explanation_fa": "فاصله معمولاً باید برای توقف پشت خودروی جلویی، حتی در صورت ترمز ناگهانی او، کافی باشد.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__4.html"
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.04-dunkelheit-und-schlechte-sicht/1.1.04-103-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_04-103-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.04-103-B",
+    "points": 4
   },
   {
-    "id": "three-minutes",
-    "topic": "Parken · پارک کردن",
-    "visual": "parking",
-    "de": "Sie halten freiwillig länger als drei Minuten. Was gilt rechtlich?",
-    "fa": "داوطلبانه بیش از سه دقیقه توقف می‌کنید. از نظر قانون چه محسوب می‌شود؟",
+    "id": "1.1.05-107-M",
+    "topic": "Geschwindigkeit · سرعت",
+    "visual": "bank",
+    "de": "Womit müssen Sie hier rechnen?",
+    "fa": "در اینجا باید انتظار چه چیزهایی را داشته باشید؟",
     "options": [
       {
-        "de": "Es ist immer nur kurzes Halten.",
-        "fa": "همیشه فقط توقف کوتاه است."
+        "de": "Dass zu schnell gefahren wird",
+        "fa": "رانندگان با سرعت زیاد حرکت کنند."
       },
       {
-        "de": "Es zählt nur bei ausgeschaltetem Motor.",
-        "fa": "فقط با موتور خاموش حساب می‌شود."
+        "de": "Dass Einmündungen übersehen werden",
+        "fa": "ورودی خیابان‌ها دیده نشوند."
       },
       {
-        "de": "Es ist Parken.",
-        "fa": "پارک کردن محسوب می‌شود."
-      }
-    ],
-    "correct": [
-      "C"
-    ],
-    "explanation_de": "Wer sein Fahrzeug verlässt oder länger als drei Minuten hält, parkt. Verkehrsbedingtes Warten ist hier nicht gemeint.",
-    "explanation_fa": "کسی که وسیله را ترک کند یا بیش از سه دقیقه توقف کند، پارک کرده است. انتظار ناشی از ترافیک منظور این سؤال نیست.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__12.html"
-  },
-  {
-    "id": "driveway",
-    "topic": "Parken · پارک کردن",
-    "visual": "parking",
-    "de": "Dürfen Sie vor einer Grundstücksausfahrt parken?",
-    "fa": "آیا می‌توانید جلوی خروجی یک ملک پارک کنید؟",
-    "options": [
-      {
-        "de": "Grundsätzlich nein.",
-        "fa": "اصولاً خیر."
-      },
-      {
-        "de": "Mit Warnblinker ist es immer erlaubt.",
-        "fa": "با فلاشر همیشه مجاز است."
-      },
-      {
-        "de": "Ja, wenn das Auto klein ist.",
-        "fa": "بله، اگر خودرو کوچک باشد."
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation_de": "Vor Grundstücksein- und -ausfahrten ist Parken grundsätzlich unzulässig. Warnblinker geben keine Sondererlaubnis.",
-    "explanation_fa": "پارک جلوی ورودی و خروجی ملک اصولاً مجاز نیست. فلاشر مجوز ویژه ایجاد نمی‌کند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__12.html"
-  },
-  {
-    "id": "leaving-property",
-    "topic": "Anfahren · شروع حرکت",
-    "visual": "junction",
-    "de": "Sie fahren aus einem Grundstück auf die Straße. Was müssen Sie sicherstellen?",
-    "fa": "از محوطهٔ یک ملک وارد خیابان می‌شوید. باید چه چیزی را تضمین کنید؟",
-    "options": [
-      {
-        "de": "Ich habe automatisch Vorfahrt.",
-        "fa": "خودکار حق تقدم دارم."
-      },
-      {
-        "de": "Andere Verkehrsteilnehmer werden nicht gefährdet.",
-        "fa": "دیگر کاربران راه به خطر نیفتند."
-      },
-      {
-        "de": "Ich muss nur auf Autos achten.",
-        "fa": "فقط باید مراقب خودروها باشم."
-      }
-    ],
-    "correct": [
-      "B"
-    ],
-    "explanation_de": "Beim Einfahren aus einem Grundstück muss eine Gefährdung anderer Verkehrsteilnehmer ausgeschlossen sein. Dazu gehören auch Fuß- und Radverkehr.",
-    "explanation_fa": "هنگام ورود از ملک به راه، نباید دیگر کاربران راه را به خطر بیندازید؛ عابران و دوچرخه‌سواران هم شامل‌اند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__10.html"
-  },
-  {
-    "id": "phone",
-    "topic": "Ablenkung · حواس‌پرتی",
-    "visual": "phone",
-    "de": "Sie warten bei laufendem Motor an Rot. Dürfen Sie das Handy zum Tippen in die Hand nehmen?",
-    "fa": "با موتور روشن پشت چراغ قرمز هستید. می‌توانید موبایل را برای تایپ در دست بگیرید؟",
-    "options": [
-      {
-        "de": "Ja, weil das Auto steht.",
-        "fa": "بله، چون خودرو ایستاده است."
-      },
-      {
-        "de": "Ja, solange eine Hand am Lenkrad bleibt.",
-        "fa": "بله، اگر یک دست روی فرمان بماند."
-      },
-      {
-        "de": "Nein.",
-        "fa": "خیر."
-      }
-    ],
-    "correct": [
-      "C"
-    ],
-    "explanation_de": "Ein elektronisches Gerät darf zur Benutzung grundsätzlich nicht aufgenommen oder gehalten werden. Ein laufender Motor an Rot hebt das Verbot nicht auf.",
-    "explanation_fa": "برای استفاده از وسیلهٔ الکترونیکی اصولاً نباید آن را بردارید یا در دست بگیرید. توقف پشت چراغ با موتور روشن این ممنوعیت را رفع نمی‌کند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__23.html"
-  },
-  {
-    "id": "blue-siren",
-    "topic": "Einsatzfahrt · امدادرسانی",
-    "visual": "siren",
-    "de": "Ein Einsatzfahrzeug fährt mit blauem Blinklicht und Einsatzhorn. Was tun Sie?",
-    "fa": "خودروی امدادی با چراغ آبی چشمک‌زن و آژیر می‌آید. چه می‌کنید؟",
-    "options": [
-      {
-        "de": "Sofort freie Bahn schaffen, ohne andere zu gefährden.",
-        "fa": "فوراً، بدون به‌خطرانداختن دیگران، راه را باز می‌کنم."
-      },
-      {
-        "de": "Direkt vor ihm stehen bleiben.",
-        "fa": "درست جلوی آن می‌ایستم."
-      },
-      {
-        "de": "Das Signal gilt nur für Fußgänger.",
-        "fa": "این علامت فقط برای عابران است."
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation_de": "Blaues Blinklicht zusammen mit dem Einsatzhorn ordnet an: Alle übrigen Verkehrsteilnehmer haben sofort freie Bahn zu schaffen.",
-    "explanation_fa": "چراغ آبی همراه آژیر دستور می‌دهد همهٔ دیگر کاربران راه فوراً مسیر را باز کنند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__38.html"
-  },
-  {
-    "id": "yellow-beacon",
-    "topic": "Warnlicht · چراغ هشدار",
-    "visual": "beacon",
-    "de": "Was bedeutet gelbes Blinklicht an einem Fahrzeug?",
-    "fa": "چراغ زرد چشمک‌زن روی خودرو چه معنایی دارد؟",
-    "options": [
-      {
-        "de": "Das Fahrzeug hat automatisch Vorfahrt.",
-        "fa": "آن خودرو خودکار حق تقدم دارد."
-      },
-      {
-        "de": "Es warnt vor Gefahren.",
-        "fa": "دربارهٔ خطر هشدار می‌دهد."
-      },
-      {
-        "de": "Alle müssen immer sofort anhalten.",
-        "fa": "همه باید همیشه فوراً توقف کنند."
-      }
-    ],
-    "correct": [
-      "B"
-    ],
-    "explanation_de": "Gelbes Blinklicht warnt vor Gefahren. Es verleiht allein keine allgemeine Vorfahrt.",
-    "explanation_fa": "چراغ زرد چشمک‌زن دربارهٔ خطر هشدار می‌دهد و به‌تنهایی حق تقدم عمومی ایجاد نمی‌کند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__38.html"
-  },
-  {
-    "id": "consideration",
-    "topic": "Rücksicht · رعایت دیگران",
-    "visual": "distance",
-    "de": "Was verlangt die StVO grundsätzlich von Ihnen?",
-    "fa": "قانون راهنمایی‌ورانندگی اصولاً چه چیزی از شما می‌خواهد؟",
-    "options": [
-      {
-        "de": "Ständig vorsichtig sein.",
-        "fa": "همیشه احتیاط کنم."
-      },
-      {
-        "de": "Gegenseitig Rücksicht nehmen.",
-        "fa": "دیگران را متقابلاً رعایت کنم."
-      },
-      {
-        "de": "Andere nicht gefährden.",
-        "fa": "دیگران را به خطر نیندازم."
+        "de": "Dass Kinder auf die Straße laufen",
+        "fa": "کودکان وارد خیابان شوند."
       }
     ],
     "correct": [
@@ -349,225 +122,536 @@
       "B",
       "C"
     ],
-    "explanation_de": "§ 1 verlangt ständige Vorsicht und gegenseitige Rücksicht. Andere dürfen insbesondere nicht gefährdet werden. Hier sind alle drei Aussagen richtig.",
-    "explanation_fa": "مادهٔ ۱ احتیاط همیشگی و رعایت متقابل را لازم می‌داند؛ دیگران نباید به خطر بیفتند. در این سؤال هر سه گزینه درست‌اند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__1.html"
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.05-geschwindigkeit/1.1.05-107-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_05-107-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.05-107-M",
+    "points": 4
   },
   {
-    "id": "cycle-clearance-town",
-    "topic": "Überholen · سبقت",
-    "visual": "distance",
-    "de": "Sie überholen mit dem Pkw innerorts ein Fahrrad auf freier Strecke. Welcher Seitenabstand gilt mindestens?",
-    "fa": "در مسیر باز داخل شهر با خودرو از دوچرخه سبقت می‌گیرید. حداقل فاصلهٔ جانبی چقدر است؟",
+    "id": "1.1.06-005-M",
+    "topic": "Ueberholen · سبقت",
+    "visual": "bank",
+    "de": "Warum dürfen Sie jetzt nicht überholen?",
+    "fa": "چرا اکنون اجازهٔ سبقت ندارید؟",
     "options": [
       {
-        "de": "1 Meter.",
-        "fa": "۱ متر."
+        "de": "Weil [die Radfahrerin] nach links abbiegen könnte",
+        "fa": "چون دوچرخه‌سوار زن ممکن است به چپ بپیچد."
       },
       {
-        "de": "1,5 Meter.",
-        "fa": "۱٫۵ متر."
+        "de": "Weil ich möglichen Gegenverkehr nicht rechtzeitig sehen kann",
+        "fa": "چون ترافیک احتمالی روبه‌رو را به‌موقع نمی‌بینم."
       },
       {
-        "de": "Ein Abstand ist nur bei Gegenverkehr nötig.",
-        "fa": "فقط هنگام آمدن وسیله از روبه‌رو فاصله لازم است."
-      }
-    ],
-    "correct": [
-      "B"
-    ],
-    "explanation_de": "Beim Überholen von Radfahrenden mit Kraftfahrzeugen sind innerorts mindestens 1,5 m Seitenabstand nötig. Reicht der Platz nicht, warten.",
-    "explanation_fa": "هنگام سبقت با وسیلهٔ موتوری از دوچرخه‌سوار در شهر، حداقل ۱٫۵ متر فاصلهٔ جانبی لازم است؛ اگر جا نیست، صبر کنید.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
-  },
-  {
-    "id": "cycle-clearance-rural",
-    "topic": "Überholen · سبقت",
-    "visual": "distance",
-    "de": "Sie überholen mit dem Pkw außerorts ein Fahrrad. Welcher Seitenabstand gilt mindestens?",
-    "fa": "بیرون محدودهٔ شهر با خودرو از دوچرخه سبقت می‌گیرید. حداقل فاصلهٔ جانبی چقدر است؟",
-    "options": [
-      {
-        "de": "1 Meter.",
-        "fa": "۱ متر."
-      },
-      {
-        "de": "1,5 Meter.",
-        "fa": "۱٫۵ متر."
-      },
-      {
-        "de": "2 Meter.",
-        "fa": "۲ متر."
-      }
-    ],
-    "correct": [
-      "C"
-    ],
-    "explanation_de": "Außerorts beträgt der Mindestseitenabstand beim Überholen von Radfahrenden mit Kraftfahrzeugen 2 m.",
-    "explanation_fa": "بیرون شهر، حداقل فاصلهٔ جانبی هنگام سبقت با وسیلهٔ موتوری از دوچرخه‌سوار ۲ متر است.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
-  },
-  {
-    "id": "unclear-overtaking",
-    "topic": "Überholen · سبقت",
-    "visual": "distance",
-    "de": "Die Verkehrslage ist unklar. Dürfen Sie trotzdem überholen?",
-    "fa": "وضعیت ترافیک نامشخص است. آیا با این حال اجازهٔ سبقت دارید؟",
-    "options": [
-      {
-        "de": "Nein.",
-        "fa": "خیر."
-      },
-      {
-        "de": "Ja, wenn ich vorher hupe.",
-        "fa": "بله، اگر اول بوق بزنم."
-      },
-      {
-        "de": "Ja, wenn mein Auto schnell genug ist.",
-        "fa": "بله، اگر خودروی من به‌اندازهٔ کافی سریع باشد."
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation_de": "Bei unklarer Verkehrslage ist Überholen unzulässig. Hupen oder Motorleistung ändern das nicht.",
-    "explanation_fa": "در وضعیت ترافیکی نامشخص، سبقت مجاز نیست. بوق‌زدن یا قدرت موتور این ممنوعیت را تغییر نمی‌دهد.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__5.html"
-  },
-  {
-    "id": "turning-cycle",
-    "topic": "Abbiegen · گردش",
-    "visual": "junction",
-    "de": "Sie biegen rechts ab. Rechts neben Ihnen fährt ein Fahrrad geradeaus. Was tun Sie?",
-    "fa": "به راست می‌پیچید. کنار شما در سمت راست، دوچرخه‌ای مستقیم می‌رود. چه می‌کنید؟",
-    "options": [
-      {
-        "de": "Vor dem Fahrrad abbiegen, weil ich blinke.",
-        "fa": "چون راهنما زده‌ام، جلوی دوچرخه می‌پیچم."
-      },
-      {
-        "de": "Das Fahrrad durchfahren lassen und nötigenfalls warten.",
-        "fa": "اجازه می‌دهم دوچرخه عبور کند و در صورت لزوم صبر می‌کنم."
-      },
-      {
-        "de": "Mit Hupen zum Anhalten auffordern.",
-        "fa": "با بوق از او می‌خواهم توقف کند."
-      }
-    ],
-    "correct": [
-      "B"
-    ],
-    "explanation_de": "Wer abbiegt, muss Fahrräder in gleicher Richtung auf oder neben der Fahrbahn durchfahren lassen. Ein Blinker gibt keinen Vorrang.",
-    "explanation_fa": "راننده هنگام گردش باید به دوچرخه‌ای که روی سواره‌رو یا کنار آن هم‌جهت حرکت می‌کند اجازهٔ عبور بدهد. راهنما حق تقدم ایجاد نمی‌کند.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__9.html"
-  },
-  {
-    "id": "bus-approach",
-    "topic": "Bus · اتوبوس",
-    "visual": "bus",
-    "de": "Ein Linienbus nähert sich mit Warnblinklicht einer Haltestelle. Dürfen Sie ihn überholen?",
-    "fa": "اتوبوس خطی با فلاشر به ایستگاه نزدیک می‌شود. آیا اجازهٔ سبقت دارید؟",
-    "options": [
-      {
-        "de": "Ja, mit Schrittgeschwindigkeit.",
-        "fa": "بله، با سرعت قدم‌زدن."
-      },
-      {
-        "de": "Ja, wenn niemand aussteigt.",
-        "fa": "بله، اگر کسی پیاده نمی‌شود."
-      },
-      {
-        "de": "Nein, jetzt besteht Überholverbot.",
-        "fa": "خیر، در این وضعیت سبقت ممنوع است."
-      }
-    ],
-    "correct": [
-      "C"
-    ],
-    "explanation_de": "Ein Linienbus, der sich mit Warnblinklicht einer gekennzeichneten Haltestelle nähert, darf nicht überholt werden.",
-    "explanation_fa": "از اتوبوس خطی که با فلاشر به ایستگاه مشخص‌شده نزدیک می‌شود، نباید سبقت گرفت.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__20.html"
-  },
-  {
-    "id": "bus-stopped",
-    "topic": "Bus · اتوبوس",
-    "visual": "bus",
-    "de": "Ein Linienbus hält mit Warnblinklicht an der Haltestelle. Was gilt beim Vorbeifahren?",
-    "fa": "اتوبوس خطی با فلاشر در ایستگاه ایستاده است. هنگام عبور چه قواعدی برقرار است؟",
-    "options": [
-      {
-        "de": "Nur Schrittgeschwindigkeit.",
-        "fa": "فقط با سرعت قدم‌زدن."
-      },
-      {
-        "de": "Fahrgäste weder gefährden noch behindern; nötigenfalls warten.",
-        "fa": "مسافران را به خطر نیندازم یا مانعشان نشوم؛ در صورت لزوم صبر کنم."
-      },
-      {
-        "de": "Bei freier Fahrbahn gilt die normale Höchstgeschwindigkeit.",
-        "fa": "اگر سواره‌رو خالی است، سرعت عادی مجاز است."
+        "de": "Weil der Straßenbelag auf der linken Fahrbahnhälfte sehr schlecht ist",
+        "fa": "چون سطح نیمهٔ چپ سواره‌رو بسیار خراب است."
       }
     ],
     "correct": [
       "A",
       "B"
     ],
-    "explanation_de": "Bei haltendem Linienbus mit Warnblinklicht gilt Schrittgeschwindigkeit, auch im Gegenverkehr auf derselben Fahrbahn. Fahrgäste dürfen weder gefährdet noch behindert werden.",
-    "explanation_fa": "کنار اتوبوس خطیِ ایستاده با فلاشر، سرعت قدم‌زدن لازم است؛ حتی برای ترافیک روبه‌رو روی همان سواره‌رو. نباید مسافران را به خطر انداخت یا مانعشان شد.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__20.html"
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.06-ueberholen/1.1.06-005-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_06-005-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.06-005-M",
+    "points": 5
   },
   {
-    "id": "zebra-pedestrian",
-    "topic": "Zebrastreifen · خط عابر",
-    "visual": "crossing",
-    "de": "Am Zebrastreifen möchte erkennbar jemand zu Fuß die Straße überqueren. Was tun Sie?",
-    "fa": "کنار خط عابر، مشخص است که عابری می‌خواهد از خیابان عبور کند. چه می‌کنید؟",
+    "id": "1.1.07-005-B",
+    "topic": "Besondere Verkehrssituationen · شرایط ویژه",
+    "visual": "bank",
+    "de": "Worauf müssen Sie sich einstellen?",
+    "fa": "باید خود را برای چه وضعیتی آماده کنید؟",
     "options": [
       {
-        "de": "Mäßig heranfahren und nötigenfalls warten.",
-        "fa": "با سرعت متعادل نزدیک می‌شوم و در صورت لزوم صبر می‌کنم."
+        "de": "Dass von rechts ein Fahrzeug kommt",
+        "fa": "ممکن است وسیله‌ای از سمت راست بیاید."
       },
       {
-        "de": "Nur halten, wenn die Person schon auf der Fahrbahn ist.",
-        "fa": "فقط وقتی عابر وارد سواره‌رو شده توقف می‌کنم."
+        "de": "Dass sich Ihr Bremsweg durch Feuchtigkeit und Laub verlängert",
+        "fa": "رطوبت و برگ‌ها مسافت ترمزم را بیشتر کنند."
       },
       {
-        "de": "Hupen und unverändert weiterfahren.",
-        "fa": "بوق می‌زنم و بدون تغییر ادامه می‌دهم."
+        "de": "Dass ein von rechts kommendes Fahrzeug auf seine Vorfahrt verzichtet",
+        "fa": "وسیله‌ای که از راست می‌آید از حق تقدمش بگذرد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-005-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-005-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-005-B",
+    "points": 3
+  },
+  {
+    "id": "1.2.02-101-B",
+    "topic": "Strassenbenutzung · استفاده از راه",
+    "visual": "bank",
+    "de": "Wozu darf der rechte Seitenstreifen benutzt werden?",
+    "fa": "از شانهٔ سمت راست راه برای چه کارهایی می‌توان استفاده کرد؟",
+    "options": [
+      {
+        "de": "Zum Halten und Parken",
+        "fa": "برای توقف و پارک."
+      },
+      {
+        "de": "Zum Befahren mit langsamen Fahrzeugen",
+        "fa": "برای حرکت وسایل نقلیهٔ کندرو."
+      },
+      {
+        "de": "Zum Überholen",
+        "fa": "برای سبقت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.02-strassenbenutzung/1.2.02-101-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_02-101-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.02-101-B",
+    "points": 3
+  },
+  {
+    "id": "1.2.05-125-M",
+    "topic": "Ueberholen · سبقت",
+    "visual": "bank",
+    "de": "Was müssen Sie in dieser Situation beim Überholen der Radfahrer beachten?",
+    "fa": "در این وضعیت، هنگام سبقت از دوچرخه‌سواران چه نکاتی را باید رعایت کنید؟",
+    "options": [
+      {
+        "de": "Aufgrund der Steigung pendeln die Radfahrer",
+        "fa": "به دلیل سربالایی، دوچرخه‌سواران به طرفین نوسان می‌کنند."
+      },
+      {
+        "de": "Ich muss mit mindestens 1,5 m Seitenabstand überholen",
+        "fa": "باید با حداقل ۱٫۵ متر فاصلهٔ جانبی سبقت بگیرم."
+      },
+      {
+        "de": "Ich muss mit mindestens 1,0 m Seitenabstand überholen",
+        "fa": "باید با حداقل ۱ متر فاصلهٔ جانبی سبقت بگیرم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.05-ueberholen/1.2.05-125-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_05-125-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.05-125-M",
+    "points": 4
+  },
+  {
+    "id": "1.2.06-101-M",
+    "topic": "Vorbeifahren · عبور از کنار مانع",
+    "visual": "bank",
+    "de": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "fa": "در این وضعیت کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich warte, bis der Entgegenkommende vorbeigefahren ist",
+        "fa": "صبر کنم تا وسیلهٔ روبه‌رو عبور کند."
+      },
+      {
+        "de": "Ich fahre vor dem Entgegenkommenden",
+        "fa": "پیش از وسیلهٔ روبه‌رو حرکت کنم."
+      },
+      {
+        "de": "Ich verständige mich mit dem Entgegenkommenden, wer zuerst fährt",
+        "fa": "با رانندهٔ روبه‌رو توافق کنم که چه کسی اول عبور کند."
       }
     ],
     "correct": [
       "A"
     ],
-    "explanation_de": "Am Fußgängerüberweg ist erkennbar querungswilligen Fußgängern das Überqueren zu ermöglichen. Mäßig heranfahren und nötigenfalls warten.",
-    "explanation_fa": "در خط عابر باید امکان عبور را به عابری که قصد عبورش مشخص است بدهید؛ با سرعت متعادل نزدیک شوید و در صورت لزوم منتظر بمانید.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__26.html"
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.06-vorbeifahren/1.2.06-101-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_06-101-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.06-101-M",
+    "points": 5
   },
   {
-    "id": "zebra-queue",
-    "topic": "Zebrastreifen · خط عابر",
-    "visual": "crossing",
-    "de": "Hinter dem Zebrastreifen staut sich der Verkehr. Sie müssten auf dem Überweg warten. Was ist richtig?",
-    "fa": "پس از خط عابر ترافیک است. اگر جلو بروید باید روی خط منتظر بمانید. کدام درست است؟",
+    "id": "1.2.09-019-M",
+    "topic": "Abbiegen Wenden / Rueckwaertsfahren · گردش",
+    "visual": "bank",
+    "de": "Sie möchten nach links abbiegen. Welche Fahrlinie müssen Sie einhalten?",
+    "fa": "می‌خواهید به چپ بپیچید. کدام مسیر حرکت را باید دنبال کنید؟",
     "options": [
       {
-        "de": "Auf dem Zebrastreifen warten.",
-        "fa": "روی خط عابر منتظر می‌مانم."
+        "de": "Die rechte Fahrlinie",
+        "fa": "مسیر سمت راست."
       },
       {
-        "de": "Vor dem Zebrastreifen warten und ihn frei lassen.",
-        "fa": "پیش از خط عابر منتظر می‌مانم و آن را باز می‌گذارم."
+        "de": "Die linke Fahrlinie",
+        "fa": "مسیر سمت چپ."
       },
       {
-        "de": "Nur bei sichtbaren Fußgängern davor warten.",
-        "fa": "فقط در صورت دیدن عابر، پیش از خط منتظر می‌مانم."
+        "de": "Beide Fahrlinien sind möglich",
+        "fa": "هر دو مسیر ممکن است."
       }
     ],
     "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-019-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-019-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-019-M",
+    "points": 4
+  },
+  {
+    "id": "1.2.10-108",
+    "topic": "Einfahren / Anfahren · خروج از ملک",
+    "visual": "bank",
+    "de": "Sie möchten aus dem Grundstück ausfahren. Was ist richtig?",
+    "fa": "می‌خواهید از محوطهٔ ملک خارج شوید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Ich muss warten, bis die Fußgänger die Ausfahrt überquert haben",
+        "fa": "باید صبر کنم تا عابران از جلوی خروجی عبور کنند."
+      },
+      {
+        "de": "Ich darf fahren, falls die Fußgänger auf ihren Vorrang verzichten",
+        "fa": "اگر عابران از حق تقدمشان بگذرند می‌توانم حرکت کنم."
+      },
+      {
+        "de": "Ich hupe kurz, damit mich die Fußgänger ausfahren lassen",
+        "fa": "کوتاه بوق بزنم تا عابران اجازهٔ خروج بدهند."
+      }
+    ],
+    "correct": [
+      "A",
       "B"
     ],
-    "explanation_de": "Bei stockendem Verkehr darf nicht auf den Fußgängerüberweg gefahren werden, wenn dort gewartet werden müsste.",
-    "explanation_fa": "در ترافیک متوقف، اگر ناچار می‌شوید روی خط عابر منتظر بمانید نباید وارد آن شوید.",
-    "source": "https://www.gesetze-im-internet.de/stvo_2013/__26.html"
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.10-einfahren-und-anfahren/1.2.10-108",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_10-108.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.10-108",
+    "points": 4
+  },
+  {
+    "id": "1.2.11-005-B",
+    "topic": "Besondere Verkehrslagen · وضعیت ویژهٔ ترافیک",
+    "visual": "bank",
+    "de": "Wie verhalten Sie sich?",
+    "fa": "چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Geschwindigkeit vermindern und nötigenfalls anhalten",
+        "fa": "سرعت را کم کنم و در صورت نیاز توقف کنم."
+      },
+      {
+        "de": "Weiterfahren und auf den Gehweg ausweichen",
+        "fa": "ادامه بدهم و به پیاده‌رو منحرف شوم."
+      },
+      {
+        "de": "Beschleunigt weiterfahren, weil der Gegenverkehr warten muss",
+        "fa": "شتاب بگیرم و ادامه بدهم، چون ترافیک روبه‌رو باید صبر کند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.11-besondere-verkehrslagen/1.2.11-005-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_11-005-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.11-005-B",
+    "points": 4
+  },
+  {
+    "id": "1.2.12-120-M",
+    "topic": "Halten / Parken · توقف و پارک",
+    "visual": "bank",
+    "de": "Wer hält falsch?",
+    "fa": "کدام خودرو نادرست توقف کرده است؟",
+    "options": [
+      {
+        "de": "[Der dunkle Pkw]",
+        "fa": "خودروی تیره‌رنگ."
+      },
+      {
+        "de": "[Der helle Pkw]",
+        "fa": "خودروی روشن‌رنگ."
+      },
+      {
+        "de": "[Beide Pkw]",
+        "fa": "هر دو خودرو."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.12-halten-und-parken/1.2.12-120-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_12-120-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.12-120-M",
+    "points": 3
+  },
+  {
+    "id": "1.2.19-009",
+    "topic": "Bahnuebergaenge · گذرگاه راه‌آهن",
+    "visual": "bank",
+    "de": "Die Position der Bahnschranken ändert sich seit längerer Zeit nicht. Wie verhalten Sie sich richtig?",
+    "fa": "مدت زیادی است که موقعیت راه‌بند راه‌آهن تغییر نمی‌کند. رفتار درست چیست؟",
+    "options": [
+      {
+        "de": "Ich überquere den Bahnübergang nicht",
+        "fa": "از گذرگاه راه‌آهن عبور نکنم."
+      },
+      {
+        "de": "Ich melde die Störung der Polizei",
+        "fa": "خرابی را به پلیس گزارش کنم."
+      },
+      {
+        "de": "Ich überquere den Bahnübergang mit besonderer Vorsicht",
+        "fa": "با احتیاط ویژه از گذرگاه عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.19-bahnuebergaenge/1.2.19-009",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_19-009.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.19-009",
+    "points": 4
+  },
+  {
+    "id": "1.2.20-106",
+    "topic": "Oeffentliche Verkehrsmittel / Schulbusse · رفع بن‌بست تقاطع",
+    "visual": "bank",
+    "de": "Alle Fahrzeuge stehen schon einige Sekunden an der Kreuzung. Wie sollten Sie sich in dieser Situation verhalten?",
+    "fa": "همهٔ وسایل نقلیه چند ثانیه است که در تقاطع ایستاده‌اند. در این وضعیت چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Ich verzichte mit eindeutigem Handzeichen auf meine Vorfahrt",
+        "fa": "با علامت واضح دست از حق تقدمم بگذرم."
+      },
+      {
+        "de": "Ich fahre als Erster bis zur Mitte der Kreuzung vor und halte an",
+        "fa": "اول تا وسط تقاطع پیش بروم و توقف کنم."
+      },
+      {
+        "de": "Ich überquere als Erster die Kreuzung",
+        "fa": "اول از تقاطع عبور کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antwort: A",
+    "explanation_fa": "گزینهٔ درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.20-oeffentliche-verkehrsmittel-und-schulbusse/1.2.20-106",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_20-106.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.20-106",
+    "points": 2
+  },
+  {
+    "id": "1.2.26-009-M",
+    "topic": "Verhalten An Fussgaengerueberwegen / Gegenueber Fussgaengern · عبور عابران",
+    "visual": "bank",
+    "de": "Womit müssen Sie bei derartigen Querungshilfen rechnen?",
+    "fa": "در کنار چنین جزیره‌های کمکیِ عبور، باید انتظار چه چیزهایی را داشته باشید؟",
+    "options": [
+      {
+        "de": "Fußgänger nehmen an, dass sie Vorrang vor dem Verkehr haben",
+        "fa": "عابران تصور کنند نسبت به وسایل نقلیه حق تقدم دارند."
+      },
+      {
+        "de": "Radfahrer überqueren die Straße, ohne den Verkehr zu beachten",
+        "fa": "دوچرخه‌سواران بدون توجه به ترافیک از خیابان عبور کنند."
+      },
+      {
+        "de": "Fußgänger beachten stets den Vorrang von Fahrzeugen",
+        "fa": "عابران همیشه حق تقدم وسایل نقلیه را رعایت کنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.26-verhalten-an-fussgaengerueberwegen-und-gegenueber-fussgaengern/1.2.26-009-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_26-009-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.26-009-M",
+    "points": 4
+  },
+  {
+    "id": "1.2.34-010",
+    "topic": "Unfall · تصادف و مواد خطرناک",
+    "visual": "bank",
+    "de": "Sie sind an einem Unfall mit einem Fahrzeug beteiligt, an dem die dargestellte orangefarbene Tafel angebracht ist. Sie sehen, dass aus dem Fahrzeug eine Flüssigkeit austritt. Wie verhalten Sie sich richtig?",
+    "fa": "در تصادفی با خودروی دارای تابلوی نارنجیِ تصویر شرکت دارید. می‌بینید از خودرو مایع نشت می‌کند. رفتار درست چیست؟",
+    "options": [
+      {
+        "de": "Ich gebe beim Notruf die Zahlen auf der orangefarbenen Tafel an",
+        "fa": "هنگام تماس اضطراری، شماره‌های روی تابلو را بگویم."
+      },
+      {
+        "de": "Ich vermeide es, den Bereich mit der ausgelaufenen Flüssigkeit zu betreten",
+        "fa": "از ورود به محدودهٔ مایع نشت‌کرده خودداری کنم."
+      },
+      {
+        "de": "Ich versuche, das Leck am Fahrzeug abzudichten",
+        "fa": "تلاش کنم محل نشت خودرو را ببندم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.34-unfall/1.2.34-010",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_34-010.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.34-010",
+    "points": 4
+  },
+  {
+    "id": "1.2.36-004-B",
+    "topic": "Zeichen / Weisungen Der Polizeibeamten · دستور پلیس",
+    "visual": "bank",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Der gelbe Pkw muss die Kreuzung räumen",
+        "fa": "خودروی زرد باید تقاطع را تخلیه کند."
+      },
+      {
+        "de": "Ich muss mich auf die Weiterfahrt vorbereiten",
+        "fa": "باید برای ادامهٔ حرکت آماده شوم."
+      },
+      {
+        "de": "Ich darf schon jetzt abbiegen",
+        "fa": "همین حالا اجازهٔ پیچیدن دارم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.36-zeichen-und-weisungen-der-polizeibeamten/1.2.36-004-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_36-004-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.36-004-B",
+    "points": 4
+  },
+  {
+    "id": "1.2.37-002-B",
+    "topic": "Wechsellichtzeichen / Dauerlichtzeichen · چراغ راهنمایی",
+    "visual": "bank",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Der grüne Pkw muss warten",
+        "fa": "خودروی سبز باید صبر کند."
+      },
+      {
+        "de": "Ich darf unter Beachtung der Verkehrszeichen abbiegen",
+        "fa": "با رعایت تابلوها اجازهٔ پیچیدن دارم."
+      },
+      {
+        "de": "Ich darf erst abbiegen, wenn die Ampel „Grün“ zeigt",
+        "fa": "فقط پس از سبزشدن چراغ اجازهٔ پیچیدن دارم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.37-wechsellichtzeichen-und-dauerlichtzeichen/1.2.37-002-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_37-002-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.37-002-B",
+    "points": 4
+  },
+  {
+    "id": "1.3.01-007-M",
+    "topic": "Vorfahrt Vorrang · حق تقدم",
+    "visual": "bank",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss den Radfahrer durchfahren lassen",
+        "fa": "باید اجازه بدهم دوچرخه‌سوار عبور کند."
+      },
+      {
+        "de": "Ich muss den [Motorradfahrer] durchfahren lassen",
+        "fa": "باید اجازه بدهم موتورسوار عبور کند."
+      },
+      {
+        "de": "Ich darf vor dem Radfahrer abbiegen",
+        "fa": "می‌توانم پیش از دوچرخه‌سوار بپیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.3.-vorfahrt-vorrang/1.3.01-vorfahrt-vorrang/1.3.01-007-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_3_01-007-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.3.01-007-M",
+    "points": 5
   }
 ]

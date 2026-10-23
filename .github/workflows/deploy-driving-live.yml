@@ -25,6 +25,7 @@ jobs:
         working-directory: live-driving-quiz
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
+          npm run prepare:media
           npm test
       - uses: actions/setup-python@v5
         with:

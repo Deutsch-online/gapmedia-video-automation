@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Quiz,validateQuestions} from '../quiz.mjs';
-const bank=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)));
+const bank=JSON.parse(readFileSync(new URL('../data/practice-questions.json',import.meta.url)));
 const mapping={A:{id:'11'},B:{id:'22'},C:{id:'33'}};
 function setup(index=0){let now=Date.now();const quiz=new Quiz(bank,{now:()=>now});quiz.index=index;quiz.start();return {quiz,advance:n=>{now+=n;},gift:(id,choice='A',extra={})=>({giftId:mapping[choice].id,user:{id:'user1',nickname:'آزمایش'},common:{msgId:id,createTime:String(Math.floor(now/1000))},gift:{type:0},...extra})};}
 test('all original questions have three bilingual options and legal references',()=>{assert.ok(validateQuestions(bank).length>=21);assert.equal(bank.find(q=>q.id==='fog').correct.length,2);});

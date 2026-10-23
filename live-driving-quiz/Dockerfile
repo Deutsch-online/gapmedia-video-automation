@@ -6,5 +6,6 @@ COPY --chown=node:node package.json package-lock.json ./
 USER node
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY --chown=node:node . .
+RUN node bank-media.mjs
 EXPOSE 7860
 CMD ["node", "server.mjs"]
