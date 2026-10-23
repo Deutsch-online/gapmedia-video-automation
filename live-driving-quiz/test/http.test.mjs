@@ -14,6 +14,10 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await post('narration',{enabled:'yes'})).status,400);assert.equal((await post('narration',{enabled:false})).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationEnabled,false);
+  assert.equal((await post('narration',{enabled:true})).status,200);assert.equal((await post('narration-repeat')).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationReplay,1);
+  assert.equal((await fetch(base+'/narration/not-a-question.wav')).status,404);
+
   const video=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url))).find(q=>q.video);
   const partial=await fetch(base+video.video,{headers:{Range:'bytes=0-31'}});assert.equal(partial.status,206);assert.match(partial.headers.get('content-range'),/^bytes 0-31\//);assert.equal(Buffer.from(await partial.arrayBuffer()).toString('ascii',4,8),'ftyp');
   assert.equal((await fetch(base+video.video,{headers:{Range:'bytes=99999999-'}})).status,416);

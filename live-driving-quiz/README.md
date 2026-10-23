@@ -132,3 +132,22 @@ Selecting a question opens its answer window with autoplay off. Manual Next reve
 A deployment tagged `[manual-driving-check]` checks real manual controls while leaving autoplay off. It observes received comments only and never sends real chat or gifts or simulates LIVE events. Real reception is only reported as verified when the actual accepted-comment counter increases.
 
 The current bank contains 150 distinct source IDs and 150 verified original images, including the two existing video questions. Session size can be configured up to 150; current plans and completed IDs survive the expansion. The larger decorative reaction stream follows the right edge of the question column, with a clear gutter before the right-side profiles; profile text sizes stay unchanged.
+
+### German question reading
+
+Docker installs Debian `espeak-ng` and generates all German question WAV files
+with `node narration-media.mjs` on free CPU at image build time. No account,
+credits, network TTS API, or installed browser voices are used for playback.
+This is an offline synthetic voice, not a neural studio voice. For local use,
+install `espeak-ng` and run that preparation command once. Generated files in
+`public/narration/` are ignored by Git and regenerated when the bank changes.
+
+Reading is enabled by default and reads only the German question once when the
+answer window opens, including manual rounds. Video viewing finishes first.
+The private panel can disable speech or request a repeat. Pause, reveal, next
+question, and disable cancel pending/playing speech; regular state broadcasts
+do not replay it. The answer timer continues during narration, so choose more
+time for long questions. Browser autoplay still needs a gesture in the actual
+Browser source: click **Ton aktivieren** and unmute that source in LIVE Studio.
+Speech uses the shared unlocked audio context independently of music volume.
+`/health.german_recordings` should equal the question count after deployment.

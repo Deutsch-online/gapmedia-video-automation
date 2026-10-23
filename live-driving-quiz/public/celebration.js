@@ -1,3 +1,5 @@
+import {QuestionNarrator} from './narration.js';
+const narrator=new QuestionNarrator();
 let context,master,timerBus,current,signature,lastPlayed,lastTimerCue,initializing=false,voices=[];
 const $=id=>document.getElementById(id);
 
@@ -50,6 +52,7 @@ for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=
 export function renderCelebration(state){
  if(!state)return;current=state;
  if(!initializing){initializing=true;void activateAudio();}
+ narrator.update(state,context);
  if(master)master.gain.setTargetAtTime(Math.max(0,Math.min(100,state.musicVolume??20))/100,context.currentTime,.03);
  $('enableMusic').classList.remove('hidden');
  $('enableMusic').textContent=context?.state==='running'?'♫ Ton testen':'♫ Ton aktivieren';

@@ -29,7 +29,8 @@ const root=fileURLToPath(new URL('.',import.meta.url));
 const hosting=hostingConfig();
 const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
-const defaults={autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+let narrationReplay=0;
+const defaults={narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -74,7 +75,7 @@ function ready() {
 }
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,supporters:activityWall(likes,supporters),guests:guests.snapshot(),
+  return {...snapshot,session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,supporters:activityWall(likes,supporters),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -189,7 +190,7 @@ async function body(req) {
   return JSON.parse(text||'{}');
 }
 const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2'};
-const assets=new Map([['/','screen.html'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
+const assets=new Map([['/','screen.html'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/narration.js','narration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
 function json(res,status,data) {res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -197,7 +198,7 @@ const server=http.createServer(async(req,res)=>{
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
     if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,publicState());
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
@@ -239,6 +240,10 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='display-language'){
         if(typeof data.showPersian!=='boolean')throw Error('تنظیم ترجمه معتبر نیست.');settings.showPersian=data.showPersian;save();
       }
+      else if(action==='narration'){
+        if(typeof data.enabled!=='boolean')throw Error('تنظیم خواندن سؤال معتبر نیست.');settings.narrationEnabled=data.enabled;save();
+      }
+      else if(action==='narration-repeat'){narrationReplay++;}
       else if(action==='timer-sound'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم صدای زمان معتبر نیست.');settings.timerSound=data.enabled;save();
       }
@@ -304,6 +309,13 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='disconnect')await disconnect();
       else return json(res,404,{error:'Unknown command'});
       broadcast();return json(res,200,{ok:true,state:publicState()});
+    }
+    if(['GET','HEAD'].includes(req.method)&&url.pathname.startsWith('/narration/')){
+      const id=url.pathname.slice('/narration/'.length).replace(/\.wav$/,'');
+      if(!quiz.questions.some(q=>q.id===id)||url.pathname!==`/narration/${id}.wav`)return json(res,404,{error:'Unknown question audio'});
+      const path=join(root,'public','narration',id+'.wav');
+      if(!existsSync(path))return json(res,503,{error:'Question audio is not prepared'});
+      return serveMedia(req,res,readFileSync(path),'audio/wav');
     }
     if(['GET','HEAD'].includes(req.method)&&bankMedia.has(url.pathname))return serveMedia(req,res,bankMedia.get(url.pathname),url.pathname.endsWith('.mp4')?'video/mp4':'image/png');
     const asset=assets.get(url.pathname);

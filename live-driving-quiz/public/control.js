@@ -56,6 +56,7 @@ function render(s){
  const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
 
  if(!languageDirty)$('showPersian').checked=s.showPersian;
+ $('narrationEnabled').checked=s.narrationEnabled;
  if(!timerSoundDirty)$('timerSound').checked=s.timerSound;
  if(!musicDirty){$('celebrationMusic').checked=s.celebrationMusic;$('musicVolume').value=s.musicVolume;$('musicVolumeValue').textContent=s.musicVolume;}
  if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
@@ -110,6 +111,8 @@ $('musicVolume').addEventListener('input',()=>{musicDirty=true;$('musicVolumeVal
 $('celebrationMusic').addEventListener('change',()=>{musicDirty=true;});
 $('saveMusic').addEventListener('click',async()=>{const result=await api('celebration-audio',{enabled:$('celebrationMusic').checked,volume:Number($('musicVolume').value)});if(result){musicDirty=false;render(result.state);}});
 
+$('narrationEnabled').addEventListener('change',async()=>{const result=await api('narration',{enabled:$('narrationEnabled').checked});if(result)render(result.state);});
+$('repeatNarration').addEventListener('click',()=>api('narration-repeat'));
 $('timerSound').addEventListener('change',()=>{timerSoundDirty=true;});
 $('saveTimerSound').addEventListener('click',async()=>{const result=await api('timer-sound',{enabled:$('timerSound').checked});if(result){timerSoundDirty=false;render(result.state);}});
 

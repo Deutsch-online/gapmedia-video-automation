@@ -3,3 +3,4 @@ node_modules/
 settings.json
 logs/
 public/media/
+public/narration/
