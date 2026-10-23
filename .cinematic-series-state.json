@@ -1411,7 +1411,7 @@
       }
     },
     "date": "2026-10-23",
-    "status": "render-failed",
+    "status": "rendering",
     "credit_from_scene": 8,
     "credit_approval_required": false,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 432s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
