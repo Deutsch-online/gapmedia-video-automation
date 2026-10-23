@@ -21,3 +21,9 @@ test('streak finishes once, tiers use per-gift value times repeat count, and sta
  assert.equal(wall.gift(streak,mapping).reason,'streak_not_finished');assert.equal(wall.gift({...streak,repeatEnd:1},mapping).accepted,true);assert.equal(wall.snapshot()[0].coins,500);
  assert.equal(wall.gift({...streak,repeatEnd:1,common:{msgId:'other',createTime:now}},mapping).reason,'duplicate_event');assert.equal(wall.gift(gift('old',1000,'old',{common:{msgId:'old',createTime:now-130000}}),mapping).reason,'invalid_event');
 });
+
+test('all-gift display includes answer gifts independently of quiz/comment input and keeps exact quantity',()=>{
+ const wall=new SupporterWall({now:()=>now});const rose=gift('rose',1,'rose-sender',{giftId:'5655',gift:{name:'Rose',type:1},repeatCount:3,repeatEnd:1});
+ assert.equal(wall.gift(rose,{}).accepted,true);const row=wall.snapshot()[0];assert.equal(row.name,'rose-sender');assert.equal(row.giftName,'Rose');assert.equal(row.count,3);assert.equal(row.coins,3);
+ assert.equal(wall.gift(rose,{}).reason,'duplicate_event');assert.equal(wall.snapshot().length,1);
+});

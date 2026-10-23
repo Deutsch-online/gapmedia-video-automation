@@ -29,7 +29,7 @@ def run():
         request('/api/admin/mode',{'mode':'live'})
         state=request('/api/admin/autoplay',{'enabled':True})['state']
     baseline=state.get('traffic',{}).copy()
-    if state['connection']['status']=='connected':
+    if state['connection']['status']=='connected' and os.getenv('DRIVING_LIVE_RESUME_ONLY')!='true':
         print('LIVE_CHECK: connected; listening for real comments and gifts only.',flush=True)
         original_input=state['answerInput']
         def set_input(source):

@@ -127,3 +127,12 @@
 .screen-body .supporter-name,.screen-body .supporter-coins{color:#203947;text-shadow:none}
 /* Keep correctness legible through the green border and check mark. */
 .screen-body .option.correct{background:#fff;border-color:#218052}
+
+/* Align all donor portraits against the content, away from the outer edge. */
+.screen-body .show{padding-left:196px}
+.supporter-rail{left:38px;width:140px;align-items:flex-start;direction:rtl;gap:12px}
+.supporter{width:100px;opacity:1}.supporter.newest{width:128px}
+.supporter-name{font-size:21px;color:#203947;line-height:1.25;margin-top:6px}.newest .supporter-name{font-size:23px}
+.supporter-gift{display:block;font-size:17px;line-height:1.3;color:#334e5b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.supporter-coins{font-size:19px;line-height:1.3}.newest .supporter-coins{font-size:21px}
+.guest-public{left:196px}

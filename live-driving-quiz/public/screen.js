@@ -101,6 +101,7 @@ function renderSupporters(rows){
   else if(person.tier==='diamond')orb.append(element('b','supporter-badge','◆'));
   else if(person.tier==='gold')orb.append(element('b','supporter-badge','♛'));
   card.append(orb,element('span','supporter-name',person.name));
+  card.append(element('small','supporter-gift',person.giftName+(person.count?' × '+fa.format(person.count):'')));
   if(person.coins!==null)card.append(element('small','supporter-coins',fa.format(person.coins)+' 🪙'));rail.append(card);
  });
 }
