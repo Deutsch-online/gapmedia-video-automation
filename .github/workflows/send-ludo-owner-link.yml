@@ -1,0 +1,45 @@
+name: Deliver Ludo private link to owner Telegram
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/send-ludo-owner-link.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ludo-owner-link-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Send the requested private link to the established owner chat
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,hmac,hashlib,urllib.request,urllib.error
+          bot=os.environ['TELEGRAM_BOT_TOKEN'];chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or os.environ['TELEGRAM_CHAT_ID']
+          def call(method,payload):
+              request=urllib.request.Request('https://api.telegram.org/bot'+bot+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:
+                  with urllib.request.urlopen(request,timeout=25) as response:data=json.load(response)
+              except urllib.error.HTTPError as exc:
+                  raise RuntimeError('Telegram HTTP '+str(exc.code)) from None
+              if not data.get('ok'):raise RuntimeError('Telegram delivery failed')
+              return data['result']
+          target=call('getChat',{'chat_id':chat})
+          if target.get('type')!='private':raise RuntimeError('Owner delivery requires the established private chat')
+          repo='afgtakrun/ludo-live-nations'
+          admin=hmac.new(os.environ['HF_TOKEN'].encode(),('ludo-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
+          url='https://afgtakrun-ludo-live-nations.hf.space/#'+admin
+          text='لینک آخرین نسخهٔ لدو لایو و پنل مدیریت شما:\n\n'+url+'\n\nبرای دیدن بازی بدون لایو و بدون هزینه: صفحه را تازه کنید، Settings و سپس «شروع دمو» را بزنید.\n\nبرای اتصال: دمو را متوقف کنید، لایو TikTok را روشن کنید، نام همان حساب را بدون @ وارد کنید و «اتصال به لایو» را بزنید.\n\nلینک خصوصی است؛ در لایو نشان ندهید. این لینک برای اجرای آنلاین است و نیاز به دانلود ندارد.'
+          result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+          print('LUDO_OWNER_LINK_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
+          PY
