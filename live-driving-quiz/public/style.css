@@ -189,7 +189,7 @@
 /* Balanced poster layout: centered content, generous edges and calm green. */
 .screen-body,.screen-body .show{background:#b6cdbf}
 .screen-body .show{padding:48px 72px 164px}
-.screen-body .show.has-activity{padding-left:316px}
+.screen-body .show.has-activity{padding-left:72px;padding-right:316px}
 .screen-body .brand{height:34px}.screen-body .episode-line{padding:8px 0 12px;font-size:22px}
 .screen-body .bank-media{margin:10px 0 28px;border-radius:24px;background:#17352b;box-shadow:0 8px 22px #183b2b12}
 .screen-body .bank-media figcaption{background:#d6e4d9;color:#365c49;padding:7px}
@@ -205,11 +205,11 @@
 .screen-body #show.bank-question{--question-media-height:500px}.screen-body #show.bank-question.has-activity{--question-media-height:420px}
 .screen-body #show.bank-question.bank-compact{--question-media-height:380px}.screen-body #show.bank-question.bank-crowded{--question-media-height:250px}
 .screen-body #show.bank-question.watching{--question-media-height:560px}
-.guest-public{left:72px;right:72px}.has-activity .guest-public{left:316px}.enable-music{right:72px;bottom:116px}
+.guest-public{left:72px;right:72px}.has-activity .guest-public{left:72px;right:316px}.enable-music{right:72px;bottom:116px}
 .winner-celebration{margin-top:24px;background:#e4eee4;border:1px solid #9cbcaa;padding:16px 18px;border-radius:22px}
 
 /* The activity rail is a faint glass surface; the question remains its own column. */
-.screen-body .supporter-rail{left:66px;top:220px;bottom:180px;width:242px;gap:20px;align-items:stretch;direction:ltr}
+.screen-body .supporter-rail{left:auto;right:66px;top:220px;bottom:180px;width:242px;gap:20px;align-items:stretch;direction:ltr}
 .screen-body .supporter{box-sizing:border-box;width:242px;min-height:94px;display:flex;align-items:center;gap:9px;text-align:left;padding:10px 8px;background:rgba(18,39,31,.09);border:1px solid rgba(255,255,255,.3);border-radius:22px;backdrop-filter:blur(8px);box-shadow:0 3px 12px #18372b0a}
 .screen-body .supporter .supporter-orb{width:76px;flex:0 0 76px}
 .screen-body .supporter.activity-gift{min-height:128px;padding:12px 8px;background:rgba(18,39,31,.13)}
@@ -263,7 +263,7 @@
 
 /* Put the portraits beside the question edge and make activity text readable. */
 .screen-body .supporter-rail{gap:16px}
-.screen-body .supporter{flex-direction:row-reverse;gap:8px}
+.screen-body .supporter{flex-direction:row;gap:8px}
 .screen-body .activity-copy{text-align:right;order:1}
 .screen-body .supporter-name,.screen-body .newest .supporter-name{font-size:28px;line-height:1.25}
 .screen-body .supporter-likes{font-size:30px}
