@@ -315,3 +315,12 @@
 .edge-reactions span:nth-child(3),.edge-reactions span:nth-child(7){font-size:46px}
 .edge-reactions span:nth-child(4),.edge-reactions span:nth-child(8){font-size:38px}
 .screen-body .show.bank-full{padding-bottom:80px}
+
+/* Brief, bounded flowers and sparks around each current correct portrait. */
+.winner-burst{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2}
+.winner-burst i{position:absolute;left:50%;top:50%;font-style:normal;font-size:28px;color:#e0a12f;opacity:0;line-height:1;text-shadow:0 0 7px #fff8cf}
+.is-celebrating .winner-burst i{animation:winner-petals 2.3s ease-out both;animation-delay:calc(var(--particle-i)*60ms + var(--winner-i)*65ms)}
+.is-celebrating .winner-face{border-color:#e9b72b;animation:winner-victory 1.3s ease-in-out 3}
+@keyframes winner-petals{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}18%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(60deg) scale(.9)}}
+@keyframes winner-victory{0%,100%{transform:translateY(0) scale(1);box-shadow:0 0 0 5px #f8e6a866}50%{transform:translateY(-5px) scale(1.04);box-shadow:0 0 0 8px #f8e6a899,0 0 24px #e6b83d88}}
+@media(prefers-reduced-motion:reduce){.is-celebrating .winner-face{animation:none}.winner-burst{display:none}}

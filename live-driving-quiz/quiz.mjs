@@ -42,7 +42,7 @@ export class Quiz {
     const correct=this.questions[this.index].correct.slice().sort().join(','),winning=[];
     for(const [id,answer] of this.answers) {
       const ok=[...answer.choices].sort().join(',')===correct;
-      if(ok) { const row=this.leaderboard.get(id)||{name:answer.name,score:0}; row.name=answer.name;row.score++;this.leaderboard.set(id,row);winning.push({key:answer.publicId,name:answer.name,avatar:answer.avatar}); }
+      if(ok) { const row=this.leaderboard.get(id)||{name:answer.name,score:0}; row.name=answer.name;row.score++;this.leaderboard.set(id,row);winning.push({userId:id,key:answer.publicId,name:answer.name,avatar:answer.avatar}); }
     }
     if(winning.length)this.lastWinningRound={roundId:this.round.id,questionId:this.questions[this.index].id,at:this.now(),people:winning};
   }
@@ -66,6 +66,12 @@ export class Quiz {
     if(!multiple && answer.choices.size&&!commentChoices) return {accepted:false,reason:'one_answer_only'};
     if(safeAvatarURL(avatar))answer.avatar=safeAvatarURL(avatar);
     for(const k of choices)answer.choices.add(k); this.answers.set(userId,answer);
+    // Retire the old badge on ANY new accepted answer; removing only wrong
+    // answers here would reveal the answer key before the question closes.
+    if(this.lastWinningRound){
+      this.lastWinningRound.people=this.lastWinningRound.people.filter(person=>person.userId!==userId);
+      if(!this.lastWinningRound.people.length)this.lastWinningRound=null;
+    }
     const recorded=commentChoices?choices.join('+'):choice;
     this.lastAnswer={name:answer.name,avatar:answer.avatar,choice:recorded};
     return {accepted:true,choice:recorded};
@@ -106,7 +112,7 @@ export class Quiz {
     const winners=this.phase==='revealed'?[...this.answers.values()].filter(a=>[...a.choices].sort().join(',')===correct):[];
     const winnerOffset=winners.length?Math.floor((this.now()-this.revealedAt)/2200)%Math.ceil(winners.length/6)*6:0;
     const last=this.lastWinningRound,offset=last?Math.floor((this.now()-last.at)/2200)%Math.ceil(last.people.length/6)*6:0;
-    const celebration=last?{roundId:last.roundId,questionId:last.questionId,at:last.at,count:last.people.length,people:last.people.slice(offset,offset+6)}:null;
+    const celebration=last?{roundId:last.roundId,questionId:last.questionId,at:last.at,count:last.people.length,people:last.people.slice(offset,offset+6).map(({key,name,avatar})=>({key,name,avatar}))}:null;
     return {celebration,winnerCount:winners.length,winners:winners.slice(winnerOffset,winnerOffset+6).map(a=>({key:a.publicId,name:a.name,avatar:a.avatar})),revealedAt:this.phase==='revealed'?this.revealedAt:null,revealReason:this.phase==='revealed'?this.revealReason:null,questionSeconds:this.seconds,index:this.index,total:this.questions.length,phase:this.phase,roundId:this.round?.id||null,closesAt:this.round?.closes||null,serverTime:this.now(),videoStartedAt:this.round?.videoStarted||null,opensAt:this.round?.opened||null,question,
       voters:this.answers.size,participants:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).slice(-6).reverse().map(a=>({key:a.publicId,name:a.name,avatar:a.avatar}))])),counts:Object.fromEntries(LETTERS.map(k=>[k,[...this.answers.values()].filter(a=>a.choices.has(k)).length])),lastAnswer:this.lastAnswer,
       leaderboard:[...this.leaderboard.values()].sort((a,b)=>b.score-a.score).slice(0,5)};

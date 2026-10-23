@@ -90,9 +90,9 @@ Click a guest in the panel or web screen to see supporters, original gift names,
 All completed gifts now show their sender in the supporter rail, including Rose/TikTok/GG when comment answering is active. Answer processing still follows the chosen input mode. The rail aligns against the text column with a small gap; names, gift quantity and known coin value are shown. The `[resume-driving-live]` deployment marker reconnects the known LIVE without switching input modes or sending chat/gifts.
 
 ### Correct-answer celebration
-The public background uses muted sage (`#e6efe9`). Correct responders are determined only after reveal using exact answer-set equality; a partial answer or an extra wrong choice does not qualify. Up to six winner portraits are shown at once and rotate every 2.2 seconds, with an accurate total and no raw TikTok user IDs. Starting the next question hides the celebration.
+The public background uses muted sage (`#e6efe9`). Correct responders are determined only after reveal using exact answer-set equality; a partial answer or an extra wrong choice does not qualify. Up to six winner portraits are shown at once and rotate every 2.2 seconds, with an accurate total and no raw TikTok user IDs. The last correct group stays visible with its original question ID until replaced; see badge retirement below.
 
-A short original major-key Web Audio jingle accompanies the animated winner portraits. It uses no downloaded/licensed track or paid generation. Music is enabled by default at 20%; the private panel can mute it or change volume. Browser autoplay policies require the source operator to click “فعال‌کردن صدا” once and enable that browser source's audio in OBS/LIVE Studio. Reduced-motion preferences suppress portrait animations.
+A distinct original four-note rising victory bell precedes the major-key Web Audio jingle, with a brief golden glow, flowers and sparks around each newly revealed correct portrait. It uses no downloaded/licensed track or paid generation. Music is enabled by default at 20%; the private panel can mute it or change volume. Browser autoplay policies require the source operator to click “فعال‌کردن صدا” once and enable that browser source's audio in OBS/LIVE Studio. Reduced-motion preferences suppress portrait animations.
 
 German and Persian question/answer text have distinct subtle shadows. Source images prefer 480px height on the 1080×1920 canvas, reducing to 390px/290px only when text and winner profiles need room; source images retain `object-fit: contain`. Timer sound has an independent panel toggle: five quiet ticks during the last five response seconds, then a two-note end cue. Manual early reveal and the video-watching phase do not sound a timer-expiry cue.
 
@@ -163,3 +163,18 @@ Browser autoplay needs a gesture in the actual Browser source: click **Ton
 aktivieren**, and unmute that source in LIVE Studio/OBS. The separate private
 panel cannot unlock the source. `/health` must report `german_voice` as
 `de_DE-thorsten-medium` and `german_recordings` equal to the question count.
+
+### Previous winner badge retirement
+
+When a user submits any accepted answer in a new round, their old winner badge
+is removed immediately. Apply this to both correct and incorrect selections so
+badge removal cannot expose the answer key before reveal. A rejected/late event
+does not remove a badge. Other prior winners who have not answered stay visible
+with their original question ID. Exact complete correct answers reappear only
+after reveal; wrong or incomplete answers never retain the old badge. Internal
+user IDs used for matching are never sent in public celebration payloads.
+
+Current winners receive a brief flower/spark burst and golden portrait glow;
+the special victory cue plays once per revealed round under the existing
+celebration music enable/volume controls. Regular broadcasts, pagination and
+old winner groups do not retrigger the cue. Reduced-motion hides bursts.

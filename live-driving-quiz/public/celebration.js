@@ -23,10 +23,20 @@ export function scheduleJingle(ctx,destination,start){
  }
  return nodes;
 }
+// Original victory cue: rising bell arpeggio and a bright major chord.
+export function scheduleSuccessSound(ctx,destination,start){
+ const nodes=[];
+ for(const [i,hz] of [523.25,659.25,783.99,1046.5].entries()){
+  const osc=ctx.createOscillator(),gain=ctx.createGain(),at=start+i*.105;
+  osc.type='sine';osc.frequency.value=hz;gain.gain.setValueAtTime(0,at);gain.gain.linearRampToValueAtTime(.4,at+.008);gain.gain.exponentialRampToValueAtTime(.0001,at+.65);
+  osc.connect(gain);gain.connect(destination);osc.start(at);osc.stop(at+.68);osc.onended=()=>{osc.disconnect();gain.disconnect();};nodes.push(osc);
+ }
+ return nodes;
+}
 function stopMusic(){for(const voice of voices)try{voice.stop();}catch{}voices=[];}
 function play(){
  if(!current||current.phase!=='revealed'||!current.celebration?.count||current.celebration.roundId!==current.roundId||!current.celebrationMusic||!context||context.state!=='running'||lastPlayed===current.roundId)return;
- stopMusic();lastPlayed=current.roundId;voices=scheduleJingle(context,master,context.currentTime+.04);
+ stopMusic();lastPlayed=current.roundId;voices=[...scheduleSuccessSound(context,master,context.currentTime+.04),...scheduleJingle(context,master,context.currentTime+1.04)];
 }
 function timerTone(frequency,delay,duration,level){
  if(!context||context.state!=='running')return;
@@ -59,6 +69,7 @@ export function renderCelebration(state){
  $('enableMusic').title=['error','timeout'].includes(narrator.status)?'Fragenstimme konnte nicht geladen werden. Im Kontrollpanel erneut vorlesen.':narrator.status==='playing'?'Deutsche Fragenstimme wird abgespielt':context?.state==='running'?'Testton für diese Browser-Quelle abspielen':'In dieser Browser-Quelle einmal klicken, um den Ton freizugeben';
  const result=state.celebration;const visible=Boolean(result?.count);
  $('winnerCelebration').classList.toggle('hidden',!visible);
+ $('winnerCelebration').classList.toggle('is-celebrating',Boolean(visible&&state.phase==='revealed'&&result.roundId===state.roundId&&state.serverTime-result.at<6000));
  if(!visible||!state.celebrationMusic||state.phase!=='revealed'||result.roundId!==state.roundId)stopMusic();
  if(!visible){signature=null;return;}
  $('winnerTitle').textContent=result.roundId===state.roundId&&state.phase==='revealed'?'Richtig beantwortet!':'Zuletzt richtig beantwortet';
@@ -71,7 +82,10 @@ export function renderCelebration(state){
   if(person.avatar){const img=document.createElement('img');img.src=person.avatar;img.alt=person.name;img.referrerPolicy='no-referrer';img.addEventListener('error',()=>img.remove(),{once:true});face.append(img);}
   const badge=document.createElement('b');badge.className='winner-check';badge.textContent='✓';
   const name=document.createElement('span');name.textContent=person.name;name.title=person.name;
-  card.append(face,badge,name);return card;
+  const burst=document.createElement('div');burst.className='winner-burst';burst.setAttribute('aria-hidden','true');
+  const flowers=['✦','🌸','✧','🌼','✦','🌸','✧','🌼','✦','🎉'];
+  flowers.forEach((symbol,i)=>{const particle=document.createElement('i');particle.textContent=symbol;const angle=(i/flowers.length)*Math.PI*2;particle.style.setProperty('--dx',Math.round(Math.cos(angle)*82)+'px');particle.style.setProperty('--dy',Math.round(Math.sin(angle)*65)-10+'px');particle.style.setProperty('--particle-i',i);burst.append(particle);});
+  face.append(burst);card.append(face,badge,name);return card;
  }));}
  play();
 }

@@ -88,3 +88,24 @@ test('combined comments need the exact answer set to win and retain closed-round
  quiz.next();quiz.start();assert.equal(quiz.comment({...e,common:{msgId:'old',createTime:now-1000000}}).reason,'late_or_old_event');
  quiz.pause();assert.equal(quiz.comment({...e,common:{msgId:'paused',createTime:now}}).reason,'round_closed');assert.equal(quiz.comment({content:'456'}).reason,'irrelevant_comment');
 });
+
+test('a previous winner is retired when answering again and wrong answers never keep the old badge',()=>{
+ const now=Date.now(),quiz=new Quiz(bank,{now:()=>now});quiz.start();
+ for(const userId of ['returning','absent'])for(const choice of quiz.questions[0].correct)quiz.submit({id:userId+choice,userId,name:userId,choice,time:now});
+ quiz.reveal();assert.equal(quiz.snapshot().celebration.count,2);assert.equal(quiz.snapshot().celebration.people[0].userId,undefined);
+ quiz.next();quiz.start();
+ const wrong='ABC'.split('').find(k=>!quiz.questions[quiz.index].correct.includes(k));
+ assert.ok(wrong);
+ assert.equal(quiz.submit({id:'new-wrong',userId:'returning',name:'returning',choice:wrong,time:now}).accepted,true);
+ let s=quiz.snapshot();assert.deepEqual(s.celebration.people.map(p=>p.name),['absent']);assert.equal(s.question.correct,undefined);
+ quiz.reveal();s=quiz.snapshot();assert.equal(s.winnerCount,0);assert.deepEqual(s.celebration.people.map(p=>p.name),['absent']);
+ quiz.next();quiz.start();for(const choice of quiz.questions[quiz.index].correct)quiz.submit({id:'correct-again'+choice,userId:'returning',name:'returning',choice,time:now});
+ quiz.reveal();s=quiz.snapshot();assert.deepEqual(s.celebration.people.map(p=>p.name),['returning']);assert.equal(s.celebration.roundId,s.roundId);assert.equal(s.celebration.people[0].userId,undefined);
+});
+
+test('retiring an old badge does not reveal whether a partial new answer is correct',()=>{
+ const now=Date.now(),quiz=new Quiz(bank,{now:()=>now});quiz.start();
+ for(const choice of quiz.questions[0].correct)quiz.submit({id:'old'+choice,userId:'same',name:'same',choice,time:now});quiz.reveal();
+ quiz.next();quiz.start();quiz.submit({id:'late',userId:'same',name:'same',choice:'A',time:now-10000});assert.equal(quiz.snapshot().celebration.count,1);
+ quiz.submit({id:'fresh',userId:'same',name:'same',choice:quiz.questions[quiz.index].correct[0],time:now});assert.equal(quiz.snapshot().celebration,null);assert.equal(quiz.snapshot().winnerCount,0);
+});
