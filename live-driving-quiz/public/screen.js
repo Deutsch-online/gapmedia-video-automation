@@ -3,7 +3,8 @@ function fitScreen(){document.documentElement.style.setProperty('--screen-scale'
 addEventListener('resize',fitScreen);fitScreen();
 const $=id=>document.getElementById(id);
 let state,receivedAt=0,optionSignature,supporterSignature,guestSignature;
-const fa=new Intl.NumberFormat('fa-IR');
+const fa=new Intl.NumberFormat('en-US');
+const digits=text=>String(text).replace(/[۰-۹٠-٩]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.includes(c)?'۰۱۲۳۴۵۶۷۸۹'.indexOf(c):'٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
 const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋',bus:'BUS',crossing:'🚶'};
 function element(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function render(s){
@@ -18,7 +19,7 @@ function render(s){
   $('modeLabel').classList.toggle('real',s.mode==='live');
   $('topic').textContent=q.topic;
   $('questionNumber').textContent=`${String(s.index+1).padStart(2,'0')} / ${String(s.total).padStart(2,'0')}`;
-  $('questionDe').textContent=q.de;$('questionFa').textContent=q.fa;
+  $('questionDe').textContent=q.de;$('questionFa').textContent=digits(q.fa);
   $('answerType').textContent=q.multiple?'بیش از یک پاسخ درست است':'یک پاسخ درست';
   const scene=document.querySelector('.scene');scene.className='scene'+(!['red','yellow'].includes(q.visual)?' alt':'')+(q.visual==='fog'?' fog':'');
   $('signal').className='signal '+q.visual;$('symbol').textContent=icons[q.visual]||'DE';
@@ -29,7 +30,7 @@ function render(s){
     const key=element('div','option-key',q.correct?.includes(k)?'✓':s.answerInput==='comments'?fa.format(i+1):k);
     const copy=element('div','option-copy');
     const de=element('div','option-de',o.de);de.lang='de';de.dir='ltr';
-    const f=element('div','option-fa',o.fa);
+    const f=element('div','option-fa',digits(o.fa));
     const pill=element('div','gift-pill');const info=element('span','gift-info');
     const symbol=element('span','gift-symbol',gift?.symbol||'🎁');info.append(symbol);
     if(gift?.icon){const icon=document.createElement('img');icon.className='gift-icon';icon.alt=gift.name;icon.referrerPolicy='no-referrer';icon.src=gift.icon;icon.addEventListener('error',()=>icon.remove(),{once:true});icon.addEventListener('load',()=>symbol.classList.add('hidden'),{once:true});info.append(icon);}
@@ -51,7 +52,7 @@ function render(s){
   $('phaseLabel').textContent=labels[s.phase]||s.phase;
   $('voters').textContent=`${fa.format(s.voters)} شرکت‌کننده`;
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name} ${s.lastAnswer.choice==='ALL'?'هر سه گزینه':`گزینهٔ ${s.lastAnswer.choice}`} را انتخاب کرد.`:'اول فکر کن؛ بعد گزینه‌ات را انتخاب کن.';
-  $('giftNote').textContent=s.phase==='watching'?'هنگام نمایش فیلم پاسخ ثبت نمی‌شود؛ پس از پایان فیلم ۳۰ ثانیه فرصت دارید.':s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
+  $('giftNote').textContent=s.phase==='watching'?'هنگام نمایش فیلم پاسخ ثبت نمی‌شود؛ پس از پایان فیلم 30 ثانیه فرصت دارید.':s.mode==='demo'?'حالت آزمایشی است؛ هدیه‌ای ارسال نکنید.':q.multiple?'برای چند پاسخ، هدیهٔ هر گزینه را جدا بفرستید؛ هدیهٔ تکراری امتیاز اضافه ندارد.':'برای هر سؤال، اولین گزینهٔ هر نفر ثبت می‌شود؛ هدیهٔ بیشتر امتیاز بیشتری نمی‌دهد.';
   const gs=JSON.stringify(s.guests||[]);if(gs!==guestSignature){guestSignature=gs;renderGuests($('guestList'),s.guests||[]);}
   renderSupporters(s.supporters||[]);syncVideo();updateTimer();requestAnimationFrame(adjustBankLayout);
 }

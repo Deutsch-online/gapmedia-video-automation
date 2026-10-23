@@ -7,6 +7,11 @@ on:
       - scripts/deploy-driving-live.py
       - .github/workflows/deploy-driving-live.yml
   workflow_dispatch:
+    inputs:
+      verify_live:
+        description: Listen for real comments and gifts after deployment (never sends gifts)
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -41,10 +46,17 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
         run: python scripts/deploy-driving-live.py
+      - name: Explicitly requested real LIVE reception check
+        if: inputs.verify_live == true || contains(github.event.head_commit.message, '[verify-driving-live]')
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python scripts/check-driving-live.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: driving-live-deployment
-          path: /tmp/driving-live-deployment.json
+          path: |
+            /tmp/driving-live-deployment.json
+            /tmp/driving-live-reception.json
           if-no-files-found: ignore
           retention-days: 14
