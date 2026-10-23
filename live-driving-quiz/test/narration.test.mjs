@@ -25,3 +25,15 @@ test('late audio response cannot play over next question or after stopping',asyn
  let resolve;const {narrator,state,ctx,played}=fixture(()=>new Promise(r=>resolve=r));narrator.update(state,ctx);narrator.update({...state,phase:'paused'},ctx);
  resolve({ok:true,arrayBuffer:async()=>new ArrayBuffer(8)});await flush();assert.equal(played.length,0);
 });
+
+test('audio device suspension preserves the sentence and avoids repeating it',async()=>{
+ const {narrator,state,ctx,played}=fixture();narrator.update(state,ctx);await flush();assert.equal(played.length,1);
+ ctx.state='suspended';for(let i=0;i<10;i++)narrator.update(state,ctx);assert.equal(played[0].stopped,undefined);
+ ctx.state='running';narrator.update(state,ctx);await flush();assert.equal(played.length,1);
+ ctx.state='suspended';narrator.update({...state,roundId:'new'},ctx);assert.equal(played[0].stopped,true);
+});
+test('repeat reuses fully decoded audio, temporary load error gets one retry',async()=>{
+ let calls=0;const {narrator,state,ctx,played}=fixture(async()=>{calls++;if(calls===1)throw Error('temporary network error');return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};});
+ narrator.update(state,ctx);await flush();assert.equal(played.length,1);assert.equal(calls,2);
+ narrator.update({...state,narrationReplay:1},ctx);await flush();assert.equal(played.length,2);assert.equal(calls,2);
+});

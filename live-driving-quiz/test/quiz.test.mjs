@@ -64,3 +64,8 @@ test('manual reveal works for waiting and paused questions without double scorin
 test('natural expiry is distinct from a manual reveal',()=>{
  let now=Date.now();const quiz=new Quiz(bank,{now:()=>now,seconds:10});quiz.start();now+=10001;assert.equal(quiz.snapshot().revealReason,'timer');
 });
+
+test('long German narration has five seconds to finish without shortening the selected answer time',()=>{
+ const q=new Quiz(bank,{seconds:10,now:()=>1000});q.start({narrationMs:14000});assert.equal(q.round.closes-q.round.opened,19000);
+ q.pause();q.seconds=30;q.start({narrationMs:14000});assert.equal(q.round.closes-q.round.opened,30000);
+});

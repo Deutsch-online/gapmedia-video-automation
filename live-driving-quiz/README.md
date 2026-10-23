@@ -135,19 +135,31 @@ The current bank contains 150 distinct source IDs and 150 verified original imag
 
 ### German question reading
 
-Docker installs Debian `espeak-ng` and generates all German question WAV files
-with `node narration-media.mjs` on free CPU at image build time. No account,
-credits, network TTS API, or installed browser voices are used for playback.
-This is an offline synthetic voice, not a neural studio voice. For local use,
-install `espeak-ng` and run that preparation command once. Generated files in
-`public/narration/` are ignored by Git and regenerated when the bank changes.
+German speech uses the free offline neural **Piper 1.3.0**, voice
+`de_DE-thorsten-medium` (Thorsten dataset: CC0). The model and config are pinned
+by Hugging Face commit and SHA-256 in `prepare-narration.py`. Piper is GPL-3.0;
+see https://github.com/OHF-Voice/piper1-gpl and the upstream MODEL_CARD at
+https://huggingface.co/rhasspy/piper-voices/blob/5041a7a49ae5b3a0f30e6837769eb03fdbb231bd/de/de_DE/thorsten/medium/MODEL_CARD .
 
-Reading is enabled by default and reads only the German question once when the
-answer window opens, including manual rounds. Video viewing finishes first.
-The private panel can disable speech or request a repeat. Pause, reveal, next
-question, and disable cancel pending/playing speech; regular state broadcasts
-do not replay it. The answer timer continues during narration, so choose more
-time for long questions. Browser autoplay still needs a gesture in the actual
-Browser source: click **Ton aktivieren** and unmute that source in LIVE Studio.
-Speech uses the shared unlocked audio context independently of music volume.
-`/health.german_recordings` should equal the question count after deployment.
+Docker installs CPU-only Piper and generates complete German sentence WAVs once
+at build time. No keys, credits, hosted TTS calls or browser voices are used for
+playback. No fallback to the previous robotic espeak waveform. Models, WAVs and
+manifest are ignored by Git; wording hashes guard against stale recordings.
+For local preparation use a Python venv with `piper-tts==1.3.0`,
+`onnxruntime==1.23.2`, `numpy==2.3.4`, then run `prepare-narration.py`.
+
+Reading is enabled by default when the answer window opens, including manual
+rounds. Video viewing finishes first. The panel can disable reading or request
+a repeat. Pause, reveal or changing questions cancels speech; state updates,
+WebSocket reconnects and temporary audio-device suspension never restart the
+same sentence. WAVs are fully downloaded and decoded before playback, cached
+for repeat, with one bounded free retry on load failure. The shared audio
+context uses playback latency and keeps its position through suspension.
+Timer beeps are suppressed while speech is loading/playing. The answer window
+is at least the selected time or recording length + 5 seconds, whichever is
+longer, to avoid cutting a long question at a short configured timer.
+
+Browser autoplay needs a gesture in the actual Browser source: click **Ton
+aktivieren**, and unmute that source in LIVE Studio/OBS. The separate private
+panel cannot unlock the source. `/health` must report `german_voice` as
+`de_DE-thorsten-medium` and `german_recordings` equal to the question count.

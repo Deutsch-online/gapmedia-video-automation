@@ -65,7 +65,7 @@ function serverNow(){return state.serverTime+performance.now()-receivedAt;}
 function updateTimer(){if(!state)return;const target=state.phase==='watching'?state.opensAt:state.closesAt;const left=['open','watching'].includes(state.phase)?Math.max(0,Math.ceil((target-serverNow())/1000)):0;
  soundCountdown(state,left);
  $('timer').replaceChildren(document.createTextNode(fa.format(left)),element('span','',state.phase==='watching'?'Video':state.phase==='revealed'?'Antwort':'Sek.'));
- $('progressBar').style.width=state.phase==='open'?`${Math.max(0,Math.min(100,left/(state.questionSeconds||30)*100))}%`:state.phase==='revealed'?'100%':'0%';}
+ $('progressBar').style.width=state.phase==='open'?`${Math.max(0,Math.min(100,left/((state.closesAt-state.opensAt)/1000||state.questionSeconds||30)*100))}%`:state.phase==='revealed'?'100%':'0%';}
 setInterval(updateTimer,250);
 let reconnect;
 function connect(){const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>{$('phaseLabel').textContent='Verbindung unterbrochen – bitte warten.';clearTimeout(reconnect);reconnect=setTimeout(connect,2000);};}

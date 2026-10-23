@@ -4,3 +4,6 @@ settings.json
 logs/
 public/media/
 public/narration/
+
+.voice-cache/
+__pycache__/

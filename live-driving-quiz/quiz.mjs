@@ -25,10 +25,10 @@ export class Quiz {
     this.lastWinningRound=null;this.revealedAt=null;this.revealReason=null;this.scoredRoundId=null;this.index=0; this.phase='waiting'; this.round=null; this.answers=new Map();
     this.seen=new Map(); this.groups=new Map(); this.leaderboard=new Map(); this.lastAnswer=null;
   }
-  start() {
+  start({narrationMs=0}={}) {
     if (['open','watching'].includes(this.phase)) throw Error('Round already open');
     const q=this.questions[this.index],watch=q.video?q.video_duration_ms+2000:0;
-    this.round={id:randomUUID(),opened:this.now()+watch,closes:this.now()+watch+this.seconds*1000,videoStarted:q.video?this.now()+2000:null};
+    this.round={id:randomUUID(),opened:this.now()+watch,closes:this.now()+watch+Math.max(this.seconds*1000,narrationMs+5000),videoStarted:q.video?this.now()+2000:null};
     this.revealedAt=null;this.revealReason=null;this.phase=q.video?'watching':'open'; this.answers=new Map(); this.lastAnswer=null;
   }
   next() { if(['open','watching'].includes(this.phase)) throw Error('Reveal or pause this question first'); this.index=(this.index+1)%this.questions.length;this.phase='waiting';this.round=null;this.answers=new Map();this.lastAnswer=null; }

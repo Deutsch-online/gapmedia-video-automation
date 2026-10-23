@@ -38,7 +38,7 @@ function timerTone(frequency,delay,duration,level){
 async function activateAudio(test=false){
  try{
   const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw Error('Audio unavailable');
-  context||=new Audio();
+  context||=new Audio({latencyHint:'playback'});
   if(!master){master=context.createGain();master.gain.value=(current?.musicVolume??20)/100;master.connect(context.destination);timerBus=context.createGain();timerBus.gain.value=.6;timerBus.connect(context.destination);context.addEventListener('statechange',()=>renderCelebration(current));}
   if(context.state!=='running')await context.resume();
   renderCelebration(current);
@@ -56,7 +56,7 @@ export function renderCelebration(state){
  if(master)master.gain.setTargetAtTime(Math.max(0,Math.min(100,state.musicVolume??20))/100,context.currentTime,.03);
  $('enableMusic').classList.remove('hidden');
  $('enableMusic').textContent=context?.state==='running'?'♫ Ton testen':'♫ Ton aktivieren';
- $('enableMusic').title=context?.state==='running'?'Testton für diese Browser-Quelle abspielen':'In dieser Browser-Quelle einmal klicken, um den Ton freizugeben';
+ $('enableMusic').title=['error','timeout'].includes(narrator.status)?'Fragenstimme konnte nicht geladen werden. Im Kontrollpanel erneut vorlesen.':narrator.status==='playing'?'Deutsche Fragenstimme wird abgespielt':context?.state==='running'?'Testton für diese Browser-Quelle abspielen':'In dieser Browser-Quelle einmal klicken, um den Ton freizugeben';
  const result=state.celebration;const visible=Boolean(result?.count);
  $('winnerCelebration').classList.toggle('hidden',!visible);
  if(!visible||!state.celebrationMusic||state.phase!=='revealed'||result.roundId!==state.roundId)stopMusic();
@@ -77,6 +77,7 @@ export function renderCelebration(state){
 }
 
 export function soundCountdown(state,left){
+ if(narrator.source||narrator.pending)return;
  if(!state?.timerSound||!context||context.state!=='running'||!state.roundId)return;
  const tick=state.phase==='open'&&left>=1&&left<=5;
  const ended=state.phase==='revealed'&&state.revealReason!=='manual'&&state.serverTime>=state.closesAt;
