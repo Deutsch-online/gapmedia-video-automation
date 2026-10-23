@@ -38,6 +38,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('manual-gifts',{confirmed:true,gifts:[{id:'1',name:'هدیه A'},{id:'1',name:'هدیه B'},{id:'3',name:'هدیه C'},{}]})).status,400);
   assert.equal((await post('manual-gifts',{confirmed:true,gifts:[{id:'1',name:'هدیه A'},{id:'2',name:'هدیه B'},{id:'3',name:'هدیه C'},{}]})).status,200);
   assert.equal((await post('mode',{mode:'live'})).status,400,'manual choices alone never claim a live connection');
+  assert.equal((await post('select',{id:first.id})).status,200);
   assert.equal((await post('start')).status,200);
   assert.equal((await post('question-time',{seconds:60})).status,400);
   const timedState=await(await fetch(base+'/api/state')).json();assert.equal(timedState.questionSeconds,45);assert.equal(timedState.closesAt-timedState.opensAt,45000);
@@ -48,6 +49,16 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('gifts',{ids:['1','2','3']})).status,400);
   for(const choice of first.correct)assert.equal((await post('simulate',{choice,name:'آزمایش'})).status,200);
   await post('reveal');state=await(await fetch(base+'/api/state')).json();assert.deepEqual(state.question.correct,first.correct);assert.equal(state.leaderboard[0].score,1);
+  assert.equal(state.session.completedTotal,1);assert.equal((await post('select',{id:first.id})).status,400);
+  assert.equal((await post('session-settings',{size:49,allowRepeat:false})).status,400);
+  assert.equal((await post('session-settings',{size:50,allowRepeat:true})).status,200);
+  assert.equal((await post('new-session')).status,200);
+  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,100);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
+  assert.equal((await post('simulate-like',{count:1000,name:'fan'})).status,200);
+  state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters[0].tier,'crown');assert.equal(state.supporters[0].likeLabel,'1K');assert.equal(state.supporters[0].userId,undefined);
+  assert.equal((await post('simulate-supporter',{coins:500,name:'fan'})).status,200);
+  state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters.length,1);assert.equal(state.supporters[0].kind,'gift');assert.equal(state.supporters[0].likes,1000);
+  assert.equal(JSON.parse(readFileSync(join(dir,'settings.json'))).sessionProgress,undefined,'demo questions never change durable real progress');
  } finally {child.kill('SIGTERM');await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(3000)]);if(child.exitCode===null)child.kill('SIGKILL');rmSync(dir,{recursive:true,force:true});}
 });
 

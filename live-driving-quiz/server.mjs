@@ -12,6 +12,9 @@ import {loadBankMedia} from './bank-media.mjs';
 import {serveMedia} from './media-response.mjs';
 import {GIFT_PRESET_VERSION,presetGifts,configuredGift,observeGift} from './gifts.mjs';
 import {SupporterWall} from './supporters.mjs';
+import {LikeWall,activityWall} from './likes.mjs';
+import {QuizSessions} from './sessions.mjs';
+import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
 import {liveDiagnostics} from './live-diagnostics.mjs';
 
@@ -34,12 +37,25 @@ const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'ut
 quiz.seconds=Number.isInteger(settings.questionSeconds)&&settings.questionSeconds>=10&&settings.questionSeconds<=300?settings.questionSeconds:30;
 const bankMedia=loadBankMedia(quiz.questions);
 const supporters=new SupporterWall();
+const likes=new LikeWall();
+const sessionStore=new SessionStore();
+const loadedProgress=await sessionStore.load();
+const ids=quiz.questions.map(q=>q.id);
+const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{});
+let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat});
+const sessions=()=>mode==='live'?liveSessions:demoSessions;
+let completedRound=null,advancing=false,sessionError=null;
+function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(liveSessions.export());}}
+async function flushSession(){if(mode==='live')await sessionStore.flush();}
+function recordCompleted(){if(quiz.phase==='revealed'&&quiz.round?.id!==completedRound){completedRound=quiz.round?.id;sessions().complete(quiz.questions[quiz.index].id);persistSession();}}
+async function nextRound(){recordCompleted();await flushSession();const id=sessions().next();persistSession();await flushSession();advanceAt=null;if(!id){autoplay=false;return false;}quiz.select(id);return true;}
+
 const guests=new GuestSupport(settings.guests||[]);
 function saveGuests(){settings.guests=guests.guests;save();}
 let mode='demo',autoplay=false,advanceAt=null,connection=null,connecting=false;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;
-const freshTraffic=()=>({commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,lastCommentReject:null,lastGiftReject:null});
+const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,lastCommentReject:null,lastGiftReject:null});
 let traffic=freshTraffic();
 function catalogFrom(raw) {
   const candidates=[raw,raw?.gifts,raw?.data?.gifts,raw?.giftList,raw?.data?.giftList,raw?.data];
@@ -53,13 +69,14 @@ function ready() {
   return live.status==='connected' && new Set(selected.map(g=>g?.id)).size===3 && selected.every(g=>g?.verified && (live.catalog.some(c=>c.id===g.id)||configuredGift(g,settings.username)));
 }
 function publicState() {
-  return {...quiz.snapshot(),build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,supporters:supporters.snapshot(),guests:guests.snapshot(),
+  const snapshot=quiz.snapshot();recordCompleted();
+  return {...snapshot,session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,supporters:activityWall(likes,supporters),guests:guests.snapshot(),
     connection:{status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){supporters.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.constructor?.name||error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -74,7 +91,7 @@ async function disconnect() {
 async function connect(username,startOnConnect=false) {
   if(connecting||connection)throw Error('ابتدا اتصال قبلی را قطع کنید.');
   if(!/^@?[A-Za-z0-9_.]{1,30}$/.test(username))throw Error('نام کاربری معتبر نیست.');
-  supporters.clear();quiz.lastWinningRound=null;traffic=freshTraffic();settings.username=username.replace(/^@/,'');for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
+  supporters.clear();likes.clear();quiz.lastWinningRound=null;traffic=freshTraffic();settings.username=username.replace(/^@/,'');for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
   live={status:'connecting',message:'در حال اتصال ناشناس به لایو…',catalog:[]};broadcast();
   const proxy=process.env.HTTPS_PROXY||process.env.HTTP_PROXY;
   const agent=proxy?{http:new HttpProxyAgent({proxy}),https:new HttpsProxyAgent({proxy})}:null;
@@ -104,6 +121,7 @@ async function connect(username,startOnConnect=false) {
     else {traffic.lastGiftReject=result.reason;if(!['unmapped_gift','streak_not_finished','duplicate_event','already_selected'].includes(result.reason))lastReject=result.reason;}
     broadcast();
   });
+  client.on(WebcastEvent.LIKE,data=>{if(connection!==client||live.status!=='connected')return;traffic.likesReceived++;likes.observe(data);broadcast();});
   client.on(WebcastEvent.CHAT,data=>{
     if(connection!==client)return;
     traffic.commentsReceived++;
@@ -127,13 +145,19 @@ async function connect(username,startOnConnect=false) {
       settings.gifts[k]=current?observeGift(settings.gifts[k],current):{...settings.gifts[k],verified:Boolean(manual)};
     }
     save();
-    if(startOnConnect&&ready()){changeMode('live');autoplay=true;startRound();}
+    if(startOnConnect&&ready()){changeMode('live');autoplay=true;await startRound();}
   } catch(error) {
     if(connection===client)await disconnect();
     live={status:'error',message:safeError(error),catalog:[],diagnostics:liveDiagnostics(error)};
   } finally {clearTimeout(timeout);connecting=false;broadcast();}
 }
-function startRound() {if(mode==='live'&&!ready())throw Error('ابتدا لایو را وصل کنید و روش پاسخ را تنظیم کنید.');quiz.start();advanceAt=null;broadcast();}
+async function startRound() {
+ if(mode==='live'&&!ready())throw Error('ابتدا لایو را وصل کنید و روش پاسخ را تنظیم کنید.');
+ await flushSession();let id=sessions().ensure();
+ while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
+ if(quiz.questions[quiz.index].id!==id)quiz.select(id);
+ persistSession();await flushSession();sessionError=null;quiz.start();advanceAt=null;broadcast();
+}
 function authenticated(req) {
   const value=req.headers.authorization?.replace(/^Bearer /,'')||'';
   const a=Buffer.from(value),b=Buffer.from(token);
@@ -161,7 +185,7 @@ const server=http.createServer(async(req,res)=>{
     if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,publicState());
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
-      if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video)}))});
+      if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{session:sessions().summary(),questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video),completed:Boolean(sessions().completed[q.id]),planned:sessions().session?.ids.includes(q.id)||false}))});
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
       const data=await body(req);const action=url.pathname.split('/').at(-1);
@@ -172,12 +196,18 @@ const server=http.createServer(async(req,res)=>{
         const guest=guests.guests.find(g=>g.key===data.key);if(!guest?.userId)throw Error('شناسهٔ عددی مهمان برای آزمایش لازم است.');
         const result=guests.gift({receiverUserId:guest.userId,giftId:'demo-guest-gift',giftName:'Testgeschenk',diamondCount:500,repeatCount:1,user:{id:'demo-donor',nickname:'حامی آزمایشی'},common:{msgId:randomUUID(),createTime:Date.now()}});if(!result.accepted)throw Error(result.reason);
       }
-      else if(action==='start')startRound();
-      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');quiz.reveal();advanceAt=Date.now()+12000;}
-      else if(action==='select'){quiz.select(String(data.id));advanceAt=null;}
-      else if(action==='next'){quiz.next();advanceAt=null;}
+      else if(action==='session-settings'){sessions().configure(Number(data.size),data.allowRepeat);persistSession();await flushSession();}
+      else if(action==='retry-session-save'){if(!sessionStore.ready)throw Error('پیشرفت خوانده نشده است؛ سرور را دوباره راه‌اندازی کنید.');await sessionStore.retry(liveSessions.export());sessionError=null;}
+      else if(action==='new-session'){
+        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
+        await flushSession();const id=sessions().create();quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
+      }
+      else if(action==='start')await startRound();
+      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');quiz.reveal();recordCompleted();advanceAt=Date.now()+12000;}
+      else if(action==='select'){if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');sessions().review(String(data.id));quiz.select(String(data.id));advanceAt=null;}
+      else if(action==='next'){if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');await nextRound();}
       else if(action==='pause'){autoplay=false;quiz.pause();}
-      else if(action==='autoplay'){autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed')quiz.next();startRound();}}
+      else if(action==='autoplay'){autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed'&&!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');await startRound();}}
       else if(action==='mode'){
         if(!['demo','live'].includes(data.mode))throw Error('حالت معتبر نیست.');
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
@@ -226,12 +256,17 @@ const server=http.createServer(async(req,res)=>{
         const result=quiz.comment({comment:String(data.comment||''),user:{id:name,nickname:name,profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}});
         if(!result.accepted)throw Error('کامنت ثبت نشد: '+result.reason);
       }
+      else if(action==='simulate-like'){
+        if(mode!=='demo')throw Error('فقط در حالت آزمایشی مجاز است.');
+        const result=likes.observe({count:Number(data.count),user:{id:String(data.name||'demo-liker'),nickname:String(data.name||'Test Likes'),profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}});
+        if(!result.accepted)throw Error('لایک آزمایشی معتبر نیست.');
+      }
       else if(action==='simulate-supporter'){
         if(mode!=='demo')throw Error('آزمایش حلقه فقط در حالت آزمایشی مجاز است.');
         const result=supporters.gift({giftId:'demo-outside-gifts',giftName:'Testgeschenk',diamondCount:Number(data.coins),repeatCount:1,user:{id:String(data.name||'demo-supporter'),nickname:String(data.name||'حامی آزمایشی'),profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}},settings.gifts);
         if(!result.accepted)throw Error('ثبت آزمایشی انجام نشد.');
       }
-      else if(action==='clear-supporters'){if(mode!=='demo')throw Error('پاک‌کردن آزمایش فقط در حالت آزمایشی است.');supporters.clear();}
+      else if(action==='clear-supporters'){if(mode!=='demo')throw Error('پاک‌کردن آزمایش فقط در حالت آزمایشی است.');supporters.clear();likes.clear();}
       else if(action==='simulate'){
         if(mode!=='demo')throw Error('شبیه‌سازی در حالت واقعی ممنوع است.');
         const choice=String(data.choice);const userId=String(data.name||'بینندهٔ آزمایشی').slice(0,40);
@@ -256,9 +291,9 @@ server.on('upgrade',(req,socket,head)=>{
   if(req.url!=='/events'||!originAllowed(req)||!hosting.allowedHosts.has(req.headers.host)){socket.destroy();return;}
   wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);ws.send(JSON.stringify(publicState()));});
 });
-const tick=setInterval(()=>{
-  quiz.tick();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+12000;
-  if(autoplay&&quiz.phase==='revealed'&&Date.now()>=advanceAt){quiz.next();try{startRound();}catch{autoplay=false;quiz.pause();}}
+const tick=setInterval(async()=>{
+  quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+12000;
+  if(autoplay&&!advancing&&quiz.phase==='revealed'&&Date.now()>=advanceAt){advancing=true;try{if(await nextRound())await startRound();}catch(error){autoplay=false;sessionError=error.message;}finally{advancing=false;}}
   broadcast();
 },500);
 server.listen(port,hosting.bind,()=>{

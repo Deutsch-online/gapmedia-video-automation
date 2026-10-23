@@ -12,6 +12,7 @@ function element(tag,className,text){const el=document.createElement(tag);el.cla
 function render(s){
   if(activeBuild&&s.build&&activeBuild!==s.build){location.reload();return;}activeBuild=s.build;
   state=s;receivedAt=performance.now();const q=s.question;
+  $('show').classList.toggle('has-activity',Boolean(s.supporters?.length));
   $('show').classList.toggle('revealed',s.phase==='revealed');
   const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);$('show').classList.toggle('watching',s.phase==='watching');
   $('bankMedia').classList.toggle('hidden',!q.image);$('bankImage').classList.toggle('hidden',Boolean(q.video));$('bankVideo').classList.toggle('hidden',!q.video);
@@ -21,7 +22,7 @@ function render(s){
   $('modeLabel').textContent=s.mode==='demo'?'Demo':s.liveReady?(s.answerInput==='comments'?'LIVE · Kommentare':'LIVE · Geschenke'):'Nicht verbunden';
   $('modeLabel').classList.toggle('real',s.mode==='live');
   $('topic').textContent='Führerschein-Theorie';
-  $('questionNumber').textContent=`${String(s.index+1).padStart(2,'0')} / ${String(s.total).padStart(2,'0')}`;
+  $('questionNumber').textContent=s.session?`Sitzung ${s.session.number} · ${s.session.review?'Auswahl':s.session.position+' / '+s.session.size}${s.session.finished?' · Beendet':''}`:`${s.index+1} / ${s.total}`;
   $('questionDe').textContent=q.de;$('questionFa').textContent=digits(q.fa);$('questionFa').classList.toggle('hidden',!s.showPersian);
   $('answerType').textContent=q.multiple?'Mehrere richtige Antworten':'Eine richtige Antwort';
   const scene=document.querySelector('.scene');scene.className='scene'+(!['red','yellow'].includes(q.visual)?' alt':'')+(q.visual==='fog'?' fog':'');
@@ -95,17 +96,23 @@ function renderSupporters(rows){
  const rail=$('supporterRail'),existing=new Map([...rail.children].map(card=>[card.dataset.supporterKey,card])),active=new Set(rows.map(p=>p.key));
  for(const [key,card] of existing)if(!active.has(key))card.remove();
  rows.forEach((person,index)=>{
-  const previous=existing.get(person.key);if(previous){previous.classList.toggle('newest',index===0);previous.style.order=index;return;}
-  const card=element('div',`supporter tier-${person.tier}${index===0?' newest':''}`);card.title=person.name;card.dataset.supporterKey=person.key;card.style.order=index;
+  const previous=existing.get(person.key),value=JSON.stringify(person);
+  if(previous?.dataset.value===value){previous.style.order=index;return;}
+  const gift=person.kind==='gift';
+  const card=element('div',`supporter ${gift?'activity-gift':'activity-like'} tier-${person.tier}${person.newest?' newest':''}`);card.title=person.name;card.dataset.supporterKey=person.key;card.dataset.value=value;card.style.order=index;
+  if(previous){card.style.animation='none';previous.remove();}
   const orb=element('div','supporter-orb'),photo=element('div','supporter-photo',Array.from(person.name)[0]||'?');
   if(person.avatar){const img=document.createElement('img');img.src=person.avatar;img.alt=person.name;img.referrerPolicy='no-referrer';img.addEventListener('error',()=>img.remove(),{once:true});photo.append(img);}
   orb.append(element('span','orb-halo'),photo,element('span','orb-gloss'));
-  if(['gold','diamond','vip'].includes(person.tier)){for(let i=0;i<4;i++){const spark=element('i','orb-spark spark-'+i);orb.append(spark);}}
+  if(['gold','diamond','vip'].includes(person.tier)){for(let i=0;i<4;i++)orb.append(element('i','orb-spark spark-'+i));}
   if(person.tier==='vip'){const orbit=element('span','dragon-orbit');orbit.append(dragon());orb.append(orbit,element('b','supporter-badge','VIP'));}
   else if(person.tier==='diamond')orb.append(element('b','supporter-badge','◆'));
   else if(person.tier==='gold')orb.append(element('b','supporter-badge','♛'));
-  card.append(orb,element('span','supporter-name',person.name));
-  card.append(element('small','supporter-gift',person.giftName+(person.count?' × '+fa.format(person.count):'')));
-  if(person.coins!==null)card.append(element('small','supporter-coins',fa.format(person.coins)+' 🪙'));rail.append(card);
+  if(person.likes>=1000)orb.append(element('span','like-crown','👑'));
+  const copy=element('div','activity-copy');copy.append(element('span','supporter-name',person.name));
+  if(gift){copy.append(element('small','supporter-gift',person.giftName+(person.count?' × '+fa.format(person.count):'')));if(person.coins!==null)copy.append(element('small','supporter-coins',fa.format(person.coins)+' 🪙'));}
+  if(person.likes>0)copy.append(element('small','supporter-likes','♥ '+person.likeLabel));
+  if(!gift)card.append(element('span','activity-rank',String(person.rank)+'.'));
+  card.append(orb,copy);rail.append(card);
  });
 }

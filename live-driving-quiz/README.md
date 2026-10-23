@@ -1,6 +1,6 @@
 # FahrFit LIVE — بانک تصویری رانندگی
 
-نسخهٔ فعال دارای ۲۴ سؤال (۲۲ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
+نسخهٔ فعال دارای ۱۰۰ سؤال (۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
 
 شناسهٔ اصلی، متن آلمانی، ترتیب گزینه‌ها و کلید پاسخ در انتقال حفظ می‌شوند. تصویر همان شناسه، بدون برش، هنگام سؤال و نمایش پاسخ دیده می‌شود. ترجمهٔ فارسی رسمی نیست و این نرم‌افزار تأییدیهٔ TÜV/DEKRA را ادعا نمی‌کند.
 
@@ -101,3 +101,12 @@ The public interface is German by default (`showPersian=false`). The owner can a
 The Persian checkbox now applies immediately on change; no separate save step is required. Its request is serialized while saving and rolls the control back to server state on failure. The control token is retained only in same-tab session storage so a refresh does not lose panel authorization. Clients watch the public build ID and reload after a later deployment (the private fragment is restored before an automatic panel reload). The background is a clearly green `#c5ddc8` across the viewport, canvas and cards.
 
 The last successful correct-answer group stays on screen across subsequent questions until a new correct group replaces it, within the current process session. The caption identifies it as the last result and includes its original question ID; it never reveals the current question's answers. One to three winners receive larger 130px portraits. Music only plays for a newly revealed current winner group, never for a prior group during a new answer period. Changing mode or connecting to another LIVE clears the stored celebration. A short German single/multiple-answer label remains visible beside the timer.
+
+
+## Sessions and activity rail
+
+The private panel configures 50–100 questions per session (default 50), with a shuffled unique plan and an explicit repeat opt-in. A revealed question enters the completed group; completed questions are excluded from later sessions unless repeats are allowed. An insufficient fresh pool blocks a new session instead of silently repeating. Ending a plan stops autoplay. Manual selection is labelled as review, and demo progress never changes the real session history.
+
+Real session plans and completed IDs are stored in a tiny private `fahrfit-quiz-state` Hugging Face Dataset, not a paid persistent disk. Deployments seed it only when absent. `HF_SESSION_REPO` and `HF_SESSION_TOKEN` are server-only; neither private dataset credentials nor progress files are public assets. Loading or saving failures block subsequent real rounds and appear in the panel. The dataset contains only question IDs, progress, timestamps and configuration, never participant profiles. Other settings and participant totals remain per-instance as described above.
+
+The left rail combines recent gift senders (larger portraits with existing coin tiers) and ranked likers, with faint translucent glass cards. Likes use the v3 message `count` sender delta, never the room `total`; duplicate/stale events are rejected. More than 100 likes gets a pink frame; 1000 or more gets a crown. Counts are English compact numbers (`1K`, `1.4K`, `2K`). A gift sender who also likes appears once, with both values. Eight rows are visible; gift rows reserve up to four slots when likers are present. Like counts cover only events received during this connection, not historic TikTok totals. Test buttons generate local demo events only and never send real likes or gifts.

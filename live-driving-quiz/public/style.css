@@ -185,3 +185,47 @@
 .screen-body .question{background:#eaf3e7;border-radius:16px;box-shadow:0 0 0 8px #eaf3e7}
 .screen-body .option{background:#eaf3e7}
 .screen-body .option.correct{background:#e0efdc;border-color:#218052}
+
+/* Balanced poster layout: centered content, generous edges and calm green. */
+.screen-body,.screen-body .show{background:#b6cdbf}
+.screen-body .show{padding:48px 72px 164px}
+.screen-body .show.has-activity{padding-left:316px}
+.screen-body .brand{height:34px}.screen-body .episode-line{padding:8px 0 12px;font-size:22px}
+.screen-body .bank-media{margin:10px 0 28px;border-radius:24px;background:#17352b;box-shadow:0 8px 22px #183b2b12}
+.screen-body .bank-media figcaption{background:#d6e4d9;color:#365c49;padding:7px}
+.screen-body .question{background:#eff5ef;border:1px solid #c4d6c8;border-radius:24px;box-shadow:0 5px 18px #244b3410;padding:20px 24px;margin:0 0 24px}
+.screen-body .bank-question h1{font-size:46px;line-height:1.24;margin:14px 0 10px}
+.screen-body .bank-question .question>p{font-size:34px;line-height:1.45;margin:10px 0 4px}
+.screen-body .bank-question .options{gap:20px}
+.screen-body .bank-question .option{padding:18px 20px;gap:16px;background:#eff5ef;border:1px solid #bdcfc2;border-radius:22px;box-shadow:0 5px 16px #244b340b}
+.screen-body .bank-question .option-de{font-size:35px;line-height:1.28}.screen-body .bank-question .option-fa{font-size:30px;line-height:1.4;margin-top:8px}
+.screen-body .bank-question .gift-pill{margin-top:10px}.screen-body .option.correct{background:#dfecdd;border-color:#2a8655}
+.screen-body .bank-question.bank-compact .question{padding:16px 20px;margin-bottom:18px}.screen-body .bank-question.bank-compact .option{padding:14px 16px}.screen-body .bank-question.bank-compact .options{gap:14px}
+.screen-body .bank-question.bank-crowded .question{padding:12px 16px;margin-bottom:16px}.screen-body .bank-question.bank-crowded .option{padding:12px 14px}.screen-body .bank-question.bank-crowded .options{gap:12px}
+.screen-body #show.bank-question{--question-media-height:500px}.screen-body #show.bank-question.has-activity{--question-media-height:420px}
+.screen-body #show.bank-question.bank-compact{--question-media-height:380px}.screen-body #show.bank-question.bank-crowded{--question-media-height:250px}
+.screen-body #show.bank-question.watching{--question-media-height:560px}
+.guest-public{left:72px;right:72px}.has-activity .guest-public{left:316px}.enable-music{right:72px;bottom:116px}
+.winner-celebration{margin-top:24px;background:#e4eee4;border:1px solid #9cbcaa;padding:16px 18px;border-radius:22px}
+
+/* The activity rail is a faint glass surface; the question remains its own column. */
+.screen-body .supporter-rail{left:38px;top:220px;bottom:180px;width:242px;gap:20px;align-items:stretch;direction:ltr}
+.screen-body .supporter{box-sizing:border-box;width:242px;min-height:94px;display:flex;align-items:center;gap:9px;text-align:left;padding:10px 8px;background:rgba(18,39,31,.09);border:1px solid rgba(255,255,255,.3);border-radius:22px;backdrop-filter:blur(8px);box-shadow:0 3px 12px #18372b0a}
+.screen-body .supporter .supporter-orb{width:76px;flex:0 0 76px}
+.screen-body .supporter.activity-gift{min-height:128px;padding:12px 8px;background:rgba(18,39,31,.13)}
+.screen-body .supporter.activity-gift .supporter-orb{width:102px;flex-basis:102px}
+.screen-body .supporter.activity-gift.newest .supporter-orb{width:116px;flex-basis:116px}
+.screen-body .activity-copy{min-width:0;flex:1}.screen-body .activity-rank{font:700 20px Arial;color:#3a574a;min-width:17px}
+.screen-body .supporter-name,.screen-body .newest .supporter-name{font-size:21px;font-weight:800;line-height:1.35;margin:0;color:#19392b;text-shadow:0 1px 0 #ffffff60}
+.screen-body .supporter-gift{font-size:16px;margin-top:4px;color:#365649}
+.screen-body .supporter-coins,.screen-body .newest .supporter-coins{font-size:19px;color:#705317;margin-top:4px}
+.screen-body .supporter-likes{display:block;color:#ac2748;font:800 22px Arial;margin-top:7px;white-space:nowrap}
+.screen-body .tier-basic{--ring:#a4bdb2;--ring-light:#eef6f0;--dark:#5c7669}
+.screen-body .tier-basic .orb-halo{opacity:.4;box-shadow:none;animation:none}
+.screen-body .tier-liked{--ring:#e995b5;--ring-light:#ffdfeb;--dark:#7b3154}
+.screen-body .tier-liked .orb-halo{box-shadow:0 0 14px #d54c8655;background:conic-gradient(#ffd0e1,#c86e9a,#ffe7f0,#c86e9a,#ffd0e1)}
+.screen-body .tier-crown{--ring:#e9ba45;--ring-light:#fff5bf;--dark:#7b5a21}
+.screen-body .tier-crown .orb-halo{background:conic-gradient(#ffeaa6,#cfa33d,#fff4bd,#cfa33d,#ffeaa6);box-shadow:0 0 18px #f0be4c77}
+.like-crown{position:absolute;top:-28px;left:50%;transform:translateX(-50%) rotate(-7deg);font-size:35px;z-index:9;filter:drop-shadow(0 2px 2px #76501655)}
+
+.screen-body .supporter-name,.screen-body .newest .supporter-name{font-size:23px}.screen-body .supporter-likes{font-size:24px}

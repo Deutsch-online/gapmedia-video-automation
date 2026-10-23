@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);let token=decodeURIComponent(location.ha
 try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=sessionStorage.getItem('fahrfit-control-token')||'';}catch{}
 history.replaceState(null,'',location.pathname);
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
-let activeBuild;
+let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
 for(const k of giftKeys){
@@ -50,13 +50,17 @@ function render(s){
  $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت 1،2،3':'روش فعال: رز / تیک‌تاک / GG';
  $('commentsInput').classList.toggle('secondary',s.answerInput!=='comments');$('giftInput').classList.toggle('secondary',s.answerInput!=='gifts');
  $('autoplay').checked=s.autoplay;
+ if(s.session){const q=s.session;if(!sessionDirty){$('sessionSize').value=q.configuredSize;$('sessionSize').max=q.bankTotal;$('allowRepeat').checked=q.allowRepeat;}
+ $('sessionStatus').textContent=`${s.mode==='demo'?'آزمایشی — ':''}جلسهٔ ${q.number}: ${q.review?'مرور دستی':q.position+' از '+q.size}؛ انجام‌شده در جلسه ${q.done}؛ کل انجام‌شده ${q.completedTotal}؛ تازه ${q.freshTotal}.${q.finished?' جلسه تمام شده؛ جلسهٔ جدید را بزنید.':''} ذخیره: ${s.sessionStorage?.status||'—'}${s.sessionStorage?.error?' — '+s.sessionStorage.error:''}`;
+ const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
+
  if(!languageDirty)$('showPersian').checked=s.showPersian;
  if(!timerSoundDirty)$('timerSound').checked=s.timerSound;
  if(!musicDirty){$('celebrationMusic').checked=s.celebrationMusic;$('musicVolume').value=s.musicVolume;$('musicVolumeValue').textContent=s.musicVolume;}
  if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
  $('questionTimeStatus').textContent=`زمان فعلی پاسخ: ${s.questionSeconds} ثانیه؛ فیلم سؤال جداگانه و کامل پخش می‌شود.`;
  $('startQuestion').textContent=`شروع سؤال · ${s.questionSeconds} ثانیه`;
- const t=s.traffic||{};$('trafficStatus').textContent=`دریافت واقعی از اتصال فعلی: ${t.commentsReceived||0} کامنت، ${t.answerCommentsReceived||0} کامنت عددی، ${t.commentsAccepted||0} پاسخ ثبت‌شده؛ ${t.giftsReceived||0} رویداد گیفت، ${t.giftsAccepted||0} پاسخ گیفت ثبت‌شده.${t.lastCommentReject?' علت آخرین کامنت ثبت‌نشده: '+t.lastCommentReject:''}${t.lastGiftReject?' علت آخرین گیفت ثبت‌نشده: '+t.lastGiftReject:''}`;
+ const t=s.traffic||{};$('trafficStatus').textContent=`دریافت واقعی از اتصال فعلی: ${t.likesReceived||0} رویداد لایک، ${t.commentsReceived||0} کامنت، ${t.answerCommentsReceived||0} کامنت عددی، ${t.commentsAccepted||0} پاسخ ثبت‌شده؛ ${t.giftsReceived||0} رویداد گیفت، ${t.giftsAccepted||0} پاسخ گیفت ثبت‌شده.${t.lastCommentReject?' علت آخرین کامنت ثبت‌نشده: '+t.lastCommentReject:''}${t.lastGiftReject?' علت آخرین گیفت ثبت‌نشده: '+t.lastGiftReject:''}`;
  const p={watching:'نمایش فیلم · هنوز پاسخ ندهید',waiting:'منتظر شروع',open:'دریافت پاسخ',revealed:'نمایش جواب',paused:'متوقف'};
  $('status').textContent=`حالت: ${s.mode==='demo'?'آزمایشی':'واقعی'}\nسؤال: ${s.index+1} از ${s.total}\nوضعیت: ${p[s.phase]}\nبینندگان پاسخ‌دهنده: ${s.voters}\nآمادگی گیفت واقعی: ${s.liveReady?'آماده':'تنظیم لازم دارد'}${s.lastReject?'\nآخرین پاسخ ثبت‌نشده: '+({watching_video:'ابتدا فیلم را ببینید؛ پاسخ‌گویی پس از فیلم آغاز می‌شود.',round_closed:'زمان سؤال تمام شده یا دریافت پاسخ متوقف است.',one_answer_only:'بیننده قبلاً گزینهٔ دیگری را انتخاب کرده است.',all_not_allowed:'این سؤال فقط یک پاسخ دارد.',late_or_old_event:'پیام هدیه برای این سؤال دیر رسیده یا مربوط به قبل است.',invalid_event:'اطلاعات لازم برای ثبت پاسخ دریافت نشد.'}[s.lastReject]||'پاسخ تکراری یا نامعتبر بود.'):''}`;
  $('leaderboard').replaceChildren(...s.leaderboard.map((row,i)=>{const p=document.createElement('p');p.textContent=`${i+1}. ${row.name} — ${row.score} پاسخ درست`;return p;}));
@@ -75,7 +79,10 @@ if(!token)notice('لینک خصوصی پنل را از پیام تلگرام ب�
 fetch('/api/state').then(r=>r.json()).then(render);
 const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>notice('ارتباط پنل قطع شد؛ نشانی خصوصی پنل را دوباره باز کنید.',true);
 
-async function loadQuestions(){try{const response=await fetch('/api/admin/questions',{headers:{Authorization:'Bearer '+token}});if(!response.ok)return;const data=await response.json();$('questionSelect').replaceChildren(...data.questions.map(q=>{const o=document.createElement('option');o.value=q.id;o.textContent=`${q.video?'🎬 ':'🖼 '}${q.id} · ${q.topic}`;return o;}));}catch{notice('فهرست سؤال‌ها دریافت نشد.',true);}}
+async function loadQuestions(){try{const response=await fetch('/api/admin/questions',{headers:{Authorization:'Bearer '+token}});if(!response.ok)return;const data=await response.json(),selected=$('questionSelect').value;
+ const groups=[['سؤال‌های جلسهٔ جاری',q=>q.planned&&!q.completed],['سؤال‌های تازه',q=>!q.planned&&!q.completed],['سؤال‌های انجام‌شده',q=>q.completed]];
+ $('questionSelect').replaceChildren(...groups.map(([label,filter])=>{const group=document.createElement('optgroup');group.label=label;for(const q of data.questions.filter(filter)){const o=document.createElement('option');o.value=q.id;o.textContent=`${q.video?'🎬 ':'🖼 '}${q.id} · ${q.topic}`;o.disabled=q.completed&&!data.session.allowRepeat;group.append(o);}return group;}));if(selected)$('questionSelect').value=selected;
+ }catch{notice('فهرست سؤال‌ها دریافت نشد.',true);}}
 $('selectQuestion').addEventListener('click',()=>api('select',{id:$('questionSelect').value}));if(token)void loadQuestions();
 
 $('giftPreset').addEventListener('click',async()=>{const result=await api('gift-preset');if(result){mappingDirty=false;manualDirty=false;mappings();notice('A: Rose 5655 · B: TikTok 5269 · C: GG 6064 ذخیره شد.');}});
@@ -103,3 +110,11 @@ $('showPersian').addEventListener('change',async()=>{
  const result=await api('display-language',{showPersian:checkbox.checked});languageDirty=false;checkbox.disabled=false;
  if(result){render(result.state);$('languageSaveStatus').textContent=result.state.showPersian?'ترجمهٔ فارسی روشن است.':'ترجمهٔ فارسی خاموش است.';}else{checkbox.checked=Boolean(state?.showPersian);$('languageSaveStatus').textContent='ذخیره نشد؛ دوباره امتحان کنید.';}
 });
+
+$('sessionSize').addEventListener('input',()=>{sessionDirty=true;});
+$('allowRepeat').addEventListener('change',()=>{sessionDirty=true;});
+async function saveSession(){const result=await api('session-settings',{size:Number($('sessionSize').value),allowRepeat:$('allowRepeat').checked});if(result){sessionDirty=false;render(result.state);}return result;}
+$('saveSession').addEventListener('click',saveSession);
+$('newSession').addEventListener('click',async()=>{if(await api('pause')&&await saveSession())await api('new-session');});
+$('retrySession').addEventListener('click',()=>api('retry-session-save'));
+document.querySelectorAll('[data-like]').forEach(button=>button.addEventListener('click',()=>api('simulate-like',{count:Number(button.dataset.like),name:'Test '+button.dataset.like})));

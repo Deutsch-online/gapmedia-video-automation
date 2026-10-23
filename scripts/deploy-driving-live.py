@@ -62,6 +62,15 @@ def deploy():
     admin=hmac.new(bot_token.encode(),('fahrfit-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
     api.add_space_secret(repo,key='QUIZ_ADMIN_TOKEN',value=admin)
     api.add_space_variable(repo,key='PUBLIC_URL',value=url)
+    state_repo=owner+'/fahrfit-quiz-state'
+    api.create_repo(state_repo,repo_type='dataset',private=True,exist_ok=True)
+    if not api.repo_info(state_repo,repo_type='dataset').private:
+        raise RuntimeError('Session progress repository must be private')
+    if not api.file_exists(state_repo,'sessions.json',repo_type='dataset'):
+        seed={'version':1,'size':50,'allowRepeat':False,'number':0,'completed':{},'session':None}
+        api.upload_file(path_or_fileobj=json.dumps(seed).encode(),path_in_repo='sessions.json',repo_id=state_repo,repo_type='dataset',commit_message='Initialize private quiz progress')
+    api.add_space_secret(repo,key='HF_SESSION_TOKEN',value=token)
+    api.add_space_variable(repo,key='HF_SESSION_REPO',value=state_repo)
     build=os.getenv('GITHUB_SHA','manual')
     api.add_space_variable(repo,key='QUIZ_BUILD_SHA',value=build)
     paths=subprocess.check_output(['git','ls-files','-z','--','live-driving-quiz'],cwd=ROOT).decode().split('\0')

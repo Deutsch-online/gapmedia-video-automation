@@ -788,5 +788,2522 @@
     "visual": "bank",
     "video": "/media/1_1_02-050-M.mp4",
     "video_duration_ms": 15040
+  },
+  {
+    "id": "1.1.02-032",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Bei welcher Person müssen Sie mit einer schweren Sehbehinderung rechnen?",
+    "fa": "در کدام شخص باید احتمال اختلال شدید بینایی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dem Mann",
+        "fa": "در مرد"
+      },
+      {
+        "de": "Dem Kind",
+        "fa": "در کودک"
+      },
+      {
+        "de": "Der Frau",
+        "fa": "در زن"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-032",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-032.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-032",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-036",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich?",
+    "fa": "چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Anhalten",
+        "fa": "توقف می‌کنم."
+      },
+      {
+        "de": "Den Mann die Straße überqueren lassen",
+        "fa": "اجازه می‌دهم مرد از جاده عبور کند."
+      },
+      {
+        "de": "Blickkontakt aufnehmen",
+        "fa": "تماس چشمی برقرار می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-036",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-036.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-036",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-037",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Womit müssen Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Personen überqueren vor dem Bus die Straße",
+        "fa": "افراد از جلوی اتوبوس از جاده عبور می‌کنند."
+      },
+      {
+        "de": "Personen rennen von links über die Straße, um den Bus zu erreichen",
+        "fa": "افراد از چپ از جاده می‌دوند تا به اتوبوس برسند."
+      },
+      {
+        "de": "Der Bus fährt plötzlich rückwärts",
+        "fa": "اتوبوس ناگهان دنده‌عقب می‌رود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-037",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-037.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-037",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-039-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich?",
+    "fa": "چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Kinder beobachten",
+        "fa": "کودکان را زیر نظر می‌گیرم."
+      },
+      {
+        "de": "Bremsbereit sein",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Mit unveränderter Geschwindigkeit weiterfahren",
+        "fa": "با همان سرعت ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-039-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-039-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-039-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-041-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Mit welchen Gefahren müssen Sie rechnen?",
+    "fa": "باید انتظار چه خطرهایی را داشته باشید؟",
+    "options": [
+      {
+        "de": "Die Kinder verlassen die Fahrbahn nicht rechtzeitig",
+        "fa": "کودکان به‌موقع جاده را ترک نمی‌کنند."
+      },
+      {
+        "de": "Einzelne Kinder kehren wieder um",
+        "fa": "بعضی کودکان دوباره برمی‌گردند."
+      },
+      {
+        "de": "Alle Kinder warten auf dem Gehweg",
+        "fa": "همهٔ کودکان در پیاده‌رو منتظر می‌مانند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-041-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-041-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-041-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-042-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie sollten Sie sich verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Auf Schrittgeschwindigkeit abbremsen",
+        "fa": "سرعت را تا سرعت قدم‌زدن کم می‌کنم."
+      },
+      {
+        "de": "Bremsbereit bleiben",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Unvermindert weiterfahren",
+        "fa": "بدون کاهش سرعت ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-042-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-042-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-042-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-043-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie müssen Sie sich verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Sofort auf Schrittgeschwindigkeit abbremsen",
+        "fa": "فوراً سرعت را تا سرعت قدم‌زدن کم می‌کنم."
+      },
+      {
+        "de": "Bremsbereit bleiben",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Mit unverminderter Geschwindigkeit vorbeifahren",
+        "fa": "بدون کاهش سرعت از کنار آن عبور می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-043-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-043-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-043-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-048-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie sollten Sie sich jetzt verhalten?",
+    "fa": "اکنون چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Ich bremse auf Schrittgeschwindigkeit ab",
+        "fa": "سرعت را تا سرعت قدم‌زدن کم می‌کنم."
+      },
+      {
+        "de": "Ich bleibe bremsbereit",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Ich überhole [den Radfahrer]",
+        "fa": "از دوچرخه‌سوار سبقت می‌گیرم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-048-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-048-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-048-M",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-051-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "fa": "در این وضعیت چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich halte an und lasse die Person die Straße überqueren",
+        "fa": "توقف می‌کنم و اجازه می‌دهم شخص از جاده عبور کند."
+      },
+      {
+        "de": "Ich fahre mit ausreichendem Abstand links an der Person vorbei",
+        "fa": "با فاصلهٔ کافی از سمت چپ شخص عبور می‌کنم."
+      },
+      {
+        "de": "Ich signalisiere der Person durch Betätigung der Lichthupe, dass ich warte",
+        "fa": "با چراغ‌زدن به شخص نشان می‌دهم که منتظر می‌مانم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-051-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-051-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-051-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-109-B",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Was ist in dieser Situation richtig?",
+    "fa": "در این وضعیت کدام درست است؟",
+    "options": [
+      {
+        "de": "Die entgegenkommenden Pkw dürfen nur vorsichtig an dem Bus vorbeifahren",
+        "fa": "خودروهای سواریِ روبه‌رو فقط با احتیاط می‌توانند از کنار اتوبوس عبور کنند."
+      },
+      {
+        "de": "Sie dürfen nur vorsichtig an dem Bus vorbeifahren",
+        "fa": "من فقط با احتیاط می‌توانم از کنار اتوبوس عبور کنم."
+      },
+      {
+        "de": "Als Gegenverkehr brauchen Sie den Bus nicht besonders zu beachten",
+        "fa": "رانندگان جهت مقابل لازم نیست توجه ویژه‌ای به اتوبوس داشته باشند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-109-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-109-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-109-B",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-110-B",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Was ist in dieser Situation richtig?",
+    "fa": "در این وضعیت کدام درست است؟",
+    "options": [
+      {
+        "de": "Auf beiden Fahrstreifen darf höchstens mit Schrittgeschwindigkeit an dem Bus vorbeigefahren werden",
+        "fa": "در هر دو خط، عبور از کنار اتوبوس حداکثر با سرعت قدم‌زدن مجاز است."
+      },
+      {
+        "de": "Auf beiden Fahrstreifen muss angehalten werden, wenn sonst Fahrgäste gefährdet würden",
+        "fa": "اگر در غیر این صورت مسافران در خطر باشند، در هر دو خط باید توقف کرد."
+      },
+      {
+        "de": "Die Fahrzeuge auf dem linken Fahrstreifen dürfen ohne besondere Vorsicht an dem Bus vorbeifahren",
+        "fa": "خودروهای خط چپ می‌توانند بدون احتیاط ویژه از کنار اتوبوس عبور کنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-110-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-110-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-110-B",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-119",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie sollten Sie sich verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Auf Schrittgeschwindigkeit abbremsen",
+        "fa": "سرعت را تا سرعت قدم‌زدن کم می‌کنم."
+      },
+      {
+        "de": "Bremsbereit bleiben",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Unverändert weiterfahren",
+        "fa": "بدون تغییر ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-119",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-119.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-119",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-120-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie sollten Sie sich verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Frühzeitig abbremsen, um den Fußgängern deutlich zu machen, dass ich ihnen das Überqueren ermögliche",
+        "fa": "زودتر سرعت را کم می‌کنم تا عابران بدانند اجازهٔ عبور به آن‌ها می‌دهم."
+      },
+      {
+        "de": "Weiterfahren, auch wenn die Fußgänger kurz stehen bleiben",
+        "fa": "حتی اگر عابران لحظه‌ای توقف کنند، ادامه می‌دهم."
+      },
+      {
+        "de": "Mit einem Bogen um die Fußgänger weiterfahren, um den nachfolgenden Verkehr nicht zu behindern",
+        "fa": "برای مزاحم‌نشدن برای ترافیک پشت سر، با قوس‌زدن از کنار عابران عبور می‌کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-120-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-120-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-120-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-121-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie müssen Sie sich verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Anhalten, um den Personen das Überqueren der Fahrbahn zu ermöglichen",
+        "fa": "توقف می‌کنم تا افراد از جاده عبور کنند."
+      },
+      {
+        "de": "Weiterfahren, weil ausreichend Zeit ist, bis die Personen meine Fahrbahnseite erreicht haben",
+        "fa": "ادامه می‌دهم، چون تا رسیدن افراد به سمت جادهٔ من زمان کافی وجود دارد."
+      },
+      {
+        "de": "Weiterfahren, weil sich Personen nur am linken Fahrbahnrand befinden",
+        "fa": "ادامه می‌دهم، چون افراد فقط کنار لبهٔ چپ جاده هستند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-121-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-121-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-121-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-122",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Mit welchem Verhalten müssen Sie an solchen Haltestellen rechnen?",
+    "fa": "در چنین ایستگاه‌هایی باید انتظار چه رفتاری را داشته باشید؟",
+    "options": [
+      {
+        "de": "Fußgänger verlassen die Haltestelleninsel unachtsam",
+        "fa": "عابران بدون توجه از سکوی میانی ایستگاه خارج می‌شوند."
+      },
+      {
+        "de": "Fußgänger rennen über die Fahrbahn zur Haltestelleninsel",
+        "fa": "عابران از جاده به‌سوی سکوی میانی ایستگاه می‌دوند."
+      },
+      {
+        "de": "Fußgänger warten, bis die Fahrbahn frei ist",
+        "fa": "عابران منتظر می‌مانند تا جاده خالی شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-122",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-122.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-122",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-123-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Sie wollen rechts abbiegen. Worauf müssen Sie sich einstellen?",
+    "fa": "می‌خواهید به راست بپیچید. باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Der Lkw wird anhalten",
+        "fa": "کامیون توقف خواهد کرد."
+      },
+      {
+        "de": "[Der Fußgänger] könnte den Lkw vorbeilassen und dann vor mir die Fahrbahn überqueren",
+        "fa": "ممکن است عابر اجازه دهد کامیون عبور کند و بعد از جلوی من از جاده بگذرد."
+      },
+      {
+        "de": "Nach dem Abbiegen des Lkws könnten Fußgänger von der gegenüberliegenden Straßenseite kommen",
+        "fa": "پس از پیچیدن کامیون، ممکن است عابرانی از سمت مقابل جاده بیایند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-123-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-123-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-123-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-124-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Worauf müssen Sie sich einstellen?",
+    "fa": "باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Auf querende Personen",
+        "fa": "افرادی که عبور می‌کنند."
+      },
+      {
+        "de": "Auf Sichtbehinderungen",
+        "fa": "موانع دید."
+      },
+      {
+        "de": "Auf sich öffnende Fahrzeugtüren",
+        "fa": "درهای خودرو که باز می‌شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-124-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-124-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-124-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-125-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Womit sollten Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dass Erwachsene auf die Fahrbahn treten können",
+        "fa": "ممکن است بزرگ‌سالان وارد جاده شوند."
+      },
+      {
+        "de": "Dass Kinder zwischen den Fahrzeugen auftauchen können",
+        "fa": "ممکن است کودکان از میان خودروها ظاهر شوند."
+      },
+      {
+        "de": "Dass starkes Bremsen erforderlich werden kann",
+        "fa": "ممکن است ترمز شدید لازم شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-125-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-125-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-125-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-130-M",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Womit müssen Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dass vor mir Fußgänger auf die Fahrbahn treten",
+        "fa": "عابران از جلوی من وارد جاده شوند."
+      },
+      {
+        "de": "Dass Kinder plötzlich zwischen den Fahrzeugen auftauchen",
+        "fa": "کودکان ناگهان از میان خودروها ظاهر شوند."
+      },
+      {
+        "de": "Dass Fußgänger warten werden, bis ich vorbeigefahren bin",
+        "fa": "عابران منتظر بمانند تا من عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-130-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-130-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-130-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-131",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Womit müssen Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dass Fußgänger plötzlich auf die Fahrbahn treten",
+        "fa": "عابران ناگهان وارد جاده شوند."
+      },
+      {
+        "de": "Dass Fahrzeugtüren geöffnet werden",
+        "fa": "درهای خودرو باز شوند."
+      },
+      {
+        "de": "Dass Fahrzeuge anfahren",
+        "fa": "خودروها شروع به حرکت کنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-131",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-131.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-131",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.02-132",
+    "topic": "Verhalten Gegenueber Fussgaengern",
+    "de": "Wie schätzen Sie die Situation ein?",
+    "fa": "وضعیت را چگونه ارزیابی می‌کنید؟",
+    "options": [
+      {
+        "de": "Die Fußgängerin kann unachtsam die Fahrbahn betreten",
+        "fa": "ممکن است عابر زن بدون توجه وارد جاده شود."
+      },
+      {
+        "de": "Der Fußgänger mit dem Mofa kann plötzlich die Richtung ändern",
+        "fa": "ممکن است مردی که موفا همراه دارد ناگهان جهتش را تغییر دهد."
+      },
+      {
+        "de": "Ich kann unvermindert weiterfahren",
+        "fa": "می‌توانم بدون کاهش سرعت ادامه دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.02-verhalten-gegenueber-fussgaengern/1.1.02-132",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_02-132.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.02-132",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-006-M",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Worauf müssen Sie sich hier einstellen?",
+    "fa": "در اینجا باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Auf ein von rechts kommendes Fahrzeug",
+        "fa": "خودرویی که از راست می‌آید."
+      },
+      {
+        "de": "Auf einen verlängerten Bremsweg",
+        "fa": "طولانی‌ترشدن فاصلهٔ ترمز."
+      },
+      {
+        "de": "Auf eine verengte Fahrbahn",
+        "fa": "تنگ‌شدن جاده."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-006-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-006-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-006-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-007-M",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Sie fahren nach Starkregen. Was sollten Sie in dieser Situation beachten?",
+    "fa": "پس از باران شدید رانندگی می‌کنید. در این وضعیت به چه چیزی توجه کنید؟",
+    "options": [
+      {
+        "de": "Ich sollte einen großen Sicherheitsabstand zum vorausfahrenden Fahrzeug halten",
+        "fa": "باید فاصلهٔ ایمنی زیادی با خودروی جلو نگه دارم."
+      },
+      {
+        "de": "Ich kann Unebenheiten auf der Fahrbahn schlecht erkennen",
+        "fa": "ناهمواری‌های جاده را به‌سختی تشخیص می‌دهم."
+      },
+      {
+        "de": "Spritzwasser kann meine Sicht beeinträchtigen",
+        "fa": "پاشیدن آب ممکن است دیدم را کم کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-007-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-007-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-007-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-102-B",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Warum müssen Sie auf dieser Straße besonders aufmerksam fahren?",
+    "fa": "چرا باید در این جاده بسیار با دقت رانندگی کنید؟",
+    "options": [
+      {
+        "de": "Weil die Fahrbahnoberfläche uneben und unterschiedlich griffig ist",
+        "fa": "چون سطح جاده ناهموار است و چسبندگی قسمت‌های آن متفاوت است."
+      },
+      {
+        "de": "Weil eine Straßenbahn entgegenkommen könnte",
+        "fa": "چون ممکن است تراموا از روبه‌رو بیاید."
+      },
+      {
+        "de": "Weil das Fahren auf den Schienen gefährlich ist",
+        "fa": "چون رانندگی روی ریل‌ها خطرناک است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-102-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-102-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-102-B",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-108-B",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Warum müssen Sie hier besonders vorsichtig fahren?",
+    "fa": "چرا باید اینجا بسیار محتاط رانندگی کنید؟",
+    "options": [
+      {
+        "de": "Weil die Fahrbahn glatt ist",
+        "fa": "چون جاده لغزنده است."
+      },
+      {
+        "de": "Weil die Sicht durch die Kurve behindert ist",
+        "fa": "چون پیچ، دید را محدود می‌کند."
+      },
+      {
+        "de": "Weil die Fahrbahn durch den falsch parkenden Pkw verengt ist",
+        "fa": "چون خودروی سواریِ نادرست پارک‌شده، جاده را تنگ کرده است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-108-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-108-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-108-B",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-112-M",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Wie verhalten Sie sich hier richtig?",
+    "fa": "در اینجا چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich bremse vorsichtig",
+        "fa": "با احتیاط ترمز می‌کنم."
+      },
+      {
+        "de": "Ich ermögliche [der Fußgängerin] auf der rechten Seite das Überqueren der Fahrbahn",
+        "fa": "به عابر زن در سمت راست اجازه می‌دهم از جاده عبور کند."
+      },
+      {
+        "de": "Ich fahre vorsichtig weiter, da keine Markierung auf der Fahrbahn zu erkennen ist",
+        "fa": "با احتیاط ادامه می‌دهم، چون خط‌کشی جاده دیده نمی‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-112-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-112-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-112-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-114-M",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Warum müssen Sie hier besonders aufmerksam sein?",
+    "fa": "چرا باید اینجا به‌ویژه دقت کنید؟",
+    "options": [
+      {
+        "de": "Weil der Straßenverlauf unübersichtlich ist",
+        "fa": "چون مسیر جاده دید کافی ندارد."
+      },
+      {
+        "de": "Weil die Fahrbahnoberfläche ungleichmäßig ist",
+        "fa": "چون سطح جاده یکنواخت نیست."
+      },
+      {
+        "de": "Weil der Gegenverkehr die Kurve schneiden könnte",
+        "fa": "چون خودروهای روبه‌رو ممکن است پیچ را میان‌بُر بزنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-114-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-114-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-114-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-116",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Warum kann hier das Rechtsabbiegen gefährlich werden?",
+    "fa": "چرا پیچیدن به راست در اینجا ممکن است خطرناک شود؟",
+    "options": [
+      {
+        "de": "Weil ich möglicherweise nicht rechtzeitig anhalten kann, wenn Fußgänger die Seitenstraße überqueren",
+        "fa": "چون اگر عابران از خیابان فرعی عبور کنند، شاید نتوانم به‌موقع توقف کنم."
+      },
+      {
+        "de": "Weil Fahrzeuge, die aus der Seitenstraße kommen, beim Abbremsen ins Schleudern geraten können",
+        "fa": "چون خودروهای خارج‌شونده از خیابان فرعی ممکن است هنگام ترمز بلغزند."
+      },
+      {
+        "de": "Weil mein Fahrzeug bei zu schnellem Abbiegen ins Schleudern geraten kann",
+        "fa": "چون اگر خیلی تند بپیچم، ممکن است خودرویم بلغزد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-116",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-116.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-116",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-117",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Sie fahren auf dieser Straße außerhalb geschlossener Ortschaften. Worauf stellen Sie sich ein?",
+    "fa": "در این جاده بیرون از محدودهٔ آبادی رانندگی می‌کنید. باید آمادهٔ چه باشید؟",
+    "options": [
+      {
+        "de": "Fußgänger nutzen die Fahrbahn",
+        "fa": "عابران از جاده استفاده می‌کنند."
+      },
+      {
+        "de": "Die Fahrbahn ist verengt",
+        "fa": "جاده تنگ شده است."
+      },
+      {
+        "de": "Fußgänger laufen nur außerhalb der Fahrbahn",
+        "fa": "عابران فقط بیرون از جاده راه می‌روند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-117",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-117.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-117",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-119-M",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Warum ist hier ein größerer Sicherheitsabstand zum vorausfahrenden Fahrzeug erforderlich?",
+    "fa": "چرا فاصلهٔ ایمنی بیشتری با خودروی جلو لازم است؟",
+    "options": [
+      {
+        "de": "Weil sonst Spritzwasser die Sicht erschwert",
+        "fa": "چون در غیر این صورت آبِ پاشیده‌شده دید را کم می‌کند."
+      },
+      {
+        "de": "Weil der Bremsweg länger ist als auf trockener Straße",
+        "fa": "چون فاصلهٔ ترمز از جادهٔ خشک طولانی‌تر است."
+      },
+      {
+        "de": "Weil sonst Unebenheiten der Fahrbahn später erkennbar sind",
+        "fa": "چون در غیر این صورت ناهمواری‌های جاده دیرتر دیده می‌شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-119-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-119-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-119-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.03-120",
+    "topic": "Fahrbahn Und Witterungsverhaeltnisse",
+    "de": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "fa": "در این وضعیت چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich verringere die Geschwindigkeit",
+        "fa": "سرعت را کم می‌کنم."
+      },
+      {
+        "de": "Ich vermeide ruckartige Lenkbewegungen",
+        "fa": "از حرکت‌های ناگهانی فرمان خودداری می‌کنم."
+      },
+      {
+        "de": "Ich bremse in der Kurve stark ab",
+        "fa": "در پیچ شدید ترمز می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.03-fahrbahn-und-witterungsverhaeltnisse/1.1.03-120",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_03-120.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.03-120",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.04-107",
+    "topic": "Dunkelheit Und Schlechte Sicht",
+    "de": "Womit müssen Sie hier rechnen?",
+    "fa": "در اینجا باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dass Ihr Fahrzeug von anderen nicht rechtzeitig gesehen wird",
+        "fa": "دیگران خودروی من را به‌موقع نبینند."
+      },
+      {
+        "de": "Dass Sie entgegenkommende Fahrzeuge erst spät erkennen",
+        "fa": "خودروهای روبه‌رو را دیر تشخیص بدهم."
+      },
+      {
+        "de": "Dass sich Ampeln von den bunten Lichtreklamen kaum abheben",
+        "fa": "چراغ‌های راهنمایی به‌سختی از تابلوهای تبلیغاتی رنگی تشخیص داده شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.04-dunkelheit-und-schlechte-sicht/1.1.04-107",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_04-107.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.04-107",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.04-108",
+    "topic": "Dunkelheit Und Schlechte Sicht",
+    "de": "Warum kann das Befahren dieser Straße gefährlich werden?",
+    "fa": "چرا رانندگی در این جاده ممکن است خطرناک شود؟",
+    "options": [
+      {
+        "de": "Weil Personen auf der Fahrbahn leicht übersehen werden",
+        "fa": "چون ممکن است افراد حاضر در جاده به‌آسانی دیده نشوند."
+      },
+      {
+        "de": "Weil schlecht beleuchtete Fahrzeuge schwer zu erkennen sind",
+        "fa": "چون خودروهای کم‌نور به‌سختی دیده می‌شوند."
+      },
+      {
+        "de": "Weil entgegenkommende Kraftfahrzeuge erst spät erkannt werden",
+        "fa": "چون وسایل نقلیهٔ روبه‌رو دیر تشخیص داده می‌شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.04-dunkelheit-und-schlechte-sicht/1.1.04-108",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_04-108.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.04-108",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.04-109",
+    "topic": "Dunkelheit Und Schlechte Sicht",
+    "de": "Weshalb ist es möglich, dass Fahrzeugführer das Zeichen \"Vorfahrt gewähren.\" nicht wahrnehmen?",
+    "fa": "چرا ممکن است رانندگان تابلوی «رعایت حق تقدم» را نبینند؟",
+    "options": [
+      {
+        "de": "Die durchgehende Beleuchtung verleitet zu der Annahme, an der Kreuzung Vorfahrt zu haben",
+        "fa": "روشنایی پیوسته ممکن است این تصور را ایجاد کند که در چهارراه حق تقدم دارند."
+      },
+      {
+        "de": "Die Straßenführung erweckt den Eindruck einer Vorfahrtstraße",
+        "fa": "شکل مسیر، تصور جادهٔ دارای حق تقدم را ایجاد می‌کند."
+      },
+      {
+        "de": "Die parkenden Fahrzeuge verdecken teilweise den Kreuzungsbereich",
+        "fa": "خودروهای پارک‌شده بخشی از محدودهٔ چهارراه را می‌پوشانند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.04-dunkelheit-und-schlechte-sicht/1.1.04-109",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_04-109.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.04-109",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.04-111",
+    "topic": "Dunkelheit Und Schlechte Sicht",
+    "de": "Wie sollten Sie sich bei diesen Sichtverhältnissen verhalten?",
+    "fa": "با این وضعیت دید چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Ich reduziere meine Geschwindigkeit",
+        "fa": "سرعتم را کم می‌کنم."
+      },
+      {
+        "de": "Ich orientiere mich am rechten Fahrbahnrand",
+        "fa": "لبهٔ راست جاده را راهنما قرار می‌دهم."
+      },
+      {
+        "de": "Ich schalte das Fernlicht ein",
+        "fa": "نوربالا را روشن می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.04-dunkelheit-und-schlechte-sicht/1.1.04-111",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_04-111.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.04-111",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.06-121-M",
+    "topic": "Ueberholen",
+    "de": "Womit müssen Sie in dieser Situation rechnen?",
+    "fa": "در این وضعیت باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Der Radfahrer wird links an dem parkenden Pkw vorbeifahren",
+        "fa": "دوچرخه‌سوار از چپِ خودروی پارک‌شده عبور می‌کند."
+      },
+      {
+        "de": "Mit Gegenverkehr",
+        "fa": "ترافیک از روبه‌رو می‌آید."
+      },
+      {
+        "de": "Der Radfahrer wird absteigen, um mich vorbeizulassen",
+        "fa": "دوچرخه‌سوار پیاده می‌شود تا من عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.06-ueberholen/1.1.06-121-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_06-121-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.06-121-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.06-122",
+    "topic": "Ueberholen",
+    "de": "Womit müssen Sie rechnen, wenn Sie überholen wollen?",
+    "fa": "اگر بخواهید سبقت بگیرید، باید انتظار چه چیزی را داشته باشید؟",
+    "options": [
+      {
+        "de": "Mit unsicherer Fahrweise des Radfahrers",
+        "fa": "رانندگی نامطمئن دوچرخه‌سوار."
+      },
+      {
+        "de": "Mit verlängertem Anhalteweg",
+        "fa": "طولانی‌ترشدن فاصلهٔ توقف."
+      },
+      {
+        "de": "Mit Rutschgefahr",
+        "fa": "خطر لغزیدن."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.06-ueberholen/1.1.06-122",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_06-122.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.06-122",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.06-123",
+    "topic": "Ueberholen",
+    "de": "Sie möchten überholen. Worauf stellen Sie sich ein?",
+    "fa": "می‌خواهید سبقت بگیرید. باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Auf plötzliches Anhalten des Radfahrers direkt vor mir",
+        "fa": "توقف ناگهانی دوچرخه‌سوار درست جلوی من."
+      },
+      {
+        "de": "Auf links Ausscheren des entfernteren Radfahrers",
+        "fa": "منحرف‌شدن دوچرخه‌سوار دورتر به چپ."
+      },
+      {
+        "de": "Auf plötzlich auftauchenden Gegenverkehr",
+        "fa": "ظاهرشدن ناگهانی ترافیک روبه‌رو."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.06-ueberholen/1.1.06-123",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_06-123.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.06-123",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.06-129-M",
+    "topic": "Ueberholen",
+    "de": "Sie möchten überholen. Worauf sollten Sie sich jetzt einstellen?",
+    "fa": "می‌خواهید سبقت بگیرید. اکنون باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "[Der Radfahrer] direkt vor mir auf der Fahrbahn hält an",
+        "fa": "دوچرخه‌سوارِ درست جلوی من در جاده توقف می‌کند."
+      },
+      {
+        "de": "[Der] entfernte [Radfahrer] auf der Fahrbahn schert nach links aus",
+        "fa": "دوچرخه‌سوار دورتر در جاده به چپ منحرف می‌شود."
+      },
+      {
+        "de": "[Der blaue Pkw] überholt mich",
+        "fa": "خودروی سواری آبی از من سبقت می‌گیرد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.06-ueberholen/1.1.06-129-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_06-129-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.06-129-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-006-B",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Warum müssen Sie hier besonders vorsichtig sein?",
+    "fa": "چرا باید اینجا بسیار محتاط باشید؟",
+    "options": [
+      {
+        "de": "Weil beim Bremsen erhöhte Rutschgefahr besteht",
+        "fa": "چون هنگام ترمز خطر لغزیدن بیشتر است."
+      },
+      {
+        "de": "Weil ein Fahrzeug von rechts kommen könnte",
+        "fa": "چون ممکن است خودرویی از راست بیاید."
+      },
+      {
+        "de": "Weil das von links kommende Auto Vorfahrt hat",
+        "fa": "چون خودرویی که از چپ می‌آید حق تقدم دارد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-006-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-006-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-006-B",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-014-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Womit müssen Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Mit Personen, die die Fahrbahn überqueren",
+        "fa": "افرادی که از جاده عبور می‌کنند."
+      },
+      {
+        "de": "Mit einem Fahrzeug, das am Bus vorbeifährt",
+        "fa": "خودرویی که از کنار اتوبوس عبور می‌کند."
+      },
+      {
+        "de": "Dass ich vor der Kreuzung halten muss",
+        "fa": "اینکه مجبور شوم پیش از چهارراه توقف کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-014-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-014-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-014-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-015-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Wie verhalten Sie sich in dieser Situation?",
+    "fa": "در این وضعیت چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Geschwindigkeit vermindern",
+        "fa": "سرعت را کم می‌کنم."
+      },
+      {
+        "de": "Bremsbereit sein",
+        "fa": "آمادهٔ ترمز می‌مانم."
+      },
+      {
+        "de": "Unverändert weiterfahren",
+        "fa": "بدون تغییر ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-015-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-015-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-015-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-020-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Wann kann es hier zu einer gefährlichen Situation kommen?",
+    "fa": "چه زمانی ممکن است وضعیت خطرناک شود؟",
+    "options": [
+      {
+        "de": "Wenn ich unvermindert weiterfahre",
+        "fa": "اگر بدون کاهش سرعت ادامه دهم."
+      },
+      {
+        "de": "Wenn [der Radfahrer] auf meine Fahrbahn wechselt",
+        "fa": "اگر دوچرخه‌سوار وارد سمت جادهٔ من شود."
+      },
+      {
+        "de": "Wenn [der Radfahrer] am Ende des Radweges anhält",
+        "fa": "اگر دوچرخه‌سوار در پایان مسیر دوچرخه توقف کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-020-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-020-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-020-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-025-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Wie verhalten Sie sich jetzt richtig?",
+    "fa": "اکنون چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich bin bremsbereit",
+        "fa": "آمادهٔ ترمز هستم."
+      },
+      {
+        "de": "Ich beobachte [den Radfahrer] aufmerksam",
+        "fa": "دوچرخه‌سوار را با دقت زیر نظر می‌گیرم."
+      },
+      {
+        "de": "Ich weiche auf die linke Fahrbahnhälfte aus",
+        "fa": "به نیمهٔ چپ جاده می‌روم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-025-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-025-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-025-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-103-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Womit müssen Sie hinter dieser Straßenkuppe rechnen?",
+    "fa": "پشت این برآمدگی جاده باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Dort kann ein Fahrzeug liegen geblieben sein",
+        "fa": "ممکن است خودرویی از کار افتاده باشد."
+      },
+      {
+        "de": "Es kann ein Fahrzeug entgegenkommen, das meinen Fahrstreifen mitbenutzt",
+        "fa": "ممکن است خودروی روبه‌رو از بخشی از خط من استفاده کند."
+      },
+      {
+        "de": "Auf meinem Fahrstreifen kann sich ein langsam fahrendes Fahrzeug befinden",
+        "fa": "ممکن است خودروی کندرو در خط من باشد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-103-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-103-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-103-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-107-B",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Worauf müssen Sie sich einstellen?",
+    "fa": "باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Auf eine unebene und verschmutzte Fahrbahn",
+        "fa": "جادهٔ ناهموار و کثیف."
+      },
+      {
+        "de": "Auf Arbeiter und Baugeräte auf der Fahrbahn",
+        "fa": "کارگران و ماشین‌آلات ساختمانی در جاده."
+      },
+      {
+        "de": "Auf einen durch Polizei geregelten Verkehrsablauf",
+        "fa": "ترافیکی که پلیس آن را هدایت می‌کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-107-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-107-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-107-B",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-137",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Sie wollen nach rechts abbiegen. Wie sollten Sie sich verhalten?",
+    "fa": "می‌خواهید به راست بپیچید. چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Den Radfahrer durchfahren lassen",
+        "fa": "اجازه می‌دهم دوچرخه‌سوار عبور کند."
+      },
+      {
+        "de": "„Schulterblick“ durchführen",
+        "fa": "از روی شانه نقطهٔ کور را بررسی می‌کنم."
+      },
+      {
+        "de": "Vor dem Radfahrer abbiegen",
+        "fa": "پیش از دوچرخه‌سوار می‌پیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-137",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-137.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-137",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-138",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Womit müssen Sie rechnen?",
+    "fa": "باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "Das Motorrad könnte nach links ausscheren",
+        "fa": "ممکن است موتورسیکلت به چپ منحرف شود."
+      },
+      {
+        "de": "Die Person neben dem Transporter könnte weiter auf die Fahrbahn treten",
+        "fa": "ممکن است شخص کنار ون بیشتر وارد جاده شود."
+      },
+      {
+        "de": "Fußgänger könnten vor dem Transporter die Fahrbahn überqueren",
+        "fa": "ممکن است عابران از جلوی ون از جاده عبور کنند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-138",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-138.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-138",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-139",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Vor dem Motorrad möchte ein Pkw auf die Fahrbahn zurücksetzen. Womit müssen Sie rechnen?",
+    "fa": "خودرویی جلوی موتورسیکلت می‌خواهد با دنده‌عقب وارد جاده شود. باید انتظار چه چیزی را داشته باشید؟",
+    "options": [
+      {
+        "de": "Dass der Pkw weiter zurücksetzt",
+        "fa": "خودرو به دنده‌عقب‌رفتن ادامه دهد."
+      },
+      {
+        "de": "Dass das Motorrad plötzlich abgebremst wird",
+        "fa": "موتورسیکلت ناگهان ترمز کند."
+      },
+      {
+        "de": "Dass mein Bremsweg länger als normal wird",
+        "fa": "فاصلهٔ ترمز من طولانی‌تر از معمول شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-139",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-139.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-139",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-153-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Worauf müssen Sie sich in dieser Situation einstellen?",
+    "fa": "در این وضعیت باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Dass Gegenverkehr auftaucht",
+        "fa": "ظاهرشدن ترافیک روبه‌رو."
+      },
+      {
+        "de": "Dass der Lkw-Fahrer auf die Fahrbahn springt",
+        "fa": "پریدن رانندهٔ کامیون به داخل جاده."
+      },
+      {
+        "de": "Dass Verkehrszeichen durch den Lkw verdeckt sind",
+        "fa": "پوشیده‌شدن تابلوهای راهنمایی به‌وسیلهٔ کامیون."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-153-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-153-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-153-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-159-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Worauf müssen Sie sich hier einstellen?",
+    "fa": "در اینجا باید آمادهٔ چه چیزی باشید؟",
+    "options": [
+      {
+        "de": "Personen betreten die Fahrbahn",
+        "fa": "افراد وارد جاده شوند."
+      },
+      {
+        "de": "Entgegenkommende Fahrzeuge biegen nach links ab",
+        "fa": "خودروهای روبه‌رو به چپ بپیچند."
+      },
+      {
+        "de": "Fahrzeuge biegen auf die Fahrbahn ein",
+        "fa": "خودروها وارد جاده شوند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-159-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-159-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-159-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-163",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Warum ist das Vorbeifahren an dieser Unfallsituation gefährlich?",
+    "fa": "چرا عبور از کنار این تصادف خطرناک است؟",
+    "options": [
+      {
+        "de": "Weil Folgeunfälle möglich sind",
+        "fa": "چون ممکن است تصادف‌های بعدی رخ دهند."
+      },
+      {
+        "de": "Weil Fußgänger übersehen werden können",
+        "fa": "چون ممکن است عابران دیده نشوند."
+      },
+      {
+        "de": "Weil die Verkehrslage unklar ist",
+        "fa": "چون وضعیت ترافیک روشن نیست."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-163",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-163.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-163",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.1.07-166-M",
+    "topic": "Besondere Verkehrssituationen",
+    "de": "Womit müssen Sie in dieser Situation rechnen?",
+    "fa": "در این وضعیت باید احتمال چه چیزی را در نظر بگیرید؟",
+    "options": [
+      {
+        "de": "[Der Radfahrer] schert nach links aus",
+        "fa": "دوچرخه‌سوار به چپ منحرف شود."
+      },
+      {
+        "de": "Mit Gegenverkehr",
+        "fa": "ترافیک از روبه‌رو بیاید."
+      },
+      {
+        "de": "[Der Radfahrer] steigt ab, um mich vorbeizulassen",
+        "fa": "دوچرخه‌سوار پیاده شود تا من عبور کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.1.-gefahrenlehre/1.1.07-besondere-verkehrssituationen/1.1.07-166-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_1_07-166-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.1.07-166-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.02-104-M",
+    "topic": "Strassenbenutzung",
+    "de": "Sie haben sich irrtümlich links eingeordnet, möchten aber nach rechts abbiegen. Wie verhalten Sie sich richtig?",
+    "fa": "اشتباهی در سمت چپ قرار گرفته‌اید، اما می‌خواهید به راست بپیچید. چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich fahre geradeaus weiter oder biege links ab",
+        "fa": "مستقیم ادامه می‌دهم یا به چپ می‌پیچم."
+      },
+      {
+        "de": "Ich wechsle vorsichtig in den rechten Fahrstreifen",
+        "fa": "با احتیاط به خط راست می‌روم."
+      },
+      {
+        "de": "Ich fahre geradeaus weiter und biege im Kreuzungsbereich rechts ab",
+        "fa": "مستقیم ادامه می‌دهم و داخل چهارراه به راست می‌پیچم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.02-strassenbenutzung/1.2.02-104-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_02-104-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.02-104-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-022-M",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Sie möchten hier nach rechts abbiegen. Was ist richtig?",
+    "fa": "می‌خواهید اینجا به راست بپیچید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Ich muss beide [Fußgänger] die Fahrbahn überqueren lassen",
+        "fa": "باید اجازه بدهم هر دو عابر از جاده عبور کنند."
+      },
+      {
+        "de": "Ich muss nur [den entgegenkommenden Fußgänger] die Fahrbahn überqueren lassen",
+        "fa": "فقط باید اجازه بدهم عابرِ روبه‌رو از جاده عبور کند."
+      },
+      {
+        "de": "Ich habe Vorrang vor beiden [Fußgängern]",
+        "fa": "نسبت به هر دو عابر حق تقدم دارم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-022-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-022-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-022-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-103-B",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Alle drei Fahrzeuge wollen links abbiegen. Wer hat sich richtig eingeordnet?",
+    "fa": "هر سه خودرو می‌خواهند به چپ بپیچند. کدام درست در خط قرار گرفته است؟",
+    "options": [
+      {
+        "de": "Der gelbe Pkw",
+        "fa": "خودروی سواری زرد."
+      },
+      {
+        "de": "Der Lkw",
+        "fa": "کامیون."
+      },
+      {
+        "de": "Der grüne Pkw",
+        "fa": "خودروی سواری سبز."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-103-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-103-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-103-B",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-107-B",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Wer muss die Fahrtrichtungsänderung anzeigen?",
+    "fa": "چه کسی باید تغییر جهت را با راهنما اعلام کند؟",
+    "options": [
+      {
+        "de": "Das Motorrad",
+        "fa": "موتورسیکلت."
+      },
+      {
+        "de": "Ich selbst",
+        "fa": "من."
+      },
+      {
+        "de": "Keiner",
+        "fa": "هیچ‌کس."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-107-B",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-107-B.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-107-B",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-112-M",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Wer muss blinken?",
+    "fa": "چه کسی باید راهنما بزند؟",
+    "options": [
+      {
+        "de": "Ich selbst",
+        "fa": "من."
+      },
+      {
+        "de": "[Der blaue Lkw]",
+        "fa": "کامیون آبی."
+      },
+      {
+        "de": "[Der rote Pkw]",
+        "fa": "خودروی سواری قرمز."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-112-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-112-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-112-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-113-M",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Wer muss hier die Fahrtrichtungsänderung anzeigen?",
+    "fa": "چه کسی باید اینجا تغییر جهت را با راهنما اعلام کند؟",
+    "options": [
+      {
+        "de": "Ich selbst",
+        "fa": "من."
+      },
+      {
+        "de": "[Der rote Pkw]",
+        "fa": "خودروی سواری قرمز."
+      },
+      {
+        "de": "[Das Motorrad]",
+        "fa": "موتورسیکلت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-113-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-113-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-113-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-121",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Ich muss an der Haltlinie anhalten",
+        "fa": "باید پشت خط توقف بایستم."
+      },
+      {
+        "de": "Ich muss den Radfahrer durchfahren lassen",
+        "fa": "باید اجازه بدهم دوچرخه‌سوار عبور کند."
+      },
+      {
+        "de": "Ich darf vor dem Radfahrer abbiegen",
+        "fa": "می‌توانم پیش از دوچرخه‌سوار بپیچم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-121",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-121.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-121",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-122",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Wie haben Sie sich zu verhalten?",
+    "fa": "چگونه باید رفتار کنید؟",
+    "options": [
+      {
+        "de": "Beide Radfahrer durchfahren lassen",
+        "fa": "اجازه می‌دهم هر دو دوچرخه‌سوار عبور کنند."
+      },
+      {
+        "de": "Nur den Radfahrer in gleicher Richtung durchfahren lassen",
+        "fa": "فقط اجازه می‌دهم دوچرخه‌سوار هم‌جهت من عبور کند."
+      },
+      {
+        "de": "Hupen und vor beiden Radfahrern abbiegen",
+        "fa": "بوق می‌زنم و پیش از هر دو دوچرخه‌سوار می‌پیچم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-122",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-122.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-122",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-130-M",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Sie möchten nach links abbiegen. Welche Fahrlinie müssen Sie einhalten?",
+    "fa": "می‌خواهید به چپ بپیچید. باید کدام مسیر را دنبال کنید؟",
+    "options": [
+      {
+        "de": "Die linke Fahrlinie",
+        "fa": "مسیر سمت چپ."
+      },
+      {
+        "de": "Die mittlere Fahrlinie",
+        "fa": "مسیر میانی."
+      },
+      {
+        "de": "Die rechte Fahrlinie",
+        "fa": "مسیر سمت راست."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-130-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-130-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-130-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.09-133-M",
+    "topic": "Abbiegen Wenden Und Rueckwaertsfahren",
+    "de": "Wer muss in dieser Situation blinken?",
+    "fa": "در این وضعیت چه کسی باید راهنما بزند؟",
+    "options": [
+      {
+        "de": "Ich selbst",
+        "fa": "من."
+      },
+      {
+        "de": "[Der blaue Pkw]",
+        "fa": "خودروی سواری آبی."
+      },
+      {
+        "de": "[Der rote Pkw]",
+        "fa": "خودروی سواری قرمز."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/1.2.09-133-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_09-133-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.09-133-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.11-007-M",
+    "topic": "Besondere Verkehrslagen",
+    "de": "Sie möchten geradeaus weiterfahren. Was ist in dieser Situation richtig?",
+    "fa": "می‌خواهید مستقیم ادامه دهید. در این وضعیت کدام درست است؟",
+    "options": [
+      {
+        "de": "Ich lasse den geschlossenen Verband durchfahren",
+        "fa": "اجازه می‌دهم ستونِ یکپارچهٔ خودروها عبور کند."
+      },
+      {
+        "de": "Ich warte an der Haltlinie",
+        "fa": "پشت خط توقف منتظر می‌مانم."
+      },
+      {
+        "de": "Ich überquere die Kreuzung",
+        "fa": "از چهارراه عبور می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.11-besondere-verkehrslagen/1.2.11-007-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_11-007-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.11-007-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.11-103-M",
+    "topic": "Besondere Verkehrslagen",
+    "de": "Sie möchten geradeaus weiterfahren. Wie verhalten Sie sich richtig?",
+    "fa": "می‌خواهید مستقیم ادامه دهید. چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich bleibe zunächst in meinem Fahrstreifen",
+        "fa": "فعلاً در خط خودم می‌مانم."
+      },
+      {
+        "de": "Ich wechsle bei einer ausreichenden Verkehrslücke nach rechts",
+        "fa": "وقتی فاصلهٔ کافی در ترافیک باشد، به راست می‌روم."
+      },
+      {
+        "de": "Ich überhole das neben mir fahrende Fahrzeug und wechsle den Fahrstreifen",
+        "fa": "از خودروی کنارم سبقت می‌گیرم و خط عوض می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.11-besondere-verkehrslagen/1.2.11-103-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_11-103-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.11-103-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.11-201-M",
+    "topic": "Besondere Verkehrslagen",
+    "de": "Sie möchten geradeaus fahren. Wie sollten Sie sich verhalten, wenn der [rote] Lkw bei „Grün“ sofort losfährt?",
+    "fa": "می‌خواهید مستقیم بروید. اگر کامیون قرمز با سبزشدن چراغ فوراً حرکت کند، چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Ich warte und lasse den Lkw losfahren",
+        "fa": "منتظر می‌مانم و اجازه می‌دهم کامیون حرکت کند."
+      },
+      {
+        "de": "Ich gebe gegebenenfalls Warnzeichen",
+        "fa": "در صورت لزوم هشدار می‌دهم."
+      },
+      {
+        "de": "Ich fahre auch sofort los",
+        "fa": "من هم فوراً حرکت می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.11-besondere-verkehrslagen/1.2.11-201-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_11-201-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.11-201-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.12-121-M",
+    "topic": "Halten Und Parken",
+    "de": "Wer parkt falsch?",
+    "fa": "چه کسی نادرست پارک کرده است؟",
+    "options": [
+      {
+        "de": "Der [weiße] Pkw",
+        "fa": "خودروی سواری سفید."
+      },
+      {
+        "de": "Der [dunkle] Pkw",
+        "fa": "خودروی سواری تیره."
+      },
+      {
+        "de": "Keiner der beiden Pkws",
+        "fa": "هیچ‌یک از دو خودرو."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.12-halten-und-parken/1.2.12-121-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_12-121-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.12-121-M",
+    "points": 2,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.12-123-M",
+    "topic": "Halten Und Parken",
+    "de": "Was ist hier zu beachten?",
+    "fa": "در اینجا به چه چیزی باید توجه کرد؟",
+    "options": [
+      {
+        "de": "Links von der Fahrbahnbegrenzung darf nicht gehalten werden",
+        "fa": "توقف در سمت چپِ خط مرزی جاده مجاز نیست."
+      },
+      {
+        "de": "Langsame Fahrzeuge müssen möglichst auf dem Seitenstreifen fahren",
+        "fa": "خودروهای کندرو باید تا حد امکان در شانهٔ جاده حرکت کنند."
+      },
+      {
+        "de": "Die Fahrbahnbegrenzung darf in keinem Fall überfahren werden",
+        "fa": "در هیچ شرایطی نمی‌توان از خط مرزی جاده عبور کرد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.12-halten-und-parken/1.2.12-123-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_12-123-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.12-123-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.12-126-M",
+    "topic": "Halten Und Parken",
+    "de": "Wer hält falsch?",
+    "fa": "چه کسی نادرست توقف کرده است؟",
+    "options": [
+      {
+        "de": "Der [rote Pkw]",
+        "fa": "خودروی سواری قرمز."
+      },
+      {
+        "de": "Der [gelbe Pkw]",
+        "fa": "خودروی سواری زرد."
+      },
+      {
+        "de": "Beide Pkws",
+        "fa": "هر دو خودرو."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.12-halten-und-parken/1.2.12-126-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_12-126-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.12-126-M",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.19-109",
+    "topic": "Bahnuebergaenge",
+    "de": "Was bedeutet dieses Verkehrszeichen?",
+    "fa": "این تابلوی راهنمایی چه معنایی دارد؟",
+    "options": [
+      {
+        "de": "Hinweis auf vorhandene elektrische Oberleitungen",
+        "fa": "هشدار دربارهٔ سیم‌های برقِ بالای مسیر."
+      },
+      {
+        "de": "Der Schienenverkehr hat immer Vorrang",
+        "fa": "ترافیک ریلی همیشه حق تقدم دارد."
+      },
+      {
+        "de": "Es ist immer zu warten, wenn sich ein Schienenfahrzeug nähert",
+        "fa": "هرگاه وسیلهٔ ریلی نزدیک شود، همیشه باید منتظر ماند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Richtige Antworten: A + B + C",
+    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.19-bahnuebergaenge/1.2.19-109",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_19-109.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.19-109",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.19-110",
+    "topic": "Bahnuebergaenge",
+    "de": "Vor einem Bahnübergang steht vor einer von rechts einmündenden Straße ein rot leuchtendes Lichtzeichen ohne Andreaskreuz. Wo müssen Sie warten?",
+    "fa": "پیش از تقاطع راه‌آهن، جلوی خیابانی که از راست می‌پیوندد چراغ قرمزِ بدون علامت ضربدر راه‌آهن روشن است. کجا باید منتظر بمانید؟",
+    "options": [
+      {
+        "de": "An der Haltlinie",
+        "fa": "پشت خط توقف."
+      },
+      {
+        "de": "Wenn keine Haltlinie vorhanden ist, vor dem Lichtzeichen",
+        "fa": "اگر خط توقف وجود ندارد، پیش از چراغ."
+      },
+      {
+        "de": "Ich kann nach Beobachten des Verkehrs bis zum Bahnübergang vorfahren",
+        "fa": "می‌توانم با زیر نظر داشتن ترافیک تا تقاطع راه‌آهن جلو بروم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.19-bahnuebergaenge/1.2.19-110",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_19-110.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.19-110",
+    "points": 3,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.20-108-M",
+    "topic": "Oeffentliche Verkehrsmittel Und Schulbusse",
+    "de": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "fa": "در این وضعیت چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich behalte meine Geschwindigkeit bei",
+        "fa": "سرعتم را حفظ می‌کنم."
+      },
+      {
+        "de": "Ich fahre mit erhöhter Aufmerksamkeit",
+        "fa": "با دقت بیشتری رانندگی می‌کنم."
+      },
+      {
+        "de": "Ich bremse jetzt auf Schrittgeschwindigkeit ab",
+        "fa": "اکنون سرعت را تا سرعت قدم‌زدن کم می‌کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.20-oeffentliche-verkehrsmittel-und-schulbusse/1.2.20-108-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_20-108-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.20-108-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.26-010-M",
+    "topic": "Verhalten An Fussgaengerueberwegen Und Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "fa": "در این وضعیت چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich beobachte die [Fußgänger] aufmerksam",
+        "fa": "عابران را با دقت زیر نظر می‌گیرم."
+      },
+      {
+        "de": "Ich verringere meine Geschwindigkeit und bereite mich darauf vor, anzuhalten",
+        "fa": "سرعتم را کم می‌کنم و برای توقف آماده می‌شوم."
+      },
+      {
+        "de": "Ich fahre mit gleicher Geschwindigkeit weiter",
+        "fa": "با همان سرعت ادامه می‌دهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.26-verhalten-an-fussgaengerueberwegen-und-gegenueber-fussgaengern/1.2.26-010-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_26-010-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.26-010-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.26-110-M",
+    "topic": "Verhalten An Fussgaengerueberwegen Und Gegenueber Fussgaengern",
+    "de": "Welches Verhalten ist richtig?",
+    "fa": "کدام رفتار درست است؟",
+    "options": [
+      {
+        "de": "Warten, weil beide Personen Vorrang haben",
+        "fa": "منتظر می‌مانم، چون هر دو شخص حق تقدم دارند."
+      },
+      {
+        "de": "Weiterfahren, weil mich beide Personen vorlassen müssen",
+        "fa": "ادامه می‌دهم، چون هر دو شخص باید اجازهٔ عبور به من بدهند."
+      },
+      {
+        "de": "Vor der entgegenkommenden Person durchfahren, weil diese wartepflichtig ist",
+        "fa": "پیش از شخصِ روبه‌رو عبور می‌کنم، چون او موظف به انتظار است."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.26-verhalten-an-fussgaengerueberwegen-und-gegenueber-fussgaengern/1.2.26-110-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_26-110-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.26-110-M",
+    "points": 4,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.26-114",
+    "topic": "Verhalten An Fussgaengerueberwegen Und Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich in dieser Situation?",
+    "fa": "در این وضعیت چگونه رفتار می‌کنید؟",
+    "options": [
+      {
+        "de": "Ich lasse den Fußgänger die Fahrbahn überqueren",
+        "fa": "اجازه می‌دهم عابر از جاده عبور کند."
+      },
+      {
+        "de": "Ich warte vor dem Fußgängerüberweg, bis das blaue Fahrzeug abgebogen ist",
+        "fa": "پیش از گذرگاه عابر منتظر می‌مانم تا خودروی آبی بپیچد."
+      },
+      {
+        "de": "Ich schließe unmittelbar zum blauen Fahrzeug auf",
+        "fa": "بلافاصله پشت خودروی آبی می‌روم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Richtige Antworten: A + B",
+    "explanation_fa": "گزینه‌های درست: A + B",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.26-verhalten-an-fussgaengerueberwegen-und-gegenueber-fussgaengern/1.2.26-114",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_26-114.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.26-114",
+    "points": 5,
+    "visual": "bank"
+  },
+  {
+    "id": "1.2.26-119-M",
+    "topic": "Verhalten An Fussgaengerueberwegen Und Gegenueber Fussgaengern",
+    "de": "Wie verhalten Sie sich richtig?",
+    "fa": "چه رفتاری درست است؟",
+    "options": [
+      {
+        "de": "Ich warte, weil beide Fußgänger Vorrang haben",
+        "fa": "منتظر می‌مانم، چون هر دو عابر حق تقدم دارند."
+      },
+      {
+        "de": "Ich fahre weiter, weil beide Fußgänger warten müssen",
+        "fa": "ادامه می‌دهم، چون هر دو عابر باید منتظر بمانند."
+      },
+      {
+        "de": "Ich biege vor [dem entgegenkommenden Fußgänger] ab, weil nur [dieser] warten muss",
+        "fa": "پیش از عابر روبه‌رو می‌پیچم، چون فقط او باید منتظر بماند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Richtige Antworten: A",
+    "explanation_fa": "گزینه‌های درست: A",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/1.2.-verhalten-im-strassenverkehr/1.2.26-verhalten-an-fussgaengerueberwegen-und-gegenueber-fussgaengern/1.2.26-119-M",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "image": "/media/1_2_26-119-M.png",
+    "image_alt": "Verkehrssituation zur Frage 1.2.26-119-M",
+    "points": 4,
+    "visual": "bank"
   }
 ]
