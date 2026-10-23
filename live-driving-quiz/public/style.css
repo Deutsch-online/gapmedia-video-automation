@@ -229,3 +229,34 @@
 .like-crown{position:absolute;top:-28px;left:50%;transform:translateX(-50%) rotate(-7deg);font-size:35px;z-index:9;filter:drop-shadow(0 2px 2px #76501655)}
 
 .screen-body .supporter-name,.screen-body .newest .supporter-name{font-size:23px}.screen-body .supporter-likes{font-size:24px}
+
+/* A continuous decorative stream, independent of real per-user like counts. */
+.edge-reactions{position:absolute;top:0;bottom:0;width:36px;overflow:hidden;pointer-events:none;z-index:5;contain:layout paint;user-select:none}
+.edge-left{left:0}.edge-right{right:3px}
+.edge-reactions span{position:absolute;top:0;left:2px;width:32px;text-align:center;color:#ec477a;font:32px/1.2 Arial,sans-serif;filter:drop-shadow(0 2px 3px #c1396544);will-change:transform,opacity;animation:edge-float 9s linear infinite}
+.edge-right span{animation-duration:10s;color:#e85c88}
+.edge-reactions span:nth-child(2){animation-delay:-1.2s;font-size:28px}.edge-reactions span:nth-child(3){animation-delay:-2.4s;color:#e76a9a}.edge-reactions span:nth-child(4){animation-delay:-3.6s;font-size:25px}.edge-reactions span:nth-child(5){animation-delay:-4.8s}.edge-reactions span:nth-child(6){animation-delay:-6s;font-size:28px}.edge-reactions span:nth-child(7){animation-delay:-7.2s;color:#cd5186}.edge-reactions span:nth-child(8){animation-delay:-8.4s;font-size:25px}
+@keyframes edge-float{0%{transform:translate3d(0,1900px,0) scale(.6) rotate(-9deg);opacity:0}8%{opacity:.78}45%{transform:translate3d(3px,1000px,0) scale(1) rotate(8deg)}88%{opacity:.65}100%{transform:translate3d(0,20px,0) scale(.75) rotate(-7deg);opacity:0}}
+/* Translation changes text layout only, never the source image or video size. */
+.screen-body #show.bank-question,
+.screen-body #show.bank-question.bank-compact,
+.screen-body #show.bank-question.bank-crowded{--question-media-height:500px}
+.screen-body #show.bank-question.has-activity{--question-media-height:420px}
+.screen-body #show.bank-question.watching{--question-media-height:560px}
+.screen-body .bank-question.bank-tight .bank-media{margin-bottom:16px}
+.screen-body .bank-question.bank-tight .question{padding:10px 14px;margin-bottom:12px}
+.screen-body .bank-question.bank-tight h1{font-size:34px;line-height:1.2;margin:8px 0}
+.screen-body .bank-question.bank-tight .question>p{font-size:28px;line-height:1.3;margin:6px 0}
+.screen-body .bank-question.bank-tight .option-de{font-size:27px;line-height:1.2}
+.screen-body .bank-question.bank-tight .option-fa{font-size:24px;line-height:1.3;margin-top:5px}
+.screen-body .bank-question.bank-tight .options{gap:8px}
+.screen-body .bank-question.bank-tight .option{padding:10px 12px}
+.screen-body .bank-question.bank-tight .gift-pill{margin-top:5px}
+@media(prefers-reduced-motion:reduce){.edge-reactions{display:none}}
+.screen-body .show.bank-tight{padding-top:32px;padding-bottom:96px}
+.screen-body .bank-question.bank-tight .winner-celebration{margin-top:12px;padding:10px 12px}
+.screen-body .bank-question.bank-tight .winner-heading{font-size:23px;margin-bottom:5px}
+.screen-body .bank-question.bank-tight .winner-heading>span{font-size:20px}
+.screen-body .bank-question.bank-tight .gift-pill{font-size:18px}
+.screen-body .bank-question.bank-tight .gift-symbol,.screen-body .bank-question.bank-tight .gift-icon{height:30px;width:30px}
+.screen-body .bank-question.bank-tight .timer{font-size:40px}

@@ -72,7 +72,13 @@ fetch('/api/state').then(r=>r.json()).then(render);connect();
 
 $('bankImage').addEventListener('error',()=>{$('imageFailure').classList.remove('hidden');$('phaseLabel').textContent='Das Bild ist nicht verfügbar. Bitte die Frage pausieren.';});
 
-function adjustBankLayout(){const show=$('show');if(!show.classList.contains('bank-question'))return;const media=state?.question.video?$('bankVideo'):$('bankImage');media.style.removeProperty('height');show.classList.remove('bank-compact','bank-crowded');if(show.scrollHeight>show.clientHeight)show.classList.add('bank-compact');if(show.scrollHeight>show.clientHeight)show.classList.add('bank-crowded');if(show.scrollHeight>show.clientHeight){const height=Number.parseFloat(getComputedStyle(media).height);media.style.height=Math.max(180,height-(show.scrollHeight-show.clientHeight)-12)+'px';}}
+function adjustBankLayout(){
+ const show=$('show');if(!show.classList.contains('bank-question'))return;
+ // Preserve the source picture's size when a translation adds more text.
+ $('bankImage').style.removeProperty('height');$('bankVideo').style.removeProperty('height');
+ show.classList.remove('bank-compact','bank-crowded','bank-tight');
+ for(const variant of ['bank-compact','bank-crowded','bank-tight'])if(show.scrollHeight>show.clientHeight)show.classList.add(variant);
+}
 document.fonts.ready.then(adjustBankLayout);
 
 function syncVideo(){
