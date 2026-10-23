@@ -29,3 +29,6 @@ Countries / Teams selector allows a custom English person/team name and locally 
 In gift-only mode, connected gameplay takes a turn every four seconds and an entrant with zero lifetime gifts is automatically replaced after its second completed turn; the most requested waiting entrant joins. In free comments or both modes, lack of gifts does not eliminate entrants. Waiting list entries never require or show gifts; entrants inherit their active slot's configured gift on promotion.
 
 Automated checks cover model rules, shared authenticated server state, free comment actions and animation metadata, one-coin restrictions, photos and ranked supporters. DOM checks cover English live labels, comment codes, supporter dialog and motion keyframes. Full visual browser review and real TikTok events still require runtime verification.
+
+## One-click demo
+The owner panel has a prominent Start demo button and a connection guide. Demo runs automatic sample gifts, requests and pawn animations with no TikTok connection and no spending. Demo state is not saved over real state. Stop demo restores the pre-demo game and request selections; connecting to a real LIVE also stops and restores the demo first. Demo cannot start while LIVE is connected/connecting and expires automatically after roughly 144 seconds.
