@@ -35,3 +35,8 @@ The owner panel has a prominent Start demo button and a connection guide. Demo r
 
 ## Flags and compact mobile display
 All fourteen default country flags are bundled SVG assets sourced from flagcdn.com and served locally. The country frames, request queue and supporter dialog use images rather than platform-dependent flag emoji. Mobile opens directly in compact LIVE view, with smaller player cards and a two-column request list. The live canvas fits the available viewport height and restores normal scrolling when Settings is opened.
+
+## Username-only connection and 9:16 glass canvas
+Connection now uses the same anonymous/free connector options as FahrFit: no TikTok login, cookie or API key; account-name validation, 10-second web request timeout, 45-second overall attempt limit, bounded cleanup and controlled reconnect backoff (five minutes for rate limits). Extended gift-catalog fetching is disabled, matching FahrFit. HTTP/WebSocket proxy agents honor the hosting environment. Safe diagnostic reasons and live event counters are visible in the private panel. Saved opt-in account settings resume after restart. A disconnected or offline account is reported as such; deployment success is not proof that the chosen account is broadcasting.
+
+LIVE view is a fixed 1080×1920 light glass canvas, scaled in full to the actual phone viewport. Like reactions float inside both canvas edges. The in-canvas liker rail ranks real senders by cumulative like deltas, with a special ring over 100 and a crown from 1000. Duplicate like IDs do not increase counts. Automatic demo includes simulated liker events, clearly marked as demo; stopping restores the prior state.
