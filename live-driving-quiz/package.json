@@ -1,0 +1,17 @@
+{
+  "name": "fahrfit-deutsch-live-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "hpagent": "1.2.0",
+    "tiktok-live-connector": "2.5.0",
+    "ws": "8.18.2"
+  }
+}

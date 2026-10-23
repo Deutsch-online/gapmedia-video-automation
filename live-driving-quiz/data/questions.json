@@ -1,0 +1,356 @@
+[
+  {
+    "id": "red-light",
+    "topic": "Ampel · چراغ راهنمایی",
+    "visual": "red",
+    "de": "Die Ampel ist rot, ohne Grünpfeil. Was tun Sie?",
+    "fa": "چراغ قرمز است و فلش سبز ندارد. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Vor der Haltlinie warten.",
+        "fa": "پشت خط ایست منتظر می‌مانم."
+      },
+      {
+        "de": "Fahren, wenn niemand kommt.",
+        "fa": "اگر کسی نمی‌آید حرکت می‌کنم."
+      },
+      {
+        "de": "Hupen und weiterfahren.",
+        "fa": "بوق می‌زنم و عبور می‌کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Rot bedeutet: Halt vor der Kreuzung. Eine vorhandene Haltlinie beachten.",
+    "explanation_fa": "قرمز یعنی پیش از تقاطع توقف کنید و خط ایست موجود را رعایت کنید.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__37.html"
+  },
+  {
+    "id": "yellow-light",
+    "topic": "Ampel · چراغ راهنمایی",
+    "visual": "yellow",
+    "de": "Die Ampel wird gelb. Sie können sicher anhalten. Was ist richtig?",
+    "fa": "چراغ زرد می‌شود و می‌توانید ایمن توقف کنید. کدام درست است؟",
+    "options": [
+      {
+        "de": "Beschleunigen, um noch durchzukommen.",
+        "fa": "سرعت را زیاد می‌کنم تا برسم."
+      },
+      {
+        "de": "Vor der Kreuzung auf das nächste Zeichen warten.",
+        "fa": "پیش از تقاطع منتظر علامت بعدی می‌مانم."
+      },
+      {
+        "de": "Gelb gilt nur für Fußgänger.",
+        "fa": "زرد فقط برای عابران است."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Gelb ordnet an, vor der Kreuzung auf das nächste Zeichen zu warten. Die Frage setzt voraus, dass sicheres Anhalten möglich ist.",
+    "explanation_fa": "زرد دستور انتظار پیش از تقاطع برای علامت بعدی است. در این سؤال فرض شده توقف ایمن ممکن است.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__37.html"
+  },
+  {
+    "id": "right-priority",
+    "topic": "Vorfahrt · حق تقدم",
+    "visual": "junction",
+    "de": "Gleichrangige Straßen: keine Ampel, keine Schilder, kein Feldweg. Wer hat Vorfahrt?",
+    "fa": "راه‌های هم‌رتبه، بدون چراغ و تابلو و راه مزرعه: حق تقدم با کیست؟",
+    "options": [
+      {
+        "de": "Das größere Fahrzeug.",
+        "fa": "خودروی بزرگ‌تر."
+      },
+      {
+        "de": "Das Fahrzeug von links.",
+        "fa": "خودروی سمت چپ."
+      },
+      {
+        "de": "Das Fahrzeug von rechts.",
+        "fa": "خودروی سمت راست."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "explanation_de": "An solchen Kreuzungen gilt rechts vor links. Besonders geregelte Vorfahrt und Feld- oder Waldwege sind Ausnahmen.",
+    "explanation_fa": "در چنین تقاطعی وسیلهٔ سمت راست حق تقدم دارد. مقررات خاص حق تقدم و راه‌های مزرعه یا جنگل استثنا هستند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__8.html"
+  },
+  {
+    "id": "field-road",
+    "topic": "Vorfahrt · حق تقدم",
+    "visual": "junction",
+    "de": "Ein Auto kommt rechts aus einem Feldweg auf die Straße. Gilt rechts vor links?",
+    "fa": "خودرویی از سمت راست، از راه مزرعه وارد خیابان می‌شود. آیا راست بر چپ مقدم است؟",
+    "options": [
+      {
+        "de": "Nein, für die Ausfahrt aus dem Feldweg gilt diese Regel nicht.",
+        "fa": "نه، این قاعده برای خروج از راه مزرعه نیست."
+      },
+      {
+        "de": "Ja, rechts hat ausnahmslos Vorfahrt.",
+        "fa": "بله، سمت راست همیشه و بدون استثنا مقدم است."
+      },
+      {
+        "de": "Nur die Fahrzeuggröße entscheidet.",
+        "fa": "فقط اندازهٔ خودرو تعیین‌کننده است."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Die Regel rechts vor links gilt nicht für Fahrzeuge, die aus einem Feld- oder Waldweg auf eine andere Straße kommen.",
+    "explanation_fa": "قاعدهٔ راست بر چپ برای وسیله‌ای که از راه مزرعه یا جنگل وارد راه دیگری می‌شود اعمال نمی‌شود.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__8.html"
+  },
+  {
+    "id": "fog",
+    "topic": "Sicht · دید راننده",
+    "visual": "fog",
+    "de": "Durch Nebel sehen Sie weniger als 50 Meter. Welche Aussagen stimmen?",
+    "fa": "در مه، دید شما کمتر از ۵۰ متر است. کدام عبارت‌ها درست‌اند؟",
+    "options": [
+      {
+        "de": "Nicht schneller als 50 km/h fahren.",
+        "fa": "بیشتر از ۵۰ کیلومتر در ساعت رانندگی نکنید."
+      },
+      {
+        "de": "Wenn nötig, noch langsamer fahren.",
+        "fa": "اگر لازم است، باز هم آهسته‌تر برانید."
+      },
+      {
+        "de": "100 km/h sind bei leerer Straße immer erlaubt.",
+        "fa": "در راه خلوت همیشه ۱۰۰ کیلومتر مجاز است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Bei weniger als 50 m Sicht durch Nebel, Schnee oder Regen gilt höchstens 50 km/h, gegebenenfalls weniger. Innerhalb der übersehbaren Strecke muss Anhalten möglich sein.",
+    "explanation_fa": "در دید کمتر از ۵۰ متر بر اثر مه، برف یا باران، حداکثر سرعت ۵۰ است؛ در صورت لزوم کمتر. باید بتوانید در محدودهٔ دید توقف کنید.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__3.html"
+  },
+  {
+    "id": "distance",
+    "topic": "Abstand · فاصله",
+    "visual": "distance",
+    "de": "Wie wählen Sie den Abstand zum vorausfahrenden Auto?",
+    "fa": "فاصله با خودروی جلویی را چگونه انتخاب می‌کنید؟",
+    "options": [
+      {
+        "de": "So knapp wie möglich.",
+        "fa": "تا حد ممکن نزدیک."
+      },
+      {
+        "de": "So groß, dass ich bei plötzlichem Bremsen dahinter halten kann.",
+        "fa": "آن‌قدر که با ترمز ناگهانی او بتوانم پشتش توقف کنم."
+      },
+      {
+        "de": "Nur nach der Farbe des Autos.",
+        "fa": "فقط بر اساس رنگ خودرو."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Der Abstand muss in der Regel auch bei plötzlichem Bremsen des vorausfahrenden Fahrzeugs ausreichen.",
+    "explanation_fa": "فاصله معمولاً باید برای توقف پشت خودروی جلویی، حتی در صورت ترمز ناگهانی او، کافی باشد.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__4.html"
+  },
+  {
+    "id": "three-minutes",
+    "topic": "Parken · پارک کردن",
+    "visual": "parking",
+    "de": "Sie halten freiwillig länger als drei Minuten. Was gilt rechtlich?",
+    "fa": "داوطلبانه بیش از سه دقیقه توقف می‌کنید. از نظر قانون چه محسوب می‌شود؟",
+    "options": [
+      {
+        "de": "Es ist immer nur kurzes Halten.",
+        "fa": "همیشه فقط توقف کوتاه است."
+      },
+      {
+        "de": "Es zählt nur bei ausgeschaltetem Motor.",
+        "fa": "فقط با موتور خاموش حساب می‌شود."
+      },
+      {
+        "de": "Es ist Parken.",
+        "fa": "پارک کردن محسوب می‌شود."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "explanation_de": "Wer sein Fahrzeug verlässt oder länger als drei Minuten hält, parkt. Verkehrsbedingtes Warten ist hier nicht gemeint.",
+    "explanation_fa": "کسی که وسیله را ترک کند یا بیش از سه دقیقه توقف کند، پارک کرده است. انتظار ناشی از ترافیک منظور این سؤال نیست.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__12.html"
+  },
+  {
+    "id": "driveway",
+    "topic": "Parken · پارک کردن",
+    "visual": "parking",
+    "de": "Dürfen Sie vor einer Grundstücksausfahrt parken?",
+    "fa": "آیا می‌توانید جلوی خروجی یک ملک پارک کنید؟",
+    "options": [
+      {
+        "de": "Grundsätzlich nein.",
+        "fa": "اصولاً خیر."
+      },
+      {
+        "de": "Mit Warnblinker ist es immer erlaubt.",
+        "fa": "با فلاشر همیشه مجاز است."
+      },
+      {
+        "de": "Ja, wenn das Auto klein ist.",
+        "fa": "بله، اگر خودرو کوچک باشد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Vor Grundstücksein- und -ausfahrten ist Parken grundsätzlich unzulässig. Warnblinker geben keine Sondererlaubnis.",
+    "explanation_fa": "پارک جلوی ورودی و خروجی ملک اصولاً مجاز نیست. فلاشر مجوز ویژه ایجاد نمی‌کند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__12.html"
+  },
+  {
+    "id": "leaving-property",
+    "topic": "Anfahren · شروع حرکت",
+    "visual": "junction",
+    "de": "Sie fahren aus einem Grundstück auf die Straße. Was müssen Sie sicherstellen?",
+    "fa": "از محوطهٔ یک ملک وارد خیابان می‌شوید. باید چه چیزی را تضمین کنید؟",
+    "options": [
+      {
+        "de": "Ich habe automatisch Vorfahrt.",
+        "fa": "خودکار حق تقدم دارم."
+      },
+      {
+        "de": "Andere Verkehrsteilnehmer werden nicht gefährdet.",
+        "fa": "دیگر کاربران راه به خطر نیفتند."
+      },
+      {
+        "de": "Ich muss nur auf Autos achten.",
+        "fa": "فقط باید مراقب خودروها باشم."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Beim Einfahren aus einem Grundstück muss eine Gefährdung anderer Verkehrsteilnehmer ausgeschlossen sein. Dazu gehören auch Fuß- und Radverkehr.",
+    "explanation_fa": "هنگام ورود از ملک به راه، نباید دیگر کاربران راه را به خطر بیندازید؛ عابران و دوچرخه‌سواران هم شامل‌اند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__10.html"
+  },
+  {
+    "id": "phone",
+    "topic": "Ablenkung · حواس‌پرتی",
+    "visual": "phone",
+    "de": "Sie warten bei laufendem Motor an Rot. Dürfen Sie das Handy zum Tippen in die Hand nehmen?",
+    "fa": "با موتور روشن پشت چراغ قرمز هستید. می‌توانید موبایل را برای تایپ در دست بگیرید؟",
+    "options": [
+      {
+        "de": "Ja, weil das Auto steht.",
+        "fa": "بله، چون خودرو ایستاده است."
+      },
+      {
+        "de": "Ja, solange eine Hand am Lenkrad bleibt.",
+        "fa": "بله، اگر یک دست روی فرمان بماند."
+      },
+      {
+        "de": "Nein.",
+        "fa": "خیر."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "explanation_de": "Ein elektronisches Gerät darf zur Benutzung grundsätzlich nicht aufgenommen oder gehalten werden. Ein laufender Motor an Rot hebt das Verbot nicht auf.",
+    "explanation_fa": "برای استفاده از وسیلهٔ الکترونیکی اصولاً نباید آن را بردارید یا در دست بگیرید. توقف پشت چراغ با موتور روشن این ممنوعیت را رفع نمی‌کند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__23.html"
+  },
+  {
+    "id": "blue-siren",
+    "topic": "Einsatzfahrt · امدادرسانی",
+    "visual": "siren",
+    "de": "Ein Einsatzfahrzeug fährt mit blauem Blinklicht und Einsatzhorn. Was tun Sie?",
+    "fa": "خودروی امدادی با چراغ آبی چشمک‌زن و آژیر می‌آید. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Sofort freie Bahn schaffen, ohne andere zu gefährden.",
+        "fa": "فوراً، بدون به‌خطرانداختن دیگران، راه را باز می‌کنم."
+      },
+      {
+        "de": "Direkt vor ihm stehen bleiben.",
+        "fa": "درست جلوی آن می‌ایستم."
+      },
+      {
+        "de": "Das Signal gilt nur für Fußgänger.",
+        "fa": "این علامت فقط برای عابران است."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Blaues Blinklicht zusammen mit dem Einsatzhorn ordnet an: Alle übrigen Verkehrsteilnehmer haben sofort freie Bahn zu schaffen.",
+    "explanation_fa": "چراغ آبی همراه آژیر دستور می‌دهد همهٔ دیگر کاربران راه فوراً مسیر را باز کنند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__38.html"
+  },
+  {
+    "id": "yellow-beacon",
+    "topic": "Warnlicht · چراغ هشدار",
+    "visual": "beacon",
+    "de": "Was bedeutet gelbes Blinklicht an einem Fahrzeug?",
+    "fa": "چراغ زرد چشمک‌زن روی خودرو چه معنایی دارد؟",
+    "options": [
+      {
+        "de": "Das Fahrzeug hat automatisch Vorfahrt.",
+        "fa": "آن خودرو خودکار حق تقدم دارد."
+      },
+      {
+        "de": "Es warnt vor Gefahren.",
+        "fa": "دربارهٔ خطر هشدار می‌دهد."
+      },
+      {
+        "de": "Alle müssen immer sofort anhalten.",
+        "fa": "همه باید همیشه فوراً توقف کنند."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "explanation_de": "Gelbes Blinklicht warnt vor Gefahren. Es verleiht allein keine allgemeine Vorfahrt.",
+    "explanation_fa": "چراغ زرد چشمک‌زن دربارهٔ خطر هشدار می‌دهد و به‌تنهایی حق تقدم عمومی ایجاد نمی‌کند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__38.html"
+  },
+  {
+    "id": "consideration",
+    "topic": "Rücksicht · رعایت دیگران",
+    "visual": "distance",
+    "de": "Was verlangt die StVO grundsätzlich von Ihnen?",
+    "fa": "قانون راهنمایی‌ورانندگی اصولاً چه چیزی از شما می‌خواهد؟",
+    "options": [
+      {
+        "de": "Ständig vorsichtig sein.",
+        "fa": "همیشه احتیاط کنم."
+      },
+      {
+        "de": "Gegenseitig Rücksicht nehmen.",
+        "fa": "دیگران را متقابلاً رعایت کنم."
+      },
+      {
+        "de": "Andere nicht gefährden.",
+        "fa": "دیگران را به خطر نیندازم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "§ 1 verlangt ständige Vorsicht und gegenseitige Rücksicht. Andere dürfen insbesondere nicht gefährdet werden. Hier sind alle drei Aussagen richtig.",
+    "explanation_fa": "مادهٔ ۱ احتیاط همیشگی و رعایت متقابل را لازم می‌داند؛ دیگران نباید به خطر بیفتند. در این سؤال هر سه گزینه درست‌اند.",
+    "source": "https://www.gesetze-im-internet.de/stvo_2013/__1.html"
+  }
+]
