@@ -1,0 +1,48 @@
+name: Deploy Nations Race and deliver owner Telegram links
+on:
+  push:
+    branches: [main]
+    paths:
+      - live-race/**
+      - scripts/deploy-race-live.py
+      - .github/workflows/deploy-race-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nations-race-free-hosting
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test compared race panel and shared state
+        working-directory: live-race
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+          node --check dist/race.js
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install official hosting client
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2'
+      - name: Publish free CPU Space and deliver private owner links
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/deploy-race-live.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nations-race-deployment
+          path: /tmp/race-live-deployment.json
+          if-no-files-found: ignore
+          retention-days: 14

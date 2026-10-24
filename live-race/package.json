@@ -1,0 +1,14 @@
+{
+  "name": "nations-live-race",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test --test-isolation=none race.test.mjs server.test.mjs"
+  },
+  "dependencies": {
+    "hpagent": "1.2.0",
+    "tiktok-live-connector": "^2.5.0",
+    "ws": "^8.18.0"
+  }
+}
