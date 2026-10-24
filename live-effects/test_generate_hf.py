@@ -12,10 +12,10 @@ class Tests(unittest.TestCase):
   self.tmp=tempfile.TemporaryDirectory();self.old=os.getcwd();os.chdir(self.tmp.name);Path('live-effects').mkdir();Path('live-effects/request.json').write_text(json.dumps(PLAN))
  def tearDown(self):os.chdir(self.old);self.tmp.cleanup()
  def run_with(self,fn):
-  with patch.dict(os.environ,{'HF_TOKEN':'test-placeholder','GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123'}),patch.dict(sys.modules,{'huggingface_hub':types.SimpleNamespace(InferenceClient=lambda **kw:types.SimpleNamespace(text_to_video=fn))}),patch.object(effects.urllib.request,'urlopen',return_value=Response()):effects.main()
- def test_exactly_four_and_completed_cache_is_reused(self):
+  with patch.dict(os.environ,{'HF_TOKEN':'test-placeholder','GITHUB_RUN_ATTEMPT':'1','GITHUB_RUN_ID':'123'}),patch.dict(sys.modules,{'huggingface_hub':types.SimpleNamespace(InferenceClient=lambda **kw:types.SimpleNamespace(image_to_video=fn))}),patch.object(effects.urllib.request,'urlopen',return_value=Response()):effects.main()
+ def test_exactly_two_and_completed_cache_is_reused(self):
   calls=[]
-  self.run_with(lambda *a,**kw:calls.append(kw) or b'x'*10001);self.assertEqual(len(calls),4)
+  self.run_with(lambda *a,**kw:calls.append(kw) or b'x'*10001);self.assertEqual(len(calls),2)
   self.run_with(lambda *a,**kw:self.fail('Completed clip resubmitted'))
   self.assertTrue(all(c['num_frames']==81 for c in calls))
  def test_unknown_outcome_stops_batch_and_cannot_resubmit(self):

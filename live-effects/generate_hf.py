@@ -3,14 +3,14 @@ import hashlib,json,os,sys,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
 
-IDS={'ice-dragon','fire-dragon','lion','diamond'}
-MODEL='Wan-AI/Wan2.2-T2V-A14B'
+IDS={'ice-dragon','fire-dragon'}
+MODEL='Wan-AI/Wan2.2-I2V-A14B'
 def now(): return datetime.now(timezone.utc).isoformat()
 def validate(plan):
- if plan.get('request_id')!='live-crown-particles-20261024-v1' or plan.get('authorize_credit') is not True: raise ValueError('Missing scoped credit authorization')
- if plan.get('max_billable_calls')!=4 or plan.get('num_frames')!=81: raise ValueError('Unexpected batch scope')
+ if plan.get('request_id')!='live-crown-dragons-reference-20261024-v2' or plan.get('authorize_credit') is not True: raise ValueError('Missing scoped credit authorization')
+ if plan.get('max_billable_calls')!=2 or plan.get('num_frames')!=81: raise ValueError('Unexpected batch scope')
  clips=plan.get('clips',[])
- if len(clips)!=4 or {c['id'] for c in clips}!=IDS: raise ValueError('Exactly four distinct effects required')
+ if len(clips)!=2 or {c['id'] for c in clips}!=IDS: raise ValueError('Exactly two reference corrections required')
  if any(not c.get('prompt') or len(c['prompt'])>6000 for c in clips): raise ValueError('Invalid prompt')
  return plan
 
@@ -24,7 +24,7 @@ def main():
  try:
   with urllib.request.urlopen(req,timeout=30) as response: json.load(response)
  except Exception as e: raise RuntimeError('Hugging Face authentication preflight failed: '+type(e).__name__) from None
- print('Hugging Face account authentication verified. Batch: four 81-frame clips; no Telegram delivery.',flush=True)
+ print('Hugging Face account authentication verified. Batch: two 81-frame reference correction clips; no Telegram delivery.',flush=True)
  if '--preflight' in sys.argv:return
  if os.environ.get('GITHUB_RUN_ATTEMPT','1')!='1':raise RuntimeError('Automatic re-submission is disabled on workflow reruns; reconcile receipts first')
  from huggingface_hub import InferenceClient
@@ -41,7 +41,7 @@ def main():
   receipt.write_text(json.dumps(record,indent=2))
   print(clip['id']+': submitting ONE authorized video request',flush=True)
   try:
-   data=client.text_to_video(clip['prompt'],model=MODEL,num_frames=81,num_inference_steps=27,seed=clip['seed'],extra_body={'aspect_ratio':'1:1','resolution':'720p','frames_per_second':16,'num_interpolated_frames':1,'adjust_fps_for_interpolation':True,'negative_prompt':plan['negative_prompt']})
+   data=client.image_to_video(Path('live-effects/keyframes')/(clip['id']+'.jpg'),prompt=clip['prompt'],model=MODEL,num_frames=81,num_inference_steps=27,seed=clip['seed'],resolution='720p',frames_per_second=16,num_interpolated_frames=1,adjust_fps_for_interpolation=True,negative_prompt=plan['negative_prompt'])
    if not isinstance(data,bytes) or len(data)<10000:raise RuntimeError('Provider did not return a video file')
    temp=out.with_suffix('.mp4.part');temp.write_bytes(data);temp.replace(out)
    record.update(status='complete',completed_at=now(),bytes=len(data),sha256=hashlib.sha256(data).hexdigest())
