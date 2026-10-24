@@ -24,7 +24,7 @@ preferences disable decorative CSS animations.
 
 A round lasts eight rolls per active position (32 with four active countries).
 The highest total wins; ties use position order. The winner's supporter/team
-photo appears on the wheel, then a new round starts after thirty seconds. Dice
+photo appears on the wheel, then a new round starts after fourteen seconds. Dice
 points reset; real gift totals and supporter rankings remain. Auto play and
 auto restart can be disabled independently in the panel. Manual dice clicks use
 the same server random roll and preserve the actual result between turns.
@@ -126,7 +126,7 @@ than evicting a supported country in the middle of play. Ties avoid removing
 the declared winner. Commenter photos replace DEMO portraits until a real gift
 supporter is available. Waiting rankings include retained dice and gift points.
 
-Victory lasts 30 seconds before automatic restart. It features the winning
+Victory lasts 14 seconds before automatic restart. It features the winning
 country's top supporter photo, a major-key musical cue, confetti and animated
 cloud/energy rings. At 50 gifts the original gold artwork is used; at 100 it
 becomes ice and over 100 it becomes the fire/dragon frame. Lower gift levels use
@@ -138,3 +138,29 @@ live-rings/public/frames/{gold,ice,fire}.png. The ring renderer is copied from
 live-driving-quiz/public/rings.js, itself based on live-rings/public/rings.js.
 The original major-key jingle is copied from
 live-driving-quiz/public/celebration.js. No paid media service is used.
+
+
+## Global country comments and unique voting
+Country recognition is offline and covers the ISO 3166 countries/regions plus
+XK (250 entries), using English, Persian, Arabic, German, Spanish, French,
+Turkish and other CLDR names. A flag or uppercase two-letter region code also
+works. Spain, España, اسپانیا and 🇪🇸 resolve to the same entry. Flag SVGs are
+bundled locally (additional flags are gzip/base64 packed in the static catalogue)
+and cached after decoding; no flag CDN request is needed during LIVE.
+
+Each TikTok viewer contributes at most one country comment per country for the
+session, even if they repeat it in another language or as a flag. Unique voter
+IDs remain in runtime state and are omitted from public snapshots. Country
+comment counts survive ordinary rounds and shuffled positions.
+
+A new country comment immediately replaces the lowest-scoring active country
+that has no gifts. When supported countries have received no new gift for a
+full minute, the eligible country with the lowest points is replaced by the
+waiting country with the most unique country comments. A fresh gift renews the
+minute. With no waiting votes, no supported country is removed by this timer.
+
+The invitation is placed above the wheel, with large solid gold lettering,
+a turquoise accent and an animated reflective frame. A locally bundled bold
+Vazirmatn font (same repository font and OFL license) removes reliance on Google
+Fonts. Country titles occupy a full frame header; scores and gift counts are
+larger. Championship display and auto-restart now use 14 seconds.
