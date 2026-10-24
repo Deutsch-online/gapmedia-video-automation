@@ -5,3 +5,5 @@
 .roar-preview{font-size:10px;padding:4px 9px;margin-top:8px;color:#edcc8d}.settings-line input[type=range]{width:130px;accent-color:#ebc779}
 
 #access-form[hidden]{display:none}#access-box[data-valid="true"]{border-color:#42775d}#access-box[data-valid="false"]{border-color:#ad8146}#access-form{margin-top:16px}
+
+.simple-panel main{margin:0 auto;max-width:1100px;padding:28px 22px}.simple-panel header{margin-bottom:20px}.simple-panel h1{font-size:27px}.simple-panel #connect-form input{font-size:19px;padding:12px}.simple-panel #connect-form button{padding:12px 24px;font-size:16px}.simple-panel #connection-message{font-size:15px;color:#e9ce93;margin-top:18px}.simple-live-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.simple-live-grid>article:last-child{grid-column:1/-1}.simple-panel details.advanced>summary{font-size:15px;color:#d1b678;cursor:pointer}.simple-panel .advanced>section{margin-top:24px}.simple-panel .level-grid{grid-template-columns:repeat(3,1fr)}.simple-panel .bottom-grid{grid-template-columns:1.2fr 1fr}@media(max-width:650px){.simple-live-grid,.simple-panel .bottom-grid{grid-template-columns:1fr}.simple-panel main{padding:18px 12px}}
