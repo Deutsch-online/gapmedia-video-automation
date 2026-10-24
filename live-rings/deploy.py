@@ -22,7 +22,7 @@ api.add_space_variable(repo,key='PUBLIC_URL',value=url)
 build=os.environ.get('GITHUB_SHA','manual');api.add_space_variable(repo,key='RINGS_BUILD_SHA',value=build)
 public=serialization.load_pem_public_key((app/'delivery-public.pem').read_bytes())
 sealed=public.encrypt(admin.encode(),padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
-files=[app/'server.mjs',app/'model.mjs',app/'Dockerfile',app/'package.json',*sorted(f for f in (app/'public').rglob('*') if f.is_file() and f.name!='delivery.json')]
+files=[app/'server.mjs',app/'model.mjs',app/'connection.mjs',app/'Dockerfile',app/'package.json',*sorted(f for f in (app/'public').rglob('*') if f.is_file() and f.name!='delivery.json')]
 operations=[CommitOperationAdd(path_in_repo=f.relative_to(app).as_posix(),path_or_fileobj=str(f)) for f in files]
 operations.append(CommitOperationAdd(path_in_repo='public/delivery.json',path_or_fileobj=json.dumps({'url':url,'sealed':base64.b64encode(sealed).decode()}).encode()))
 operations.append(CommitOperationAdd(path_in_repo='README.md',path_or_fileobj=b'---\ntitle: Live Rings Studio\nemoji: \xe2\x9c\xa8\ncolorFrom: yellow\ncolorTo: red\nsdk: docker\napp_port: 7860\npinned: false\n---\n\nLive guest rings with private control panel.\n'))

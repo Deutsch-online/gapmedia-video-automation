@@ -17,7 +17,7 @@ function cloud(ctx,x,y,radius,color,opacity){
  if(sprite){ctx.drawImage(sprite,x-radius,y-radius,radius*2,radius*2);return;}
  const g=ctx.createRadialGradient(x,y,0,x,y,radius);g.addColorStop(0,`rgba(${rgb(color)},.55)`);g.addColorStop(1,`rgba(${rgb(color)},0)`);ctx.fillStyle=g;ctx.fillRect(x-radius,y-radius,radius*2,radius*2);
 }
-export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyle='orbit'}={}){
+export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyle='orbit',ornaments=false}={}){
  if(!level)return;const id=typeof level==='string'?level:level.id,p=palettes[id]||palettes.simple,rank=ranks[id]??0;
  const t=time*.001*(.6+speed*.35),r=size*.5,power=.75+intensity*.25;
  ctx.save();ctx.translate(x,y);
@@ -25,12 +25,12 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,r-size*.022,0,TAU);ctx.clip('evenodd');
  ctx.globalCompositeOperation='screen';ctx.shadowBlur=0;
  // Drifting cloud banks: higher tiers add layers, density and a wider halo.
- const banks=18+rank*9,layers=1+Math.floor(rank/2);
+ const banks=30+rank*14,layers=1+Math.floor(rank/2);
  for(let layer=0;layer<layers;layer++)for(let i=0;i<banks;i++){
   const phase=i*2.39996+layer*1.77,a=i/banks*TAU+t*(layer%2?-.13:.11)+Math.sin(phase+t*.45)*.13;
-  const breath=.5+.5*Math.sin(phase*1.6+t*.95),radius=r+size*(.018+layer*.022+breath*(.015+rank*.006));
+  const breath=.5+.5*Math.sin(phase*1.6+t*.95),radius=r+size*(.018+layer*.022+breath*(.025+rank*.013));
   const puff=size*(.034+rank*.006+breath*.022)*(1+layer*.12);
-  cloud(ctx,Math.cos(a)*radius,Math.sin(a)*radius,puff,p[(i+layer)%3===0?1:0],(.16+rank*.035)*power*(.6+.4*breath));
+  cloud(ctx,Math.cos(a)*radius,Math.sin(a)*radius,puff,p[(i+layer)%3===0?1:0],(.28+rank*.05)*power*(.6+.4*breath));
  }
  // Continuous ripples travel around the halo, rather than a static border.
  const waves=1+Math.floor(rank/2);
@@ -43,10 +43,10 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  if(id==='simple'&&simpleStyle==='dots')ctx.setLineDash([size*.012,size*.04]);
  for(let j=0;j<(id==='simple'?(simpleStyle==='double'?2:1):2);j++){ctx.beginPath();ctx.arc(0,0,r+j*size*.022,0,TAU);ctx.stroke();}ctx.setLineDash([]);ctx.shadowBlur=0;
  // Outward-moving dust, frost and embers; particle counts increase with every tier.
- const particles=14+rank*15;
+ const particles=30+rank*26;
  for(let i=0;i<particles;i++){
   const seed=i*2.39996,life=((t*(.15+rank*.025)+i*.618034)%1+1)%1,angle=seed+t*(i%2?.12:-.09);
-  const radius=r+size*(.018+life*(.035+rank*.014)),px=Math.cos(angle)*radius,py=Math.sin(angle)*radius;
+  const radius=r+size*(.018+life*(.07+rank*.022)),px=Math.cos(angle)*radius,py=Math.sin(angle)*radius;
   ctx.globalAlpha=Math.sin(life*Math.PI)*(.4+rank*.06)*power;ctx.fillStyle=i%4===0?p[1]:p[0];
   ctx.save();ctx.translate(px,py);ctx.rotate(seed+t*.5);
   if(id==='ice'){
@@ -79,5 +79,5 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  ctx.restore();
  // AI-painted transparent ornaments sit over the animated mist and energy ring.
  const art=frameArt.get(id);
- if(art){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,size*.32,0,TAU);ctx.clip('evenodd');const breathe=1+Math.sin(t*.9)*.007,span=size*1.61*breathe;ctx.rotate(Math.sin(t*.6)*(id==='gold'?.002:.006));ctx.shadowColor=p[0];ctx.shadowBlur=size*(.025+.012*Math.sin(t*1.6)**2)*power;ctx.drawImage(art,-span/2,-span/2,span,span);ctx.restore();}
+ if(art&&ornaments){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,size*.32,0,TAU);ctx.clip('evenodd');const breathe=1+Math.sin(t*.9)*.007,span=size*1.61*breathe;ctx.rotate(Math.sin(t*.6)*(id==='gold'?.002:.006));ctx.shadowColor=p[0];ctx.shadowBlur=size*(.025+.012*Math.sin(t*1.6)**2)*power;ctx.drawImage(art,-span/2,-span/2,span,span);ctx.restore();}
 }
