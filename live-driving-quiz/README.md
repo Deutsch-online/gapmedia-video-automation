@@ -289,3 +289,21 @@ no raw upstream payloads, URLs, cookies or tokens. Demo injections do not enter
 this real-event log. Prior unlogged events cannot be reconstructed or claimed
 as recovered. The state resets on a new room/process, as the existing LIVE
 participant counters do.
+
+### Section sessions, replay and overlay controls
+
+The session selector groups the 200 loaded questions by their original catalogue
+prefix (for example `1.2.09`); labels come from the original source URL. Counts
+refer to the loaded bank, not the publisher's entire catalogue. General sessions
+retain the 50-question minimum; a source section can contain fewer questions and
+allows 1 through its displayed count. Selecting settings affects the next session.
+`repeat-session` explicitly replays the exact current/finished plan in the same
+order without deleting completed history or enabling global repeats. Demo plans
+remain isolated from real progress.
+
+The owner sets the post-answer wait from 0–300 seconds independently of the
+question timer. Liker and gifter ring styles can be chosen independently, including
+automatic tiers or no ring; the artwork and renderer reuse `live-rings/public`.
+Floating hearts belong only to the highlighted portrait. Real MEMBER events show
+a bounded, transient name toast rising from the lower right; the private panel's
+join test is restricted to demo mode. No join history is persisted.

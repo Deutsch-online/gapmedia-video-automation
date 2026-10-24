@@ -30,3 +30,16 @@ test('expanding a 150-question bank to 200 preserves active plans and completed 
  assert.deepEqual(restored.session,original.session);assert.deepEqual(restored.completed,original.completed);assert.equal(restored.summary().bankTotal,200);assert.equal(restored.summary().freshTotal,199);
  restored.configure(200,true);restored.create();assert.equal(restored.session.ids.length,200);assert.equal(new Set(restored.session.ids).size,200);
 });
+
+import {bankSections} from '../sections.mjs';
+test('source sections constrain new sessions, persist and can replay exact completed plan without global repeats',()=>{
+ const questions=Array.from({length:60},(_,i)=>({id:(i<7?'1.2.09':'1.3.01')+'-'+i,source:'https://example.com/1.2.09-abbiegen-wenden-und-rueckwaertsfahren/x'}));
+ const groups=bankSections(questions),s=new QuizSessions(questions.map(q=>q.id),{}, {...opts,groups});
+ assert.equal(groups['1.2.09'].ids.length,7);assert.match(groups['1.2.09'].label,/abbiegen/);
+ assert.throws(()=>s.configure(8,false,'1.2.09'));assert.throws(()=>s.configure(1,false,'missing'));
+ s.configure(7,false,'1.2.09');s.create();const plan=[...s.session.ids],sessionId=s.session.id;
+ for(let i=0;i<7;i++){s.complete(s.current());s.next();}assert.equal(s.summary().finished,true);
+ s.repeat();assert.notEqual(s.session.id,sessionId);assert.deepEqual(s.session.ids,plan);assert.equal(s.summary().done,0);assert.equal(s.allowRepeat,false);assert.equal(s.current(),plan[0]);assert.equal(Object.keys(s.completed).length,7);
+ const restored=new QuizSessions(questions.map(q=>q.id),s.export(),{...opts,groups});assert.equal(restored.size,7);assert.equal(restored.section,'1.2.09');assert.deepEqual(restored.session.ids,plan);
+ restored.configure(50,false,'all');restored.create();assert.equal(restored.session.ids.length,50);assert.ok(restored.session.ids.every(id=>!plan.includes(id)));
+});

@@ -4,6 +4,7 @@ try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=se
 history.replaceState(null,'',location.pathname);
 let giftStyleDirty=false,activityDirty=false,activityProfilesSignature;
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
+let waitDirty=false,frameDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
@@ -63,8 +64,13 @@ function render(s){
  const profiles=[s.activityFocus,...s.supporters].filter(Boolean),profileSig=JSON.stringify(profiles.map(p=>[p.personKey,p.username,p.name]));
  if(profileSig!==activityProfilesSignature){activityProfilesSignature=profileSig;const seen=new Set();$('activityProfiles').replaceChildren(...profiles.filter(p=>p.username&&!seen.has(p.username)&&seen.add(p.username)).map(p=>{const link=document.createElement('a');link.href='https://www.tiktok.com/@'+encodeURIComponent(p.username);link.target='_blank';link.rel='noopener noreferrer';link.textContent=p.name+' · Follow +';return link;}));}
 
- if(s.session){const q=s.session;if(!sessionDirty){$('sessionSize').value=q.configuredSize;$('sessionSize').max=q.bankTotal;$('allowRepeat').checked=q.allowRepeat;}
- $('sessionStatus').textContent=`${s.mode==='demo'?'آزمایشی — ':''}جلسهٔ ${q.number}: ${q.review?'مرور دستی':q.position+' از '+q.size}؛ انجام‌شده در جلسه ${q.done}؛ کل انجام‌شده ${q.completedTotal}؛ تازه ${q.freshTotal}.${q.finished?' جلسه تمام شده؛ جلسهٔ جدید را بزنید.':''} ذخیره: ${s.sessionStorage?.status||'—'}${s.sessionStorage?.error?' — '+s.sessionStorage.error:''}`;
+ if(!waitDirty)$('waitSeconds').value=s.waitSeconds??12;
+ if(!frameDirty){$('likerFrame').value=s.profileFrames?.liker||'auto';$('gifterFrame').value=s.profileFrames?.gifter||'auto';}
+ if(s.session){const q=s.session;
+ const sectionSelect=$('sessionSection');if(sectionSelect.options.length!==q.sections?.length){sectionSelect.replaceChildren(...(q.sections||[]).map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.label+' · '+g.count+' سؤال';o.dataset.count=g.count;return o;}));}
+ $('repeatSession').disabled=!q.hasSession;
+if(!sessionDirty){$('sessionSection').value=q.section||'all';$('sessionSize').min=q.minSize;$('sessionSize').value=q.configuredSize;$('sessionSize').max=q.poolTotal;$('allowRepeat').checked=q.allowRepeat;}
+ $('sessionStatus').textContent=`${s.mode==='demo'?'آزمایشی — ':''}جلسهٔ ${q.number}: ${q.review?'مرور دستی':q.position+' از '+q.size}؛ انجام‌شده در جلسه ${q.done}؛ کل انجام‌شده ${q.completedTotal}؛ تازه ${q.freshTotal}.${q.finished?' جلسه تمام شده؛ تکرار همین جلسه یا جلسهٔ جدید را بزنید.':''} ذخیره: ${s.sessionStorage?.status||'—'}${s.sessionStorage?.error?' — '+s.sessionStorage.error:''}`;
  const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
 
  if(!languageDirty)$('showPersian').checked=s.showPersian;
@@ -136,7 +142,7 @@ $('showPersian').addEventListener('change',async()=>{
 
 $('sessionSize').addEventListener('input',()=>{sessionDirty=true;});
 $('allowRepeat').addEventListener('change',()=>{sessionDirty=true;});
-async function saveSession(){const result=await api('session-settings',{size:Number($('sessionSize').value),allowRepeat:$('allowRepeat').checked});if(result){sessionDirty=false;render(result.state);}return result;}
+async function saveSession(){const result=await api('session-settings',{section:$('sessionSection').value,size:Number($('sessionSize').value),allowRepeat:$('allowRepeat').checked});if(result){sessionDirty=false;render(result.state);}return result;}
 $('saveSession').addEventListener('click',saveSession);
 $('newSession').addEventListener('click',async()=>{if(await api('pause')&&await saveSession())await api('new-session');});
 $('retrySession').addEventListener('click',()=>api('retry-session-save'));
@@ -148,3 +154,11 @@ for(const id of ['activitySide','activityCount','activityTop'])$(id).addEventLis
 $('saveActivity').addEventListener('click',async()=>{const result=await api('activity-display',{side:$('activitySide').value,count:Number($('activityCount').value),top:Number($('activityTop').value)});if(result){activityDirty=false;render(result.state);}});
 
 $('refreshGiftEvents').addEventListener('click',async()=>{try{const response=await fetch('/api/admin/gift-events',{headers:{Authorization:'Bearer '+token}});if(!response.ok)throw Error('دسترسی به گزارش ممکن نیست.');const data=await response.json();$('giftEventStatus').textContent=data.events.length?data.events.map(e=>`${new Date(e.at).toLocaleTimeString('en-GB')} · ${e.username?'@'+e.username:'فرستنده'} · Gift #${e.giftId} × ${e.count??'?'} · ${e.accepted?(e.pending?'در حال ارسال؛ نمایش فعال':e.updated?'تعداد به‌روز شد':'ثبت و نمایش شد'):'رد: '+e.reason}`).join('\n'):'پس از این نسخه هنوز رویداد گیفتی دریافت نشده است؛ رویدادهای گذشته بازسازی نمی‌شوند.';}catch(e){$('giftEventStatus').textContent=e.message;}});
+
+$('sessionSection').addEventListener('change',()=>{sessionDirty=true;const option=$('sessionSection').selectedOptions[0],max=Number(option.dataset.count);$('sessionSize').min=option.value==='all'?50:1;$('sessionSize').max=max;$('sessionSize').value=Math.min(max,Number($('sessionSize').value));});
+$('repeatSession').addEventListener('click',async()=>{if(await api('pause'))await api('repeat-session');});
+$('waitSeconds').addEventListener('input',()=>{waitDirty=true;});
+$('saveWaitTime').addEventListener('click',async()=>{const result=await api('wait-time',{seconds:Number($('waitSeconds').value)});if(result){waitDirty=false;render(result.state);}});
+for(const id of ['likerFrame','gifterFrame']){for(const [value,label] of Object.entries({auto:'خودکار بر اساس امتیاز',none:'بدون قاب',simple:'ساده',glow:'نورانی',silver:'نقره‌ای',gold:'طلایی',ice:'الماسی',fire:'آتش و اژدها'})){const o=document.createElement('option');o.value=value;o.textContent=label;$(id).append(o);}$(id).addEventListener('change',()=>{frameDirty=true;});}
+$('saveProfileFrames').addEventListener('click',async()=>{const result=await api('profile-frames',{liker:$('likerFrame').value,gifter:$('gifterFrame').value});if(result){frameDirty=false;render(result.state);}});
+$('testJoin').addEventListener('click',()=>api('simulate-join'));

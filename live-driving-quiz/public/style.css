@@ -386,3 +386,13 @@
 .screen-body .bank-question .option-de{font-weight:850;color:#17323f;text-shadow:0 1px 0 #ffffffbb,0 2px 1px #193a4a2b}
 .screen-body #questionFa{font-weight:850;color:#214638;text-shadow:0 1px 0 #ffffffb8,0 2px 1px #1b48342b}
 .screen-body .bank-question .option-fa{font-weight:800;color:#244b3d;text-shadow:0 1px 0 #ffffffb8,0 2px 1px #1b483426}
+
+/* Reactions belong only to the highlighted portrait, never the screen edges. */
+.edge-reactions{display:none!important}
+.focus-hearts{position:absolute;inset:-22px;pointer-events:none;overflow:visible}
+.focus-hearts i{position:absolute;left:calc(10% + var(--i)*18%);bottom:10%;font:34px Arial;color:#ff598b;font-style:normal;animation:focus-heart-rise 3.4s linear infinite;animation-delay:calc(var(--i)*-.68s);text-shadow:0 2px 8px #eb347e66}
+@keyframes focus-heart-rise{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:.9}100%{transform:translateY(-210px) scale(1.2);opacity:0}}
+.join-toasts{position:absolute;right:70px;bottom:210px;width:370px;height:580px;pointer-events:none;z-index:20;overflow:hidden}
+.join-toast{position:absolute;bottom:0;right:0;max-width:100%;padding:12px 18px;border:1px solid #ffffff70;border-radius:24px;background:#174d3788;backdrop-filter:blur(8px);color:white;font-size:26px;font-weight:750;overflow-wrap:anywhere;animation:join-rise 8s linear both}
+@keyframes join-rise{0%{transform:translateY(40px);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateY(-480px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.focus-hearts{display:none}.join-toast{animation:none}}

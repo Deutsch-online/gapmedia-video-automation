@@ -26,6 +26,14 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('activity-display',{side:'left',count:5,top:300})).status,200);
   assert.deepEqual((await(await fetch(base+'/api/state')).json()).activityDisplay,{side:'left',count:5,top:300});
 
+  assert.equal((await post('wait-time',{seconds:-1})).status,400);
+  assert.equal((await post('wait-time',{seconds:23})).status,200);
+  assert.equal((await(await fetch(base+'/api/state')).json()).waitSeconds,23);
+  assert.equal((await post('profile-frames',{liker:'gold',gifter:'fire'})).status,200);
+  assert.equal((await post('profile-frames',{liker:'evil',gifter:'fire'})).status,400);
+  assert.deepEqual((await(await fetch(base+'/api/state')).json()).profileFrames,{liker:'gold',gifter:'fire'});
+  assert.equal((await post('simulate-join')).status,200);
+  assert.equal((await(await fetch(base+'/api/state')).json()).joins.length,1);
   assert.equal((await post('narration',{enabled:'yes'})).status,400);assert.equal((await post('narration',{enabled:false})).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationEnabled,false);
   assert.equal((await post('narration',{enabled:true})).status,200);assert.equal((await post('narration-repeat')).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationReplay,1);
   assert.equal((await fetch(base+'/narration/not-a-question.wav')).status,404);

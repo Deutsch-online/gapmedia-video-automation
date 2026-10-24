@@ -9,13 +9,15 @@ function updateCopy(node,person){
  let coins=copy.querySelector('.supporter-coins');if(person.kind==='gift'&&person.coins!==null){if(!coins){coins=el('small','supporter-coins');copy.append(coins);}coins.textContent=person.coins+' 🪙';}else coins?.remove();
  let likes=copy.querySelector('.supporter-likes');if(person.likes>0){if(!likes){likes=el('small','supporter-likes');copy.append(likes);}likes.textContent='♥ '+person.likeLabel;}else likes?.remove();
 }
+let frameSettings={};
 function card(person,focus=false){
  const gift=person.kind==='gift',node=el('div',`supporter ${gift?'activity-gift':'activity-like'} tier-${person.tier}${person.newest?' newest':''}${focus?' activity-feature':''}`);node.dataset.person=person.personKey||person.key;
  if(focus)node.append(el('strong','activity-feature-title',gift?'Danke für dein Geschenk!':'Top Likes · Danke!'));
  const orb=el('div','supporter-orb'),photo=el('div','supporter-photo',Array.from(person.name||'?')[0]);
  if(person.avatar){const img=document.createElement('img');img.src=person.avatar;img.alt=person.name;img.referrerPolicy='no-referrer';img.addEventListener('error',()=>img.remove(),{once:true});photo.append(img);}
  orb.append(photo);
- const canvas=document.createElement('canvas');canvas.className='studio-profile-ring';canvas.width=canvas.height=focus?240:144;canvas.dataset.level=({vip:'fire',diamond:'ice',gold:'gold',silver:'silver',simple:'simple',bubble:'glow',crown:'gold',liked:'glow',basic:'simple'})[person.tier]||'simple';canvas.dataset.feature=focus?'1':'0';orb.append(canvas);
+ const canvas=document.createElement('canvas');canvas.className='studio-profile-ring';canvas.width=canvas.height=focus?240:144;canvas.dataset.level=({vip:'fire',diamond:'ice',gold:'gold',silver:'silver',simple:'simple',bubble:'glow',crown:'gold',liked:'glow',basic:'simple'})[person.tier]||'simple';canvas.dataset.feature=focus?'1':'0';const chosen=frameSettings[gift?'gifter':'liker'];if(chosen&&chosen!=='auto')canvas.dataset.level=chosen;orb.append(canvas);
+ if(focus){const hearts=el('div','focus-hearts');for(let i=0;i<5;i++){const heart=el('i','','♥');heart.style.setProperty('--i',i);hearts.append(heart);}orb.append(hearts);}
  const copy=el('div','activity-copy');copy.append(el('span','supporter-name',person.name));
  if(gift){copy.append(el('small','supporter-gift',giftLabel(person)));if(person.coins!==null)copy.append(el('small','supporter-coins',person.coins+' 🪙'));}
  if(person.likes>0)copy.append(el('small','supporter-likes','♥ '+person.likeLabel));
@@ -34,11 +36,12 @@ export function renderActivity(state){
  const config=state.activityDisplay||{side:'right',count:8,top:220},focus=state.activityFocus;
  const show=$('show');show.classList.toggle('activity-left',config.side==='left');show.style.setProperty('--activity-top',(config.top||220)+'px');
  const rows=(state.supporters||[]).filter(p=>!focus||p.personKey!==focus.personKey).slice(0,Math.max(0,config.count-(focus?1:0)));
- const next=JSON.stringify([focus,rows]);if(signature===next){requestAnimationFrame(fitList);return;}signature=next;drawnStatic=false;
+ frameSettings=state.profileFrames||{};renderJoins(state.joins||[]);
+ const next=JSON.stringify([focus,rows,frameSettings]);if(signature===next){requestAnimationFrame(fitList);return;}signature=next;drawnStatic=false;
  const rail=$('supporterRail');const oldFocus=rail.querySelector('.activity-feature');
  // Preserve the enlarged portrait when only its like count changes.
  let featured;
- if(focus){const identity=JSON.stringify([focus.key,focus.kind,focus.tier,focus.avatar,focus.username]);
+ if(focus){const identity=JSON.stringify([focus.key,focus.kind,focus.tier,focus.avatar,focus.username,frameSettings]);
   if(oldFocus?.dataset.identity===identity){featured=oldFocus;updateCopy(featured,focus);}
   else{featured=card(focus,true);featured.dataset.identity=identity;}
  }
@@ -55,6 +58,7 @@ function animateFrames(time){
   for(const canvas of document.querySelectorAll('.studio-profile-ring')){
    const feature=canvas.dataset.feature==='1';if(!still&&!(feature?main:small))continue;
    const ctx=canvas.getContext('2d'),span=canvas.width;ctx.clearRect(0,0,span,span);
+   if(canvas.dataset.level==='none')continue;
    drawRing(ctx,span/2,span/2,span*.61,canvas.dataset.level,still?0:time,{speed:1,intensity:feature?1.2:.7,ornaments:feature});
   }
   if(main)lastMain=time;if(small)lastSmall=time;drawnStatic=still;
@@ -63,3 +67,6 @@ function animateFrames(time){
 }
 reduced.addEventListener('change',()=>{drawnStatic=false;});
 requestAnimationFrame(animateFrames);
+
+const seenJoins=new Set();
+function renderJoins(joins){let host=$('joinToasts');if(!host){host=el('div','join-toasts');host.id='joinToasts';host.setAttribute('aria-live','polite');$('show').append(host);}for(const join of joins){if(seenJoins.has(join.key))continue;seenJoins.add(join.key);if(seenJoins.size>500)seenJoins.delete(seenJoins.values().next().value);const age=Date.now()-join.at;if(age>8000)continue;const toast=el('div','join-toast',join.name+' · ist beigetreten');toast.style.animationDelay=-(Math.max(0,age)/1000)+'s';host.append(toast);toast.addEventListener('animationend',()=>toast.remove(),{once:true});setTimeout(()=>toast.remove(),8500);while(host.children.length>5)host.firstElementChild.remove();}}

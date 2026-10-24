@@ -14,6 +14,7 @@ import {GIFT_PRESET_VERSION,presetGifts,configuredGift,observeGift} from './gift
 import {SupporterWall,DEFAULT_GIFT_STYLE,validGiftStyle,styledGiftTier} from './supporters.mjs';
 import {LiveReconnect} from './reconnect.mjs';
 import {LikeWall,activityWall,activityFocus} from './likes.mjs';
+import {bankSections} from './sections.mjs';
 import {QuizSessions} from './sessions.mjs';
 import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
@@ -32,7 +33,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0;
 let narrationInfo;
-const defaults={giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -50,15 +51,17 @@ const savedActivity=loadedProgress?.activityDisplay;
 if(savedActivity&&['left','right'].includes(savedActivity.side)&&Number.isInteger(savedActivity.count)&&savedActivity.count>=1&&savedActivity.count<=10&&Number.isInteger(savedActivity.top)&&savedActivity.top>=80&&savedActivity.top<=400)settings.activityDisplay={side:savedActivity.side,count:savedActivity.count,top:savedActivity.top};
 if(validGiftStyle(loadedProgress?.giftStyle))settings.giftStyle=loadedProgress.giftStyle;
 
-const ids=quiz.questions.map(q=>q.id);
-const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{});
-let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat});
+if(Number.isInteger(loadedProgress?.waitSeconds)&&loadedProgress.waitSeconds>=0&&loadedProgress.waitSeconds<=300)settings.waitSeconds=loadedProgress.waitSeconds;
+if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFrames;
+const ids=quiz.questions.map(q=>q.id);const groups=bankSections(quiz.questions);
+const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{},{groups});
+let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat},{groups});
 const sessions=()=>mode==='live'?liveSessions:demoSessions;
 let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -71,7 +74,8 @@ let mode='demo',autoplay=false,advanceAt=null,connection=null,connecting=false;
 const reconnect=new LiveReconnect({enabled:Boolean(hosting.publicOrigin)&&settings.autoReconnect!==false});
 let resumeOnReconnect=false,connectGeneration=0;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
-let recent=[],lastReject=null;
+let recent=[],lastReject=null;let recentJoins=[];
+function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const key=String(data.common?.msgId||randomUUID());if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,at:Date.now()});recentJoins=recentJoins.slice(-8);}
 const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,giftProfilesRecorded:0,giftProfilesUpdated:0,giftProgressReceived:0,giftDisplayRejected:0,giftDuplicates:0,lastGiftDisplayReject:null,lastCommentReject:null,lastGiftReject:null});
 let traffic=freshTraffic();let giftDisplayEvents=[];
 function recordGiftDisplay(event,result){
@@ -95,13 +99,13 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){questionTrail=[];trailIndex=-1;roundControlGeneration++;supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){recentJoins=[];questionTrail=[];trailIndex=-1;roundControlGeneration++;supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.constructor?.name||error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -155,6 +159,7 @@ async function connect(username,startOnConnect=false,automatic=false) {
     broadcast();
   }
   client.on(WebcastEvent.GIFT,data=>{if(connection!==client)return;if(live.status==='connecting'){pendingGifts.push(data);if(pendingGifts.length>256)pendingGifts.shift();return;}handleGift(data);});
+  client.on(WebcastEvent.MEMBER,data=>{if(connection!==client||live.status!=='connected')return;receiveJoin(data);broadcast();});
   client.on(WebcastEvent.LIKE,data=>{if(connection!==client||live.status!=='connected')return;traffic.likesReceived++;likes.observe(data);broadcast();});
   client.on(WebcastEvent.CHAT,data=>{
     if(connection!==client)return;
@@ -247,14 +252,14 @@ const server=http.createServer(async(req,res)=>{
         const guest=guests.guests.find(g=>g.key===data.key);if(!guest?.userId)throw Error('شناسهٔ عددی مهمان برای آزمایش لازم است.');
         const result=guests.gift({receiverUserId:guest.userId,giftId:'demo-guest-gift',giftName:'Testgeschenk',diamondCount:500,repeatCount:1,user:{id:'demo-donor',nickname:'حامی آزمایشی'},common:{msgId:randomUUID(),createTime:Date.now()}});if(!result.accepted)throw Error(result.reason);
       }
-      else if(action==='session-settings'){sessions().configure(Number(data.size),data.allowRepeat);persistSession();await flushSession();}
+      else if(action==='session-settings'){sessions().configure(Number(data.size),data.allowRepeat,data.section||"all");persistSession();await flushSession();}
       else if(action==='retry-session-save'){if(!sessionStore.ready)throw Error('پیشرفت خوانده نشده است؛ سرور را دوباره راه‌اندازی کنید.');await sessionStore.retry(progressData());sessionError=null;}
-      else if(action==='new-session'){
+      else if(action==='repeat-session'||action==='new-session'){
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
-        await flushSession();const id=sessions().create();questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
+        await flushSession();const id=action==='repeat-session'?sessions().repeat():sessions().create();roundControlGeneration++;questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
       }
       else if(action==='start'){const generation=++roundControlGeneration;await startRound({generation});}
-      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+12000;}
+      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+settings.waitSeconds*1000;}
       else if(action==='select'){
         sessions().review(String(data.id));const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;quiz.pause();quiz.select(String(data.id));advanceAt=null;await startRound({generation});
       }
@@ -302,6 +307,13 @@ const server=http.createServer(async(req,res)=>{
         const volume=Number(data.volume);if(typeof data.enabled!=='boolean'||!Number.isInteger(volume)||volume<0||volume>100)throw Error('تنظیم صدا معتبر نیست.');
         settings.celebrationMusic=data.enabled;settings.musicVolume=volume;save();
       }
+      else if(action==='wait-time'){
+        if(!Number.isInteger(data.seconds)||data.seconds<0||data.seconds>300)throw Error('زمان انتظار باید بین 0 و 300 ثانیه باشد.');settings.waitSeconds=data.seconds;if(quiz.phase==='revealed')advanceAt=Date.now()+data.seconds*1000;await persistDisplay();
+      }
+      else if(action==='profile-frames'){
+        if(!['auto','none','simple','glow','silver','gold','ice','fire'].includes(data.liker)||!['auto','none','simple','glow','silver','gold','ice','fire'].includes(data.gifter))throw Error('قاب نامعتبر است.');settings.profileFrames={liker:data.liker,gifter:data.gifter};await persistDisplay();
+      }
+      else if(action==='simulate-join'){if(mode!=='demo')throw Error('فقط در حالت آزمایشی');receiveJoin({user:{nickname:'Demo · Neuer Besucher'}});}
       else if(action==='question-time'){
         const seconds=Number(data.seconds);if(!Number.isInteger(seconds)||seconds<10||seconds>300)throw Error('زمان پاسخ باید عدد صحیح بین 10 و 300 ثانیه باشد.');
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');
@@ -382,7 +394,7 @@ server.on('upgrade',(req,socket,head)=>{
 });
 const tick=setInterval(async()=>{
   if(reconnect.due({connecting,connected:Boolean(connection)}))void connect(settings.username,false,true).catch(()=>{reconnect.failed();});
-  quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+12000;
+  quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+settings.waitSeconds*1000;
   if(autoplay&&!advancing&&quiz.phase==='revealed'&&Date.now()>=advanceAt){advancing=true;try{if(await nextRound())await startRound();}catch(error){autoplay=false;sessionError=error.message;}finally{advancing=false;}}
   broadcast();
 },500);
