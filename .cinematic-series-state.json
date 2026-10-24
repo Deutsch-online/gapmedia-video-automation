@@ -1411,7 +1411,7 @@
       }
     },
     "date": "2026-10-24",
-    "status": "rendering",
+    "status": "dispatching",
     "credit_from_scene": 8,
     "credit_approval_required": true,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 387s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
@@ -1433,7 +1433,14 @@
       ],
       "new_ending_scene_index": 8,
       "note": "First eight signed scenes unchanged; new closing shot required. No clips shortened or sped up."
-    }
+    },
+    "platform_receipts": {},
+    "platform_files": {
+      "tiktok": "renders/cinematic-series/e0009/tiktok/e0009-tiktok-45s.mp4",
+      "instagram": "renders/cinematic-series/e0009/instagram/e0009-instagram-45s.mp4"
+    },
+    "file": "renders/cinematic-series/e0009/tiktok/e0009-tiktok-45s.mp4",
+    "platform": "tiktok"
   },
   "attempts": {
     "2026-10-15": 2,
