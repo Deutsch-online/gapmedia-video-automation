@@ -176,3 +176,13 @@ Only a received valid username produces a clickable official TikTok profile
 link; DEMO and missing usernames stay visibly labeled but unavailable. Opening
 the profile does not automatically follow the account. Browser Source video
 itself remains noninteractive to live viewers.
+
+
+## Continuous automatic country play
+Empty country slots refill from the waiting roster, reserve pool or offline
+country catalogue. With no audience input, new countries begin with zero real
+gifts/comments; global donor totals are retained. A ten-second motion watchdog
+cancels a stuck action with a generation guard so an old delayed action cannot
+award points after recovery. Orphaned motion state is cleared automatically,
+and normal rolling resumes. Manual team removal and deliberate owner pause
+settings still apply. The championship pause remains 14 seconds.
