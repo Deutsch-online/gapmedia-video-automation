@@ -2,8 +2,8 @@
   "state": {
     "teams": [
       {
-        "flag": "🇦🇫",
-        "name": "Afghanistan",
+        "flag": "🇸🇦",
+        "name": "Saudi Arabia",
         "gift": "🌹 Rose",
         "p": [
           -1,
@@ -19,8 +19,8 @@
         "teamAvatar": ""
       },
       {
-        "flag": "🇮🇷",
-        "name": "Iran",
+        "flag": "🇩🇪",
+        "name": "Germany",
         "gift": "♪ TikTok",
         "p": [
           -1,
@@ -36,8 +36,8 @@
         "teamAvatar": ""
       },
       {
-        "flag": "🇹🇷",
-        "name": "Turkey",
+        "flag": "🇮🇱",
+        "name": "Israel",
         "gift": "GG GG",
         "p": [
           -1,
@@ -53,8 +53,8 @@
         "teamAvatar": ""
       },
       {
-        "flag": "🇵🇰",
-        "name": "Pakistan",
+        "flag": "🇦🇫",
+        "name": "Afghanistan",
         "gift": "🍦 Ice Cream Cone",
         "p": [
           -1,
@@ -72,8 +72,8 @@
     ],
     "queue": [
       {
-        "flag": "🇹🇯",
-        "name": "Tajikistan",
+        "flag": "🇮🇷",
+        "name": "Iran",
         "p": [
           -1,
           -1,
@@ -86,8 +86,8 @@
         "teamAvatar": ""
       },
       {
-        "flag": "🇮🇳",
-        "name": "India",
+        "flag": "🇹🇯",
+        "name": "Tajikistan",
         "p": [
           -1,
           -1,
@@ -100,8 +100,8 @@
         "teamAvatar": ""
       },
       {
-        "flag": "🇸🇦",
-        "name": "Saudi Arabia",
+        "flag": "🇮🇳",
+        "name": "India",
         "p": [
           -1,
           -1,
@@ -128,6 +128,34 @@
         "teamAvatar": ""
       },
       {
+        "flag": "🇹🇷",
+        "name": "Turkey",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 9,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
+        "flag": "🇵🇰",
+        "name": "Pakistan",
+        "p": [
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "g": 0,
+        "requestId": 10,
+        "requests": 0,
+        "teamAvatar": ""
+      },
+      {
         "flag": "🇺🇿",
         "name": "Uzbekistan",
         "p": [
@@ -137,7 +165,7 @@
           -1
         ],
         "g": 0,
-        "requestId": 9,
+        "requestId": 11,
         "requests": 0,
         "teamAvatar": ""
       },
@@ -151,41 +179,13 @@
           -1
         ],
         "g": 0,
-        "requestId": 10,
-        "requests": 0,
-        "teamAvatar": ""
-      },
-      {
-        "flag": "🇩🇪",
-        "name": "Germany",
-        "p": [
-          -1,
-          -1,
-          -1,
-          -1
-        ],
-        "g": 0,
-        "requestId": 11,
+        "requestId": 12,
         "requests": 0,
         "teamAvatar": ""
       },
       {
         "flag": "🇫🇷",
         "name": "France",
-        "p": [
-          -1,
-          -1,
-          -1,
-          -1
-        ],
-        "g": 0,
-        "requestId": 12,
-        "requests": 0,
-        "teamAvatar": ""
-      },
-      {
-        "flag": "🇬🇧",
-        "name": "United Kingdom",
         "p": [
           -1,
           -1,
@@ -224,7 +224,7 @@
     "6064",
     "5827"
   ],
-  "config": "🇦🇫|Afghanistan|🌹 Rose\n🇮🇷|Iran|♪ TikTok\n🇹🇷|Turkey|GG GG\n🇵🇰|Pakistan|🍦 Ice Cream Cone\n🇹🇯|Tajikistan\n🇮🇳|India\n🇸🇦|Saudi Arabia\n🇦🇪|UAE\n🇺🇿|Uzbekistan\n🇮🇶|Iraq\n🇩🇪|Germany\n🇫🇷|France\n🇬🇧|United Kingdom\n🇺🇸|USA",
+  "config": "🇸🇦|Saudi Arabia|🌹 Rose\n🇩🇪|Germany|♪ TikTok\n🇮🇱|Israel|GG GG\n🇦🇫|Afghanistan|🍦 Ice Cream Cone\n🇮🇷|Iran\n🇹🇯|Tajikistan\n🇮🇳|India\n🇦🇪|UAE\n🇹🇷|Turkey\n🇵🇰|Pakistan\n🇺🇿|Uzbekistan\n🇮🇶|Iraq\n🇫🇷|France\n🇺🇸|USA",
   "likes": 0,
   "fans": [],
   "display": {

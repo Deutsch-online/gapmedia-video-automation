@@ -1,19 +1,19 @@
 const presets=[{id:'5655',name:'Rose',symbol:'🌹'},{id:'5269',name:'TikTok',symbol:'♪'},{id:'6064',name:'GG',symbol:'GG'},{id:'5827',name:'Ice Cream Cone',symbol:'🍦'}];
 const oneCoinGifts=[...presets,{id:'5760',name:'Weights',symbol:'🏋'},{id:'6042',name:'Mini Speaker',symbol:'🔊'},{id:'6093',name:'Football',symbol:'⚽'},{id:'6169',name:'Tennis',symbol:'🎾'},{id:'6224',name:'Love Letter',symbol:'💌'}];
-const englishNames={'🇦🇫':'Afghanistan','🇮🇷':'Iran','🇹🇷':'Turkey','🇵🇰':'Pakistan','🇹🇯':'Tajikistan','🇮🇳':'India','🇸🇦':'Saudi Arabia','🇦🇪':'UAE','🇺🇿':'Uzbekistan','🇮🇶':'Iraq','🇩🇪':'Germany','🇫🇷':'France','🇬🇧':'United Kingdom','🇺🇸':'USA'};
-const defaults=`🇦🇫|Afghanistan|🌹 Rose
-🇮🇷|Iran|♪ TikTok
-🇹🇷|Turkey|GG
-🇵🇰|Pakistan|🍦 Ice Cream Cone
+const englishNames={'🇦🇫':'Afghanistan','🇮🇷':'Iran','🇹🇷':'Turkey','🇵🇰':'Pakistan','🇹🇯':'Tajikistan','🇮🇳':'India','🇸🇦':'Saudi Arabia','🇦🇪':'UAE','🇺🇿':'Uzbekistan','🇮🇶':'Iraq','🇩🇪':'Germany','🇫🇷':'France','🇬🇧':'United Kingdom','🇺🇸':'USA','🇮🇱':'Israel'};
+const defaults=`🇸🇦|Saudi Arabia|🌹 Rose
+🇩🇪|Germany|♪ TikTok
+🇮🇱|Israel|GG GG
+🇦🇫|Afghanistan|🍦 Ice Cream Cone
+🇮🇷|Iran
 🇹🇯|Tajikistan
 🇮🇳|India
-🇸🇦|Saudi Arabia
 🇦🇪|UAE
+🇹🇷|Turkey
+🇵🇰|Pakistan
 🇺🇿|Uzbekistan
 🇮🇶|Iraq
-🇩🇪|Germany
 🇫🇷|France
-🇬🇧|United Kingdom
 🇺🇸|USA`;
 let rosterMode='countries',inputMode='comments';
 let config=localStorage.getItem('ludo-config')||defaults,state,history=[];const colors=['#ffc624','#00c8ff','#ff325b','#1be091'];

@@ -29,6 +29,11 @@ points reset; real gift totals and supporter rankings remain. Auto play and
 auto restart can be disabled independently in the panel. Manual dice clicks use
 the same server random roll and preserve the actual result between turns.
 
+The initial four countries are Saudi Arabia, Germany, Israel and Afghanistan;
+Iran is first in the waiting queue. The panel has a one-click random country
+shuffle. It keeps country points/donors and fixed position gifts, clears waiting
+comment choices, and waits for an in-flight dice animation to finish.
+
 ## Fixed gift positions and waiting countries
 
 Four active gift IDs remain attached to their board positions, not countries.
