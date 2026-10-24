@@ -68,3 +68,19 @@ body.broadcast{color:#eaf7ff;background:radial-gradient(ellipse at 20% 5%,#284f6
 @keyframes leader-follow-breathe{0%,100%{transform:translateY(0) scale(1);filter:brightness(1)}50%{transform:translateY(-4px) scale(1.07);filter:brightness(1.17)}}
 @keyframes leader-follow-shine{0%,25%{left:-45%;opacity:0}40%{opacity:1}65%,100%{left:120%;opacity:0}}
 @media(prefers-reduced-motion:reduce){.broadcast .rail-featured a.follow-profile,.broadcast .rail-featured a.follow-profile:after{animation:none}}
+/* The leading supporters' portraits beat like hearts; incoming likes land on their chosen country. */
+.broadcast .rail-featured .liker-face{animation:leader-heartbeat 1.9s ease-in-out infinite;transform-origin:center;will-change:transform}
+.broadcast #gifterRail .rail-featured .liker-face{animation-delay:-.95s}
+.country-flying-heart{position:absolute;z-index:35;font:bold 40px Arial;color:#ff70ad;text-shadow:0 0 12px #ffcae4,0 0 27px #ff4c9b;pointer-events:none;line-height:1}
+.broadcast.gift-game .player-frame.like-burst{animation:country-like-glow 1.3s ease-out both}
+@keyframes leader-heartbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}23%{transform:scale(1.03)}34%{transform:scale(1.17)}48%{transform:scale(1)}}
+@keyframes country-like-glow{0%,100%{filter:brightness(1)}35%{filter:brightness(1.55) drop-shadow(0 0 18px #ff7cba)}}
+@media(prefers-reduced-motion:reduce){.broadcast .rail-featured .liker-face,.broadcast.gift-game .player-frame.like-burst{animation:none}.country-flying-heart{display:none}}
+/* Live leaders beat like hearts; country frames flash when likes arrive. */
+.broadcast .rail-featured .liker-face{animation:leader-heartbeat 1.9s ease-in-out infinite;transform-origin:center;will-change:transform}
+.broadcast #gifterRail .rail-featured .liker-face{animation-delay:-.95s}
+.country-flying-heart{position:absolute;z-index:35;font:bold 40px Arial;color:#ff70ad;text-shadow:0 0 12px #ffcae4,0 0 27px #ff4c9b;pointer-events:none;line-height:1}
+.broadcast.gift-game .player-frame.like-burst{animation:country-like-glow 1.3s ease-out both}
+@keyframes leader-heartbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}23%{transform:scale(1.03)}34%{transform:scale(1.17)}48%{transform:scale(1)}}
+@keyframes country-like-glow{0%,100%{filter:brightness(1)}35%{filter:brightness(1.55) drop-shadow(0 0 18px #ff7cba)}}
+@media(prefers-reduced-motion:reduce){.broadcast .rail-featured .liker-face,.broadcast.gift-game .player-frame.like-burst{animation:none}.country-flying-heart{display:none}}
