@@ -1,48 +1,106 @@
-# لدو لایو کشورها — پنل آنلاین یکپارچه
+# Lucky Nations / TikTok LIVE
 
-نسخهٔ آنلاین: https://afgtakrun-ludo-live-nations.hf.space/
+Public 9:16 Browser Source: https://afgtakrun-ludo-live-nations.hf.space/screen
 
-بازی و پنل در یک صفحه هستند. لینک خصوصی مدیریت شامل کلید در fragment است؛ آن را در لایو نمایش ندهید. با ورود، پنل کشورها، صف ۱۰ کشور، چهار شناسهٔ گیفت، حساب تیک‌تاک و تنظیم صدا و تصویر فعال می‌شود. دکمهٔ حالت لایو کنترل‌ها را پنهان می‌کند؛ دکمهٔ چرخ‌دنده پنل را برمی‌گرداند. صفحهٔ نمایش اختیاری `/screen` همان برنامه را با پنل بسته باز می‌کند.
+The private panel and public display share the same app. The panel link includes
+an administrative fragment; the public screen never authenticates. Use a
+1080×1920 Browser/Website source, Fit/Contain and zero crop. Account connection
+uses any LIVE TikTok username, without a TikTok password, cookie or paid API.
+The connector is unofficial; a successful deployment does not prove a TikTok
+account is live or accessible from the host.
 
-ابتدا لایو را در TikTok آغاز کنید؛ در پنل نام حساب را وارد و اتصال را بزنید. هر گیفت نهایی با شناسهٔ یکتا به گوشهٔ مربوط نگاشت می‌شود و نام و پروفایل آخرین فرستنده در قاب آن کشور قرار می‌گیرد. آخرین شناسهٔ دریافتی برای تنظیم گیفت‌های ناشناخته نشان داده می‌شود. گوشهٔ چهارم تا تعیین شناسه غیرفعال است. کشور جایگزین، نگاشت گوشه را به ارث می‌برد و پروفایل قبلی پاک می‌شود. زنجیرهٔ گیفت پس از پایان یک بار ثبت می‌شود.
+## Country dice game
 
-تنظیمات و بازی از سرور میان مرورگرها همگام می‌شوند. کلید خصوصی فقط در sessionStorage مرورگر مدیر است و داخل snapshot عمومی فرستاده نمی‌شود. تغییر هم‌زمان قدیمی با شمارهٔ revision رد می‌شود. وضعیت در فایل محلی کانتینر نگهداری می‌شود؛ بازسازی یا جایگزینی کانتینر می‌تواند آن را پاک کند.
+Gift/country mode uses an animated six-sector wheel and a readable dice face;
+there are no Ludo pawns in this mode. It rolls automatically every four seconds
+while the display/panel is open or LIVE mode is active, including when nobody
+has sent a like, comment or gift. The rolled 1–6 is added to that country's dice
+points. Every one-coin gift adds exactly one gift point. Rose starts with zero
+base points; the three other fixed active positions start with three, shown
+explicitly in the score breakdown. Total = dice + gifts + base. Country frames
+and score columns upgrade at 10 gifts (silver), 50 (gold), 100 (diamond) and over
+100 (dragon), with stronger lighting, particles and cloud effects. Reduced-motion
+preferences disable decorative CSS animations.
 
-میزبانی مستقل Hugging Face فقط CPU-basic رایگان است؛ اسکریپت سخت‌افزار پولی یا نامعلوم را رد می‌کند. GitHub Actions در مخزن Deutsch-online/gapmedia-video-automation و مسیر live-ludo منبع اصلی انتشار آنلاین است. کلید مدیریت از secret زمان اجرا ساخته و فقط با کلید عمومی گیرنده رمز می‌شود؛ کلید خام داخل کد یا log نیست. هیچ پیام تلگرام ارسال نمی‌شود.
+A round lasts eight rolls per active position (32 with four active countries).
+The highest total wins; ties use position order. The winner's supporter/team
+photo appears on the wheel, then a new round starts after eight seconds. Dice
+points reset; real gift totals and supporter rankings remain. Auto play and
+auto restart can be disabled independently in the panel. Manual dice clicks use
+the same server random roll and preserve the actual result between turns.
 
-کتابخانهٔ اتصال tiktok-live-connector غیررسمی است؛ دریافت واقعی گیفت نیازمند لایو بودن حساب و دسترسی تیک‌تاک از میزبان است. این نسخه ورود پنل و WebSocket سرور آنلاین را بررسی کرده است؛ دریافت گیفت واقعی بدون لایو کاربر بررسی نشده است.
+## Fixed gift positions and waiting countries
 
-## اجرای محلی
-Node.js 24 یا جدیدتر؛ npm ci سپس npm start. لینک خصوصی در ترمینال چاپ می‌شود. PORT و LUDO_ADMIN_TOKEN اختیاری‌اند. برای میزبانی عمومی، PUBLIC_URL امن و LUDO_ADMIN_TOKEN لازم‌اند.
+Four active gift IDs remain attached to their board positions, not countries.
+Five other curated one-coin gifts are automatically assigned to the five visible
+waiting positions. The two sets are disjoint. Editing an active gift preserves
+other mappings where possible and fills any conflicting waiting position from
+the remaining catalogue. Events reporting a cost greater than one coin are
+rejected. Current availability/prices depend on TikTok's catalogue.
 
-## آزمایش
-node test.mjs
-احراز مدیریت، رد نوشتن ناشناس، همگامی پروفایل و تنظیمات، جلوگیری از تداخل و اعتبار نام حساب بررسی می‌شوند.
+Waiting countries rank first by received gifts, then comment requests. A
+waiting gift targets the country currently occupying that visible row. Once
+its gift points exceed the weakest active country's total score, it enters
+that position. An inactive position can be filled immediately. Its donations
+and top supporter follow it; the position's gift does not change. A displaced
+country moves to the reserve rotation with fresh game points. Global donor
+totals are retained independently of country changes.
 
-## Neon / free comments update
-The live display uses English labels and English country or team names. The owner panel can stay Persian. Default input is free comments: 1–4 trigger a dice roll and animated move for the corresponding active slot, with Ludo's six-to-enter, capture, safe-cell and exact-home rules. Actions run sequentially. Request numbers 5–14 belong to waiting entrants, remain stable as ranks change and are separate from gameplay. Each viewer has one current waiting choice; changing it subtracts one request from the previous choice. Percent bars and rank order update from real comment events.
+A visible waiting country with no gift for 60 seconds is replaced from reserves,
+including before the first audience interaction. Gift positions stay fixed.
+Numbered comments still request waiting entries, and each viewer has one active
+choice. Repeated comments renew activity without adding duplicate votes.
 
-Nine curated one-coin gifts are available; four distinct gifts are preselected (Rose 5655, TikTok 5269, GG 6064, Ice Cream Cone 5827). Gift IDs with higher cost cannot be selected; a received event reporting cost above one coin is rejected. Preset IDs and reference costs were checked against https://gist.github.com/alberand/ce890338db1a97af07802d5d59c72309 . Availability and current platform prices still depend on TikTok's catalogue.
+Active-country inactivity removal starts only after the first numbered comment
+or gift. The default is 180 seconds, adjustable between 60 and 1800 or disabled.
+This prevents an audience-free initial broadcast from emptying immediately.
+Each country's own comment/gift renews its deadline. Likes do not choose a
+country. If all entries are removed and no replacement is available, restore
+an entry in the panel.
 
-Countries / Teams selector allows a custom English person/team name and locally resized picture in place of the flag. Team pictures are part of the shared snapshot. Supporter profile remains separate: the highest cumulative gift sender is shown, and clicking the frame opens all supporters ranked by gift count. Participant names are user-provided content and are preserved.
+## Team Ludo mode
 
-In gift-only mode, connected gameplay takes a turn every four seconds and an entrant with zero lifetime gifts is automatically replaced after its second completed turn; the most requested waiting entrant joins. In free comments or both modes, lack of gifts does not eliminate entrants. Waiting list entries never require or show gifts; entrants inherit their active slot's configured gift on promotion.
+Number/Teams mode retains the Ludo board and pawns, custom names/photos and free
+turn-based comments 1–4. Only the active team's number rolls. Six enters a pawn,
+unsafe cells allow captures, and finishing requires an exact roll. Waiting
+request numbers are distinct from active 1–4. Automatic inactivity deletion does
+not apply to teams. The owner can remove or restore an active team and delete
+a waiting entry. Switching back to team mode restores the waiting reserve list.
 
-Automated checks cover model rules, shared authenticated server state, free comment actions and animation metadata, one-coin restrictions, photos and ranked supporters. DOM checks cover English live labels, comment codes, supporter dialog and motion keyframes. Full visual browser review and real TikTok events still require runtime verification.
+Country frames show a large portrait of the latest gift sender on every new gift.
+The top cumulative supporter remains available in the ranked supporter dialog.
+Before real activity, locally bundled illustrated avatars carry DEMO labels and
+zero activity counts; real profiles replace them automatically.
 
-## One-click demo
-The owner panel has a prominent Start demo button and a connection guide. Demo runs automatic sample gifts, requests and pawn animations with no TikTok connection and no spending. Demo state is not saved over real state. Stop demo restores the pre-demo game and request selections; connecting to a real LIVE also stops and restores the demo first. Demo cannot start while LIVE is connected/connecting and expires automatically after roughly 144 seconds.
+## Likes, gift spotlight and Follow +
 
-## Flags and compact mobile display
-All fourteen default country flags are bundled SVG assets sourced from flagcdn.com and served locally. The country frames, request queue and supporter dialog use images rather than platform-dependent flag emoji. Mobile opens directly in compact LIVE view, with smaller player cards and a two-column request list. The live canvas fits the available viewport height and restores normal scrolling when Settings is opened.
+A single independent rail can move left/right without moving the game. Per-user
+like totals use lowercase compact numbers, e.g. 1.2k. Each gift sender gets a
+60-second large spotlight; simultaneous senders queue in order, and repeated
+gifts update the sender's existing turn. With no pending gifts, the top liker
+is enlarged. Global gift totals include waiting and replaced countries.
 
-## Username-only connection and 9:16 glass canvas
-Connection now uses the same anonymous/free connector options as FahrFit: no TikTok login, cookie or API key; account-name validation, 10-second web request timeout, 45-second overall attempt limit, bounded cleanup and controlled reconnect backoff (five minutes for rate limits). Extended gift-catalog fetching is disabled, matching FahrFit. HTTP/WebSocket proxy agents honor the hosting environment. Safe diagnostic reasons and live event counters are visible in the private panel. Saved opt-in account settings resume after restart. A disconnected or offline account is reported as such; deployment success is not proof that the chosen account is broadcasting.
+Follow + opens the sender's official TikTok profile when TikTok supplied their
+public username. The viewer follows from TikTok; the app does not send follow
+requests. Viewers cannot click controls inside a Browser Source video; profile
+links work when the actual app page is open. Missing usernames disable the link.
 
-LIVE view is a fixed 1080×1920 light glass canvas, scaled in full to the actual phone viewport. Like reactions float inside both canvas edges. The in-canvas liker rail ranks real senders by cumulative like deltas, with a special ring over 100 and a crown from 1000. Duplicate like IDs do not increase counts. Automatic demo includes simulated liker events, clearly marked as demo; stopping restores the prior state.
+## Panel, demo, hosting and tests
 
-## Full-frame LIVE Studio / OBS output
-Use `/screen` as the Browser / Website source at 1080×1920, with Fit/Contain and zero crop. This public display route never authenticates as the administrator and hides the control UI before scripts finish. The complete light glass canvas, including the game, liker rail and waiting list, scales to fit both viewport dimensions. The private panel exposes a copyable screen URL without the management key.
+The panel includes automatic-play settings, fixed gift mappings, country/team
+name/photo editing, removal/restore, manual dice, a new-round button, connection
+diagnostics and a reversible simulated demo. Demo restores the prior game on
+stop and does not overwrite real state. Browser audio needs one interaction:
+use Interact → Enable game sound and enable Browser audio in the mixer.
 
-## Two visible play choices
-The panel now offers exactly two play modes: Number / Teams and Gifts. Number mode shows large TEAM 1–4 badges instead of gift artwork and displays editable team names/photos instead of country names/flags. Gift mode shows the configured gift artwork and counts again. Team names are stored separately from country names and retained when an entrant is promoted from the request queue. The team name/photo editor is expanded by default.
+Node 24: `npm ci`, `npm start`, `node test.mjs`. Optional environment variables:
+PORT and LUDO_ADMIN_TOKEN; public hosting also requires PUBLIC_URL. State is
+stored in the container's local .runtime.json; rebuilding may reset it. Never
+commit this runtime file or management tokens.
+
+GitHub Actions deploys live-ludo/ to Hugging Face CPU-basic only; unknown or paid
+hardware is rejected. Automated checks cover authentication, synchronized state,
+real dice values, one-coin validation, waiting gifts/promotion/rotation, spotlight
+queue deadlines, restart, manual removal and unchanged team play. Chromium QA
+checks the full phone canvas, wheel, tiers, waiting gifts, profile links and an
+independently movable rail. Actual live gift receipt needs a broadcasting account.
