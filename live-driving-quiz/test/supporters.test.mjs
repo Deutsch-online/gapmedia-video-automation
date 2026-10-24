@@ -27,3 +27,12 @@ test('all-gift display includes answer gifts independently of quiz/comment input
  assert.equal(wall.gift(rose,{}).accepted,true);const row=wall.snapshot()[0];assert.equal(row.name,'rose-sender');assert.equal(row.giftName,'Rose');assert.equal(row.count,3);assert.equal(row.coins,3);
  assert.equal(wall.gift(rose,{}).reason,'duplicate_event');assert.equal(wall.snapshot().length,1);
 });
+
+test('custom gift decoration thresholds can use total coins or final gift count',async()=>{
+ const {DEFAULT_GIFT_STYLE,validGiftStyle,styledGiftTier}=await import('../supporters.mjs');
+ assert.equal(validGiftStyle(DEFAULT_GIFT_STYLE),true);assert.equal(styledGiftTier({coins:500,count:2}),'diamond');
+ const config={basis:'count',levels:{simple:2,silver:5,gold:10,diamond:20,vip:50}};
+ assert.equal(validGiftStyle(config),true);assert.equal(styledGiftTier({coins:99999,count:1},config),'bubble');assert.equal(styledGiftTier({coins:1,count:20},config),'diamond');assert.equal(styledGiftTier({coins:null,count:50},config),'vip');
+ assert.equal(styledGiftTier({coins:null,count:100}), 'bubble');
+ assert.equal(validGiftStyle({...config,levels:{...config.levels,gold:4}}),false);assert.equal(validGiftStyle({...config,basis:'cash'}),false);
+});

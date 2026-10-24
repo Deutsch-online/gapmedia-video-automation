@@ -14,6 +14,13 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await post('gift-style',{basis:'count',levels:{simple:2,silver:3,gold:4,diamond:5,vip:6}})).status,200);
+  assert.equal((await post('gift-style',{basis:'coins',levels:{simple:5,silver:3,gold:4,diamond:5,vip:6}})).status,400);
+  assert.equal((await post('activity-display',{side:'free',count:8,top:220})).status,400);
+  assert.equal((await post('activity-display',{side:'left',count:11,top:220})).status,400);
+  assert.equal((await post('activity-display',{side:'left',count:5,top:300})).status,200);
+  assert.deepEqual((await(await fetch(base+'/api/state')).json()).activityDisplay,{side:'left',count:5,top:300});
+
   assert.equal((await post('narration',{enabled:'yes'})).status,400);assert.equal((await post('narration',{enabled:false})).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationEnabled,false);
   assert.equal((await post('narration',{enabled:true})).status,200);assert.equal((await post('narration-repeat')).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationReplay,1);
   assert.equal((await fetch(base+'/narration/not-a-question.wav')).status,404);

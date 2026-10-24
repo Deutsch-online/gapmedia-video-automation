@@ -189,3 +189,36 @@ or invented questions were added. Existing 150 rows, both videos, session
 plans and completed IDs are preserved. Neural German audio is regenerated
 for all 200 questions in the free CPU build. Session sizes remain owner
 controlled (50–200), with default 50 and explicit repeat opt-in.
+
+### Movable mobile activity rail and gift spotlight
+
+The private panel selects only left/right and vertical position (80–400 design
+pixels); there is no free horizontal dragging. The portrait layout remains
+1080×1920 and reserves a separate question column on either side. The owner
+chooses 1–10 people including the enlarged person. Long lists tour vertically
+inside the rail; reduced-motion uses manual scroll instead. Profile font sizes
+are preserved. The newest gift gets the large portrait for 60 seconds, then
+the actual highest liker gets it. A new final gift replaces the previous one;
+without a liker, the last gift remains until someone can take that place.
+One person is not duplicated in the list and spotlight. Counts, exact values,
+and gift validation remain event based; nothing buys or sends gifts.
+
+Ring rendering and transparent gold/ice/fire artwork are copied from this same
+repository's `live-rings/public` (the owner's referenced Rings Studio). The
+entire painted ornament slowly rotates, with canvas clouds, ripples, crowns,
+embers and flames. Only the enlarged frame uses full ornaments; smaller frames
+use the same animated renderer at a lower update rate. The transparent center
+keeps the portrait clear. Motion respects reduced-motion and hidden tabs.
+
+The panel can choose decoration by final gift quantity or total event coins
+(value × completed repeat count), with strictly increasing custom thresholds
+for simple, silver, gold, diamond and VIP. Unknown coin value cannot earn a
+higher coin-based tier. Defaults keep the previous thresholds. Layout and gift
+threshold settings are saved locally and in the existing free private progress
+Dataset, without storing participant data there.
+
+Follow + opens only an actual validated TikTok username received from events.
+It never guesses a handle from a display name or silently follows an account.
+Following needs TikTok's own account UI. The links are usable in the Browser
+source/Interact and private panel; a streamed video image is not clickable for
+viewers. Missing usernames show a disabled control instead of a made-up URL.

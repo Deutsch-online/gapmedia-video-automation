@@ -17,3 +17,10 @@ export function profileAvatar(event){
  const candidates=[u.profilePictureUrl,event.profilePictureUrl,...models.flatMap(m=>m?.urlList||m?.url_list||[])];
  return candidates.map(safeAvatarURL).find(Boolean)||null;
 }
+
+export function profileUsername(event){
+ const value=event.user?.uniqueId||event.user?.displayId||event.uniqueId||'';
+ const handle=typeof value==='string'?value.replace(/^@/,''):'';
+ return /^[A-Za-z0-9._]{2,24}$/.test(handle)?handle:null;
+}
+export function profileLink(handle){return typeof handle==='string'&&/^[A-Za-z0-9._]{2,24}$/.test(handle)?'https://www.tiktok.com/@'+handle:null;}

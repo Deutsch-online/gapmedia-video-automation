@@ -2,10 +2,16 @@ import {renderGuests} from './guests-ui.js';
 const $=id=>document.getElementById(id);let token=decodeURIComponent(location.hash.slice(1));
 try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=sessionStorage.getItem('fahrfit-control-token')||'';}catch{}
 history.replaceState(null,'',location.pathname);
+let giftStyleDirty=false,activityDirty=false,activityProfilesSignature;
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
+const styleTiers=['simple','silver','gold','diamond','vip'];
+for(const [i,tier] of styleTiers.entries()){const label=document.createElement('label');label.textContent=['ساده از','نقره‌ای از','طلایی از','الماسی از','VIP از'][i];const input=document.createElement('input');input.id='giftStyle_'+tier;input.type='number';input.min='1';input.max='1000000000';input.step='1';label.append(input);$('giftStyleLevels').append(label);input.addEventListener('input',()=>{giftStyleDirty=true;});}
+$('giftStyleBasis').addEventListener('change',()=>{giftStyleDirty=true;});
+$('saveGiftStyle').addEventListener('click',async()=>{const result=await api('gift-style',{basis:$('giftStyleBasis').value,levels:Object.fromEntries(styleTiers.map(t=>[t,Number($('giftStyle_'+t).value)]))});if(result){giftStyleDirty=false;render(result.state);}});
+
 for(const k of giftKeys){
  const label=document.createElement('label');label.textContent=k==='ALL'?'هر سه · اختیاری':`گزینهٔ ${k}`;
  const name=document.createElement('input');name.id='manualName'+k;name.placeholder='نام هدیه';name.maxLength=80;
@@ -51,6 +57,11 @@ function render(s){
  $('answerInputStatus').textContent=s.answerInput==='comments'?'روش فعال: کامنت 1،2،3':'روش فعال: رز / تیک‌تاک / GG';
  $('commentsInput').classList.toggle('secondary',s.answerInput!=='comments');$('giftInput').classList.toggle('secondary',s.answerInput!=='gifts');
  $('autoplay').checked=s.autoplay;
+ if(!giftStyleDirty){$('giftStyleBasis').value=s.giftStyle.basis;for(const tier of styleTiers)$('giftStyle_'+tier).value=s.giftStyle.levels[tier];}
+ if(!activityDirty){$('activitySide').value=s.activityDisplay.side;$('activityCount').value=s.activityDisplay.count;$('activityTop').value=s.activityDisplay.top;$('activityTopValue').textContent=s.activityDisplay.top;}
+ const profiles=[s.activityFocus,...s.supporters].filter(Boolean),profileSig=JSON.stringify(profiles.map(p=>[p.personKey,p.username,p.name]));
+ if(profileSig!==activityProfilesSignature){activityProfilesSignature=profileSig;const seen=new Set();$('activityProfiles').replaceChildren(...profiles.filter(p=>p.username&&!seen.has(p.username)&&seen.add(p.username)).map(p=>{const link=document.createElement('a');link.href='https://www.tiktok.com/@'+encodeURIComponent(p.username);link.target='_blank';link.rel='noopener noreferrer';link.textContent=p.name+' · Follow +';return link;}));}
+
  if(s.session){const q=s.session;if(!sessionDirty){$('sessionSize').value=q.configuredSize;$('sessionSize').max=q.bankTotal;$('allowRepeat').checked=q.allowRepeat;}
  $('sessionStatus').textContent=`${s.mode==='demo'?'آزمایشی — ':''}جلسهٔ ${q.number}: ${q.review?'مرور دستی':q.position+' از '+q.size}؛ انجام‌شده در جلسه ${q.done}؛ کل انجام‌شده ${q.completedTotal}؛ تازه ${q.freshTotal}.${q.finished?' جلسه تمام شده؛ جلسهٔ جدید را بزنید.':''} ذخیره: ${s.sessionStorage?.status||'—'}${s.sessionStorage?.error?' — '+s.sessionStorage.error:''}`;
  const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
@@ -131,3 +142,6 @@ $('retrySession').addEventListener('click',()=>api('retry-session-save'));
 document.querySelectorAll('[data-like]').forEach(button=>button.addEventListener('click',()=>api('simulate-like',{count:Number(button.dataset.like),name:'Test '+button.dataset.like})));
 
 $('autoReconnect').addEventListener('change',e=>api('auto-reconnect',{enabled:e.target.checked}));
+
+for(const id of ['activitySide','activityCount','activityTop'])$(id).addEventListener('input',()=>{activityDirty=true;$('activityTopValue').textContent=$('activityTop').value;});
+$('saveActivity').addEventListener('click',async()=>{const result=await api('activity-display',{side:$('activitySide').value,count:Number($('activityCount').value),top:Number($('activityTop').value)});if(result){activityDirty=false;render(result.state);}});

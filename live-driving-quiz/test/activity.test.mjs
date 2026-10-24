@@ -19,3 +19,19 @@ test('ranked likenesses and larger donors share a bounded list without duplicate
  const rows=activityWall(likes,gifts);assert.equal(rows.length,3);assert.equal(rows[0].kind,'gift');assert.equal(rows[0].tier,'diamond');assert.equal(rows[0].likes,500);assert.equal(rows[1].likes,1000);assert.equal(rows[1].rank,1);assert.ok(rows.every(p=>!('userId' in p)));
  for(let i=4;i<30;i++)likes.observe(event('fan'+i,i,String(i)));assert.equal(activityWall(likes,gifts).length,8);
 });
+
+test('configurable row limits never overrun and spotlight switches after exactly 60 seconds',async()=>{
+ const {activityFocus}=await import('../likes.mjs');let clock=now;
+ const likes=new LikeWall({now:()=>clock}),gifts=new SupporterWall({now:()=>clock,limit:20});
+ likes.observe(event('top',1500,'1'));likes.observe(event('second',100,'2'));
+ gifts.gift({giftId:'gift',diamondCount:500,user:{id:'3',uniqueId:'gift_user',nickname:'Gift User'},common:{msgId:'g',createTime:clock}},{});
+ assert.equal(activityFocus(likes,gifts,clock).kind,'gift');assert.equal(activityFocus(likes,gifts,clock).username,'gift_user');
+ clock+=59999;assert.equal(activityFocus(likes,gifts,clock).kind,'gift');clock++;assert.equal(activityFocus(likes,gifts,clock).likes,1500);assert.equal(activityFocus(likes,gifts,clock).username,'fan_1');
+ for(const count of [1,2,3,8,10])assert.ok(activityWall(likes,gifts,count).length<=count);
+ assert.ok(!('userId' in activityFocus(likes,gifts,clock)));
+});
+test('profile links use validated actual usernames and never guess from display names',async()=>{
+ const {profileUsername,profileLink}=await import('../gifts.mjs');
+ assert.equal(profileUsername({user:{nickname:'A Fake Name'}}),null);assert.equal(profileUsername({user:{displayId:'real.user'}}),'real.user');
+ assert.equal(profileLink('real.user'),'https://www.tiktok.com/@real.user');assert.equal(profileLink('x/?redirect=evil'),null);assert.equal(profileLink('javascript:alert(1)'),null);
+});
