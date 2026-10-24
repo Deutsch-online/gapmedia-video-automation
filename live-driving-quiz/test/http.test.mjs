@@ -57,7 +57,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('session-settings',{size:49,allowRepeat:false})).status,400);
   assert.equal((await post('session-settings',{size:50,allowRepeat:true})).status,200);
   assert.equal((await post('new-session')).status,200);
-  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,150);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
+  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,200);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
   assert.equal((await post('simulate-like',{count:1000,name:'fan'})).status,200);
   state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters[0].tier,'crown');assert.equal(state.supporters[0].likeLabel,'1K');assert.equal(state.supporters[0].userId,undefined);
   assert.equal((await post('simulate-supporter',{coins:500,name:'fan'})).status,200);

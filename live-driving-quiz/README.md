@@ -1,6 +1,6 @@
 # FahrFit LIVE — بانک تصویری رانندگی
 
-نسخهٔ فعال دارای ۱۵۰ سؤال (۱۴۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
+نسخهٔ فعال دارای ۲۰۰ سؤال (۱۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
 
 شناسهٔ اصلی، متن آلمانی، ترتیب گزینه‌ها و کلید پاسخ در انتقال حفظ می‌شوند. تصویر همان شناسه، بدون برش، هنگام سؤال و نمایش پاسخ دیده می‌شود. ترجمهٔ فارسی رسمی نیست و این نرم‌افزار تأییدیهٔ TÜV/DEKRA را ادعا نمی‌کند.
 
@@ -105,7 +105,7 @@ The last successful correct-answer group stays on screen across subsequent quest
 
 ## Sessions and activity rail
 
-The private panel configures 50–150 questions per session (default 50), with a shuffled unique plan and an explicit repeat opt-in. A revealed question enters the completed group; completed questions are excluded from later sessions unless repeats are allowed. An insufficient fresh pool blocks a new session instead of silently repeating. Ending a plan stops autoplay. Manual selection is labelled as review, and demo progress never changes the real session history.
+The private panel configures 50–200 questions per session (default 50), with a shuffled unique plan and an explicit repeat opt-in. A revealed question enters the completed group; completed questions are excluded from later sessions unless repeats are allowed. An insufficient fresh pool blocks a new session instead of silently repeating. Ending a plan stops autoplay. Manual selection is labelled as review, and demo progress never changes the real session history.
 
 Real session plans and completed IDs are stored in a tiny private `fahrfit-quiz-state` Hugging Face Dataset, not a paid persistent disk. Deployments seed it only when absent. `HF_SESSION_REPO` and `HF_SESSION_TOKEN` are server-only; neither private dataset credentials nor progress files are public assets. Loading or saving failures block subsequent real rounds and appear in the panel. The dataset contains only question IDs, progress, timestamps and configuration, never participant profiles. Other settings and participant totals remain per-instance as described above.
 
@@ -131,7 +131,7 @@ Selecting a question opens its answer window with autoplay off. Manual Next reve
 
 A deployment tagged `[manual-driving-check]` checks real manual controls while leaving autoplay off. It observes received comments only and never sends real chat or gifts or simulates LIVE events. Real reception is only reported as verified when the actual accepted-comment counter increases.
 
-The current bank contains 150 distinct source IDs and 150 verified original images, including the two existing video questions. Session size can be configured up to 150; current plans and completed IDs survive the expansion. The larger decorative reaction stream follows the right edge of the question column, with a clear gutter before the right-side profiles; profile text sizes stay unchanged.
+The current bank contains 200 distinct source IDs and 200 verified original images, including the two existing video questions. Session size can be configured up to 200; current plans and completed IDs survive the expansion. The larger decorative reaction stream follows the right edge of the question column, with a clear gutter before the right-side profiles; profile text sizes stay unchanged.
 
 ### German question reading
 
@@ -178,3 +178,14 @@ Current winners receive a brief flower/spark burst and golden portrait glow;
 the special victory cue plays once per revealed round under the existing
 celebration music enable/volume controls. Regular broadcasts, pagination and
 old winner groups do not retrigger the cue. Reduced-motion hides bursts.
+
+### Bank expansion to 200
+
+Added 50 distinct image-based source questions: passenger safety, right of way,
+intersection order and traffic warning signs. Each uses the pinned upstream
+German wording, option order and answer key, a verified original PNG and a
+reviewed educational Persian translation using جاده. No repeated source IDs
+or invented questions were added. Existing 150 rows, both videos, session
+plans and completed IDs are preserved. Neural German audio is regenerated
+for all 200 questions in the free CPU build. Session sizes remain owner
+controlled (50–200), with default 50 and explicit repeat opt-in.

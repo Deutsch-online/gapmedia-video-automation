@@ -22,3 +22,11 @@ test('private progress writes use an authenticated private Dataset; failure bloc
  fail=true;globalThis.fetch=async()=>new Response('',{status:503});const unread=new SessionStore({HF_SESSION_REPO:'owner/state',HF_SESSION_TOKEN:'test-private'});assert.equal(await unread.load(),null);await assert.rejects(unread.flush());
  }finally{globalThis.fetch=real;}
 });
+
+test('expanding a 150-question bank to 200 preserves active plans and completed history',()=>{
+ const oldIds=Array.from({length:150},(_,i)=>'q'+i),newIds=Array.from({length:200},(_,i)=>'q'+i);
+ const original=new QuizSessions(oldIds,{},opts);original.create();original.complete('q0');original.next();
+ const restored=new QuizSessions(newIds,JSON.parse(JSON.stringify(original.export())),opts);
+ assert.deepEqual(restored.session,original.session);assert.deepEqual(restored.completed,original.completed);assert.equal(restored.summary().bankTotal,200);assert.equal(restored.summary().freshTotal,199);
+ restored.configure(200,true);restored.create();assert.equal(restored.session.ids.length,200);assert.equal(new Set(restored.session.ids).size,200);
+});
