@@ -232,7 +232,8 @@
     "bg": "#070b21",
     "volume": 20,
     "effects": true,
-    "sound": false
+    "sound": false,
+    "railSide": "split"
   },
   "schemaVersion": 5,
   "inputMode": "gifts",

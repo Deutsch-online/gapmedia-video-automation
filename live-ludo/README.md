@@ -24,7 +24,7 @@ preferences disable decorative CSS animations.
 
 A round lasts eight rolls per active position (32 with four active countries).
 The highest total wins; ties use position order. The winner's supporter/team
-photo appears on the wheel, then a new round starts after eight seconds. Dice
+photo appears on the wheel, then a new round starts after thirty seconds. Dice
 points reset; real gift totals and supporter rankings remain. Auto play and
 auto restart can be disabled independently in the panel. Manual dice clicks use
 the same server random roll and preserve the actual result between turns.
@@ -37,8 +37,8 @@ comment choices, and waits for an in-flight dice animation to finish.
 ## Fixed gift positions and waiting countries
 
 Four active gift IDs remain attached to their board positions, not countries.
-Five other curated one-coin gifts are automatically assigned to the five visible
-waiting positions. The two sets are disjoint. Editing an active gift preserves
+Five other curated one-coin gifts are assigned to internal waiting positions
+for owner testing; the public waiting-country table is hidden. The two sets are disjoint. Editing an active gift preserves
 other mappings where possible and fills any conflicting waiting position from
 the remaining catalogue. Events reporting a cost greater than one coin are
 rejected. Current availability/prices depend on TikTok's catalogue.
@@ -79,7 +79,11 @@ zero activity counts; real profiles replace them automatically.
 
 ## Likes, gift spotlight and Follow +
 
-A single independent rail can move left/right without moving the game. Per-user
+Two raised translucent glass rails show likers on the left and gifters on the
+right by default, inset 72 canvas pixels for safer video cropping. The panel
+can also place both on the left or right, without moving the game. Portraits
+and per-person totals have stronger contrast. No audio-unlock button is shown
+on the public screen. Per-user
 like totals use lowercase compact numbers, e.g. 1.2k. Each gift sender gets a
 60-second large spotlight; simultaneous senders queue in order, and repeated
 gifts update the sender's existing turn. With no pending gifts, the top liker
@@ -96,7 +100,7 @@ The panel includes automatic-play settings, fixed gift mappings, country/team
 name/photo editing, removal/restore, manual dice, a new-round button, connection
 diagnostics and a reversible simulated demo. Demo restores the prior game on
 stop and does not overwrite real state. Browser audio needs one interaction:
-use Interact → Enable game sound and enable Browser audio in the mixer.
+click the page once through Interact if required and enable Browser audio in the mixer. The public screen has no sound-enable button.
 
 Node 24: `npm ci`, `npm start`, `node test.mjs`. Optional environment variables:
 PORT and LUDO_ADMIN_TOKEN; public hosting also requires PUBLIC_URL. State is
@@ -109,3 +113,28 @@ real dice values, one-coin validation, waiting gifts/promotion/rotation, spotlig
 queue deadlines, restart, manual removal and unchanged team play. Chromium QA
 checks the full phone canvas, wheel, tiers, waiting gifts, profile links and an
 independently movable rail. Actual live gift receipt needs a broadcasting account.
+
+
+## Country comments, clean live layout and championship
+The public country view hides the waiting-country table. Its only invitation is
+“comment your country and support”, shown as animated luminous text. Supported
+English/Persian country names and flags from the configured roster/country map
+can enter through comments. A country with no gifts may be replaced immediately;
+when every active country has received gifts, the entrant becomes a challenger.
+The lowest total score leaves after the current round and celebration, rather
+than evicting a supported country in the middle of play. Ties avoid removing
+the declared winner. Commenter photos replace DEMO portraits until a real gift
+supporter is available. Waiting rankings include retained dice and gift points.
+
+Victory lasts 30 seconds before automatic restart. It features the winning
+country's top supporter photo, a major-key musical cue, confetti and animated
+cloud/energy rings. At 50 gifts the original gold artwork is used; at 100 it
+becomes ice and over 100 it becomes the fire/dragon frame. Lower gift levels use
+animated cloud and silver rings. Music honors the volume setting and browser
+audio activation. No audio-unlock control is displayed publicly.
+
+Frame artwork is copied without alteration from this same repository's
+live-rings/public/frames/{gold,ice,fire}.png. The ring renderer is copied from
+live-driving-quiz/public/rings.js, itself based on live-rings/public/rings.js.
+The original major-key jingle is copied from
+live-driving-quiz/public/celebration.js. No paid media service is used.
