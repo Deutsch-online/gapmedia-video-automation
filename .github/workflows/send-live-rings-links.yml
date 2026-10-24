@@ -42,7 +42,7 @@ jobs:
               raise RuntimeError('Unexpected authorization response')
           except urllib.error.HTTPError as error:
               if error.code!=404:raise RuntimeError('Panel key verification failed') from None
-          text='✨ پنل حلقه‌های مهمان لایو\n\n🔐 لینک خصوصی مدیریت:\n'+base+'/?panel=1#'+token+'\n\n🎥 لینک خروجی شفاف برای لایو:\n'+base+'/screen\n\nگیفت‌دهنده‌ها با پروفایل درخشان بالا، تا ۱۰ لایک‌کننده پایین، و تاج ویژه برای نفر اول لایک. حلقهٔ مهمان فقط به کسی می‌رسد که بیشترین کوین دریافتی را دارد.\n\nدر پنل، یوزرنیم میزبان و مهمان‌ها را وارد کن. خروجی لایو: عرض 1080 و ارتفاع 1920.\n\nلینک مدیریت خصوصی است؛ در لایو فقط لینک خروجی را نمایش بده.'
+          text='🔐 لینک خصوصی مدیریت حلقه‌ها — ورود اصلاح‌شده\n\n'+base+'/?panel=1#'+token+'\n\n۱. لینک کامل بالا را باز کن.\n۲. بالای پنل باید «دسترسی مدیریت تأیید شد» نمایش داده شود.\n۳. یوزرنیم میزبان را وارد کن و «اتصال به لایو» را بزن.\n\nاگر دسترسی تأیید نشد، همین لینک کامل را در کادر بالای پنل وارد کن و «ورود به مدیریت» را بزن.\n\n🎥 خروجی مخصوص LIVE Studio:\n'+base+'/screen\n\nاندازهٔ خروجی: 1080 × 1920\nلینک مدیریت خصوصی است؛ در لایو فقط لینک خروجی را نمایش بده.'
           result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
           print('RINGS_LINKS_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
           PY
