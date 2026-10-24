@@ -164,3 +164,15 @@ a turquoise accent and an animated reflective frame. A locally bundled bold
 Vazirmatn font (same repository font and OFL license) removes reliance on Google
 Fonts. Country titles occupy a full frame header; scores and gift counts are
 larger. Championship display and auto-restart now use 14 seconds.
+
+
+## Prominent Follow + and championship profile
+The featured liker/gifter buttons use opaque high-contrast raised colors. The
+championship overlay also includes a large Follow + link beneath the winning
+supporter's name. TikTok native displayId and legacy uniqueId fields are both
+recognized. Public handles are retained in ranked supporter summaries and
+backfilled across existing like/gift/comment records for the same TikTok ID.
+Only a received valid username produces a clickable official TikTok profile
+link; DEMO and missing usernames stay visibly labeled but unavailable. Opening
+the profile does not automatically follow the account. Browser Source video
+itself remains noninteractive to live viewers.
