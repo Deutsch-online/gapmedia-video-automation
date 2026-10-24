@@ -1,0 +1,28 @@
+name: Send Ludo live link to owner Telegram
+on:
+  push:
+    paths: [".trigger-ludo-link"]
+permissions:
+  contents: read
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send direct links only
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.parse, urllib.request
+          token=os.environ['TELEGRAM_BOT_TOKEN']
+          chat=os.environ['TELEGRAM_CHAT_ID']
+          if not token or not chat: raise SystemExit('Telegram owner bot is not configured')
+          message='لینک مستقیم نسخه تازه لدو برای لایو:\nhttps://afgtakrun-ludo-live-nations.hf.space/screen\n\nصفحه OBS یا LIVE Studio را یک بار Refresh کنید. این پیام فقط لینک است و فایل ZIP ندارد.'
+          data=urllib.parse.urlencode({'chat_id':chat,'text':message,'disable_web_page_preview':'true'}).encode()
+          request=urllib.request.Request('https://api.telegram.org/bot'+token+'/sendMessage',data=data)
+          try: result=json.load(urllib.request.urlopen(request,timeout=45))
+          except Exception: raise SystemExit('Telegram link delivery failed; no secrets logged')
+          if not result.get('ok'): raise SystemExit('Telegram did not confirm delivery')
+          print('LUDO_LINK_DELIVERED message_id='+str(result['result']['message_id']))
+          PY
