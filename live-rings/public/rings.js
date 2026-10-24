@@ -80,4 +80,18 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  // AI-painted transparent ornaments sit over the animated mist and energy ring.
  const art=frameArt.get(id);
  if(art&&ornaments){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,size*.32,0,TAU);ctx.clip('evenodd');const breathe=1+Math.sin(t*.9)*.007,span=size*1.61*breathe;ctx.rotate(Math.sin(t*.6)*(id==='gold'?.002:.006));ctx.shadowColor=p[0];ctx.shadowBlur=size*(.025+.012*Math.sin(t*1.6)**2)*power;ctx.drawImage(art,-span/2,-span/2,span,span);ctx.restore();}
+ drawCrown(ctx,x,y,size,id,time);
+}
+
+function drawCrown(ctx,x,y,size,id,time){
+ if(!['silver','gold','ice','fire'].includes(id))return;
+ const fire=id==='fire',cold=id==='silver'||id==='ice';const colors=fire?['#ffdb77','#ee5425','#591d23']:cold?['#f3ffff','#83ddff','#3c6ebc']:['#fff5b1','#f3c15a','#a36b17'];
+ const t=time*.001,r=size*.5;ctx.save();ctx.translate(x,y-r-size*.025);ctx.shadowColor=colors[1];ctx.shadowBlur=size*(.035+.012*Math.sin(t*2)**2);ctx.lineJoin='round';ctx.lineWidth=size*.008;
+ const g=ctx.createLinearGradient(0,-size*.15,0,size*.035);g.addColorStop(0,colors[0]);g.addColorStop(.48,colors[1]);g.addColorStop(.75,colors[0]);g.addColorStop(1,colors[2]);ctx.fillStyle=g;ctx.strokeStyle=colors[0];
+ ctx.beginPath();ctx.moveTo(-size*.13,size*.02);ctx.lineTo(-size*.17,-size*.1);ctx.lineTo(-size*.075,-size*.055);ctx.lineTo(-size*.065,-size*.14);ctx.lineTo(-size*.025,-size*.085);ctx.lineTo(0,-size*.19);ctx.lineTo(size*.025,-size*.085);ctx.lineTo(size*.065,-size*.14);ctx.lineTo(size*.075,-size*.055);ctx.lineTo(size*.17,-size*.1);ctx.lineTo(size*.13,size*.02);ctx.closePath();ctx.fill();ctx.stroke();
+ if(fire){for(const direction of [-1,1]){ctx.beginPath();ctx.moveTo(direction*size*.1,-size*.035);ctx.bezierCurveTo(direction*size*.23,-size*.13,direction*size*.18,-size*.18,direction*size*.15,-size*.22);ctx.bezierCurveTo(direction*size*.14,-size*.13,direction*size*.07,-size*.12,direction*size*.045,-size*.06);ctx.closePath();ctx.fill();ctx.stroke();}}
+ ctx.fillStyle=colors[2];ctx.fillRect(-size*.12,-size*.002,size*.24,size*.025);ctx.fillStyle=colors[0];
+ for(let i=-1;i<=1;i++){ctx.save();ctx.translate(i*size*.075,-size*(i===0?.052:.025));ctx.rotate(Math.PI/4);const gem=size*(i===0?.024:.013);ctx.fillStyle=cold?'#e9ffff':fire?'#ff623c':'#fff1b2';ctx.fillRect(-gem/2,-gem/2,gem,gem);ctx.restore();}
+ for(let i=0;i<5;i++){const phase=t*1.6+i*1.4,xx=Math.sin(i*3.1)*size*.17,yy=-size*(.08+.1*(.5+.5*Math.sin(phase)));ctx.globalAlpha=.3+.7*Math.sin(phase)**2;ctx.fillStyle=colors[0];ctx.beginPath();ctx.arc(xx,yy,size*.0035,0,TAU);ctx.fill();}
+ ctx.restore();
 }
