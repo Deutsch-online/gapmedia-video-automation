@@ -1417,7 +1417,148 @@
       }
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 10,
+      "title_de": "Die richtige Briefmarke",
+      "title_fa": "تمبر مناسب",
+      "summary": "Marta prepares an envelope to mail and proudly places a cute decorative cat sticker in the top right corner. Lukas points out that sending a letter requires an official postage stamp. Marta cheerfully moves her cat sticker to seal the back flap and affixes the real stamp in its place.",
+      "cliffhanger": "With her letter properly stamped, Marta heads out to locate the nearest yellow mailbox.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta holds up a neatly addressed white envelope bearing an oversized sparkly cartoon cat sticker in the postage stamp corner.",
+      "everyday_problem": "Marta confuses a decorative sticker with a postage stamp needed to mail a letter.",
+      "practical_resolution": "Marta learns that an envelope requires a valid Briefmarke for postage, repositions her sticker to seal the envelope flap, and affixes the genuine stamp in the top right corner.",
+      "marta_goal": "Prepare her envelope correctly so it can be mailed.",
+      "marta_decision": "Keep the decorative sticker as an envelope seal on the back and place the official postage stamp on the front.",
+      "visual_payoff": "The cat sticker seals the back envelope flap like a wax seal, while the official blue postage stamp sits squarely on the top right front.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replaced repeated verbal explanations with two concrete prop interactions (peeling the cat sticker and sticking the real stamp) for clear visual storytelling.",
+        "visible_comic_action": "Marta flips the envelope and uses the oversized cat sticker to firmly seal the back envelope flap before proudly adhering the real stamp.",
+        "next_experiment": "In the upcoming outdoor scene, introduce an environmental sound cue (mailbox flap snap) tied directly to Marta's deciding physical action."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Mein Brief ist endlich fertig!",
+          "fa": "نامه‌ام بالاخره آماده است!",
+          "scene": "Medium shot of Marta standing by the hallway console table, proudly presenting a sealed white envelope toward the camera.",
+          "motion": "Marta raises the envelope with both hands and beams proudly.",
+          "visible_objects": [
+            "white envelope",
+            "cat sticker"
+          ],
+          "object_action": "Marta holds the white envelope with the cat sticker visible in the top right corner."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Das ist ein süßer Katzen-Sticker.",
+          "fa": "این یک برچسب گربه بامزه است.",
+          "scene": "Closer framing of Lukas standing beside the console table, looking downward at the envelope with an amused smile.",
+          "motion": "Lukas points a relaxed index finger toward the colorful cat sticker.",
+          "visible_objects": [
+            "cat sticker",
+            "stamp booklet"
+          ],
+          "object_action": "Lukas holds a small yellow stamp booklet in his left hand while pointing with his right."
+        },
+        {
+          "speaker": "marta",
+          "de": "Er klebt schön oben rechts!",
+          "fa": "خوب و مرتب بالا سمت راست چسبیده!",
+          "scene": "Close-up of Marta holding the envelope, tapping the corner sticker with satisfaction.",
+          "motion": "Marta taps the cartoon cat sticker gently with her fingertip.",
+          "visible_objects": [
+            "white envelope",
+            "cat sticker"
+          ],
+          "object_action": "Marta taps the cat sticker on the top right corner of the envelope."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ein Brief braucht eine Briefmarke.",
+          "fa": "یک نامه به تمبر پستی نیاز دارد.",
+          "scene": "Medium shot of Lukas opening the small stamp booklet to show a genuine postage stamp.",
+          "motion": "Lukas flips open the booklet cover and shows a real stamp inside.",
+          "visible_objects": [
+            "stamp booklet",
+            "postage stamp"
+          ],
+          "object_action": "Lukas displays an official postage stamp inside the booklet."
+        },
+        {
+          "speaker": "marta",
+          "de": "Zählt mein Sticker denn nicht?",
+          "fa": "یعنی برچسب من حساب نمی‌شود؟",
+          "scene": "Closer framing of Marta looking curiously between her envelope and the stamp booklet off-camera.",
+          "motion": "Marta tilts her head playfully and raises her eyebrows in surprise.",
+          "visible_objects": [
+            "white envelope",
+            "cat sticker"
+          ],
+          "object_action": "Marta lowers the envelope slightly and inspects the sticker closely."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Leider nein, nur die Briefmarke.",
+          "fa": "متأسفانه نه، فقط تمبر پستی.",
+          "scene": "Medium shot of Lukas detaching one self-adhesive postage stamp from the booklet.",
+          "motion": "Lukas peels the small postage stamp carefully from its paper backing.",
+          "visible_objects": [
+            "stamp booklet",
+            "postage stamp"
+          ],
+          "object_action": "Lukas peels a single postage stamp with his thumb and forefinger."
+        },
+        {
+          "speaker": "marta",
+          "de": "Dann klebe ich ihn hinten drauf!",
+          "fa": "پس آن را پشت پاکت می‌چسبانم!",
+          "scene": "Close-up of Marta turning the envelope around and peeling the cat sticker off the corner.",
+          "motion": "Marta smoothly transfers the cat sticker across to the pointed closure flap on the back.",
+          "visible_objects": [
+            "white envelope",
+            "cat sticker"
+          ],
+          "object_action": "Marta presses the cat sticker firmly over the envelope back flap."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Sehr gut! Hier ist das Porto.",
+          "fa": "بسیار عالی! این هم هزینه پست.",
+          "scene": "Medium shot of Lukas extending his hand forward to deliver the official stamp.",
+          "motion": "Lukas offers the peeled postage stamp forward with a warm nod of encouragement.",
+          "visible_objects": [
+            "postage stamp"
+          ],
+          "object_action": "Lukas holds the peeled postage stamp between his fingertips."
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt ist der Brief reisefertig!",
+          "fa": "حالا نامه آماده سفر است!",
+          "scene": "Closer framing of Marta pressing the official postage stamp into place on the front of the envelope.",
+          "motion": "Marta presses the real stamp onto the top right corner and smiles brightly into camera.",
+          "visible_objects": [
+            "white envelope",
+            "postage stamp"
+          ],
+          "object_action": "Marta presses the official postage stamp securely onto the top right corner."
+        }
+      ],
+      "research_source": {
+        "topic": "Posting a letter",
+        "url": "https://www.deutschepost.de/de/b/briefmarken.html",
+        "excerpt": "Briefmarken - Postwertzeichen - Briefmarken kaufen | Deutsche Post Sendung verfolgen Sendung Porto berechnen Porto Kontakt Kontakt Standorte finden Standorte Jetzt bewerben Karriere Passende Briefmarke direkt zur Hand Für den sofortigen Versand oder als Vorrat – hier finden Sie für jeden Bedarf das richtige Porto. Internetmarke oder klassische Briefmarke ? Sie haben die Wahl! Porto einfach online bezahlen, ausdrucken und aufkleben – mit der Internetmarke ist Ihr Brief in wenigen Klicks versandbereit. Alternativ bestellen Sie sich Briefmarken in",
+        "retrieved_at": "2026-10-24T23:46:43.667694+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-10-25",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
