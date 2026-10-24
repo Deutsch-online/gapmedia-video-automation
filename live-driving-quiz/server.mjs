@@ -308,9 +308,11 @@ const server=http.createServer(async(req,res)=>{
         settings.celebrationMusic=data.enabled;settings.musicVolume=volume;save();
       }
       else if(action==='wait-time'){
+        if(!sessionStore.ready)throw Error('ابتدا اتصال ذخیره‌سازی را بازیابی کنید.');
         if(!Number.isInteger(data.seconds)||data.seconds<0||data.seconds>300)throw Error('زمان انتظار باید بین 0 و 300 ثانیه باشد.');settings.waitSeconds=data.seconds;if(quiz.phase==='revealed')advanceAt=Date.now()+data.seconds*1000;await persistDisplay();
       }
       else if(action==='profile-frames'){
+        if(!sessionStore.ready)throw Error('ابتدا اتصال ذخیره‌سازی را بازیابی کنید.');
         if(!['auto','none','simple','glow','silver','gold','ice','fire'].includes(data.liker)||!['auto','none','simple','glow','silver','gold','ice','fire'].includes(data.gifter))throw Error('قاب نامعتبر است.');settings.profileFrames={liker:data.liker,gifter:data.gifter};await persistDisplay();
       }
       else if(action==='simulate-join'){if(mode!=='demo')throw Error('فقط در حالت آزمایشی');receiveJoin({user:{nickname:'Demo · Neuer Besucher'}});}
