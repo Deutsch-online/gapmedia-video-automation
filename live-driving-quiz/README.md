@@ -222,3 +222,40 @@ It never guesses a handle from a display name or silently follows an account.
 Following needs TikTok's own account UI. The links are usable in the Browser
 source/Interact and private panel; a streamed video image is not clickable for
 viewers. Missing usernames show a disabled control instead of a made-up URL.
+
+### Shareable sales demo, original media viewer and operator buttons
+
+`/demo` is a responsive public sales demonstration with an embedded
+`/screen?demo=sales` preview. It fetches only a small labelled sample deck at
+`/api/demo`; all people, gifts, points and interactions are simulated locally.
+It never opens a LIVE socket, calls admin routes, buys/sends gifts, or changes
+real question/session history. Same-origin parent messages are restricted to
+the parent frame and an explicit command set. Sample answers are disclosed
+only for this demonstration, not from the real current round.
+
+Images and videos retain verified source bytes. Tap the media or use ⛶ to move
+the same media nodes into a large touch-friendly dialog, zoom 100–400%, drag,
+pinch, reset, use native video controls or open the original file. The actual
+source dimensions appear beside the media. This does not invent detail, upscale
+low-resolution media or claim 4K. Close/Escape restores the original media nodes;
+changing questions closes and resets the viewer. The answer timer keeps running.
+
+The private control page provides an owner-only `/screen#TOKEN` link. Four
+on-screen buttons execute Previous, Repeat, Pause and Next through authenticated
+admin commands in Browser-source Interact. The token is removed from the visible
+URL and retained only in that Browser session's sessionStorage for Refresh.
+Public fresh sessions have no operator controls; sales preview controls always
+remain local, even if an owner has used the same browser. Never share the owner
+URL; share `/demo` instead. Controls do not become clickable in a streamed video.
+
+Previous/forward traversal uses the current process's displayed-question trail.
+Repeat starts a new answer round and clears the current round's votes, without
+enabling bulk session repeats. Completed review is allowed only for explicit
+owner Previous/Repeat; ordinary selection keeps the repeat policy. A repeated
+Start remains idempotent. Pause stops autoplay. Existing plan progress is retained.
+
+`/rights` and a discreet in-app watermark identify the product's copyright notice.
+The notice covers proprietary branding/presentation/promotional material subject
+to legal and licence exceptions. It preserves AGPL and upstream rights, attributes
+question/media rights to their owners and makes no claim of legal registration
+or prevention of screen recording.

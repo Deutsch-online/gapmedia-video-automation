@@ -14,6 +14,9 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await fetch(base+'/demo')).status,200);assert.equal((await fetch(base+'/rights')).status,200);
+  const beforeDemo=await(await fetch(base+'/api/state')).json();const demo=await(await fetch(base+'/api/demo')).json();assert.ok(demo.questions.length>=4);assert.ok(demo.questions.some(q=>q.video));const afterDemo=await(await fetch(base+'/api/state')).json();assert.equal(afterDemo.roundId,beforeDemo.roundId);assert.equal(afterDemo.voters,beforeDemo.voters);
+
   assert.equal((await post('gift-style',{basis:'count',levels:{simple:2,silver:3,gold:4,diamond:5,vip:6}})).status,200);
   assert.equal((await post('gift-style',{basis:'coins',levels:{simple:5,silver:3,gold:4,diamond:5,vip:6}})).status,400);
   assert.equal((await post('activity-display',{side:'free',count:8,top:220})).status,400);
@@ -81,6 +84,11 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   await post('pause');state=(await(await post('reveal')).json()).state;assert.equal(state.leaderboard.find(p=>p.name==='manual-user').score,score);
   state=(await(await post('next')).json()).state;assert.ok(['open','watching'].includes(state.phase));assert.equal(state.autoplay,false);assert.notEqual(state.question.id,first.id);
   state=(await(await post('next')).json()).state;assert.ok(['open','watching'].includes(state.phase));assert.equal(state.autoplay,false,'manual next also works before the prior round closes');
+  const latestId=state.question.id;await post('session-settings',{size:50,allowRepeat:false});
+  state=(await(await post('previous')).json()).state;assert.notEqual(state.question.id,latestId);assert.equal(state.autoplay,false);
+  state=(await(await post('next')).json()).state;assert.equal(state.question.id,latestId);
+  const priorRound=state.roundId;state=(await(await post('repeat')).json()).state;assert.equal(state.question.id,latestId);assert.notEqual(state.roundId,priorRound);assert.equal(state.voters,0);assert.equal(state.session.allowRepeat,false,'explicit operator repeat does not enable bulk session repeats');
+
 
  } finally {child.kill('SIGTERM');await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(3000)]);if(child.exitCode===null)child.kill('SIGKILL');rmSync(dir,{recursive:true,force:true});}
 });

@@ -16,7 +16,7 @@ export class QuizSessions{
  }
  current(){return this.reviewId||this.session?.ids[this.session.cursor]||null;}
  ensure(){if(this.reviewId)return this.reviewId;if(!this.session)return this.create();if(!this.current())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را از پنل شروع کنید.');return this.current();}
- review(id){if(!this.ids.includes(id))throw Error('سؤال ناشناخته است.');if(this.completed[id]&&!this.allowRepeat)throw Error('برای مرور سؤال انجام‌شده، تکرار را در پنل روشن کنید.');this.reviewId=id;}
+ review(id,{explicitRepeat=false}={}){if(!this.ids.includes(id))throw Error('سؤال ناشناخته است.');if(this.completed[id]&&!this.allowRepeat&&!explicitRepeat)throw Error('برای مرور سؤال انجام‌شده، تکرار را در پنل روشن کنید.');this.reviewId=id;}
  complete(id){if(!this.ids.includes(id))return;const old=this.completed[id];this.completed[id]={at:this.now(),attempts:(old?.attempts||0)+1};if(this.session?.ids.includes(id)&&!this.session.done.includes(id))this.session.done.push(id);}
  next(){if(this.reviewId){this.reviewId=null;return this.session?this.current():this.ensure();}if(!this.session)return this.ensure();this.session.cursor=Math.min(this.session.cursor+1,this.session.ids.length);return this.current();}
  export(){return {version:1,size:this.size,allowRepeat:this.allowRepeat,number:this.number,completed:this.completed,session:this.session};}

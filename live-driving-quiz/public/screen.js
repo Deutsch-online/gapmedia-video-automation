@@ -1,3 +1,5 @@
+import {renderOperator} from './operator-controls.js';
+import {renderMediaViewer} from './media-viewer.js';
 import {renderActivity} from './activity-ui.js';
 import {renderCelebration,soundCountdown} from './celebration.js';
 import {renderGuests} from './guests-ui.js';
@@ -60,7 +62,7 @@ function render(s){
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name}: ${s.lastAnswer.choice}`:'Erst nachdenken, dann antworten.';
   $('giftNote').textContent='Antworten gelten nur während der Antwortzeit.';
   const gs=JSON.stringify(s.guests||[]);if(gs!==guestSignature){guestSignature=gs;renderGuests($('guestList'),s.guests||[],{language:'de'});}
-  renderActivity(s);renderCelebration(s);syncVideo();updateTimer();requestAnimationFrame(adjustBankLayout);
+  renderActivity(s);renderCelebration(s);syncVideo();renderMediaViewer(s);renderOperator(s);updateTimer();requestAnimationFrame(adjustBankLayout);
 }
 function serverNow(){return state.serverTime+performance.now()-receivedAt;}
 function updateTimer(){if(!state)return;const target=state.phase==='watching'?state.opensAt:state.closesAt;const left=['open','watching'].includes(state.phase)?Math.max(0,Math.ceil((target-serverNow())/1000)):0;
@@ -70,7 +72,8 @@ function updateTimer(){if(!state)return;const target=state.phase==='watching'?st
 setInterval(updateTimer,250);
 let reconnect;
 function connect(){const ws=new WebSocket(`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}/events`);ws.onmessage=e=>render(JSON.parse(e.data));ws.onclose=()=>{$('phaseLabel').textContent='Verbindung unterbrochen – bitte warten.';clearTimeout(reconnect);reconnect=setTimeout(connect,2000);};}
-fetch('/api/state').then(r=>r.json()).then(render);connect();
+if(new URLSearchParams(location.search).get('demo')==='sales'){void import('./sales-preview.js').then(m=>m.startSalesPreview(render));}
+else{fetch('/api/state').then(r=>r.json()).then(render);connect();}
 
 $('bankImage').addEventListener('error',()=>{$('imageFailure').classList.remove('hidden');$('phaseLabel').textContent='Das Bild ist nicht verfügbar. Bitte die Frage pausieren.';});
 

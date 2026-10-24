@@ -54,6 +54,8 @@ const ids=quiz.questions.map(q=>q.id);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{});
 let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat});
 const sessions=()=>mode==='live'?liveSessions:demoSessions;
+let questionTrail=[],trailIndex=-1;
+function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
 function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle};}
@@ -86,13 +88,13 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
 function broadcast() {const data=JSON.stringify(publicState());for(const ws of wss.clients)if(ws.readyState===1){if(ws.bufferedAmount>1000000)ws.terminate();else ws.send(data);}}
 function save() {writeFileSync(settingsFile,JSON.stringify(settings,null,2)+'\n',{mode:0o600});}
-function changeMode(next){if(mode!==next){roundControlGeneration++;supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
+function changeMode(next){if(mode!==next){questionTrail=[];trailIndex=-1;roundControlGeneration++;supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;quiz.pause();quiz.leaderboard.clear();quiz.answers.clear();quiz.lastAnswer=null;recent=[];}mode=next;}
 function safeError(error) {
   if(/offline/i.test(error?.constructor?.name||error?.name||''))return 'حساب اکنون لایو ندارد.';
   if(/Room ID/.test(error?.message||''))return 'شناسهٔ لایو دریافت نشد؛ حساب ممکن است آفلاین یا دسترسی محدود باشد.';
@@ -184,7 +186,10 @@ async function startRound({generation=roundControlGeneration}={}) {
  await flushSession();checkRoundGeneration(generation);let id=sessions().ensure();
  while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
- persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:settings.narrationEnabled?narrationInfo?.questions[quiz.questions[quiz.index].id]?.duration_ms||0:0});advanceAt=null;broadcast();
+ persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:settings.narrationEnabled?narrationInfo?.questions[quiz.questions[quiz.index].id]?.duration_ms||0:0});rememberQuestion(id);advanceAt=null;broadcast();
+}
+async function revisitQuestion(id,generation){
+ recordCompleted();await flushSession();checkRoundGeneration(generation);quiz.pause();sessions().review(id,{explicitRepeat:true});quiz.select(id);await startRound({generation});if(sessions().session?.ids[sessions().session.cursor]===id)sessions().reviewId=null;
 }
 function authenticated(req) {
   const value=req.headers.authorization?.replace(/^Bearer /,'')||'';
@@ -202,7 +207,7 @@ async function body(req) {
 }
 narrationInfo=narrationMetadata(root,quiz.questions);
 const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2','.png':'image/png'};
-const assets=new Map([['/','screen.html'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/activity-ui.js','activity-ui.js'],['/rings.js','rings.js'],['/frames/fire.png','frames/fire.png'],['/frames/gold.png','frames/gold.png'],['/frames/ice.png','frames/ice.png'],['/narration.js','narration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
+const assets=new Map([['/','screen.html'],['/demo','sales.html'],['/rights','rights.html'],['/sales.css','sales.css'],['/sales.js','sales.js'],['/sales-preview.js','sales-preview.js'],['/media-viewer.js','media-viewer.js'],['/operator-controls.js','operator-controls.js'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/activity-ui.js','activity-ui.js'],['/rings.js','rings.js'],['/frames/fire.png','frames/fire.png'],['/frames/gold.png','frames/gold.png'],['/frames/ice.png','frames/ice.png'],['/narration.js','narration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
 function json(res,status,data) {res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -211,6 +216,10 @@ const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,base);
   try {
     if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
+    if(req.method==='GET'&&url.pathname==='/api/demo'){
+      const selected=[quiz.questions[0],...quiz.questions.filter(q=>q.video),...quiz.questions.filter(q=>q.id.startsWith('1.3.01')).slice(0,2),...quiz.questions.filter(q=>q.id.startsWith('1.4.40')).slice(0,1)];
+      return json(res,200,{label:'Isolated sales demonstration; all participants and gifts are simulated',questions:selected});
+    }
     if(req.method==='GET'&&url.pathname==='/api/state')return json(res,200,publicState());
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
@@ -229,17 +238,24 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='retry-session-save'){if(!sessionStore.ready)throw Error('پیشرفت خوانده نشده است؛ سرور را دوباره راه‌اندازی کنید.');await sessionStore.retry(progressData());sessionError=null;}
       else if(action==='new-session'){
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
-        await flushSession();const id=sessions().create();quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
+        await flushSession();const id=sessions().create();questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
       }
       else if(action==='start'){const generation=++roundControlGeneration;await startRound({generation});}
       else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+12000;}
       else if(action==='select'){
         sessions().review(String(data.id));const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;quiz.pause();quiz.select(String(data.id));advanceAt=null;await startRound({generation});
       }
+      else if(action==='previous'){
+        if(trailIndex<=0)throw Error('هنوز سؤال قبلی در این نشست نمایش داده نشده است.');const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;const nextIndex=trailIndex-1;const id=questionTrail[nextIndex];trailIndex=nextIndex;await revisitQuestion(id,generation);
+      }
+      else if(action==='repeat'){
+        const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;await revisitQuestion(quiz.questions[quiz.index].id,generation);
+      }
       else if(action==='next'){
         const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;
         if(quiz.phase==='open')quiz.reveal({manual:true});else if(quiz.phase==='watching')quiz.pause();
-        if(await nextRound({generation}))await startRound({generation});
+        if(trailIndex+1<questionTrail.length){const id=questionTrail[++trailIndex];await revisitQuestion(id,generation);}
+        else if(await nextRound({generation}))await startRound({generation});
       }
       else if(action==='pause'){roundControlGeneration++;resumeOnReconnect=false;autoplay=false;quiz.pause();}
       else if(action==='autoplay'){const generation=++roundControlGeneration;resumeOnReconnect=Boolean(data.enabled);autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed'&&!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');await startRound();}}

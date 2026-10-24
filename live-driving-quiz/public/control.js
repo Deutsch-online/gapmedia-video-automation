@@ -20,6 +20,7 @@ for(const k of giftKeys){
 }
 $('manualGifts').addEventListener('input',()=>{manualDirty=true;});
 $('screenUrl').textContent=location.origin+'/screen';
+$('operatorScreenLink').href=location.origin+'/screen#'+encodeURIComponent(token);
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(action,data={}){
  try{
@@ -82,7 +83,7 @@ function render(s){
 let manualBusy=false;
 async function manualCommand(action,data={}){
  if(manualBusy)return;manualBusy=true;notice('در حال اجرای فرمان…');
- const buttons=[...document.querySelectorAll('[data-command="start"],[data-command="reveal"],[data-command="next"],#selectQuestion,#questionSelect')];
+ const buttons=[...document.querySelectorAll('[data-command="previous"],[data-command="repeat"],[data-command="start"],[data-command="reveal"],[data-command="next"],#selectQuestion,#questionSelect')];
  for(const button of buttons)button.disabled=true;
  try{return await api(action,data);}finally{manualBusy=false;for(const button of buttons)button.disabled=false;}
 }
