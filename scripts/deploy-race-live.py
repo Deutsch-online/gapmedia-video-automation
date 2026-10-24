@@ -93,9 +93,7 @@ def deploy():
     write_report(report)
     control=url+'/?panel=1#'+admin
     message=telegram(bot_token,'sendMessage',{'chat_id':chat,'link_preview_options':{'is_disabled':True},'text':
-        'بازی مسابقهٔ موترها آماده و منتشر شد.\n\nصفحهٔ نمایش برای لایو و OBS:\n'+url+'/screen'+
-        '\n\nپنل خصوصی مدیریت شما:\n'+control+
-        '\n\n۱ تا ۵ موتر، ورود خودکار با پروفایل، صف انتظار، هر ۱۰ لایک یک قدم، هر گیفت مشخص یک قدم. قاب‌های جداگانه، سطح قاب‌ها، زمان بی‌فعالیتی، تعداد نفرات ستون‌ها و توقف مسابقه در پنل تنظیم می‌شوند.\n\nپنل با پنل لدو و تیوری آلمانی مقایسه و تکمیل شد. آزمایش رایگان از اطلاعات اصلی جداست. لایو را در TikTok روشن کنید، نام حساب را در پنل وارد و اتصال را بزنید.\n\nلینک پنل خصوصی را روی لایو نمایش ندهید. میزبانی CPU رایگان است.'})
+        'Nations Race updated.\n\nLIVE:\n'+url+'/screen'+'\n\nPrivate panel:\n'+control+'\n\nLike and Move / Gift and Move'})
     report['private_link_delivered']=True;report['telegram_message_id']=message.get('message_id');write_report(report)
     print('RACE_LIVE_READY: '+json.dumps(report))
 
