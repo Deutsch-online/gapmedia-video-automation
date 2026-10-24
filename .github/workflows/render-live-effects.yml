@@ -1,0 +1,55 @@
+name: Live Crown genuine particle videos
+on:
+  push:
+    branches: [codex/live-crown-hf-particles]
+    paths:
+      - live-effects/request.json
+      - .github/workflows/render-live-effects.yml
+permissions:
+  contents: read
+concurrency:
+  group: live-crown-hf-particles
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check request scope and duplicate-submission guards
+        run: python live-effects/test_generate_hf.py
+      - name: Install video provider client
+        run: python -m pip install 'huggingface_hub==0.36.0'
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/live-effects
+          key: live-crown-${{ hashFiles('live-effects/request.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            live-crown-${{ hashFiles('live-effects/request.json') }}-
+      - name: Verify the account without generation
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python live-effects/generate_hf.py --preflight
+      - name: Generate exactly four owner-authorized videos
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_TELEMETRY: '1'
+          PYTHONUNBUFFERED: '1'
+        run: python live-effects/generate_hf.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: renders/live-effects
+          key: live-crown-${{ hashFiles('live-effects/request.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-crown-particle-videos
+          path: renders/live-effects
+          if-no-files-found: warn
+          retention-days: 14
