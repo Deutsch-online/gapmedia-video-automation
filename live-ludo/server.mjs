@@ -64,7 +64,7 @@ const autoTurns=setInterval(()=>{
  if(playing||demoRunning)return;
  if(snapshot.state.motion){snapshot.state.motion=null;snapshot.state.dice=0;publish()}
  if(snapshot.state.winner!==null){if(a.autoRestart){snapshot.state.nextGameAt ||=now+14000;if(now>=snapshot.state.nextGameAt){restartGame(snapshot);publish()}}return}
- if(snapshot.inputMode==='gifts'&&(wss.clients.size>0||mode==='live')){
+ if(snapshot.inputMode==='gifts'){
   const popular=promoteMostCommented(snapshot,now);if(popular){publish();broadcast({type:'notice',message:popular.entered+' enters with the most unique country comments. '+popular.removed+' had no gift for 60 seconds.'})}
   const rotated=rotateWaiting(snapshot,now);const promoted=promoteGiftLeader(snapshot,now);if(rotated.length||promoted){publish();if(promoted)broadcast({type:'notice',message:promoted.entered+' takes the slot from '+promoted.removed+'. Slot gifts stay fixed.'})}
   const removed=expireCountries(snapshot,now);if(removed.length){publish();broadcast({type:'notice',message:'Inactive countries removed: '+removed.join(', ')})}
