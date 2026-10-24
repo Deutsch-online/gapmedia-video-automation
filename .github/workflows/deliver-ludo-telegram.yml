@@ -1,0 +1,40 @@
+name: Deliver Ludo update to owner Telegram
+on:
+  push:
+    paths: [".trigger-ludo-delivery"]
+permissions:
+  contents: read
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package current Ludo app
+        run: |
+          cd live-ludo
+          zip -qr /tmp/ludo-live-latest.zip . -x 'node_modules/*' '.runtime.json' '.env' '.env.*' '*.pem'
+      - name: Send update to configured owner chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, uuid
+          token=os.environ['TELEGRAM_BOT_TOKEN']
+          chat=os.environ['TELEGRAM_CHAT_ID']
+          if not token or not chat: raise SystemExit('Telegram owner bot is not configured')
+          boundary='ludo'+uuid.uuid4().hex
+          caption='نسخه تازه لدو آماده است. دکمه Follow + تاپ لایکر و گیفتر متحرک شد و بازی بدون باز بودن صفحه هم خودکار ادامه می‌یابد.\n\nلینک نمایش برای OBS و LIVE Studio:\nhttps://afgtakrun-ludo-live-nations.hf.space/screen\n\nصفحه OBS را یک بار Refresh کنید.'
+          parts=[]
+          for key,value in [('chat_id',chat),('caption',caption)]:
+              parts.append(('--'+boundary+'\r\nContent-Disposition: form-data; name="'+key+'"\r\n\r\n'+value+'\r\n').encode())
+          parts.append(('--'+boundary+'\r\nContent-Disposition: form-data; name="document"; filename="ludo-live-latest.zip"\r\nContent-Type: application/zip\r\n\r\n').encode()+open('/tmp/ludo-live-latest.zip','rb').read()+b'\r\n')
+          parts.append(('--'+boundary+'--\r\n').encode())
+          request=urllib.request.Request('https://api.telegram.org/bot'+token+'/sendDocument',data=b''.join(parts),headers={'Content-Type':'multipart/form-data; boundary='+boundary})
+          try:
+              result=json.load(urllib.request.urlopen(request,timeout=90))
+          except Exception:
+              raise SystemExit('Telegram delivery failed; no secrets logged')
+          if not result.get('ok'): raise SystemExit('Telegram did not confirm delivery')
+          print('LUDO_TELEGRAM_DELIVERED message_id='+str(result['result']['message_id']))
+          PY
