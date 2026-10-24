@@ -14,6 +14,8 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await fetch(base+'/api/admin/gift-events')).status,401);const giftLog=await(await fetch(base+'/api/admin/gift-events',{headers:{authorization:'Bearer '+settings.token}})).json();assert.deepEqual(giftLog.events,[]);assert.equal(giftLog.traffic.giftProfilesRecorded,0);
+
   assert.equal((await fetch(base+'/demo')).status,200);assert.equal((await fetch(base+'/rights')).status,200);
   const beforeDemo=await(await fetch(base+'/api/state')).json();const demo=await(await fetch(base+'/api/demo')).json();assert.ok(demo.questions.length>=4);assert.ok(demo.questions.some(q=>q.video));const afterDemo=await(await fetch(base+'/api/state')).json();assert.equal(afterDemo.roundId,beforeDemo.roundId);assert.equal(afterDemo.voters,beforeDemo.voters);
 

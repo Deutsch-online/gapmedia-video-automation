@@ -72,8 +72,15 @@ const reconnect=new LiveReconnect({enabled:Boolean(hosting.publicOrigin)&&settin
 let resumeOnReconnect=false,connectGeneration=0;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;
-const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,lastCommentReject:null,lastGiftReject:null});
-let traffic=freshTraffic();
+const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,giftProfilesRecorded:0,giftProfilesUpdated:0,giftProgressReceived:0,giftDisplayRejected:0,giftDuplicates:0,lastGiftDisplayReject:null,lastCommentReject:null,lastGiftReject:null});
+let traffic=freshTraffic();let giftDisplayEvents=[];
+function recordGiftDisplay(event,result){
+ if(result.accepted){if(result.updated)traffic.giftProfilesUpdated++;else traffic.giftProfilesRecorded++;if(result.pending)traffic.giftProgressReceived++;traffic.lastGiftDisplayReject=null;}
+ else if(['duplicate_event','older_streak_update'].includes(result.reason))traffic.giftDuplicates++;
+ else{traffic.giftDisplayRejected++;traffic.lastGiftDisplayReject=result.detail||result.reason;}
+ const count=Number(result.count??event.repeatCount??event.gift?.repeat_count),item={at:Date.now(),accepted:result.accepted,pending:result.pending===true,updated:result.updated===true,reason:result.detail||result.reason||null,giftId:String(event.giftId??event.gift?.id??'').slice(0,30),count:Number.isSafeInteger(count)&&count>0?count:null,coins:result.coins??null,username:typeof event.user?.displayId==='string'?event.user.displayId.slice(0,24):typeof event.user?.uniqueId==='string'?event.user.uniqueId.slice(0,24):null};
+ giftDisplayEvents.unshift(item);giftDisplayEvents=giftDisplayEvents.slice(0,30);
+}
 function catalogFrom(raw) {
   const candidates=[raw,raw?.gifts,raw?.data?.gifts,raw?.giftList,raw?.data?.giftList,raw?.data];
   const list=candidates.find(Array.isArray)||[];
@@ -114,7 +121,7 @@ async function connect(username,startOnConnect=false,automatic=false) {
   const account=username.replace(/^@/,'');
   if(!automatic){settings.autoReconnect=true;reconnect.enable();resumeOnReconnect=startOnConnect;}
   const generation=++connectGeneration;
-  if(settings.username!==account){supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;traffic=freshTraffic();reconnect.room=null;}
+  if(settings.username!==account){supporters.clear();likes.clear();guests.clear();quiz.lastWinningRound=null;traffic=freshTraffic();giftDisplayEvents=[];reconnect.room=null;}
   settings.username=account;for(const g of Object.values(settings.gifts))if(g.source==='owner-preset')g.bound_username=settings.username;save();connecting=true;autoplay=false;quiz.pause();
   live={status:'connecting',message:'در حال اتصال ناشناس به لایو…',catalog:[]};broadcast();
   const proxy=process.env.HTTPS_PROXY||process.env.HTTP_PROXY;
@@ -125,7 +132,8 @@ async function connect(username,startOnConnect=false,automatic=false) {
   client.on(ControlEvent.ERROR,()=>{});
   client.on(ControlEvent.DISCONNECTED,()=>{if(connection===client){resumeOnReconnect=autoplay||resumeOnReconnect;connection=null;connecting=false;autoplay=false;quiz.pause();reconnect.failed();live={status:'disconnected',message:reconnect.enabled?'اتصال لایو قطع شد؛ تلاش مجدد خودکار فعال است.':'اتصال لایو قطع شد؛ از پنل دوباره وصل کنید.',catalog:[]};broadcast();}});
   client.on(WebcastEvent.STREAM_END,()=>{if(connection===client){reconnect.failed('offline');void disconnect({manual:false});}});
-  client.on(WebcastEvent.GIFT,data=>{
+  const pendingGifts=[];
+  function handleGift(data){
     if(connection!==client)return;
     traffic.giftsReceived++;
     const details=data.giftDetails||data.gift||data.extendedGiftInfo||{};
@@ -136,15 +144,17 @@ async function connect(username,startOnConnect=false,automatic=false) {
       const i=live.catalog.findIndex(g=>g.id===id);if(i<0&&live.catalog.length<1000)live.catalog.push(gift);else if(i>=0)live.catalog[i]=gift;
       for(const k of [...LETTERS,'ALL'])if(settings.gifts[k].id===id)settings.gifts[k]=observeGift(settings.gifts[k],gift);
     }
+    const displayResult=supporters.gift(data,{});recordGiftDisplay(data,displayResult);
     let guestResult;
-    if(live.status==='connected'){if(guests.observe(data.user))saveGuests();if(guests.observe(data.toUser))saveGuests();guestResult=guests.gift(data);supporters.gift(data,{});}
+    if(live.status==='connected'){if(guests.observe(data.user))saveGuests();if(guests.observe(data.toUser))saveGuests();guestResult=guests.gift(data);}
     if(guestResult?.accepted){broadcast();return;}
     if(mode!=='live'||settings.answerInput!=='gifts'||!ready()||connection!==client){broadcast();return;}
     const result=quiz.gift(data,Object.fromEntries(Object.entries(settings.gifts).filter(([,g])=>g.verified)));
     if(result.accepted) {traffic.giftsAccepted++;traffic.lastGiftReject=null;recent.push({...quiz.lastAnswer,at:Date.now()});recent=recent.slice(-12);lastReject=null;}
     else {traffic.lastGiftReject=result.reason;if(!['unmapped_gift','streak_not_finished','duplicate_event','already_selected'].includes(result.reason))lastReject=result.reason;}
     broadcast();
-  });
+  }
+  client.on(WebcastEvent.GIFT,data=>{if(connection!==client)return;if(live.status==='connecting'){pendingGifts.push(data);if(pendingGifts.length>256)pendingGifts.shift();return;}handleGift(data);});
   client.on(WebcastEvent.LIKE,data=>{if(connection!==client||live.status!=='connected')return;traffic.likesReceived++;likes.observe(data);broadcast();});
   client.on(WebcastEvent.CHAT,data=>{
     if(connection!==client)return;
@@ -161,10 +171,11 @@ async function connect(username,startOnConnect=false,automatic=false) {
   try {
     const connectedState=await Promise.race([client.connect(),new Promise((_,reject)=>{timeout=setTimeout(()=>reject(Error('Connect timeout')),45000);})]);
     if(connection!==client)throw Error('Connection changed');
-    if(reconnect.connected(connectedState?.roomId)){supporters.clear();likes.clear();guests.clear();traffic=freshTraffic();quiz.lastWinningRound=null;}
+    if(reconnect.connected(connectedState?.roomId)){supporters.clear();likes.clear();guests.clear();traffic=freshTraffic();giftDisplayEvents=[];quiz.lastWinningRound=null;}
     changeMode('live');
     const catalog=catalogFrom(client.availableGifts);
     live={status:'connected',message:'متصل؛ هدایا از رویدادهای همین لایو شناخته می‌شوند. می‌توانید نام و شناسهٔ هدایا را هم دستی ثبت کنید.',catalog};
+    for(const event of pendingGifts.splice(0))handleGift(event);
     for(const k of [...LETTERS,'ALL']){
       const current=catalog.find(g=>g.id===settings.gifts[k].id);
       const manual=configuredGift(settings.gifts[k],settings.username);
@@ -173,6 +184,7 @@ async function connect(username,startOnConnect=false,automatic=false) {
     save();
     if((startOnConnect||resumeOnReconnect)&&ready())try{await startRound();autoplay=true;}catch(error){autoplay=false;sessionError=error.message;}
   } catch(error) {
+    pendingGifts.length=0;
     if(generation!==connectGeneration){await Promise.race([client.disconnect().catch(()=>{}),new Promise(resolve=>setTimeout(resolve,1500))]);return;}
     if(connection===client){connection=null;await Promise.race([client.disconnect().catch(()=>{}),new Promise(resolve=>setTimeout(resolve,1500))]);}
     const diagnostics=liveDiagnostics(error);reconnect.failed(diagnostics[0]?.reason);
@@ -224,6 +236,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
       if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{session:sessions().summary(),questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video),completed:Boolean(sessions().completed[q.id]),planned:sessions().session?.ids.includes(q.id)||false}))});
+      if(req.method==='GET'&&url.pathname==='/api/admin/gift-events')return json(res,200,{events:giftDisplayEvents,traffic});
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
       const data=await body(req);const action=url.pathname.split('/').at(-1);
@@ -328,7 +341,7 @@ const server=http.createServer(async(req,res)=>{
       }
       else if(action==='simulate-supporter'){
         if(mode!=='demo')throw Error('آزمایش حلقه فقط در حالت آزمایشی مجاز است.');
-        const result=supporters.gift({giftId:'demo-outside-gifts',giftName:'Testgeschenk',diamondCount:Number(data.coins),repeatCount:1,user:{id:String(data.name||'demo-supporter'),nickname:String(data.name||'حامی آزمایشی'),uniqueId:data.username,profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}},settings.gifts);
+        const result=supporters.gift({giftId:'demo-outside-gifts',giftName:'Testgeschenk',diamondCount:Number(data.coins),repeatCount:Number.isSafeInteger(data.count)&&data.count>0?data.count:1,gift:{type:data.combo===true?1:0},repeatEnd:data.final===true?1:0,groupId:typeof data.groupId==='string'?data.groupId.slice(0,60):undefined,user:{id:String(data.name||'demo-supporter'),nickname:String(data.name||'حامی آزمایشی'),uniqueId:data.username,profilePictureUrl:data.avatar},common:{msgId:randomUUID(),createTime:Date.now()}},settings.gifts);
         if(!result.accepted)throw Error('ثبت آزمایشی انجام نشد.');
       }
       else if(action==='clear-supporters'){if(mode!=='demo')throw Error('پاک‌کردن آزمایش فقط در حالت آزمایشی است.');supporters.clear();likes.clear();}

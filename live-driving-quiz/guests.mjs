@@ -21,7 +21,7 @@ export class GuestSupport {
  }
  clear(){this.wall.clear();this.donors.clear();this.unassigned=0;}
  gift(event){
-  this.observe(event.toUser);const result=this.wall.gift(event,{});if(!result.accepted)return result;
+  this.observe(event.toUser);const result=this.wall.gift(event,{});if(!result.accepted)return result;if(result.pending)return {accepted:false,reason:'streak_not_finished'};
   const receiver=String(event.receiverUserId??event.giftExtra?.toUserId??event.toUser?.id??event.toUser?.userId??'');
   const guest=this.guests.find(g=>g.userId&&g.userId===receiver);
   if(!guest){this.unassigned++;return {accepted:false,reason:'unknown_recipient'};}

@@ -259,3 +259,33 @@ The notice covers proprietary branding/presentation/promotional material subject
 to legal and licence exceptions. It preserves AGPL and upstream rights, attributes
 question/media rights to their owners and makes no claim of legal registration
 or prevention of screen recording.
+
+### Tight rail and reliable progressive gift display
+
+Both rail positions now have a six-design-pixel gutter beside the question.
+The rail moves inward to a 68px outside margin so portraits stay inside mobile
+LIVE crops; reaction particles occupy the outside margin. German and Persian
+question/answer text use heavier weights and crisp, restrained shadows, without
+changing profile text sizes or source media height.
+
+Gift display is independent of quiz gift answers. A combo/streak displays the
+sender immediately while `pending`; subsequent cumulative counters replace the
+same portrait/count rather than summing updates. Finalization removes the
+pending label and never duplicates the completed gift. Zero/empty order/group
+sentinels cannot act as universal duplicate IDs. IDs, counts, type and value are
+normalized across v3, legacy and extended metadata; positive nested values are
+not masked by protobuf zero defaults or empty metadata objects. Existing
+avatars/handles survive partial final messages, and known like-profile avatars
+can fill a missing donor avatar. Missing prices remain unknown. Guest totals
+still apply only once at finalization; quiz answer scoring rules are unchanged.
+
+Actual gift events received during connection setup are held in a bounded
+memory queue and processed after room/mode promotion so the reset does not
+erase them. Existing connection retry/freshness checks remain in effect.
+The private panel separates received events, recorded portraits, updates and
+quiz gift answers. `/api/admin/gift-events` keeps the latest 30 enumerated
+accept/reject summaries in process memory, requires authentication and exposes
+no raw upstream payloads, URLs, cookies or tokens. Demo injections do not enter
+this real-event log. Prior unlogged events cannot be reconstructed or claimed
+as recovered. The state resets on a new room/process, as the existing LIVE
+participant counters do.

@@ -2,6 +2,13 @@ import {drawRing} from './rings.js';
 const $=id=>document.getElementById(id);
 const el=(tag,cls,text)=>{const node=document.createElement(tag);node.className=cls;if(text!=null)node.textContent=text;return node;};
 const profileURL=name=>typeof name==='string'&&/^[A-Za-z0-9._]{2,24}$/.test(name)?'https://www.tiktok.com/@'+name:null;
+const giftLabel=person=>person.giftName+(person.count?' × '+person.count:'')+(person.pending?' · läuft':'');
+function updateCopy(node,person){
+ const copy=node.querySelector('.activity-copy');copy.querySelector('.supporter-name').textContent=person.name;
+ const gift=copy.querySelector('.supporter-gift');if(gift)gift.textContent=giftLabel(person);
+ let coins=copy.querySelector('.supporter-coins');if(person.kind==='gift'&&person.coins!==null){if(!coins){coins=el('small','supporter-coins');copy.append(coins);}coins.textContent=person.coins+' 🪙';}else coins?.remove();
+ let likes=copy.querySelector('.supporter-likes');if(person.likes>0){if(!likes){likes=el('small','supporter-likes');copy.append(likes);}likes.textContent='♥ '+person.likeLabel;}else likes?.remove();
+}
 function card(person,focus=false){
  const gift=person.kind==='gift',node=el('div',`supporter ${gift?'activity-gift':'activity-like'} tier-${person.tier}${person.newest?' newest':''}${focus?' activity-feature':''}`);node.dataset.person=person.personKey||person.key;
  if(focus)node.append(el('strong','activity-feature-title',gift?'Danke für dein Geschenk!':'Top Likes · Danke!'));
@@ -10,7 +17,7 @@ function card(person,focus=false){
  orb.append(photo);
  const canvas=document.createElement('canvas');canvas.className='studio-profile-ring';canvas.width=canvas.height=focus?240:144;canvas.dataset.level=({vip:'fire',diamond:'ice',gold:'gold',silver:'silver',simple:'simple',bubble:'glow',crown:'gold',liked:'glow',basic:'simple'})[person.tier]||'simple';canvas.dataset.feature=focus?'1':'0';orb.append(canvas);
  const copy=el('div','activity-copy');copy.append(el('span','supporter-name',person.name));
- if(gift){copy.append(el('small','supporter-gift',person.giftName+(person.count?' × '+person.count:'')));if(person.coins!==null)copy.append(el('small','supporter-coins',person.coins+' 🪙'));}
+ if(gift){copy.append(el('small','supporter-gift',giftLabel(person)));if(person.coins!==null)copy.append(el('small','supporter-coins',person.coins+' 🪙'));}
  if(person.likes>0)copy.append(el('small','supporter-likes','♥ '+person.likeLabel));
  node.append(orb,copy);
  if(focus){const url=profileURL(person.username),follow=el(url?'a':'span','activity-follow'+(url?'':' unavailable'),'Follow +');
@@ -32,7 +39,7 @@ export function renderActivity(state){
  // Preserve the enlarged portrait when only its like count changes.
  let featured;
  if(focus){const identity=JSON.stringify([focus.key,focus.kind,focus.tier,focus.avatar,focus.username]);
-  if(oldFocus?.dataset.identity===identity){featured=oldFocus;const likes=featured.querySelector('.supporter-likes');if(likes)likes.textContent='♥ '+focus.likeLabel;}
+  if(oldFocus?.dataset.identity===identity){featured=oldFocus;updateCopy(featured,focus);}
   else{featured=card(focus,true);featured.dataset.identity=identity;}
  }
  const list=el('div','activity-list'),inner=el('div','activity-list-inner');rows.forEach(p=>inner.append(card(p)));list.append(inner);

@@ -376,3 +376,13 @@
 .screen-body .has-operator-controls .supporter-rail{bottom:200px}
 .operator-controls button{font-size:clamp(20px,calc(13px / var(--screen-scale,1)),36px);min-height:clamp(44px,calc(36px / var(--screen-scale,1)),100px)}
 .screen-body .has-operator-controls .enable-music{bottom:185px}
+/* Six design pixels between the rail and question; keep it inside mobile crop. */
+.screen-body .supporter-rail{right:68px}
+.screen-body .activity-left .supporter-rail{left:68px;right:auto}
+.has-activity .edge-right{right:0}.has-activity.activity-left .edge-left{left:0}
+.has-activity:not(.activity-left) .edge-right,.has-activity.activity-left .edge-left{opacity:.22;z-index:0}
+/* Crisper, heavier bilingual question type; profile text sizes remain intact. */
+.screen-body #questionDe{font-weight:900;color:#152e3b;text-shadow:0 1px 0 #ffffffbb,0 2px 1px #193a4a32}
+.screen-body .bank-question .option-de{font-weight:850;color:#17323f;text-shadow:0 1px 0 #ffffffbb,0 2px 1px #193a4a2b}
+.screen-body #questionFa{font-weight:850;color:#214638;text-shadow:0 1px 0 #ffffffb8,0 2px 1px #1b48342b}
+.screen-body .bank-question .option-fa{font-weight:800;color:#244b3d;text-shadow:0 1px 0 #ffffffb8,0 2px 1px #1b483426}

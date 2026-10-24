@@ -24,7 +24,7 @@ export class LikeWall{
 export function activityWall(likes,supporters,limit=8){
  const donors=supporters.entries,donorIds=new Set(donors.map(p=>p.userId));
  const fans=[...likes.users.values()].sort((a,b)=>b.likes-a.likes||b.at-a.at).filter(p=>!donorIds.has(p.userId));
- const gifts=donors.slice(0,Math.min(limit,fans.length?Math.max(1,Math.floor(limit/2)):limit)).map((p,i)=>({...p,kind:'gift',newest:i===0,username:p.username||likes.users.get(p.userId)?.username||null,likes:likes.users.get(p.userId)?.likes||0}));
+ const gifts=donors.slice(0,Math.min(limit,fans.length?Math.max(1,Math.floor(limit/2)):limit)).map((p,i)=>({...p,kind:'gift',newest:i===0,avatar:p.avatar||likes.users.get(p.userId)?.avatar||null,username:p.username||likes.users.get(p.userId)?.username||null,likes:likes.users.get(p.userId)?.likes||0}));
  const rows=[...gifts.map(p=>({...p,personKey:likes.users.get(p.userId)?.key||p.key})),...fans.slice(0,limit-gifts.length).map((p,i)=>({...p,personKey:p.key,rank:i+1}))];
  return rows.map(({userId,...row})=>({...row,likeLabel:compactLikes(row.likes||0)}));
 }
@@ -34,5 +34,5 @@ export function activityFocus(likes,supporters,now=Date.now()){
  const gift=latest&&(!top||now-latest.at<60000);
  const person=gift?{...latest,kind:'gift',newest:true,likes:likes.users.get(latest.userId)?.likes||0}:top;
  if(!person)return null;
- const {userId,...row}=person;return {...row,username:row.username||supporters.entries.find(p=>p.userId===userId)?.username||null,personKey:likes.users.get(person.userId)?.key||person.key,likeLabel:compactLikes(row.likes||0)};
+ const {userId,...row}=person;return {...row,avatar:row.avatar||likes.users.get(userId)?.avatar||supporters.entries.find(p=>p.userId===userId)?.avatar||null,username:row.username||supporters.entries.find(p=>p.userId===userId)?.username||null,personKey:likes.users.get(person.userId)?.key||person.key,likeLabel:compactLikes(row.likes||0)};
 }
