@@ -16,6 +16,16 @@ def check_free():
  return r
 check_free();url=str(info.host).rstrip('/')
 if not url.startswith('https://') or not url.endswith('.hf.space'):raise RuntimeError('Unexpected hosting origin')
+# Preserve the current scene and configured account across this hosting update.
+try:
+ with urllib.request.urlopen(url+'/api/state',timeout=15) as response:current=json.load(response)
+ recovery={k:current[k] for k in ['settings','guests','winner','mode'] if k in current}
+ recovery['feed']=current.get('feed',[])[:12];recovery['likes']=current.get('likes',[])[:10]
+ if isinstance(recovery.get('settings'),dict) and isinstance(recovery.get('guests'),list):
+  api.add_space_secret(repo,key='RINGS_RECOVERY_JSON',value=json.dumps(recovery))
+except Exception:
+ print('Existing scene backup unavailable; deployment stopped to protect current setup',flush=True)
+ raise
 admin=hmac.new(os.environ['HF_TOKEN'].encode(),('live-rings-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
 api.add_space_secret(repo,key='RINGS_ADMIN_TOKEN',value=admin)
 api.add_space_variable(repo,key='PUBLIC_URL',value=url)
