@@ -1,0 +1,27 @@
+'use strict';
+(()=>{
+ if(location.pathname==='/screen'||new URLSearchParams(location.search).get('view')==='live')return;
+ const panel=document.getElementById('panel'),tools=document.getElementById('tools'),form=document.getElementById('settings');
+ const audioSection=document.createElement('section');audioSection.id='audioSettings';audioSection.innerHTML='<h2>رفتار صدا</h2><div class="fields audio-fields"></div><div class="audio-tools"></div>';
+ const supporterSection=document.createElement('section');supporterSection.id='supporterSettings';supporterSection.innerHTML='<h2>رتبه‌بندی لایکر و گیفتر</h2><div class="fields supporter-fields"></div>';
+ function moveField(name,target){const input=form.elements.namedItem(name);if(!input)return;const label=input.closest('label');if(!label)return;input.setAttribute('form','settings');target.append(label)}
+ const audioFields=['sound','voiceStyle','volume','instructionVoice','instructionRepeat','instructionRepeatSeconds','welcomeVoice','welcomeIntervalSeconds','engineSound','engineVolume','celebrationMusic'];
+ audioFields.forEach(name=>moveField(name,audioSection.querySelector('.audio-fields')));
+ ['likerCount','gifterCount','likerFrame','gifterFrame','giftStyleBasis','tierSimple','tierSilver','tierGold','tierIce','tierFire','ringSpeed','ringIntensity','ring','ornaments'].forEach(name=>moveField(name,supporterSection.querySelector('.supporter-fields')));
+ for(const section of [audioSection,supporterSection]){const save=document.createElement('button');save.type='button';save.textContent='ذخیرهٔ تنظیمات';save.onclick=()=>form.requestSubmit();section.append(save)}
+ const test=document.getElementById('testSound'),status=document.getElementById('audioSourceStatus');audioSection.querySelector('.audio-tools').append(test,status);
+ tools.append(supporterSection,audioSection);
+ const bar=document.createElement('div');bar.className='panel-toolbar';const language=document.createElement('select');language.id='panelLanguage';language.setAttribute('aria-label','Panel language');language.innerHTML='<option value="fa">فارسی</option><option value="en">English</option>';bar.append(language);panel.querySelector('.panel-head').after(bar);
+ const nav=document.createElement('nav');nav.className='panel-tabs';nav.setAttribute('aria-label','Control panel sections');tools.prepend(nav);
+ const sections=[...tools.children].filter(e=>e.tagName==='SECTION'),names=['Controls','Connection','Cars','Game','Reports','Tests','Players','Display','Rankings','Audio'],faNames=['کنترل','اتصال','موترها','بازی','گزارش','آزمایش','بازیکنان','نمایش','رتبه‌بندی','صدا'];
+ const tabButtons=sections.map((section,i)=>{const button=document.createElement('button');button.type='button';button.dataset.index=i;button.onclick=()=>selectTab(i);nav.append(button);return button});
+ let selected=0,lang=localStorage.getItem('race-panel-language')||'fa',dictionary={},applying=false;const originals=new WeakMap(),lastEnglish=new WeakMap();
+ function selectTab(index){selected=index;sections.forEach((section,i)=>section.hidden=i!==index);tabButtons.forEach((button,i)=>button.setAttribute('aria-selected',String(i===index)))}
+ const motion=document.createElement('button');motion.type='button';motion.id='motionToggle';bar.append(motion);motion.onclick=()=>{if(!window.panelRaceState?.running)send('race-control',{action:'start'});else send('race-control',{action:window.panelRaceState.paused?'resume':'pause'})};
+ window.updatePanelMotion=s=>{window.panelRaceState=s;const text=lang==='en'?(s.running&&!s.paused?'LIVE motion: ON · turn off':'LIVE motion: OFF · turn on'):(s.running&&!s.paused?'حرکت لایو: روشن · خاموش کن':'حرکت لایو: خاموش · روشن کن');if(motion.textContent!==text)motion.textContent=text;motion.classList.toggle('motion-off',!s.running||s.paused)};
+ function translateText(value){const trimmed=value.trim();if(dictionary[trimmed])return value.replace(trimmed,dictionary[trimmed]);return trimmed.replace(/^موتر (\d+)$/,'Car $1').replace(/^دور (\d+)$/,'Round $1').replace(/^انتظار$/,'Waiting').replace('Formula · فرمول','Formula').replace('GT · سوپراسپورت','GT · Supercar').replace('Rally · رالی','Rally')}
+ function translate(){if(applying)return;applying=true;panel.dir=lang==='en'?'ltr':'rtl';panel.lang=lang;language.value=lang;tabButtons.forEach((b,i)=>{const text=(lang==='en'?names:faNames)[i]||String(i+1);if(b.textContent!==text)b.textContent=text});const walker=document.createTreeWalker(panel,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){if(n.parentElement?.closest('.panel-tabs,.panel-toolbar,script,#diagnostics,#giftEvents,#audioSourceStatus,#connectionStatus,#raceControlStatus,#traffic'))continue;const current=n.nodeValue;if(/[\u0600-\u06ff]/.test(current))originals.set(n,current);else if(!originals.has(n))originals.set(n,current);const original=originals.get(n),next=lang==='en'?translateText(original):original;if(n.nodeValue!==next)n.nodeValue=next;lastEnglish.set(n,next)}if(window.panelRaceState)window.updatePanelMotion(window.panelRaceState);applying=false}
+ language.onchange=()=>{lang=language.value;localStorage.setItem('race-panel-language',lang);translate()};
+ let queued=false;new MutationObserver(()=>{if(applying||queued)return;queued=true;requestAnimationFrame(()=>{queued=false;translate()})}).observe(panel,{subtree:true,childList:true,characterData:true});
+ fetch('/panel-translations.json').then(r=>r.json()).then(data=>{dictionary=data;translate()});selectTab(0);translate();
+})();
