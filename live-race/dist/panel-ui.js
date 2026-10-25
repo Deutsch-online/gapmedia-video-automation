@@ -9,7 +9,7 @@
  audioFields.forEach(name=>moveField(name,audioSection.querySelector('.audio-fields')));
  ['likerCount','gifterCount','likerFrame','gifterFrame','giftStyleBasis','tierSimple','tierSilver','tierGold','tierIce','tierFire','ringSpeed','ringIntensity','ring','ornaments'].forEach(name=>moveField(name,supporterSection.querySelector('.supporter-fields')));
  for(const section of [audioSection,supporterSection]){const save=document.createElement('button');save.type='button';save.textContent='ذخیرهٔ تنظیمات';save.onclick=()=>form.requestSubmit();section.append(save)}
- const test=document.getElementById('testSound'),status=document.getElementById('audioSourceStatus');audioSection.querySelector('.audio-tools').append(test,status);
+ const test=document.getElementById('testSound'),status=document.getElementById('audioSourceStatus');const engineTest=document.createElement('button');engineTest.id='testEngine';engineTest.type='button';engineTest.textContent='آزمایش صدای موتر · ۵ ثانیه';engineTest.onclick=()=>window.testRaceEngine();audioSection.querySelector('.audio-tools').append(test,engineTest,status);
  tools.append(supporterSection,audioSection);
  const bar=document.createElement('div');bar.className='panel-toolbar';const language=document.createElement('select');language.id='panelLanguage';language.setAttribute('aria-label','Panel language');language.innerHTML='<option value="fa">فارسی</option><option value="en">English</option>';bar.append(language);panel.querySelector('.panel-head').after(bar);
  const nav=document.createElement('nav');nav.className='panel-tabs';nav.setAttribute('aria-label','Control panel sections');tools.prepend(nav);
