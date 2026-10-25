@@ -18,7 +18,7 @@ test('panel authentication, custom gifts, pause, restore and isolated demo',{tim
   const action=async(type,data={})=>{messages.length=0;socket.send(JSON.stringify({type,...data}));return await wait(()=>messages.find(m=>m.type==='snapshot'||m.type==='error'))};
   assert.equal((await action('race-settings',{settings:{cars:5}})).type,'error');
   messages.length=0;socket.send(JSON.stringify({type:'auth',token}));assert.equal((await wait(()=>messages.find(m=>m.type==='auth'))).ok,true);
-  assert.equal((await action('race-settings',{settings:{cars:5,removeInactive:false,demoOpponents:false,giftMoveIntervalMs:0}})).snapshot.race.settings.cars,5);
+  assert.equal((await action('race-settings',{settings:{cars:5,removeInactive:false,demoOpponents:false,giftMoveIntervalMs:0,giftScoreWindowMs:0}})).snapshot.race.settings.cars,5);
   let controlled=await action('race-control',{action:'stop'});assert.equal(controlled.snapshot.race.settings.running,false);controlled=await action('race-control',{action:'start'});assert.equal(controlled.snapshot.race.settings.running,true);controlled=await action('race-control',{action:'pause'});assert.equal(controlled.snapshot.race.settings.paused,true);controlled=await action('race-control',{action:'resume'});assert.equal(controlled.snapshot.race.settings.paused,false);
   await new Promise(r=>setTimeout(r,3100));
   for(let i=1;i<=7;i++)assert.equal((await action('race-add',{userId:String(i),name:'Player '+i})).type,'snapshot');
