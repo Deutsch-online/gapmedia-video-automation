@@ -9,9 +9,16 @@ globalThis.PresenterSchedule=class PresenterSchedule{
 };
 
 globalThis.CrowdCheer=class CrowdCheer{
- constructor(){this.baseline=null;this.peak=0;this.allowedAt=0;this.followupAt=0;this.rotation=0;this.options={step:5,cooldownSeconds:60}}
+ constructor(){this.lastCount=null;this.growth=0;this.allowedAt=0;this.followupAt=0;this.rotation=0;this.options={step:1,cooldownSeconds:10}}
  configure(options){Object.assign(this.options,options)}
- observe(count){if(!Number.isSafeInteger(count)||count<0)return;if(this.baseline===null){this.baseline=count;this.peak=count;return}this.peak=Math.max(this.peak,count)}
- clearPending(){this.baseline=this.peak;this.followupAt=0}
- next(now){if(this.followupAt&&now>=this.followupAt){this.followupAt=0;return ['hypeDouble','hypeTap','hypeSupport','hypeTeam'][this.rotation++%4]}if(this.baseline!==null&&this.peak-this.baseline>=this.options.step&&now>=this.allowedAt){this.baseline=this.peak;this.allowedAt=now+this.options.cooldownSeconds*1000;this.followupAt=now+10000;return 'crowdThanks'}return null}
+ observe(count){if(!Number.isSafeInteger(count)||count<0)return;if(this.lastCount===null){this.lastCount=count;return}if(count>this.lastCount)this.growth+=count-this.lastCount;else if(count<this.lastCount)this.growth=0;this.lastCount=count}
+ clearPending(){this.growth=0;this.followupAt=0}
+ next(now){if(this.lastCount!==null&&this.growth>=this.options.step&&now>=this.allowedAt){const gain=this.growth;this.growth=0;this.allowedAt=now+this.options.cooldownSeconds*1000;this.followupAt=now+10000;return gain>=20?'crowdRoarThanks':gain>=5?'crowdBoostThanks':'crowdThanks'}if(this.followupAt&&now>=this.followupAt){this.followupAt=0;return ['hypeDouble','hypeTap','hypeSupport','hypeTeam'][this.rotation++%4]}return null}
+};
+
+globalThis.HostSpeechBurst=class HostSpeechBurst{
+ constructor(){this.lines=0;this.restUntil=0;this.justResumed=false;this.options={lines:2,pauseSeconds:180}}
+ configure(options){Object.assign(this.options,options)}
+ ready(now){if(now<this.restUntil)return false;if(this.restUntil){this.restUntil=0;this.lines=0;this.justResumed=true}return true}
+ complete(now){this.lines++;if(this.lines>=this.options.lines){this.restUntil=now+this.options.pauseSeconds*1000;return true}return false}
 };
