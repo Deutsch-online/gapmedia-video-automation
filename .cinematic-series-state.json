@@ -1563,7 +1563,146 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 11,
+      "title_de": "Der Deckel muss ab!",
+      "title_fa": "درپوش باید جدا شود!",
+      "summary": "In the shared kitchen, Marta wants to throw away an empty yogurt cup. Before it goes into the yellow recycling bin, Lukas reminds her that packaging parts like the foil lid need to be detached first. Marta peels the lid cleanly and scores a cheerful double toss into the recycling bin.",
+      "cliffhanger": "Next time, Marta sorts the empty glass jars by color at the neighborhood bottle bank.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta hovers an empty plastic yogurt pot with its shiny foil lid over an open kitchen bin, hesitating before tossing it.",
+      "everyday_problem": "Sorting everyday packaging waste correctly by separating different components such as the lid from the cup before disposal.",
+      "practical_resolution": "Marta firmly pulls the tab to detach the aluminum lid from the plastic cup so both individual materials can be recycled properly.",
+      "marta_goal": "Dispose of an empty breakfast yogurt container correctly in the apartment recycling system.",
+      "marta_decision": "Marta firmly peels the foil lid completely off the plastic tub and tosses both items separately into the yellow bin.",
+      "visual_payoff": "Marta holds the separated cup in one hand and the foil lid in the other, sinking both into the yellow bin like a triumphant two-handed basketball shot.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replaced repeated dialogue with two distinct visual actions: peeling an adhered foil lid and a playful double-handed disposal gesture.",
+        "visible_comic_action": "Marta struggles briefly with a stubborn foil tab before ripping it free and joyfully dropping cup and lid simultaneously like a twin basketball score.",
+        "next_experiment": "In the upcoming glass sorting scene, utilize distinct hollow clinking sound cues for clear, green, and brown glass containers."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Wohin gehört dieser Becher?",
+          "fa": "این لیوان ماست کجا انداخته می‌شود؟",
+          "scene": "Medium shot in the kitchen as Marta holds an empty plastic yogurt pot with its aluminum lid still attached above the kitchen waste station.",
+          "motion": "Marta looks quizzically at the yogurt cup in her hand and tilts it toward the bins.",
+          "visible_objects": [
+            "yogurt cup",
+            "yellow recycling bin"
+          ],
+          "object_action": "Marta holds an empty yogurt pot with attached lid over the kitchen bin."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Der Plastikbecher kommt hier rein.",
+          "fa": "لیوان پلاستیکی داخل این سطل می‌رود.",
+          "scene": "Closer framing of Lukas beside the kitchen counter, pointing clearly down toward the yellow recycling container.",
+          "motion": "Lukas taps the bright yellow lid of the recycling bin with his index finger.",
+          "visible_objects": [
+            "yellow recycling bin"
+          ],
+          "object_action": "Lukas taps the yellow recycling bin lid with his right hand."
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, ich werfe alles hinein!",
+          "fa": "خوب، من همه‌اش را می‌اندازم تو!",
+          "scene": "Medium framing of Marta extending her arm forward to drop the whole assembled yogurt pot straight into the yellow bin.",
+          "motion": "Marta swings her arm down enthusiastically, ready to release the intact cup and lid.",
+          "visible_objects": [
+            "yogurt cup",
+            "yellow recycling bin"
+          ],
+          "object_action": "Marta lowers the intact yogurt cup toward the yellow bin opening."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Warte, der Deckel muss ab!",
+          "fa": "صبر کن، درپوش باید جدا شود!",
+          "scene": "Close-up of Lukas raising a friendly stopping hand, gesturing specifically toward the foil top of the packaging.",
+          "motion": "Lukas raises his open palm playfully and points toward the shiny lid edge.",
+          "visible_objects": [
+            "yellow recycling bin"
+          ],
+          "object_action": "Lukas raises his hand in a gentle stopping gesture."
+        },
+        {
+          "speaker": "marta",
+          "de": "Der Aludeckel klebt ganz fest.",
+          "fa": "درپوش آلومینیومی خیلی سفت چسبیده است.",
+          "scene": "Close-up on Marta gripping the small foil tab of the yogurt pot with two fingers as the thin foil stretches without opening.",
+          "motion": "Marta tugs carefully at the tiny corner tab with an exaggerated squint of concentration.",
+          "visible_objects": [
+            "yogurt cup",
+            "foil lid"
+          ],
+          "object_action": "Marta pinches the corner of the foil lid and tugs on it."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Einfach an der Ecke ziehen.",
+          "fa": "فقط گوشه‌اش را بکش.",
+          "scene": "Medium shot of Lukas demonstrating a smooth peeling motion with both hands in mid-air.",
+          "motion": "Lukas mimes holding a rim with one hand and pulling a tab firmly with the other.",
+          "visible_objects": [
+            "yellow recycling bin"
+          ],
+          "object_action": "Lukas demonstrates a smooth peeling hand motion."
+        },
+        {
+          "speaker": "marta",
+          "de": "Geschafft! Der Deckel ist ab.",
+          "fa": "انجام شد! درپوش جدا شد.",
+          "scene": "Medium action framing of Marta cleanly peeling the aluminum lid completely off the white plastic yogurt tub.",
+          "motion": "Marta pulls the lid all the way off with a decisive snap and holds the two parts apart.",
+          "visible_objects": [
+            "yogurt cup",
+            "foil lid"
+          ],
+          "object_action": "Marta separates the foil lid from the plastic yogurt cup."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Perfekt! Beides in die Gelbe Tonne.",
+          "fa": "عالیه! هر دو داخل سطل زرد.",
+          "scene": "Medium shot of Lukas nodding with an encouraging smile and opening the yellow bin flap fully.",
+          "motion": "Lukas props open the yellow bin flap and gestures welcome toward the opening.",
+          "visible_objects": [
+            "yellow recycling bin"
+          ],
+          "object_action": "Lukas holds open the yellow recycling bin flap."
+        },
+        {
+          "speaker": "marta",
+          "de": "Zwei Treffer für die Umwelt!",
+          "fa": "دو پرتاب دقیق برای محیط زیست!",
+          "scene": "Medium shot of Marta proudly dropping the plastic cup from one hand and the crumpled foil lid from the other into the yellow bin.",
+          "motion": "Marta releases both hands simultaneously like a twin basketball drop and smiles broadly.",
+          "visible_objects": [
+            "yogurt cup",
+            "foil lid",
+            "yellow recycling bin"
+          ],
+          "object_action": "Marta drops the plastic cup and foil lid separately into the yellow bin."
+        }
+      ],
+      "research_source": {
+        "topic": "Sorting household waste",
+        "url": "https://www.muelltrennung-wirkt.de/de/muelltrennung/",
+        "excerpt": "Mülltrennung: Das musst Du wissen | Mülltrennung wirkt! Mülltrennung leicht gemacht. Hier findest du Tipps & Tricks zur Mülltrennung: 1. Verpackungen werden je nach Materialart in unterschiedlichen Abfallbehältern gesammelt In der Papiertonne, in der Gelben Tonne/ im Gelben Sack oder in der Wertstofftonne, in Altglascontainern, Rest- und Bioabfälle gehören in die dafür zur Verfügung stehenden Behälter. 2. Unterschiedliche Bestandteile einer Verpackung sollten voneinander getrennt werden Zum Beispiel Verpackungen und ihre Deckel. Die einzelnen K",
+        "retrieved_at": "2026-10-25T23:37:23.676367+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-10-26",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
