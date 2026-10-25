@@ -1,0 +1,38 @@
+name: Generate gamer character using Hugging Face credit
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/generate-gamer-character.py
+      - .github/workflows/generate-gamer-character.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gamer-character-generation
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install inference client
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2' Pillow
+      - name: Generate one image and deliver existing Persian voice
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/generate-gamer-character.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gamer-character
+          path: /tmp/gamer-character/
+          if-no-files-found: ignore
+          retention-days: 14
