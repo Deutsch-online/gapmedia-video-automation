@@ -343,3 +343,20 @@ and are never persisted as participant history.
 The Docker build generates and caches speech in a separate layer so unrelated
 UI edits do not regenerate all voices. Repeated identical speech text is also
 synthesized once per language within a build.
+
+
+### Compact entry bubbles and panel navigation
+
+The private control panel groups its existing tools into eight horizontal tabs:
+questions, LIVE connection, placement/display, gifts, guests, audio, reports and
+sales demo. Sections stay mounted so changing tabs does not lose input drafts or
+interrupt LIVE updates; the selected tab is remembered only in that browser
+session. Arrow keys, Home and End navigate the tablist.
+
+New arrivals are small round glass portraits on the outside right edge, rather
+than large name cards. The placement tab controls their side, three small sizes,
+vertical start and visibility. The name and welcome remain in the accessible
+portrait title; the periodic bilingual voice/banner are unchanged. The combined
+liker/gifter rail retains left/right positioning and now offers a wider vertical
+range, from 80 through 1200 design units. These preferences are persisted with
+presentation settings, never with participant identities.

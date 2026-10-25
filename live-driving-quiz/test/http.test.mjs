@@ -23,6 +23,12 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('gift-style',{basis:'coins',levels:{simple:5,silver:3,gold:4,diamond:5,vip:6}})).status,400);
   assert.equal((await post('activity-display',{side:'free',count:8,top:220})).status,400);
   assert.equal((await post('activity-display',{side:'left',count:11,top:220})).status,400);
+  assert.equal((await post('activity-display',{side:'left',count:5,top:1200})).status,200);
+  assert.equal((await post('activity-display',{side:'left',count:5,top:1201})).status,400);
+  assert.equal((await post('join-display',{enabled:true,side:'right',size:64,bottom:100})).status,200);
+  assert.equal((await post('join-display',{enabled:true,side:'free',size:64,bottom:100})).status,400);
+  assert.equal((await post('join-display',{enabled:true,side:'right',size:500,bottom:100})).status,400);
+  assert.deepEqual((await(await fetch(base+'/api/state')).json()).joinDisplay,{enabled:true,side:'right',size:64,bottom:100});
   assert.equal((await post('activity-display',{side:'left',count:5,top:300})).status,200);
   assert.deepEqual((await(await fetch(base+'/api/state')).json()).activityDisplay,{side:'left',count:5,top:300});
 

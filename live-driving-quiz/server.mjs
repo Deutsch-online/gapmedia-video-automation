@@ -35,7 +35,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0;
 let narrationInfo;
-const defaults={narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={joinDisplay:{enabled:true,side:"right",size:64,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -52,13 +52,15 @@ const likes=new LikeWall();
 const sessionStore=new SessionStore();
 const loadedProgress=await sessionStore.load();
 const savedActivity=loadedProgress?.activityDisplay;
-if(savedActivity&&['left','right'].includes(savedActivity.side)&&Number.isInteger(savedActivity.count)&&savedActivity.count>=1&&savedActivity.count<=10&&Number.isInteger(savedActivity.top)&&savedActivity.top>=80&&savedActivity.top<=400)settings.activityDisplay={side:savedActivity.side,count:savedActivity.count,top:savedActivity.top};
+if(savedActivity&&['left','right'].includes(savedActivity.side)&&Number.isInteger(savedActivity.count)&&savedActivity.count>=1&&savedActivity.count<=10&&Number.isInteger(savedActivity.top)&&savedActivity.top>=80&&savedActivity.top<=1200)settings.activityDisplay={side:savedActivity.side,count:savedActivity.count,top:savedActivity.top};
 if(validGiftStyle(loadedProgress?.giftStyle))settings.giftStyle=loadedProgress.giftStyle;
 
 if(Number.isInteger(loadedProgress?.waitSeconds)&&loadedProgress.waitSeconds>=0&&loadedProgress.waitSeconds<=300)settings.waitSeconds=loadedProgress.waitSeconds;
 if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFrames;
 if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
 if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
+const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
+if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
 const ids=quiz.questions.map(q=>q.id);const groups=bankSections(quiz.questions);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{},{groups});
 let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat},{groups});
@@ -67,7 +69,7 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,joinDisplay:settings.joinDisplay};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -105,7 +107,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -299,8 +301,12 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='activity-display'){
         if(!sessionStore.ready)throw Error('تنظیم ذخیره‌شده قابل خواندن نیست؛ ابتدا اتصال ذخیره‌سازی را بازیابی کنید.');
         const {side,count,top}=data;
-        if(!['left','right'].includes(side)||!Number.isInteger(count)||count<1||count>10||!Number.isInteger(top)||top<80||top>400)throw Error('تنظیم ستون معتبر نیست: تعداد 1 تا 10 و ارتفاع 80 تا 400.');
+        if(!['left','right'].includes(side)||!Number.isInteger(count)||count<1||count>10||!Number.isInteger(top)||top<80||top>1200)throw Error('تنظیم ستون معتبر نیست: تعداد 1 تا 10 و ارتفاع 80 تا 1200.');
         settings.activityDisplay={side,count,top};await persistDisplay();
+      }
+      else if(action==='join-display'){
+        if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');
+        if(!validJoinDisplay(data))throw Error('تنظیم حباب معتبر نیست.');settings.joinDisplay={enabled:data.enabled,side:data.side,size:data.size,bottom:data.bottom};await persistDisplay();
       }
       else if(action==='narration-language'){
         if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');

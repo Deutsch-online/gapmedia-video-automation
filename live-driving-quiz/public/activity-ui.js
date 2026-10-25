@@ -36,7 +36,7 @@ export function renderActivity(state){
  const config=state.activityDisplay||{side:'right',count:8,top:220},focus=state.activityFocus;
  const show=$('show');show.classList.toggle('activity-left',config.side==='left');show.style.setProperty('--activity-top',(config.top||220)+'px');
  const rows=(state.supporters||[]).filter(p=>!focus||p.personKey!==focus.personKey).slice(0,Math.max(0,config.count-(focus?1:0)));
- frameSettings=state.profileFrames||{};renderJoins(state.joins||[]);renderWelcome(state);
+ frameSettings=state.profileFrames||{};renderJoins(state.joins||[],state.joinDisplay);renderWelcome(state);
  const next=JSON.stringify([focus,rows,frameSettings]);if(signature===next){requestAnimationFrame(fitList);return;}signature=next;drawnStatic=false;
  const rail=$('supporterRail');const oldFocus=rail.querySelector('.activity-feature');
  // Preserve the enlarged portrait when only its like count changes.
@@ -74,11 +74,12 @@ function showNextJoin(){
  const join=joinQueue.shift(),host=$('joinToasts'),toast=el('div','join-toast');
  const portrait=el('div','join-portrait',Array.from(join.name||'?')[0]);
  if(join.avatar){const img=document.createElement('img');img.src=join.avatar;img.alt=join.name;img.referrerPolicy='no-referrer';img.addEventListener('error',()=>img.remove(),{once:true});portrait.append(img);}
- const copy=el('div','join-copy');copy.append(el('strong','',join.name),el('small','','خوش آمدید · Willkommen'));toast.append(portrait,copy);host.append(toast);
+ const copy=el('div','join-copy');copy.append(el('strong','',join.name),el('small','','خوش آمدید · Willkommen'));toast.append(portrait,copy);toast.title=join.name+' · خوش آمدید · Willkommen';host.append(toast);
  toast.addEventListener('animationend',()=>toast.remove(),{once:true});setTimeout(()=>toast.remove(),8500);setTimeout(showNextJoin,1600);
 }
-function renderJoins(joins){
+function renderJoins(joins,config={enabled:true,side:"right",size:64,bottom:100}){
  let host=$('joinToasts');if(!host){host=el('div','join-toasts');host.id='joinToasts';host.setAttribute('aria-live','polite');$('show').append(host);}
+ host.classList.toggle('join-left',config.side==='left');host.style.setProperty('--join-size',(config.size||64)+'px');host.style.setProperty('--join-bottom',(config.bottom||100)+'px');host.classList.toggle('hidden',config.enabled===false);if(config.enabled===false){joinQueue.length=0;host.replaceChildren();return;}
  for(const join of joins){if(seenJoins.has(join.key))continue;seenJoins.add(join.key);if(seenJoins.size>1000)seenJoins.delete(seenJoins.values().next().value);if(Date.now()-join.at>9000)continue;joinQueue.push(join);if(joinQueue.length>50)joinQueue.shift();}
  if(!joinPumpRunning)showNextJoin();
 }

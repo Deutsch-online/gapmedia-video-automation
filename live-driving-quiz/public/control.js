@@ -4,6 +4,7 @@ try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=se
 history.replaceState(null,'',location.pathname);
 let giftStyleDirty=false,activityDirty=false,activityProfilesSignature;
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
+let joinDisplayDirty=false;
 let speechLanguageDirty=false,welcomeDirty=false;
 let waitDirty=false,frameDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
@@ -65,6 +66,7 @@ function render(s){
  const profiles=[s.activityFocus,...s.supporters].filter(Boolean),profileSig=JSON.stringify(profiles.map(p=>[p.personKey,p.username,p.name]));
  if(profileSig!==activityProfilesSignature){activityProfilesSignature=profileSig;const seen=new Set();$('activityProfiles').replaceChildren(...profiles.filter(p=>p.username&&!seen.has(p.username)&&seen.add(p.username)).map(p=>{const link=document.createElement('a');link.href='https://www.tiktok.com/@'+encodeURIComponent(p.username);link.target='_blank';link.rel='noopener noreferrer';link.textContent=p.name+' · Follow +';return link;}));}
 
+ if(!joinDisplayDirty&&s.joinDisplay){$('joinEnabled').checked=s.joinDisplay.enabled;$('joinSide').value=s.joinDisplay.side;$('joinSize').value=s.joinDisplay.size;$('joinBottom').value=s.joinDisplay.bottom;$('joinBottomValue').textContent=s.joinDisplay.bottom;}
  if(!waitDirty)$('waitSeconds').value=s.waitSeconds??12;
  if(!frameDirty){$('likerFrame').value=s.profileFrames?.liker||'auto';$('gifterFrame').value=s.profileFrames?.gifter||'auto';}
  if(s.session){const q=s.session;
@@ -169,3 +171,11 @@ $('saveNarrationLanguage').addEventListener('click',async()=>{if(await api('paus
 $('welcomeEnabled').addEventListener('change',()=>{welcomeDirty=true;});
 $('saveWelcome').addEventListener('click',async()=>{const result=await api('welcome-settings',{enabled:$('welcomeEnabled').checked});if(result){welcomeDirty=false;render(result.state);}});
 $('testWelcome').addEventListener('click',async()=>{if(await api('pause'))await api('simulate-welcome');});
+
+for(const id of ['joinEnabled','joinSide','joinSize','joinBottom'])$(id).addEventListener('input',()=>{joinDisplayDirty=true;$('joinBottomValue').textContent=$('joinBottom').value;});
+$('saveJoinDisplay').addEventListener('click',async()=>{const result=await api('join-display',{enabled:$('joinEnabled').checked,side:$('joinSide').value,size:Number($('joinSize').value),bottom:Number($('joinBottom').value)});if(result){joinDisplayDirty=false;render(result.state);}});
+$('testJoinBubble').addEventListener('click',()=>api('simulate-join'));
+const tabs=[...document.querySelectorAll('.control-tabs [role=tab]')];
+function selectPanel(key,{focus=false}={}){const selected=tabs.find(t=>t.dataset.panel===key)||tabs[0];for(const tab of tabs){const active=tab===selected;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;$(tab.getAttribute('aria-controls')).hidden=!active;}try{sessionStorage.setItem('fahrfit-control-section',selected.dataset.panel);}catch{}if(focus)selected.focus();selected.scrollIntoView({block:'nearest',inline:'nearest'});}
+for(const [index,tab] of tabs.entries()){tab.addEventListener('click',()=>selectPanel(tab.dataset.panel));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowLeft')next=(index+1)%tabs.length;if(event.key==='ArrowRight')next=(index-1+tabs.length)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();selectPanel(tabs[next].dataset.panel,{focus:true});}});}
+try{selectPanel(sessionStorage.getItem('fahrfit-control-section'));}catch{selectPanel('questions');}
