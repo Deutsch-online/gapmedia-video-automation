@@ -1,17 +1,16 @@
 {
-  "id": "1cdc426ab4505a0b804b9793",
-  "status": "pending",
-  "plan_sha": "325a5c051626519262e60e07d150753ac18cdcb1afe1f64c2ed75e73d8d7ea3c",
+  "id": "7ee9618d85163ed2193ee971",
+  "status": "sending",
+  "plan_sha": "73e0f5aff2610daca5fb5c176e1950332eb119bb264d53e46c9c07966f097cb8",
   "simple_text_approval": true,
   "kind": "episode",
-  "episode": 10,
+  "episode": 11,
   "scenes": [
     8
   ],
   "chat_id": "7993801735",
-  "expires_at": "2026-10-26T00:08:18.285Z",
-  "text_approve_sha": "eece0d49f66647cee49222d25ff0794c7c6df4fef61ab893a1c12993fa283b6c",
-  "text_reject_sha": "c8ef2bae0eb2744ad1319c94de5bff6ee4b73e35317d63c685414aa768a36a76",
-  "created_at": "2026-10-25T00:08:18.286Z",
-  "message_id": 2671
+  "expires_at": "2026-10-26T23:58:50.358Z",
+  "text_approve_sha": "e2e3f4a046713fc312d77d7b8f336a4490dcd9fc5accf1430aaf8fabdac2a994",
+  "text_reject_sha": "fd0b8c45ec6f20a53288fafbb9ca46397128dce91bdeb594976e338db777360a",
+  "created_at": "2026-10-25T23:58:50.359Z"
 }
