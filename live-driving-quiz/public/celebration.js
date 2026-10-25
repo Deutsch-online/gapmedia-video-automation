@@ -1,5 +1,5 @@
-import {QuestionNarrator,WelcomeAnnouncer} from './narration.js';
-const narrator=new QuestionNarrator();const welcomeSpeaker=new WelcomeAnnouncer();
+import {QuestionNarrator,WelcomeAnnouncer,AssistantAnnouncer} from './narration.js';
+const narrator=new QuestionNarrator();const welcomeSpeaker=new WelcomeAnnouncer();const lessonSpeaker=new AssistantAnnouncer();
 let context,master,timerBus,current,signature,lastPlayed,lastTimerCue,initializing=false,voices=[];
 const $=id=>document.getElementById(id);
 
@@ -35,6 +35,8 @@ export function scheduleSuccessSound(ctx,destination,start){
 }
 function stopMusic(){for(const voice of voices)try{voice.stop();}catch{}voices=[];}
 function play(){
+ if(lessonSpeaker.source||lessonSpeaker.pending||welcomeSpeaker.source||welcomeSpeaker.pending)return;
+ if(current?.celebration&&current.serverTime-current.celebration.at>10000)return;
  if(!current||current.phase!=='revealed'||!current.celebration?.count||current.celebration.roundId!==current.roundId||!current.celebrationMusic||!context||context.state!=='running'||lastPlayed===current.roundId)return;
  stopMusic();lastPlayed=current.roundId;voices=[...scheduleSuccessSound(context,master,context.currentTime+.04),...scheduleJingle(context,master,context.currentTime+1.04)];
 }
@@ -64,7 +66,9 @@ export function renderCelebration(state){
  if(!initializing){initializing=true;void activateAudio();}
  narrator.update(state,context);
  const greetingBusy=Boolean(narrator.source||narrator.pending||state.phase==='revealed'&&state.celebrationMusic&&state.celebration?.roundId===state.roundId&&state.serverTime-state.celebration.at<10000);
- welcomeSpeaker.update(state,context,{busy:greetingBusy});
+ welcomeSpeaker.update(state,context,{busy:greetingBusy||Boolean(lessonSpeaker.source||lessonSpeaker.pending)});
+ lessonSpeaker.update(state,context,{busy:greetingBusy||Boolean(welcomeSpeaker.source||welcomeSpeaker.pending)});
+ renderAssistantCaption(state);
  if(master)master.gain.setTargetAtTime(Math.max(0,Math.min(100,state.musicVolume??20))/100,context.currentTime,.03);
  $('enableMusic').classList.remove('hidden');
  $('enableMusic').textContent=context?.state==='running'?'♫ Ton testen':'♫ Ton aktivieren';
@@ -93,7 +97,7 @@ export function renderCelebration(state){
 }
 
 export function soundCountdown(state,left){
- if(narrator.source||narrator.pending||welcomeSpeaker.source||welcomeSpeaker.pending)return;
+ if(narrator.source||narrator.pending||welcomeSpeaker.source||welcomeSpeaker.pending||lessonSpeaker.source||lessonSpeaker.pending)return;
  if(!state?.timerSound||!context||context.state!=='running'||!state.roundId)return;
  const tick=state.phase==='open'&&left>=1&&left<=5;
  const ended=state.phase==='revealed'&&state.revealReason!=='manual'&&state.serverTime>=state.closesAt;
@@ -101,3 +105,5 @@ export function soundCountdown(state,left){
  const key=state.roundId+':'+(ended?'end':left);if(key===lastTimerCue)return;lastTimerCue=key;
  if(ended){timerTone(659.25,0,.16,.3);timerTone(1046.5,.16,.25,.26);}else timerTone(880,0,.07,.24);
 }
+
+function renderAssistantCaption(state){let box=$('assistantCaption');if(!box){box=document.createElement('aside');box.id='assistantCaption';box.className='assistant-caption hidden';box.setAttribute('aria-live','polite');$('show').append(box);}const active=state.assistant?.active,visible=state.assistant?.enabled&&state.assistant.showCaptions&&active&&(!active.roundId||active.roundId===state.roundId)&&state.serverTime<active.expiresAt&&!['open','watching'].includes(state.phase);box.classList.toggle('hidden',!visible);if(!visible||box.dataset.key===active.id)return;box.dataset.key=active.id;const title=document.createElement('strong'),text=document.createElement('p');title.textContent=active.title;text.textContent=active.text;box.dir='rtl';box.lang='fa';box.replaceChildren(title,text);}

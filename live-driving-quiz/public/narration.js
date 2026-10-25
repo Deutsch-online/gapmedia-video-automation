@@ -53,3 +53,14 @@ export class WelcomeAnnouncer extends QuestionNarrator{
   this.play(announcement.id,['/narration/welcome-fa.wav','/narration/welcome-de.wav'],ctx);if(this.key===announcement.id)this.lastAnnouncement=announcement.id;
  }
 }
+
+export class AssistantAnnouncer extends QuestionNarrator{
+ update(state,ctx,{busy=false}={}){
+  const item=state.assistant?.active;
+  const active=state.assistant?.enabled&&item&&(!item.roundId||item.roundId===state.roundId)&&state.serverTime<item.expiresAt&&!['open','watching'].includes(state.phase)&&(state.mode==='demo'||state.mode==='live'&&state.connection?.status==='connected');
+  if(!active){if(this.key!==null||this.pending||this.source)this.stop();this.key=null;return;}
+  if(busy&&!this.source&&!this.pending)return;
+  if(this.key===null&&this.lastAnnouncement===item.id)return;
+  this.play(item.id,[item.audioUrl],ctx);if(this.key===item.id)this.lastAnnouncement=item.id;
+ }
+}

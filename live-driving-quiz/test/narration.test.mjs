@@ -62,3 +62,11 @@ test('native Persian speech normalization strips symbols, retains decimal meanin
  const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps([m.speech_text('[توقف]، «فاصله»؛ چرا؟ # !','fa'),m.speech_text('سرعت ۳.۵ کیلومتر، ۲۰٪','fa')],ensure_ascii=False))";
  const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.equal(out[0],'توقف فاصله چرا.');assert.equal(out[1],'سرعت 3 ممیز 5 کیلومتر 20 درصد');assert.doesNotMatch(out.join(' '),/علامت|نقطه|براکت/);
 });
+
+import {AssistantAnnouncer} from '../public/narration.js';
+test('lesson voice buffers once, waits for other audio and stops immediately on a new round',async()=>{
+ const {ctx,played}=fixture(),speaker=new AssistantAnnouncer({fetchAudio:async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer(8)})});
+ const state={mode:'demo',phase:'revealed',roundId:'lesson-r',serverTime:1000,assistant:{enabled:true,active:{id:'lesson-1',roundId:'lesson-r',expiresAt:30000,audioUrl:'/assistant/audio/lesson.wav'}}};
+ speaker.update(state,ctx,{busy:true});await flush();assert.equal(played.length,0);speaker.update(state,ctx);await flush();assert.equal(played.length,1);
+ speaker.update(state,ctx);await flush();assert.equal(played.length,1);speaker.update({...state,roundId:'other',phase:'waiting'},ctx);assert.equal(played[0].stopped,true);
+});

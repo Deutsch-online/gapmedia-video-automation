@@ -14,6 +14,16 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
+  const teacher=await(await fetch(base+'/api/admin/assistant',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(teacher.settings.enabled,true);assert.equal(teacher.settings.showCaptions,false);
+  assert.equal((await post('assistant-settings',{...teacher.settings,commentGap:0})).status,400);
+  assert.equal((await post('assistant-explain')).status,400,'viewers and owner cannot reveal keys through lesson speech before reveal');
+  assert.equal((await post('assistant-say',{text:'Only English'})).status,400);
+  assert.equal((await post('assistant-settings',{...teacher.settings,enabled:false})).status,200);
+  assert.equal((await post('assistant-say',{text:'سلام'})).status,400);
+  assert.equal((await post('assistant-settings',{...teacher.settings,enabled:true,autoExplain:false})).status,200);
+  assert.equal((await fetch(base+'/assistant/audio/00000000-0000-0000-0000-000000000000.wav')).status,404);
+
   assert.equal((await fetch(base+'/api/admin/gift-events')).status,401);const giftLog=await(await fetch(base+'/api/admin/gift-events',{headers:{authorization:'Bearer '+settings.token}})).json();assert.deepEqual(giftLog.events,[]);assert.equal(giftLog.traffic.giftProfilesRecorded,0);
 
   assert.equal((await fetch(base+'/demo')).status,200);assert.equal((await fetch(base+'/rights')).status,200);

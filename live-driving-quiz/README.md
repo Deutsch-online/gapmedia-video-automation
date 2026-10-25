@@ -360,3 +360,51 @@ portrait title; the periodic bilingual voice/banner are unchanged. The combined
 liker/gifter rail retains left/right positioning and now offers a wider vertical
 range, from 80 through 1200 design units. These preferences are persisted with
 presentation settings, never with participant identities.
+
+### Persian LIVE teaching assistant
+
+The private panel's new **دستیار درس** tab controls a native Persian speaking
+assistant: read selected Persian comments, answer lesson questions, explain the
+current answer, read an owner's custom text, and thank supporters. Replies use
+the current bank's exact answer keys, reviewed chapter notes and a driving-term
+glossary. They are educational retrieval/rules, not an unrestricted general
+language model. A question outside those supported topics asks for clarification.
+The chapter note is labelled as a general note; it is not a fabricated translation
+of a publisher's question-specific explanation. Correct option numbers are only
+spoken after the current answer has been revealed.
+
+Comments are spoken/replied to in the LIVE audio source, with an optional compact
+caption. This integration has read-only TikTok events: the voice and overlay are
+the response channel. Owner text is explicitly labelled for LIVE broadcast.
+Numeric answer comments remain on the quiz scoring path and are not read out.
+Reading/replying, automatic explanation, like thanks and gift thanks can each be
+disabled. Comment and thanks intervals plus the minimum like threshold are owner
+settings. Simultaneous support is grouped; a pending gift streak is never thanked
+as a finalized gift, and duplicate or rejected events cannot create thanks.
+Non-Persian display names are spoken as «دوست گرامی» while the existing profile
+widgets retain the actual name.
+
+`fa-speech-worker.py` keeps the already-pinned native Amir Piper model resident on
+CPU and accepts bounded NDJSON over stdin. No shell command interpolation,
+external TTS, API credit, GPU or paid fallback is involved. All dynamic audio is
+fully buffered, then announced in the shared Browser Source audio context. A
+bounded queue schedules speech in question breaks after narration, victory music
+and periodic welcomes; autoplay holds the next question until that speech window
+ends. Explicit owner controls retain priority. Changing question/mode,
+disconnecting, disabling the assistant or pressing stop retires the old speech.
+Owner text and unrevealed question hints explicitly pause the question first.
+
+Only authenticated owner POSTs can submit custom text or change assistant
+settings. The public audio route is read-only and uses opaque speech IDs; it
+cannot start synthesis. Queues, recent texts, supporter batching and generated
+WAVs are bounded, process-local and never written to the session Dataset. Only
+assistant preferences persist. Comments never grant access to files, command
+execution, spending or account actions. Missing local voices report a bounded
+error in the panel rather than switching to a paid service.
+
+Twelve common original source IDs also have concise question-specific Persian
+reasoning translated from the pinned archive's publisher explanations (including
+roundabout exit priority, bicycle protection strips, oil, glare and passing a
+road obstruction). Other questions retain the exact correct-option explanation
+and a clearly labelled chapter note. Viewer-requested hints never select these
+answer-specific explanations before reveal.
