@@ -1,6 +1,33 @@
 {
-  "at": "2026-10-23T13:23:49.359Z",
+  "at": "2026-10-25T14:22:14.705Z",
   "rows": [
+    {
+      "cat": "tools",
+      "title": "AI Image & Video Model News Roundup – October 24, 2026 | kombitz",
+      "url": "https://www.kombitz.com/2026/10/24/ai-image-video-model-news-roundup-october-24-2026/",
+      "date": "2026-10-24",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "ByteDance launches Seedance 2.5 4K video model for film production · TechNode",
+      "url": "https://technode.com/2026/10/23/bytedance-launches-seedance-2-5-4k-video-model-for-film-production/",
+      "date": "2026-10-23",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
+      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps",
+      "date": "2026-10-23",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
     {
       "cat": "instagram",
       "title": "Meta Adds Audio Links to Edits and a New Way to Record Reels",
@@ -8,7 +35,7 @@
       "date": "2026-10-21",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -17,106 +44,61 @@
       "date": "2026-10-22",
       "sources": 7,
       "clear": true,
-      "score": 28
-    },
-    {
-      "cat": "tools",
-      "title": "From AI-Generated to Artist-Directed: What’s Changing?",
-      "url": "https://moodelier-newsletter-59a624.beehiiv.com/p/from-ai-generated-to-artist-directed-what-s-changing",
-      "date": "2026-10-21",
-      "sources": 8,
-      "clear": true,
-      "score": 28
-    },
-    {
-      "cat": "instagram",
-      "title": "Meta shares more information on Edits Plus subscriptions | Social Media Today",
-      "url": "https://www.socialmediatoday.com/news/meta-shares-more-information-on-edits-plus-subscriptions/833646/",
-      "date": "2026-10-21",
-      "sources": 7,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "VideoGen Unveils Model 1, Its First AI Video Generation Model, and $1 Million in Free AI Credits",
-      "url": "https://finance.yahoo.com/technology/ai/articles/videogen-unveils-model-1-first-163000767.html",
-      "date": "2026-10-20",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Introducing HeyGen Video: Generate the Whole Scene From One Prompt",
-      "url": "https://www.heygen.com/blog/introducing-heygen-video",
-      "date": "2026-10-21",
-      "sources": 5,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Imagination Studio: Open-Source Local AI Film Studio | ArtRealmAI",
-      "url": "https://artrealmai.com/article/imagination-studio-open-source-local-ai-film-studio-h3-flux",
-      "date": "2026-10-21",
-      "sources": 7,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Introducing Motion, the General Video Agent",
-      "url": "https://mosaic.so/research/motion-gva",
-      "date": "2026-10-20",
-      "sources": 8,
-      "clear": true,
       "score": 26
     },
     {
-      "cat": "instagram",
-      "title": "Instagram rolls out an AI video assistant for creators",
-      "url": "https://www.fintech.am/en/instagram-edits/",
+      "cat": "tiktok",
+      "title": "TikTok Voice Comments and Instagram AI Labels: October 2026",
+      "url": "https://www.honestfred.com/social-marketing/tiktok-voice-comments-polls-instagram-ai-profile-labels/",
+      "date": "2026-10-21",
+      "sources": 7,
+      "clear": true,
+      "score": 25
+    },
+    {
+      "cat": "tools",
+      "title": "fal launches FLUX 3 Max, claiming 22× faster AI video generation than Seedance 2.5 | VentureBeat",
+      "url": "https://venturebeat.com/technology/fal-launches-flux-3-max-claiming-22-faster-ai-video-generation-than-seedance-2-5",
       "date": "2026-10-19",
       "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 24
     },
     {
       "cat": "instagram",
       "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
       "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/",
       "date": "2026-10-19",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "instagram",
       "title": "Instagram now lets you put posts you’re tagged in on your main grid · NewsThat.Rocks",
       "url": "https://newsthat.rocks/instagram-tagged-posts-profile-grid/",
       "date": "2026-10-19",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "tiktok",
       "title": "TikTok Creator Assistant: What TikTok Says It Does and Who Gets It (2026)",
       "url": "https://tiktoknewshub.com/videos/tiktok-creator-assistant-explained/",
       "date": "2026-10-18",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 24
+      "score": 23
     },
     {
       "cat": "tiktok",
-      "title": "TikTok expands AI-transparency tools with education hub, labels, watermarks and creator protection",
-      "url": "https://www.globalvillagespace.com/tech/tiktok-ai-transparency-education-hub-labels-watermarks-likeness-detection/",
-      "date": "2026-10-17",
+      "title": "TikTok AI Video Tool Free Launch Oct 28 | Miami Biz",
+      "url": "https://wilsonalvarez.com/it-tech/tiktok-ai-video-tool-october-2026/",
+      "date": "2026-10-19",
       "sources": 8,
       "clear": true,
-      "score": 24
+      "score": 23
     },
     {
       "cat": "tiktok",
@@ -125,72 +107,90 @@
       "date": "2026-10-20",
       "sources": 6,
       "clear": false,
-      "score": 24
+      "score": 22
     },
     {
-      "cat": "tiktok",
-      "title": "TikTok Smart+ Creative Selection: Creator Content and AI Creatives in One Approval | Lapotta",
-      "url": "https://www.lapotta.com/news/en/tiktok-smart-plus-creative-selection",
-      "date": "2026-10-17",
-      "sources": 6,
+      "cat": "instagram",
+      "title": "AI-AP | Pro Photo Daily - Around the Net » State of the Art: Instagram's New AI Assistant Analyzes Your Reels and Suggests New Ideas",
+      "url": "https://www.ai-ap.com/publications/article/37420/state-of-the-art-instagrams-new-ai-assistant-ana.html",
+      "date": "2026-10-20",
+      "sources": 8,
+      "clear": false,
+      "score": 21
+    },
+    {
+      "cat": "instagram",
+      "title": "A Creator Spotted It First: Instagram Is Quietly Testing a Netflix-Style Way to Binge Your Reels | The Coaching Times",
+      "url": "https://www.thecoaching-times.com/story/a-creator-spotted-it-first-instagram-is-quietly-testing-a-netflix-style-way-to-b",
+      "date": "2026-10-20",
+      "sources": 5,
+      "clear": false,
+      "score": 21
+    },
+    {
+      "cat": "tools",
+      "title": "Seedance 2.5 Launch: Now Available on Dreamina",
+      "url": "https://dreamina.capcut.com/resource/seedance-2-5-launch",
+      "date": "2026-10-23",
+      "sources": 3,
       "clear": true,
-      "score": 23
+      "score": 19
     }
   ],
   "shown": [
     {
       "n": 1,
+      "cat": "tools",
+      "title": "AI Image & Video Model News Roundup – October 24, 2026 | kombitz",
+      "url": "https://www.kombitz.com/2026/10/24/ai-image-video-model-news-roundup-october-24-2026/"
+    },
+    {
+      "n": 2,
+      "cat": "tools",
+      "title": "ByteDance launches Seedance 2.5 4K video model for film production · TechNode",
+      "url": "https://technode.com/2026/10/23/bytedance-launches-seedance-2-5-4k-video-model-for-film-production/"
+    },
+    {
+      "n": 3,
+      "cat": "tools",
+      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
+      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps"
+    },
+    {
+      "n": 4,
       "cat": "instagram",
       "title": "Meta Adds Audio Links to Edits and a New Way to Record Reels",
       "url": "https://almcorp.com/news/meta-adds-audio-links-edits-new-way-record-reels/"
     },
     {
-      "n": 2,
+      "n": 5,
       "cat": "instagram",
-      "title": "Meta shares more information on Edits Plus subscriptions | Social Media Today",
-      "url": "https://www.socialmediatoday.com/news/meta-shares-more-information-on-edits-plus-subscriptions/833646/"
+      "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
+      "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/"
     },
     {
-      "n": 3,
+      "n": 6,
       "cat": "instagram",
-      "title": "Instagram rolls out an AI video assistant for creators",
-      "url": "https://www.fintech.am/en/instagram-edits/"
+      "title": "Instagram now lets you put posts you’re tagged in on your main grid · NewsThat.Rocks",
+      "url": "https://newsthat.rocks/instagram-tagged-posts-profile-grid/"
     },
     {
-      "n": 4,
+      "n": 7,
       "cat": "tiktok",
       "title": "TikTok Shop multi-product link puts 10 products in one video",
       "url": "https://kolvant.com/news/tiktok-shop-multi-product-link-beta/"
     },
     {
-      "n": 5,
-      "cat": "tiktok",
-      "title": "TikTok Creator Assistant: What TikTok Says It Does and Who Gets It (2026)",
-      "url": "https://tiktoknewshub.com/videos/tiktok-creator-assistant-explained/"
-    },
-    {
-      "n": 6,
-      "cat": "tiktok",
-      "title": "TikTok expands AI-transparency tools with education hub, labels, watermarks and creator protection",
-      "url": "https://www.globalvillagespace.com/tech/tiktok-ai-transparency-education-hub-labels-watermarks-likeness-detection/"
-    },
-    {
-      "n": 7,
-      "cat": "tools",
-      "title": "From AI-Generated to Artist-Directed: What’s Changing?",
-      "url": "https://moodelier-newsletter-59a624.beehiiv.com/p/from-ai-generated-to-artist-directed-what-s-changing"
-    },
-    {
       "n": 8,
-      "cat": "tools",
-      "title": "VideoGen Unveils Model 1, Its First AI Video Generation Model, and $1 Million in Free AI Credits",
-      "url": "https://finance.yahoo.com/technology/ai/articles/videogen-unveils-model-1-first-163000767.html"
+      "cat": "tiktok",
+      "title": "TikTok Voice Comments and Instagram AI Labels: October 2026",
+      "url": "https://www.honestfred.com/social-marketing/tiktok-voice-comments-polls-instagram-ai-profile-labels/"
     },
     {
       "n": 9,
-      "cat": "tools",
-      "title": "Introducing HeyGen Video: Generate the Whole Scene From One Prompt",
-      "url": "https://www.heygen.com/blog/introducing-heygen-video"
+      "cat": "tiktok",
+      "title": "TikTok Creator Assistant: What TikTok Says It Does and Who Gets It (2026)",
+      "url": "https://tiktoknewshub.com/videos/tiktok-creator-assistant-explained/"
     }
   ]
 }
