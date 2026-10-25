@@ -90,3 +90,8 @@
 .screen #stage{margin-bottom:var(--live-safe-bottom,28svh)}.screen .road{min-height:var(--minimum-road,110px)!important}.screen #joinToasts{bottom:var(--live-safe-bottom,28svh)}.screen .waiting{max-height:5svh}.screen #waitingList{max-height:5svh}
 
 .spotlight-follow{display:inline-block;pointer-events:auto;background:linear-gradient(135deg,#74ffe0,#29bda5);border:1px solid #bdfff1;border-radius:7px;color:#052826;font-weight:900;font-size:clamp(10px,1.8vw,19px);line-height:1.2;padding:5px 7px;text-align:center;box-shadow:0 0 9px #43e2c343}#winner .spotlight-follow{font-size:clamp(18px,3vw,32px);padding:10px 28px;margin-top:12px}
+
+#selectCarLabel{display:block;font:700 clamp(12px,2.8vw,29px) Live,Arial;text-align:center;color:#d8fff4;line-height:1.2;margin-bottom:6px;text-shadow:0 1px 4px #001923}#movePrompt{padding-top:9px;padding-bottom:10px}
+
+.country-edge-prompt{padding:6px 3px;border:1px solid #99eadc80;border-radius:8px;background:#143c46cc;color:#dcfff6;font-size:clamp(10px,1.9vw,19px);font-weight:800;line-height:1.25;text-align:center;animation:country-callout 3s ease-in-out infinite}.spotlight-idle{opacity:.65;padding:4px 2px;gap:2px;box-shadow:none!important;border-width:1px;transition:opacity .3s}.spotlight-idle .avatar{width:clamp(20px,4vw,38px);height:clamp(20px,4vw,38px)}.spotlight-idle strong{font-size:clamp(9px,1.6vw,15px);font-weight:500}.spotlight-idle b{font-size:clamp(11px,2vw,20px)}@keyframes country-callout{0%,100%{opacity:.25}40%,65%{opacity:1}}.effects-off .country-edge-prompt{animation:none}@media(prefers-reduced-motion:reduce){.country-edge-prompt{animation:none}}
+.screen #countrySuggestion{display:none!important}
