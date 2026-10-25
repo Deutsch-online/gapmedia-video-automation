@@ -1,0 +1,43 @@
+name: Send Ludo LIVE links to owner
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/send-ludo-links.yml
+permissions:
+  contents: read
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send private control link and public screen link to Telegram
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 - <<'PY'
+          import os, hmac, hashlib, json, urllib.request
+          hf = os.environ['HF_TOKEN']
+          bot = os.environ['TELEGRAM_BOT_TOKEN']
+          chat = os.environ['TELEGRAM_CHAT_ID']
+          if not hf or not bot or not chat:
+              raise RuntimeError('Telegram or hosting credential is missing')
+          admin = hmac.new(hf.encode(), b'ludo-admin-v1:afgtakrun/ludo-live-nations', hashlib.sha256).hexdigest()
+          base = 'https://afgtakrun-ludo-live-nations.hf.space'
+          message = ('🎲 Ludo LIVE Nations is updated.\n\n'
+                     'Live screen for TikTok LIVE Studio / OBS:\n' + base + '/screen\n\n'
+                     'Private control panel:\n' + base + '/control#' + admin + '\n\n'
+                     'New rules: first to the target score wins; 10 likes = 1 game point. '
+                     'Configured gifts support the game, and every gift is recorded for its giver. '
+                     'The winner celebration announces the virtual Game Coins prize in English.\n\n'
+                     'Keep the control link private.')
+          payload = json.dumps({'chat_id': chat, 'text': message, 'disable_web_page_preview': True}).encode()
+          request = urllib.request.Request('https://api.telegram.org/bot' + bot + '/sendMessage',
+                                           data=payload, headers={'Content-Type':'application/json'})
+          with urllib.request.urlopen(request, timeout=20) as response:
+              result = json.load(response)
+          if not result.get('ok'):
+              raise RuntimeError('Telegram rejected the message')
+          print('Telegram links delivered')
+          PY
