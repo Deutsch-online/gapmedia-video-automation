@@ -1,7 +1,6 @@
 import asyncio,base64,json,os,subprocess
 from pathlib import Path
 from urllib.request import Request,urlopen
-import edge_tts
 from huggingface_hub import HfApi,InferenceClient,CommitOperationAdd,hf_hub_download
 
 root=Path('/tmp/host-video');root.mkdir(exist_ok=True)
@@ -19,17 +18,12 @@ else:
  api.upload_file(path_or_fileobj=str(raw),path_in_repo=raw_name,repo_id=repo,repo_type='dataset',commit_message='Save one generated rear-view host motion clip')
 voice=root/'english-presenter-v2.mp3'
 text="Welcome to the race! Choose your car, and get ready. Like or send a gift to help your driver move. Let's race!"
-if 'english-presenter-v2.mp3' in existing:
- voice.write_bytes(Path(hf_hub_download(repo,'english-presenter-v2.mp3',repo_type='dataset',token=token)).read_bytes())
-else:
- try:
-  asyncio.run(edge_tts.Communicate(text,'en-US-JennyNeural',rate='-3%',pitch='+0Hz',receive_timeout=25).save(str(voice)))
- except Exception:
-  pack=json.loads(Path('live-race/dist/audio/voices.json').read_text());voice.write_bytes(base64.b64decode(pack['voices']['bright']['clips']['test'].split(',',1)[1]));text='Welcome to Nations Race. Select your car. Like or gift to move. Good luck, and enjoy the race!'
+# Use the already validated natural English recording, avoiding a live TTS connection.
+pack=json.loads(Path('live-race/dist/audio/voices.json').read_text());voice.write_bytes(base64.b64decode(pack['voices']['bright']['clips']['test'].split(',',1)[1]));text='Welcome to Nations Race. Select your car. Like or gift to move. Good luck, and enjoy the race!'
 # Extend the real body/head motion with its reverse for a smooth short narration clip.
 final=root/final_name
 motion=root/'motion-loop.mp4'
-subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(raw),'-filter_complex','[0:v]split=2[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0,fps=24,format=yuv420p[v]','-map','[v]','-an','-c:v','libx264','-preset','medium','-crf','20',str(motion)],check=True)
+subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(raw),'-filter_complex','[0:v]split=2[a][b];[b]reverse[r];[a][r]concat=n=2:v=1:a=0,fps=24,format=yuv420p[v]','-map','[v]','-an','-c:v','libx264','-preset','fast','-threads','2','-crf','20',str(motion)],check=True)
 subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-stream_loop','-1','-i',str(motion),'-i',str(voice),'-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','160k','-shortest','-movflags','+faststart',str(final)],check=True)
 poster=root/'english-host-back-v2.jpg';subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(final),'-frames:v','1',str(poster)],check=True)
 meta=root/'english-host-v2.json';meta.write_text(json.dumps({'fictional_adult':True,'face':'rear view, not shown','model':'Wan-AI/Wan2.2-T2V-A14B','provider':'fal-ai via Hugging Face','voice':'Jenny, natural synthetic English female presenter','spoken_text':text,'motion':'generated head nods and body shifts; forward/reverse extension','prompt':prompt},indent=2))

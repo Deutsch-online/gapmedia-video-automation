@@ -117,3 +117,10 @@
 .donor-gifts{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;grid-column:1/-1}.donor-gift{display:flex;align-items:center;gap:1px}.donor-gift img{width:clamp(18px,4vw,35px);height:clamp(18px,4vw,35px);object-fit:contain}.donor-gift small{font-size:clamp(9px,1.5vw,16px);color:#fff3b3}.support-list .spotlight-featured>.avatar{width:clamp(28px,6vw,60px);height:clamp(28px,6vw,60px)}
 
 .support-list .spotlight-featured.spotlight-minor{display:grid;grid-template-columns:clamp(20px,4vw,36px) minmax(0,1fr);text-align:left;border-width:1px;background:#24403ecc;box-shadow:0 0 7px #ffe18a33}.support-list .spotlight-minor>.avatar{width:clamp(20px,4vw,36px);height:clamp(20px,4vw,36px)}.support-list .spotlight-minor .spotlight-follow{grid-column:1/-1;font-size:clamp(9px,1.5vw,15px)}
+
+/* The presenter has its own row below the track, above the reserved chat area. */
+#presenterStage{position:relative;margin:6px 0 0;overflow:hidden;border:1px solid #48758b;border-radius:12px;background:radial-gradient(ellipse at 50% 50%,#302958,#081425 75%);height:var(--presenter-height,16svh);max-height:300px;min-height:60px;display:flex;justify-content:center;align-items:stretch}#presenterVideo{display:block;height:100%;width:100%;object-fit:contain;background:transparent}.host-speaking{box-shadow:0 0 12px #62dfcb55;border-color:#71edb1!important}body:not(.screen) #presenterStage{height:150px}body:not(.screen) #presenterStage video{display:none}
+
+.screen #presenterStage{margin-right:var(--edge-gutter)}
+
+.screen #presenterStage{height:min(var(--presenter-height,16svh),max(60px,calc(35svh - 140px)))}

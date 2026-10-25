@@ -7,6 +7,7 @@
  function finish(){clearTimeout(watchdog);busy=false;report(settings.sound?'ready':'muted');if(pendingName){const name=pendingName;pendingName='';setTimeout(()=>speakName(name),80)}}
  player.onended=finish;player.onerror=()=>{clearTimeout(watchdog);busy=false;cooldown=Date.now()+10000;report('error','clip-playback-error')};
  async function playClip(key,{force=false}={}){
+  if(!force&&window.RaceHost?.busy)return false;
   if(!force&&(!settings.sound||busy||blocked||Date.now()<cooldown))return false;
   if(force)stop();const token=++playToken;busy=true;report('loading');
   try{const data=await pack(),voice=data.voices[settings.voiceStyle]||data.voices.warm;const src=voice.clips[key]||voice.clips.mixed;
