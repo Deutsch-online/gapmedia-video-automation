@@ -77,7 +77,7 @@ if(!sessionDirty){$('sessionSection').value=q.section||'all';$('sessionSize').mi
  const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
 
  if(!languageDirty)$('showPersian').checked=s.showPersian;
- $('narrationEnabled').checked=s.narrationEnabled;if(!speechLanguageDirty)$('narrationLanguage').value=s.narrationLanguage||'de';if(!welcomeDirty)$('welcomeEnabled').checked=s.welcome?.enabled!==false;
+ $('narrationEnabled').checked=s.narrationEnabled;if(!speechLanguageDirty)$('narrationLanguage').value=s.narrationLanguage||'de';if(!welcomeDirty){$('welcomeEnabled').checked=s.welcome?.enabled!==false;$('welcomeLanguage').value=s.welcome?.language||'fa';}
  if(!timerSoundDirty)$('timerSound').checked=s.timerSound;
  if(!musicDirty){$('celebrationMusic').checked=s.celebrationMusic;$('musicVolume').value=s.musicVolume;$('musicVolumeValue').textContent=s.musicVolume;}
  if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
@@ -168,8 +168,8 @@ $('testJoin').addEventListener('click',()=>api('simulate-join'));
 
 $('narrationLanguage').addEventListener('change',()=>{speechLanguageDirty=true;});
 $('saveNarrationLanguage').addEventListener('click',async()=>{if(await api('pause')){const result=await api('narration-language',{language:$('narrationLanguage').value});if(result){speechLanguageDirty=false;render(result.state);}}});
-$('welcomeEnabled').addEventListener('change',()=>{welcomeDirty=true;});
-$('saveWelcome').addEventListener('click',async()=>{const result=await api('welcome-settings',{enabled:$('welcomeEnabled').checked});if(result){welcomeDirty=false;render(result.state);}});
+$('welcomeEnabled').addEventListener('change',()=>{welcomeDirty=true;});$('welcomeLanguage').addEventListener('change',()=>{welcomeDirty=true;});
+$('saveWelcome').addEventListener('click',async()=>{const result=await api('welcome-settings',{enabled:$('welcomeEnabled').checked,language:$('welcomeLanguage').value});if(result){welcomeDirty=false;render(result.state);}});
 $('testWelcome').addEventListener('click',async()=>{if(await api('pause'))await api('simulate-welcome');});
 
 for(const id of ['joinEnabled','joinSide','joinSize','joinBottom'])$(id).addEventListener('input',()=>{joinDisplayDirty=true;$('joinBottomValue').textContent=$('joinBottom').value;});
@@ -194,3 +194,6 @@ $('assistantTestComment').addEventListener('click',async()=>{if(await api('assis
 $('assistantTestSupport').addEventListener('click',()=>api('assistant-test-support'));
 $('refreshAssistant').addEventListener('click',refreshAssistant);
 void refreshAssistant();setInterval(()=>{if(!$('panel-assistant').hidden)void refreshAssistant();},2000);
+
+$('refreshLive').addEventListener('click',()=>api('refresh-screen'));
+$('refreshPanel').addEventListener('click',()=>location.reload());

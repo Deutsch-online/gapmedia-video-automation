@@ -10,6 +10,11 @@ import wave
 import shutil
 
 ROOT = Path(__file__).resolve().parent
+PERSIAN_LENGTH_SCALE = 1.25
+PERSIAN_VOLUME = .78
+PERSIAN_NOISE_SCALE = .55
+PERSIAN_NOISE_W_SCALE = .65
+PRONUNCIATION_VERSION = 'fa-careful-v3'
 REVISION = '5041a7a49ae5b3a0f30e6837769eb03fdbb231bd'
 VOICES = {
  'de': {'voice': 'de_DE-thorsten-medium', 'path': 'de/de_DE/thorsten/medium', 'files': {
@@ -26,11 +31,19 @@ def speech_text(text, lang):
     # contributes a sentence pause; decimal numbers retain their numeric meaning.
     text = unicodedata.normalize('NFC', text)
     if lang == 'fa':
-        text = text.translate(str.maketrans('يك٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹', 'یک01234567890123456789')).replace('\u200c', ' ')
+        text = text.translate(str.maketrans('يك٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹', 'یک01234567890123456789'))
+        # Preserve the sound of Persian suffixes rather than reading each half
+        # of a half-spaced word separately. Only explicit ezafe spelling is changed.
+        text = re.sub(r'ه\u200cی(?=\s|$|[،.؟!])', 'هٔ', text)
+        # Explicit LIVE loanwords: do not change ordinary شیر (milk/lion).
+        text = re.sub(r'(?<!\w)(?:شی{2,}ر|شی+[ \u200c]+ی*ر|share)(?!\w)', 'شِیر', text, flags=re.IGNORECASE)
+        text = text.replace('پخش زنده', 'لایف').replace('لایو', 'لایف')
+        text = text.replace('دوستان گرامی', 'دوستانِ گرامی')
+        text = re.sub(r'همراهی(?=\s+شما)', 'همراهیِ', text)
         text = re.sub(r'(?<=\d)[.٫](?=\d)', ' ممیز ', text)
         text = text.replace('%', ' درصد ').replace('٪', ' درصد ')
     text = re.sub(r'(?<=[\w\d])[؟?!;؛。](?=\s|$)', '.', text)
-    text = ''.join(c if c in '.,' or not unicodedata.category(c).startswith(('P', 'S', 'C')) else ' ' for c in text)
+    text = ''.join(c if c in '.,\u200c' or not unicodedata.category(c).startswith(('P', 'S', 'C')) else ' ' for c in text)
     return re.sub(r'\s+', ' ', text).strip()
 
 def prepare():
@@ -39,7 +52,7 @@ def prepare():
     from piper.config import PiperConfig, SynthesisConfig
     cache = Path(os.environ.get('QUIZ_VOICE_CACHE', ROOT / '.voice-cache'));cache.mkdir(parents=True, exist_ok=True)
     directory = ROOT / 'public/narration';directory.mkdir(parents=True, exist_ok=True)
-    manifest = {'engine': 'piper-1.3.0', 'voice': VOICES['de']['voice'], 'persian_voice': VOICES['fa']['voice'], 'model_revision': REVISION, 'dataset_license': 'CC0', 'questions': {}, 'persian_questions': {}, 'welcome': {}}
+    manifest = {'engine': 'piper-1.3.0', 'voice': VOICES['de']['voice'], 'persian_voice': VOICES['fa']['voice'], 'model_revision': REVISION, 'dataset_license': 'CC0', 'pronunciation_version': PRONUNCIATION_VERSION, 'persian_length_scale': PERSIAN_LENGTH_SCALE, 'persian_volume': PERSIAN_VOLUME, 'questions': {}, 'persian_questions': {}, 'welcome': {}}
     questions = json.loads((ROOT / 'data/questions.json').read_text())
     messages = json.loads((ROOT / 'speech-texts.json').read_text())['welcome']
     for lang, meta in VOICES.items():
@@ -62,7 +75,7 @@ def prepare():
             path=(directory if welcome else output_dir)/(identifier+'.wav')
             if key in synthesized:shutil.copyfile(synthesized[key],path)
             else:
-                with wave.open(str(path),'wb') as output:voice.synthesize_wav(text,output,syn_config=SynthesisConfig(length_scale=1.0,noise_scale=.667,noise_w_scale=.8,normalize_audio=True,volume=.85))
+                with wave.open(str(path),'wb') as output:voice.synthesize_wav(text,output,syn_config=SynthesisConfig(length_scale=PERSIAN_LENGTH_SCALE if lang=='fa' else 1.0,noise_scale=PERSIAN_NOISE_SCALE if lang=='fa' else .667,noise_w_scale=PERSIAN_NOISE_W_SCALE if lang=='fa' else .8,normalize_audio=True,volume=PERSIAN_VOLUME if lang=='fa' else .85))
                 synthesized[key]=path
             with wave.open(str(path)) as audio:
                 duration=round(audio.getnframes()/audio.getframerate()*1000)

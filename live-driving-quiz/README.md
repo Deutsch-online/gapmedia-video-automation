@@ -408,3 +408,27 @@ roundabout exit priority, bicycle protection strips, oil, glare and passing a
 road obstruction). Other questions retain the exact correct-option explanation
 and a clearly labelled chapter note. Viewer-requested hints never select these
 answer-specific explanations before reveal.
+
+### Calm Persian delivery and panel refresh
+
+Persian recordings and resident speech share the same careful profile: length
+scale 1.25, volume 0.78 and steadier synthesis variation. German question speed
+is unchanged. Speech text preserves half-spaces instead of splitting Persian
+suffixes, canonicalizes explicit ه‌ی ezafe spelling, and uses targeted readings
+for the requested LIVE/share wording. Explicit شییر/share is distinguished from
+the ordinary Persian شیر; ordinary words and displayed bank text are retained.
+Versioned narration metadata rejects stale clips from the previous voice profile.
+
+Social messages default to Persian. Selecting Persian question narration forces
+the welcome to Persian too, even if a bilingual welcome preference was saved;
+lesson explanations and supporter thanks already use Persian. The separate
+welcome-language control remains available outside Persian-only narration mode.
+
+Entry portraits now default to size 96, with 112 available in the placement tab;
+old small defaults migrate once while later explicit size selections are kept.
+They remain circular, on the outside edge, and disappear after their ascent.
+
+The panel's global refresh buttons reload either the display sources via an
+owner-authenticated revision broadcast, or the panel itself. Refreshing the
+display does not reset the current question, session progress, answers or scores.
+Owner Browser-source access is retained in session storage across a reload.

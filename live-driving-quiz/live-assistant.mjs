@@ -30,7 +30,7 @@ export class LiveAssistant{
   if(msg&&!/^0+$/.test(msg)&&this.seenEvent('comment:'+msg))return {accepted:false,reason:'duplicate'};
   if(this.now()-this.lastComment<config.commentGap*1000)return {accepted:false,reason:'cooldown'};
   const reply=config.replyComments?answerComment(text,q,{revealed:phase==='revealed'}):null;
-  const read=config.readComments?'نظر بیننده: '+text.slice(0,160):'';
+  const read=config.readComments?'یکی از دوستان نوشته: '+text.slice(0,160):'';
   if(!read&&!reply)return {accepted:false,reason:'not_relevant'};
   const result=this.enqueue({text:[read,reply?.text].filter(Boolean).join(' '),title:'پاسخ به '+personName(event),kind:reply?'reply':'comment',roundId:reply?.questionBound?roundId:null,requiresReveal:phase==='revealed'&&reply?.questionBound===true,priority:2});
   if(result.accepted)this.lastComment=this.now();return result;
@@ -44,7 +44,7 @@ export class LiveAssistant{
  flushThanks(){
   if(!this.thanks.size||this.now()-this.lastThanks<this.settings().thankGap*1000||!this.enabled())return;
   const people=[...this.thanks.values()].filter(p=>this.now()-p.at<90000);if(!people.length){this.thanks.clear();return;}
-  const parts=[];for(const [kind,label] of [['gift','فرستادن هدیه'],['like','لایک کردن پخش زنده']]){const group=people.filter(p=>p.kind===kind);if(!group.length)continue;const names=[...new Set(group.slice(0,3).map(p=>spokenName(p.name)))].join(' و ');parts.push('از '+names+(group.length>3?' و همهٔ دوستان':'')+' برای '+label+' سپاسگزارم.');}
+  const parts=[];for(const [kind,label] of [['gift','فرستادن هدیه'],['like','لایک کردن لایف']]){const group=people.filter(p=>p.kind===kind);if(!group.length)continue;const names=[...new Set(group.slice(0,3).map(p=>spokenName(p.name)))].join(' و ');parts.push(kind==='like'?'تشکر، دوستان گرامی، از لایک‌های شما. لطفاً لایف را شییر کنید.':'از '+names+(group.length>3?' و همهٔ دوستان':'')+' برای '+label+' تشکر می‌کنم.');}
   if(this.enqueue({text:parts.join(' '),title:'تشکر از همراهی شما',kind:'thanks',priority:3}).accepted){this.thanks.clear();this.lastThanks=this.now();}
  }
  tick({roundId,phase,canSpeak=false}={}){

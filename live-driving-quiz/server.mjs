@@ -36,9 +36,9 @@ const root=fileURLToPath(new URL('.',import.meta.url));
 const hosting=hostingConfig();
 const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
-let narrationReplay=0;
+let narrationReplay=0,screenRevision=0;
 let narrationInfo;
-const defaults={assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:64,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -49,7 +49,8 @@ const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'ut
 quiz.seconds=Number.isInteger(settings.questionSeconds)&&settings.questionSeconds>=10&&settings.questionSeconds<=300?settings.questionSeconds:30;
 const bankMedia=loadBankMedia(quiz.questions);
 const welcomeCycle=new WelcomeCycle();const speechTexts=JSON.parse(readFileSync(join(root,'speech-texts.json'),'utf8'));
-const welcomeDuration=()=>((narrationInfo?.welcome?.fa?.duration_ms||11000)+(narrationInfo?.welcome?.de?.duration_ms||9000)+300);
+const welcomeLanguage=()=>settings.narrationLanguage==='fa'?'fa':settings.welcomeLanguage;
+const welcomeDuration=()=>{const lang=welcomeLanguage(),fa=narrationInfo?.welcome?.fa?.duration_ms||11000,de=narrationInfo?.welcome?.de?.duration_ms||9000;return lang==='fa'?fa:lang==='de'?de:fa+de+300;};
 const supporters=new SupporterWall({limit:20});
 const likes=new LikeWall();
 const sessionStore=new SessionStore();
@@ -62,9 +63,12 @@ if(Number.isInteger(loadedProgress?.waitSeconds)&&loadedProgress.waitSeconds>=0&
 if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFrames;
 if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
 if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
-const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
+if(['fa','de','both'].includes(loadedProgress?.welcomeLanguage))settings.welcomeLanguage=loadedProgress.welcomeLanguage;
+const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
 if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
 if(validAssistantSettings(loadedProgress?.assistant))settings.assistant=loadedProgress.assistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
+// The small v1 bubbles are upgraded to a readable default; the panel can still select a smaller size.
+if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBubbleVersion)!==2&&settings.joinDisplay.size<=72)settings.joinDisplay={...settings.joinDisplay,size:96};settings.joinBubbleVersion=2;
 const liveVoice=new LiveSpeech();const assistant=new LiveAssistant({voice:liveVoice,settings:()=>settings.assistant});
 const ids=quiz.questions.map(q=>q.id);const groups=bankSections(quiz.questions);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{},{groups});
@@ -74,7 +78,7 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,joinDisplay:settings.joinDisplay,assistant:settings.assistant};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -112,7 +116,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -259,7 +263,8 @@ const server=http.createServer(async(req,res)=>{
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
       const data=await body(req);const action=url.pathname.split('/').at(-1);
-      if(action==='assistant-settings'){
+      if(action==='refresh-screen'){screenRevision++;}
+      else if(action==='assistant-settings'){
         if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');if(!validAssistantSettings(data))throw Error('تنظیم دستیار معتبر نیست.');settings.assistant=Object.fromEntries(Object.keys(ASSISTANT_DEFAULTS).map(key=>[key,data[key]]));if(!data.enabled)assistant.clear();await persistDisplay();
       }
       else if(action==='assistant-say'){
@@ -340,7 +345,7 @@ const server=http.createServer(async(req,res)=>{
       }
       else if(action==='welcome-settings'){
         if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');
-        if(typeof data.enabled!=='boolean')throw Error('تنظیم نامعتبر است.');settings.welcomeEnabled=data.enabled;await persistDisplay();
+        if(typeof data.enabled!=='boolean')throw Error('تنظیم نامعتبر است.');if(data.language!==undefined&&!['fa','de','both'].includes(data.language))throw Error('زبان پیام نامعتبر است.');settings.welcomeEnabled=data.enabled;if(data.language!==undefined)settings.welcomeLanguage=data.language;await persistDisplay();
       }
       else if(action==='simulate-welcome'){
         if(mode!=='demo')throw Error('فقط در حالت آزمایشی');if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');welcomeCycle.demo(welcomeDuration());

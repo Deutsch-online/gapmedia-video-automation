@@ -50,7 +50,8 @@ export class WelcomeAnnouncer extends QuestionNarrator{
   if(!active){if(this.key!==null||this.pending||this.source)this.stop();this.key=null;return;}
   if(busy&&!this.source&&!this.pending)return;
   if(this.key===null&&this.lastAnnouncement===announcement.id)return;
-  this.play(announcement.id,['/narration/welcome-fa.wav','/narration/welcome-de.wav'],ctx);if(this.key===announcement.id)this.lastAnnouncement=announcement.id;
+  const language=state.narrationLanguage==='fa'?'fa':welcome.language||'both';const urls=language==='both'?['/narration/welcome-fa.wav','/narration/welcome-de.wav']:['/narration/welcome-'+language+'.wav'];
+  this.play(announcement.id,urls,ctx);if(this.key===announcement.id)this.lastAnnouncement=announcement.id;
  }
 }
 

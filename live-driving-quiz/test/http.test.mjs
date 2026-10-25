@@ -13,7 +13,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   let settings;for(let i=0;i<80;i++){try{settings=JSON.parse(readFileSync(runtime,'utf8'));break;}catch{await delay(100);}}
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
-  assert.equal((await fetch(base+'/screen')).status,200);
+  assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
   const teacher=await(await fetch(base+'/api/admin/assistant',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(teacher.settings.enabled,true);assert.equal(teacher.settings.showCaptions,false);
   assert.equal((await post('assistant-settings',{...teacher.settings,commentGap:0})).status,400);
@@ -33,7 +33,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('gift-style',{basis:'coins',levels:{simple:5,silver:3,gold:4,diamond:5,vip:6}})).status,400);
   assert.equal((await post('activity-display',{side:'free',count:8,top:220})).status,400);
   assert.equal((await post('activity-display',{side:'left',count:11,top:220})).status,400);
-  assert.equal((await post('activity-display',{side:'left',count:5,top:1200})).status,200);
+  assert.equal((await post('join-display',{enabled:true,side:'right',size:112,bottom:100})).status,200);assert.equal((await post('activity-display',{side:'left',count:5,top:1200})).status,200);
   assert.equal((await post('activity-display',{side:'left',count:5,top:1201})).status,400);
   assert.equal((await post('join-display',{enabled:true,side:'right',size:64,bottom:100})).status,200);
   assert.equal((await post('join-display',{enabled:true,side:'free',size:64,bottom:100})).status,400);
@@ -44,7 +44,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
 
   assert.equal((await post('narration-language',{language:'wrong'})).status,400);
   assert.equal((await post('narration-language',{language:'both'})).status,200);
-  assert.equal((await post('welcome-settings',{enabled:true})).status,200);
+  assert.equal((await post('welcome-settings',{enabled:true,language:'fa'})).status,200);assert.equal((await post('welcome-settings',{enabled:true,language:'wrong'})).status,400);
   assert.equal((await post('simulate-welcome')).status,200);
   let audioState=await(await fetch(base+'/api/state')).json();assert.equal(audioState.welcome.intervalSeconds,120);assert.equal(audioState.welcome.announcement.demo,true);assert.match(audioState.welcome.texts.fa,/خوش آمدید/);
   for(const path of ['/narration/fa/'+first.id+'.wav','/narration/welcome-fa.wav','/narration/welcome-de.wav']){const response=await fetch(base+path);assert.ok([200,503].includes(response.status));if(response.status===200)assert.equal(Buffer.from(await response.arrayBuffer()).toString('ascii',0,4),'RIFF');}

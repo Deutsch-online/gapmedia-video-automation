@@ -70,3 +70,12 @@ test('lesson voice buffers once, waits for other audio and stops immediately on 
  speaker.update(state,ctx,{busy:true});await flush();assert.equal(played.length,0);speaker.update(state,ctx);await flush();assert.equal(played.length,1);
  speaker.update(state,ctx);await flush();assert.equal(played.length,1);speaker.update({...state,roundId:'other',phase:'waiting'},ctx);assert.equal(played[0].stopped,true);
 });
+
+test('careful Persian keeps suffixes/ezafe, pronounces explicit share differently from milk, and slows the voice',()=>{
+ const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps({'text':m.speech_text('می‌خواهم گزینه‌ی درست، همراهی شما، شییر و share و شیر و پخش زنده','fa'),'scale':m.PERSIAN_LENGTH_SCALE,'volume':m.PERSIAN_VOLUME},ensure_ascii=False))";
+ const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.equal(out.scale,1.25);assert.equal(out.volume,.78);assert.match(out.text,/می‌خواهم/);assert.match(out.text,/گزینهٔ درست/);assert.match(out.text,/همراهیِ شما/);assert.match(out.text,/شِیر و شِیر و شیر/);assert.match(out.text,/لایف/);assert.doesNotMatch(out.text,/پخش زنده/);
+});
+test('Persian speech mode requests only Persian welcome even when both welcome languages are selected',async()=>{
+ const {ctx,played}=fixture(),urls=[],speaker=new WelcomeAnnouncer({fetchAudio:async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};}});
+ speaker.update({mode:'demo',phase:'paused',narrationLanguage:'fa',serverTime:0,welcome:{enabled:true,language:'both',announcement:{id:'fa-only',demo:true,expiresAt:30000}}},ctx);await flush();assert.deepEqual(urls,['/narration/welcome-fa.wav']);assert.equal(played.length,1);
+});

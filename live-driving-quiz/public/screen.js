@@ -6,13 +6,14 @@ import {renderGuests} from './guests-ui.js';
 function fitScreen(){document.documentElement.style.setProperty('--screen-scale',Math.min(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fitScreen);fitScreen();
 const $=id=>document.getElementById(id);
-let activeBuild;
+let activeBuild,activeScreenRevision;
 let state,receivedAt=0,optionSignature,supporterSignature,guestSignature;
 const fa=new Intl.NumberFormat('en-US');
 const digits=text=>String(text).replace(/[۰-۹٠-٩]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.includes(c)?'۰۱۲۳۴۵۶۷۸۹'.indexOf(c):'٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
 const icons={junction:'↗',parking:'P',distance:'↔',phone:'📵',siren:'🚑',beacon:'⚠',fog:'≋',bus:'BUS',crossing:'🚶'};
 function element(tag,className,text){const el=document.createElement(tag);el.className=className;el.textContent=text;return el;}
 function render(s){
+  if(s.screenRevision!==undefined){if(activeScreenRevision!==undefined&&s.screenRevision!==activeScreenRevision){location.reload();return;}activeScreenRevision=s.screenRevision;}
   if(activeBuild&&s.build&&activeBuild!==s.build){location.reload();return;}activeBuild=s.build;
   state=s;receivedAt=performance.now();const q=s.question;
   $('show').classList.toggle('has-activity',Boolean(s.supporters?.length||s.activityFocus));

@@ -18,7 +18,7 @@ for line in sys.stdin:
   request=json.loads(line);text=request['text']
   if not isinstance(text,str) or not 1<=len(text)<=1600:raise ValueError('Invalid speech length')
   text=module.speech_text(text,'fa');buffer=io.BytesIO()
-  with wave.open(buffer,'wb') as output:voice.synthesize_wav(text,output,syn_config=SynthesisConfig(length_scale=1.0,noise_scale=.667,noise_w_scale=.8,normalize_audio=True,volume=.85))
+  with wave.open(buffer,'wb') as output:voice.synthesize_wav(text,output,syn_config=SynthesisConfig(length_scale=module.PERSIAN_LENGTH_SCALE,noise_scale=module.PERSIAN_NOISE_SCALE,noise_w_scale=module.PERSIAN_NOISE_W_SCALE,normalize_audio=True,volume=module.PERSIAN_VOLUME))
   data=buffer.getvalue()
   with wave.open(io.BytesIO(data)) as audio:duration=round(audio.getnframes()/audio.getframerate()*1000)
   if not 400<=duration<=120000 or len(data)>5500000:raise ValueError('Speech exceeds bound')
