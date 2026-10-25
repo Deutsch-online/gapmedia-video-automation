@@ -14,7 +14,7 @@ PERSIAN_LENGTH_SCALE = 1.25
 PERSIAN_VOLUME = .78
 PERSIAN_NOISE_SCALE = .55
 PERSIAN_NOISE_W_SCALE = .65
-PRONUNCIATION_VERSION = 'fa-careful-v3'
+PRONUNCIATION_VERSION = 'fa-dari-v4'
 REVISION = '5041a7a49ae5b3a0f30e6837769eb03fdbb231bd'
 VOICES = {
  'de': {'voice': 'de_DE-thorsten-medium', 'path': 'de/de_DE/thorsten/medium', 'files': {
@@ -38,6 +38,12 @@ def speech_text(text, lang):
         # Explicit LIVE loanwords: do not change ordinary شیر (milk/lion).
         text = re.sub(r'(?<!\w)(?:شی{2,}ر|شی+[ \u200c]+ی*ر|share)(?!\w)', 'شِیر', text, flags=re.IGNORECASE)
         text = text.replace('پخش زنده', 'لایف').replace('لایو', 'لایف')
+        # Afghan vocabulary affects speech only, never source bank text or keys.
+        # Explicit vowels avoid eSpeak's felash / darivar readings.
+        text = re.sub(r'(?<!\w)(?:فلش|flash)(?!\w)', 'فْلَش', text, flags=re.IGNORECASE)
+        text = re.sub(r'(?<!\w)(?:راننده|دریور)(ٔ)?(?!\w)', lambda match: 'دْرَیوَر' + ('ِ' if match[1] else ''), text)
+        text = re.sub(r'(?<!\w)رانندگان(?!\w)', 'دْرَیوَرها', text)
+        text = re.sub(r'(?<!\w)(?:خودرو|موتر)(?!\w)', 'موتَر', text)
         text = text.replace('دوستان گرامی', 'دوستانِ گرامی')
         text = re.sub(r'همراهی(?=\s+شما)', 'همراهیِ', text)
         text = re.sub(r'(?<=\d)[.٫](?=\d)', ' ممیز ', text)

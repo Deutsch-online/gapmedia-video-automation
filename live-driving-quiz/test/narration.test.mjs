@@ -79,3 +79,11 @@ test('Persian speech mode requests only Persian welcome even when both welcome l
  const {ctx,played}=fixture(),urls=[],speaker=new WelcomeAnnouncer({fetchAudio:async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};}});
  speaker.update({mode:'demo',phase:'paused',narrationLanguage:'fa',serverTime:0,welcome:{enabled:true,language:'both',announcement:{id:'fa-only',demo:true,expiresAt:30000}}},ctx);await flush();assert.deepEqual(urls,['/narration/welcome-fa.wav']);assert.equal(played.length,1);
 });
+
+// Native normalizer is shared by question recordings and the resident assistant.
+test('Afghan spoken vocabulary uses Flash and driver without changing German or unrelated words',()=>{
+ const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps([m.speech_text('فلش Flash FLASH، رانندهٔ موتر، دریور، رانندگان، خودرو، رانندگی، فلشدار','fa'),m.speech_text('Flash Fahrer','de'),m.PRONUNCIATION_VERSION],ensure_ascii=False))";
+ const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));
+ assert.equal(out[0],'فْلَش فْلَش فْلَش دْرَیوَرِ موتَر دْرَیوَر دْرَیوَرها موتَر رانندگی فلشدار');
+ assert.equal(out[1],'Flash Fahrer');assert.equal(out[2],'fa-dari-v4');
+});
