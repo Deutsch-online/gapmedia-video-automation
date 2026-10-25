@@ -10,9 +10,10 @@ def main():
   with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
  info=api('getChat',{'chat_id':chat})
  if not info.get('ok') or info.get('result',{}).get('type')!='private':raise RuntimeError('Private owner chat required')
- path=Path('live-race/dist/audio/race-music-preview.mp3');boundary='RaceDraft'+secrets.token_hex(16)
+ path=Path(os.environ.get('MUSIC_PREVIEW_FILE','live-race/dist/audio/race-music-preview.mp3'));meta=json.loads(path.with_suffix('.json').read_text()) if path.with_suffix('.json').exists() else {};boundary='RaceDraft'+secrets.token_hex(16)
  caption='پیش‌نمایش موسیقی تازهٔ مسابقه · Neon Team · 129 BPM\nملودی و سازها تازه ساخته شده‌اند؛ از صدای نمونه کپی نشده است.\nلطفاً گوش بدهید و نظر بدهید. هنوز جایگزین موسیقی فعلی بازی نشده است.'
- fields={'chat_id':str(chat),'title':'Neon Team — Racing Preview','performer':'Nations Race · Original synth instrumental','caption':caption,'duration':'61'}
+ caption=meta.get('caption',caption)
+ fields={'chat_id':str(chat),'title':meta.get('title','Neon Team — Racing Preview'),'performer':'Nations Race · Original synth instrumental','caption':caption,'duration':str(meta.get('duration',61))}
  body=bytearray()
  for name,value in fields.items():body.extend(('--'+boundary+'\r\nContent-Disposition: form-data; name="'+name+'"\r\n\r\n'+value+'\r\n').encode())
  body.extend(('--'+boundary+'\r\nContent-Disposition: form-data; name="audio"; filename="Neon-Team-129-preview.mp3"\r\nContent-Type: audio/mpeg\r\n\r\n').encode());body.extend(path.read_bytes());body.extend(('\r\n--'+boundary+'--\r\n').encode())

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - live-race/dist/audio/race-music-preview.mp3
+      - music-previews/**
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,6 +22,7 @@ jobs:
           python-version: '3.11'
       - name: Send draft audio for listening before changing game music
         env:
+          MUSIC_PREVIEW_FILE: music-previews/drift-v2-preview.mp3
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
