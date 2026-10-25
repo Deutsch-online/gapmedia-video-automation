@@ -1,0 +1,41 @@
+name: Generate rear-view English host video
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/generate-host-video.py
+      - .github/workflows/generate-host-video.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gamer-host-video-generation
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install video and voice tools
+        run: |
+          python -m pip install --disable-pip-version-check 'huggingface_hub>=1,<2' edge-tts Pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Generate one motion video with English presenter voice
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/generate-host-video.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: english-host-video
+          path: /tmp/host-video/
+          if-no-files-found: ignore
+          retention-days: 14
