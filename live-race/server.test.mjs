@@ -19,6 +19,7 @@ test('panel authentication, custom gifts, pause, restore and isolated demo',{tim
   assert.equal((await action('race-settings',{settings:{cars:5}})).type,'error');
   messages.length=0;socket.send(JSON.stringify({type:'auth',token}));assert.equal((await wait(()=>messages.find(m=>m.type==='auth'))).ok,true);
   assert.equal((await action('race-settings',{settings:{cars:5,removeInactive:false,demoOpponents:false}})).snapshot.race.settings.cars,5);
+  let controlled=await action('race-control',{action:'stop'});assert.equal(controlled.snapshot.race.settings.running,false);controlled=await action('race-control',{action:'start'});assert.equal(controlled.snapshot.race.settings.running,true);controlled=await action('race-control',{action:'pause'});assert.equal(controlled.snapshot.race.settings.paused,true);controlled=await action('race-control',{action:'resume'});assert.equal(controlled.snapshot.race.settings.paused,false);
   await new Promise(r=>setTimeout(r,3100));
   for(let i=1;i<=7;i++)assert.equal((await action('race-add',{userId:String(i),name:'Player '+i})).type,'snapshot');
   let m=await action('race-demo',{action:'like',userId:'1',name:'Player 1',count:37});assert.equal(m.snapshot.race.slots[0].distance,30);assert.equal(m.snapshot.race.slots[0].likeRemainder,7);assert.equal(m.snapshot.race.queue.length,2);assert.equal(m.manualTests,true);
