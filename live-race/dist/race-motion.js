@@ -6,3 +6,5 @@ globalThis.RaceMotion=class RaceMotion{
   for(const i of this.rows.keys())if(!drivers.some(x=>x.i===i))this.rows.delete(i);this.ranks=nextRanks;return {rows:this.rows,events:this.events,active}
  }
 };
+
+globalThis.raceRoundStage=function(round,count=3){count=Math.max(1,Math.min(9,Math.floor(Number(count)||3)));round=Math.max(1,Math.floor(Number(round)||1));const index=(round-1)%count+1,final=index===count,label=n=>n===count?'FINAL · '+n+'/'+count:'ROUND '+n+'/'+count;return {index,count,final,series:Math.floor((round-1)/count)+1,title:label(index),nextTitle:label(final?1:index+1)}};

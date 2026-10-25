@@ -1,0 +1,27 @@
+name: Deliver requested original racing music preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - live-race/dist/audio/race-music-preview.mp3
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: race-music-owner-preview
+  cancel-in-progress: false
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Send draft audio for listening before changing game music
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/send-race-music-preview.py
