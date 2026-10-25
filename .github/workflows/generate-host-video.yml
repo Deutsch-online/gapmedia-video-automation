@@ -28,6 +28,8 @@ jobs:
       - name: Generate one motion video with English presenter voice
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_XET: '1'
+          HF_HUB_DOWNLOAD_TIMEOUT: '60'
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
