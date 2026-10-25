@@ -1,5 +1,5 @@
-import {QuestionNarrator} from './narration.js';
-const narrator=new QuestionNarrator();
+import {QuestionNarrator,WelcomeAnnouncer} from './narration.js';
+const narrator=new QuestionNarrator();const welcomeSpeaker=new WelcomeAnnouncer();
 let context,master,timerBus,current,signature,lastPlayed,lastTimerCue,initializing=false,voices=[];
 const $=id=>document.getElementById(id);
 
@@ -63,10 +63,12 @@ export function renderCelebration(state){
  if(!state)return;current=state;
  if(!initializing){initializing=true;void activateAudio();}
  narrator.update(state,context);
+ const greetingBusy=Boolean(narrator.source||narrator.pending||state.phase==='revealed'&&state.celebrationMusic&&state.celebration?.roundId===state.roundId&&state.serverTime-state.celebration.at<10000);
+ welcomeSpeaker.update(state,context,{busy:greetingBusy});
  if(master)master.gain.setTargetAtTime(Math.max(0,Math.min(100,state.musicVolume??20))/100,context.currentTime,.03);
  $('enableMusic').classList.remove('hidden');
  $('enableMusic').textContent=context?.state==='running'?'♫ Ton testen':'♫ Ton aktivieren';
- $('enableMusic').title=['error','timeout'].includes(narrator.status)?'Fragenstimme konnte nicht geladen werden. Im Kontrollpanel erneut vorlesen.':narrator.status==='playing'?'Deutsche Fragenstimme wird abgespielt':context?.state==='running'?'Testton für diese Browser-Quelle abspielen':'In dieser Browser-Quelle einmal klicken, um den Ton freizugeben';
+ $('enableMusic').title=['error','timeout'].includes(narrator.status)?'Fragenstimme konnte nicht geladen werden. Im Kontrollpanel erneut vorlesen.':narrator.status==='playing'?'Fragenstimme wird abgespielt':context?.state==='running'?'Testton für diese Browser-Quelle abspielen':'In dieser Browser-Quelle einmal klicken, um den Ton freizugeben';
  const result=state.celebration;const visible=Boolean(result?.count);
  $('winnerCelebration').classList.toggle('hidden',!visible);
  $('winnerCelebration').classList.toggle('is-celebrating',Boolean(visible&&state.phase==='revealed'&&result.roundId===state.roundId&&state.serverTime-result.at<6000));
@@ -91,7 +93,7 @@ export function renderCelebration(state){
 }
 
 export function soundCountdown(state,left){
- if(narrator.source||narrator.pending)return;
+ if(narrator.source||narrator.pending||welcomeSpeaker.source||welcomeSpeaker.pending)return;
  if(!state?.timerSound||!context||context.state!=='running'||!state.roundId)return;
  const tick=state.phase==='open'&&left>=1&&left<=5;
  const ended=state.phase==='revealed'&&state.revealReason!=='manual'&&state.serverTime>=state.closesAt;

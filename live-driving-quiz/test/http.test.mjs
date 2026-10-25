@@ -26,6 +26,13 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('activity-display',{side:'left',count:5,top:300})).status,200);
   assert.deepEqual((await(await fetch(base+'/api/state')).json()).activityDisplay,{side:'left',count:5,top:300});
 
+  assert.equal((await post('narration-language',{language:'wrong'})).status,400);
+  assert.equal((await post('narration-language',{language:'both'})).status,200);
+  assert.equal((await post('welcome-settings',{enabled:true})).status,200);
+  assert.equal((await post('simulate-welcome')).status,200);
+  let audioState=await(await fetch(base+'/api/state')).json();assert.equal(audioState.welcome.intervalSeconds,120);assert.equal(audioState.welcome.announcement.demo,true);assert.match(audioState.welcome.texts.fa,/خوش آمدید/);
+  for(const path of ['/narration/fa/'+first.id+'.wav','/narration/welcome-fa.wav','/narration/welcome-de.wav']){const response=await fetch(base+path);assert.ok([200,503].includes(response.status));if(response.status===200)assert.equal(Buffer.from(await response.arrayBuffer()).toString('ascii',0,4),'RIFF');}
+  assert.equal((await fetch(base+'/narration/fa/no-such-question.wav')).status,404);
   assert.equal((await post('wait-time',{seconds:-1})).status,400);
   assert.equal((await post('wait-time',{seconds:23})).status,200);
   assert.equal((await(await fetch(base+'/api/state')).json()).waitSeconds,23);
@@ -77,7 +84,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('session-settings',{size:49,allowRepeat:false})).status,400);
   assert.equal((await post('session-settings',{size:50,allowRepeat:true})).status,200);
   assert.equal((await post('new-session')).status,200);
-  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,200);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
+  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,300);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
   assert.equal((await post('simulate-like',{count:1000,name:'fan'})).status,200);
   state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters[0].tier,'crown');assert.equal(state.supporters[0].likeLabel,'1K');assert.equal(state.supporters[0].userId,undefined);
   assert.equal((await post('simulate-supporter',{coins:500,name:'fan'})).status,200);

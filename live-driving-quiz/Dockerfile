@@ -6,9 +6,13 @@ RUN chown node:node /home/node/app
 COPY --chown=node:node package.json package-lock.json ./
 USER node
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
-COPY --chown=node:node . .
 RUN python3 -m venv /home/node/voice-env && /home/node/voice-env/bin/pip install --no-cache-dir piper-tts==1.3.0 onnxruntime==1.23.2 numpy==2.3.4
 ENV QUIZ_TTS_PYTHON=/home/node/voice-env/bin/python
-RUN node bank-media.mjs && node narration-media.mjs
+# Keep CPU-generated voices cached when only UI/server code changes.
+COPY --chown=node:node data/questions.json ./data/questions.json
+COPY --chown=node:node prepare-narration.py speech-texts.json ./
+RUN /home/node/voice-env/bin/python prepare-narration.py
+COPY --chown=node:node . .
+RUN node bank-media.mjs
 EXPOSE 7860
 CMD ["node", "server.mjs"]

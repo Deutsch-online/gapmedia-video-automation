@@ -292,7 +292,7 @@ participant counters do.
 
 ### Section sessions, replay and overlay controls
 
-The session selector groups the 200 loaded questions by their original catalogue
+The session selector groups the 300 loaded questions by their original catalogue
 prefix (for example `1.2.09`); labels come from the original source URL. Counts
 refer to the loaded bank, not the publisher's entire catalogue. General sessions
 retain the 50-question minimum; a source section can contain fewer questions and
@@ -307,3 +307,39 @@ automatic tiers or no ring; the artwork and renderer reuse `live-rings/public`.
 Floating hearts belong only to the highlighted portrait. Real MEMBER events show
 a bounded, transient name toast rising from the lower right; the private panel's
 join test is restricted to demo mode. No join history is persisted.
+
+
+### 300-question bank and native Persian speech
+
+The loaded bank now contains 300 distinct original source IDs with 300 verified
+PNGs and two original videos. The additional 100 German questions, option order
+and correct keys are preserved from the pinned upstream archive; every added
+question and all 300 new options have educational Persian translations. Source
+prefix sections and their counts update automatically; active plans and completed
+history are retained. This remains a selected archive, not a claim to contain the
+complete or current official examination catalogue.
+
+The narration selector supports German, Persian and German followed by Persian.
+The native Persian voice is `fa_IR-amir-medium` and the German voice remains
+`de_DE-thorsten-medium`; both are Piper voices with CC0 datasets, pinned model
+hashes, and local CPU synthesis. No external TTS or paid fallback is used. Symbols
+and bracket names are stripped before synthesis, sentence punctuation gives a
+pause and Persian decimal numbers preserve their value. All question clips and
+the two welcome clips are buffered fully before playback. Audio uses the actual
+Browser Source's shared AudioContext; it still requires that source's audio unlock
+and an unmuted mixer. Choosing both languages extends the answer window when
+needed to fit both recordings and five seconds for an answer.
+
+On an active LIVE connection, the welcome message becomes due after 120 seconds
+and repeats every 120 seconds of scheduled playback. It waits until the question,
+video and victory jingle finish; autoplay holds the next question until the two
+welcome clips finish. Manual next/pause controls retain priority. The private
+panel can disable greetings or test one in demo mode. It does not welcome on a
+fake timer when TikTok is disconnected. New MEMBER events use the real avatar
+when provided, a clear initial otherwise, and bilingual welcome copy; queued
+portraits rise from the lower right and disappear. Transient queues are bounded
+and are never persisted as participant history.
+
+The Docker build generates and caches speech in a separate layer so unrelated
+UI edits do not regenerate all voices. Repeated identical speech text is also
+synthesized once per language within a build.

@@ -3,3 +3,8 @@ node_modules
 settings.json
 logs
 .git
+
+.voice-cache
+public/media
+public/narration
+__pycache__

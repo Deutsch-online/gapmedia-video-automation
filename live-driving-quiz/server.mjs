@@ -18,7 +18,9 @@ import {bankSections} from './sections.mjs';
 import {QuizSessions} from './sessions.mjs';
 import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
-import {narrationMetadata} from './narration-metadata.mjs';
+import {WelcomeCycle} from './welcome.mjs';
+import {profileAvatar} from './gifts.mjs';
+import {narrationMetadata,narrationDuration} from './narration-metadata.mjs';
 import {liveDiagnostics} from './live-diagnostics.mjs';
 
 // The dependency otherwise discovers SIGN_API_KEY from the environment.
@@ -33,7 +35,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0;
 let narrationInfo;
-const defaults={waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -43,6 +45,8 @@ if((stored&&stored.giftPreset!==GIFT_PRESET_VERSION)||Object.values(settings.gif
 const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'utf8')));
 quiz.seconds=Number.isInteger(settings.questionSeconds)&&settings.questionSeconds>=10&&settings.questionSeconds<=300?settings.questionSeconds:30;
 const bankMedia=loadBankMedia(quiz.questions);
+const welcomeCycle=new WelcomeCycle();const speechTexts=JSON.parse(readFileSync(join(root,'speech-texts.json'),'utf8'));
+const welcomeDuration=()=>((narrationInfo?.welcome?.fa?.duration_ms||11000)+(narrationInfo?.welcome?.de?.duration_ms||9000)+300);
 const supporters=new SupporterWall({limit:20});
 const likes=new LikeWall();
 const sessionStore=new SessionStore();
@@ -53,6 +57,8 @@ if(validGiftStyle(loadedProgress?.giftStyle))settings.giftStyle=loadedProgress.g
 
 if(Number.isInteger(loadedProgress?.waitSeconds)&&loadedProgress.waitSeconds>=0&&loadedProgress.waitSeconds<=300)settings.waitSeconds=loadedProgress.waitSeconds;
 if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFrames;
+if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
+if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
 const ids=quiz.questions.map(q=>q.id);const groups=bankSections(quiz.questions);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{},{groups});
 let demoSessions=new QuizSessions(ids,{size:liveSessions.size,allowRepeat:liveSessions.allowRepeat},{groups});
@@ -61,7 +67,7 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -75,7 +81,7 @@ const reconnect=new LiveReconnect({enabled:Boolean(hosting.publicOrigin)&&settin
 let resumeOnReconnect=false,connectGeneration=0;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;let recentJoins=[];
-function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const key=String(data.common?.msgId||randomUUID());if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,at:Date.now()});recentJoins=recentJoins.slice(-8);}
+function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const message=String(data.common?.msgId||'');const key=message&&!/^0+$/.test(message)?message:randomUUID();if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,avatar:profileAvatar(data),at:Date.now()});recentJoins=recentJoins.slice(-64);}
 const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,giftProfilesRecorded:0,giftProfilesUpdated:0,giftProgressReceived:0,giftDisplayRejected:0,giftDuplicates:0,lastGiftDisplayReject:null,lastCommentReject:null,lastGiftReject:null});
 let traffic=freshTraffic();let giftDisplayEvents=[];
 function recordGiftDisplay(event,result){
@@ -99,7 +105,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -203,7 +209,7 @@ async function startRound({generation=roundControlGeneration}={}) {
  await flushSession();checkRoundGeneration(generation);let id=sessions().ensure();
  while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
- persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:settings.narrationEnabled?narrationInfo?.questions[quiz.questions[quiz.index].id]?.duration_ms||0:0});rememberQuestion(id);advanceAt=null;broadcast();
+ persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:settings.narrationEnabled?narrationDuration(narrationInfo,quiz.questions[quiz.index].id,settings.narrationLanguage):0});rememberQuestion(id);advanceAt=null;broadcast();
 }
 async function revisitQuestion(id,generation){
  recordCompleted();await flushSession();checkRoundGeneration(generation);quiz.pause();sessions().review(id,{explicitRepeat:true});quiz.select(id);await startRound({generation});if(sessions().session?.ids[sessions().session.cursor]===id)sessions().reviewId=null;
@@ -232,7 +238,7 @@ const server=http.createServer(async(req,res)=>{
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,persian_voice:narrationInfo?.persian_voice||null,persian_recordings:quiz.questions.filter(q=>existsSync(join(root,'public/narration/fa',q.id+'.wav'))).length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
     if(req.method==='GET'&&url.pathname==='/api/demo'){
       const selected=[quiz.questions[0],...quiz.questions.filter(q=>q.video),...quiz.questions.filter(q=>q.id.startsWith('1.3.01')).slice(0,2),...quiz.questions.filter(q=>q.id.startsWith('1.4.40')).slice(0,1)];
       return json(res,200,{label:'Isolated sales demonstration; all participants and gifts are simulated',questions:selected});
@@ -295,6 +301,18 @@ const server=http.createServer(async(req,res)=>{
         const {side,count,top}=data;
         if(!['left','right'].includes(side)||!Number.isInteger(count)||count<1||count>10||!Number.isInteger(top)||top<80||top>400)throw Error('تنظیم ستون معتبر نیست: تعداد 1 تا 10 و ارتفاع 80 تا 400.');
         settings.activityDisplay={side,count,top};await persistDisplay();
+      }
+      else if(action==='narration-language'){
+        if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');
+        if(!['de','fa','both'].includes(data.language))throw Error('زبان نامعتبر است.');
+        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');settings.narrationLanguage=data.language;await persistDisplay();
+      }
+      else if(action==='welcome-settings'){
+        if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');
+        if(typeof data.enabled!=='boolean')throw Error('تنظیم نامعتبر است.');settings.welcomeEnabled=data.enabled;await persistDisplay();
+      }
+      else if(action==='simulate-welcome'){
+        if(mode!=='demo')throw Error('فقط در حالت آزمایشی');if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');welcomeCycle.demo(welcomeDuration());
       }
       else if(action==='narration'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم خواندن سؤال معتبر نیست.');settings.narrationEnabled=data.enabled;save();
@@ -376,9 +394,11 @@ const server=http.createServer(async(req,res)=>{
       broadcast();return json(res,200,{ok:true,state:publicState()});
     }
     if(['GET','HEAD'].includes(req.method)&&url.pathname.startsWith('/narration/')){
-      const id=url.pathname.slice('/narration/'.length).replace(/\.wav$/,'');
-      if(!quiz.questions.some(q=>q.id===id)||url.pathname!==`/narration/${id}.wav`)return json(res,404,{error:'Unknown question audio'});
-      const path=join(root,'public','narration',id+'.wav');
+      if(['/narration/welcome-fa.wav','/narration/welcome-de.wav'].includes(url.pathname)){const file=join(root,'public',url.pathname);if(!existsSync(file))return json(res,503,{error:'Welcome audio is not prepared'});return serveMedia(req,res,readFileSync(file),'audio/wav');}
+      const language=url.pathname.startsWith('/narration/fa/')?'fa':'de',prefix=language==='fa'?'/narration/fa/':'/narration/';
+      const id=url.pathname.slice(prefix.length).replace(/\.wav$/,'');
+      if(!quiz.questions.some(q=>q.id===id)||url.pathname!==`${prefix}${id}.wav`)return json(res,404,{error:'Unknown question audio'});
+      const path=join(root,'public','narration',...(language==='fa'?['fa']:[]),id+'.wav');
       if(!existsSync(path))return json(res,503,{error:'Question audio is not prepared'});
       return serveMedia(req,res,readFileSync(path),'audio/wav');
     }
@@ -397,6 +417,8 @@ server.on('upgrade',(req,socket,head)=>{
 const tick=setInterval(async()=>{
   if(reconnect.due({connecting,connected:Boolean(connection)}))void connect(settings.username,false,true).catch(()=>{reconnect.failed();});
   quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+settings.waitSeconds*1000;
+  const announcement=(mode==='demo'&&welcomeCycle.announcement?.demo&&Date.now()<welcomeCycle.announcement.expiresAt)?null:welcomeCycle.tick({connected:mode==='live'&&live.status==='connected',enabled:settings.welcomeEnabled,phase:settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000?'open':quiz.phase,durationMs:welcomeDuration()});
+  if(announcement&&quiz.phase==='revealed')advanceAt=Math.max(advanceAt||0,announcement.expiresAt);
   if(autoplay&&!advancing&&quiz.phase==='revealed'&&Date.now()>=advanceAt){advancing=true;try{if(await nextRound())await startRound();}catch(error){autoplay=false;sessionError=error.message;}finally{advancing=false;}}
   broadcast();
 },500);

@@ -396,3 +396,11 @@
 .join-toast{position:absolute;bottom:0;right:0;max-width:100%;padding:12px 18px;border:1px solid #ffffff70;border-radius:24px;background:#174d3788;backdrop-filter:blur(8px);color:white;font-size:26px;font-weight:750;overflow-wrap:anywhere;animation:join-rise 8s linear both}
 @keyframes join-rise{0%{transform:translateY(40px);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateY(-480px);opacity:0}}
 @media(prefers-reduced-motion:reduce){.focus-hearts{display:none}.join-toast{animation:none}}
+
+.join-toasts{width:440px}
+.join-toast{display:flex;gap:16px;align-items:center;padding:12px 18px;background:#123e32cc;font-size:30px}
+.join-portrait{position:relative;flex:0 0 76px;width:76px;height:76px;display:grid;place-items:center;border:3px solid #b5e6cb;border-radius:50%;background:#247855;overflow:hidden;color:#fff}
+.join-portrait img{position:absolute;width:100%;height:100%;object-fit:cover}
+.join-copy{min-width:0}.join-copy strong{display:block;font-size:30px;overflow-wrap:anywhere}.join-copy small{display:block;font-size:22px;color:#d8f9e3;margin-top:6px}
+.welcome-banner{position:absolute;left:60px;right:60px;bottom:110px;z-index:22;border-radius:24px;border:2px solid #c4e4d4;background:#eff9f2f2;box-shadow:0 8px 30px #174d3728;padding:18px 24px;pointer-events:none;text-align:center}
+.welcome-banner p{margin:5px 0;font-size:27px;line-height:1.45;font-weight:750;color:#164431}.welcome-banner p[lang=de]{font-size:24px;color:#213d50}

@@ -4,6 +4,7 @@ try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=se
 history.replaceState(null,'',location.pathname);
 let giftStyleDirty=false,activityDirty=false,activityProfilesSignature;
 let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
+let speechLanguageDirty=false,welcomeDirty=false;
 let waitDirty=false,frameDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
@@ -74,7 +75,7 @@ if(!sessionDirty){$('sessionSection').value=q.section||'all';$('sessionSize').mi
  const sig=JSON.stringify([s.mode,q.completedTotal,q.number,q.allowRepeat]);if(sig!==questionGroupSignature){questionGroupSignature=sig;void loadQuestions();}}
 
  if(!languageDirty)$('showPersian').checked=s.showPersian;
- $('narrationEnabled').checked=s.narrationEnabled;
+ $('narrationEnabled').checked=s.narrationEnabled;if(!speechLanguageDirty)$('narrationLanguage').value=s.narrationLanguage||'de';if(!welcomeDirty)$('welcomeEnabled').checked=s.welcome?.enabled!==false;
  if(!timerSoundDirty)$('timerSound').checked=s.timerSound;
  if(!musicDirty){$('celebrationMusic').checked=s.celebrationMusic;$('musicVolume').value=s.musicVolume;$('musicVolumeValue').textContent=s.musicVolume;}
  if(!timeDirty)$('questionSeconds').value=s.questionSeconds;
@@ -162,3 +163,9 @@ $('saveWaitTime').addEventListener('click',async()=>{const result=await api('wai
 for(const id of ['likerFrame','gifterFrame']){for(const [value,label] of Object.entries({auto:'خودکار بر اساس امتیاز',none:'بدون قاب',simple:'ساده',glow:'نورانی',silver:'نقره‌ای',gold:'طلایی',ice:'الماسی',fire:'آتش و اژدها'})){const o=document.createElement('option');o.value=value;o.textContent=label;$(id).append(o);}$(id).addEventListener('change',()=>{frameDirty=true;});}
 $('saveProfileFrames').addEventListener('click',async()=>{const result=await api('profile-frames',{liker:$('likerFrame').value,gifter:$('gifterFrame').value});if(result){frameDirty=false;render(result.state);}});
 $('testJoin').addEventListener('click',()=>api('simulate-join'));
+
+$('narrationLanguage').addEventListener('change',()=>{speechLanguageDirty=true;});
+$('saveNarrationLanguage').addEventListener('click',async()=>{if(await api('pause')){const result=await api('narration-language',{language:$('narrationLanguage').value});if(result){speechLanguageDirty=false;render(result.state);}}});
+$('welcomeEnabled').addEventListener('change',()=>{welcomeDirty=true;});
+$('saveWelcome').addEventListener('click',async()=>{const result=await api('welcome-settings',{enabled:$('welcomeEnabled').checked});if(result){welcomeDirty=false;render(result.state);}});
+$('testWelcome').addEventListener('click',async()=>{if(await api('pause'))await api('simulate-welcome');});

@@ -37,3 +37,28 @@ test('repeat reuses fully decoded audio, temporary load error gets one retry',as
  narrator.update(state,ctx);await flush();assert.equal(played.length,1);assert.equal(calls,2);
  narrator.update({...state,narrationReplay:1},ctx);await flush();assert.equal(played.length,2);assert.equal(calls,2);
 });
+
+import {WelcomeAnnouncer} from '../public/narration.js';
+test('both languages preload and play in order, never simultaneously; Persian mode requests only native Persian',async()=>{
+ const urls=[],{narrator,state,ctx,played}=fixture(async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};});
+ narrator.update({...state,narrationLanguage:'both'},ctx);await flush();assert.equal(played.length,1);assert.equal(urls.length,2);assert.match(urls[1],/narration\/fa\//);
+ played[0].onended();assert.equal(played.length,2);played[1].onended();assert.equal(narrator.status,'ready');
+ narrator.update({...state,narrationLanguage:'both'},ctx);await flush();assert.equal(played.length,2);
+ narrator.update({...state,narrationLanguage:'fa',roundId:'fa-only'},ctx);await flush();assert.equal(played.length,3);assert.equal(urls.length,2,'decoded Persian clip is reused');
+ narrator.update({...state,phase:'paused'},ctx);assert.equal(played[2].stopped,true);
+});
+test('welcome waits for idle speech, plays once in both languages, and yields immediately to a new question',async()=>{
+ const {ctx,played}=fixture(),urls=[],announcer=new WelcomeAnnouncer({fetchAudio:async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};}});
+ const state={mode:'live',connection:{status:'connected'},phase:'revealed',serverTime:1000,welcome:{enabled:true,announcement:{id:'welcome-1',expiresAt:30000}}};
+ announcer.update(state,ctx,{busy:true});await flush();assert.equal(played.length,0);
+ announcer.update(state,ctx);await flush();assert.equal(played.length,1);assert.deepEqual(urls,['/narration/welcome-fa.wav','/narration/welcome-de.wav']);
+ announcer.update(state,ctx);await flush();assert.equal(played.length,1);
+ announcer.update({...state,phase:'open'},ctx);assert.equal(played[0].stopped,true);announcer.update(state,ctx);await flush();assert.equal(played.length,1,'cancelled welcome does not restart on another idle state');
+ announcer.update({...state,serverTime:40000},ctx);await flush();assert.equal(played.length,1);
+});
+
+import {execFileSync} from 'node:child_process';
+test('native Persian speech normalization strips symbols, retains decimal meaning and never inserts punctuation names',()=>{
+ const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps([m.speech_text('[توقف]، «فاصله»؛ چرا؟ # !','fa'),m.speech_text('سرعت ۳.۵ کیلومتر، ۲۰٪','fa')],ensure_ascii=False))";
+ const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.equal(out[0],'توقف فاصله چرا.');assert.equal(out[1],'سرعت 3 ممیز 5 کیلومتر 20 درصد');assert.doesNotMatch(out.join(' '),/علامت|نقطه|براکت/);
+});
