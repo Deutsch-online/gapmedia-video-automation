@@ -209,6 +209,17 @@
           "Integration requires an adapter for the project's existing faster-whisper; no new model or automatic download activated."
         ]
       }
+    },
+    {
+      "name": "OmniVoice",
+      "url": "https://github.com/k2-fsa/OmniVoice",
+      "category": "persian-tts-evaluation-candidate",
+      "purpose": "Evaluate pre-rendered Persian lesson speech using an independent assistant voice; owner recordings remain pronunciation references only",
+      "repository_license_metadata": "Apache-2.0",
+      "reviewed_commit": "08be0b4ccbac3e13e374e86fbfead4b4cac343e2",
+      "reviewed": "2026-10-26: language table, README, tips, dependency/inference/model/device source and HF metadata; no Persian audio listening or speed benchmark",
+      "integration_status": "reference-only; fa support declared; Dari quality and free CPU real-time latency unverified; no installation, voice cloning or paid service activated",
+      "review_file": "research/omnivoice-persian-review-2026-10-26.md"
     }
   ],
   "production_notes": [

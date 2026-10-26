@@ -1,0 +1,32 @@
+name: Teacher voice and Takrun bot preflight
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/teacher-agent-preflight.py
+      - .github/workflows/teacher-agent-preflight.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8'
+      - name: Verify identities without sending messages and audition the female voice
+        env:
+          TAKRUN_BOT_TOKEN: ${{ secrets.TAKRUN_BOT_TOKEN }}
+          TAKRUN_TELEGRAM_BOT_TOKEN: ${{ secrets.TAKRUN_TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_TAKRUN_TOKEN: ${{ secrets.TELEGRAM_TAKRUN_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python scripts/teacher-agent-preflight.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teacher-agent-preflight
+          path: /tmp/teacher-agent-preflight
+          retention-days: 7
