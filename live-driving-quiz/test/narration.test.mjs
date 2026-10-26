@@ -92,3 +92,11 @@ test('adjacent bilingual aliases are said once with native German segments while
  const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.speech_segments('سیستم ضدقفل بریک (ABS) به شما کمک می‌کند. حق تقدم (Vorfahrt) را رعایت کنید.','fa'),ensure_ascii=False))";
  const parts=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.deepEqual(parts.filter(p=>p[0]==='de').map(p=>p[1]),['ABS','Vorfahrt']);assert.doesNotMatch(parts.map(p=>p[1]).join(' '),/سیستم ضدقفل|حق تقدم/);assert.match(parts.map(p=>p[1]).join(' '),/رعایت کنید/);
 });
+
+
+test('browser narration caches are separated when the Persian voice changes',async()=>{
+ const urls=[],{narrator,state,ctx,played}=fixture(async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};});
+ narrator.update({...state,narrationLanguage:'fa',persianVoice:'male'},ctx);await flush();
+ narrator.update({...state,narrationLanguage:'fa',persianVoice:'female'},ctx);await flush();
+ assert.equal(played[0].stopped,true);assert.equal(urls.length,2);assert.notEqual(urls[0],urls[1]);assert.match(urls[0],/voice=male/);assert.match(urls[1],/voice=female/);
+});

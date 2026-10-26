@@ -1,3 +1,4 @@
+import {handleTeacherSection,teacherResultSecret} from './teacher-section.js';
 import {runAssistantAI,veniceStatus,formatVeniceStatus} from './venice-ai.js';
 import {memoryTransfer,memoryContext,handleMemory,resolveFollowup} from './project-memory.js';
 import {handleProjectDiagnostics,validateDiagnostic,formatDiagnostic} from './project-diagnostics.js';
@@ -21,7 +22,7 @@ async function webhookSecret(token) {
   return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-const HELP = `🤖 <b>ویدیو آلمانی</b>
+const HELP = `📚 دستیار درس و تلفظ: /teacher\n🎬 بازگشت به ویدیو: /video\n🤖 <b>ویدیو آلمانی</b>
 
 هر پرسشی دربارهٔ آلمانی، ایدهٔ داستان، ویدیو یا کارهای روزمره دارید، عادی بنویسید. پاسخ در همین گفتگو می‌آید.
 
@@ -678,6 +679,14 @@ export default {
       return response||new Response('Not found',{status:404});
     }
     if(request.method==='GET'&&route==='/monitor-health')return Response.json(await monitorHealth(env));
+      if(request.method==='POST'&&route==='/internal/teacher-result'){
+        if(!env.TELEGRAM_BOT_TOKEN||request.headers.get('X-Project-Authorization')!==await teacherResultSecret(env.TELEGRAM_BOT_TOKEN))return new Response('Unauthorized',{status:401});
+        const owner=env.ALLOWED_CHAT_ID||(await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
+        const data=await request.json().catch(()=>null);
+        if(!owner||String(data?.chatId)!==String(owner)||typeof data?.text!=='string'||data.text.length>4000)return new Response('Invalid teaching result',{status:400});
+        await replyText(env,owner,'📚 درس و تلفظ\n'+data.text);
+        return Response.json({ok:true});
+      }
     if(route.startsWith('/internal/')){
       if(!env.TELEGRAM_BOT_TOKEN||request.headers.get('X-Project-Authorization')!==await monitorSignature(env.TELEGRAM_BOT_TOKEN))return new Response('Unauthorized',{status:401});
       if(request.method==='POST'&&route==='/internal/project-memory'){
@@ -687,6 +696,7 @@ export default {
           return Response.json(await memoryTransfer(env,JSON.parse(text)));
         }catch{return new Response('Private memory transfer failed',{status:400});}
       }
+      if(request.method==='GET'&&route==='/internal/teacher-health')return Response.json({ok:true,section:'teacher',version:'social-teacher-v1'});
       if(request.method==='GET'&&route==='/internal/venice-status')return Response.json(await veniceStatus(env));
       if(route==='/internal/provider-report'){
         if(request.method==='GET')return Response.json(await env.BOT_STATE.get('project:provider-latest','json')||{});
@@ -809,6 +819,7 @@ export default {
     try {
       if(await handleSimpleCredit(message,env,telegram,githubHeaders(env)))return new Response('ok');
       if(env.BOT_STATE&&!(await env.BOT_STATE.get('social:owner')))await env.BOT_STATE.put('social:owner',chatId);
+      if(await handleTeacherSection({env,chatId,input,update,telegram}))return new Response('ok');
       const managed = await manageCommands(env,chatId,input,telegram);
       if (managed) {
         await reply(env,chatId,managed);

@@ -5,8 +5,8 @@ export class QuestionNarrator {
  update(state,ctx){
   if(!(state.narrationEnabled&&state.phase==='open'&&state.roundId)){if(this.key!==null||this.pending||this.source)this.stop();this.key=null;return;}
   const languages=state.narrationLanguage==='both'?['de','fa']:[state.narrationLanguage==='fa'?'fa':'de'];
-  const id=state.question.id,key=JSON.stringify([state.roundId,id,state.narrationReplay||0,state.pronunciationRevision||0,languages]);
-  this.play(key,languages.map(lang=>'/narration/'+(lang==='fa'?'fa/':'')+encodeURIComponent(id)+'.wav'+(lang==='fa'&&state.pronunciationRevision?'?pv='+state.pronunciationRevision:'' )),ctx);
+  const id=state.question.id,key=JSON.stringify([state.roundId,id,state.narrationReplay||0,state.pronunciationRevision||0,state.persianVoice||'male',languages]);
+  this.play(key,languages.map(lang=>'/narration/'+(lang==='fa'?'fa/':'')+encodeURIComponent(id)+'.wav'+(lang==='fa'?'?pv='+(state.pronunciationRevision||0)+'&voice='+(state.persianVoice||'male'):'' )),ctx);
  }
  play(key,urls,ctx){
   if(this.key!==null&&this.key!==key){this.stop();this.key=null;}
@@ -51,7 +51,7 @@ export class WelcomeAnnouncer extends QuestionNarrator{
   if(busy&&!this.source&&!this.pending)return;
   if(this.key===null&&this.lastAnnouncement===announcement.id)return;
   const language=state.narrationLanguage==='fa'?'fa':welcome.language||'both';const urls=language==='both'?['/narration/welcome-fa.wav','/narration/welcome-de.wav']:['/narration/welcome-'+language+'.wav'];
-  this.play(announcement.id,urls,ctx);if(this.key===announcement.id)this.lastAnnouncement=announcement.id;
+  this.play(announcement.id,urls.map(url=>url.includes('welcome-fa')&&state.persianVoice?url+'?voice='+state.persianVoice:url),ctx);if(this.key===announcement.id)this.lastAnnouncement=announcement.id;
  }
 }
 

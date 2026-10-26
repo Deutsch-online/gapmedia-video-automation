@@ -16,6 +16,14 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   let settings;for(let i=0;i<80;i++){try{settings=JSON.parse(readFileSync(runtime,'utf8'));break;}catch{await delay(100);}}
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
+  assert.equal((await post('persian-voice',{voice:'bad'})).status,400);
+  assert.equal((await fetch(base+'/internal/social-teacher')).status,401);
+  assert.equal((await post('persian-voice',{voice:'female'})).status,200);
+  assert.equal((await(await fetch(base+'/api/state')).json()).persianVoice,'female');
+  assert.equal(JSON.parse(readFileSync(join(dir,'settings.json'),'utf8')).persianVoice,'female');
+  assert.equal((await post('teacher-preview',{voice:'male',text:'یک سوال'})).status,200);
+  assert.equal((await(await fetch(base+'/api/state')).json()).persianVoice,'female','audition cannot change the saved lesson voice');
+  assert.equal((await post('persian-voice',{voice:'male'})).status,200);
   assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
   for(const endpoint of ['teacher','teacher-vocabulary','next-lesson','practice-lesson','teacher-word?word=test'])assert.equal((await fetch(base+'/api/admin/'+endpoint)).status,401);

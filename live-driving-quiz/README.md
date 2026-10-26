@@ -1,6 +1,6 @@
 # FahrFit LIVE — بانک تصویری رانندگی
 
-> Active voice update (2026-10-26): lesson questions, practice, explanations and Persian welcomes use the fixed female standard-Persian `fa-IR-DilaraNeural` voice. Written vocabulary is preserved; no automatic Afghan word substitution or owner-voice playback. New speech requires server internet; generated clips are privately cached. Historical Amir/Piper descriptions below refer to the retained baseline/rehearsal assets, not the active Persian lesson voice. See [TEACHER_VOICE.md](TEACHER_VOICE.md). The owner-only @takrun_bot command bridge is prepared and requires the matching `TAKRUN_BOT_TOKEN` secret before it can connect.
+> Active update (2026-10-26): choose **male Farid** or **female Dilara** in «صدا و خوش‌آمد». Male is the default. The selection persists across restarts and applies to Persian questions, practice, assistant replies and welcomes. Clips are cached by voice as well as text/style. New speech needs server internet; no paid fallback or owner-recording playback. Use **@afgsocial_bot → /teacher** for the separate lesson/pronunciation section; **/video** returns to the existing video section. Cloudflare retains the existing Telegram webhook. See [TEACHER_VOICE.md](TEACHER_VOICE.md).
 
 
 نسخهٔ فعال دارای ۲۰۰ سؤال (۱۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.

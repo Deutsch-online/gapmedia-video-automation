@@ -62,13 +62,14 @@ def deploy():
     admin=hmac.new(bot_token.encode(),('fahrfit-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
     api.add_space_secret(repo,key='QUIZ_ADMIN_TOKEN',value=admin)
     api.add_space_variable(repo,key='PUBLIC_URL',value=url)
-    takrun=next((os.getenv(key,'').strip() for key in ('TAKRUN_BOT_TOKEN','TAKRUN_TELEGRAM_BOT_TOKEN','TELEGRAM_TAKRUN_TOKEN') if os.getenv(key,'').strip()),'')
-    if takrun:
-        identity=telegram(takrun,'getMe',{})
-        if identity.get('username','').lower()!='takrun_bot':raise RuntimeError('TAKRUN_BOT_TOKEN must belong to @takrun_bot')
-        api.add_space_secret(repo,key='TAKRUN_BOT_TOKEN',value=takrun)
-        api.add_space_secret(repo,key='TAKRUN_OWNER_ID',value=str(info['id']))
-    print('Takrun credentials supplied:',bool(takrun))
+    identity=telegram(bot_token,'getMe',{})
+    if identity.get('username','').lower()!='afgsocial_bot':raise RuntimeError('Social teaching bridge requires @afgsocial_bot')
+    bridge=hashlib.sha256(('fahrfit-social-bridge-v1:'+bot_token).encode()).hexdigest()
+    callback=hashlib.sha256(('fahrfit-social-result-v1:'+bot_token).encode()).hexdigest()
+    api.add_space_secret(repo,key='SOCIAL_TEACHER_SECRET',value=bridge)
+    api.add_space_secret(repo,key='SOCIAL_CALLBACK_SECRET',value=callback)
+    api.add_space_secret(repo,key='SOCIAL_TEACHER_OWNER',value=str(info['id']))
+    print('Social teaching bridge configured: True; existing video webhook preserved')
 
     state_repo=owner+'/fahrfit-quiz-state'
     api.create_repo(state_repo,repo_type='dataset',private=True,exist_ok=True)
@@ -109,11 +110,24 @@ def deploy():
         except (OSError,ValueError):pass
         time.sleep(8)
     if not ready:raise RuntimeError('Free Space did not become ready within the bounded deployment window')
-    # Exercise the actual deployed female adapter, not just an advertised health label.
-    voice_request=urllib.request.Request(url+'/api/admin/teacher-preview',data=json.dumps({'text':'یک سوال داریم. راننده در جاده است.'}).encode(),headers={'Authorization':'Bearer '+admin,'Content-Type':'application/json'})
-    with urllib.request.urlopen(voice_request,timeout=75) as response:voice_audio=response.read(5500001)
-    if not (2048<len(voice_audio)<=5500000 and voice_audio[:4]==b'RIFF'):raise RuntimeError('Female Persian voice did not return a valid sample')
-    report['persian_voice']='fa-IR-DilaraNeural';report['female_voice_probe']=True
+    # Exercise the actual deployed selected-voice adapter, not just an advertised health label.
+    for choice in ('male','female'):
+        voice_request=urllib.request.Request(url+'/api/admin/teacher-preview',data=json.dumps({'voice':choice,'text':'سلام دوستان گرامی. یک سوال داریم. راننده در جاده است.'}).encode(),headers={'Authorization':'Bearer '+admin,'Content-Type':'application/json'})
+        with urllib.request.urlopen(voice_request,timeout=75) as response:voice_audio=response.read(5500001)
+        if not (2048<len(voice_audio)<=5500000 and voice_audio[:4]==b'RIFF'):raise RuntimeError('Selected Persian voice did not return a valid sample')
+    bridge_request=urllib.request.Request(url+'/internal/social-teacher',headers={'X-Teacher-Authorization':bridge})
+    with urllib.request.urlopen(bridge_request,timeout=20) as response:teacher_state=json.load(response)
+    if teacher_state.get('state')!='ready' or teacher_state.get('expectedBot')!='afgsocial_bot':raise RuntimeError('Social teaching queue is not ready')
+    worker_ready=False
+    for attempt in range(24):
+        try:
+            worker_request=urllib.request.Request('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/teacher-health',headers={'X-Project-Authorization':hashlib.sha256(('gapmedia-monitor-v1:'+bot_token).encode()).hexdigest()})
+            with urllib.request.urlopen(worker_request,timeout=15) as response:worker_health=json.load(response)
+            if worker_health.get('version')=='social-teacher-v1':worker_ready=True;break
+        except (OSError,ValueError):pass
+        time.sleep(5)
+    report['social_worker_ready']=worker_ready
+    report['persian_voice']=health.get('persian_voice');report['persian_voice_probe']=True;report['voice_choices_tested']=['male','female'];report['social_teacher_queue_ready']=True
     report.update(status='ready',screen_url=url+'/screen',deployed_at=datetime.now(timezone.utc).isoformat())
     write_report(report)
     control=url+'/control#'+admin

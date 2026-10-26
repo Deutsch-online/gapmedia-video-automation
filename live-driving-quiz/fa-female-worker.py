@@ -1,4 +1,4 @@
-"""Free keyless female Persian synthesis; cached by the private Node adapter."""
+"""Free keyless selectable Persian synthesis; cached by the private Node adapter."""
 import asyncio,base64,io,json,os,ssl,subprocess,sys,wave
 import edge_tts
 from standard_persian import speech_text
@@ -13,7 +13,9 @@ async def render(request):
  rules=[r for r in request.get('rules',[]) if isinstance(r.get('spoken'),str) and pronunciation_key(r.get('word',''))==pronunciation_key(r['spoken'])]
  for start,end,rule in reversed(correction_matches(text,rules)):text=text[:start]+rule['spoken']+text[end:]
  text=speech_text(text);pace=float(request.get('style',{}).get('pace',1.25));rate=max(-30,min(5,round((1.25/pace*.9-1)*100)))
- communicate=edge_tts.Communicate(text,voice='fa-IR-DilaraNeural',rate=f'{rate:+d}%',proxy=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy'))
+ voice=request.get('style',{}).get('voice','fa-IR-FaridNeural')
+ if voice not in ('fa-IR-FaridNeural','fa-IR-DilaraNeural'):raise ValueError('Invalid voice')
+ communicate=edge_tts.Communicate(text,voice=voice,rate=f'{rate:+d}%',pitch='+0Hz',volume='+0%',proxy=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy'))
  parts=[]
  async for item in communicate.stream():
   if item['type']=='audio':parts.append(item['data'])
@@ -30,4 +32,4 @@ for line in sys.stdin:
  try:
   if len(line)>500000:raise ValueError('Oversized input')
   request=json.loads(line);print(json.dumps(asyncio.run(asyncio.wait_for(render(request),40))),flush=True)
- except Exception:print(json.dumps({'id':request.get('id'),'error':'female_persian_unavailable'}),flush=True)
+ except Exception:print(json.dumps({'id':request.get('id'),'error':'persian_voice_unavailable'}),flush=True)

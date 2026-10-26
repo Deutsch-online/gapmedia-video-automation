@@ -1,3 +1,17 @@
+# Current update: selectable voices and Social teaching section
+
+Choose **مرد · فرید** (`fa-IR-FaridNeural`) or **زن · دیلارا** (`fa-IR-DilaraNeural`) under «صدا و خوش‌آمد», then save or listen to the sample. Male is the default when there is no saved choice. Both use complete standard-Persian sentences, the configured calm pace, literal vocabulary and same-word vowel corrections. Pleasantness and every pronunciation still need the owner's listening feedback. German Thorsten is unchanged.
+
+Selection is persisted in private session state. Both in-memory and private disk audio caches include the voice identity; browser question/welcome caches are separated too. Changing voice stops old assistant/welcome audio and clears prepared readings; the next question or «دوباره خواندن سؤال» prepares the selected voice. Auditioning an explicit preview voice does not change the saved lesson choice. Owner samples remain private pronunciation references; they are never played as lesson speech. The online free/keyless endpoint can fail; there is no paid fallback. Cached sentences can be reused without another synthesis request.
+
+The existing **@afgsocial_bot** now has a separate **📚 درس و تلفظ** section (`/teacher`), with **🎬 ویدیو** (`/video`) returning to video commands. `/teacher status` works without changing section. Sections use private per-owner state. Commands cover lesson status, diagnosis, current/next lesson, explanation, navigation, written pronunciation correction and bounded scheduled navigation. Explicit existing credit/social/video slash commands retain their handlers. This is a scoped teaching assistant, not an unrestricted shell or autonomous repository writer.
+
+Cloudflare stays the sole Telegram webhook receiver. It validates the configured private owner, forwards teaching updates using a dedicated hashed bridge credential, and relays persisted job results. HF only has the bridge/callback digests, not the Social bot token. Job acceptance persists before execution; update retries cannot execute a job twice. Queued jobs run with the owner's browser closed while the free server is awake and connected; free hosting is not an always-on guarantee. Owner samples and private control tokens are never sent to the bot history.
+
+The entries below document earlier stages; references to a fixed female-only voice or a required Takrun token are superseded by this section.
+
+---
+
 # Private pronunciation coaching — assistant voice only
 
 Owner policy updated 2026-10-26: owner recordings are examples for pronunciation rehearsal only. Questions, practice and assistant explanations are generated with the native assistant voice. Raw owner words/sentences are never inserted into lesson audio. Previously enabled owner tone-copy preferences are forcibly disabled on load; enabling tone copy through the old endpoint is rejected. The production image no longer installs OpenVoice/Torch or owner tone-copy model weights. Old helper source remains for historical reference, unused by lesson playback.

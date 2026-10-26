@@ -32,6 +32,8 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           npm run prepare:media
           npm test
+      - name: Verify Social teaching section preserves video commands
+        run: node --test worker/test-teacher-section.mjs worker/test-chatbot.mjs worker/test-commands.mjs worker/test-series-assistant.mjs
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
