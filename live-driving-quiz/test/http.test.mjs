@@ -11,11 +11,13 @@ import {request as httpRequest} from 'node:http';
 test('local control requires a token; OBS state hides answers; live mode needs verified gifts',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'driving-quiz-test-')),runtime=join(dir,'runtime.json');const port=32000+Math.floor(Math.random()*20000);
  const nativeWorker=join(dir,'native-worker.mjs');writeFileSync(nativeWorker,`import readline from 'node:readline';for await(const line of readline.createInterface({input:process.stdin})){const r=JSON.parse(line);if(r.operation==='learn'){console.log(JSON.stringify({id:r.id,learned:{spoken:'موتَر',reviewNeeded:false,method:'test-native-rehearsal'}}));continue;}const b=Buffer.alloc(44144);b.write('RIFF');b.writeUInt32LE(b.length-8,4);b.write('WAVE',8);b.write('fmt ',12);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(22050,24);b.writeUInt32LE(44100,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(b.length-44,40);for(let i=44;i<b.length;i+=2)b.writeInt16LE(Math.round(Math.sin(i/15)*3000),i);console.log(JSON.stringify({id:r.id,audio:b.toString('base64'),duration_ms:1000}));}`);
+ writeFileSync(join(dir,'settings.json'),JSON.stringify({narrationLanguage:'fa',joinBubbleVersion:2,joinDisplay:{enabled:true,side:'right',size:96,bottom:100}}));
  const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,QUIZ_TTS_PYTHON:process.execPath,QUIZ_TTS_WORKER:nativeWorker,PORT:String(port),QUIZ_RUNTIME_PATH:runtime,QUIZ_SETTINGS_PATH:join(dir,'settings.json')},stdio:'ignore'});
  try {
   let settings;for(let i=0;i<80;i++){try{settings=JSON.parse(readFileSync(runtime,'utf8'));break;}catch{await delay(100);}}
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
+  const initial=await(await fetch(base+'/api/state')).json();assert.equal(initial.narrationLanguage,'both');assert.equal(initial.joinDisplay.size,160);
   assert.equal((await post('persian-voice',{voice:'bad'})).status,400);
   assert.equal((await fetch(base+'/internal/social-teacher')).status,401);
   assert.equal((await post('persian-voice',{voice:'female'})).status,200);
@@ -85,6 +87,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.equal((await post('gift-style',{basis:'coins',levels:{simple:5,silver:3,gold:4,diamond:5,vip:6}})).status,400);
   assert.equal((await post('activity-display',{side:'free',count:8,top:220})).status,400);
   assert.equal((await post('activity-display',{side:'left',count:11,top:220})).status,400);
+  assert.equal((await post('join-display',{enabled:true,side:'right',size:192,bottom:100})).status,200);
   assert.equal((await post('join-display',{enabled:true,side:'right',size:112,bottom:100})).status,200);assert.equal((await post('activity-display',{side:'left',count:5,top:1200})).status,200);
   assert.equal((await post('activity-display',{side:'left',count:5,top:1201})).status,400);
   assert.equal((await post('join-display',{enabled:true,side:'right',size:64,bottom:100})).status,200);
@@ -95,6 +98,7 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   assert.deepEqual((await(await fetch(base+'/api/state')).json()).activityDisplay,{side:'left',count:5,top:300});
 
   assert.equal((await post('narration-language',{language:'wrong'})).status,400);
+  assert.equal((await post('narration-language',{language:'fa'})).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).narrationLanguage,'both');
   assert.equal((await post('narration-language',{language:'both'})).status,200);
   assert.equal((await post('welcome-settings',{enabled:true,language:'fa'})).status,200);assert.equal((await post('welcome-settings',{enabled:true,language:'wrong'})).status,400);
   assert.equal((await post('simulate-welcome')).status,200);

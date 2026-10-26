@@ -406,9 +406,9 @@
 .welcome-banner p{margin:5px 0;font-size:27px;line-height:1.45;font-weight:750;color:#164431}.welcome-banner p[lang=de]{font-size:24px;color:#213d50}
 
 /* Small glass bubbles travel along the outside edge, clear of the quiz text. */
-.join-toasts{right:0;left:auto;bottom:var(--join-bottom,100px);width:calc(var(--join-size,96px) + 8px);height:1450px;overflow:visible}
+.join-toasts{right:0;left:auto;bottom:var(--join-bottom,100px);width:calc(var(--join-size,160px) + 8px);height:1450px;overflow:visible}
 .join-toasts.join-left{left:0;right:auto}
-.join-toast{right:4px;width:var(--join-size,96px);height:var(--join-size,96px);padding:0;border:0;background:transparent;box-shadow:none;border-radius:50%;backdrop-filter:none;animation:join-bubble-rise 8s linear both}
+.join-toast{right:4px;width:var(--join-size,160px);height:var(--join-size,160px);padding:0;border:0;background:transparent;box-shadow:none;border-radius:50%;backdrop-filter:none;animation:join-bubble-rise 8s linear both}
 .join-left .join-toast{left:4px;right:auto}
 .join-toast .join-portrait{flex:0 0 100%;width:100%;height:100%;border:2px solid #e5ffffbb;background:#d8f7ed33;backdrop-filter:blur(8px);box-shadow:inset 0 0 9px #ffffff77,0 0 12px #a8dce388;font-size:26px}
 .join-portrait:after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 25% 16%,#fff9,transparent 34%);pointer-events:none}

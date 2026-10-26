@@ -2,6 +2,8 @@
 
 > Active update (2026-10-26): choose **male Farid** or **female Dilara** in «صدا و خوش‌آمد». Male is the default. The selection persists across restarts and applies to Persian questions, practice, assistant replies and welcomes. Clips are cached by voice as well as text/style. New speech needs server internet; no paid fallback or owner-recording playback. Use **@afgsocial_bot → /teacher** for the separate lesson/pronunciation section; **/video** returns to the existing video section. Cloudflare retains the existing Telegram webhook. See [TEACHER_VOICE.md](TEACHER_VOICE.md).
 
+Question narration starts in German; bilingual mode then reads Persian. Legacy Persian-only question settings migrate to bilingual mode. Explanations and Persian welcome settings remain separate. New-join bubbles default to 160 canvas pixels, with 144/160/192 options in the panel; old small bubbles are upgraded once and subsequent explicit choices persist.
+
 
 نسخهٔ فعال دارای ۲۰۰ سؤال (۱۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
 

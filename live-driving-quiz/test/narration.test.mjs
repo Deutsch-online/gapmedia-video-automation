@@ -41,7 +41,7 @@ test('repeat reuses fully decoded audio, temporary load error gets one retry',as
 import {WelcomeAnnouncer} from '../public/narration.js';
 test('both languages preload and play in order, never simultaneously; Persian mode requests only native Persian',async()=>{
  const urls=[],{narrator,state,ctx,played}=fixture(async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};});
- narrator.update({...state,narrationLanguage:'both'},ctx);await flush();assert.equal(played.length,1);assert.equal(urls.length,2);assert.match(urls[1],/narration\/fa\//);
+ narrator.update({...state,narrationLanguage:'both'},ctx);await flush();assert.equal(played.length,1);assert.equal(urls.length,2);assert.match(urls[0],/\/narration\/[^/]+\.wav$/);assert.doesNotMatch(urls[0],/\/fa\//);assert.match(urls[1],/narration\/fa\//);
  played[0].onended();assert.equal(played.length,2);played[1].onended();assert.equal(narrator.status,'ready');
  narrator.update({...state,narrationLanguage:'both'},ctx);await flush();assert.equal(played.length,2);
  narrator.update({...state,narrationLanguage:'fa',roundId:'fa-only'},ctx);await flush();assert.equal(played.length,3);assert.equal(urls.length,2,'decoded Persian clip is reused');

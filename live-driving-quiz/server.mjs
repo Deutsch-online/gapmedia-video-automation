@@ -49,7 +49,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0,screenRevision=0;
 let narrationInfo;
-const defaults={persianVoice:'male',presenterIntroAuto:true,presenterDisplay:{enabled:true,width:420},welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={persianVoice:'male',presenterIntroAuto:true,presenterDisplay:{enabled:true,width:420},welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:160,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -75,16 +75,17 @@ if(validGiftStyle(loadedProgress?.giftStyle))settings.giftStyle=loadedProgress.g
 if(Number.isInteger(loadedProgress?.waitSeconds)&&loadedProgress.waitSeconds>=0&&loadedProgress.waitSeconds<=300)settings.waitSeconds=loadedProgress.waitSeconds;
 if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFrames;
 if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
+if(settings.narrationLanguage==='fa'){settings.narrationLanguage='both';settings.welcomeLanguage='fa';}
 if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
 if(['fa','de','both'].includes(loadedProgress?.welcomeLanguage))settings.welcomeLanguage=loadedProgress.welcomeLanguage;
 if(typeof loadedProgress?.presenterIntroAuto==='boolean')settings.presenterIntroAuto=loadedProgress.presenterIntroAuto;
 const validPresenter=value=>value&&typeof value.enabled==='boolean'&&Number.isInteger(value.width)&&value.width>=280&&value.width<=600;
 if(validPresenter(loadedProgress?.presenterDisplay))settings.presenterDisplay=loadedProgress.presenterDisplay;else if(!validPresenter(settings.presenterDisplay))settings.presenterDisplay=defaults.presenterDisplay;
-const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
+const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112,144,160,192].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
 if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
 if(validAssistantSettings(loadedProgress?.assistant))settings.assistant=loadedProgress.assistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
-// The small v1 bubbles are upgraded to a readable default; the panel can still select a smaller size.
-if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBubbleVersion)!==2&&settings.joinDisplay.size<=72)settings.joinDisplay={...settings.joinDisplay,size:96};settings.joinBubbleVersion=2;
+// Upgrade existing small bubbles once; subsequent explicit size choices persist.
+if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBubbleVersion)!==3&&settings.joinDisplay.size<160)settings.joinDisplay={...settings.joinDisplay,size:160};settings.joinBubbleVersion=3;
 let teacher=new TeacherProfile(loadedProgress?.teacherProfile||settings.teacherProfile||{});settings.teacherProfile=teacher.export();
 const teacherFiles=new PrivateTeacherFiles(sessionStore,join(dirname(settingsFile),'.teacher-private'));
 let teacherMutedRound=null;const correctedReadings=new Map();
@@ -103,7 +104,7 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),persianVoice:settings.persianVoice,activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterIntroAuto:settings.presenterIntroAuto,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant,teacherProfile:settings.teacherProfile,teacherAgent:settings.teacherAgent};}
+function progressData(){return {...liveSessions.export(),persianVoice:settings.persianVoice,activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterIntroAuto:settings.presenterIntroAuto,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:3,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant,teacherProfile:settings.teacherProfile,teacherAgent:settings.teacherAgent};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -322,7 +323,7 @@ const server=http.createServer(async(req,res)=>{
   try {
     if(req.method==='GET'&&url.pathname==='/internal/social-teacher'){if(!teacherAgent.authorized(req.headers['x-teacher-authorization']))return json(res,401,{error:'Unauthorized'});return json(res,200,teacherAgent.status());}
     if(req.method==='POST'&&url.pathname==='/internal/social-teacher'){if(!teacherAgent.authorized(req.headers['x-teacher-authorization']))return json(res,401,{error:'Unauthorized'});const update=await body(req);await teacherAgent.receive(update);return json(res,200,{ok:true});}
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,persian_voice:persianVoice(settings.persianVoice).id,persian_voice_choice:settings.persianVoice,persian_speech_mode:'literal_standard_selectable_cached',persian_recordings:quiz.questions.filter(q=>existsSync(join(root,'public/narration/fa',q.id+'.wav'))).length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,persian_voice:persianVoice(settings.persianVoice).id,persian_voice_choice:settings.persianVoice,question_narration_language:settings.narrationLanguage,join_bubble_size:settings.joinDisplay.size,persian_speech_mode:'literal_standard_selectable_cached',persian_recordings:quiz.questions.filter(q=>existsSync(join(root,'public/narration/fa',q.id+'.wav'))).length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
     if(req.method==='GET'&&url.pathname==='/api/demo'){
       const selected=[quiz.questions[0],...quiz.questions.filter(q=>q.video),...quiz.questions.filter(q=>q.id.startsWith('1.3.01')).slice(0,2),...quiz.questions.filter(q=>q.id.startsWith('1.4.40')).slice(0,1)];
       return json(res,200,{label:'Isolated sales demonstration; all participants and gifts are simulated',questions:selected});
@@ -366,7 +367,7 @@ const server=http.createServer(async(req,res)=>{
         if(typeof data.text!=='string'||data.text.length>240)throw Error('دستور مدرس طولانی است.');const command=parseTeacherCommand(data.text,{pending:teacher.pending()});
         if(command.kind==='arm'){teacher.arm();assistant.clear();teacherMutedRound=quiz.round?.id||null;}
         if(command.kind==='text-correction'){const candidate=new TeacherProfile(teacher.export());setLiteralPronunciation(candidate,command.word,command.spoken);await commitTeacher(candidate);}
-        if(command.kind==='setting'){if(command.setting==='persian'){settings.showPersian=command.enabled;settings.narrationLanguage=command.enabled?'fa':'de';}else{settings.assistant.enabled=command.enabled;if(!command.enabled)assistant.clear();}await persistDisplay();}
+        if(command.kind==='setting'){if(command.setting==='persian'){settings.showPersian=command.enabled;settings.narrationLanguage=command.enabled?'both':'de';}else{settings.assistant.enabled=command.enabled;if(!command.enabled)assistant.clear();}await persistDisplay();}
         broadcast();return json(res,200,{ok:true,command,profile:teacher.privateState(),diagnostics:command.kind==='diagnose'?teacherDiagnostics():null,state:publicState()});
       }
       else if(action==='teacher-question-recording-remove'){if(!quiz.questions.some(q=>q.id===data.id))throw Error('سوال مشخص نیست.');const candidate=new TeacherProfile(teacher.export());candidate.removeQuestionRecording(data.id);await commitTeacher(candidate);}
@@ -462,7 +463,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='narration-language'){
         if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');
         if(!['de','fa','both'].includes(data.language))throw Error('زبان نامعتبر است.');
-        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');settings.narrationLanguage=data.language;await persistDisplay();
+        if(['open','watching'].includes(quiz.phase))throw Error('ابتدا سؤال را متوقف کنید.');settings.narrationLanguage=data.language==='fa'?'both':data.language;await persistDisplay();
       }
       else if(action==='welcome-settings'){
         if(!sessionStore.ready)throw Error('ابتدا ذخیره‌سازی را بازیابی کنید.');

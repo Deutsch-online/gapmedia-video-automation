@@ -77,9 +77,9 @@ function showNextJoin(){
  const copy=el('div','join-copy');copy.append(el('strong','',join.name),el('small','','خوش آمدید · Willkommen'));toast.append(portrait,copy);toast.title=join.name+' · خوش آمدید · Willkommen';host.append(toast);
  toast.addEventListener('animationend',()=>toast.remove(),{once:true});setTimeout(()=>toast.remove(),8500);setTimeout(showNextJoin,1600);
 }
-function renderJoins(joins,config={enabled:true,side:"right",size:96,bottom:100}){
+function renderJoins(joins,config={enabled:true,side:"right",size:160,bottom:100}){
  let host=$('joinToasts');if(!host){host=el('div','join-toasts');host.id='joinToasts';host.setAttribute('aria-live','polite');$('show').append(host);}
- host.classList.toggle('join-left',config.side==='left');host.style.setProperty('--join-size',(config.size||96)+'px');host.style.setProperty('--join-bottom',(config.bottom||100)+'px');host.classList.toggle('hidden',config.enabled===false);if(config.enabled===false){joinQueue.length=0;host.replaceChildren();return;}
+ host.classList.toggle('join-left',config.side==='left');host.style.setProperty('--join-size',(config.size||160)+'px');host.style.setProperty('--join-bottom',(config.bottom||100)+'px');host.classList.toggle('hidden',config.enabled===false);if(config.enabled===false){joinQueue.length=0;host.replaceChildren();return;}
  for(const join of joins){if(seenJoins.has(join.key))continue;seenJoins.add(join.key);if(seenJoins.size>1000)seenJoins.delete(seenJoins.values().next().value);if(Date.now()-join.at>9000)continue;joinQueue.push(join);if(joinQueue.length>50)joinQueue.shift();}
  if(!joinPumpRunning)showNextJoin();
 }
