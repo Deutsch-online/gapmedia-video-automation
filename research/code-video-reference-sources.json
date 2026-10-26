@@ -192,7 +192,23 @@
       "reviewed": "2026-10-26: metadata, README, requirements, LICENSE and media workflow source; no live platform extraction tested",
       "reviewed_commit": "c196ba48df72c064811adcb934104c3e6567858b",
       "integration_status": "reference-only; existing faster-whisper requires an adapter; no dependencies or paid services activated",
-      "review_file": "research/video-fetcher-to-markdown-2026-10-26.md"
+      "review_file": "research/video-fetcher-to-markdown-2026-10-26.md",
+      "assessment": {
+        "project_fit": "recommended-research-archive",
+        "application": "Archive permitted German lesson and visual-reference transcripts as searchable Markdown with original URL, creator, language and timestamps. Save notes and adjacent contact-sheet images together in an Obsidian vault or a chosen research directory.",
+        "verified_capabilities": [
+          "README supports --output-dir to write directly into an Obsidian vault; no automatic Obsidian sync or plugin is required.",
+          "fetch_media.py defaults to contact sheets for videos with a video track and known duration up to and including 180 seconds; --frames and --no-frames override this.",
+          "YouTube captions support optional linked timestamps; media transcription uses local Whisper and timestamps."
+        ],
+        "license_findings": "Tool code is MIT. The tool license does not grant rights to redistribute source transcripts, video frames or course material.",
+        "limits": [
+          "No live extraction or Obsidian import tested in this review.",
+          "Contact sheets sample frames; they do not perform OCR, semantic visual analysis or continuous motion review.",
+          "Keep original-language text and machine-transcription provenance; verify quotes against source audio before using them in lessons.",
+          "Integration requires an adapter for the project's existing faster-whisper; no new model or automatic download activated."
+        ]
+      }
     }
   ],
   "production_notes": [
