@@ -1,6 +1,11 @@
 // Reviewed educational notes. Correct choices always come from the current bank,
 // never from a viewer instruction or a guessed interpretation of an image.
 const rules={
+ diagnostics:'در عیب‌یابی، نشانه‌ها را دقیق بررسی کنید. خرابی فرمان، بریک و کمربند به بررسی تخنیکی نیاز دارد؛ با حدس و ادامهٔ سفر خطر ایجاد نکنید.',
+ engine:'سطح مایعات و وضعیت انتقال نیرو را مطابق راهنمای سازنده بررسی کنید. چراغ هشدار و داغ‌شدن انجین را جدی بگیرید.',
+ oil:'نوع و سطح روغن باید مطابق مشخصات سازنده باشد. برای اندازه‌گیری و اضافه‌کردن، روش راهنمای موتر را رعایت کنید.',
+ brakes:'سیستم کمکی جای توجه دریور را نمی‌گیرد. بریک و کروزکنترول محدودیت دارند؛ سرعت و فاصله را خودتان بررسی کنید.',
+ equipment:'تجهیزات نصب‌شده و محدودیت‌های درج‌شده در راهنمای موتر و روی تایر را بررسی کنید.',
  pedestrians:'در نزدیکی عابر پیاده، کودک و ایستگاه اتوبوس، سرعت و فاصله را طوری انتخاب کنید که بتوانید بدون ایجاد خطر توقف کنید. رفتار دیگران را قطعی فرض نکنید.',
  road:'خیس‌بودن، برف و یخ می‌توانند چسبندگی لاستیک را کم و مسافت ترمز را بیشتر کنند. سرعت را با وضعیت واقعی جاده و دید هماهنگ کنید.',
  visibility:'سرعت باید با محدودهٔ دید متناسب باشد. در تاریکی و دید کم، هم دیدن مسیر و هم دیده‌شدن خودروی شما اهمیت دارد.',
@@ -37,7 +42,7 @@ const rules={
  tyres:'فشار باد، وضعیت لاستیک و علامت‌های روی آن را بررسی کنید. چراغ هشدار به بررسی علت نیاز دارد؛ تنها با حدس‌زدن به رانندگی ادامه ندهید.'
 };
 const category={
- '1.1.02':'pedestrians','2.1.02':'pedestrians','1.1.03':'road','2.1.03':'road','1.1.04':'visibility','2.1.04':'visibility','1.1.05':'speed','2.1.05':'speed','1.1.06':'overtake','2.1.06':'overtake','1.1.07':'situations','2.1.07':'situations','1.2.02':'roaduse','2.2.02':'roaduse','1.2.05':'overtake','1.2.06':'passing','1.2.09':'turning','2.2.09':'turning','1.2.10':'entering','1.2.11':'congestion','1.2.12':'parking','2.2.12':'parking','1.2.19':'rail','1.2.20':'bus','1.2.26':'crossing','1.2.34':'accident','1.2.36':'police','1.2.37':'lights','2.2.37':'lights','1.3.01':'priority','1.4.40':'hazards','2.4.40':'hazards','1.4.41':'signs','2.4.41':'signs','1.4.42':'direction','2.4.42':'direction','2.4.43':'direction','2.1.08':'motorway','2.2.18':'motorway','2.1.11':'emotions','2.2.04':'distance','2.2.07':'lanes','2.2.14':'doors','2.2.17':'illumination','2.2.21':'passengers','2.2.38':'emergency','2.5.01':'environment','2.6.02':'documents','2.7.01':'physics','2.7.05':'tyres'};
+ '1.1.02':'pedestrians','2.1.02':'pedestrians','1.1.03':'road','2.1.03':'road','1.1.04':'visibility','2.1.04':'visibility','1.1.05':'speed','2.1.05':'speed','1.1.06':'overtake','2.1.06':'overtake','1.1.07':'situations','2.1.07':'situations','1.2.02':'roaduse','2.2.02':'roaduse','1.2.05':'overtake','1.2.06':'passing','1.2.09':'turning','2.2.09':'turning','1.2.10':'entering','1.2.11':'congestion','1.2.12':'parking','2.2.12':'parking','1.2.19':'rail','1.2.20':'bus','1.2.26':'crossing','1.2.34':'accident','1.2.36':'police','1.2.37':'lights','2.2.37':'lights','1.3.01':'priority','1.4.40':'hazards','2.4.40':'hazards','1.4.41':'signs','2.4.41':'signs','1.4.42':'direction','2.4.42':'direction','2.4.43':'direction','2.1.08':'motorway','2.2.18':'motorway','2.1.11':'emotions','2.2.04':'distance','2.2.07':'lanes','2.2.14':'doors','2.2.17':'illumination','2.2.21':'passengers','2.2.38':'emergency','2.5.01':'environment','2.6.02':'documents','2.7.01':'physics','2.7.05':'tyres','2.7.02':'diagnostics','2.7.03':'engine','2.7.04':'oil','2.7.06':'brakes','2.7.10':'equipment'};
 const questionNotes={
  '1.2.09-021-M':'هنگام خروج از میدان، عابر پیاده و دوچرخه‌سواری که از مسیر خروج شما عبور می‌کنند، اولویت عبور دارند. باید اجازه دهید هر دو عبور کنند؛ بنابراین انتخاب فقط یکی از آن‌ها کافی نیست.',
  '1.1.07-019-M':'بین خط شما و خط گردش، نوار محافظ دوچرخه قرار دارد. تغییر خط را به‌موقع انجام دهید تا روی این نوار متوقف نشوید و مانع دوچرخه‌سواران نشوید. سرعت قدم‌زدن، شرط عمومی عبور از هر نوار محافظ دوچرخه نیست.',
@@ -68,14 +73,17 @@ export const hasPersian=text=>/[\u0600-\u06ff]/.test(text);
 export function teachingNote(q){return rules[category[q.id?.split('-')[0]]]||'ابتدا متن سوال، تصویر و همهٔ گزینه‌ها را بررسی کنید. ممکن است بیش از یک گزینه درست باشد.';}
 export function explainQuestion(q,{reveal=false}={}){
  const note=teachingNote(q);
- if(!reveal)return 'نکتهٔ این بخش: '+note+' پاسخ نهایی پس از پایان زمان سوال توضیح داده می‌شود.';
- const selected=q.correct.map(k=>{const i='ABC'.indexOf(k);return 'گزینهٔ '+(i+1)+': '+q.options[i].fa;});
- return 'پاسخ این سوال، '+selected.join(' همچنین ')+(questionNotes[q.id]?' دلیل این سوال: '+questionNotes[q.id]:' نکتهٔ آموزشی این بخش: '+note)+(q.correct.length>1?' برای پاسخ کامل، همهٔ گزینه‌های درست باید انتخاب شوند.':'');
+ if(!reveal)return 'نکتهٔ این بخش: '+note;
+ const labels=q.correct.map(k=>['یک','دو','سه']['ABC'.indexOf(k)]);
+ const reason=q.detailed_lesson?q.explanation_fa:questionNotes[q.id]||'';
+ return 'گزینهٔ '+labels.join(' و ')+(labels.length>1?' درست‌اند. ':' درست است. ')+reason;
+
 }
 export function answerComment(value,q,{revealed=false}={}){
  const text=cleanComment(value),plain=text.replace(/\u200c/g,' ');
  if(!text||!hasPersian(text)||/^[\s\d۰-۹٠-٩,،.؟?!]+$/.test(text))return null;
  for(const [term,meaning] of glossary)if(text.toLowerCase().includes(term.toLowerCase()))return {kind:'term',text:meaning};
+ if(/نفهمیدم|متوجه نشدم|گیج|سخت است|سخته/.test(plain))return {kind:revealed?'explanation':'hint',text:'نگران نباشید؛ با هم آرام بررسی می‌کنیم. '+explainQuestion(q,{reveal:revealed}),questionBound:true};
  if(/تشریح|توضیح|چرا|دلیل|گزینه|جواب|پاسخ.*درست|نکته/.test(plain))return {kind:revealed?'explanation':'hint',text:explainQuestion(q,{reveal:revealed}),questionBound:true};
  if(/سلام|درود|خسته نباش/.test(plain))return {kind:'greeting',text:'سلام، خوش آمدید. خوشحالیم که همراه ما هستید. با هم، با آرامش سوال‌های رانندگی را تمرین می‌کنیم. پرسش درسی خود را بنویسید.'};
  if(/حق تقدم/.test(plain))return {kind:'lesson',text:rules.priority};

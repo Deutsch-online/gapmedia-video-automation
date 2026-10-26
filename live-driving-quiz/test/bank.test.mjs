@@ -6,11 +6,11 @@ import {validateQuestions,Quiz} from '../quiz.mjs';
 import {bankManifest,loadBankMedia,validateImage} from '../bank-media.mjs';
 const questions=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)));
 test('live deck has source IDs, unchanged imported German/answer keys, and all associated images',()=>{
- assert.equal(validateQuestions(questions).length,bankManifest.question_count);const media=loadBankMedia(questions);assert.equal(media.size,questions.length+(bankManifest.videos||[]).length);
+ assert.equal(validateQuestions(questions).length,bankManifest.question_count);const media=loadBankMedia(questions);assert.equal(media.size,bankManifest.images.length+(bankManifest.videos||[]).length);
  for(const q of questions){
-  const row=bankManifest.images.find(r=>r.question_id===q.id);assert.ok(row);
+  const row=[...bankManifest.images,...(bankManifest.text_questions||[])].find(r=>r.question_id===q.id);assert.ok(row);
   const hash=createHash('sha256').update(JSON.stringify([q.de,q.options.map(o=>o.de),q.correct])).digest('hex');assert.equal(hash,row.text_key_sha256);
-  const quiz=new Quiz([q]);const publicQuestion=quiz.snapshot().question;assert.equal(publicQuestion.correct,undefined);assert.equal(publicQuestion.image,q.image);quiz.start();if(q.video){quiz.round.opened=Date.now()-1;quiz.tick();}quiz.reveal();assert.deepEqual(quiz.snapshot().question.correct,q.correct);
+  const quiz=new Quiz([q]);const publicQuestion=quiz.snapshot().question;assert.equal(publicQuestion.correct,undefined);assert.equal(publicQuestion.image,q.image||null);quiz.start();if(q.video){quiz.round.opened=Date.now()-1;quiz.tick();}quiz.reveal();assert.deepEqual(quiz.snapshot().question.correct,q.correct);
  }
 });
 test('a corrupted image or a mismatched question image cannot enter the live deck',()=>{

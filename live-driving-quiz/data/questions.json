@@ -7825,14 +7825,15 @@
       "C"
     ],
     "explanation_de": "Richtige Antworten: A + B + C",
-    "explanation_fa": "گزینه‌های درست: A + B + C",
+    "explanation_fa": "موتر باربری سبک نسبت به موتر سواری بلندتر است و با بار، مرکز ثقل آن بالاتر می‌رود. در پیچ احتمال واژگونی بیشتر است، باد جانبی اثر بیشتری دارد و باید ارتفاع کل موتر را با ارتفاع مجاز پل یا ورودی مقایسه کنید. هر سه گزینه درست است.",
     "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-161",
     "source_kind": "imported-question-bank",
     "translation_kind": "educational-fa",
     "image": "/media/2_7_01-161.png",
     "image_alt": "Verkehrssituation zur Frage 2.7.01-161",
     "points": 3,
-    "visual": "bank"
+    "visual": "bank",
+    "detailed_lesson": true
   },
   {
     "id": "2.7.05-001",
@@ -7857,14 +7858,16 @@
       "A"
     ],
     "explanation_de": "Richtige Antworten: A",
-    "explanation_fa": "گزینه‌های درست: A",
+    "explanation_fa": "در کد چهاررقمی تاریخ تولید تایر، دو رقم اول هفته و دو رقم آخر سال را نشان می‌دهد. کد 1217 یعنی هفتهٔ دوازدهم سال 2017؛ ماه دوازدهم یا روز اول فبروری نیست. وضعیت و عمر تایر را در کنار عمق آج بررسی کنید.",
     "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-001",
     "source_kind": "imported-question-bank",
     "translation_kind": "educational-fa",
     "image": "/media/2_7_05-001.png",
     "image_alt": "Verkehrssituation zur Frage 2.7.05-001",
     "points": 2,
-    "visual": "bank"
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
   },
   {
     "id": "1.1.02-038-M",
@@ -8607,14 +8610,16 @@
       "B"
     ],
     "explanation_de": "Richtige Antworten: A + B",
-    "explanation_fa": "گزینه‌های درست: A + B",
+    "explanation_fa": "نماد کوه و دانهٔ برف روی این تایر، مناسب‌بودن آن برای شرایط برفیِ تعریف‌شده در آزمون مربوط را نشان می‌دهد. این علامت به معنی الزام استفادهٔ همیشگی از زنجیر تایر نیست. تابلو و وضعیت جاده را جدا بررسی کنید.",
     "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-103",
     "source_kind": "imported-question-bank",
     "translation_kind": "educational-fa",
     "image": "/media/2_7_05-103.png",
     "image_alt": "Verkehrssituation zur Frage 2.7.05-103",
     "points": 3,
-    "visual": "bank"
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
   },
   {
     "id": "1.1.02-040-M",
@@ -9163,14 +9168,16 @@
       "B"
     ],
     "explanation_de": "Richtige Antworten: A + B",
-    "explanation_fa": "گزینه‌های درست: A + B",
+    "explanation_fa": "چراغ کنترل فشار تایر می‌تواند به علت کم‌شدن فشار یا تعویض اخیر چرخ و نیاز به تنظیم دوبارهٔ سیستم روشن شود. فشار واقعی را بررسی و روش راه‌اندازی را طبق دستور سازنده انجام دهید. مهرهٔ شل را این چراغ مستقیماً تشخیص نمی‌دهد؛ بنابراین گزینهٔ سوم درست نیست.",
     "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-107",
     "source_kind": "imported-question-bank",
     "translation_kind": "educational-fa",
     "image": "/media/2_7_05-107.png",
     "image_alt": "Verkehrssituation zur Frage 2.7.05-107",
     "points": 3,
-    "visual": "bank"
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
   },
   {
     "id": "1.1.02-108-B",
@@ -9824,5 +9831,1553 @@
     "image_alt": "Verkehrssituation zur Frage 2.1.06-024-M",
     "points": 4,
     "visual": "bank"
+  },
+  {
+    "id": "2.7.01-102",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Was ändert sich durch das Mitführen eines Wohnanhängers?",
+    "fa": "با وصل‌کردن کاروان به موتر چه چیزی تغییر می‌کند؟",
+    "options": [
+      {
+        "de": "Der Überholweg wird wesentlich länger",
+        "fa": "مسافت لازم برای سبقت بسیار بیشتر می‌شود."
+      },
+      {
+        "de": "Hastige Lenkbewegungen erhöhen die Schleudergefahr",
+        "fa": "حرکت ناگهانی فرمان، خطر لغزیدن و از کنترل خارج‌شدن را بیشتر می‌کند."
+      },
+      {
+        "de": "Der Bremsweg wird wesentlich kürzer",
+        "fa": "مسافت بریک بسیار کوتاه‌تر می‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Führen Sie als Kfz-FahrerIn einen Wohnanhänger mit, so erhöht sich nicht nur die Schleudergefahr, auch Überhol- und Bremsweg werden länger. Das liegt an der zusätzlich zu ziehenden Last und der Zugbewegung des Anhängers.",
+    "explanation_fa": "کاروان وزن و طول مجموعه را بیشتر می‌کند؛ شتاب کمتر می‌شود و برای سبقت فضای بیشتری لازم است. حرکت ناگهانی فرمان می‌تواند کاروان را به نوسان بیندازد. وصل‌کردن کاروان، مسافت بریک را کوتاه نمی‌کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-102",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-103",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Das Lenkrad lässt sich schwerer als normal drehen. Was kann die Ursache dafür sein?",
+    "fa": "فرمان سخت‌تر از حالت عادی می‌چرخد. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Lenkgetriebe defekt",
+        "fa": "جعبهٔ فرمان خراب است."
+      },
+      {
+        "de": "Lenkhilfe ausgefallen",
+        "fa": "کمک‌فرمان از کار افتاده است."
+      },
+      {
+        "de": "Reifenluftdruck zu hoch",
+        "fa": "فشار باد تایر بیش از حد زیاد است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Ist die Lenkung schwergängig, kann ein Defekt am Lenkgetriebe die Ursache dafür sein. Auch der Ausfall der Lenkhilfe, der Servolenkung, kann dazu führen, dass das Lenkrad sich schwerer als normal bewegen lässt. Einen ähnlichen Effekt hat man bei zu niedrigem Reifendruck, nicht aber bei zu hohem.",
+    "explanation_fa": "خرابی جعبهٔ فرمان یا قطع کمک‌فرمان می‌تواند چرخاندن فرمان را سخت کند. فشار باد زیاد، پاسخ این سوال نیست. پیش از ادامهٔ سفر، علت سختی فرمان باید بررسی و عیب برطرف شود.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-103",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/diagnostics.svg"
+  },
+  {
+    "id": "2.7.03-101",
+    "topic": "Verbrennungsmaschine Fluessigkeiten Kraftstoffsystem Elektrische Anlage Zuendung Kraftuebertragung",
+    "de": "Welche Folge kann eine zu geringe Menge Kühlflüssigkeit im Motor haben?",
+    "fa": "کم‌بودن مایع خنک‌کنندهٔ انجین چه پیامدی می‌تواند داشته باشد؟",
+    "options": [
+      {
+        "de": "- zum Motorschaden führen",
+        "fa": "ممکن است به انجین آسیب برسد."
+      },
+      {
+        "de": "- zur Überhitzung des Motors führen",
+        "fa": "ممکن است انجین بیش از حد داغ شود."
+      },
+      {
+        "de": "- zur Erhöhung des Kraftstoffverbrauchs führen",
+        "fa": "ممکن است مصرف سوخت بیشتر شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Eine zu geringe Menge Kühlflüssigkeit kann zu einem Motorschaden führen und sollte stets von dir kontrolliert werden. Eine weitere Folge ist das Überhitzen des Motors. Achte auf ausreichend Kühlflüssigkeit.",
+    "explanation_fa": "مایع خنک‌کننده گرمای انجین را انتقال می‌دهد. کمبود آن می‌تواند باعث داغ‌شدن بیش از حد و آسیب انجین شود. سطح مایع را مطابق دستور سازنده بررسی کنید؛ سرپوش سیستم داغ را باز نکنید. افزایش مصرف سوخت، پاسخ مورد نظر این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.03-verbrennungsmaschine-fluessigkeiten-kraftstoffsystem-elektrische-anlage-zuendung-kraftuebertragung/2.7.03-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/cooling.svg"
+  },
+  {
+    "id": "2.7.04-101",
+    "topic": "Schmier Und Frostschutzmittel",
+    "de": "Wie können Sie den Motorölstand kontrollieren?",
+    "fa": "سطح روغن انجین را چگونه بررسی می‌کنید؟",
+    "options": [
+      {
+        "de": "- Fahrerinformationssystem",
+        "fa": "با سیستم اطلاعات دریور."
+      },
+      {
+        "de": "- Ölmessstab",
+        "fa": "با میلهٔ اندازه‌گیری روغن."
+      },
+      {
+        "de": "- Momentanverbrauchsanzeige",
+        "fa": "با نمایشگر مصرف لحظه‌ای سوخت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Je nach Fahrzeug lässt sich der Motorölstand auf unterschieldiche Weise kontrollieren. Moderne Fahrzeuge können den Ölstand im Infotainmentsystem anzeigen.",
+    "explanation_fa": "بسته به نوع موتر، سطح روغن با میلهٔ اندازه‌گیری یا سیستم الکترونیکی اطلاعات دریور بررسی می‌شود. نمایشگر مصرف لحظه‌ای، مصرف سوخت را نشان می‌دهد و معیار سطح روغن نیست. روش اندازه‌گیری را از راهنمای سازنده دنبال کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.04-schmier-und-frostschutzmittel/2.7.04-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/oil.svg"
+  },
+  {
+    "id": "2.7.05-101",
+    "topic": "Verwendung Und Wartung Von Reifen",
+    "de": "Was ist beim Radwechsel mit einem Wagenheber zu beachten?",
+    "fa": "هنگام تعویض چرخ با جک به چه نکاتی توجه می‌کنید؟",
+    "options": [
+      {
+        "de": "Der Wagenheber darf nur an den vom Fahrzeughersteller festgelegten Aufnahmepunkten angesetzt werden",
+        "fa": "جک را فقط در نقاط تعیین‌شده توسط سازنده قرار می‌دهم."
+      },
+      {
+        "de": "Der Untergrund sollte immer stabil und rutschfest sein",
+        "fa": "سطح زیر جک باید محکم و غیرلغزنده باشد."
+      },
+      {
+        "de": "Der Wagenheber ist immer mittig an der Längsseite des Fahrzeugs anzubringen",
+        "fa": "جک را همیشه وسط پهلوی طولی موتر می‌گذارم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Der Wagenheber darf nur an den vom Fahrzeughersteller festgelegten Aufnahmepunkten angesetzt werden. Machst du das nicht, kann es zu einem Schaden führen. Der Untergrund sollte immer stabil und rutschfest sein.",
+    "explanation_fa": "قرارگرفتن جک در نقطهٔ نامناسب می‌تواند به بدنه آسیب بزند یا باعث افتادن موتر شود. سطح باید محکم و غیرلغزنده باشد. وسط پهلوی موتر، محل عمومی و مجاز برای تمام موترها نیست. قبل از بلندکردن، موتر را در برابر حرکت ناخواسته ایمن کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.06-101",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Was bewirkt ein Antiblockiersystem (ABS)?",
+    "fa": "سیستم ضدقفل بریک، ABS، چه کاری انجام می‌دهد؟",
+    "options": [
+      {
+        "de": "Auch bei glatter Fahrbahn wird das Fahrzeug bestmöglich gebremst",
+        "fa": "حتی در جادهٔ لغزنده، بریک‌گیری موتر به بهترین شکل ممکن انجام می‌شود."
+      },
+      {
+        "de": "Beim Bremsen bleibt die Lenkfähigkeit weitgehend erhalten",
+        "fa": "هنگام بریک‌گیری، توانایی فرمان‌دادن تا حد زیادی حفظ می‌شود."
+      },
+      {
+        "de": "Aquaplaning wird verhindert",
+        "fa": "از شناورشدن تایر روی آب جلوگیری می‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Ein Antiblockiersystem (ABS) bewirkt, dass die Räder eines Fahrzeugs auch dann nicht blockieren, wenn der/die Kfz-FahrerIn eine Vollbremsung durchführt. Das Kfz bleibt zumindest begrenzt lenkfähig und der Bremsweg ändert sich auch auf glatter Fahrbahn nicht. Beim Aquaplaning entsteht im Wesentlichen durch hohe Geschwindigkeiten ein Wasserkeil zwischen der Fahrbahnoberfläche und den Reifen. Das dadurch verursachte Aufschwimmen des Fahrzeugs wird auch durch ABS nicht verhindert.",
+    "explanation_fa": "سیستم ABS فشار بریک را تنظیم می‌کند تا چرخ‌ها قفل نشوند و امکان هدایت موتر تا حد زیادی باقی بماند. این سیستم محدودیت چسبندگی را از بین نمی‌برد و از آب‌لغزی جلوگیری نمی‌کند. در جادهٔ خیس، سرعت و فاصلهٔ ایمن همچنان ضروری است.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.10-101",
+    "topic": "Ausruestung Von Fahrzeugen",
+    "de": "Ein Pkw ist mit Winterreifen (M+S) ausgerüstet. Am Armaturenbrett ist ein Aufkleber \"Mit M+S 160\" angebracht. Was bedeutet das?",
+    "fa": "موتر تایر زمستانی M+S دارد و روی داشبورد برچسب «با M+S، 160» دیده می‌شود. معنایش چیست؟",
+    "options": [
+      {
+        "de": "Man darf höchstens 160 km/h fahren",
+        "fa": "حداکثر سرعت مجاز با این تایرها 160 کیلومتر در ساعت است."
+      },
+      {
+        "de": "Der Aufkleber gilt nicht bei trockener Fahrbahn",
+        "fa": "این برچسب در جادهٔ خشک اعتبار ندارد."
+      },
+      {
+        "de": "Der Aufkleber gilt nicht bei regennasser Fahrbahn",
+        "fa": "این برچسب در جادهٔ باران‌خورده اعتبار ندارد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Sie dürfen bei Fahrten mit diesen Reifen die auf dem Aufkleber angegebene Geschwindigkeit nicht überschreiten, die Reifen sind für höhere Geschwindigkeiten nicht zugelassen. Wenn Sie schneller fahren, könnten die Reifen überhitzen und dadurch beschädigt werden.",
+    "explanation_fa": "برچسب، حد سرعت این تایرها را یادآوری می‌کند؛ این حد با خشک یا خیس‌بودن جاده لغو نمی‌شود. البته محدودیت جاده و شرایط واقعی ممکن است سرعت کمتری لازم کند. این سوال از آرشیو منبع است؛ نوشتهٔ M+S به‌تنهایی تضمین رعایت مقررات فعلی تایر زمستانی آلمان نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.10-ausruestung-von-fahrzeugen/2.7.10-101",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.01-103",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Was ändert sich durch das Mitführen eines zweiachsigen Anhängers hinter einem Pkw?",
+    "fa": "وصل‌کردن تریلر دومحوره به موتر سواری چه تغییری ایجاد می‌کند؟",
+    "options": [
+      {
+        "de": "Beim Abbiegen und in Kurven wird mehr Platz benötigt",
+        "fa": "در گردش و پیچ‌ها فضای بیشتری لازم است."
+      },
+      {
+        "de": "Das Beschleunigungsvermögen nimmt ab",
+        "fa": "توان شتاب‌گیری کمتر می‌شود."
+      },
+      {
+        "de": "Die Fahrstabilität nimmt zu",
+        "fa": "پایداری حرکت بیشتر می‌شود."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Das Gespann aus Pkw und Anhänger benötigt mehr Platz beim Befahren von Kurven sowie beim Abbiegen. Ebenso verändert sich durch die Masse das Beschleunigungsvermögen. Es nimmt deutlich ab.",
+    "explanation_fa": "تریلر طول و وزن مجموعه را بیشتر می‌کند؛ هنگام پیچیدن فضای بیشتری لازم دارید و شتاب‌گیری کندتر می‌شود. داشتن تریلر به‌خودی‌خود پایداری را بیشتر نمی‌کند. مسیر چرخ‌های تریلر را در گردش در نظر بگیرید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-103",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-107",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Die Bremse an Ihrem Pkw wirkt stark einseitig. Welche Folgen können beim Bremsen eintreten?",
+    "fa": "بریک موتر به‌شدت یک‌طرفه عمل می‌کند. هنگام بریک‌گیری چه پیامدی ممکن است رخ دهد؟",
+    "options": [
+      {
+        "de": "Seitliches Ausbrechen des Fahrzeugs",
+        "fa": "موتر ممکن است به یک سمت منحرف شود."
+      },
+      {
+        "de": "Längerer Bremsweg",
+        "fa": "مسافت بریک بیشتر می‌شود."
+      },
+      {
+        "de": "Ausfall des Antiblockiersystems (ABS)",
+        "fa": "سیستم ABS از کار می‌افتد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Wirkt die Bremse am Pkw stark einseitig, hat dies erhebliche negative Auswirken auf das Fahrverhalten des Fahrzeuges. Das Fahrzeug kann seitlich in benachbarte Fahrspuren ausbrechen oder ins Schleudern geraten. Der Bremsweg wird länger. Das ABS bleibt dabei funktionstüchtig.",
+    "explanation_fa": "وقتی نیروی بریک دو طرف برابر نباشد، موتر ممکن است به یک سمت کشیده شود و مسافت توقف افزایش پیدا کند. خرابی ABS نتیجهٔ ضروری این عیب نیست. بریک یک‌طرفه یک مشکل ایمنی است و باید ترمیم شود.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-107",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/diagnostics.svg"
+  },
+  {
+    "id": "2.7.03-102",
+    "topic": "Verbrennungsmaschine Fluessigkeiten Kraftstoffsystem Elektrische Anlage Zuendung Kraftuebertragung",
+    "de": "Sie fahren mit Schrittgeschwindigkeit in einem Stau. Wann ist der Kupplungsverschleiß an Ihrem Kraftfahrzeug mit manuellem Schaltgetriebe am geringsten?",
+    "fa": "در ترافیک با سرعت قدم‌زدن حرکت می‌کنید. در موتر دارای گیربکس دستی، چه زمانی فرسایش کلچ کمتر است؟",
+    "options": [
+      {
+        "de": "- in einem niedrigen Gang möglichst ohne Betätigung der Kupplung fahre",
+        "fa": "تا حد امکان با گیر پایین و بدون فشردن کلچ حرکت کنم."
+      },
+      {
+        "de": "- wiederholt anfahre und anhalte",
+        "fa": "پیوسته حرکت کنم و دوباره توقف کنم."
+      },
+      {
+        "de": "- langsam mit schleifender Kupplung fahre",
+        "fa": "آهسته با کلچ نیمه‌گرفته حرکت کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Kuppeln Sie vollständig ein um die Kupplung nicht unnötig abzunutzen. Wählen Sie sich einen Gang in dem Sie ohne Kupplung und Gas rollen können.",
+    "explanation_fa": "نیمه‌کلچ طولانی، اصطکاک و گرما ایجاد می‌کند و فرسایش را بیشتر می‌سازد. اگر وضعیت ترافیک اجازه دهد، با گیر مناسب و کلچ کاملاً رهاشده حرکت کنید. برای حفظ این روش، فاصلهٔ ایمن را قربانی نکنید و در صورت نیاز توقف کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.03-verbrennungsmaschine-fluessigkeiten-kraftstoffsystem-elektrische-anlage-zuendung-kraftuebertragung/2.7.03-102",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.05-102",
+    "topic": "Verwendung Und Wartung Von Reifen",
+    "de": "Sie müssen ein defektes Rad demontieren. In welcher Reihenfolge sollten Sie vorgehen?",
+    "fa": "می‌خواهید چرخ خراب را باز کنید. ترتیب درست چیست؟",
+    "options": [
+      {
+        "de": "Fahrzeug gegen Wegrollen sichern, Wagenheber ansetzen, Radmuttern lösen, Fahrzeug anheben, Radmuttern herausdrehen",
+        "fa": "موتر را در برابر حرکت ایمن کنم، جک را قرار دهم، مهره‌های چرخ را شل کنم، موتر را بلند کنم و مهره‌ها را کامل باز کنم."
+      },
+      {
+        "de": "Fahrzeug gegen Wegrollen sichern, Wagenheber ansetzen, Fahrzeug anheben, Radmuttern lösen, Radmuttern herausdrehen",
+        "fa": "موتر را ایمن کنم، جک را قرار دهم، موتر را بلند کنم، مهره‌ها را شل کنم و کامل باز کنم."
+      },
+      {
+        "de": "Wagenheber ansetzen, Fahrzeug gegen Wegrollen sichern, Radmuttern lösen, Fahrzeug anheben, Radmuttern herausdrehen",
+        "fa": "جک را قرار دهم، بعد موتر را در برابر حرکت ایمن کنم، مهره‌ها را شل کنم، موتر را بلند کنم و مهره‌ها را کامل باز کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Die richtige Reihenfolge ist: Fahrzeug gegen Wegrollen sichern, Wagenheber ansetzten, Radmuttern lösen, Fahrzeug anheben, Radmuttern herausdrehen.",
+    "explanation_fa": "ابتدا موتر را در برابر حرکت ناخواسته ایمن کنید. جک را در محل تعیین‌شده قرار دهید؛ پیش از بلندشدن چرخ، مهره‌ها را فقط کمی شل کنید. سپس موتر را بلند کنید و مهره‌ها را کامل باز کنید. شل‌کردن اولیه در حالت بلندشده می‌تواند مجموعه را ناپایدار کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-102",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.06-103",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Welche Vorteile bietet ein Antiblockiersystem (ABS)?",
+    "fa": "سیستم ABS چه مزیتی دارد؟",
+    "options": [
+      {
+        "de": "Beim Bremsen wird das Blockieren der Räder verhindert",
+        "fa": "هنگام بریک‌گیری از قفل‌شدن چرخ‌ها جلوگیری می‌کند."
+      },
+      {
+        "de": "Selbst bei starkem Bremsen bleibt die Lenkfähigkeit erhalten",
+        "fa": "حتی در بریک شدید، توانایی فرمان‌دادن حفظ می‌شود."
+      },
+      {
+        "de": "Kurven können wesentlich schneller durchfahren werden",
+        "fa": "می‌توان پیچ‌ها را با سرعت بسیار بیشتر طی کرد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Das Antiblockiersystem (ABS) bietet den Vorteil, dass es beim Bremsen auf nassen oder verschmutzten Strecken ein Blockieren der Räder verhindert. Dazu wird der Bremsdruck in kurzen Intervallen geregelt. Normale Fahreigenschaften werden durch das ABS nicht beeinflusst.",
+    "explanation_fa": "با جلوگیری از قفل‌شدن چرخ‌ها، ABS امکان هدایت موتر را هنگام بریک‌گیری بهتر حفظ می‌کند. این کمک ایمنی، مجوز ورود سریع‌تر به پیچ نیست؛ چسبندگی تایر همچنان محدود است.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-103",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.04-001",
+    "topic": "Schmier Und Frostschutzmittel",
+    "de": "Was sollten Sie beim Nachfüllen von Motoröl beachten?",
+    "fa": "هنگام اضافه‌کردن روغن انجین چه نکاتی را رعایت می‌کنید؟",
+    "options": [
+      {
+        "de": "Ich verwende Motoröl nach der Spezifikation des Fahrzeugherstellers",
+        "fa": "از روغن مطابق مشخصات سازنده استفاده می‌کنم."
+      },
+      {
+        "de": "Ich überschreite den maximalen Füllstand nicht",
+        "fa": "از حد بالای مجاز روغن بیشتر نمی‌ریزم."
+      },
+      {
+        "de": "Ich fülle das Motoröl bei laufendem Motor nach",
+        "fa": "روغن را هنگامی اضافه می‌کنم که انجین روشن است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Da es sehr unterschiedliche Öle gibt, solltest du darauf achten, das das verwendetet Motoröl den Spezifikationen des Herstellers entspricht. Auch solltest auf eine Überschreitung des maximalen Füllstandes vermeiden. Bei laufendem Motor ist falsch.",
+    "explanation_fa": "نوع روغن باید با مشخصات سازنده هماهنگ باشد و سطح آن از علامت حداکثر بالاتر نرود. زیادریختن روغن هم می‌تواند آسیب ایجاد کند. برای اضافه‌کردن روغن، انجین را خاموش کنید و روش و زمان انتظار تعیین‌شده در راهنما را رعایت کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.04-schmier-und-frostschutzmittel/2.7.04-001",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/oil.svg"
+  },
+  {
+    "id": "2.7.01-104",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie fahren mit Ihrem Pkw und Anhänger auf einer Straße mit Gegenverkehr und wollen nach links abbiegen. Was ist beim Wiederanfahren besonders wichtig?",
+    "fa": "با موتر و تریلر در جادهٔ دوطرفه می‌خواهید به چپ بپیچید. هنگام شروع دوبارهٔ حرکت، چه چیزی مهم است؟",
+    "options": [
+      {
+        "de": "An die eigene Zuglänge denken",
+        "fa": "طول کامل موتر و تریلر را در نظر بگیرم."
+      },
+      {
+        "de": "Das geringere Beschleunigungsvermögen berücksichtigen",
+        "fa": "شتاب‌گیری ضعیف‌تر را حساب کنم."
+      },
+      {
+        "de": "Den Gegenverkehr mit der Lichthupe warnen",
+        "fa": "با فلش چراغ، به ترافیک روبه‌رو هشدار بدهم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Mit einem Anhänger haben Sie ein geringeres Beschleunigungsvermögen, eine veränderte Masse und eine größere Gesamtlänge. Dies müssen Sie beim Wiederanfahren berücksichtigen. Der Gegenverkehr darf in diesem Fall nicht durch Einsatz der Lichthupe gewarnt werden.",
+    "explanation_fa": "طول بیشتر و شتاب کمتر یعنی برای عبور کامل از مسیر ترافیک روبه‌رو، زمان و فاصلهٔ بیشتری لازم دارید. تنها وقتی حرکت کنید که فاصلهٔ ایمن کافی باشد. فلش چراغ جای فاصله و حق تقدم را نمی‌گیرد.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-104",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-109",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Das Bremspedal lässt sich bis zum Fahrzeugboden durchtreten. Erst bei mehrmaliger Betätigung wird der Pedalweg kürzer. Was müssen Sie tun?",
+    "fa": "پدال بریک تا کف پایین می‌رود و فقط با چند بار فشردن، مسیر حرکتش کوتاه‌تر می‌شود. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Fahrzeug sofort abstellen",
+        "fa": "موتر را فوراً در محل ایمن متوقف می‌کنم."
+      },
+      {
+        "de": "Bremse reparieren lassen",
+        "fa": "بریک را ترمیم می‌کنم."
+      },
+      {
+        "de": "Bremsflüssigkeit nachfüllen genügt",
+        "fa": "فقط مایع بریک اضافه کنم، کافی است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Lässt sich das Bremspedal bis zum Fahrzeugboden durchtreten und wird der Pedalweg nach mehrmaligem Pumpen/ Durchtreten kürzer, ist Luft in der Bremsanlage. Das bedeutet, dass die Bremse sofort gewartet und repariert werden muss. Eine Weiterfahrt ist nicht möglich. Auch das Nachfüllen der Bremsflüssigkeit schafft keine Abhilfe des Problems.",
+    "explanation_fa": "این حالت نشانهٔ احتمالی نقص جدی سیستم بریک است. موتر را در محل ایمن متوقف کنید و برای بررسی و ترمیم اقدام کنید. ادامهٔ سفر یا صرفاً اضافه‌کردن مایع، ایمنی بریک را تضمین نمی‌کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-109",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 5,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/diagnostics.svg"
+  },
+  {
+    "id": "2.7.05-104",
+    "topic": "Verwendung Und Wartung Von Reifen",
+    "de": "Was müssen Sie beim Fahren mit Winterreifen besonders beachten?",
+    "fa": "با تایر زمستانی به چه نکته‌ای توجه ویژه می‌کنید؟",
+    "options": [
+      {
+        "de": "- die zulässige Höchstgeschwindigkeit für diese Reifen nicht überschreiten",
+        "fa": "از حداکثر سرعت مجاز همان تایر بیشتر نمی‌روم."
+      },
+      {
+        "de": "- nicht schneller als 80 km/h fahren",
+        "fa": "هرگز بیشتر از 80 کیلومتر در ساعت نمی‌روم."
+      },
+      {
+        "de": "- höchstens so schnell fahren wie bei der Nutzung von Schneeketten",
+        "fa": "حداکثر سرعت را همیشه برابر سرعت مجاز با زنجیر تایر می‌گیرم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Mit Winterreifen musst du darauf achten, dass du die zulässige Höchstgeschwindigkeit für die Reifen nicht überschreitest. Diese kannst du im Geschwindigkeitsindex nachsehen.",
+    "explanation_fa": "هر تایر محدودیت سرعت مربوط به خودش را دارد. تایر زمستانی الزاماً حد عمومی 80 کیلومتر در ساعت ندارد و حد آن با زنجیر تایر یکی نیست. محدودیت جاده و وضعیت هوا ممکن است سرعت کمتری لازم کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-104",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.06-104",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Welche Vorteile bietet ein Antiblockiersystem (ABS)?",
+    "fa": "کدام مزیت مربوط به ABS است؟",
+    "options": [
+      {
+        "de": "Starkes Bremsen und gleichzeitiges Ausweichen ist möglich",
+        "fa": "می‌توان هم‌زمان بریک شدید گرفت و مسیر را تغییر داد."
+      },
+      {
+        "de": "Das Durchdrehen der Räder beim Anfahren wird verhindert",
+        "fa": "از هرزگردی چرخ‌ها هنگام شروع حرکت جلوگیری می‌کند."
+      },
+      {
+        "de": "Beim Bremsen in Kurven wird die Kippgefahr vermindert",
+        "fa": "خطر واژگونی در پیچ را کم می‌کند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Ein Antiblockiersystem ist besonders hilfreich bei starken Bremsungen auf nasser oder verschmutzter Fahrbahn. Es wirkt einem möglichen Blockieren der Räder durch Regelung des Bremsdrucks in kurzen Intervallen entgegen. So verhindert es das Ausbrechen des Fahrzeugs aus der Spur. Auf Fahreigenschaften in Kurven hat ABS keine Auswirkungen. Das Durchdrehen der Räder beim Anfahren kann die Antriebsschlupfregelung (ASR) verhindern, nicht ABS.",
+    "explanation_fa": "وظیفهٔ اصلی ABS جلوگیری از قفل‌شدن چرخ در بریک‌گیری است، بنابراین امکان هدایت و دورشدن از مانع بهتر حفظ می‌شود. کنترل هرزگردی هنگام حرکت، وظیفهٔ سیستم دیگری مانند ASR است. ABS را تضمین جلوگیری از واژگونی ندانید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-104",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-105",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie fahren einen Pkw mit einem ungebremsten Anhänger. Es kommt ein längeres, starkes Gefälle. Was ist richtig?",
+    "fa": "با موتر و تریلر بدون بریک مستقل، به سرازیری طولانی و تند می‌رسید. چه کاری درست است؟",
+    "options": [
+      {
+        "de": "Wenn nötig Geschwindigkeit verringern, rechtzeitig niedrigen Gang einlegen, bremsbereit sein",
+        "fa": "در صورت نیاز سرعت را کم کنم، به‌موقع گیر پایین بگذارم و آمادهٔ بریک باشم."
+      },
+      {
+        "de": "Schieben des Anhängers berücksichtigen",
+        "fa": "فشار تریلر به موتر را در نظر بگیرم."
+      },
+      {
+        "de": "Bremse des Pkws durch häufiges Auskuppeln entlasten",
+        "fa": "با فشردن مکرر کلچ، فشار روی بریک موتر را کم کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Verringern Sie die Geschwindigkeit rechtzeitig. Legen Sie einen möglichst niedrigen Gang ein. Die dadurch aktivierte Motorbremse unterstützt die Bremswirkung der Pedalbremsung. Kuppeln Sie auf keinen Fall aus in den Leerlauf. Dadurch würde das Fahrzeug schneller werden.",
+    "explanation_fa": "تریلر بدون بریک در سرازیری به موتر فشار وارد می‌کند. پیش از سرازیری سرعت و گیر مناسب را انتخاب کنید تا از بریک انجین استفاده شود. فشردن کلچ، این اثر را از بین می‌برد و راهی برای سبک‌کردن بار بریک نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-105",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 4,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-114",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Sie fahren bei Dunkelheit mit Abblendlicht. Entgegenkommende blenden auf und ab. Was kann das bedeuten?",
+    "fa": "شب با نور پایین حرکت می‌کنید و موترهای روبه‌رو چراغ می‌زنند. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Die Scheinwerfer Ihres Fahrzeuges können falsch eingestellt sein und blenden",
+        "fa": "چراغ‌های موتر من نادرست تنظیم شده و چشم دیگران را می‌زند."
+      },
+      {
+        "de": "Die Leuchtweitenregelung an Ihrem Fahrzeug ist nicht dem Beladungszustand angepasst",
+        "fa": "تنظیم ارتفاع نور با مقدار بار موتر هماهنگ نیست."
+      },
+      {
+        "de": "Die anderen fordern Sie auf, Fernlicht einzuschalten",
+        "fa": "از من می‌خواهند نور بالا را روشن کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Das Auf- und Abblenden der entgegenkommenden Kfz-FahrerInnen ist ein typisches Zeichen dafür, dass Sie den Gegenverkehr mit ihren Vorderleuchten blenden. Als Ursache hierfür kommen falsch eingestellte Scheinwerfer oder eine dem Beladungszustand nicht entsprechende Einstellung der Leuchtweitenregulierung infrage. Verstehen Sie das Auf- und Abblenden nicht als Aufforderung, das Fernlicht Ihres Kfz einzuschalten.",
+    "explanation_fa": "تنظیم نادرست چراغ یا تغییر زاویهٔ موتر بر اثر بار می‌تواند نور پایین را به چشم دریور روبه‌رو بتاباند. ارتفاع نور را متناسب با بار و دستور سازنده تنظیم کنید. چراغ‌زدن دیگران را درخواست روشن‌کردن نور بالا فرض نکنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-114",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.05-105",
+    "topic": "Verwendung Und Wartung Von Reifen",
+    "de": "Ihr Pkw ist mit Winterreifen ausgerüstet. Welche Bedeutung hat der Geschwindigkeits-Aufkleber „max. 190 km/h“ am Armaturenbrett?",
+    "fa": "موتر تایر زمستانی دارد و روی داشبورد برچسب «حداکثر 190 کیلومتر در ساعت» است. معنایش چیست؟",
+    "options": [
+      {
+        "de": "- darf nicht überschritten werden",
+        "fa": "نباید از این سرعت بیشتر بروم."
+      },
+      {
+        "de": "- gilt nur bei winterlichen Straßenverhältnissen",
+        "fa": "فقط در وضعیت زمستانی جاده اعتبار دارد."
+      },
+      {
+        "de": "- gilt nicht bei trockenen Straßenverhältnissen",
+        "fa": "در جادهٔ خشک اعتبار ندارد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Du darfst die Geschwindigkeit von maximal 190 km/h deiner Winterreifen nicht überschreiten.",
+    "explanation_fa": "این عدد حد سرعت مربوط به تایر نصب‌شده است و در جادهٔ خشک هم معتبر می‌ماند. سرعت مجاز جاده یا شرایط بد می‌تواند کمتر باشد؛ همیشه کمترین محدودیت لازم را رعایت کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-105",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.06-105",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Wann tritt bei einem Anhänger mit Auflaufbremse die Bremswirkung ein?",
+    "fa": "بریک فشاری تریلر چه زمانی عمل می‌کند؟",
+    "options": [
+      {
+        "de": "Beim Auflaufen des Anhängers auf das Zugfahrzeug",
+        "fa": "وقتی تریلر به طرف موتر کشنده فشار وارد می‌کند."
+      },
+      {
+        "de": "Zeitgleich mit der Betätigung des Bremspedals im Zugfahrzeug",
+        "fa": "دقیقاً هم‌زمان با فشردن پدال بریک موتر کشنده."
+      },
+      {
+        "de": "Vor Eintreten der Bremswirkung beim Zugfahrzeug, damit der Zug gestreckt bleibt",
+        "fa": "پیش از شروع بریک موتر کشنده، تا مجموعه کشیده بماند."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Beim Auflaufen des Anhängers auf das Zugfahrzeug tritt bei einem Anhänger mit Auflaufbremse die Bremswirkung ein. Wie der Name nahelegt, wird die Bremse des Anhängers erst ausgelöst, wenn der Anhänger auf das Zugfahrzeug auffährt.",
+    "explanation_fa": "وقتی موتر کشنده سرعت کم می‌کند، تریلر به اتصال فشار می‌آورد و مکانیزم بریک فشاری فعال می‌شود. این بریک فرمان مستقیم و هم‌زمان پدال را مانند سیستم‌های دیگر دریافت نمی‌کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-105",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-107",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Was müssen Sie bei einem Pkw mit Wohnanhänger vor Fahrtbeginn prüfen?",
+    "fa": "پیش از سفر با موتر و کاروان چه چیزهایی را بررسی می‌کنید؟",
+    "options": [
+      {
+        "de": "Ob die Beleuchtungseinrichtung des Anhängers funktioniert",
+        "fa": "چراغ‌های کاروان درست کار می‌کنند."
+      },
+      {
+        "de": "Ob die Sicht nach hinten durch die Rückspiegel ausreicht",
+        "fa": "آینه‌ها دید کافی به عقب می‌دهند."
+      },
+      {
+        "de": "Ob die Mitfahrer im Wohnanhänger die Sicherheitsgurte angelegt haben",
+        "fa": "مسافران داخل کاروان کمربند بسته‌اند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Wohnanhänger schränken die Sicht nach hinten ein. Deswegen müssen Sie vor Fahrtbeginn prüfen, ob die Spiegel eine ausreichende Sicht nach hinten bieten. Außerdem müssen Sie sicherstellen, dass auch die Beleuchtungseinrichtung funktioniert.",
+    "explanation_fa": "چراغ‌های تریلر و دید کافی آینه‌ها باید بررسی شوند. نشستن افراد در کاروانِ در حال کشیده‌شدن مجاز نیست؛ بنابراین بستن کمربند داخل آن، راه‌حل این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-107",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-117",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Die Scheibenwaschanlage funktioniert nicht. Woran kann das liegen?",
+    "fa": "شیشه‌شوی کار نمی‌کند. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Kein Wasser im Vorratsbehälter",
+        "fa": "مخزن آب خالی است."
+      },
+      {
+        "de": "Sicherung defekt",
+        "fa": "فیوز خراب است."
+      },
+      {
+        "de": "Düsen verstopft",
+        "fa": "نازل‌ها مسدود شده‌اند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Wenn die Scheibenwaschanlage nicht funktioniert, kann das entweder an verstopften Düsen liegen oder an einer defekten Sicherung. Es ist jedoch auch möglich, dass sich kein Wasser mehr in dem Vorratsbehälter befindet und die Scheibenwaschanlage deswegen nicht funktioniert.",
+    "explanation_fa": "خالی‌بودن مخزن، قطع‌شدن برق به علت فیوز خراب و بسته‌شدن نازل‌ها هر سه می‌توانند شیشه‌شوی را از کار بیندازند. برای دید ایمن، علت را بررسی کنید و مایع مناسب فصل به کار ببرید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-117",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.05-106",
+    "topic": "Verwendung Und Wartung Von Reifen",
+    "de": "Was ist nach dem Anbau von Winterreifen an Ihrem Pkw zu beachten?",
+    "fa": "پس از نصب تایر زمستانی روی موتر چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Der Reifenfülldruck ist entsprechend den Herstellervorgaben zu überprüfen",
+        "fa": "فشار باد را مطابق دستور سازنده بررسی می‌کنم."
+      },
+      {
+        "de": "Die zulässige Höchstgeschwindigkeit der Reifen ist zu berücksichtigen",
+        "fa": "حداکثر سرعت مجاز تایر را رعایت می‌کنم."
+      },
+      {
+        "de": "Der Luftdruck sollte 0,5 bar niedriger sein als die Herstellervorgabe für Sommerreifen",
+        "fa": "فشار باد را نیم بار کمتر از دستور سازنده برای تایر تابستانی می‌گیرم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Nach dem Anbau von Winterreifen solltest du den Reifendruck der entsprechenden Herstellervorgaben überprüfen und die zulässige Höchstgeschwindigkeit der Reifen berücksichtigen. Diese darf nicht überschritten werden.",
+    "explanation_fa": "مقدار فشار را از راهنمای موتر و متناسب با بار انتخاب کنید و محدودیت سرعت تایر را رعایت کنید. کم‌کردن خودسرانهٔ نیم بار می‌تواند کنترل و دوام تایر را خراب کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.05-verwendung-und-wartung-von-reifen/2.7.05-106",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.06-107",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Wann ist für eine Fahrzeugkombination die Gefahr besonders groß, auf glatter Fahrbahn einzuknicken oder zu schleudern?",
+    "fa": "چه زمانی خطر تاخوردن یا لغزیدن مجموعهٔ موتر و تریلر در جادهٔ لغزنده زیاد است؟",
+    "options": [
+      {
+        "de": "Wenn ruckartig gelenkt wird",
+        "fa": "هنگام فرمان‌دادن ناگهانی."
+      },
+      {
+        "de": "Wenn bei Kurvenfahrten mit der Betriebsbremse mit maximaler Verzögerung gebremst wird",
+        "fa": "هنگام بریک‌گیری با بیشترین شدت در پیچ."
+      },
+      {
+        "de": "Wenn dosiert beschleunigt wird",
+        "fa": "هنگام شتاب‌گیری ملایم و کنترل‌شده."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Bei einer Fahrzeugkombination ist die Gefahr dann besonders groß,  wenn ruckartig gelenkt wird und wenn bei Kurvenfahrten mit der Betriebsbremse mit maximaler Verzögerung gebremst wird.",
+    "explanation_fa": "فرمان ناگهانی و بریک شدید در پیچ، چسبندگی محدود جاده را تحت فشار می‌گذارد و می‌تواند موتر و تریلر را ناپایدار کند. حرکت‌های ملایم و سرعت متناسب، خطر را کمتر می‌سازند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-107",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-108",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie fahren einen Pkw mit voll beladenem Anhänger ohne eigene Bremse. Was ist richtig?",
+    "fa": "تریلر کاملاً پُر و بدون بریک مستقل را با موتر می‌کشید. چه چیزی درست است؟",
+    "options": [
+      {
+        "de": "Der Bremsweg wird länger",
+        "fa": "مسافت بریک بیشتر می‌شود."
+      },
+      {
+        "de": "Der Reaktionsweg wird länger",
+        "fa": "مسافت واکنش بیشتر می‌شود."
+      },
+      {
+        "de": "Der Anhalteweg wird kürzer",
+        "fa": "مسافت توقف کوتاه‌تر می‌شود."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Beachten Sie, dass der voll beladene Anhänger ohne eigene Bremse den Bremsweg und damit auch den Anhalteweg um die jeweilige Anhängelast verlängert. Der Reaktionsweg verändert sich in diesem Fall nicht.",
+    "explanation_fa": "وزن بیشترِ تریلر بدون بریک، بار بیشتری بر بریک موتر وارد می‌کند و مسافت بریک افزایش می‌یابد. در سرعت و زمان واکنش برابر، خودِ تریلر مسافت واکنش را تغییر نمی‌دهد. مسافت توقف هم کوتاه‌تر نمی‌شود.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-108",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-118",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Aus den Düsen der Scheibenwaschanlage kommt zu wenig Wasser. Was kann die Ursache dafür sein?",
+    "fa": "از نازل شیشه‌شوی آب کمی بیرون می‌آید. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Düsen sind teilweise verstopft",
+        "fa": "نازل‌ها تا اندازه‌ای مسدود شده‌اند."
+      },
+      {
+        "de": "Wasserförderpumpe defekt",
+        "fa": "پمپ آب خراب است."
+      },
+      {
+        "de": "Zu viel Wasser im Vorratsbehälter",
+        "fa": "مخزن بیش از حد آب دارد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Die Düsen der Scheibenwaschanlage Ihres Fahrzeugs könnten teilweise verstopft sein, wenn zu wenig Wasser aus ihnen herauskommt. Eventuell ist auch ein Defekt der Wasserförderpumpe die Ursache für die Fehlfunktion der Scheibenwaschanlage. Zu viel Wasser kommt als Ursache für den Fehler nicht in Betracht.",
+    "explanation_fa": "گرفتگی نسبی نازل یا خرابی پمپ می‌تواند مقدار آب خروجی را کم کند. پُربودن مخزن علت مورد نظر نیست. نازل و پمپ را بدون آسیب‌زدن به آن‌ها بررسی کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-118",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.04-002",
+    "topic": "Schmier Und Frostschutzmittel",
+    "de": "Welche Aufgabe hat Motoröl in einem Verbrennungsmotor?",
+    "fa": "روغن در انجین احتراقی چه وظایفی دارد؟",
+    "options": [
+      {
+        "de": "- dem Verschleißschutz",
+        "fa": "جلوگیری از فرسایش."
+      },
+      {
+        "de": "- der Kühlung",
+        "fa": "کمک به خنک‌کردن."
+      },
+      {
+        "de": "- der Reinigung",
+        "fa": "پاک‌سازی."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Motoröl wirkt sich verschieden auf einen Verbrennungsmotor aus. Es dient dem Verschleißschutz, der Kühlung und auch der Reinigung. Achte auf einen ausreichenden Motorölstand.",
+    "explanation_fa": "روغن بین سطوح متحرک لایه ایجاد می‌کند و اصطکاک و فرسایش را کم می‌سازد. همچنین بخشی از گرما و ذرات آلودگی را انتقال می‌دهد. هر سه گزینه درست است؛ سطح و نوع روغن باید مطابق راهنما باشد.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.04-schmier-und-frostschutzmittel/2.7.04-002",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/oil.svg"
+  },
+  {
+    "id": "2.7.01-109",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie wollen an Ihren Pkw einen einachsigen Wohnwagen anhängen. Was müssen Sie prüfen?",
+    "fa": "می‌خواهید کاروان تک‌محوره را به موتر وصل کنید. چه چیزهایی را بررسی می‌کنید؟",
+    "options": [
+      {
+        "de": "Ob die zulässige Anhängelast oder die zulässige Stützlast des Pkws überschritten wird",
+        "fa": "از وزن مجاز تریلر یا بار عمودی مجاز روی اتصال موتر بیشتر نشود."
+      },
+      {
+        "de": "Ob wegen der Breite des Wohnwagens zusätzliche Rückspiegel angebracht werden müssen",
+        "fa": "آیا به علت عرض کاروان، آینهٔ اضافی لازم است."
+      },
+      {
+        "de": "Ob der Wohnwagen für die Beförderung von Personen zugelassen ist",
+        "fa": "آیا کاروان برای حمل افراد مجوز دارد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Der Wohnwagen mindert die Sicht nach hinten. Sie als Kfz-FahrerIn müssen prüfen, ob die Sicht nach hinten durch die vorhandenen Spiegel ausreicht. Gegebenenfalls müssen Sie zusätzliche Spiegel an Ihrem Pkw anbringen. Zugfahrzeug und Anhänger müssen immer aufeinander abgestimmt sein.",
+    "explanation_fa": "وزن مجاز کشش، بار عمودی اتصال و دید کافی آینه‌ها اهمیت دارند. برای سفر نباید داخل کاروانِ در حال کشیده‌شدن مسافر بنشانید. تکیه بر مجوز فرضی حمل افراد، پاسخ درست این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-109",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/trailer.svg"
+  },
+  {
+    "id": "2.7.02-119",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Woran kann es liegen, wenn die Scheibenwischer nicht mehr sauber wischen?",
+    "fa": "برف‌پاک‌کن شیشه را خوب پاک نمی‌کند. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Scheibenwischerblätter sind abgenutzt",
+        "fa": "تیغه‌های برف‌پاک‌کن فرسوده‌اند."
+      },
+      {
+        "de": "Ölfilm auf der Scheibe",
+        "fa": "روی شیشه لایهٔ روغن وجود دارد."
+      },
+      {
+        "de": "Scheibenheizung ist defekt",
+        "fa": "گرم‌کن شیشه خراب است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Wenn die Scheibenwischer nicht mehr sauber wischen, kann das an einem Ölfilm auf der Scheibe liegen. Auch abgenutzte Scheibenwischerblätter können die Funktion des Scheibenwischers beeinträchtigen. Ein Defekt an der Scheibenheizung hat dagegen keine Auswirkungen.",
+    "explanation_fa": "تیغهٔ فرسوده خوب با شیشه تماس نمی‌گیرد و لایهٔ روغن هم رد و تاری ایجاد می‌کند. تیغه‌ها و شیشه را بررسی کنید. خرابی گرم‌کن، علت مورد نظر برای پاک‌نکردن مکانیکی تیغه نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-119",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.04-003",
+    "topic": "Schmier Und Frostschutzmittel",
+    "de": "Wie können Sie den Motorölstand kontrollieren?",
+    "fa": "سطح روغن انجین را با چه چیزی می‌توان بررسی کرد؟",
+    "options": [
+      {
+        "de": "- Schauglas",
+        "fa": "با شیشهٔ نشان‌دهندهٔ سطح روغن."
+      },
+      {
+        "de": "- Ölmessstab",
+        "fa": "با میلهٔ اندازه‌گیری روغن."
+      },
+      {
+        "de": "- Momentanverbrauchsanzeige",
+        "fa": "با نمایشگر مصرف لحظه‌ای سوخت."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Es gibt ein Schauglas an dem der Ölstand abgelesen werden kann. Sonst können Sie es über einen Ölmessstab ablesen.",
+    "explanation_fa": "بسته به ساختمان وسیله، سطح روغن از شیشهٔ بازدید یا میله خوانده می‌شود. نمایشگر مصرف لحظه‌ای، مصرف سوخت را نشان می‌دهد و سطح روغن را اندازه نمی‌گیرد. شیوهٔ دقیق بررسی را از راهنمای سازنده بگیرید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.04-schmier-und-frostschutzmittel/2.7.04-003",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/oil.svg"
+  },
+  {
+    "id": "2.7.01-110",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie wollen mit einem Automatik-Pkw (hydraulischer Wandler) losfahren. Was müssen Sie wissen?",
+    "fa": "می‌خواهید با موتر اتومات دارای مبدل هیدرولیکی حرکت کنید. چه چیزی را باید بدانید؟",
+    "options": [
+      {
+        "de": "Beim Einlegen einer Fahrstufe muss der Pkw in der Regel mit der Betriebsbremse festgehalten werden",
+        "fa": "هنگام انتخاب حالت حرکت، معمولاً باید موتر را با بریک اصلی نگه دارم."
+      },
+      {
+        "de": "Der Wählhebel darf nur bei stehendem Motor betätigt werden",
+        "fa": "اهرم انتخاب را فقط هنگام خاموش‌بودن انجین حرکت بدهم."
+      },
+      {
+        "de": "Die Drehzahl muss wesentlich erhöht werden, damit der Motor nicht abgewürgt wird",
+        "fa": "برای جلوگیری از خاموش‌شدن انجین، دور آن را بسیار زیاد کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Geben Sie als Kfz-FührerIn einem Fahrzeug mit Automatikgetriebe ein „Go“ mit eingelegter Fahrstufe, versucht es, loszufahren. Dies kann nur mit Betätigen der Betriebsbremse verhindert werden. Der Wählhebel kann und darf bei stehenden und laufenden Motor betätigt werden.",
+    "explanation_fa": "موتر اتومات ممکن است با انتخاب حالت حرکت و بدون گازدادن، آرام پیش برود. بنابراین هنگام انتخاب حالت، بریک را مطابق راهنما نگه دارید. خاموش‌کردن انجین یا زیادکردن شدید دور آن، قاعدهٔ درست شروع حرکت نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-110",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.02-120",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Die Scheibenwischer an Ihrem Pkw funktionieren nicht. Was kann die Ursache dafür sein?",
+    "fa": "برف‌پاک‌کن موتر کار نمی‌کند. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Sicherung durchgebrannt",
+        "fa": "فیوز سوخته است."
+      },
+      {
+        "de": "Scheibenwischermotor defekt",
+        "fa": "موتور برف‌پاک‌کن خراب است."
+      },
+      {
+        "de": "Zu viel Wasser in der Scheibenwaschanlage",
+        "fa": "مخزن شیشه‌شوی بیش از حد آب دارد."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Wenn die Scheibenwischer an Ihrem Pkw nicht funktionieren, kann das an einem defekten Motor in der Scheibenwaschanlage liegen. Auch eine durchgebrannte Sicherung kann die Ursache sein. Eine zu große Menge an Wasser ist dagegen nicht für einen Ausfall verantwortlich.",
+    "explanation_fa": "فیوز یا موتور برقی معیوب می‌تواند حرکت برف‌پاک‌کن را متوقف کند. مقدار زیاد آب شیشه‌شوی علت توقف موتور آن نیست. با دید ناکافی به سفر ادامه ندهید و عیب را برطرف کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-120",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.06-110",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Was kann aus einem zu späten Ausschalten der Geschwindigkeitsregelanlage (Tempomat) folgen?",
+    "fa": "دیر خاموش‌کردن کروزکنترول چه پیامدی می‌تواند داشته باشد؟",
+    "options": [
+      {
+        "de": "Ein zu dichtes Auffahren",
+        "fa": "بیش از حد به موتر جلویی نزدیک شوم."
+      },
+      {
+        "de": "Eine zu hohe Kurvengeschwindigkeit",
+        "fa": "با سرعت زیاد وارد پیچ شوم."
+      },
+      {
+        "de": "Eine Überschreitung der zulässigen Höchstgeschwindigkeit",
+        "fa": "از حد سرعت مجاز بیشتر بروم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Aus einem zu späten Ausschalten der Geschwindigkeitsregelanlage (Tempomat) kann ein zu dichtes Auffahren folgen. Eine zu hohe Kurvengeschwindigkeit und aber auch eine Überschreitung der zulässigen Höchstgeschwindigkeit.",
+    "explanation_fa": "کروزکنترول سرعت تنظیم‌شده را دنبال می‌کند؛ اگر تغییر وضعیت را دیر تشخیص دهید، ممکن است فاصله کم یا سرعت برای پیچ و محدودیت تازه زیاد شود. دریور مسئول توجه و مداخلهٔ به‌موقع است.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-110",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-111",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Worauf ist beim Luftdruck der Reifen zu achten?",
+    "fa": "دربارهٔ فشار باد تایرها چه نکاتی مهم است؟",
+    "options": [
+      {
+        "de": "Luftdruck regelmäßig kontrollieren, einschließlich Reserverad",
+        "fa": "فشار را مرتب، از جمله در تایر زاپاس، بررسی کنم."
+      },
+      {
+        "de": "Luftdruck bei starker Beladung nach Betriebsanleitung erhöhen",
+        "fa": "برای بار زیاد، فشار را مطابق راهنمای موتر بالا ببرم."
+      },
+      {
+        "de": "Luftdruck vor längeren Fahrten verringern",
+        "fa": "پیش از سفر طولانی، فشار باد را کم کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Durch die regelmäßige Überprüfung des Luftdrucks der Reifen lassen sich Reifenschäden vermeiden, es lässt sich aber auch Kraftstoff sparen. Sollten Sie Ihr Fahrzeug einer stärkeren Belastung aussetzen, müssen Sie den Reifendruck anpassen.",
+    "explanation_fa": "فشار مناسب به بار و دستور سازنده بستگی دارد. تایر زاپاس را هم در بررسی دوره‌ای فراموش نکنید. کم‌کردن فشار پیش از سفر طولانی، روش عمومی درست نیست و می‌تواند گرما و آسیب تایر را بیشتر کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-111",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.02-121",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Das Schloss eines Sicherheitsgurtes schließt nicht. Was tun Sie?",
+    "fa": "قفل کمربند ایمنی بسته نمی‌شود. چه می‌کنید؟",
+    "options": [
+      {
+        "de": "Schloss instand setzen lassen",
+        "fa": "قفل را ترمیم می‌کنم."
+      },
+      {
+        "de": "Nichts, weil der Sitz mit Airbag ausgerüstet ist",
+        "fa": "چون صندلی ایربگ دارد، کاری لازم نیست."
+      },
+      {
+        "de": "Mit geringer Geschwindigkeit fahren",
+        "fa": "با سرعت کم حرکت می‌کنم."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Wenn das Schloss eines Sicherheitsgurtes nicht richtig schließt, müssen Sie sich zuerst um die Reparatur oder einen Ersatz kümmern. Ohne ordnungsgemäße Funktion der Gurte ist eine Fahrt auch bei geringer Geschwindigkeit nicht erlaubt, da intakte Sicherheitsgurte zwingend vorgeschrieben sind.",
+    "explanation_fa": "کمربند باید درست بسته و قفل شود. ایربگ جای کمربند را نمی‌گیرد و سرعت کم هم نقص آن را جبران نمی‌کند. پیش از استفاده از این صندلی، قفل باید ترمیم شود.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-121",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/diagnostics.svg"
+  },
+  {
+    "id": "2.7.06-111",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Wobei kann Sie eine Geschwindigkeitsregelanlage (Tempomat) unterstützen?",
+    "fa": "کروزکنترول معمولی در چه کاری کمک می‌کند؟",
+    "options": [
+      {
+        "de": "Beim Einhalten einer gleichbleibenden Geschwindigkeit",
+        "fa": "حفظ سرعت تقریباً ثابت."
+      },
+      {
+        "de": "Bei einer energiesparenden Fahrweise",
+        "fa": "رانندگی کم‌مصرف."
+      },
+      {
+        "de": "Beim Einhalten des Mindestabstands zum vorausfahrenden Fahrzeug",
+        "fa": "حفظ حداقل فاصله از موتر جلویی."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Eine Geschwindigkeitsregelanlage (Tempomat) kann dich beim Einhalten einer gleichbleibenden Geschwindigkeit unterstützen. Außerdem bei einer energiesparenden Fahrweise.",
+    "explanation_fa": "کروزکنترول معمولی سرعت تنظیم‌شده را نگه می‌دارد و می‌تواند به حرکت یکنواخت و کم‌مصرف کمک کند. فاصله با موتر جلو را خودش تنظیم نمی‌کند؛ این ویژگی را با کروزکنترول تطبیقی اشتباه نگیرید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-111",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-112",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Sie mussten nach einer Reifenpanne das Notrad montieren. Was ist bei der Weiterfahrt verboten?",
+    "fa": "پس از پنچری، تایر زاپاس موقت نصب کرده‌اید. ادامهٔ کدام کار ممنوع است؟",
+    "options": [
+      {
+        "de": "Schneller als 80 km/h zu fahren",
+        "fa": "حرکت با سرعت بیشتر از 80 کیلومتر در ساعت."
+      },
+      {
+        "de": "Mit dem Notrad länger als unbedingt erforderlich zu fahren",
+        "fa": "استفاده از زاپاس موقت بیشتر از زمان واقعاً لازم."
+      },
+      {
+        "de": "Personen mitzunehmen",
+        "fa": "سوارکردن مسافر."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Noträder haben eine andere Bauform als herkömmliche Räder und sind nur bis zu einer Geschwindigkeit von 80 km/h zugelassen. Sie besitzen schlechtere Laufeigenschaften. Mit ihnen sollte nur so weit wie nötig gefahren werden. Mitnahme von Personen ist nicht eingeschränkt.",
+    "explanation_fa": "زاپاس موقت برای رسیدن محدود و ایمن به محل رفع عیب است. حد سرعت این سوال 80 است؛ برچسب تایر و راهنمای موتر را هم رعایت کنید و تایر اصلی را هرچه زودتر ترمیم یا تعویض کنید. ممنوعیت عمومی حمل مسافر، پاسخ این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-112",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.02-122",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Der Sicherheitsgurt rollt sich nicht mehr automatisch auf. Woran kann das liegen?",
+    "fa": "کمربند ایمنی خودکار جمع نمی‌شود. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Sicherheitsgurt ist verdreht",
+        "fa": "کمربند تاب خورده است."
+      },
+      {
+        "de": "Automatische Aufrollvorrichtung ist defekt",
+        "fa": "سیستم جمع‌کننده خراب است."
+      },
+      {
+        "de": "Sitzverstellung ist defekt",
+        "fa": "سیستم تنظیم صندلی خراب است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Manchmal passiert es beim Abschnallen, dass sich der Gurt verdreht und in der vorgesehenen Führung klemmt. Ein Aufrollen ist dann nicht mehr möglich. Außerdem kann die Vorrichtung als Bauteil einen Defekt aufweisen. Sie muss dann repariert oder ausgetauscht werden.",
+    "explanation_fa": "تاب‌خوردگی می‌تواند مانع جمع‌شدن نوار شود و خرابی جمع‌کننده هم علت ممکن است. تنظیم صندلی، پاسخ این سوال نیست. کمربند باید بدون گیر و به شکل درست روی بدن قرار گیرد؛ عیب را برطرف کنید.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-122",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 2,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.06-112",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Was sollten Sie bei der Benutzung einer adaptiven Geschwindigkeitsregelanlage beachten?",
+    "fa": "هنگام استفاده از کروزکنترول تطبیقی چه نکاتی را رعایت می‌کنید؟",
+    "options": [
+      {
+        "de": "Auch bei längerer Nutzung des Systems muss ich stets aufmerksam bleiben",
+        "fa": "حتی پس از استفادهٔ طولانی، همیشه هوشیار بمانم."
+      },
+      {
+        "de": "Durch starken Regen oder Schneefall kann das System beeinträchtigt werden",
+        "fa": "باران یا برف شدید ممکن است عملکرد سیستم را محدود کند."
+      },
+      {
+        "de": "Durch die Benutzung von Gas- oder Bremspedal kann das System jederzeit übersteuert werden",
+        "fa": "با پدال گاز یا بریک می‌توانم در عملکرد سیستم مداخله کنم."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Bei der Benutzung einer adaptiven Geschwindigkeitsregelanlage solltest du beachten, dass du auch bei längerer Nutzung des Systems stets aufmerksam bleibst. Durch starken Regen oder Schneefall kann das System beeinträchtigt werden und durch die Benutzung von Gas- oder Bremspedal kann das System jederzeit übersteuert werden.",
+    "explanation_fa": "سیستم کمکی جای دریور را نمی‌گیرد. بارش شدید می‌تواند دید حسگرها را محدود کند. همیشه آمادهٔ مداخله باشید و روش لغو یا کنترل سیستم با پدال‌ها را از راهنمای موتر بشناسید. گازدادن، مداخلهٔ موقت است و الزاماً سیستم را خاموش نمی‌کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-112",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-113",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Beim Fahren merken Sie, dass Ihr Pkw stets nach links zieht. Welche Ursachen sind möglich?",
+    "fa": "هنگام حرکت، موتر همیشه به چپ کشیده می‌شود. علت‌های ممکن چیست؟",
+    "options": [
+      {
+        "de": "Zu wenig Luft im linken Vorderreifen",
+        "fa": "فشار باد تایر جلوی چپ کم است."
+      },
+      {
+        "de": "Falsche Radeinstellung an der Vorderachse (Spur, Sturz)",
+        "fa": "زاویهٔ چرخ‌های محور جلو درست تنظیم نیست."
+      },
+      {
+        "de": "Linker Hinterreifen stark abgefahren",
+        "fa": "تایر عقب چپ بسیار ساییده شده است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Zieht Ihr Fahrzeug nach links, sodass Gegenlenken erforderlich ist, könnte zu wenig Luftdruck im linken Reifen die Ursache sein oder eine veränderte Radeinstellung. Ein stark abgefahrener Reifen hat in der Regel nicht diesen Effekt.",
+    "explanation_fa": "اختلاف فشار تایر جلو و تنظیم نادرست زاویهٔ چرخ جلو می‌توانند موتر را به یک سمت بکشند. علت باید تخنیکی بررسی شود. گزینهٔ سوم در کلید این سوال درست نیست؛ این به معنی بی‌خطر بودن تایر ساییده در وضعیت واقعی نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-113",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/tyres.svg"
+  },
+  {
+    "id": "2.7.02-123",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "In Ihrem Pkw flattert das Lenkrad während der Fahrt. Woran kann das liegen?",
+    "fa": "هنگام حرکت، فرمان موتر می‌لرزد. علت چه می‌تواند باشد؟",
+    "options": [
+      {
+        "de": "Räder haben Unwucht",
+        "fa": "چرخ‌ها بالانس نیستند."
+      },
+      {
+        "de": "Stoßdämpfer sind defekt",
+        "fa": "کمک‌فنرها خراب‌اند."
+      },
+      {
+        "de": "Federung ist schadhaft",
+        "fa": "سیستم فنربندی آسیب دیده است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation_de": "Wenn das Lenkrad während der Fahrt flattert, können defekte Stoßdämpfer der Grund dafür sein. Sie unterbinden Vertikalbewegungen der Reifen. Auch Schäden an der Federung können eine mögliche Ursache sein. Den gleichen Flatter-Effekt verursachen auch Räder mit einer Unwucht.",
+    "explanation_fa": "عدم بالانس چرخ و خرابی اجزای تعلیق می‌تواند لرزش را به فرمان منتقل کند. هر سه علت در این سوال ممکن است. لرزش را فقط با محکم‌گرفتن فرمان نادیده نگیرید؛ چرخ و سیستم تعلیق بررسی شود.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-123",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/diagnostics.svg"
+  },
+  {
+    "id": "2.7.06-113",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Welche Funktion übernimmt eine adaptive Geschwindigkeitsregelanlage bei Kraftfahrzeugen?",
+    "fa": "کروزکنترول تطبیقی چه کاری انجام می‌دهد؟",
+    "options": [
+      {
+        "de": "- beschleunigt selbständig bis zu einer vorher eingestellten Geschwindigkeit",
+        "fa": "تا سرعتی که قبلاً تنظیم شده، خودکار شتاب می‌گیرد."
+      },
+      {
+        "de": "- bremst selbständig, wenn das vorausfahrende Fahrzeug langsamer fährt",
+        "fa": "وقتی موتر جلویی آهسته‌تر حرکت کند، خودکار بریک می‌گیرد."
+      },
+      {
+        "de": "- stellt den Abstand automatisch auf den vorgeschriebenen Sicherheitsabstand ein",
+        "fa": "فاصله را خودکار دقیقاً برابر فاصلهٔ ایمنی مقرر در قانون تنظیم می‌کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Die adaptive Geschwindigkeitsregelanlage übernimmt folgende Funktionen: Das System beschleunigt selbständig bis zu einer vorher eingestellten Geschwindigkeit und es bremst selbständig, wenn das vorausfahrende Fahrzeug langsamer fährt.",
+    "explanation_fa": "سیستم می‌تواند تا حد تنظیم‌شده سرعت بگیرد و با نزدیک‌شدن به موتر آهسته‌تر، سرعت را کم کند. اما قانونی و مناسب‌بودن فاصله در همهٔ شرایط تضمین نمی‌شود؛ فاصلهٔ انتخابی و شرایط را خود دریور باید بررسی کند.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-113",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
+  },
+  {
+    "id": "2.7.01-114",
+    "topic": "Fahrbetrieb Fahrphysik Fahrtechnik",
+    "de": "Wozu neigt ein Pkw mit Vorderradantrieb, wenn man in der Kurve zu viel Gas gibt?",
+    "fa": "اگر در پیچ با موتر دیفرانسیل جلو بیش از حد گاز بدهید، موتر چه تمایلی پیدا می‌کند؟",
+    "options": [
+      {
+        "de": "Er neigt dazu, vorne auszubrechen",
+        "fa": "بخش جلوی آن به بیرون پیچ سر می‌خورد."
+      },
+      {
+        "de": "Er neigt zum Übersteuern",
+        "fa": "بیش‌فرمانی پیدا می‌کند."
+      },
+      {
+        "de": "Er neigt dazu, hinten auszubrechen",
+        "fa": "بخش عقب آن به بیرون پیچ سر می‌خورد."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation_de": "Als Kfz-FahrerIn müssen Sie stets damit rechnen, dass Ihr Fahrzeug mit Vorderradantrieb nach vorne ausbricht, wenn Sie in einer Kurve zu viel Gas geben. Ihr Fahrzeug wird eher unter- als übersteuern.",
+    "explanation_fa": "در موتر دیفرانسیل جلو، گاز زیاد در پیچ می‌تواند چسبندگی چرخ جلو را کم کند و موتر مسیر بازتری از فرمان بگیرد؛ این کم‌فرمانی است. بیش‌فرمانی و سرخوردن عقب، پاسخ این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.01-fahrbetrieb-fahrphysik-fahrtechnik/2.7.01-114",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.02-125",
+    "topic": "Maengelerkennung Lokalisierung Von Stoerungen",
+    "de": "Was kann die Ursache für eine übermäßige Abnutzung der Reifen sein?",
+    "fa": "ساییدگی بیش از حد تایر چه علتی می‌تواند داشته باشد؟",
+    "options": [
+      {
+        "de": "Schaden an der Federung",
+        "fa": "سیستم فنربندی آسیب دیده است."
+      },
+      {
+        "de": "Falscher Reifenluftdruck",
+        "fa": "فشار باد تایر نادرست است."
+      },
+      {
+        "de": "Anbau eines Frontspoilers",
+        "fa": "اسپویلر جلو نصب شده است."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Falscher Reifeninnendruck und Schäden an der Federung sind die häufigsten Ursachen von übermäßiger Abnutzung der Reifen. Beim Reifendruck geht es dabei um zu wenig Luftdruck. Dies erhöht den Abrieb. Der Anbau eines Frontspoilers führt nicht zu Reifenschäden.",
+    "explanation_fa": "فشار نادرست سطح تماس و گرمای تایر را تغییر می‌دهد؛ آسیب تعلیق هم می‌تواند بار و تماس چرخ را نامناسب کند. هر دو باعث فرسایش بیشتر می‌شوند. نصب اسپویلر جلو، علت مورد نظر این سوال نیست.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.02-maengelerkennung-lokalisierung-von-stoerungen/2.7.02-125",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true
+  },
+  {
+    "id": "2.7.06-114",
+    "topic": "Bremsanlagen Und Geschwindigkeitsregler",
+    "de": "Welchen Vorteil bringt die Nutzung einer Geschwindigkeitsregelanlage (Tempomat) für den Fahrer eines Kraftfahrzeugs?",
+    "fa": "استفاده از کروزکنترول چه مزیتی برای دریور دارد؟",
+    "options": [
+      {
+        "de": "- hält eine eingestellte Fahrgeschwindigkeit auf ebener Fahrbahn konstant",
+        "fa": "سرعت تنظیم‌شده را در جادهٔ هموار ثابت نگه می‌دارد."
+      },
+      {
+        "de": "- entlastet den Fahrer bei der Fahrzeugbedienung",
+        "fa": "کار دریور در کنترل موتر را سبک‌تر می‌کند."
+      },
+      {
+        "de": "- passt die Geschwindigkeit an die Verkehrsdichte an",
+        "fa": "سرعت را با تراکم ترافیک هماهنگ می‌کند."
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation_de": "Der Tempomat hält eine konstant eingestellte Fahrgeschwindigkeit auf ebener Fahrbahn und entlastet dich bei der Fahrzeugbedienung. Die Verkehrsdichte kann nicht an die Geschwindigkeit angepasst werden.",
+    "explanation_fa": "کروزکنترول معمولی نیاز به نگه‌داشتن پیوستهٔ پدال گاز را کم می‌کند و سرعت را در جادهٔ هموار نگه می‌دارد. هماهنگی خودکار با تراکم ترافیک، ویژگی تضمین‌شدهٔ آن نیست. نظارت و کنترل شرایط همچنان وظیفهٔ دریور است.",
+    "source": "https://www.clickclickdrive.de/fragenkatalog/2.7.-technik/2.7.06-bremsanlagen-und-geschwindigkeitsregler/2.7.06-114",
+    "source_kind": "imported-question-bank",
+    "translation_kind": "educational-fa",
+    "source_media": "none",
+    "points": 3,
+    "visual": "bank",
+    "detailed_lesson": true,
+    "learning_example": "/teaching/abs.svg"
   }
 ]

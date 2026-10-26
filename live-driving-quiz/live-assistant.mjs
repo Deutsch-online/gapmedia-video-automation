@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import {cleanComment,hasPersian,answerComment,explainQuestion,teachingNote} from './teaching.mjs';
 export const ASSISTANT_DEFAULTS={enabled:true,showCaptions:false,readComments:true,replyComments:true,autoExplain:true,thankLikes:true,thankGifts:true,likeThreshold:1,commentGap:8,thankGap:20};
 export function validAssistantSettings(s){return s&&['enabled','showCaptions','readComments','replyComments','autoExplain','thankLikes','thankGifts'].every(k=>typeof s[k]==='boolean')&&Number.isInteger(s.likeThreshold)&&s.likeThreshold>=1&&s.likeThreshold<=1000&&Number.isInteger(s.commentGap)&&s.commentGap>=3&&s.commentGap<=60&&Number.isInteger(s.thankGap)&&s.thankGap>=10&&s.thankGap<=120;}
+export function winnerEncouragement(names,seed=''){const clean=[...new Set(names.map(name=>cleanComment(name,30).replace(/[^\p{L}\p{N}\s\u200c-]/gu,'').trim()).filter(Boolean))].slice(0,24);if(!clean.length)return '';const choices=['آفرین، {names}! خوب دقت کردید.','بسیار عالی، {names}! پاسخ‌تان درست بود.','{names}، آفرین! نکته را درست گرفتید.'];const index=[...String(seed)].reduce((sum,c)=>sum+c.codePointAt(0),0)%choices.length;return ' '+choices[index].replace('{names}',clean.join('، '));}
 const numberOnly=text=>/^[\s\d۰-۹٠-٩,،.؟?!]+$/.test(text);
 const personName=event=>cleanComment(event.user?.nickname||event.user?.displayId||event.user?.uniqueId||'بیننده').slice(0,40);
 const spokenName=name=>/^[\u0600-\u06ff\s\u200c]+$/.test(name)?name.slice(0,30):'دوست گرامی';
@@ -29,13 +30,14 @@ export class LiveAssistant{
   if(!this.enabled()||!hasPersian(text)||numberOnly(text)||/https?:|www\./i.test(String(event.content??event.comment??'')))return {accepted:false,reason:'not_readable'};
   if(msg&&!/^0+$/.test(msg)&&this.seenEvent('comment:'+msg))return {accepted:false,reason:'duplicate'};
   if(this.now()-this.lastComment<config.commentGap*1000)return {accepted:false,reason:'cooldown'};
+  if(this.seenEvent('comment-text:'+q.id+':'+phase+':'+text.toLocaleLowerCase()))return {accepted:false,reason:'duplicate_text'};
   const reply=config.replyComments?answerComment(text,q,{revealed:phase==='revealed'}):null;
   const read=config.readComments?'یکی از دوستان نوشته: '+text.slice(0,160):'';
   if(!read&&!reply)return {accepted:false,reason:'not_relevant'};
   const result=this.enqueue({text:[read,reply?.text].filter(Boolean).join(' '),title:'پاسخ به '+personName(event),kind:reply?'reply':'comment',roundId:reply?.questionBound?roundId:null,requiresReveal:phase==='revealed'&&reply?.questionBound===true,priority:2});
   if(result.accepted)this.lastComment=this.now();return result;
  }
- explain(q,roundId,{revealed=false,owner=false}={}){const existing=revealed&&(this.queue.find(j=>j.kind==='explanation'&&j.roundId===roundId)||this.active?.kind==='explanation'&&this.active?.roundId===roundId&&this.active);if(existing)return {accepted:true,id:existing.id,reused:true};return this.enqueue({text:explainQuestion(q,{reveal:revealed}),title:revealed?'تشریح سوال '+q.id:'نکتهٔ مهم سوال',kind:revealed?'explanation':'hint',roundId,requiresReveal:revealed,priority:owner?0:1,key:owner?null:'explain:'+roundId});}
+ explain(q,roundId,{revealed=false,owner=false,winners=[]}={}){const existing=revealed&&(this.queue.find(j=>j.kind==='explanation'&&j.roundId===roundId)||this.active?.kind==='explanation'&&this.active?.roundId===roundId&&this.active);if(existing)return {accepted:true,id:existing.id,reused:true};return this.enqueue({text:explainQuestion(q,{reveal:revealed})+(revealed?winnerEncouragement(winners,roundId):''),title:revealed?'تشریح سوال '+q.id:'نکتهٔ مهم سوال',kind:revealed?'explanation':'hint',roundId,requiresReveal:revealed,priority:owner?0:1,key:owner?null:'explain:'+roundId});}
  noteSupport(kind,event,{accepted,pending=false}={},total=1){
   const s=this.settings();if(!accepted||pending||!this.enabled()||!(kind==='gift'?s.thankGifts:s.thankLikes)||kind==='like'&&total<s.likeThreshold)return;
   const id=String(event.user?.id??event.user?.userId??'');if(!id)return;

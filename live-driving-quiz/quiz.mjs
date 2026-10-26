@@ -12,7 +12,7 @@ export function validateQuestions(questions) {
     if (q.options?.length!==3 || !q.options.every(o=>o.de?.trim() && o.fa?.trim())) throw Error('Three bilingual options required');
     if (!q.correct?.length || new Set(q.correct).size!==q.correct.length || q.correct.some(k=>!LETTERS.includes(k))) throw Error('Invalid answer key');
     if(q.source_kind==='imported-question-bank'){
-      if(!/^\d+\.\d+\.\d+-\d+(?:-[BM])?$/.test(q.id)||!/^https:\/\/www\.clickclickdrive\.de\/fragenkatalog\//.test(q.source)||!q.source.endsWith('/'+q.id)||!/^\/media\/[0-9A-Za-z_-]+\.png$/.test(q.image)||q.translation_kind!=='educational-fa')throw Error('Imported question provenance or image missing');
+      if(!/^\d+\.\d+\.\d+-\d+(?:-[BM])?$/.test(q.id)||!/^https:\/\/www\.clickclickdrive\.de\/fragenkatalog\//.test(q.source)||!q.source.endsWith('/'+q.id)||!(q.source_media==='none'?!q.image&&!q.video:/^\/media\/[0-9A-Za-z_-]+\.png$/.test(q.image))||q.translation_kind!=='educational-fa')throw Error('Imported question provenance or image missing');
     }else if (!/^https:\/\/www\.gesetze-im-internet\.de\/stvo_2013\/__[0-9]+\.html$/.test(q.source)) throw Error('Official legal source required');
   }
   for(const q of questions)if(q.video&&(!/^\/media\/[0-9A-Za-z_-]+\.mp4$/.test(q.video)||!Number.isInteger(q.video_duration_ms)||q.video_duration_ms<1000||q.video_duration_ms>30000))throw Error('Invalid question video');
@@ -107,7 +107,7 @@ export class Quiz {
     this.tick();
     const q=this.questions[this.index];
     const question={id:q.id,de:q.de,fa:q.fa,options:q.options,topic:q.topic,visual:q.visual,multiple:q.correct.length>1,source_kind:q.source_kind||'authored-practice',image:q.image||null,image_alt:q.image_alt||null,points:q.points||null,video:q.video||null,video_duration_ms:q.video_duration_ms||null};
-    if(this.phase==='revealed') Object.assign(question,{correct:q.correct,explanation_de:q.explanation_de,explanation_fa:q.explanation_fa,source:q.source});
+    if(this.phase==='revealed') Object.assign(question,{correct:q.correct,learning_example:q.learning_example||null,explanation_de:q.explanation_de,explanation_fa:q.explanation_fa,source:q.source});
     const correct=q.correct.slice().sort().join(',');
     const winners=this.phase==='revealed'?[...this.answers.values()].filter(a=>[...a.choices].sort().join(',')===correct):[];
     const winnerOffset=winners.length?Math.floor((this.now()-this.revealedAt)/2200)%Math.ceil(winners.length/6)*6:0;

@@ -15,6 +15,8 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
+  assert.equal((await fetch(base+'/api/admin/technical-lesson')).status,401);
+  const technical=await(await fetch(base+'/api/admin/technical-lesson',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(technical.questions.length,50);assert.ok(technical.questions.every(q=>q.explanation.length>100));
   const teacher=await(await fetch(base+'/api/admin/assistant',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(teacher.settings.enabled,true);assert.equal(teacher.settings.showCaptions,false);
   assert.equal((await post('assistant-settings',{...teacher.settings,commentGap:0})).status,400);
   assert.equal((await post('assistant-explain')).status,400,'viewers and owner cannot reveal keys through lesson speech before reveal');
@@ -97,10 +99,10 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   for(const choice of first.correct)assert.equal((await post('simulate',{choice,name:'آزمایش'})).status,200);
   await post('reveal');state=await(await fetch(base+'/api/state')).json();assert.deepEqual(state.question.correct,first.correct);assert.equal(state.leaderboard[0].score,1);
   assert.equal(state.session.completedTotal,1);assert.equal((await post('select',{id:first.id})).status,400);
-  assert.equal((await post('session-settings',{size:49,allowRepeat:false})).status,400);
+  assert.equal((await post('session-settings',{size:29,allowRepeat:false})).status,400);
   assert.equal((await post('session-settings',{size:50,allowRepeat:true})).status,200);
   assert.equal((await post('new-session')).status,200);
-  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,300);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
+  const groups=await(await fetch(base+'/api/admin/questions',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(groups.questions.length,346);assert.equal(groups.questions.filter(q=>q.completed).length,1);assert.equal(groups.questions.filter(q=>q.planned).length,50);
   assert.equal((await post('simulate-like',{count:1000,name:'fan'})).status,200);
   state=await(await fetch(base+'/api/state')).json();assert.equal(state.supporters[0].tier,'crown');assert.equal(state.supporters[0].likeLabel,'1K');assert.equal(state.supporters[0].userId,undefined);
   assert.equal((await post('simulate-supporter',{coins:500,name:'fan'})).status,200);

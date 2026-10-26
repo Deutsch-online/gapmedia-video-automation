@@ -85,5 +85,10 @@ test('Afghan spoken vocabulary uses Flash and driver without changing German or 
  const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps([m.speech_text('فلش Flash FLASH، رانندهٔ موتر، دریور، رانندگان، خودرو، رانندگی، فلشدار','fa'),m.speech_text('Flash Fahrer','de'),m.PRONUNCIATION_VERSION],ensure_ascii=False))";
  const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));
  assert.equal(out[0],'فْلَش فْلَش فْلَش دْرَیوَرِ موتَر دْرَیوَر دْرَیوَرها موتَر رانندگی فلشدار');
- assert.equal(out[1],'Flash Fahrer');assert.equal(out[2],'fa-dari-v4');
+ assert.equal(out[1],'Flash Fahrer');assert.equal(out[2],'fa-dari-mixed-v5');
+});
+
+test('adjacent bilingual aliases are said once with native German segments while Persian context stays',()=>{
+ const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.speech_segments('سیستم ضدقفل بریک (ABS) به شما کمک می‌کند. حق تقدم (Vorfahrt) را رعایت کنید.','fa'),ensure_ascii=False))";
+ const parts=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.deepEqual(parts.filter(p=>p[0]==='de').map(p=>p[1]),['ABS','Vorfahrt']);assert.doesNotMatch(parts.map(p=>p[1]).join(' '),/سیستم ضدقفل|حق تقدم/);assert.match(parts.map(p=>p[1]).join(' '),/رعایت کنید/);
 });

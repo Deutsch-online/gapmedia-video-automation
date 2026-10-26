@@ -1,3 +1,4 @@
+import {renderPresenter} from './presenter-ui.js';
 import {renderOperator} from './operator-controls.js';
 import {renderMediaViewer} from './media-viewer.js';
 import {renderActivity} from './activity-ui.js';
@@ -20,9 +21,11 @@ function render(s){
   $('show').classList.toggle('answer-comments',s.answerInput==='comments');
   $('show').classList.toggle('revealed',s.phase==='revealed');
   const imported=q.source_kind==='imported-question-bank';$('show').classList.toggle('bank-question',imported);$('show').classList.toggle('watching',s.phase==='watching');
-  $('bankMedia').classList.toggle('hidden',!q.image);$('bankImage').classList.toggle('hidden',Boolean(q.video));$('bankVideo').classList.toggle('hidden',!q.video);
-  const img=$('bankImage');if(q.image&&img.getAttribute('src')!==q.image){$('imageFailure').classList.add('hidden');img.src=q.image;img.alt=q.de||q.id;}
-  $('bankImageLabel').textContent=`${q.id}`;
+  const lessonExample=s.phase==='revealed'&&s.assistant?.active?.kind==='explanation'&&s.assistant.active.roundId===s.roundId?q.learning_example:null;
+  const shownImage=lessonExample||q.image;
+  $('bankMedia').classList.toggle('hidden',!shownImage);$('bankImage').classList.toggle('hidden',Boolean(q.video));$('bankVideo').classList.toggle('hidden',!q.video);
+  const img=$('bankImage');if(shownImage&&img.getAttribute('src')!==shownImage){$('imageFailure').classList.add('hidden');img.src=shownImage;img.alt=q.de||q.id;}
+  $('bankImageLabel').textContent=lessonExample?'Lernskizze · kein Prüfungsbild'+(s.showPersian?' · مثال آموزشی':''):`${q.id}`;
 
   $('modeLabel').textContent=s.mode==='demo'?(s.connection.autoReconnect?'Demo · LIVE nicht verbunden':'Demo'):s.liveReady?(s.answerInput==='comments'?'LIVE · Kommentare':'LIVE · Geschenke'):'Nicht verbunden';
   $('modeLabel').classList.toggle('real',s.mode==='live');
@@ -55,7 +58,7 @@ function render(s){
   const all=s.gifts.ALL;
   $('allGift').classList.toggle('hidden',!q.multiple||s.phase==='revealed'||(s.mode==='live'&&!all?.verified));
   $('allGift').textContent='Alle drei Optionen: A + B + C';
-  $('explainDe').textContent=q.explanation_de||'';$('explainFa').textContent=q.explanation_fa||'';
+  $('explainDe').textContent=q.correct?'Richtige Antworten: '+q.correct.map(k=>'ABC'.indexOf(k)+1).join(' + '):'';$('explainFa').textContent=q.correct?'پاسخ درست: '+q.correct.map(k=>'ABC'.indexOf(k)+1).join(' + '):'';
   if(q.source)$('source').href=q.source;else $('source').removeAttribute('href');
   const labels={watching:'Video ansehen – noch nicht antworten',waiting:'Bereit für die nächste Frage',open:s.mode==='demo'?'Testantwort auswählen':'Jetzt antworten',revealed:'Richtige Antwort',paused:'Pausiert – Antworten deaktiviert'};
   $('phaseLabel').textContent=labels[s.phase]||s.phase;
@@ -63,7 +66,7 @@ function render(s){
   $('lastAnswer').textContent=s.lastAnswer?`${s.lastAnswer.name}: ${s.lastAnswer.choice}`:'Erst nachdenken, dann antworten.';
   $('giftNote').textContent='Antworten gelten nur während der Antwortzeit.';
   const gs=JSON.stringify(s.guests||[]);if(gs!==guestSignature){guestSignature=gs;renderGuests($('guestList'),s.guests||[],{language:'de'});}
-  renderActivity(s);renderCelebration(s);syncVideo();renderMediaViewer(s);renderOperator(s);updateTimer();requestAnimationFrame(adjustBankLayout);
+  renderActivity(s);renderCelebration(s);syncVideo();renderMediaViewer(lessonExample?{...s,question:{...q,image:lessonExample}}:s);renderOperator(s);updateTimer();requestAnimationFrame(()=>{adjustBankLayout();renderPresenter(s);});
 }
 function serverNow(){return state.serverTime+performance.now()-receivedAt;}
 function updateTimer(){if(!state)return;const target=state.phase==='watching'?state.opensAt:state.closesAt;const left=['open','watching'].includes(state.phase)?Math.max(0,Math.ceil((target-serverNow())/1000)):0;

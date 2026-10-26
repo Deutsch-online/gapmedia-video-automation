@@ -34,6 +34,7 @@ export function loadBankMedia(questions){
  const rows=mediaRows(),files=new Map();
  for(const q of questions){
   if(q.source_kind!=='imported-question-bank')continue;
+  if(q.source_media==='none'){const row=bankManifest.text_questions?.find(r=>r.question_id===q.id);const key=JSON.stringify([q.de,q.options.map(o=>o.de),q.correct]);if(!row||q.image||q.video||row.text_key_sha256!==createHash('sha256').update(key).digest('hex'))throw Error('Text question provenance mismatch: '+q.id);continue;}
   const image=rows.find(r=>r.question_id===q.id&&q.image==='/media/'+r.file);if(!image)throw Error('Question/image association missing: '+q.id);
   files.set(q.image,validateImage(readFileSync(join(root,'public/media',image.file)),image));
   if(q.video){const video=rows.find(r=>r.question_id===q.id&&q.video==='/media/'+r.file&&q.video_duration_ms===r.duration_ms);if(!video)throw Error('Question/video association missing: '+q.id);files.set(q.video,validateVideo(readFileSync(join(root,'public/media',video.file)),video));}

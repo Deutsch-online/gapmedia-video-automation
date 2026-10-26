@@ -7,6 +7,7 @@ let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
 let joinDisplayDirty=false;
 let speechLanguageDirty=false,welcomeDirty=false;
 let waitDirty=false,frameDirty=false;
+let presenterDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
 const giftKeys=['A','B','C','ALL'];
@@ -69,7 +70,8 @@ function render(s){
  if(!joinDisplayDirty&&s.joinDisplay){$('joinEnabled').checked=s.joinDisplay.enabled;$('joinSide').value=s.joinDisplay.side;$('joinSize').value=s.joinDisplay.size;$('joinBottom').value=s.joinDisplay.bottom;$('joinBottomValue').textContent=s.joinDisplay.bottom;}
  if(!waitDirty)$('waitSeconds').value=s.waitSeconds??12;
  if(!frameDirty){$('likerFrame').value=s.profileFrames?.liker||'auto';$('gifterFrame').value=s.profileFrames?.gifter||'auto';}
- if(s.session){const q=s.session;
+ if(!presenterDirty&&s.presenterDisplay){$('presenterEnabled').checked=s.presenterDisplay.enabled;$('presenterWidth').value=s.presenterDisplay.width;}
+ if(s.session){const q=s.session;renderLessonFolders(q.lessonFolders);
  const sectionSelect=$('sessionSection');if(sectionSelect.options.length!==q.sections?.length){sectionSelect.replaceChildren(...(q.sections||[]).map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.label+' · '+g.count+' سؤال';o.dataset.count=g.count;return o;}));}
  $('repeatSession').disabled=!q.hasSession;
 if(!sessionDirty){$('sessionSection').value=q.section||'all';$('sessionSize').min=q.minSize;$('sessionSize').value=q.configuredSize;$('sessionSize').max=q.poolTotal;$('allowRepeat').checked=q.allowRepeat;}
@@ -197,3 +199,29 @@ void refreshAssistant();setInterval(()=>{if(!$('panel-assistant').hidden)void re
 
 $('refreshLive').addEventListener('click',()=>api('refresh-screen'));
 $('refreshPanel').addEventListener('click',()=>location.reload());
+
+$('technicalSession').addEventListener('click',async()=>{
+ $('sessionSection').value='technical';$('sessionSize').min=1;$('sessionSize').max=50;$('sessionSize').value=30;sessionDirty=true;
+ if(await saveSession())$('sessionStatus').textContent='جلسهٔ تخنیکی 30 سوالی آماده است. برای اجرای آن، «جلسهٔ جدید» را بزنید. سابقه و اجازهٔ تکرار شما حفظ شده است.';
+});
+$('technicalLesson').addEventListener('click',async()=>{
+ const response=await fetch('/api/admin/technical-lesson',{headers:{Authorization:'Bearer '+token}});if(!response.ok)return;const data=await response.json(),root=$('technicalLessonContent');root.replaceChildren();
+ const intro=document.createElement('p');intro.textContent='مجموعهٔ 50 سوال تخنیکی از آرشیو منبع، با ترجمه و تشریح آموزشی. تصاویر توضیحی، طرح آموزشی‌اند؛ تصویر اصلی آزمون نیستند.';root.append(intro);
+ for(const [i,q] of data.questions.entries()){const card=document.createElement('details'),title=document.createElement('summary');title.textContent=(i+1)+'. '+q.id+' · '+q.fa;card.append(title);
+ const de=document.createElement('p');de.lang='de';de.dir='ltr';de.textContent=q.de;card.append(de);
+ q.options.forEach((o,j)=>{const row=document.createElement('p');row.textContent=(j+1)+'. '+o.de+' — '+o.fa;card.append(row);});
+ const note=document.createElement('p');note.textContent=q.explanation;card.append(note);
+ if(q.example){const image=document.createElement('img');image.src=q.example;image.alt='طرح آموزشی '+q.id;image.style.cssText='width:100%;max-width:600px';card.append(image);}
+ const source=document.createElement('a');source.href=q.source;source.target='_blank';source.rel='noopener noreferrer';source.textContent='منبع اصلی سوال';card.append(source);root.append(card);}
+});
+
+let lessonFolderSignature;
+function renderLessonFolders(data){if(!data)return;const sig=JSON.stringify(data);if(sig===lessonFolderSignature)return;lessonFolderSignature=sig;
+ $('lessonRemainder').textContent=(data.active?'یک جلسه در حال مطالعه است. ':'')+(data.remainder?data.remainder+' سوال تازه برای تکمیل جلسهٔ بعدی باقی است؛ خودکار تکرار نمی‌شود.':'');
+ for(const [key,id] of [['queued','queuedLessons'],['studied','studiedLessons']])$(id).replaceChildren(...data[key].map(row=>{const line=document.createElement('p');line.textContent='جلسهٔ '+row.number+' · '+row.count+' سوال'+(row.technical?' · '+row.technical+' تخنیکی':'');if(key==='studied'){const b=document.createElement('button');b.textContent='مرور همین جلسه';b.addEventListener('click',async()=>{if(await api('pause'))await api('repeat-lesson',{lessonId:row.id});});line.append(' ',b);}return line;}));
+}
+$('planLessons').addEventListener('click',()=>api('plan-lessons'));
+$('nextLesson').addEventListener('click',async()=>{if(await api('pause'))await api('next-lesson');});
+
+for(const id of ['presenterEnabled','presenterWidth'])$(id).addEventListener('input',()=>{presenterDirty=true;});
+$('savePresenter').addEventListener('click',async()=>{const result=await api('presenter-display',{enabled:$('presenterEnabled').checked,width:Number($('presenterWidth').value)});if(result){presenterDirty=false;render(result.state);}});

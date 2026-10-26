@@ -432,3 +432,13 @@ The panel's global refresh buttons reload either the display sources via an
 owner-authenticated revision broadcast, or the panel itself. Refreshing the
 display does not reset the current question, session progress, answers or scores.
 Owner Browser-source access is retained in session storage across a reload.
+
+### Thirty-question lesson programme and technical teaching
+
+The owner panel groups upcoming lessons and studied lessons separately. Each new queued lesson has exactly 30 unread source questions, prioritising the technical questions. A short remainder is shown explicitly; it is never filled with repeated questions. Progress and both folders use the existing private Dataset. Starting a queued lesson disables automatic repetition. Archived lessons can be reviewed deliberately. Existing question completion history is retained; old sessions whose individual plans were never recorded cannot be reconstructed.
+
+The bank contains 346 archived source-ID questions: 300 with verified original images and 46 genuinely text-only questions. Fifty technical questions have specific Persian educational explanations. Six original SVG teaching sketches illustrate relevant explanations after reveal; they are labelled as teaching sketches and never substituted for missing examination images. The complete technical booklet is owner-only in the panel. This is an archived bank, not a claim of a complete or current official examination catalogue.
+
+Question WAVs and live assistant WAVs share Afghan vocabulary/pronunciation rules. Reviewed adjacent Persian/German aliases are spoken once; Latin German terms use the native German voice inside the same buffered WAV. The base Persian voice is still the pinned Persian Amir model, not a verified Dari voice or the owner's cloned voice. Cloning requires a separately supplied owner voice recording; the repository has `ai-cast/omnivoice-say.py`, but no clone is activated or paid provider used here.
+
+The studio portrait is a static image requested by the owner, shown below the answers with a private size/visibility setting. It automatically hides if there is insufficient room rather than covering answer choices. Lip-sync, blinking and facial animation are not claimed by this static display. No unrelated speaking loop is played. External face/audio upload for animation remains subject to the owner's specific permission; no upload is triggered by the app or deployment.

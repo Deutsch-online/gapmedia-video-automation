@@ -4,10 +4,10 @@ import {QuizSessions} from '../sessions.mjs';
 import {SessionStore} from '../session-store.mjs';
 const ids=Array.from({length:100},(_,i)=>'q'+i),opts={shuffle:ids=>[...ids],now:()=>12345};
 test('50-question sessions finish without cycling; completed questions survive reload and are excluded',()=>{
- const s=new QuizSessions(ids,{},opts);assert.throws(()=>s.configure(49,false));assert.equal(s.create(),'q0');
+ const s=new QuizSessions(ids,{},opts);assert.throws(()=>s.configure(29,false));s.configure(50,false);assert.equal(s.create(),'q0');
  for(let i=0;i<50;i++){assert.equal(s.current(),'q'+i);s.complete(s.current());s.next();}
  assert.equal(s.current(),null);assert.equal(s.summary().finished,true);assert.equal(s.summary().done,50);
- const restored=new QuizSessions(ids,JSON.parse(JSON.stringify(s.export())),opts);assert.equal(restored.create(),'q50');assert.equal(restored.session.ids.length,50);assert.equal(new Set(restored.session.ids).size,50);
+ const restored=new QuizSessions(ids,JSON.parse(JSON.stringify(s.export())),opts);restored.configure(50,false);assert.equal(restored.create(),'q50');assert.equal(restored.session.ids.length,50);assert.equal(new Set(restored.session.ids).size,50);
  for(let i=0;i<50;i++){restored.complete(restored.current());restored.next();}
  assert.throws(()=>restored.create(),/0/);restored.configure(75,true);restored.create();assert.equal(restored.session.ids.length,75);assert.equal(new Set(restored.session.ids).size,75);
 });
@@ -42,4 +42,13 @@ test('source sections constrain new sessions, persist and can replay exact compl
  s.repeat();assert.notEqual(s.session.id,sessionId);assert.deepEqual(s.session.ids,plan);assert.equal(s.summary().done,0);assert.equal(s.allowRepeat,false);assert.equal(s.current(),plan[0]);assert.equal(Object.keys(s.completed).length,7);
  const restored=new QuizSessions(questions.map(q=>q.id),s.export(),{...opts,groups});assert.equal(restored.size,7);assert.equal(restored.section,'1.2.09');assert.deepEqual(restored.session.ids,plan);
  restored.configure(50,false,'all');restored.create();assert.equal(restored.session.ids.length,50);assert.ok(restored.session.ids.every(id=>!plan.includes(id)));
+});
+
+test('30-question lesson folders persist order, exclude studied questions, and replay only by explicit selection',()=>{
+ const s=new QuizSessions(ids,{},opts);assert.equal(s.size,30);s.refreshLessons();assert.deepEqual(s.lessonFolders().queued.map(row=>row.count),[30,30,30]);assert.equal(s.lessonFolders().remainder,10);
+ assert.equal(s.nextLesson(),'q0');const plan=[...s.session.ids];assert.equal(s.session.ids.length,30);
+ for(let i=0;i<30;i++){s.complete(s.current());s.next();}
+ assert.equal(s.lessonFolders().studied.length,1);assert.equal(s.lessonFolders().queued.length,2);
+ const restored=new QuizSessions(ids,JSON.parse(JSON.stringify(s.export())),opts);assert.deepEqual(restored.lessonPlan,s.lessonPlan);assert.equal(restored.nextLesson(),'q30');assert.ok(restored.session.ids.every(id=>!plan.includes(id)));
+ const archived=restored.lessonFolders().studied[0];assert.equal(restored.replayLesson(archived.id),'q0');assert.deepEqual(restored.session.ids,plan);assert.equal(restored.allowRepeat,false);
 });

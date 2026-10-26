@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 export function narrationMetadata(root,questions){
  const path=join(root,'public/narration/manifest.json');if(!existsSync(path))return null;
  const meta=JSON.parse(readFileSync(path,'utf8'));
- if(meta.pronunciation_version!=='fa-dari-v4'||meta.persian_length_scale!==1.25)throw Error('Persian pronunciation needs regeneration');
+ if(meta.pronunciation_version!=='fa-dari-mixed-v5'||meta.persian_length_scale!==1.25)throw Error('Persian pronunciation needs regeneration');
  if(meta.engine!=='piper-1.3.0'||meta.voice!=='de_DE-thorsten-medium'||meta.persian_voice!=='fa_IR-amir-medium')throw Error('Unknown narration voice');
  const valid=(row,text)=>row?.text_sha256===createHash('sha256').update(text).digest('hex')&&Number.isInteger(row.duration_ms)&&row.duration_ms>=400;
  for(const q of questions)for(const [language,key] of [['de','questions'],['fa','persian_questions']])if(!valid(meta[key]?.[q.id],q[language]))throw Error('Question audio is stale: '+q.id+' '+language);

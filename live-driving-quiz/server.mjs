@@ -20,7 +20,7 @@ import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
 import {LiveSpeech} from './live-speech.mjs';
 import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
-import {answerComment,teachingNote} from './teaching.mjs';
+import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
 import {WelcomeCycle} from './welcome.mjs';
 import {profileAvatar} from './gifts.mjs';
 import {narrationMetadata,narrationDuration} from './narration-metadata.mjs';
@@ -38,7 +38,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0,screenRevision=0;
 let narrationInfo;
-const defaults={welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={presenterDisplay:{enabled:true,width:420},welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -64,6 +64,8 @@ if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFr
 if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
 if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
 if(['fa','de','both'].includes(loadedProgress?.welcomeLanguage))settings.welcomeLanguage=loadedProgress.welcomeLanguage;
+const validPresenter=value=>value&&typeof value.enabled==='boolean'&&Number.isInteger(value.width)&&value.width>=280&&value.width<=600;
+if(validPresenter(loadedProgress?.presenterDisplay))settings.presenterDisplay=loadedProgress.presenterDisplay;else if(!validPresenter(settings.presenterDisplay))settings.presenterDisplay=defaults.presenterDisplay;
 const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
 if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
 if(validAssistantSettings(loadedProgress?.assistant))settings.assistant=loadedProgress.assistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
@@ -78,11 +80,12 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
-function recordCompleted(){if(quiz.phase==='revealed'&&quiz.round?.id!==completedRound){completedRound=quiz.round?.id;sessions().complete(quiz.questions[quiz.index].id);persistSession();if(settings.assistant.enabled&&settings.assistant.autoExplain)assistant.explain(quiz.questions[quiz.index],quiz.round.id,{revealed:true});}}
+function winnerNames(){const key=quiz.questions[quiz.index].correct.slice().sort().join(',');return [...quiz.answers.values()].filter(a=>[...a.choices].sort().join(',')===key).map(a=>a.name);}
+function recordCompleted(){if(quiz.phase==='revealed'&&quiz.round?.id!==completedRound){completedRound=quiz.round?.id;sessions().complete(quiz.questions[quiz.index].id);persistSession();if(settings.assistant.enabled&&settings.assistant.autoExplain)assistant.explain(quiz.questions[quiz.index],quiz.round.id,{revealed:true,winners:winnerNames()});}}
 async function nextRound({generation=roundControlGeneration}={}){recordCompleted();await flushSession();checkRoundGeneration(generation);const id=sessions().next();persistSession();await flushSession();checkRoundGeneration(generation);advanceAt=null;if(!id){autoplay=false;return false;}quiz.select(id);return true;}
 
 const guests=new GuestSupport(settings.guests||[]);
@@ -116,7 +119,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -240,8 +243,10 @@ async function body(req) {
   return JSON.parse(text||'{}');
 }
 narrationInfo=narrationMetadata(root,quiz.questions);
-const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2','.png':'image/png'};
+const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'};
 const assets=new Map([['/','screen.html'],['/demo','sales.html'],['/rights','rights.html'],['/sales.css','sales.css'],['/sales.js','sales.js'],['/sales-preview.js','sales-preview.js'],['/media-viewer.js','media-viewer.js'],['/operator-controls.js','operator-controls.js'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/activity-ui.js','activity-ui.js'],['/rings.js','rings.js'],['/frames/fire.png','frames/fire.png'],['/frames/gold.png','frames/gold.png'],['/frames/ice.png','frames/ice.png'],['/narration.js','narration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
+for(const name of ['diagnostics','cooling','oil','tyres','abs','trailer'])assets.set('/teaching/'+name+'.svg','teaching/'+name+'.svg');
+assets.set('/presenter/owner-studio.webp','presenter/owner-studio.webp');assets.set('/presenter-ui.js','presenter-ui.js');
 function json(res,status,data) {res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -258,6 +263,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
       if(req.method==='GET'&&url.pathname==='/api/admin/assistant')return json(res,200,{settings:settings.assistant,...assistant.status(),note:teachingNote(quiz.questions[quiz.index]),source:quiz.questions[quiz.index].source});
+      if(req.method==='GET'&&url.pathname==='/api/admin/technical-lesson')return json(res,200,{questions:quiz.questions.filter(q=>q.id.startsWith('2.7.')).map(q=>({id:q.id,de:q.de,fa:q.fa,options:q.options,explanation:explainQuestion(q,{reveal:true}),example:q.learning_example,source:q.source}))});
       if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{session:sessions().summary(),questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video),completed:Boolean(sessions().completed[q.id]),planned:sessions().session?.ids.includes(q.id)||false}))});
       if(req.method==='GET'&&url.pathname==='/api/admin/gift-events')return json(res,200,{events:giftDisplayEvents,traffic});
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
@@ -274,7 +280,7 @@ const server=http.createServer(async(req,res)=>{
         if(typeof data.text!=='string'||data.text.length>240)throw Error('پرسش کوتاه فارسی وارد کنید.');const response=answerComment(data.text,quiz.questions[quiz.index],{revealed:quiz.phase==='revealed'});if(!response)throw Error('پرسش را دربارهٔ سوال جاری یا یک اصطلاح رانندگی بنویسید.');const result=assistant.enqueue({text:response.text,title:'پاسخ دستیار به مدرس',kind:'reply',priority:0,roundId:response.questionBound?quiz.round?.id:null,requiresReveal:quiz.phase==='revealed'&&response.questionBound===true});if(!result.accepted)throw Error('صف دستیار در دسترس نیست.');
       }
       else if(action==='assistant-hint'||action==='assistant-explain'){
-        if(action==='assistant-explain'&&quiz.phase!=='revealed')throw Error('ابتدا پاسخ سوال را نمایش دهید.');const result=assistant.explain(quiz.questions[quiz.index],quiz.round?.id,{revealed:action==='assistant-explain',owner:true});if(!result.accepted)throw Error('صف دستیار در دسترس نیست.');
+        if(action==='assistant-explain'&&quiz.phase!=='revealed')throw Error('ابتدا پاسخ سوال را نمایش دهید.');const result=assistant.explain(quiz.questions[quiz.index],quiz.round?.id,{revealed:action==='assistant-explain',owner:true,winners:winnerNames()});if(!result.accepted)throw Error('صف دستیار در دسترس نیست.');
       }
       else if(action==='assistant-stop'){assistant.clear();liveVoice.close();}
       else if(action==='assistant-test-comment'){
@@ -290,11 +296,13 @@ const server=http.createServer(async(req,res)=>{
         const guest=guests.guests.find(g=>g.key===data.key);if(!guest?.userId)throw Error('شناسهٔ عددی مهمان برای آزمایش لازم است.');
         const result=guests.gift({receiverUserId:guest.userId,giftId:'demo-guest-gift',giftName:'Testgeschenk',diamondCount:500,repeatCount:1,user:{id:'demo-donor',nickname:'حامی آزمایشی'},common:{msgId:randomUUID(),createTime:Date.now()}});if(!result.accepted)throw Error(result.reason);
       }
+      else if(action==='plan-lessons'){sessions().refreshLessons();persistSession();await flushSession();}
+      else if(action==='presenter-display'){const display={enabled:data.enabled,width:Number(data.width)};if(!validPresenter(display))throw Error('اندازهٔ تصویر باید بین 280 و 600 باشد.');settings.presenterDisplay=display;await persistDisplay();}
       else if(action==='session-settings'){sessions().configure(Number(data.size),data.allowRepeat,data.section||"all");persistSession();await flushSession();}
       else if(action==='retry-session-save'){if(!sessionStore.ready)throw Error('پیشرفت خوانده نشده است؛ سرور را دوباره راه‌اندازی کنید.');await sessionStore.retry(progressData());sessionError=null;}
-      else if(action==='repeat-session'||action==='new-session'){
+      else if(action==='repeat-session'||action==='new-session'||action==='next-lesson'||action==='repeat-lesson'){
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
-        await flushSession();const id=action==='repeat-session'?sessions().repeat():sessions().create();roundControlGeneration++;questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
+        await flushSession();const id=action==='repeat-session'?sessions().repeat():action==='next-lesson'?sessions().nextLesson():action==='repeat-lesson'?sessions().replayLesson(data.lessonId):sessions().create();roundControlGeneration++;questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
       }
       else if(action==='start'){const generation=++roundControlGeneration;await startRound({generation});}
       else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+settings.waitSeconds*1000;}
