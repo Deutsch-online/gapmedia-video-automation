@@ -17,8 +17,15 @@
       "category": "animation-example",
       "purpose": "Study p5.js scene transitions and music-driven character animation",
       "repository_license_metadata": null,
-      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or services activated",
+      "observed_commit": "fa546a38092e75f2b079e6a86d6abc54dd525d17",
+      "assessment": {
+        "project_fit": "study-only",
+        "application": "Compare its shot planning and character-led transitions with mexicat/pdoom-video; prefer the author's newer ClaudeAnimationBase for reusable animation ideas.",
+        "license_findings": "No root LICENSE or explicit README reuse grant found. Link and study only; do not copy code, music or assets without permission.",
+        "scope_correction": "README links source, storyboard and animation guide; no render was executed."
+      }
     },
     {
       "name": "awesome-opus5-5-videos",
@@ -26,8 +33,15 @@
       "category": "prompt-library",
       "purpose": "Discover source-linked coded video examples and prompts",
       "repository_license_metadata": "MIT",
-      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or services activated",
+      "observed_commit": "92aee2f586ac0715cb3cbcb6384834f98a33383d",
+      "assessment": {
+        "project_fit": "supplementary",
+        "application": "Discover educational scene structures and deterministic Canvas/SVG/GSAP approaches; follow each original creator link.",
+        "license_findings": "MIT for repository software/docs; linked creator videos, prompts and media require their own rights check.",
+        "scope_correction": "README currently lists 703 prompts and 418 live remakes; these are author counts, not independently tested outputs."
+      }
     },
     {
       "name": "tidewater",
@@ -53,8 +67,15 @@
       "category": "visual-style-library",
       "purpose": "Study coded films and reusable visual style directions",
       "repository_license_metadata": "MIT",
-      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or services activated",
+      "observed_commit": "413a6bd6d78ebd3bdd5abaec9538a26867f890df",
+      "assessment": {
+        "project_fit": "recommended-reference",
+        "application": "Use director/technique guides for story beats, readable action and purposeful transitions; adapt style ideas to original Marta/Lukas 3D scenes.",
+        "license_findings": "Code/docs MIT. Demo films/stills CC BY 4.0 with LemoLab credit, repository link and changes stated. Third-party assets retain licenses; Game Show Flat, Paper-cut Lightbox and Broadcast News Package voice tracks are excluded.",
+        "scope_correction": "README currently advertises 59 styles; tuned for Claude, with no cross-model quality guarantee."
+      }
     },
     {
       "name": "ClaudeAnimationBase",
@@ -62,8 +83,15 @@
       "category": "cartoon-reference",
       "purpose": "p5.js and p5.brush starter for expressive hand-painted 2D characters",
       "repository_license_metadata": "MIT",
-      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or services activated",
+      "observed_commit": "0ac8bf2b31942376cb6b8c4074715595d512acd2",
+      "assessment": {
+        "project_fit": "conditional-reference",
+        "application": "Use expression, anticipation, reaction and shot continuity principles to improve original characters. Its flat 2D brush renderer does not replace the current 3D dialogue and lip-sync pipeline.",
+        "license_findings": "Root code license MIT; retain copyright and license when copying substantial code, and check dependencies/assets separately.",
+        "scope_correction": "ANIMATION_GUIDE.md confirms 31 emotions. Its no-text and flat-2D style rules do not override this project's bilingual captions and 3D identity."
+      }
     },
     {
       "name": "awesome-claude-5-5-videos",
@@ -71,8 +99,15 @@
       "category": "production-research",
       "purpose": "Source-linked workflow examples, prompts and production evidence",
       "repository_license_metadata": "CC-BY-4.0",
-      "reviewed": "GitHub metadata and README; no rendered examples visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or services activated",
+      "observed_commit": "87e5cbfaa4bf1f6516a6c69be58c42a9b85a1041",
+      "assessment": {
+        "project_fit": "recommended-research",
+        "application": "Use source-linked educational examples, production briefs and workflow/cost analysis to select a technique and document review steps.",
+        "license_findings": "Original writing/charts CC BY 4.0; attribution, license link and change notice required when adapting them. Linked works and stills belong to their creators.",
+        "scope_correction": "README reports 424 distinct source posts, including 301 Opus entries, as of 2026-10-11; groups overlap and attribution is creator-reported."
+      }
     },
     {
       "name": "shipvideo",
@@ -106,24 +141,47 @@
       "url": "https://github.com/mexicat/pdoom-video",
       "category": "music-video-render-reference",
       "purpose": "Deterministic Three.js music-video renderer, timed typography and optional true 4K60 export; high render time and memory usage reported by the author",
-      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or external services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or external services activated",
+      "observed_commit": "fa164b74fd0b26a99375715b619c55b4a0fb3d05",
+      "assessment": {
+        "project_fit": "technical-reference",
+        "application": "Study word-level alignment and deterministic time-based rendering for caption timing; keep captions stable and readable for A1 learners.",
+        "license_findings": "Code MIT; fonts retain their own licenses. Song, lyrics and data/lyrics.json explicitly excluded.",
+        "scope_correction": "4K60 is supported by the source renderer according to README, but not tested here; it is landscape and hardware intensive."
+      },
+      "repository_license_metadata": "MIT"
     },
     {
       "name": "mg-styles-15",
       "url": "https://github.com/Vincentwei1021/mg-styles-15",
       "category": "motion-style-library",
       "purpose": "15 ten-second coded motion-design films with source, style notes and prompts; browser rendering and a Blender-based 3D example",
-      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or external services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or external services activated",
+      "observed_commit": "49052d80bfaf9fa8412cc9710530e5e95a3b8d8c",
+      "assessment": {
+        "project_fit": "recommended-reference",
+        "application": "Explore flat vector, line art, collage and sticker-explainer ideas for clearly separated learning inserts; use 3D staging ideas where compatible with the current series.",
+        "license_findings": "Original code, prompts, docs and films MIT. Third-party assets retain licenses, including BSD-3-Clause highlight.js and OFL font-derived glyphs; check fonts and individual media before reuse.",
+        "scope_correction": "15 ten-second films with prompts and source; most use renderAt(t), while the 3D example includes Blender."
+      },
+      "repository_license_metadata": "MIT"
     },
     {
       "name": "opus-video-prompts",
       "url": "https://github.com/joeseesun/opus-video-prompts",
       "category": "prompt-library",
       "purpose": "Source-linked prompt collection for explainers, product promos, animation and coded video",
-      "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
-      "integration_status": "reference-only; no dependencies installed or external services activated"
+      "reviewed": "2026-10-26: root file listing, README and root LICENSE where present; ClaudeAnimationBase animation guide excerpt also read. No demos executed or videos visually reviewed.",
+      "integration_status": "reference-only; no dependencies installed or external services activated",
+      "observed_commit": "7977c807781d4ba7c235247b8899a72575a30d00",
+      "assessment": {
+        "project_fit": "discovery-only",
+        "application": "Follow original source links and write new project-specific briefs; treat this as a discovery index rather than a reusable code package.",
+        "license_findings": "No root LICENSE or explicit README blanket reuse grant found. Do not assume public prompts or linked code/media are licensed for copying.",
+        "scope_correction": "README states 18 full prompts, 54 public cases and nine technical routes; not 54 complete source-code projects."
+      }
     },
     {
       "name": "video-fetcher-to-markdown",
@@ -143,7 +201,12 @@
     "Game examples are references for lighting and camera work, not direct replacements for the existing 3D dialogue pipeline",
     "Named model provenance and benchmark or virality claims remain author reports unless independently verified",
     "Check each copied code and media license separately; GitHub license metadata is not a full asset audit",
-    "No external paid API calls, subscriptions or generated media without the project cost controls"
+    "No external paid API calls, subscriptions or generated media without the project cost controls",
+    "2026-10-26 review: all eight owner-supplied repositories were already cataloged; update existing entries rather than duplicating them.",
+    "Apply references during storyboard preparation: choose one technique, record its source URL and intended educational benefit, write original scene direction, then inspect rendered output before claiming visual suitability.",
+    "Preserve PROJECT_RULES.md: original adult Marta/Lukas 3D identity, ordinary episodes exactly 60 seconds, one-speaker audio-driven lip sync, visible props, lower caption area, and music only during dialogue pauses.",
+    "These repositories supply production ideas, not authoritative German-language, migration or everyday-law facts; retrieve an appropriate official factual source for each new episode.",
+    "This review registers assessed references only. It does not install skills, import code/media, change production behavior, authorize paid credits or establish runtime compatibility."
   ],
   "promo_status": {
     "requested_tool": "video-shotcraft",
@@ -151,5 +214,5 @@
     "product_details": "pending owner response to product/link/benefit question",
     "render_started": false
   },
-  "updated_at": "2026-10-21"
+  "updated_at": "2026-10-26"
 }
