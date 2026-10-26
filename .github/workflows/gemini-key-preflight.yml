@@ -1,0 +1,33 @@
+name: Gemini key and model preflight (read only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/gemini-key-preflight.mjs
+      - .github/workflows/gemini-key-preflight.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read model metadata without generation or uploads
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: node scripts/gemini-key-preflight.mjs > /tmp/gemini-key-preflight.json
+      - name: Show sanitised metadata only
+        if: always()
+        run: test ! -f /tmp/gemini-key-preflight.json || cat /tmp/gemini-key-preflight.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gemini-key-preflight
+          path: /tmp/gemini-key-preflight.json
+          retention-days: 7
