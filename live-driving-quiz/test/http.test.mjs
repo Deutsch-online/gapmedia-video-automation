@@ -17,13 +17,14 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
-  for(const endpoint of ['teacher','next-lesson','practice-lesson','teacher-word?word=test'])assert.equal((await fetch(base+'/api/admin/'+endpoint)).status,401);
+  for(const endpoint of ['teacher','teacher-vocabulary','next-lesson','practice-lesson','teacher-word?word=test'])assert.equal((await fetch(base+'/api/admin/'+endpoint)).status,401);
   assert.equal((await fetch(base+'/teacher-ui.js')).status,200);
   assert.equal((await fetch(base+'/live-demo')).status,200);
   assert.equal((await fetch(base+'/live-demo.js')).status,200);
   assert.equal((await fetch(base+'/teacher-audio.js')).status,200);
   const ownerGet=path=>fetch(base+'/api/admin/'+path,{headers:{authorization:'Bearer '+settings.token}});
   assert.equal((await ownerGet('next-lesson')).status,200);
+  const vocabularyBefore=await(await ownerGet('teacher-vocabulary')).json();assert.ok(Array.isArray(vocabularyBefore.words));assert.ok(vocabularyBefore.references.length>=2);assert.equal((await post('teacher-word-queue',{word:'موتر باری'})).status,200);const vocabulary=await(await ownerGet('teacher-vocabulary')).json();assert.ok(vocabulary.words.some(w=>w.word==='موتر باری'&&w.reported));assert.ok(vocabulary.audit.state);const panelHtml=await(await fetch(base+'/control')).text();assert.equal((panelHtml.match(/id="teacherWord"/g)||[]).length,1);assert.match(panelHtml,/id="panel-pronunciation"/);
   const practice=await(await ownerGet('practice-lesson')).json();assert.equal(practice.questions.length,30);assert.ok(practice.questions.every(q=>q.fa&&q.note));
   assert.equal((await post('teacher-preview',{text:''})).status,400);
   assert.equal((await fetch(base+'/api/admin/teacher-transcribe',{method:'POST',body:'not audio'})).status,401);

@@ -23,9 +23,12 @@ import {OwnerVoice} from './owner-voice.mjs';
 const ownerVoice=new OwnerVoice();
 import {LocalRecognition} from './local-recognition.mjs';
 const localRecognition=new LocalRecognition();
+const auditRecognition=new LocalRecognition({timeout:120000});
+const pronunciationAudit={state:"idle",lastError:null,checked:0};
 import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
 import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
-import {TeacherProfile,parseTeacherCommand,normalWord,validWord,validateSentenceAudio,textHash,validateWordAudio} from './teacher-profile.mjs';
+import {suspectWords,auditKey} from './pronunciation-audit.mjs';
+import {TeacherProfile,pronunciationKey,wordPattern,parseTeacherCommand,normalWord,validWord,validateSentenceAudio,textHash,validateWordAudio} from './teacher-profile.mjs';
 import {PrivateTeacherFiles} from './private-teacher-files.mjs';
 import {PresenterIntro} from './presenter-intro.mjs';
 import {WelcomeCycle} from './welcome.mjs';
@@ -101,6 +104,26 @@ async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
 async function stageCorrectedQuestion(question){const key=question.id+':'+teacher.revision;if(correctedReadings.has(key))return correctedReadings.get(key);const saved=teacher.questionRecording(question);const clip=saved?{audio:await teacherFiles.load(saved.sha256),durationMs:saved.durationMs}:await liveVoice.synthesize(teacher.questionText(question));correctedReadings.set(key,clip);while(correctedReadings.size>8)correctedReadings.delete(correctedReadings.keys().next().value);return clip;}
 async function commitTeacher(candidate){const previous=settings.teacherProfile;settings.teacherProfile=candidate.export();try{await persistDisplay();}catch(error){settings.teacherProfile=previous;save();if(sessionStore.repo)sessionStore.queue(progressData());throw error;}teacher=candidate;assistant.clear();liveVoice.close();practiceVoice.close();ownerVoice.close();correctedReadings.clear();teacherMutedRound=quiz.round?.id||null;}
+let auditRunning=false,auditNextAt=Date.now()+15000;
+async function auditNextPronunciation(){
+ if(auditRunning||Date.now()<auditNextAt||['open','watching'].includes(quiz.phase)||localRecognition.pending||liveVoice.pending||practiceVoice.pending||ownerVoice.pending||assistant.active&&Date.now()<assistant.active.expiresAt)return;
+ auditRunning=true;pronunciationAudit.state='checking';
+ try{
+  const current=sessions().session,ids=current?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];
+  let item;
+  for(const id of ids){const q=quiz.questions.find(q=>q.id===id);if(!q||teacher.questionRecording(q))continue;const text=teacher.questionText(q),path=join(root,'public/narration/fa',id+'.wav');if(!existsSync(path))continue;const audio=teacher.customQuestion(q)?correctedReadings.get(id+':'+teacher.revision)?.audio:readFileSync(path);if(!audio)continue;const key=auditKey(id,text,audio);if(!teacher.auditChecks.includes(key)){item={id,text,audio,key};break;}}
+  if(!item){pronunciationAudit.state='ready';return;}
+  const revision=teacher.revision,heard=await auditRecognition.transcribe(item.audio,{audit:true});if(teacher.revision!==revision)return;
+  const candidates=suspectWords(item.text,heard).filter(v=>!teacher.matches(v.word).length);
+  const candidate=new TeacherProfile(teacher.export());candidate.auditChecks=[...candidate.auditChecks,item.key].slice(-400);
+  for(const v of candidates){const old=candidate.suspected.find(x=>x.word===v.word);if(old){old.heard=v.heard;old.questionId=item.id;}else if(candidate.suspected.length<500)candidate.suspected.push({...v,questionId:item.id,reason:'transcript_disagreement'});}
+  // This is audit metadata only: preserve active audio, revision and owner edits.
+  teacher=candidate;settings.teacherProfile=teacher.export();try{await persistDisplay();}catch(error){if(teacher===candidate){teacher.auditChecks=teacher.auditChecks.filter(k=>k!==item.key);settings.teacherProfile=teacher.export();save();}throw error;}
+  pronunciationAudit.checked++;pronunciationAudit.state='ready';pronunciationAudit.lastError=null;
+ }catch{pronunciationAudit.state='error';pronunciationAudit.lastError='بررسی خودکار صدا فعلاً کامل نشد؛ در مکث بعدی دوباره تلاش می‌شود. هیچ اعتبار پولی مصرف نشد.';}
+ finally{auditRunning=false;auditNextAt=Date.now()+(pronunciationAudit.state==='error'?120000:15000);}
+}
+const pronunciationAuditTick=setInterval(()=>{void auditNextPronunciation();},5000);pronunciationAuditTick.unref();
 function teacherDiagnostics(){return {connection:live.status,connectionDiagnostics:live.diagnostics||[],voiceWorker:liveVoice.state,recognitionWorker:localRecognition.state,voiceCloneWorker:ownerVoice.state,voiceCloneEnabled:Boolean(teacher.voiceReference?.enabled),assistantEnabled:settings.assistant.enabled,narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,storage:sessionStore.status,pronunciationRules:teacher.rules.length,sourceAudio:'صدای Browser Source باید روی همان صفحه فعال باشد؛ سرور آن را حدس نمی‌زند.',guestAudio:'مسیر صدای تب یا ورودی مجازی در پنل لازم است؛ اتصال کامنت، صدای گیست را منتقل نمی‌کند.'};}
 async function wordAudioBody(req,maxBytes=240000){let total=0;const parts=[];for await(const part of req){total+=part.length;if(total>maxBytes)throw Error('نمونهٔ کلمه بیش از حد بزرگ است.');parts.push(part);}return Buffer.concat(parts);}
 function winnerNames(){const key=quiz.questions[quiz.index].correct.slice().sort().join(',');return [...quiz.answers.values()].filter(a=>[...a.choices].sort().join(',')===key).map(a=>a.name);}
@@ -286,8 +309,13 @@ const server=http.createServer(async(req,res)=>{
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
       if(req.method==='GET'&&url.pathname==='/api/admin/next-lesson'){const plan=sessions().lessonPlan;return json(res,200,{session:sessions().summary(),next:(plan?.queued?.[0]?.ids||[]).map(id=>{const q=quiz.questions.find(q=>q.id===id);return {id,fa:q?.fa,de:q?.de};})});}
       if(req.method==='GET'&&url.pathname==='/api/admin/practice-lesson'){const current=sessions().session;const ids=current?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];return json(res,200,{title:current?'درس این جلسه · '+current.number:'درس نوبت بعدی',questions:ids.map(id=>{const q=quiz.questions.find(q=>q.id===id);return {id,fa:teacher.questionText(q),originalFa:q.fa,edited:Boolean(teacher.questionEdits[id]),recorded:Boolean(teacher.questionRecording(q)),de:q.de,note:teachingNote(q)};})});}
+      if(req.method==='GET'&&url.pathname==='/api/admin/teacher-vocabulary'){
+        const corpus=quiz.questions.map(q=>[teacher.questionText(q),...q.options.map(o=>o.fa),teachingNote(q)].join(' '));
+        const words=[...new Set([...teacher.suspected.map(v=>v.word),...teacher.pendingWords,...teacher.rules.map(r=>r.word)])];
+        return json(res,200,{audit:{...pronunciationAudit,totalChecked:teacher.auditChecks.length},words:words.map(word=>({word,suspected:teacher.suspected.find(v=>v.word===word)||null,reported:teacher.pendingWords.includes(word),corrected:teacher.matches(word).length>0,questions:corpus.filter(t=>wordPattern(pronunciationKey(word)).test(pronunciationKey(t))).length})),references:[{title:'صدای پایهٔ فارسی Amir / Piper',url:'https://huggingface.co/rhasspy/piper-voices/tree/5041a7a49ae5b3a0f30e6837769eb03fdbb231bd/fa/fa_IR/amir/medium'},{title:'واژه‌نامهٔ افغانی و قواعد تلفظ پروژه',url:'https://github.com/Deutsch-online/gapmedia-video-automation/blob/main/live-driving-quiz/prepare-narration.py'}]});
+      }
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher')return json(res,200,{profile:teacher.privateState(),diagnostics:teacherDiagnostics()});
-      if(req.method==='GET'&&url.pathname==='/api/admin/teacher-word'){const rule=teacher.rules.find(r=>r.word===normalWord(url.searchParams.get('word')));if(!rule?.sha256)return json(res,404,{error:'نمونه وجود ندارد.'});return serveMedia(req,res,await teacherFiles.load(rule.sha256),'audio/wav');}
+      if(req.method==='GET'&&url.pathname==='/api/admin/teacher-word'){const rule=teacher.rules.find(r=>pronunciationKey(r.word)===pronunciationKey(url.searchParams.get('word')));if(!rule?.sha256)return json(res,404,{error:'نمونه وجود ندارد.'});return serveMedia(req,res,await teacherFiles.load(rule.sha256),'audio/wav');}
       if(req.method==='GET'&&url.pathname==='/api/admin/assistant')return json(res,200,{settings:settings.assistant,...assistant.status(),note:teachingNote(quiz.questions[quiz.index]),source:quiz.questions[quiz.index].source});
       if(req.method==='GET'&&url.pathname==='/api/admin/technical-lesson')return json(res,200,{questions:quiz.questions.filter(q=>q.id.startsWith('2.7.')).map(q=>({id:q.id,de:q.de,fa:q.fa,options:q.options,explanation:explainQuestion(q,{reveal:true}),example:q.learning_example,source:q.source}))});
       if(req.method==='GET'&&url.pathname==='/api/admin/questions')return json(res,200,{session:sessions().summary(),questions:quiz.questions.map(q=>({id:q.id,topic:q.topic,video:Boolean(q.video),completed:Boolean(sessions().completed[q.id]),planned:sessions().session?.ids.includes(q.id)||false}))});
@@ -311,6 +339,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='teacher-clone-reference'){const info=teacher.questionRecordings[data.id];if(!info)throw Error('اول صدای همین جمله را ذخیره کنید.');const candidate=new TeacherProfile(teacher.export());candidate.setVoiceReference(info);await commitTeacher(candidate);}
       else if(action==='teacher-clone-enabled'){const candidate=new TeacherProfile(teacher.export());candidate.enableVoiceReference(data.enabled);await commitTeacher(candidate);}
       else if(action==='teacher-style'){const candidate=new TeacherProfile(teacher.export());candidate.setStyle(data.style||{});await commitTeacher(candidate);}
+      else if(action==='teacher-word-queue'){const candidate=new TeacherProfile(teacher.export());candidate.queueWord(data.word);await commitTeacher(candidate);}
       else if(action==='teacher-word-text'){const candidate=new TeacherProfile(teacher.export());candidate.setText(data.word,data.spoken);await commitTeacher(candidate);}
       else if(action==='teacher-word-remove'){const candidate=new TeacherProfile(teacher.export());candidate.remove(normalWord(data.word));await commitTeacher(candidate);}
       else if(action==='teacher-cancel-correction'){teacher.disarm();}
@@ -527,4 +556,4 @@ server.listen(port,hosting.bind,()=>{
   writeFileSync(process.env.QUIZ_RUNTIME_PATH||join(root,'.runtime.json'),JSON.stringify({base,token,screen:base+'/screen',control:base+'/control#'+token,pid:process.pid},null,2),{mode:0o600});
   console.log(hosting.publicOrigin?`Screen: ${base}/screen\nPrivate control link is delivered separately to the owner.\nDemo mode; paid signing is disabled.`:`Screen: ${base}/screen\nControl: ${base}/control#${token}\nDemo mode; no live connection or paid service has been enabled.`);
 });
-for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);liveVoice.close();practiceVoice.close();localRecognition.close();ownerVoice.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);clearInterval(pronunciationAuditTick);auditRecognition.close();liveVoice.close();practiceVoice.close();localRecognition.close();ownerVoice.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});

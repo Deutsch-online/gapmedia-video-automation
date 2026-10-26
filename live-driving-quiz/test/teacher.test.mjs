@@ -30,3 +30,30 @@ test('private samples use JSON Git files instead of binary WAV commits and can b
 });
 
 test('queued audio callbacks after Stop cannot read a closed audio context',()=>{const audio=new TeacherAudio({status:()=>{}});assert.doesNotThrow(()=>audio.process(new Float32Array(2048)));});
+
+test('corrections automatically match Arabic letter variants and vowels across lessons without touching longer words',()=>{
+ const p=new TeacherProfile();p.queueWord('موتر');p.setText('موتر','موتَر');p.setText('کلاچ','کْلَچ');assert.equal(p.pendingWords.length,0);
+ const q1={id:'lesson-one',fa:'موتَر فاصله دارد.'},q2={id:'lesson-two',fa:'كِلاچ را فشار دهید.'};
+ assert.ok(p.customQuestion(q1));assert.ok(p.customQuestion(q2));assert.equal(p.matches('موترها').length,0);assert.equal(p.matches('موتر‌ها').length,0);
+ p.setText('مُوتر','موتَر');assert.equal(p.rules.length,2,'vowel spelling updates the same word');assert.equal(new TeacherProfile(p.export()).matches(q2.fa).length,1);
+ for(let i=0;i<60;i++)p.upsert({word:'واژه'+String.fromCodePoint(0x4e00+i),spoken:'تلفظ'});assert.ok(p.rules.length>50);
+});
+
+test('automatic pronunciation audit flags substitutions, suppresses Afghan aliases and cannot rewrite corrections',async()=>{
+ const {suspectWords,auditKey}=await import('../pronunciation-audit.mjs');
+ const expected='شما باید فاصله مناسب با موتر دیگر داشته باشید';
+ assert.deepEqual(suspectWords(expected,'شما باید فاصله مناسب با متر دیگر داشته باشید'),[{word:'موتر',heard:'متر'}]);
+ assert.deepEqual(suspectWords('شما باید ترمز موتر را بررسی کنید','شما باید بریک موتر را بررسی کنید'),[]);
+ assert.deepEqual(suspectWords(expected,'این متن هیچ ربطی ندارد'),[]);assert.deepEqual(suspectWords(expected,'شما باید فاصله مناسب با موتر دیگر داشته'),[]);
+ assert.notEqual(auditKey('a',expected,Buffer.from('one')),auditKey('a',expected,Buffer.from('two')));
+ const p=new TeacherProfile({suspected:[{word:'موتر',heard:'متر',questionId:'a'}]});p.upsert({word:'موتر',spoken:'موتَر'});assert.equal(p.suspected.length,0);assert.equal(new TeacherProfile(p.export()).rules.length,1);
+});
+
+test('Python splicing and JS selection agree on vowelled words, Arabic letters and original sentence offsets',async()=>{
+ const {execFileSync}=await import('node:child_process');
+ const code=`import json\nfrom runtime_pronunciation import correction_matches\nt='كِلاچ و موتَر، موترها و موتر باری'\nr=[{'word':'کلاچ','spoken':'کْلَچ'},{'word':'موتر','spoken':'موتَر'},{'word':'موتر باری','spoken':'نمونه'}]\nprint(json.dumps([(t[a:b],r['word']) for a,b,r in correction_matches(t,r)],ensure_ascii=False))`;
+ const found=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));
+ assert.deepEqual(found,[['كِلاچ','کلاچ'],['موتَر','موتر'],['موتر باری','موتر باری']]);
+});
+
+test('vowel-only targets cannot create empty matching patterns',()=>{const p=new TeacherProfile();assert.throws(()=>p.setText('َ','تلفظ'));assert.throws(()=>p.queueWord('ـَ'));});

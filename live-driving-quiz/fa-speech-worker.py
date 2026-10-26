@@ -17,7 +17,7 @@ for language in ['fa','de']:
 for line in sys.stdin:
  request={}
  try:
-  if len(line)>24000000:raise ValueError('Request too long')
+  if len(line)>70000000:raise ValueError('Request too long')
   request=json.loads(line);text=request['text']
   if not isinstance(text,str) or not 1<=len(text)<=1600:raise ValueError('Invalid speech length')
   buffer=io.BytesIO()
