@@ -157,3 +157,7 @@ body.screen{width:min(100vw,56.25svh);min-height:100svh;position:relative;margin
 
 
 #roundStageBanner{max-width:92%;white-space:normal;text-align:center;font-size:clamp(12px,2.8vw,24px);line-height:1.2}
+
+.screen #joinToasts{display:flex;flex-direction:column-reverse;justify-content:flex-start;gap:4px}.screen #joinToasts .join-toast{position:relative;flex:0 0 auto;bottom:auto;right:auto;margin:0;animation:arrival-above-country 6.3s ease-in-out both}@keyframes arrival-above-country{0%{opacity:0;transform:translateY(0)}12%,82%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}@media(prefers-reduced-motion:reduce){.screen #joinToasts .join-toast{animation:arrival-fade 6.3s both}}
+
+.screen #joinToasts .join-copy strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
