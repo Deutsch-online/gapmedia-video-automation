@@ -4,9 +4,9 @@ Open the private owner control panel, then **درس نوبت و مدرس**. The 
 
 ## Guest audio
 
-The TikTok event connector supplies comments, likes and gifts, not a guest's audio. The owner can explicitly share a TikTok browser tab **including its audio** through the panel, or route LIVE Studio/guest audio into the browser's default microphone using a virtual audio input. Tab-track speech recognition requires a browser supporting `SpeechRecognition.start(audioTrack)`; older browsers may not support it. Test the input before using it in a lesson. No live guest audio has been verified until the owner performs that test. Neither this feature nor the connector joins a TikTok guest seat automatically.
+The TikTok event connector supplies comments, likes and gifts, not a guest's audio. The owner can explicitly share a TikTok browser tab **including its audio** through the panel, or route LIVE Studio/guest audio into the browser's default microphone using a virtual audio input. Tab-track speech recognition requires a browser supporting `SpeechRecognition.start(audioTrack)`; the panel requires desktop Chrome/Edge 135 or newer and refuses unsupported browsers instead of silently selecting their microphone. Test the input before using it in a lesson. No live guest audio has been verified until the owner performs that test. Neither this feature nor the connector joins a TikTok guest seat automatically.
 
-Microphone/tab sharing starts only after the owner clicks its button. Stop sharing releases all tracks. Recognition uses the browser's speech service when available, with `fa-AF`; there is no paid API fallback. The input does not verify a speaker's identity: enable it only for the owner's teaching segment. Only the enumerated lesson actions are accepted, never shell commands or arbitrary code.
+Microphone/tab sharing starts only after the owner clicks its button. Stop sharing releases all tracks. Recognition uses the browser's speech service when available, with `fa-AF`, falling back to `fa-IR` only if the browser rejects Dari recognition; there is no paid API fallback. The input does not verify a speaker's identity: enable it only for the owner's teaching segment. Only the enumerated lesson actions are accepted, never shell commands or arbitrary code.
 
 ## Silent pronunciation correction
 
