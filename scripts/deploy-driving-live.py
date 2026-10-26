@@ -121,12 +121,23 @@ def deploy():
     worker_ready=False
     for attempt in range(24):
         try:
-            worker_request=urllib.request.Request('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/teacher-health',headers={'X-Project-Authorization':hashlib.sha256(('gapmedia-monitor-v1:'+bot_token).encode()).hexdigest()})
+            worker_request=urllib.request.Request('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/teacher-health',headers={'User-Agent':'FahrFit-Lesson-Agent/1.0','X-Project-Authorization':hashlib.sha256(('gapmedia-monitor-v1:'+bot_token).encode()).hexdigest()})
             with urllib.request.urlopen(worker_request,timeout=15) as response:worker_health=json.load(response)
             if worker_health.get('version')=='social-teacher-v1':worker_ready=True;break
         except (OSError,ValueError):pass
         time.sleep(5)
     report['social_worker_ready']=worker_ready
+    if not worker_ready:raise RuntimeError('Social teaching worker is not ready')
+    # A deliberately invalid recipient tests callback authentication without
+    # sending a Telegram message or consuming a real update ID.
+    callback_request=urllib.request.Request('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/teacher-result',data=json.dumps({'chatId':'invalid-probe','text':'connectivity check'}).encode(),headers={'User-Agent':'FahrFit-Lesson-Agent/1.0','X-Project-Authorization':callback,'Content-Type':'application/json'})
+    callback_ready=False
+    try:
+        with urllib.request.urlopen(callback_request,timeout=20) as response:response.read()
+    except urllib.error.HTTPError as error:
+        callback_ready=error.code==400 and error.read(100)==b'Invalid teaching result'
+    if not callback_ready:raise RuntimeError('Social teaching callback authentication failed')
+    report['social_callback_ready']=True
     report['persian_voice']=health.get('persian_voice');report['persian_voice_probe']=True;report['voice_choices_tested']=['male','female'];report['social_teacher_queue_ready']=True
     report.update(status='ready',screen_url=url+'/screen',deployed_at=datetime.now(timezone.utc).isoformat())
     write_report(report)

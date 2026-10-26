@@ -10,7 +10,7 @@ export class SocialTeacher extends TelegramTeacher{
  async start(){if(this.state==='not_configured'||this.state==='ready')return;this.state='ready';this.timer=setInterval(()=>void this.drain(),1000);this.timer.unref();}
  async api(method,payload){
   if(method!=='sendMessage'||String(payload.chat_id)!==this.owner)throw Error('Unsupported teaching transport');
-  const response=await this.fetcher(this.callbackOrigin+'/internal/teacher-result',{method:'POST',headers:{'content-type':'application/json','X-Project-Authorization':this.callbackSecret},body:JSON.stringify({chatId:this.owner,text:payload.text}),signal:AbortSignal.timeout(20000)});
+  const response=await this.fetcher(this.callbackOrigin+'/internal/teacher-result',{method:'POST',headers:{'User-Agent':'FahrFit-Lesson-Agent/1.0','content-type':'application/json','X-Project-Authorization':this.callbackSecret},body:JSON.stringify({chatId:this.owner,text:payload.text}),signal:AbortSignal.timeout(20000)});
   if(!response.ok)throw Error('ارسال نتیجه به بات سوشل ناموفق بود.');return {ok:true};
  }
 }
