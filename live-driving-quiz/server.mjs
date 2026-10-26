@@ -117,6 +117,7 @@ const teacherAgent=new TelegramTeacher({saved:loadedProgress?.teacherAgent||sett
  const action=intent.kind==='correction'?'teacher-word-text':intent.action,data=intent.kind==='correction'?{word:intent.word,spoken:intent.spoken}:{};
  const response=await fetch('http://127.0.0.1:'+port+'/api/admin/'+action,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(65000)});const result=await response.json();if(!response.ok)throw Error(result.error||'اجرای فرمان ناموفق بود.');return intent.kind==='correction'?'اصلاح تلفظ ذخیره شد؛ صدای خودتان در درس پخش نمی‌شود.':'فرمان '+action+' اجرا شد.';
 }});
+settings.teacherAgent=teacherAgent.export();
 let pendingPronunciationMigration=null;
 let auditRunning=false,auditNextAt=Date.now()+15000;
 async function auditNextPronunciation(){
