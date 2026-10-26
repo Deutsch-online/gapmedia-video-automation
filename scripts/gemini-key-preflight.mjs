@@ -1,6 +1,6 @@
 // Credential/model lookup only. Never performs generation, uploads or billing changes.
 import {pathToFileURL} from 'node:url';
-export async function inspectGeminiKey({env=process.env,fetchImpl=fetch}={}){
+export async function inspectGeminiKey({env=process.env,fetchImpl=fetch,probeVideoModels=true}={}){
  const key=env.GEMINI_API_KEY||env.GOOGLE_API_KEY;
  const report={credential_present:Boolean(key),authentication:'not_checked',generation_enabled:false,free_tier_verified:false,billing_verified:false,models:{video:[],image:[],multimodal:[]}};
  if(!key){report.authentication='missing';return report;}
@@ -23,6 +23,13 @@ export async function inspectGeminiKey({env=process.env,fetchImpl=fetch}={}){
   if(!data.nextPageToken)break;
   if(typeof data.nextPageToken!=='string'||data.nextPageToken.length>2000){report.authentication='invalid_response';break;}
   token=data.nextPageToken;
+ }
+ if(probeVideoModels&&report.authentication==='accepted'){
+  report.video_model_checks=[];
+  for(const name of ['veo-3.1-lite-generate-preview','veo-3.1-fast-generate-preview','veo-3.1-generate-preview','veo-2.0-generate-001']){
+   try{const response=await fetchImpl('https://generativelanguage.googleapis.com/v1beta/models/'+name,{method:'GET',headers:{'x-goog-api-key':key},signal:AbortSignal.timeout(15000)});const check={name,http_status:response.status};if(response.ok){const m=await response.json();check.generation_method_listed=Array.isArray(m.supportedGenerationMethods)&&m.supportedGenerationMethods.includes('predictLongRunning');if(check.generation_method_listed&&!report.models.video.includes(name))report.models.video.push(name);}report.video_model_checks.push(check);}
+   catch{report.video_model_checks.push({name,status:'network_error'});}
+  }
  }
  report.note='Model visibility is not proof of free quota or generation permission. No content was generated.';
  return report;
