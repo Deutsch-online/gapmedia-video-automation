@@ -50,6 +50,11 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
         run: python scripts/deploy-driving-live.py
+      - name: Diagnose a failed free-host build
+        if: failure()
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python scripts/read-driving-build-errors.py
       - name: Explicitly requested real LIVE reception check
         if: inputs.verify_live == true || contains(github.event.head_commit.message, '[verify-driving-live]') || contains(github.event.head_commit.message, '[resume-driving-live]') || contains(github.event.head_commit.message, '[manual-driving-check]')
         env:
