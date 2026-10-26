@@ -3,14 +3,15 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {pcmWav} from '../public/teacher-audio.js';
-import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {request as httpRequest} from 'node:http';
 test('local control requires a token; OBS state hides answers; live mode needs verified gifts',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'driving-quiz-test-')),runtime=join(dir,'runtime.json');const port=32000+Math.floor(Math.random()*20000);
- const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),QUIZ_RUNTIME_PATH:runtime,QUIZ_SETTINGS_PATH:join(dir,'settings.json')},stdio:'ignore'});
+ const nativeWorker=join(dir,'native-worker.mjs');writeFileSync(nativeWorker,`import readline from 'node:readline';for await(const line of readline.createInterface({input:process.stdin})){const r=JSON.parse(line);if(r.operation==='learn'){console.log(JSON.stringify({id:r.id,learned:{spoken:'موتَر',reviewNeeded:false,method:'test-native-rehearsal'}}));continue;}const b=Buffer.alloc(44144);b.write('RIFF');b.writeUInt32LE(b.length-8,4);b.write('WAVE',8);b.write('fmt ',12);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(22050,24);b.writeUInt32LE(44100,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(b.length-44,40);for(let i=44;i<b.length;i+=2)b.writeInt16LE(Math.round(Math.sin(i/15)*3000),i);console.log(JSON.stringify({id:r.id,audio:b.toString('base64'),duration_ms:1000}));}`);
+ const child=spawn(process.execPath,['server.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,QUIZ_TTS_PYTHON:process.execPath,QUIZ_TTS_WORKER:nativeWorker,PORT:String(port),QUIZ_RUNTIME_PATH:runtime,QUIZ_SETTINGS_PATH:join(dir,'settings.json')},stdio:'ignore'});
  try {
   let settings;for(let i=0;i<80;i++){try{settings=JSON.parse(readFileSync(runtime,'utf8'));break;}catch{await delay(100);}}
   assert.ok(settings,'server started');const base=settings.base;const first=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url)))[0];
@@ -42,9 +43,10 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const samples=Float32Array.from({length:22050*7},(_,i)=>Math.sin(i/12)*.2),sampleBytes=Buffer.from(await pcmWav(samples,22050,60).arrayBuffer());
   const sampleUrl=base+'/api/admin/teacher-question-audio?id='+encodeURIComponent(practice.questions[0].id)+'&textHash='+createHash('sha256').update(testText).digest('hex');
   const sampleResponse=await fetch(sampleUrl,{method:'POST',headers:{authorization:'Bearer '+settings.token,'content-type':'audio/wav'},body:sampleBytes});assert.equal(sampleResponse.status,200);
-  const recorded=await post('teacher-preview',{text:testText,questionId:practice.questions[0].id});assert.equal(recorded.status,200);assert.deepEqual(Buffer.from(await recorded.arrayBuffer()),sampleBytes,'exact owner recording plays offline without Python, LIVE or a public screen');
-  assert.equal((await post('teacher-clone-reference',{id:practice.questions[0].id})).status,200);assert.equal((await post('teacher-clone-enabled',{enabled:true})).status,200);
+  const recorded=await post('teacher-preview',{text:testText,questionId:practice.questions[0].id});assert.equal(recorded.status,200);assert.notDeepEqual(Buffer.from(await recorded.arrayBuffer()),sampleBytes,'question playback must be synthesized assistant audio, never the saved teacher sample');
+  assert.equal((await post('teacher-clone-reference',{id:practice.questions[0].id})).status,200);assert.equal((await post('teacher-clone-enabled',{enabled:true})).status,400);
   assert.equal((await post('teacher-clone-enabled',{enabled:false})).status,200);
+  const wordAudio=sampleBytes.subarray(0,44144),short=Buffer.from(wordAudio);short.writeUInt32LE(short.length-8,4);short.writeUInt32LE(short.length-44,40);const taught=await fetch(base+'/api/admin/teacher-word-audio?word='+encodeURIComponent('موتر'),{method:'POST',headers:{authorization:'Bearer '+settings.token,'content-type':'audio/wav'},body:short});assert.equal(taught.status,200);const learned=(await taught.json());assert.equal(learned.profile.playbackVoice,'assistant_only');assert.equal(learned.profile.rules.find(r=>r.word==='موتر').spoken,'موتَر');const reheard=await post('teacher-preview',{text:'موتر در جاده است.'});assert.equal(reheard.status,200);assert.notDeepEqual(Buffer.from(await reheard.arrayBuffer()),short);
   assert.equal((await post('teacher-question-recording-remove',{id:practice.questions[0].id})).status,200);
   assert.equal((await post('teacher-question-reset',{id:practice.questions[0].id})).status,200);
   assert.equal((await(await ownerGet('practice-lesson')).json()).questions.find(q=>q.id===practice.questions[0].id).fa,practice.questions[0].fa);

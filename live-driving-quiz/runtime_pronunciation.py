@@ -1,4 +1,4 @@
-"""Private teacher examples are spliced into native CPU speech, never sent to external inference."""
+"""Teacher audio is training input only; all lesson output is native assistant speech."""
 import base64,io,re,wave,unicodedata
 
 MARKS=re.compile(r'[\u064b-\u065f\u0670\u06d6-\u06ed\u0640]')
@@ -26,7 +26,7 @@ def reading(module,text,voices,output,rules,style):
     from piper.config import SynthesisConfig
     module.PERSIAN_LENGTH_SCALE=float(style.get('pace',1.25));module.PERSIAN_VOLUME=float(style.get('volume',.78))
     if not 1.05<=module.PERSIAN_LENGTH_SCALE<=1.6 or not .5<=module.PERSIAN_VOLUME<=.95:raise ValueError('Invalid style')
-    rules=rules or []
+    rules=[r for r in (rules or []) if isinstance(r.get('spoken'),str) and r['spoken']]
     if len(rules)>200:raise ValueError('Too many rules')
     by_word={r['word']:r for r in rules}
     for word in by_word:
@@ -44,8 +44,7 @@ def reading(module,text,voices,output,rules,style):
         parts.append(buffer.getvalue())
     for start,end,rule in correction_matches(text,rules):
         native(text[position:start])
-        if rule.get('audio'):parts.append(base64.b64decode(rule['audio'],validate=True))
-        else:native(rule['spoken'],raw=True)
+        native(rule['spoken'],raw=True)
         position=end
     native(text[position:])
     frames=[]

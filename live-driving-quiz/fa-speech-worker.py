@@ -17,9 +17,18 @@ for language in ['fa','de']:
 for line in sys.stdin:
  request={}
  try:
-  if len(line)>70000000:raise ValueError('Request too long')
+  if len(line)>500000:raise ValueError('Request too long')
   request=json.loads(line);text=request['text']
   if not isinstance(text,str) or not 1<=len(text)<=1600:raise ValueError('Invalid speech length')
+  if request.get('operation')=='learn':
+   from pronunciation_learning import learn
+   reference=base64.b64decode(request['reference'],validate=True)
+   if len(reference)>240000 or len(text)>60:raise ValueError('Invalid pronunciation sample')
+   def native(spoken):
+    output=io.BytesIO();reading(module,text,voices,output,[{'word':text,'spoken':spoken}],request.get('style',{}));return output.getvalue()
+   result=learn(module,text,reference,native,lambda spoken:voices['fa'].phonemize(module.speech_text(spoken,'de')))
+   print(json.dumps({'id':request['id'],'learned':result},ensure_ascii=True),flush=True)
+   continue
   buffer=io.BytesIO()
   reading(module,text,voices,buffer,request.get('rules',[]),request.get('style',{}))
   data=buffer.getvalue()

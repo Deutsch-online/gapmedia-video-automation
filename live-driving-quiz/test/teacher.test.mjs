@@ -19,7 +19,7 @@ test('server recognition captures a bounded utterance without browser SpeechReco
 
 test('full-sentence recordings exceed the word limit, trim silence and stay tied to the edited text',async()=>{
  const {validateSentenceAudio,textHash}=await import('../teacher-profile.mjs');const {trimRecording}=await import('../public/teacher-audio.js');const rate=22050,a=Float32Array.from({length:7*rate},(_,i)=>Math.sin(i/12)*.2),bytes=Buffer.from(await pcmWav(a,rate,60).arrayBuffer());assert.throws(()=>validateWordAudio(bytes));const info=validateSentenceAudio(bytes);assert.equal(info.durationMs,7000);
- const p=new TeacherProfile(),q={id:'1.2.03-001',fa:'متن اصلی'};p.setQuestionText(q.id,'متن اصلاح‌شده');p.setQuestionRecording(q,info);assert.equal(p.questionRecording(q).textSha256,textHash('متن اصلاح‌شده'));p.setVoiceReference(info);assert.equal(p.voiceReference.enabled,false);p.enableVoiceReference(true);assert.equal(new TeacherProfile(p.export()).privateState().voiceCloneActive,true);p.setQuestionText(q.id,'متن تازه');assert.equal(p.questionRecording(q),null);p.resetQuestionText(q.id);assert.equal(p.questionText(q),'متن اصلی');
+ const p=new TeacherProfile(),q={id:'1.2.03-001',fa:'متن اصلی'};p.setQuestionText(q.id,'متن اصلاح‌شده');p.setQuestionRecording(q,info);assert.equal(p.questionRecording(q).textSha256,textHash('متن اصلاح‌شده'));p.setVoiceReference(info);assert.equal(p.voiceReference.enabled,false);assert.throws(()=>p.enableVoiceReference(true));assert.equal(new TeacherProfile(p.export()).privateState().voiceCloneActive,false);p.setQuestionText(q.id,'متن تازه');assert.equal(p.questionRecording(q),null);p.resetQuestionText(q.id);assert.equal(p.questionText(q),'متن اصلی');
  const padded=new Float32Array(9*rate);padded.set(a,rate);const trimmed=trimRecording(padded,rate);assert.ok(trimmed.length<padded.length);assert.ok(trimmed.length>=a.length);
 });
 test('private samples use JSON Git files instead of binary WAV commits and can be restored without a local cache',async()=>{
@@ -57,3 +57,5 @@ test('Python splicing and JS selection agree on vowelled words, Arabic letters a
 });
 
 test('vowel-only targets cannot create empty matching patterns',()=>{const p=new TeacherProfile();assert.throws(()=>p.setText('َ','تلفظ'));assert.throws(()=>p.queueWord('ـَ'));});
+
+test('legacy enabled voice copies are forcibly disabled and owner recordings never select the lesson playback path',()=>{const p=new TeacherProfile({voiceReference:{sha256:'a'.repeat(64),durationMs:7000,enabled:true}});assert.equal(p.voiceReference.enabled,false);assert.equal(p.privateState().playbackVoice,'assistant_only');const q={id:'one',fa:'این متن اصلی است.'};p.setQuestionRecording(q,{sha256:'b'.repeat(64),durationMs:1000});assert.equal(p.customQuestion(q),false);});

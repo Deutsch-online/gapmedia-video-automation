@@ -16,14 +16,10 @@ RUN /home/node/voice-env/bin/python prepare-narration.py
 RUN python3 -m venv /home/node/asr-env && /home/node/asr-env/bin/pip install --no-cache-dir faster-whisper==1.2.1 av==16.1.0
 RUN HF_HUB_DISABLE_XET=1 /home/node/asr-env/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('Systran/faster-whisper-small',revision='536b0662742c02347bc0e980a01041f333bce120',local_dir='/home/node/asr-model',allow_patterns=['config.json','model.bin','tokenizer.json','vocabulary.*'])"
 ENV QUIZ_ASR_PYTHON=/home/node/asr-env/bin/python QUIZ_ASR_MODEL=/home/node/asr-model
-# Separate CPU-only tone-conversion runtime; no CUDA or paid inference service.
-RUN python3 -m venv /home/node/clone-env && /home/node/clone-env/bin/pip install --no-cache-dir pip==25.0.1 setuptools==75.8.2 wheel==0.45.1 && /home/node/clone-env/bin/pip install --no-cache-dir --no-deps torch==2.6.0+cpu --index-url https://download.pytorch.org/whl/cpu
-RUN /home/node/clone-env/bin/pip install --no-cache-dir filelock==3.20.0 typing_extensions==4.15.0 networkx==3.4.2 jinja2==3.1.6 fsspec==2025.3.2 sympy==1.13.1 numpy==1.26.4 librosa==0.10.2.post1 soundfile==0.12.1 eng_to_ipa==0.0.2 inflect==7.0.0 unidecode==1.3.7 pypinyin==0.50.0 cn2an==0.5.22 jieba==0.42.1
-COPY --chown=node:node prepare-owner-voice.py ./
-RUN python3 prepare-owner-voice.py /home/node/owner-voice-assets
-RUN /home/node/clone-env/bin/pip check && PYTHONPATH=/home/node/owner-voice-assets /home/node/clone-env/bin/python -c "import torch; from openvoice.api import ToneColorConverter; assert torch.version.cuda is None; print('CPU owner-voice runtime imports passed')"
-ENV QUIZ_CLONE_PYTHON=/home/node/clone-env/bin/python QUIZ_CLONE_ASSETS=/home/node/owner-voice-assets
+# Pronunciation rehearsal uses the existing native Piper/NumPy CPU runtime.
+# Owner tone-copy models are deliberately not installed or enabled.
 COPY --chown=node:node . .
 RUN node bank-media.mjs
+RUN /home/node/voice-env/bin/python -m unittest discover -s test -p '*learning_test.py'
 EXPOSE 7860
 CMD ["node", "server.mjs"]

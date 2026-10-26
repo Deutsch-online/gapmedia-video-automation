@@ -124,6 +124,17 @@
       "purpose": "Source-linked prompt collection for explainers, product promos, animation and coded video",
       "reviewed": "README retrieved 2026-10-21; demos not executed or visually reviewed",
       "integration_status": "reference-only; no dependencies installed or external services activated"
+    },
+    {
+      "name": "video-fetcher-to-markdown",
+      "url": "https://github.com/JimmySadek/video-fetcher-to-markdown",
+      "category": "transcript-and-research-archive",
+      "purpose": "Source-linked captions, local Whisper transcripts and short-video contact sheets for searchable Markdown research notes",
+      "repository_license_metadata": "MIT",
+      "reviewed": "2026-10-26: metadata, README, requirements, LICENSE and media workflow source; no live platform extraction tested",
+      "reviewed_commit": "c196ba48df72c064811adcb934104c3e6567858b",
+      "integration_status": "reference-only; existing faster-whisper requires an adapter; no dependencies or paid services activated",
+      "review_file": "research/video-fetcher-to-markdown-2026-10-26.md"
     }
   ],
   "production_notes": [
