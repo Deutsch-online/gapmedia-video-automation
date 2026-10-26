@@ -26,7 +26,9 @@ for line in sys.stdin:
    if len(reference)>240000 or len(text)>60:raise ValueError('Invalid pronunciation sample')
    def native(spoken):
     output=io.BytesIO();reading(module,text,voices,output,[{'word':text,'spoken':spoken}],request.get('style',{}));return output.getvalue()
-   result=learn(module,text,reference,native,lambda spoken:voices['fa'].phonemize(module.speech_text(spoken,'de')))
+   from types import SimpleNamespace
+   from standard_persian import speech_text as standard_text
+   result=learn(SimpleNamespace(speech_text=lambda text,lang:standard_text(text)),text,reference,native,lambda spoken:voices['fa'].phonemize(module.speech_text(spoken,'de')))
    print(json.dumps({'id':request['id'],'learned':result},ensure_ascii=True),flush=True)
    continue
   buffer=io.BytesIO()

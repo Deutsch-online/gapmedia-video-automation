@@ -16,6 +16,10 @@ RUN /home/node/voice-env/bin/python prepare-narration.py
 RUN python3 -m venv /home/node/asr-env && /home/node/asr-env/bin/pip install --no-cache-dir faster-whisper==1.2.1 av==16.1.0
 RUN HF_HUB_DISABLE_XET=1 /home/node/asr-env/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('Systran/faster-whisper-small',revision='536b0662742c02347bc0e980a01041f333bce120',local_dir='/home/node/asr-model',allow_patterns=['config.json','model.bin','tokenizer.json','vocabulary.*'])"
 ENV QUIZ_ASR_PYTHON=/home/node/asr-env/bin/python QUIZ_ASR_MODEL=/home/node/asr-model
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+USER node
+RUN /home/node/voice-env/bin/pip install --no-cache-dir edge-tts==7.3.1
 # Pronunciation rehearsal uses the existing native Piper/NumPy CPU runtime.
 # Owner tone-copy models are deliberately not installed or enabled.
 COPY --chown=node:node . .

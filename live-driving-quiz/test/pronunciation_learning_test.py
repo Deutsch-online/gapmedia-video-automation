@@ -38,3 +38,10 @@ class PronunciationLearningTest(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class StandardPersianTest(unittest.TestCase):
+    def test_literal_words_keep_their_spelling_and_one_is_not_replaced(self):
+        from standard_persian import speech_text
+        text=speech_text('یک راننده با خودرو در جاده است. ترمز و کلاچ را بررسی کنید.')
+        self.assertIn('یِک',text);self.assertIn('راننده',text);self.assertIn('خودرو',text);self.assertIn('ترمز',text)
+        self.assertNotIn('دریور',text);self.assertNotIn('موتَر',text);self.assertNotIn('بک',text)

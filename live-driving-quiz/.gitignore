@@ -7,3 +7,5 @@ public/narration/
 
 .voice-cache/
 __pycache__/
+
+.speech-cache/

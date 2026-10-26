@@ -1,5 +1,8 @@
 # FahrFit LIVE — بانک تصویری رانندگی
 
+> Active voice update (2026-10-26): lesson questions, practice, explanations and Persian welcomes use the fixed female standard-Persian `fa-IR-DilaraNeural` voice. Written vocabulary is preserved; no automatic Afghan word substitution or owner-voice playback. New speech requires server internet; generated clips are privately cached. Historical Amir/Piper descriptions below refer to the retained baseline/rehearsal assets, not the active Persian lesson voice. See [TEACHER_VOICE.md](TEACHER_VOICE.md). The owner-only @takrun_bot command bridge is prepared and requires the matching `TAKRUN_BOT_TOKEN` secret before it can connect.
+
+
 نسخهٔ فعال دارای ۲۰۰ سؤال (۱۹۸ سؤال تصویری و ۲ سؤال ویدیویی) با متن آلمانی، سه گزینه و کلید پاسخِ واردشده از بانک، به‌همراه ترجمهٔ فارسی آموزشی است. این مجموعه با سؤال‌های تألیفی قبلی جایگزین شده است؛ آن تمرین‌ها فقط در `data/practice-questions.json` برای آزمون‌های قبلی نگهداری می‌شوند.
 
 شناسهٔ اصلی، متن آلمانی، ترتیب گزینه‌ها و کلید پاسخ در انتقال حفظ می‌شوند. تصویر همان شناسه، بدون برش، هنگام سؤال و نمایش پاسخ دیده می‌شود. ترجمهٔ فارسی رسمی نیست و این نرم‌افزار تأییدیهٔ TÜV/DEKRA را ادعا نمی‌کند.

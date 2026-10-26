@@ -1,0 +1,73 @@
+{
+  "reviewed_at": "2026-10-26",
+  "purpose": "Assess the owner's ten TTS sources for standard female Persian lesson speech",
+  "review_file": "research/tts-persian-candidates-2026-10-26.md",
+  "sources": [
+    {
+      "name": "pocket-tts",
+      "url": "https://github.com/kyutai-labs/pocket-tts",
+      "code_license": "MIT",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "kokoro",
+      "url": "https://github.com/hexgrad/kokoro",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "Zonos",
+      "url": "https://github.com/Zyphra/Zonos",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "FireRedTTS3",
+      "url": "https://github.com/FireRedTeam/FireRedTTS3",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "Orpheus-TTS",
+      "url": "https://github.com/canopyai/Orpheus-TTS",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "OuteTTS",
+      "url": "https://github.com/edwko/OuteTTS",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "parler-tts",
+      "url": "https://github.com/huggingface/parler-tts",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "StyleTTS2",
+      "url": "https://github.com/yl4579/StyleTTS2",
+      "code_license": "MIT",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "MeloTTS",
+      "url": "https://github.com/myshell-ai/MeloTTS",
+      "code_license": "MIT",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    },
+    {
+      "name": "soprano",
+      "url": "https://github.com/ekwek1/soprano",
+      "code_license": "Apache-2.0",
+      "reviewed": "2026-10-26: official repository metadata and README; no model installed or audio inference run"
+    }
+  ],
+  "policy": {
+    "owner_audio": "pronunciation references only",
+    "paid_inference": "not authorized",
+    "model_installations": "none of these ten installed",
+    "current_voice_candidate": "fa-IR-DilaraNeural; free online audition succeeded; privately cached PCM"
+  }
+}

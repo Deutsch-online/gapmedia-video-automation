@@ -22,7 +22,7 @@ export class LiveAssistant{
   if(this.preparing)return;const job=this.queue.find(j=>j.status==='queued');if(!job)return;
   const generation=this.generation;this.preparing=true;job.status='preparing';
   try{const clip=await this.voice.synthesize(job.text);if(generation!==this.generation)return;job.durationMs=clip.durationMs;job.status='ready';this.audio.set(job.id,{audio:clip.audio,at:this.now()});this.lastError=null;}
-  catch{if(generation===this.generation){this.queue=this.queue.filter(j=>j!==job);this.stats.errors++;this.lastError='تولید صدای محلی فارسی ناموفق بود؛ از سرویس پولی استفاده نشد.';}}
+  catch(error){if(generation===this.generation){this.queue=this.queue.filter(j=>j!==job);this.stats.errors++;const note=String(error?.message||'تولید صدای فارسی ناموفق بود.');this.lastError=(note+(note.includes('پولی')?'':'؛ از سرویس پولی استفاده نشد.')).slice(0,300);}}
   finally{this.preparing=false;this.prepare();}
  }
  comment(event,q,phase,roundId){

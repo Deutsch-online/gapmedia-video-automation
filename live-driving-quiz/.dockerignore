@@ -10,3 +10,5 @@ public/narration
 __pycache__
 
 .teacher-private/
+
+.speech-cache/

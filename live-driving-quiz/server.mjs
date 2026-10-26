@@ -18,6 +18,8 @@ import {bankSections} from './sections.mjs';
 import {QuizSessions} from './sessions.mjs';
 import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
+import {TelegramTeacher} from './telegram-teacher.mjs';
+import {FemaleSpeech} from './female-speech.mjs';
 import {LiveSpeech} from './live-speech.mjs';
 import {LocalRecognition} from './local-recognition.mjs';
 const localRecognition=new LocalRecognition();
@@ -59,7 +61,7 @@ const bankMedia=loadBankMedia(quiz.questions);
 const presenterIntro=new PresenterIntro();
 const welcomeCycle=new WelcomeCycle();const speechTexts=JSON.parse(readFileSync(join(root,'speech-texts.json'),'utf8'));
 const welcomeLanguage=()=>settings.narrationLanguage==='fa'?'fa':settings.welcomeLanguage;
-const welcomeDuration=()=>{const lang=welcomeLanguage(),fa=narrationInfo?.welcome?.fa?.duration_ms||11000,de=narrationInfo?.welcome?.de?.duration_ms||9000;return lang==='fa'?fa:lang==='de'?de:fa+de+300;};
+const welcomeDuration=()=>{const lang=welcomeLanguage(),fa=femaleWelcome?.durationMs||11000,de=narrationInfo?.welcome?.de?.duration_ms||9000;return lang==='fa'?fa:lang==='de'?de:fa+de+300;};
 const supporters=new SupporterWall({limit:20});
 const likes=new LikeWall();
 const sessionStore=new SessionStore();
@@ -84,10 +86,12 @@ if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBu
 let teacher=new TeacherProfile(loadedProgress?.teacherProfile||settings.teacherProfile||{});settings.teacherProfile=teacher.export();
 const teacherFiles=new PrivateTeacherFiles(sessionStore,join(dirname(settingsFile),'.teacher-private'));
 let teacherMutedRound=null;const correctedReadings=new Map();
-const teacherVoiceOptions={revision:()=>teacher.revision,style:()=>teacher.style,rulesFor:async text=>teacher.matches(text).filter(rule=>rule.spoken).map(rule=>({word:rule.word,spoken:rule.spoken}))};
-const liveVoice=new LiveSpeech(teacherVoiceOptions);
-const practiceVoice=new LiveSpeech(teacherVoiceOptions);
-const pronunciationVoice=new LiveSpeech(teacherVoiceOptions);
+const teacherVoiceOptions={revision:()=>teacher.revision,style:()=>teacher.style,rulesFor:async text=>teacher.matches(text).filter(rule=>rule.spoken&&pronunciationKey(rule.word)===pronunciationKey(rule.spoken)).map(rule=>({word:rule.word,spoken:rule.spoken}))};
+const liveVoice=new FemaleSpeech({...teacherVoiceOptions,directory:join(dirname(settingsFile),'.speech-cache')});
+const practiceVoice=new FemaleSpeech({...teacherVoiceOptions,directory:join(dirname(settingsFile),'.speech-cache')});
+const pronunciationVoice=new LiveSpeech({...teacherVoiceOptions,python:process.env.QUIZ_PRONUNCIATION_PYTHON||process.env.QUIZ_TTS_PYTHON});
+const auditSpeech=new FemaleSpeech({...teacherVoiceOptions,directory:join(dirname(settingsFile),'.speech-cache')});
+const welcomeVoice=new FemaleSpeech({...teacherVoiceOptions,directory:join(dirname(settingsFile),'.speech-cache')});let femaleWelcome=null,welcomePreparing=false,welcomeRetryAt=0;
 const assistant=new LiveAssistant({voice:liveVoice,settings:()=>settings.assistant,style:()=>teacher.style});
 const ids=quiz.questions.map(q=>q.id);const groups=bankSections(quiz.questions);
 const liveSessions=new QuizSessions(ids,loadedProgress||settings.sessionProgress||{},{groups});
@@ -97,12 +101,22 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterIntroAuto:settings.presenterIntroAuto,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant,teacherProfile:settings.teacherProfile};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterIntroAuto:settings.presenterIntroAuto,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant,teacherProfile:settings.teacherProfile,teacherAgent:settings.teacherAgent};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
 async function stageCorrectedQuestion(question){const key=question.id+':'+teacher.revision;if(correctedReadings.has(key))return correctedReadings.get(key);const clip=await liveVoice.synthesize(teacher.questionText(question));correctedReadings.set(key,clip);while(correctedReadings.size>8)correctedReadings.delete(correctedReadings.keys().next().value);return clip;}
 async function commitTeacher(candidate){const previous=settings.teacherProfile;settings.teacherProfile=candidate.export();try{await persistDisplay();}catch(error){settings.teacherProfile=previous;save();if(sessionStore.repo)sessionStore.queue(progressData());throw error;}teacher=candidate;assistant.clear();liveVoice.close();practiceVoice.close();correctedReadings.clear();teacherMutedRound=quiz.round?.id||null;}
+const teacherAgent=new TelegramTeacher({saved:loadedProgress?.teacherAgent||settings.teacherAgent||{},persist:async data=>{settings.teacherAgent=data;await persistDisplay();},execute:async intent=>{
+ if(intent.kind==='help')return 'دستیار درس: وضعیت، بررسی خطا، درس این جلسه، توضیح سوال، شروع درس، توقف، سوال بعدی، تکرار سوال، جلسه بعدی و اصلاح تلفظ. فرمان ثبت‌شده بدون بازبودن مرورگر شما روی سرور اجرا می‌شود. سرور برای دریافت تلگرام به اینترنت نیاز دارد.';
+ if(intent.kind==='status'){const st=publicState();return 'صدای خانم فارسی معیار Dilara؛ متن بدون تبدیل واژه به لهجه خوانده می‌شود.\nحالت درس: '+st.phase+'؛ اتصال: '+live.status+'؛ جلسه: '+(st.session?.number||0)+'\nآخرین خطا: '+(sessionError||assistant.lastError||'خطای تازه ثبت نشده است.');}
+ if(intent.kind==='jobs')return teacherAgent.jobs.slice(-10).map(j=>j.id+' · '+j.action+' · '+j.status+(j.error?' · '+j.error:'')).join('\n')||'صف خالی است.';
+ if(intent.kind==='diagnose')return JSON.stringify(teacherDiagnostics(),null,2)+'\n'+(sessionError||assistant.lastError||'خطای اجرایی تازه ثبت نشده است.');
+ if(intent.kind==='lesson'){const ids=sessions().session?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];return 'درس جاری یا نوبت بعد · '+ids.length+' سوال\n'+ids.map((id,i)=>{const q=quiz.questions.find(q=>q.id===id);return (i+1)+'. '+teacher.questionText(q);}).join('\n').slice(0,3200);}
+ if(intent.kind==='explain')return explainQuestion(quiz.questions[quiz.index],{reveal:quiz.phase==='revealed'});
+ const action=intent.kind==='correction'?'teacher-word-text':intent.action,data=intent.kind==='correction'?{word:intent.word,spoken:intent.spoken}:{};
+ const response=await fetch('http://127.0.0.1:'+port+'/api/admin/'+action,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(65000)});const result=await response.json();if(!response.ok)throw Error(result.error||'اجرای فرمان ناموفق بود.');return intent.kind==='correction'?'اصلاح تلفظ ذخیره شد؛ صدای خودتان در درس پخش نمی‌شود.':'فرمان '+action+' اجرا شد.';
+}});
 let pendingPronunciationMigration=null;
 let auditRunning=false,auditNextAt=Date.now()+15000;
 async function auditNextPronunciation(){
@@ -114,7 +128,7 @@ async function auditNextPronunciation(){
   if(legacy){pronunciationAudit.state='learning';let learned=null;try{learned=await pronunciationVoice.learn(legacy.word,await teacherFiles.load(legacy.sha256));}catch{}pendingPronunciationMigration={word:legacy.word,sha256:legacy.sha256,learned};return;}
   const current=sessions().session,ids=current?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];
   let item;
-  for(const id of ids){const q=quiz.questions.find(q=>q.id===id);if(!q)continue;const text=teacher.questionText(q),path=join(root,'public/narration/fa',id+'.wav');if(!existsSync(path))continue;const audio=teacher.customQuestion(q)?correctedReadings.get(id+':'+teacher.revision)?.audio:readFileSync(path);if(!audio)continue;const key=auditKey(id,text,audio);if(!teacher.auditChecks.includes(key)){item={id,text,audio,key};break;}}
+  for(const id of ids){const q=quiz.questions.find(q=>q.id===id);if(!q)continue;const text=teacher.questionText(q),path=join(root,'public/narration/fa',id+'.wav');if(!existsSync(path))continue;const audio=correctedReadings.get(id+':'+teacher.revision)?.audio||(await auditSpeech.synthesize(text)).audio;const key=auditKey(id,text,audio);if(!teacher.auditChecks.includes(key)){item={id,text,audio,key};break;}}
   if(!item){pronunciationAudit.state='ready';return;}
   const revision=teacher.revision,heard=await auditRecognition.transcribe(item.audio,{audit:true});if(teacher.revision!==revision)return;
   const candidates=suspectWords(item.text,heard).filter(v=>!teacher.matches(v.word).length);
@@ -127,6 +141,7 @@ async function auditNextPronunciation(){
  finally{auditRunning=false;auditNextAt=Date.now()+(pronunciationAudit.state==='error'?120000:15000);}
 }
 const pronunciationAuditTick=setInterval(()=>{void auditNextPronunciation();},5000);pronunciationAuditTick.unref();
+function setLiteralPronunciation(candidate,word,spoken){if(pronunciationKey(word)!==pronunciationKey(spoken))throw Error('برای اصلاح تلفظ، همان کلمه را با اعراب بنویسید؛ واژهٔ متن تغییر داده نمی‌شود.');candidate.setText(word,spoken);}
 function teacherDiagnostics(){return {connection:live.status,connectionDiagnostics:live.diagnostics||[],voiceWorker:liveVoice.state,recognitionWorker:localRecognition.state,voiceCloneWorker:'disabled',voiceCloneEnabled:false,assistantEnabled:settings.assistant.enabled,narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,storage:sessionStore.status,pronunciationRules:teacher.rules.length,playbackVoice:'assistant_only',sourceAudio:'صدای Browser Source باید روی همان صفحه فعال باشد؛ سرور آن را حدس نمی‌زند.',guestAudio:'مسیر صدای تب یا ورودی مجازی در پنل لازم است؛ اتصال کامنت، صدای گیست را منتقل نمی‌کند.'};}
 async function wordAudioBody(req,maxBytes=240000){let total=0;const parts=[];for await(const part of req){total+=part.length;if(total>maxBytes)throw Error('نمونهٔ کلمه بیش از حد بزرگ است.');parts.push(part);}return Buffer.concat(parts);}
 function winnerNames(){const key=quiz.questions[quiz.index].correct.slice().sort().join(',');return [...quiz.answers.values()].filter(a=>[...a.choices].sort().join(',')===key).map(a=>a.name);}
@@ -164,7 +179,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();snapshot.question={...snapshot.question,fa:teacher.questionText(snapshot.question)};recordCompleted();
-  return {...snapshot,presenterIntro:{...presenterIntro.snapshot(),auto:settings.presenterIntroAuto},screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},pronunciationRevision:teacher.revision,narrationEnabled:settings.narrationEnabled&&teacherMutedRound!==quiz.round?.id,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,presenterIntro:{...presenterIntro.snapshot(),auto:settings.presenterIntroAuto},screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},pronunciationRevision:teacher.revision,narrationEnabled:settings.narrationEnabled&&teacherMutedRound!==quiz.round?.id,narrationLanguage:settings.narrationLanguage,persianVoice:'fa-IR-DilaraNeural',speechStyle:'literal_standard',welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -270,7 +285,7 @@ async function startRound({generation=roundControlGeneration}={}) {
  while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
  let duration=settings.narrationEnabled?narrationDuration(narrationInfo,quiz.questions[quiz.index].id,settings.narrationLanguage):0;
- if(settings.narrationEnabled&&settings.narrationLanguage!=='de'&&teacher.customQuestion(quiz.questions[quiz.index])){assistant.clear();const reading=await stageCorrectedQuestion(quiz.questions[quiz.index]);checkRoundGeneration(generation);duration=reading.durationMs+(settings.narrationLanguage==='both'?(narrationInfo?.questions?.[id]?.duration_ms||0)+300:0);}
+ if(settings.narrationEnabled&&settings.narrationLanguage!=='de'&&Boolean(quiz.questions[quiz.index])){assistant.clear();const reading=await stageCorrectedQuestion(quiz.questions[quiz.index]);checkRoundGeneration(generation);duration=reading.durationMs+(settings.narrationLanguage==='both'?(narrationInfo?.questions?.[id]?.duration_ms||0)+300:0);}
  persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:duration});rememberQuestion(id);advanceAt=null;broadcast();
 }
 async function revisitQuestion(id,generation){
@@ -302,7 +317,8 @@ const server=http.createServer(async(req,res)=>{
   if(!hosting.allowedHosts.has(req.headers.host)||!originAllowed(req))return json(res,403,{error:'Host or origin is not allowed'});
   const url=new URL(req.url,base);
   try {
-    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,persian_voice:narrationInfo?.persian_voice||null,persian_recordings:quiz.questions.filter(q=>existsSync(join(root,'public/narration/fa',q.id+'.wav'))).length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
+    if(req.method==='POST'&&url.pathname==='/telegram/takrun'){if(!teacherAgent.authorized(req.headers['x-telegram-bot-api-secret-token']))return json(res,401,{error:'Unauthorized'});const update=await body(req);await teacherAgent.receive(update);return json(res,200,{ok:true});}
+    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'fahrfit-online-v1',build:process.env.QUIZ_BUILD_SHA||'local',mode,questions:quiz.questions.length,german_voice:narrationInfo?.voice||null,persian_voice:'fa-IR-DilaraNeural',persian_speech_mode:'literal_standard_female_cached',persian_recordings:quiz.questions.filter(q=>existsSync(join(root,'public/narration/fa',q.id+'.wav'))).length,german_recordings:quiz.questions.filter(q=>existsSync(join(root,'public','narration',q.id+'.wav'))).length,verified_images:[...bankMedia.keys()].filter(p=>p.endsWith('.png')).length,verified_videos:[...bankMedia.keys()].filter(p=>p.endsWith('.mp4')).length});
     if(req.method==='GET'&&url.pathname==='/api/demo'){
       const selected=[quiz.questions[0],...quiz.questions.filter(q=>q.video),...quiz.questions.filter(q=>q.id.startsWith('1.3.01')).slice(0,2),...quiz.questions.filter(q=>q.id.startsWith('1.4.40')).slice(0,1)];
       return json(res,200,{label:'Isolated sales demonstration; all participants and gifts are simulated',questions:selected});
@@ -315,8 +331,9 @@ const server=http.createServer(async(req,res)=>{
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher-vocabulary'){
         const corpus=quiz.questions.map(q=>[teacher.questionText(q),...q.options.map(o=>o.fa),teachingNote(q)].join(' '));
         const words=[...new Set([...teacher.suspected.map(v=>v.word),...teacher.pendingWords,...teacher.rules.map(r=>r.word)])];
-        return json(res,200,{audit:{...pronunciationAudit,totalChecked:teacher.auditChecks.length},words:words.map(word=>({word,suspected:teacher.suspected.find(v=>v.word===word)||null,reported:teacher.pendingWords.includes(word),corrected:teacher.matches(word).some(r=>r.spoken&&!r.reviewNeeded),questions:corpus.filter(t=>wordPattern(pronunciationKey(word)).test(pronunciationKey(t))).length})),references:[{title:'صدای پایهٔ فارسی Amir / Piper',url:'https://huggingface.co/rhasspy/piper-voices/tree/5041a7a49ae5b3a0f30e6837769eb03fdbb231bd/fa/fa_IR/amir/medium'},{title:'واژه‌نامهٔ افغانی و قواعد تلفظ پروژه',url:'https://github.com/Deutsch-online/gapmedia-video-automation/blob/main/live-driving-quiz/prepare-narration.py'}]});
+        return json(res,200,{audit:{...pronunciationAudit,totalChecked:teacher.auditChecks.length},words:words.map(word=>({word,suspected:teacher.suspected.find(v=>v.word===word)||null,reported:teacher.pendingWords.includes(word),corrected:teacher.matches(word).some(r=>r.spoken&&!r.reviewNeeded&&pronunciationKey(r.word)===pronunciationKey(r.spoken)),questions:corpus.filter(t=>wordPattern(pronunciationKey(word)).test(pronunciationKey(t))).length})),references:[{title:'صدای پایهٔ فارسی Amir / Piper',url:'https://huggingface.co/rhasspy/piper-voices/tree/5041a7a49ae5b3a0f30e6837769eb03fdbb231bd/fa/fa_IR/amir/medium'},{title:'واژه‌نامهٔ افغانی و قواعد تلفظ پروژه',url:'https://github.com/Deutsch-online/gapmedia-video-automation/blob/main/live-driving-quiz/prepare-narration.py'}]});
       }
+      if(req.method==='GET'&&url.pathname==='/api/admin/teacher-agent')return json(res,200,teacherAgent.status());
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher')return json(res,200,{profile:teacher.privateState(),diagnostics:teacherDiagnostics()});
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher-word'){const rule=teacher.rules.find(r=>pronunciationKey(r.word)===pronunciationKey(url.searchParams.get('word')));if(!rule?.sha256)return json(res,404,{error:'نمونه وجود ندارد.'});return serveMedia(req,res,await teacherFiles.load(rule.sha256),'audio/wav');}
       if(req.method==='GET'&&url.pathname==='/api/admin/assistant')return json(res,200,{settings:settings.assistant,...assistant.status(),note:teachingNote(quiz.questions[quiz.index]),source:quiz.questions[quiz.index].source});
@@ -339,7 +356,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='teacher-command'){
         if(typeof data.text!=='string'||data.text.length>240)throw Error('دستور مدرس طولانی است.');const command=parseTeacherCommand(data.text,{pending:teacher.pending()});
         if(command.kind==='arm'){teacher.arm();assistant.clear();teacherMutedRound=quiz.round?.id||null;}
-        if(command.kind==='text-correction'){const candidate=new TeacherProfile(teacher.export());candidate.setText(command.word,command.spoken);await commitTeacher(candidate);}
+        if(command.kind==='text-correction'){const candidate=new TeacherProfile(teacher.export());setLiteralPronunciation(candidate,command.word,command.spoken);await commitTeacher(candidate);}
         if(command.kind==='setting'){if(command.setting==='persian'){settings.showPersian=command.enabled;settings.narrationLanguage=command.enabled?'fa':'de';}else{settings.assistant.enabled=command.enabled;if(!command.enabled)assistant.clear();}await persistDisplay();}
         broadcast();return json(res,200,{ok:true,command,profile:teacher.privateState(),diagnostics:command.kind==='diagnose'?teacherDiagnostics():null,state:publicState()});
       }
@@ -349,7 +366,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='teacher-clone-enabled'){const candidate=new TeacherProfile(teacher.export());candidate.enableVoiceReference(data.enabled);await commitTeacher(candidate);}
       else if(action==='teacher-style'){const candidate=new TeacherProfile(teacher.export());candidate.setStyle(data.style||{});await commitTeacher(candidate);}
       else if(action==='teacher-word-queue'){const candidate=new TeacherProfile(teacher.export());candidate.queueWord(data.word);await commitTeacher(candidate);}
-      else if(action==='teacher-word-text'){const candidate=new TeacherProfile(teacher.export());candidate.setText(data.word,data.spoken);await commitTeacher(candidate);}
+      else if(action==='teacher-word-text'){const candidate=new TeacherProfile(teacher.export());setLiteralPronunciation(candidate,data.word,data.spoken);await commitTeacher(candidate);}
       else if(action==='teacher-word-remove'){const candidate=new TeacherProfile(teacher.export());candidate.remove(normalWord(data.word));await commitTeacher(candidate);}
       else if(action==='teacher-cancel-correction'){teacher.disarm();}
       else if(action==='teacher-diagnose'){const diagnostics=teacherDiagnostics();try{const clip=await liveVoice.synthesize('آزمون صدای فارسی مدرس.');diagnostics.voiceTest={ok:true,durationMs:clip.durationMs};}catch{diagnostics.voiceTest={ok:false,message:'تولید صدای محلی ناموفق یا مشغول است؛ اعتبار پولی مصرف نشد.'};}return json(res,200,{ok:true,diagnostics,state:publicState()});}
@@ -448,7 +465,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='narration'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم خواندن سؤال معتبر نیست.');settings.narrationEnabled=data.enabled;save();
       }
-      else if(action==='narration-repeat'){if(teacher.customQuestion(quiz.questions[quiz.index]))await stageCorrectedQuestion(quiz.questions[quiz.index]);teacherMutedRound=null;narrationReplay++;}
+      else if(action==='narration-repeat'){if(Boolean(quiz.questions[quiz.index]))await stageCorrectedQuestion(quiz.questions[quiz.index]);teacherMutedRound=null;narrationReplay++;}
       else if(action==='timer-sound'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم صدای زمان معتبر نیست.');settings.timerSound=data.enabled;save();
       }
@@ -527,11 +544,12 @@ const server=http.createServer(async(req,res)=>{
     const assistantAudio=url.pathname.match(/^\/assistant\/audio\/([a-f0-9-]{36})\.wav$/);
     if(['GET','HEAD'].includes(req.method)&&assistantAudio){const audio=assistant.getAudio(assistantAudio[1]);if(!audio)return json(res,404,{error:'Speech expired'});return serveMedia(req,res,audio,'audio/wav');}
     if(['GET','HEAD'].includes(req.method)&&url.pathname.startsWith('/narration/')){
-      if(['/narration/welcome-fa.wav','/narration/welcome-de.wav'].includes(url.pathname)){const file=join(root,'public',url.pathname);if(!existsSync(file))return json(res,503,{error:'Welcome audio is not prepared'});return serveMedia(req,res,readFileSync(file),'audio/wav');}
+      if(url.pathname==='/narration/welcome-fa.wav'){if(!femaleWelcome)return json(res,503,{error:'صدای خوش‌آمد فارسی هنوز آماده نیست.'});return serveMedia(req,res,femaleWelcome.audio,'audio/wav');}
+      if(['/narration/welcome-de.wav'].includes(url.pathname)){const file=join(root,'public',url.pathname);if(!existsSync(file))return json(res,503,{error:'Welcome audio is not prepared'});return serveMedia(req,res,readFileSync(file),'audio/wav');}
       const language=url.pathname.startsWith('/narration/fa/')?'fa':'de',prefix=language==='fa'?'/narration/fa/':'/narration/';
       const id=url.pathname.slice(prefix.length).replace(/\.wav$/,'');
       if(!quiz.questions.some(q=>q.id===id)||url.pathname!==`${prefix}${id}.wav`)return json(res,404,{error:'Unknown question audio'});
-      if(language==='fa'&&teacher.customQuestion(quiz.questions.find(q=>q.id===id))){const reading=correctedReadings.get(id+':'+teacher.revision);if(!reading)return json(res,503,{error:'Corrected narration must be prepared by the owner before playback'});return serveMedia(req,res,reading.audio,'audio/wav');}
+      if(language==='fa'&&Boolean(quiz.questions.find(q=>q.id===id))){const reading=correctedReadings.get(id+':'+teacher.revision);if(!reading)return json(res,503,{error:'Corrected narration must be prepared by the owner before playback'});return serveMedia(req,res,reading.audio,'audio/wav');}
       const path=join(root,'public','narration',...(language==='fa'?['fa']:[]),id+'.wav');
       if(!existsSync(path))return json(res,503,{error:'Question audio is not prepared'});
       return serveMedia(req,res,readFileSync(path),'audio/wav');
@@ -550,9 +568,11 @@ server.on('upgrade',(req,socket,head)=>{
   wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);ws.send(JSON.stringify(publicState()));});
 });
 const tick=setInterval(async()=>{
+ if(teacherAgent.state==='connection_error'&&Date.now()>(teacherAgent.reconnectAt||0))void teacherAgent.start();
+ if(!femaleWelcome&&!welcomePreparing&&Date.now()>welcomeRetryAt&&settings.welcomeEnabled){welcomePreparing=true;void welcomeVoice.synthesize(speechTexts.welcome.fa).then(clip=>{femaleWelcome=clip;}).catch(()=>{welcomeRetryAt=Date.now()+120000;}).finally(()=>{welcomePreparing=false;});}
   if(reconnect.due({connecting,connected:Boolean(connection)}))void connect(settings.username,false,true).catch(()=>{reconnect.failed();});
   const introBusy=presenterIntro.busy();quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+settings.waitSeconds*1000;
-  const announcement=(mode==='demo'&&welcomeCycle.announcement?.demo&&Date.now()<welcomeCycle.announcement.expiresAt)?null:welcomeCycle.tick({connected:mode==='live'&&live.status==='connected',enabled:settings.welcomeEnabled&&!introBusy,phase:(assistant.active&&Date.now()<assistant.active.expiresAt)||(settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000)?'open':quiz.phase,durationMs:welcomeDuration()});
+  const announcement=(mode==='demo'&&welcomeCycle.announcement?.demo&&Date.now()<welcomeCycle.announcement.expiresAt)?null:welcomeCycle.tick({connected:mode==='live'&&live.status==='connected',enabled:settings.welcomeEnabled&&!introBusy&&(welcomeLanguage()==='de'||Boolean(femaleWelcome)),phase:(assistant.active&&Date.now()<assistant.active.expiresAt)||(settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000)?'open':quiz.phase,durationMs:welcomeDuration()});
   if(announcement&&quiz.phase==='revealed')advanceAt=Math.max(advanceAt||0,announcement.expiresAt);
   const welcomeBusy=welcomeCycle.announcement&&Date.now()<welcomeCycle.announcement.expiresAt;
   const musicBusy=settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000;
@@ -562,7 +582,8 @@ const tick=setInterval(async()=>{
   broadcast();
 },500);
 server.listen(port,hosting.bind,()=>{
+ void teacherAgent.start();
   writeFileSync(process.env.QUIZ_RUNTIME_PATH||join(root,'.runtime.json'),JSON.stringify({base,token,screen:base+'/screen',control:base+'/control#'+token,pid:process.pid},null,2),{mode:0o600});
   console.log(hosting.publicOrigin?`Screen: ${base}/screen\nPrivate control link is delivered separately to the owner.\nDemo mode; paid signing is disabled.`:`Screen: ${base}/screen\nControl: ${base}/control#${token}\nDemo mode; no live connection or paid service has been enabled.`);
 });
-for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);clearInterval(pronunciationAuditTick);auditRecognition.close();liveVoice.close();practiceVoice.close();pronunciationVoice.close();localRecognition.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);clearInterval(pronunciationAuditTick);teacherAgent.close();auditSpeech.close();auditRecognition.close();liveVoice.close();practiceVoice.close();pronunciationVoice.close();welcomeVoice.close();localRecognition.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});
