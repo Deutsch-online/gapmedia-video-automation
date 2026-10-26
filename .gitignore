@@ -70,3 +70,5 @@ __pycache__/
 # Isolated local video-model runtime and installer cache
 .tools/
 .cache/wan2gp-uv/
+
+.teacher-private/

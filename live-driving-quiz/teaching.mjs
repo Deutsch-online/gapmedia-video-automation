@@ -79,13 +79,13 @@ export function explainQuestion(q,{reveal=false}={}){
  return 'گزینهٔ '+labels.join(' و ')+(labels.length>1?' درست‌اند. ':' درست است. ')+reason;
 
 }
-export function answerComment(value,q,{revealed=false}={}){
+export function answerComment(value,q,{revealed=false,style={}}={}){
  const text=cleanComment(value),plain=text.replace(/\u200c/g,' ');
  if(!text||!hasPersian(text)||/^[\s\d۰-۹٠-٩,،.؟?!]+$/.test(text))return null;
  for(const [term,meaning] of glossary)if(text.toLowerCase().includes(term.toLowerCase()))return {kind:'term',text:meaning};
- if(/نفهمیدم|متوجه نشدم|گیج|سخت است|سخته/.test(plain))return {kind:revealed?'explanation':'hint',text:'نگران نباشید؛ با هم آرام بررسی می‌کنیم. '+explainQuestion(q,{reveal:revealed}),questionBound:true};
+ if(/نفهمیدم|متوجه نشدم|گیج|سخت است|سخته/.test(plain))return {kind:revealed?'explanation':'hint',text:(style.confusion||'نگران نباشید؛ با هم آرام بررسی می‌کنیم.')+' '+explainQuestion(q,{reveal:revealed}),questionBound:true};
  if(/تشریح|توضیح|چرا|دلیل|گزینه|جواب|پاسخ.*درست|نکته/.test(plain))return {kind:revealed?'explanation':'hint',text:explainQuestion(q,{reveal:revealed}),questionBound:true};
- if(/سلام|درود|خسته نباش/.test(plain))return {kind:'greeting',text:'سلام، خوش آمدید. خوشحالیم که همراه ما هستید. با هم، با آرامش سوال‌های رانندگی را تمرین می‌کنیم. پرسش درسی خود را بنویسید.'};
+ if(/سلام|درود|خسته نباش/.test(plain))return {kind:'greeting',text:style.greeting||'سلام، خوش آمدید. خوشحالیم که همراه ما هستید. با هم، با آرامش سوال‌های رانندگی را تمرین می‌کنیم. پرسش درسی خود را بنویسید.'};
  if(/حق تقدم/.test(plain))return {kind:'lesson',text:rules.priority};
  if(/نقطه.*کور|نگاه.*شانه/.test(plain))return {kind:'lesson',text:glossary.find(([term])=>term==='Schulterblick')[1]};
  if(/امتیاز|چطور.*پاسخ|چگونه.*پاسخ|چند.*گزینه/.test(plain))return {kind:'help',text:'شمارهٔ گزینه‌های انتخابی را در یک کامنت بنویسید. برای نمونه، شماره‌های یک و دو را کنار هم بنویسید. در سوال چندپاسخی، همهٔ گزینه‌های درست لازم‌اند.'};

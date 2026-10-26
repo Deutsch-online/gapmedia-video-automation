@@ -8,3 +8,5 @@ logs
 public/media
 public/narration
 __pycache__
+
+.teacher-private/

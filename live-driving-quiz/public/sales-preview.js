@@ -1,6 +1,8 @@
+import {controlMedia} from './media-viewer.js';
 // Standalone client demo. No LIVE events, admin requests, gifts or progress writes.
 export async function startSalesPreview(render){
  const response=await fetch('/api/demo');if(!response.ok)throw Error('Demo unavailable');const {questions}=await response.json();
+ let previousPhase,pausedAt;
  let index=0,round=0,phase,opened,closes,videoAt,answer=new Set(),showPersian=true,input='comments',score=0,lastWinner=null,giftAt=0,coins=0,likes=1200;
  const person={key:'demo-person',name:'Demo Alex',avatar:null},fan={key:'demo-fan',personKey:'demo-fan',kind:'like',name:'Demo Mia',avatar:null,likes,likeLabel:'1.2K',tier:'crown',username:null};
  function start(){round++;const now=Date.now(),watch=questions[index].video?questions[index].video_duration_ms+2000:0;phase=watch?'watching':'open';videoAt=watch?now+2000:null;opened=now+watch;closes=opened+30000;answer=new Set();emit();}
@@ -11,7 +13,7 @@ export async function startSalesPreview(render){
  }
  function emit(){const s=state();render(s);window.parent.postMessage({type:'fahrfit-demo-state',phase,index,total:questions.length,score,questionId:s.question.id,video:Boolean(s.question.video),hasPrevious:index>0},location.origin);}
  function command(action,data={}){
-  if(action==='next'){index=(index+1)%questions.length;start();}if(action==='previous'&&index>0){index--;start();}if(action==='repeat'||action==='start')start();if(action==='pause'){phase='paused';emit();}if(action==='reveal')reveal();
+  if(action==='next'){index=(index+1)%questions.length;start();}if(action==='previous'&&index>0){index--;start();}if(action==='repeat'||action==='start')start();if(action==='pause'&&phase!=='paused'){previousPhase=phase;pausedAt=Date.now();phase='paused';emit();}if(action==='resume'&&phase==='paused'){const delay=Date.now()-pausedAt;opened+=delay;closes+=delay;if(videoAt)videoAt+=delay;phase=previousPhase||'open';emit();}if(action==='media')controlMedia(data.action,data.value);if(action==='reveal')reveal();
   if(action==='language'){showPersian=Boolean(data.enabled);emit();}if(action==='input'){input=data.input==='gifts'?'gifts':'comments';answer=new Set();emit();}
   if(action==='answer'&&phase==='open'){const digits=String(data.value||'').match(/[123]/g)||[];for(const n of digits)answer.add('ABC'[Number(n)-1]);emit();}
   if(action==='support'){coins+=500;giftAt=Date.now();emit();}

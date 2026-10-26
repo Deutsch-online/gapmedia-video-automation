@@ -5,8 +5,8 @@ export class QuestionNarrator {
  update(state,ctx){
   if(!(state.narrationEnabled&&state.phase==='open'&&state.roundId)){if(this.key!==null||this.pending||this.source)this.stop();this.key=null;return;}
   const languages=state.narrationLanguage==='both'?['de','fa']:[state.narrationLanguage==='fa'?'fa':'de'];
-  const id=state.question.id,key=JSON.stringify([state.roundId,id,state.narrationReplay||0,languages]);
-  this.play(key,languages.map(lang=>'/narration/'+(lang==='fa'?'fa/':'')+encodeURIComponent(id)+'.wav'),ctx);
+  const id=state.question.id,key=JSON.stringify([state.roundId,id,state.narrationReplay||0,state.pronunciationRevision||0,languages]);
+  this.play(key,languages.map(lang=>'/narration/'+(lang==='fa'?'fa/':'')+encodeURIComponent(id)+'.wav'+(lang==='fa'&&state.pronunciationRevision?'?pv='+state.pronunciationRevision:'' )),ctx);
  }
  play(key,urls,ctx){
   if(this.key!==null&&this.key!==key){this.stop();this.key=null;}

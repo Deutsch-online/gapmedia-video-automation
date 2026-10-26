@@ -1,3 +1,4 @@
+import {initTeacher,renderTeacher} from './teacher-ui.js';
 import {renderGuests} from './guests-ui.js';
 const $=id=>document.getElementById(id);let token=decodeURIComponent(location.hash.slice(1));
 try{if(token)sessionStorage.setItem('fahrfit-control-token',token);else token=sessionStorage.getItem('fahrfit-control-token')||'';}catch{}
@@ -56,6 +57,7 @@ function savedGifts(){
 }
 async function loadCatalog(){try{const r=await fetch('/api/admin/catalog',{headers:{Authorization:'Bearer '+token}});if(!r.ok)throw Error('لینک خصوصی پنل را از پیام تلگرام باز کنید؛ بخش بعد از # باید در لینک باشد.');catalog=(await r.json()).gifts;mappings();}catch(e){notice(e.message,true);}}
 function render(s){
+ renderTeacher(s);
  if(!s)return;if(activeBuild&&s.build&&activeBuild!==s.build){history.replaceState(null,'',location.pathname+'#'+encodeURIComponent(token));location.reload();return;}activeBuild=s.build;const changed=state?.connection.status!==s.connection.status||state?.connection.giftCount!==s.connection.giftCount;state=s;
  $('autoReconnect').checked=Boolean(s.connection.autoReconnect);
  $('connectionStatus').textContent=s.connection.message+(s.connection.autoReconnect&&s.connection.retryAt?' تلاش بعدی تا '+Math.max(0,Math.ceil((s.connection.retryAt-s.serverTime)/1000))+' ثانیهٔ دیگر.':'')+(s.connection.diagnostics?.length?' '+s.connection.diagnostics.map(d=>`${d.route||'اتصال'}: ${d.reason}${d.httpStatus?' HTTP '+d.httpStatus:''}`).join(' · '):'');
@@ -180,7 +182,7 @@ for(const id of ['joinEnabled','joinSide','joinSize','joinBottom'])$(id).addEven
 $('saveJoinDisplay').addEventListener('click',async()=>{const result=await api('join-display',{enabled:$('joinEnabled').checked,side:$('joinSide').value,size:Number($('joinSize').value),bottom:Number($('joinBottom').value)});if(result){joinDisplayDirty=false;render(result.state);}});
 $('testJoinBubble').addEventListener('click',()=>api('simulate-join'));
 const tabs=[...document.querySelectorAll('.control-tabs [role=tab]')];
-function selectPanel(key,{focus=false}={}){const selected=tabs.find(t=>t.dataset.panel===key)||tabs[0];for(const tab of tabs){const active=tab===selected;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;$(tab.getAttribute('aria-controls')).hidden=!active;}try{sessionStorage.setItem('fahrfit-control-section',selected.dataset.panel);}catch{}if(focus)selected.focus();selected.scrollIntoView({block:'nearest',inline:'nearest'});}
+function selectPanel(key,{focus=false}={}){if(key==='sales'){const demo=document.querySelector('.control-live-demo');if(!demo.src)demo.src=demo.dataset.src;}const selected=tabs.find(t=>t.dataset.panel===key)||tabs[0];for(const tab of tabs){const active=tab===selected;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;$(tab.getAttribute('aria-controls')).hidden=!active;}try{sessionStorage.setItem('fahrfit-control-section',selected.dataset.panel);}catch{}if(focus)selected.focus();selected.scrollIntoView({block:'nearest',inline:'nearest'});}
 for(const [index,tab] of tabs.entries()){tab.addEventListener('click',()=>selectPanel(tab.dataset.panel));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowLeft')next=(index+1)%tabs.length;if(event.key==='ArrowRight')next=(index-1+tabs.length)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();selectPanel(tabs[next].dataset.panel,{focus:true});}});}
 try{selectPanel(sessionStorage.getItem('fahrfit-control-section'));}catch{selectPanel('questions');}
 
@@ -232,3 +234,5 @@ $('introAuto').addEventListener('change',()=>{introDirty=true;});
 $('saveIntroAuto').addEventListener('click',async()=>{const r=await api('presenter-intro-settings',{auto:$('introAuto').checked});if(r){introDirty=false;render(r.state);}});
 $('playIntro').addEventListener('click',()=>api('presenter-intro-play'));
 $('stopIntro').addEventListener('click',()=>api('presenter-intro-stop'));
+
+initTeacher({token,api,getState:()=>state});

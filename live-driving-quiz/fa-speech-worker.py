@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('speech_prepare',ROOT/'prepare-narration.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 import onnxruntime as ort
+from runtime_pronunciation import reading
 from piper.voice import PiperVoice
 from piper.config import PiperConfig,SynthesisConfig
 voices={}
@@ -16,11 +17,11 @@ for language in ['fa','de']:
 for line in sys.stdin:
  request={}
  try:
-  if len(line)>12000:raise ValueError('Request too long')
+  if len(line)>24000000:raise ValueError('Request too long')
   request=json.loads(line);text=request['text']
   if not isinstance(text,str) or not 1<=len(text)<=1600:raise ValueError('Invalid speech length')
   buffer=io.BytesIO()
-  module.synthesize_reading(text,'fa',voices,buffer)
+  reading(module,text,voices,buffer,request.get('rules',[]),request.get('style',{}))
   data=buffer.getvalue()
   with wave.open(io.BytesIO(data)) as audio:duration=round(audio.getnframes()/audio.getframerate()*1000)
   if not 400<=duration<=120000 or len(data)>5500000:raise ValueError('Speech exceeds bound')

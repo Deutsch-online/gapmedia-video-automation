@@ -15,6 +15,21 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
+  for(const endpoint of ['teacher','next-lesson','teacher-word?word=test'])assert.equal((await fetch(base+'/api/admin/'+endpoint)).status,401);
+  assert.equal((await fetch(base+'/teacher-ui.js')).status,200);
+  assert.equal((await fetch(base+'/live-demo')).status,200);
+  assert.equal((await fetch(base+'/live-demo.js')).status,200);
+  assert.equal((await fetch(base+'/teacher-audio.js')).status,200);
+  const ownerGet=path=>fetch(base+'/api/admin/'+path,{headers:{authorization:'Bearer '+settings.token}});
+  assert.equal((await ownerGet('next-lesson')).status,200);
+  const arm=await(await post('teacher-command',{text:'این کلمه را اینطور تلفظ کن'})).json();
+  assert.equal(arm.command.silent,true);assert.equal(arm.profile.pendingCorrection,true);
+  assert.equal((await post('teacher-word-text',{word:'فلش',spoken:'فِلَش'})).status,200);
+  const privateProfile=await(await ownerGet('teacher')).json();assert.equal(privateProfile.profile.rules.length,1);
+  const publicProfile=await(await fetch(base+'/api/state')).json();assert.equal(publicProfile.teacherProfile,undefined);assert.equal(publicProfile.rules,undefined);
+  assert.equal((await post('teacher-word-text',{word:'فلش',spoken:'فلش'})).status,400);
+  assert.equal((await post('teacher-word-remove',{word:'فلش'})).status,200);
+
   assert.equal((await fetch(base+'/api/admin/presenter-intro-play',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,401);
   assert.equal((await post('presenter-intro-play')).status,200);const introState=await(await fetch(base+'/api/state')).json();assert.equal(introState.phase,'paused');assert.equal(introState.presenterIntro.durationMs,30000);assert.ok(introState.presenterIntro.active);
   assert.equal((await post('presenter-intro-stop')).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).presenterIntro.active,null);
