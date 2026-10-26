@@ -16,6 +16,12 @@ RUN /home/node/voice-env/bin/python prepare-narration.py
 RUN python3 -m venv /home/node/asr-env && /home/node/asr-env/bin/pip install --no-cache-dir faster-whisper==1.2.1 av==16.1.0
 RUN HF_HUB_DISABLE_XET=1 /home/node/asr-env/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('Systran/faster-whisper-small',revision='536b0662742c02347bc0e980a01041f333bce120',local_dir='/home/node/asr-model',allow_patterns=['config.json','model.bin','tokenizer.json','vocabulary.*'])"
 ENV QUIZ_ASR_PYTHON=/home/node/asr-env/bin/python QUIZ_ASR_MODEL=/home/node/asr-model
+# Separate CPU-only tone-conversion runtime; no CUDA or paid inference service.
+RUN python3 -m venv /home/node/clone-env && /home/node/clone-env/bin/pip install --no-cache-dir torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+RUN /home/node/clone-env/bin/pip install --no-cache-dir numpy==1.26.4 librosa==0.10.2.post1 soundfile==0.12.1 eng_to_ipa==0.0.2 inflect==7.0.0 unidecode==1.3.7 pypinyin==0.50.0 cn2an==0.5.22 jieba==0.42.1
+COPY --chown=node:node prepare-owner-voice.py ./
+RUN python3 prepare-owner-voice.py /home/node/owner-voice-assets
+ENV QUIZ_CLONE_PYTHON=/home/node/clone-env/bin/python QUIZ_CLONE_ASSETS=/home/node/owner-voice-assets
 COPY --chown=node:node . .
 RUN node bank-media.mjs
 EXPOSE 7860

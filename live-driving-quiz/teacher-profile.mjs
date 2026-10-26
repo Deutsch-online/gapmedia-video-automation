@@ -3,17 +3,20 @@ export const TEACHER_STYLE={pace:1.25,volume:0.78,greeting:'سلام، خوش آ
 export const normalWord=s=>String(s||'').normalize('NFC').replace(/[يك]/g,c=>c==='ي'?'ی':'ک').replace(/\s+/g,' ').trim();
 export function validWord(word){return typeof word==='string'&&word.length>=1&&word.length<=60&&/^[\p{L}\p{M}\u200c -]+$/u.test(word)&&word.split(' ').length<=3;}
 export function wordPattern(word){return new RegExp('(?<![\\p{L}\\p{N}_\\u200c])'+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\p{L}\\p{N}_\\u200c])','giu');}
-export function validateWordAudio(bytes){
- if(!Buffer.isBuffer(bytes)||bytes.length<44||bytes.length>240000||bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WAVE')throw Error('نمونهٔ کلمه باید WAV کوتاه باشد.');
+export function validateTeacherAudio(bytes,{maxBytes=240000,maxDurationMs=5000}={}){
+ if(!Buffer.isBuffer(bytes)||bytes.length<44||bytes.length>maxBytes||bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WAVE')throw Error('نمونهٔ کلمه باید WAV کوتاه باشد.');
  let fmt,data;
  for(let offset=12;offset+8<=bytes.length;){const id=bytes.toString('ascii',offset,offset+4),size=bytes.readUInt32LE(offset+4),end=offset+8+size;if(end>bytes.length)throw Error('فایل صوتی ناقص است.');if(id==='fmt ')fmt=bytes.subarray(offset+8,end);if(id==='data')data=bytes.subarray(offset+8,end);offset=end+(size%2);}
  if(!fmt||fmt.length<16||fmt.readUInt16LE(0)!==1||fmt.readUInt16LE(2)!==1||fmt.readUInt32LE(4)!==22050||fmt.readUInt16LE(14)!==16||!data||data.length%2)throw Error('قالب نمونهٔ کلمه معتبر نیست.');
- const durationMs=Math.round(data.length/44100*1000);if(durationMs<150||durationMs>5000)throw Error('نمونهٔ تلفظ باید بین 0.15 و 5 ثانیه باشد.');
+ const durationMs=Math.round(data.length/44100*1000);if(durationMs<150||durationMs>maxDurationMs)throw Error('مدت ضبط باید بین 0.15 و '+maxDurationMs/1000+' ثانیه باشد.');
  let peak=0;for(let i=0;i<data.length;i+=2)peak=Math.max(peak,Math.abs(data.readInt16LE(i)));if(peak<120)throw Error('صدای نمونه شنیده نمی‌شود.');
  return {durationMs,sha256:createHash('sha256').update(bytes).digest('hex')};
 }
+export const validateWordAudio=bytes=>validateTeacherAudio(bytes);
+export const validateSentenceAudio=bytes=>validateTeacherAudio(bytes,{maxBytes:2646044,maxDurationMs:60000});
+export const textHash=text=>createHash('sha256').update(text).digest('hex');
 export class TeacherProfile{
- constructor(saved={}){this.revision=Number.isInteger(saved.revision)?saved.revision:0;this.rules=(Array.isArray(saved.rules)?saved.rules:[]).filter(r=>validWord(r.word)&&(typeof r.spoken==='string'||/^[a-f0-9]{64}$/.test(r.sha256||''))).slice(0,50);this.style={...TEACHER_STYLE};for(const k of Object.keys(TEACHER_STYLE))if(typeof saved.style?.[k]===typeof TEACHER_STYLE[k])this.style[k]=saved.style[k];try{this.validateStyle(this.style);}catch{this.style={...TEACHER_STYLE};}this.pendingUntil=0;}
+ constructor(saved={}){this.revision=Number.isInteger(saved.revision)?saved.revision:0;this.rules=(Array.isArray(saved.rules)?saved.rules:[]).filter(r=>validWord(r.word)&&(typeof r.spoken==='string'||/^[a-f0-9]{64}$/.test(r.sha256||''))).slice(0,50);this.style={...TEACHER_STYLE};for(const k of Object.keys(TEACHER_STYLE))if(typeof saved.style?.[k]===typeof TEACHER_STYLE[k])this.style[k]=saved.style[k];try{this.validateStyle(this.style);}catch{this.style={...TEACHER_STYLE};}this.pendingUntil=0;this.voiceReference=/^[a-f0-9]{64}$/.test(saved.voiceReference?.sha256||'')&&saved.voiceReference.durationMs>=5000&&saved.voiceReference.durationMs<=60000?{...saved.voiceReference,enabled:saved.voiceReference.enabled===true}:null;this.questionRecordings=Object.fromEntries(Object.entries(saved.questionRecordings||{}).filter(([id,v])=>/^[A-Za-z0-9.-]{1,80}$/.test(id)&&/^[a-f0-9]{64}$/.test(v?.sha256||'')&&/^[a-f0-9]{64}$/.test(v?.textSha256||'')&&Number.isInteger(v.durationMs)&&v.durationMs>=150&&v.durationMs<=60000).slice(0,400));this.questionEdits=Object.fromEntries(Object.entries(saved.questionEdits||{}).filter(([id,v])=>/^[A-Za-z0-9.-]{1,80}$/.test(id)&&typeof v?.fa==='string'&&v.fa.trim()&&v.fa.length<=600).slice(0,400));}
  validateStyle(style){if(!Number.isFinite(style.pace)||style.pace<1.05||style.pace>1.6||!Number.isFinite(style.volume)||style.volume<0.5||style.volume>0.95)throw Error('سرعت یا بلندی صدا معتبر نیست.');for(const k of ['greeting','confusion','success','thanks'])if(typeof style[k]!=='string'||style[k].length>220||!style[k].trim()||/https?:|[<>]/i.test(style[k]))throw Error('متن سبک برخورد معتبر نیست.');if(!style.success.includes('{names}'))throw Error('متن تشویق باید {names} داشته باشد.');}
  setStyle(value){const next={...this.style,...value};this.validateStyle(next);this.style=next;this.revision++;}
  arm(now=Date.now()){this.pendingUntil=now+30000;}
@@ -23,9 +26,18 @@ export class TeacherProfile{
  setText(word,spoken){spoken=normalWord(spoken);if(!validWord(spoken))throw Error('تلفظ اصلاح‌شده معتبر نیست.');if(normalWord(word)===spoken)throw Error('برای اصلاح تلفظِ یکسان در نوشتار، نمونهٔ صوتی کلمه را ثبت کنید.');this.upsert({word,spoken,updatedAt:Date.now()});}
  remove(word){this.rules=this.rules.filter(r=>r.word!==word);this.revision++;}
  matches(text){const normalized=normalWord(text);return this.rules.filter(r=>wordPattern(r.word).test(normalized));}
- custom(text){return this.matches(text).length>0||this.style.pace!==TEACHER_STYLE.pace||this.style.volume!==TEACHER_STYLE.volume;}
- export(){return {version:1,revision:this.revision,style:this.style,rules:this.rules};}
- privateState(){return {...this.export(),pendingCorrection:this.pending(),training:'explicit_examples_and_feedback',voiceCloneActive:false};}
+ custom(text){return Boolean(this.voiceReference?.enabled)||this.matches(text).length>0||this.style.pace!==TEACHER_STYLE.pace||this.style.volume!==TEACHER_STYLE.volume;}
+ questionText(question){return this.questionEdits[question.id]?.fa||question.fa;}
+ questionRecording(question){const clip=this.questionRecordings[question.id];return clip?.textSha256===textHash(this.questionText(question))?clip:null;}
+ customQuestion(question){return Boolean(this.questionRecording(question)||this.questionEdits[question.id])||this.custom(question.fa);}
+ setQuestionRecording(question,info){this.questionRecordings[question.id]={...info,textSha256:textHash(this.questionText(question)),updatedAt:Date.now()};this.revision++;}
+ setVoiceReference(info){if(info.durationMs<5000||info.durationMs>60000||!/^[a-f0-9]{64}$/.test(info.sha256))throw Error('نمونهٔ کاپی صدا باید 5 تا 60 ثانیه باشد.');this.voiceReference={...info,enabled:Boolean(this.voiceReference?.enabled),updatedAt:Date.now()};this.revision++;}
+ enableVoiceReference(enabled){if(!this.voiceReference||typeof enabled!=='boolean')throw Error('اول یک نمونهٔ صدای خودتان ذخیره کنید.');this.voiceReference.enabled=enabled;this.revision++;}
+ removeQuestionRecording(id){delete this.questionRecordings[id];this.revision++;}
+ setQuestionText(id,text){if(!/^[A-Za-z0-9.-]{1,80}$/.test(id)||typeof text!=='string'||!text.trim()||text.length>600||/[<>]/.test(text))throw Error('متن اصلاح‌شدهٔ سوال باید بین 1 و 600 نویسه باشد.');this.questionEdits[id]={fa:text.trim().normalize('NFC'),updatedAt:Date.now()};this.revision++;}
+ resetQuestionText(id){delete this.questionEdits[id];this.revision++;}
+ export(){return {version:1,revision:this.revision,style:this.style,rules:this.rules,questionEdits:this.questionEdits,questionRecordings:this.questionRecordings,voiceReference:this.voiceReference};}
+ privateState(){return {...this.export(),pendingCorrection:this.pending(),training:'explicit_examples_and_feedback',voiceCloneActive:Boolean(this.voiceReference?.enabled)};}
 }
 export function parseTeacherCommand(value,{pending=false}={}){
  const text=normalWord(value).replace(/[،؟?!؛.]/g,' ').replace(/\s+/g,' ').trim();

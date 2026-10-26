@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {pcmWav} from '../public/teacher-audio.js';
 import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -33,6 +35,19 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const publicProfile=await(await fetch(base+'/api/state')).json();assert.equal(publicProfile.teacherProfile,undefined);assert.equal(publicProfile.rules,undefined);
   assert.equal((await post('teacher-word-text',{word:'فلش',spoken:'فلش'})).status,400);
   assert.equal((await post('teacher-word-remove',{word:'فلش'})).status,200);
+  const testText='این جمله برای تمرین صدای خودم اصلاح شده است.';
+  assert.equal((await post('teacher-question-text',{id:practice.questions[0].id,text:testText})).status,200);
+  assert.equal((await(await ownerGet('practice-lesson')).json()).questions.find(q=>q.id===practice.questions[0].id).fa,testText);
+  const samples=Float32Array.from({length:22050*7},(_,i)=>Math.sin(i/12)*.2),sampleBytes=Buffer.from(await pcmWav(samples,22050,60).arrayBuffer());
+  const sampleUrl=base+'/api/admin/teacher-question-audio?id='+encodeURIComponent(practice.questions[0].id)+'&textHash='+createHash('sha256').update(testText).digest('hex');
+  const sampleResponse=await fetch(sampleUrl,{method:'POST',headers:{authorization:'Bearer '+settings.token,'content-type':'audio/wav'},body:sampleBytes});assert.equal(sampleResponse.status,200);
+  const recorded=await post('teacher-preview',{text:testText,questionId:practice.questions[0].id});assert.equal(recorded.status,200);assert.deepEqual(Buffer.from(await recorded.arrayBuffer()),sampleBytes,'exact owner recording plays offline without Python, LIVE or a public screen');
+  assert.equal((await post('teacher-clone-reference',{id:practice.questions[0].id})).status,200);assert.equal((await post('teacher-clone-enabled',{enabled:true})).status,200);
+  assert.equal((await post('teacher-clone-enabled',{enabled:false})).status,200);
+  assert.equal((await post('teacher-question-recording-remove',{id:practice.questions[0].id})).status,200);
+  assert.equal((await post('teacher-question-reset',{id:practice.questions[0].id})).status,200);
+  assert.equal((await(await ownerGet('practice-lesson')).json()).questions.find(q=>q.id===practice.questions[0].id).fa,practice.questions[0].fa);
+
 
   assert.equal((await fetch(base+'/api/admin/presenter-intro-play',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,401);
   assert.equal((await post('presenter-intro-play')).status,200);const introState=await(await fetch(base+'/api/state')).json();assert.equal(introState.phase,'paused');assert.equal(introState.presenterIntro.durationMs,30000);assert.ok(introState.presenterIntro.active);

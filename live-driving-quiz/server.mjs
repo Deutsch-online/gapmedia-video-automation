@@ -19,11 +19,13 @@ import {QuizSessions} from './sessions.mjs';
 import {SessionStore} from './session-store.mjs';
 import {GuestSupport} from './guests.mjs';
 import {LiveSpeech} from './live-speech.mjs';
+import {OwnerVoice} from './owner-voice.mjs';
+const ownerVoice=new OwnerVoice();
 import {LocalRecognition} from './local-recognition.mjs';
 const localRecognition=new LocalRecognition();
 import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
 import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
-import {TeacherProfile,parseTeacherCommand,normalWord,validWord,validateWordAudio} from './teacher-profile.mjs';
+import {TeacherProfile,parseTeacherCommand,normalWord,validWord,validateSentenceAudio,textHash,validateWordAudio} from './teacher-profile.mjs';
 import {PrivateTeacherFiles} from './private-teacher-files.mjs';
 import {PresenterIntro} from './presenter-intro.mjs';
 import {WelcomeCycle} from './welcome.mjs';
@@ -81,7 +83,7 @@ if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBu
 let teacher=new TeacherProfile(loadedProgress?.teacherProfile||settings.teacherProfile||{});settings.teacherProfile=teacher.export();
 const teacherFiles=new PrivateTeacherFiles(sessionStore,join(dirname(settingsFile),'.teacher-private'));
 let teacherMutedRound=null;const correctedReadings=new Map();
-const teacherVoiceOptions={revision:()=>teacher.revision,style:()=>teacher.style,rulesFor:async text=>Promise.all(teacher.matches(text).map(async rule=>rule.sha256?{word:rule.word,audio:(await teacherFiles.load(rule.sha256)).toString('base64')}:{word:rule.word,spoken:rule.spoken}))};
+const teacherVoiceOptions={processAudio:async clip=>teacher.voiceReference?.enabled?ownerVoice.convert(clip,await teacherFiles.load(teacher.voiceReference.sha256),teacher.voiceReference.sha256):clip,revision:()=>teacher.revision,style:()=>teacher.style,rulesFor:async text=>Promise.all(teacher.matches(text).map(async rule=>rule.sha256?{word:rule.word,audio:(await teacherFiles.load(rule.sha256)).toString('base64')}:{word:rule.word,spoken:rule.spoken}))};
 const liveVoice=new LiveSpeech(teacherVoiceOptions);
 const practiceVoice=new LiveSpeech(teacherVoiceOptions);
 const assistant=new LiveAssistant({voice:liveVoice,settings:()=>settings.assistant,style:()=>teacher.style});
@@ -97,10 +99,10 @@ function progressData(){return {...liveSessions.export(),activityDisplay:setting
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
-async function stageCorrectedQuestion(question){const key=question.id+':'+teacher.revision;if(correctedReadings.has(key))return correctedReadings.get(key);const clip=await liveVoice.synthesize(question.fa);correctedReadings.set(key,clip);while(correctedReadings.size>8)correctedReadings.delete(correctedReadings.keys().next().value);return clip;}
-async function commitTeacher(candidate){const previous=settings.teacherProfile;settings.teacherProfile=candidate.export();try{await persistDisplay();}catch(error){settings.teacherProfile=previous;save();if(sessionStore.repo)sessionStore.queue(progressData());throw error;}teacher=candidate;assistant.clear();liveVoice.close();practiceVoice.close();correctedReadings.clear();teacherMutedRound=quiz.round?.id||null;}
-function teacherDiagnostics(){return {connection:live.status,connectionDiagnostics:live.diagnostics||[],voiceWorker:liveVoice.state,recognitionWorker:localRecognition.state,assistantEnabled:settings.assistant.enabled,narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,storage:sessionStore.status,pronunciationRules:teacher.rules.length,sourceAudio:'صدای Browser Source باید روی همان صفحه فعال باشد؛ سرور آن را حدس نمی‌زند.',guestAudio:'مسیر صدای تب یا ورودی مجازی در پنل لازم است؛ اتصال کامنت، صدای گیست را منتقل نمی‌کند.'};}
-async function wordAudioBody(req){let total=0;const parts=[];for await(const part of req){total+=part.length;if(total>240000)throw Error('نمونهٔ کلمه بیش از حد بزرگ است.');parts.push(part);}return Buffer.concat(parts);}
+async function stageCorrectedQuestion(question){const key=question.id+':'+teacher.revision;if(correctedReadings.has(key))return correctedReadings.get(key);const saved=teacher.questionRecording(question);const clip=saved?{audio:await teacherFiles.load(saved.sha256),durationMs:saved.durationMs}:await liveVoice.synthesize(teacher.questionText(question));correctedReadings.set(key,clip);while(correctedReadings.size>8)correctedReadings.delete(correctedReadings.keys().next().value);return clip;}
+async function commitTeacher(candidate){const previous=settings.teacherProfile;settings.teacherProfile=candidate.export();try{await persistDisplay();}catch(error){settings.teacherProfile=previous;save();if(sessionStore.repo)sessionStore.queue(progressData());throw error;}teacher=candidate;assistant.clear();liveVoice.close();practiceVoice.close();ownerVoice.close();correctedReadings.clear();teacherMutedRound=quiz.round?.id||null;}
+function teacherDiagnostics(){return {connection:live.status,connectionDiagnostics:live.diagnostics||[],voiceWorker:liveVoice.state,recognitionWorker:localRecognition.state,voiceCloneWorker:ownerVoice.state,voiceCloneEnabled:Boolean(teacher.voiceReference?.enabled),assistantEnabled:settings.assistant.enabled,narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,storage:sessionStore.status,pronunciationRules:teacher.rules.length,sourceAudio:'صدای Browser Source باید روی همان صفحه فعال باشد؛ سرور آن را حدس نمی‌زند.',guestAudio:'مسیر صدای تب یا ورودی مجازی در پنل لازم است؛ اتصال کامنت، صدای گیست را منتقل نمی‌کند.'};}
+async function wordAudioBody(req,maxBytes=240000){let total=0;const parts=[];for await(const part of req){total+=part.length;if(total>maxBytes)throw Error('نمونهٔ کلمه بیش از حد بزرگ است.');parts.push(part);}return Buffer.concat(parts);}
 function winnerNames(){const key=quiz.questions[quiz.index].correct.slice().sort().join(',');return [...quiz.answers.values()].filter(a=>[...a.choices].sort().join(',')===key).map(a=>a.name);}
 function recordCompleted(){if(quiz.phase==='revealed'&&quiz.round?.id!==completedRound){completedRound=quiz.round?.id;sessions().complete(quiz.questions[quiz.index].id);persistSession();if(settings.assistant.enabled&&settings.assistant.autoExplain)assistant.explain(quiz.questions[quiz.index],quiz.round.id,{revealed:true,winners:winnerNames()});}}
 async function nextRound({generation=roundControlGeneration}={}){recordCompleted();await flushSession();checkRoundGeneration(generation);const id=sessions().next();persistSession();await flushSession();checkRoundGeneration(generation);advanceAt=null;if(!id){autoplay=false;return false;}quiz.select(id);return true;}
@@ -135,7 +137,7 @@ function ready() {
 }
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
-  const snapshot=quiz.snapshot();recordCompleted();
+  const snapshot=quiz.snapshot();snapshot.question={...snapshot.question,fa:teacher.questionText(snapshot.question)};recordCompleted();
   return {...snapshot,presenterIntro:{...presenterIntro.snapshot(),auto:settings.presenterIntroAuto},screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},pronunciationRevision:teacher.revision,narrationEnabled:settings.narrationEnabled&&teacherMutedRound!==quiz.round?.id,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
@@ -242,7 +244,7 @@ async function startRound({generation=roundControlGeneration}={}) {
  while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
  let duration=settings.narrationEnabled?narrationDuration(narrationInfo,quiz.questions[quiz.index].id,settings.narrationLanguage):0;
- if(settings.narrationEnabled&&settings.narrationLanguage!=='de'&&teacher.custom(quiz.questions[quiz.index].fa)){assistant.clear();const reading=await stageCorrectedQuestion(quiz.questions[quiz.index]);checkRoundGeneration(generation);duration=reading.durationMs+(settings.narrationLanguage==='both'?(narrationInfo?.questions?.[id]?.duration_ms||0)+300:0);}
+ if(settings.narrationEnabled&&settings.narrationLanguage!=='de'&&teacher.customQuestion(quiz.questions[quiz.index])){assistant.clear();const reading=await stageCorrectedQuestion(quiz.questions[quiz.index]);checkRoundGeneration(generation);duration=reading.durationMs+(settings.narrationLanguage==='both'?(narrationInfo?.questions?.[id]?.duration_ms||0)+300:0);}
  persistSession();await flushSession();checkRoundGeneration(generation);sessionError=null;quiz.start({narrationMs:duration});rememberQuestion(id);advanceAt=null;broadcast();
 }
 async function revisitQuestion(id,generation){
@@ -283,7 +285,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname.startsWith('/api/admin/')) {
       if(!authenticated(req))return json(res,401,{error:'رمز پنل کنترل معتبر نیست.'});
       if(req.method==='GET'&&url.pathname==='/api/admin/next-lesson'){const plan=sessions().lessonPlan;return json(res,200,{session:sessions().summary(),next:(plan?.queued?.[0]?.ids||[]).map(id=>{const q=quiz.questions.find(q=>q.id===id);return {id,fa:q?.fa,de:q?.de};})});}
-      if(req.method==='GET'&&url.pathname==='/api/admin/practice-lesson'){const current=sessions().session;const ids=current?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];return json(res,200,{title:current?'درس این جلسه · '+current.number:'درس نوبت بعدی',questions:ids.map(id=>{const q=quiz.questions.find(q=>q.id===id);return {id,fa:q.fa,de:q.de,note:teachingNote(q)};})});}
+      if(req.method==='GET'&&url.pathname==='/api/admin/practice-lesson'){const current=sessions().session;const ids=current?.ids||sessions().lessonPlan?.queued?.[0]?.ids||[];return json(res,200,{title:current?'درس این جلسه · '+current.number:'درس نوبت بعدی',questions:ids.map(id=>{const q=quiz.questions.find(q=>q.id===id);return {id,fa:teacher.questionText(q),originalFa:q.fa,edited:Boolean(teacher.questionEdits[id]),recorded:Boolean(teacher.questionRecording(q)),de:q.de,note:teachingNote(q)};})});}
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher')return json(res,200,{profile:teacher.privateState(),diagnostics:teacherDiagnostics()});
       if(req.method==='GET'&&url.pathname==='/api/admin/teacher-word'){const rule=teacher.rules.find(r=>r.word===normalWord(url.searchParams.get('word')));if(!rule?.sha256)return json(res,404,{error:'نمونه وجود ندارد.'});return serveMedia(req,res,await teacherFiles.load(rule.sha256),'audio/wav');}
       if(req.method==='GET'&&url.pathname==='/api/admin/assistant')return json(res,200,{settings:settings.assistant,...assistant.status(),note:teachingNote(quiz.questions[quiz.index]),source:quiz.questions[quiz.index].source});
@@ -292,10 +294,11 @@ const server=http.createServer(async(req,res)=>{
       if(req.method==='GET'&&url.pathname==='/api/admin/gift-events')return json(res,200,{events:giftDisplayEvents,traffic});
       if(req.method==='GET'&&url.pathname==='/api/admin/catalog')return json(res,200,{gifts:live.catalog});
       if(req.method!=='POST')return json(res,405,{error:'POST required'});
+      if(url.pathname==='/api/admin/teacher-question-audio'){const question=quiz.questions.find(q=>q.id===url.searchParams.get('id'));if(!question)throw Error('سوال مشخص نیست.');if(url.searchParams.get('textHash')!==textHash(teacher.questionText(question)))throw Error('متن سوال تغییر کرده است؛ برای متن جدید دوباره ضبط کنید.');const bytes=await wordAudioBody(req,2646044),info=validateSentenceAudio(bytes);await teacherFiles.save(info.sha256,bytes);const candidate=new TeacherProfile(teacher.export());candidate.setQuestionRecording(question,info);const cloneReferenceSkipped=url.searchParams.get('cloneReference')==='true'&&info.durationMs<5000;if(url.searchParams.get('cloneReference')==='true'&&!cloneReferenceSkipped)candidate.setVoiceReference(info);let referencePace=null;if(url.searchParams.get('learnPace')==='true'){try{const baseline=await practiceVoice.synthesize(teacher.questionText(question));referencePace=Math.round(Math.max(1.05,Math.min(1.6,teacher.style.pace*info.durationMs/baseline.durationMs))*100)/100;candidate.setStyle({pace:referencePace});}catch{}}await commitTeacher(candidate);broadcast();return json(res,200,{ok:true,silent:true,referencePace,cloneReferenceSkipped,profile:teacher.privateState(),state:publicState()});}
       if(url.pathname==='/api/admin/teacher-transcribe'){const audio=await wordAudioBody(req);const text=await localRecognition.transcribe(audio);return json(res,200,{ok:true,text,engine:'whisper-small-cpu',silent:true});}
       if(url.pathname==='/api/admin/teacher-word-audio'){const word=normalWord(url.searchParams.get('word'));if(!validWord(word))throw Error('کلمه مشخص نیست؛ آن را در پنل انتخاب کنید.');const bytes=await wordAudioBody(req),info=validateWordAudio(bytes);await teacherFiles.save(info.sha256,bytes);const candidate=new TeacherProfile(teacher.export());candidate.upsert({word,sha256:info.sha256,durationMs:info.durationMs,updatedAt:Date.now()});await commitTeacher(candidate);broadcast();return json(res,200,{ok:true,silent:true,profile:teacher.privateState(),state:publicState()});}
       const data=await body(req);const action=url.pathname.split('/').at(-1);
-      if(action==='teacher-preview'){if(typeof data.text!=='string'||!data.text.trim()||data.text.length>600)throw Error('متن تمرین را بین 1 و 600 نویسه وارد کنید.');const clip=await practiceVoice.synthesize(data.text);return serveMedia(req,res,clip.audio,'audio/wav');}
+      if(action==='teacher-preview'){if(typeof data.text!=='string'||!data.text.trim()||data.text.length>600)throw Error('متن تمرین را بین 1 و 600 نویسه وارد کنید.');const question=quiz.questions.find(q=>q.id===data.questionId);const saved=question&&data.text===teacher.questionText(question)?teacher.questionRecording(question):null;const clip=saved?{audio:await teacherFiles.load(saved.sha256)}:await practiceVoice.synthesize(data.text);if(data.useClone===true&&!teacher.voiceReference?.enabled){if(!teacher.voiceReference)throw Error('ابتدا جملهٔ خودتان را دست‌کم 5 ثانیه ضبط و به عنوان مرجع کاپی صدا ذخیره کنید.');const converted=await ownerVoice.convert(clip,await teacherFiles.load(teacher.voiceReference.sha256),teacher.voiceReference.sha256);return serveMedia(req,res,converted.audio,'audio/wav');}return serveMedia(req,res,clip.audio,'audio/wav');}
       else if(action==='teacher-command'){
         if(typeof data.text!=='string'||data.text.length>240)throw Error('دستور مدرس طولانی است.');const command=parseTeacherCommand(data.text,{pending:teacher.pending()});
         if(command.kind==='arm'){teacher.arm();assistant.clear();teacherMutedRound=quiz.round?.id||null;}
@@ -303,6 +306,10 @@ const server=http.createServer(async(req,res)=>{
         if(command.kind==='setting'){if(command.setting==='persian'){settings.showPersian=command.enabled;settings.narrationLanguage=command.enabled?'fa':'de';}else{settings.assistant.enabled=command.enabled;if(!command.enabled)assistant.clear();}await persistDisplay();}
         broadcast();return json(res,200,{ok:true,command,profile:teacher.privateState(),diagnostics:command.kind==='diagnose'?teacherDiagnostics():null,state:publicState()});
       }
+      else if(action==='teacher-question-recording-remove'){if(!quiz.questions.some(q=>q.id===data.id))throw Error('سوال مشخص نیست.');const candidate=new TeacherProfile(teacher.export());candidate.removeQuestionRecording(data.id);await commitTeacher(candidate);}
+      else if(action==='teacher-question-text'||action==='teacher-question-reset'){if(!quiz.questions.some(q=>q.id===data.id))throw Error('سوال شناخته نشد.');const candidate=new TeacherProfile(teacher.export());if(action==='teacher-question-reset')candidate.resetQuestionText(data.id);else candidate.setQuestionText(data.id,data.text);await commitTeacher(candidate);}
+      else if(action==='teacher-clone-reference'){const info=teacher.questionRecordings[data.id];if(!info)throw Error('اول صدای همین جمله را ذخیره کنید.');const candidate=new TeacherProfile(teacher.export());candidate.setVoiceReference(info);await commitTeacher(candidate);}
+      else if(action==='teacher-clone-enabled'){const candidate=new TeacherProfile(teacher.export());candidate.enableVoiceReference(data.enabled);await commitTeacher(candidate);}
       else if(action==='teacher-style'){const candidate=new TeacherProfile(teacher.export());candidate.setStyle(data.style||{});await commitTeacher(candidate);}
       else if(action==='teacher-word-text'){const candidate=new TeacherProfile(teacher.export());candidate.setText(data.word,data.spoken);await commitTeacher(candidate);}
       else if(action==='teacher-word-remove'){const candidate=new TeacherProfile(teacher.export());candidate.remove(normalWord(data.word));await commitTeacher(candidate);}
@@ -403,7 +410,7 @@ const server=http.createServer(async(req,res)=>{
       else if(action==='narration'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم خواندن سؤال معتبر نیست.');settings.narrationEnabled=data.enabled;save();
       }
-      else if(action==='narration-repeat'){if(teacher.custom(quiz.questions[quiz.index].fa))await stageCorrectedQuestion(quiz.questions[quiz.index]);teacherMutedRound=null;narrationReplay++;}
+      else if(action==='narration-repeat'){if(teacher.customQuestion(quiz.questions[quiz.index]))await stageCorrectedQuestion(quiz.questions[quiz.index]);teacherMutedRound=null;narrationReplay++;}
       else if(action==='timer-sound'){
         if(typeof data.enabled!=='boolean')throw Error('تنظیم صدای زمان معتبر نیست.');settings.timerSound=data.enabled;save();
       }
@@ -486,7 +493,7 @@ const server=http.createServer(async(req,res)=>{
       const language=url.pathname.startsWith('/narration/fa/')?'fa':'de',prefix=language==='fa'?'/narration/fa/':'/narration/';
       const id=url.pathname.slice(prefix.length).replace(/\.wav$/,'');
       if(!quiz.questions.some(q=>q.id===id)||url.pathname!==`${prefix}${id}.wav`)return json(res,404,{error:'Unknown question audio'});
-      if(language==='fa'&&teacher.custom(quiz.questions.find(q=>q.id===id).fa)){const reading=correctedReadings.get(id+':'+teacher.revision);if(!reading)return json(res,503,{error:'Corrected narration must be prepared by the owner before playback'});return serveMedia(req,res,reading.audio,'audio/wav');}
+      if(language==='fa'&&teacher.customQuestion(quiz.questions.find(q=>q.id===id))){const reading=correctedReadings.get(id+':'+teacher.revision);if(!reading)return json(res,503,{error:'Corrected narration must be prepared by the owner before playback'});return serveMedia(req,res,reading.audio,'audio/wav');}
       const path=join(root,'public','narration',...(language==='fa'?['fa']:[]),id+'.wav');
       if(!existsSync(path))return json(res,503,{error:'Question audio is not prepared'});
       return serveMedia(req,res,readFileSync(path),'audio/wav');
@@ -520,4 +527,4 @@ server.listen(port,hosting.bind,()=>{
   writeFileSync(process.env.QUIZ_RUNTIME_PATH||join(root,'.runtime.json'),JSON.stringify({base,token,screen:base+'/screen',control:base+'/control#'+token,pid:process.pid},null,2),{mode:0o600});
   console.log(hosting.publicOrigin?`Screen: ${base}/screen\nPrivate control link is delivered separately to the owner.\nDemo mode; paid signing is disabled.`:`Screen: ${base}/screen\nControl: ${base}/control#${token}\nDemo mode; no live connection or paid service has been enabled.`);
 });
-for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);liveVoice.close();practiceVoice.close();localRecognition.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(tick);liveVoice.close();practiceVoice.close();localRecognition.close();ownerVoice.close();reconnect.disable();await disconnect({manual:false});wss.close();server.close(()=>process.exit(0));setTimeout(()=>process.exit(0),2000).unref();});

@@ -1,21 +1,31 @@
-# Private practice and local recognition
+# Private teacher speech, text corrections and voice copy
 
-The owner panel identifies the current or queued 30-question lesson and teaching note. The pronunciation practice section plays question/custom Persian text directly in the private panel without TikTok, the public screen or a LIVE connection. Playback uses a separate CPU speech worker. Recorded corrections apply to the next preview. Stop discards pending playback.
+The owner panel identifies the current or queued 30-question lesson and teaching note. Practice plays question/custom Persian text in the private panel without TikTok, the public screen or a LIVE connection. Text edits persist as owner overrides keyed by question ID; German source text, source question bank and answer keys remain unchanged. Reset restores the original Persian question. A recording is matched to its question text by SHA-256, so editing that text prevents an outdated recording from playing for it.
 
-## Input and recognition
+## Record the sentence directly beneath its text
 
-TikTok events do not include guest audio. Explicitly share a TikTok tab including sound, or route guest/LIVE Studio sound into a virtual microphone. Capture requires the owner's browser permission. There is no silent fallback to a different input.
+Read the visible sentence using the microphone, finish, listen locally, then save. Capture is bounded to 60 seconds; surrounding silence is trimmed with padding. The exact owner recording plays for that question in practice and the live screen. A short-word recorder remains separate, bounded to five seconds. Recordings require explicit capture and save; there is no spoken acknowledgement.
 
-Edge/Chrome SpeechRecognition is no longer used. WebAudio captures bounded utterances with 300 ms pre-roll, 750 ms trailing silence and a five-second cap. Authenticated PCM is processed only on the existing free CPU host by faster-whisper 1.2.1 and PyAV 16.1.0. Multilingual small model revision: Systran/faster-whisper-small@536b0662742c02347bc0e980a01041f333bce120, MIT. Model files are downloaded during the image build; runtime uses local_files_only. No inference API, GPU or paid fallback is used. Raw command audio and transcripts stay in memory and are not persisted.
+Optional pacing adaptation compares the recorded sentence length with locally synthesized speech for the same text and adjusts future Persian pacing within 1.05–1.6. It does not infer a viewer's emotions or train a new language model.
 
-One transcription runs at a time, bounded by timeout; the worker is released after 120 seconds idle. Stopping ignores late results. Only explicit whitelisted lesson commands execute. The input does not verify speaker identity: enable it only for the owner's segment and use headphones. Persian/Dari recognition may be imperfect; typed commands and explicit recording remain available.
+## Approximate owner voice on new sentences
 
-## Silent correction
+A clear owner recording of 5–60 seconds can serve as a private reference. OpenVoice V2 performs CPU-only tone conversion on the existing Persian speech output. Initial reference creation leaves conversion disabled; the owner can hear a newly generated example and enable conversion for new sentences and LIVE. Updating an existing reference retains the owner's enabled/disabled setting. Exact question recordings bypass conversion and preserve the original expression. Native German recordings and prebuilt welcomes/introduction remain unchanged.
 
-Say «این کلمه را اینطور تلفظ کن», pause, then say only the corrected word. Specify its written form in the panel if uncertain. Alternatively enter the word, record its pronunciation and stop to save. No spoken acknowledgement is enqueued.
+This is approximate voice copying, not guaranteed identical expression, pronunciation or emotional behaviour. The owner's portrait remains a still image; this feature does not create live facial lip sync. The existing prerecorded introduction contains real facial movement.
 
-Correction samples are 22050 Hz mono 16-bit PCM, 0.15–5 seconds and at most 240 kB, validated and SHA-256 checked. They are stored in the existing private HF Dataset and cached outside public assets; never published to GitHub or sent to an external inference API. Deleting a mapping does not erase private Dataset history.
+Model: myshell-ai/OpenVoiceV2@f36e7edfe1684461a8343844af60babc2efbb727, converter checkpoint SHA-256 9652c27e92b6b2a91632590ac9962ef7ae2b712e5c5b7f4c34ec55ee2b37ab9e. Source: https://github.com/myshell-ai/OpenVoice, revision 74a1d147b17a8c3092dd5430504bd83ef6c7eb23, MIT. The build downloads and checksum-verifies source and weights and retains its LICENSE. PyTorch 2.6.0 CPU wheels only; no CUDA, paid inference API or GPU hardware is requested. Runtime does not download models. Model-generated watermarks are disabled through the library's supported no-watermark path, avoiding an additional network model; the UI describes generated examples as copied speech.
 
-Future Persian speech splices the owner's recorded word into local speech. This is not full voice cloning, continuous emotional training or live facial lip sync. The portrait is a still image; only the recorded introduction has actual facial motion. German recordings, prebuilt welcomes and the recorded introduction are unchanged. Style settings are explicit preferences; winner templates retain real {names}.
+Private references remain WAV/PCM, never uploaded Python/Torch objects. Speaker embeddings are kept only in worker memory. Conversion is serialized, bounded by timeout, cached and released after idle. When enabled conversion fails, an explicit error is returned; no paid or undisclosed voice fallback is used.
 
-/live-demo is an independent mobile preview. Its controls and simulated gifts never invoke owner actions or alter real lesson progress.
+## Private persistence
+
+Samples are validated, integrity-checked 22050 Hz mono PCM, at most 60 seconds. Original samples are cached outside public assets and stored as base64 in small JSON files in the existing private HF Dataset. JSON uses the ordinary Git commit protocol; raw WAV paths normally require LFS. Reads remain compatible with legacy WAV files. Remote reads are bounded and verified after decoding. Raw audio is never committed to GitHub or sent to an external inference API. Deleting a mapping does not erase Dataset history. A synthetic-only workflow test verifies upload and cold-cache reload without altering owner rules or question progress.
+
+## Guest audio and recognition
+
+The event connector supplies TikTok comments/likes/gifts, not guest sound. Explicitly share a tab including audio, or route guest/LIVE Studio sound into a virtual microphone. There is no silent fallback to a different source. The owner must permit capture and can stop it.
+
+Edge/Chrome SpeechRecognition is not used. WebAudio captures bounded commands with 300 ms pre-roll, 750 ms trailing silence and a five-second cap. Authenticated clips are transcribed in memory on CPU by faster-whisper 1.2.1/PyAV 16.1.0, multilingual small model Systran/faster-whisper-small@536b0662742c02347bc0e980a01041f333bce120. These command clips/transcripts are not persisted. Stopping discards late responses. Only enumerated teacher commands execute; identity is not verified, so use the input only for the owner's teaching segment and use headphones. Recognition can be imperfect; text and explicit recording are available.
+
+/live-demo stays isolated from real lesson progress and simulates its gifts.
