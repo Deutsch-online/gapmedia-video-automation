@@ -21,6 +21,7 @@ import {GuestSupport} from './guests.mjs';
 import {LiveSpeech} from './live-speech.mjs';
 import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
 import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
+import {PresenterIntro} from './presenter-intro.mjs';
 import {WelcomeCycle} from './welcome.mjs';
 import {profileAvatar} from './gifts.mjs';
 import {narrationMetadata,narrationDuration} from './narration-metadata.mjs';
@@ -38,7 +39,7 @@ const {token,port,base}=hosting;
 const settingsFile=process.env.QUIZ_SETTINGS_PATH||join(root,'settings.json');
 let narrationReplay=0,screenRevision=0;
 let narrationInfo;
-const defaults={presenterDisplay:{enabled:true,width:420},welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
+const defaults={presenterIntroAuto:true,presenterDisplay:{enabled:true,width:420},welcomeLanguage:"fa",assistant:{...ASSISTANT_DEFAULTS},joinDisplay:{enabled:true,side:"right",size:96,bottom:100},narrationLanguage:"both",welcomeEnabled:true,waitSeconds:12,profileFrames:{liker:"auto",gifter:"auto"},giftStyle:DEFAULT_GIFT_STYLE,activityDisplay:{side:'right',count:8,top:220},narrationEnabled:true,autoReconnect:true,showPersian:false,timerSound:true,celebrationMusic:true,musicVolume:20,questionSeconds:30,answerInput:'comments',username:'easydeutsches',gifts:presetGifts('easydeutsches'),giftPreset:GIFT_PRESET_VERSION};
 const stored=existsSync(settingsFile)?JSON.parse(readFileSync(settingsFile,'utf8')):null;
 let settings=stored?{...defaults,...stored}:defaults;
 settings.gifts={...defaults.gifts,...settings.gifts};
@@ -48,6 +49,7 @@ if((stored&&stored.giftPreset!==GIFT_PRESET_VERSION)||Object.values(settings.gif
 const quiz=new Quiz(JSON.parse(readFileSync(join(root,'data/questions.json'),'utf8')));
 quiz.seconds=Number.isInteger(settings.questionSeconds)&&settings.questionSeconds>=10&&settings.questionSeconds<=300?settings.questionSeconds:30;
 const bankMedia=loadBankMedia(quiz.questions);
+const presenterIntro=new PresenterIntro();
 const welcomeCycle=new WelcomeCycle();const speechTexts=JSON.parse(readFileSync(join(root,'speech-texts.json'),'utf8'));
 const welcomeLanguage=()=>settings.narrationLanguage==='fa'?'fa':settings.welcomeLanguage;
 const welcomeDuration=()=>{const lang=welcomeLanguage(),fa=narrationInfo?.welcome?.fa?.duration_ms||11000,de=narrationInfo?.welcome?.de?.duration_ms||9000;return lang==='fa'?fa:lang==='de'?de:fa+de+300;};
@@ -64,6 +66,7 @@ if(loadedProgress?.profileFrames)settings.profileFrames=loadedProgress.profileFr
 if(['de','fa','both'].includes(loadedProgress?.narrationLanguage))settings.narrationLanguage=loadedProgress.narrationLanguage;
 if(typeof loadedProgress?.welcomeEnabled==='boolean')settings.welcomeEnabled=loadedProgress.welcomeEnabled;
 if(['fa','de','both'].includes(loadedProgress?.welcomeLanguage))settings.welcomeLanguage=loadedProgress.welcomeLanguage;
+if(typeof loadedProgress?.presenterIntroAuto==='boolean')settings.presenterIntroAuto=loadedProgress.presenterIntroAuto;
 const validPresenter=value=>value&&typeof value.enabled==='boolean'&&Number.isInteger(value.width)&&value.width>=280&&value.width<=600;
 if(validPresenter(loadedProgress?.presenterDisplay))settings.presenterDisplay=loadedProgress.presenterDisplay;else if(!validPresenter(settings.presenterDisplay))settings.presenterDisplay=defaults.presenterDisplay;
 const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
@@ -80,7 +83,7 @@ let questionTrail=[],trailIndex=-1;
 function rememberQuestion(id){if(questionTrail[trailIndex]===id)return;questionTrail=questionTrail.slice(0,trailIndex+1);questionTrail.push(id);trailIndex=questionTrail.length-1;if(questionTrail.length>200){questionTrail.shift();trailIndex--;}}
 let completedRound=null,advancing=false,sessionError=null,roundControlGeneration=0;
 function checkRoundGeneration(generation){if(generation!==roundControlGeneration)throw Error('فرمان قبلی با دستور تازه لغو شد.');}
-function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant};}
+function progressData(){return {...liveSessions.export(),activityDisplay:settings.activityDisplay,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,narrationLanguage:settings.narrationLanguage,welcomeEnabled:settings.welcomeEnabled,presenterIntroAuto:settings.presenterIntroAuto,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joinBubbleVersion:2,welcomeLanguage:settings.welcomeLanguage,assistant:settings.assistant};}
 function persistSession(){if(mode==='live'){settings.sessionProgress=liveSessions.export();save();sessionStore.queue(progressData());}}
 async function persistDisplay(){save();if(sessionStore.repo){sessionStore.queue(progressData());await sessionStore.flush();}}
 async function flushSession(){if(mode==='live')await sessionStore.flush();}
@@ -119,7 +122,7 @@ function ready() {
 function styleActivity(person){return person?.kind==='gift'?{...person,tier:styledGiftTier(person,settings.giftStyle)}:person;}
 function publicState() {
   const snapshot=quiz.snapshot();recordCompleted();
-  return {...snapshot,screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
+  return {...snapshot,presenterIntro:{...presenterIntro.snapshot(),auto:settings.presenterIntroAuto},screenRevision,assistant:{enabled:settings.assistant.enabled,showCaptions:settings.assistant.showCaptions,...assistant.snapshot({roundId:quiz.round?.id,phase:quiz.phase})},navigation:{hasPrevious:trailIndex>0},session:sessions().summary(),sessionStorage:{status:mode==='live'?sessionStore.status:'demo',ready:mode!=='live'||sessionStore.ready,error:sessionError},build:process.env.QUIZ_BUILD_SHA||'local',mode,autoplay,answerInput:settings.answerInput,username:settings.username,gifts:settings.gifts,liveReady:ready(),traffic:{...traffic},narrationEnabled:settings.narrationEnabled,narrationLanguage:settings.narrationLanguage,welcome:{enabled:settings.welcomeEnabled,language:welcomeLanguage(),intervalSeconds:120,announcement:welcomeCycle.announcement,texts:speechTexts.welcome},narrationReplay,showPersian:settings.showPersian,timerSound:settings.timerSound,celebrationMusic:settings.celebrationMusic,musicVolume:settings.musicVolume,giftStyle:settings.giftStyle,waitSeconds:settings.waitSeconds,profileFrames:settings.profileFrames,presenterDisplay:settings.presenterDisplay,joinDisplay:settings.joinDisplay,joins:recentJoins.filter(j=>Date.now()-j.at<9000),activityDisplay:settings.activityDisplay,activityFocus:styleActivity(activityFocus(likes,supporters)),supporters:activityWall(likes,supporters,settings.activityDisplay.count).map(styleActivity),guests:guests.snapshot(),
     connection:{...reconnect.snapshot(),status:live.status,message:live.message,giftCount:live.catalog.length,diagnostics:live.diagnostics||[]},recent:recent.slice(-4).reverse(),lastReject};
 }
 const wss=new WebSocketServer({noServer:true});
@@ -220,6 +223,7 @@ async function connect(username,startOnConnect=false,automatic=false) {
 async function startRound({generation=roundControlGeneration}={}) {
  if(['open','watching'].includes(quiz.phase))return;
  if(mode==='live'&&!ready())throw Error('ابتدا لایو را وصل کنید و روش پاسخ را تنظیم کنید.');
+ presenterIntro.stop();
  await flushSession();checkRoundGeneration(generation);let id=sessions().ensure();
  while(!sessions().reviewId&&sessions().session.done.includes(id)){if(!await nextRound({generation}))throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');id=sessions().current();}
  if(quiz.questions[quiz.index].id!==id)quiz.select(id);
@@ -246,7 +250,7 @@ narrationInfo=narrationMetadata(root,quiz.questions);
 const contentTypes={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.woff2':'font/woff2','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'};
 const assets=new Map([['/','screen.html'],['/demo','sales.html'],['/rights','rights.html'],['/sales.css','sales.css'],['/sales.js','sales.js'],['/sales-preview.js','sales-preview.js'],['/media-viewer.js','media-viewer.js'],['/operator-controls.js','operator-controls.js'],['/screen','screen.html'],['/control','control.html'],['/style.css','style.css'],['/screen.js','screen.js'],['/celebration.js','celebration.js'],['/activity-ui.js','activity-ui.js'],['/rings.js','rings.js'],['/frames/fire.png','frames/fire.png'],['/frames/gold.png','frames/gold.png'],['/frames/ice.png','frames/ice.png'],['/narration.js','narration.js'],['/guests-ui.js','guests-ui.js'],['/control.js','control.js'],['/font.woff2','font.woff2']]);
 for(const name of ['diagnostics','cooling','oil','tyres','abs','trailer'])assets.set('/teaching/'+name+'.svg','teaching/'+name+'.svg');
-assets.set('/presenter/owner-studio.webp','presenter/owner-studio.webp');assets.set('/presenter-ui.js','presenter-ui.js');
+assets.set('/presenter/owner-studio.webp','presenter/owner-studio.webp');assets.set('/presenter-ui.js','presenter-ui.js');assets.set('/presenter-intro-ui.js','presenter-intro-ui.js');
 function json(res,status,data) {res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));}
 const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -297,15 +301,18 @@ const server=http.createServer(async(req,res)=>{
         const result=guests.gift({receiverUserId:guest.userId,giftId:'demo-guest-gift',giftName:'Testgeschenk',diamondCount:500,repeatCount:1,user:{id:'demo-donor',nickname:'حامی آزمایشی'},common:{msgId:randomUUID(),createTime:Date.now()}});if(!result.accepted)throw Error(result.reason);
       }
       else if(action==='plan-lessons'){sessions().refreshLessons();persistSession();await flushSession();}
+      else if(action==='presenter-intro-settings'){if(typeof data.auto!=='boolean')throw Error('تنظیم نامعتبر است.');settings.presenterIntroAuto=data.auto;await persistDisplay();}
+      else if(action==='presenter-intro-play'){roundControlGeneration++;autoplay=false;resumeOnReconnect=false;quiz.pause();assistant.clear();presenterIntro.start();}
+      else if(action==='presenter-intro-stop'){presenterIntro.stop();}
       else if(action==='presenter-display'){const display={enabled:data.enabled,width:Number(data.width)};if(!validPresenter(display))throw Error('اندازهٔ تصویر باید بین 280 و 600 باشد.');settings.presenterDisplay=display;await persistDisplay();}
       else if(action==='session-settings'){sessions().configure(Number(data.size),data.allowRepeat,data.section||"all");persistSession();await flushSession();}
       else if(action==='retry-session-save'){if(!sessionStore.ready)throw Error('پیشرفت خوانده نشده است؛ سرور را دوباره راه‌اندازی کنید.');await sessionStore.retry(progressData());sessionError=null;}
       else if(action==='repeat-session'||action==='new-session'||action==='next-lesson'||action==='repeat-lesson'){
         if(['open','watching'].includes(quiz.phase))throw Error('ابتدا توقف را بزنید.');
-        await flushSession();const id=action==='repeat-session'?sessions().repeat():action==='next-lesson'?sessions().nextLesson():action==='repeat-lesson'?sessions().replayLesson(data.lessonId):sessions().create();roundControlGeneration++;questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;
+        await flushSession();const id=action==='repeat-session'?sessions().repeat():action==='next-lesson'?sessions().nextLesson():action==='repeat-lesson'?sessions().replayLesson(data.lessonId):sessions().create();roundControlGeneration++;questionTrail=[];trailIndex=-1;quiz.select(id);autoplay=false;advanceAt=null;persistSession();await flushSession();sessionError=null;if(settings.presenterIntroAuto){quiz.pause();assistant.clear();presenterIntro.start();}
       }
       else if(action==='start'){const generation=++roundControlGeneration;await startRound({generation});}
-      else if(action==='reveal'){if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+settings.waitSeconds*1000;}
+      else if(action==='reveal'){presenterIntro.stop();if(quiz.phase==='watching')throw Error('ابتدا نمایش فیلم تمام شود یا سؤال را متوقف کنید.');roundControlGeneration++;quiz.reveal({manual:true});recordCompleted();advanceAt=Date.now()+settings.waitSeconds*1000;}
       else if(action==='select'){
         sessions().review(String(data.id));const generation=++roundControlGeneration;autoplay=false;resumeOnReconnect=false;quiz.pause();quiz.select(String(data.id));advanceAt=null;await startRound({generation});
       }
@@ -321,13 +328,13 @@ const server=http.createServer(async(req,res)=>{
         if(trailIndex+1<questionTrail.length){const id=questionTrail[++trailIndex];await revisitQuestion(id,generation);}
         else if(await nextRound({generation}))await startRound({generation});
       }
-      else if(action==='pause'){roundControlGeneration++;resumeOnReconnect=false;autoplay=false;quiz.pause();}
+      else if(action==='pause'){presenterIntro.stop();roundControlGeneration++;resumeOnReconnect=false;autoplay=false;quiz.pause();}
       else if(action==='autoplay'){const generation=++roundControlGeneration;resumeOnReconnect=Boolean(data.enabled);autoplay=Boolean(data.enabled);if(autoplay&&!['open','watching'].includes(quiz.phase)){if(quiz.phase==='revealed'&&!await nextRound())throw Error('جلسه تمام شده است؛ جلسهٔ جدید را شروع کنید.');await startRound();}}
       else if(action==='mode'){
         if(!['demo','live'].includes(data.mode))throw Error('حالت معتبر نیست.');
         if(['open','watching'].includes(quiz.phase))throw Error('پیش از تغییر حالت، سؤال را متوقف کنید.');
         if(data.mode==='live'&&!ready())throw Error('اتصال لایو و آماده‌بودن روش پاسخ لازم است.');
-        if(data.mode==='demo')await disconnect();changeMode(data.mode);resumeOnReconnect=false;autoplay=false;quiz.pause();
+        presenterIntro.stop();if(data.mode==='demo')await disconnect();changeMode(data.mode);resumeOnReconnect=false;autoplay=false;quiz.pause();
       }
       else if(action==='display-language'){
         if(typeof data.showPersian!=='boolean')throw Error('تنظیم ترجمه معتبر نیست.');settings.showPersian=data.showPersian;save();
@@ -448,6 +455,7 @@ const server=http.createServer(async(req,res)=>{
       if(!existsSync(path))return json(res,503,{error:'Question audio is not prepared'});
       return serveMedia(req,res,readFileSync(path),'audio/wav');
     }
+    if(['GET','HEAD'].includes(req.method)&&url.pathname==='/presenter/lesson-intro.mp4')return serveMedia(req,res,readFileSync(join(root,'public/presenter/lesson-intro.mp4')),'video/mp4');
     if(['GET','HEAD'].includes(req.method)&&bankMedia.has(url.pathname))return serveMedia(req,res,bankMedia.get(url.pathname),url.pathname.endsWith('.mp4')?'video/mp4':'image/png');
     const asset=assets.get(url.pathname);
     if(req.method==='GET'&&asset) {
@@ -462,12 +470,12 @@ server.on('upgrade',(req,socket,head)=>{
 });
 const tick=setInterval(async()=>{
   if(reconnect.due({connecting,connected:Boolean(connection)}))void connect(settings.username,false,true).catch(()=>{reconnect.failed();});
-  quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+settings.waitSeconds*1000;
-  const announcement=(mode==='demo'&&welcomeCycle.announcement?.demo&&Date.now()<welcomeCycle.announcement.expiresAt)?null:welcomeCycle.tick({connected:mode==='live'&&live.status==='connected',enabled:settings.welcomeEnabled,phase:(assistant.active&&Date.now()<assistant.active.expiresAt)||(settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000)?'open':quiz.phase,durationMs:welcomeDuration()});
+  const introBusy=presenterIntro.busy();quiz.tick();recordCompleted();if(quiz.phase==='revealed'&&advanceAt===null)advanceAt=Date.now()+settings.waitSeconds*1000;
+  const announcement=(mode==='demo'&&welcomeCycle.announcement?.demo&&Date.now()<welcomeCycle.announcement.expiresAt)?null:welcomeCycle.tick({connected:mode==='live'&&live.status==='connected',enabled:settings.welcomeEnabled&&!introBusy,phase:(assistant.active&&Date.now()<assistant.active.expiresAt)||(settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000)?'open':quiz.phase,durationMs:welcomeDuration()});
   if(announcement&&quiz.phase==='revealed')advanceAt=Math.max(advanceAt||0,announcement.expiresAt);
   const welcomeBusy=welcomeCycle.announcement&&Date.now()<welcomeCycle.announcement.expiresAt;
   const musicBusy=settings.celebrationMusic&&quiz.lastWinningRound&&quiz.lastWinningRound.roundId===quiz.round?.id&&Date.now()-quiz.lastWinningRound.at<10000;
-  const spoken=assistant.tick({roundId:quiz.round?.id,phase:quiz.phase,canSpeak:!['open','watching'].includes(quiz.phase)&&!welcomeBusy&&!musicBusy&&(mode==='demo'||live.status==='connected')});
+  const spoken=assistant.tick({roundId:quiz.round?.id,phase:quiz.phase,canSpeak:!introBusy&&!['open','watching'].includes(quiz.phase)&&!welcomeBusy&&!musicBusy&&(mode==='demo'||live.status==='connected')});
   if(spoken&&quiz.phase==='revealed')advanceAt=Math.max(advanceAt||0,spoken.expiresAt);
   if(autoplay&&!advancing&&quiz.phase==='revealed'&&Date.now()>=advanceAt){advancing=true;try{if(await nextRound())await startRound();}catch(error){autoplay=false;sessionError=error.message;}finally{advancing=false;}}
   broadcast();

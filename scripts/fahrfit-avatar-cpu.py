@@ -41,8 +41,25 @@ def main():
                       '    return run(*args, **kwargs)')
     if text != old:
         path.write_text(text)
+    # Keep the free CPU host below its memory limit: preprocessing and audio
+    # models are no longer needed when facial rendering starts.
+    path = root / 'inference.py'
+    text = path.read_text()
+    if 'Release completed models before' not in text:
+        text = text.replace('    animate_from_coeff = AnimateFromCoeff(sadtalker_paths, device)',
+                            '    # Renderer is loaded after face/audio preprocessing.')
+        text = text.replace('    #coeff2video',
+                            '    # Release completed models before the large renderer.\n'
+                            '    del preprocess_model, audio_to_coeff\n'
+                            '    import gc, ctypes\n'
+                            '    gc.collect()\n'
+                            '    try: ctypes.CDLL(None).malloc_trim(0)\n'
+                            '    except (AttributeError, OSError): pass\n'
+                            '    animate_from_coeff = AnimateFromCoeff(sadtalker_paths, device)\n'
+                            '    #coeff2video')
+        path.write_text(text)
     subprocess.run([sys.executable, '-u', '-c',
-                    'import torch,runpy;torch.set_num_threads(2);torch.set_num_interop_threads(1);runpy.run_path("inference.py",run_name="__main__")',
+                    'import torch,runpy,random,numpy as np;random.seed(42);np.random.seed(42);torch.manual_seed(42);torch.set_num_threads(2);torch.set_num_interop_threads(1);runpy.run_path("inference.py",run_name="__main__")',
                     '--driven_audio', str(audio), '--source_image', str(image),
                     '--result_dir', str(Path(args.output_dir).resolve()),
                     '--preprocess', 'full', '--size', '256', '--batch_size', '1',

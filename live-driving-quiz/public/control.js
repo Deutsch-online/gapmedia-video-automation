@@ -7,6 +7,7 @@ let timeDirty=false,musicDirty=false,timerSoundDirty=false,languageDirty=false;
 let joinDisplayDirty=false;
 let speechLanguageDirty=false,welcomeDirty=false;
 let waitDirty=false,frameDirty=false;
+let introDirty=false;
 let presenterDirty=false;
 let activeBuild,sessionDirty=false,questionGroupSignature;
 let state,catalog=[],mappingDirty=false,manualDirty=false,savedSignature;
@@ -70,6 +71,7 @@ function render(s){
  if(!joinDisplayDirty&&s.joinDisplay){$('joinEnabled').checked=s.joinDisplay.enabled;$('joinSide').value=s.joinDisplay.side;$('joinSize').value=s.joinDisplay.size;$('joinBottom').value=s.joinDisplay.bottom;$('joinBottomValue').textContent=s.joinDisplay.bottom;}
  if(!waitDirty)$('waitSeconds').value=s.waitSeconds??12;
  if(!frameDirty){$('likerFrame').value=s.profileFrames?.liker||'auto';$('gifterFrame').value=s.profileFrames?.gifter||'auto';}
+ if(s.presenterIntro){if(!introDirty)$('introAuto').checked=s.presenterIntro.auto;$('introStatus').textContent=s.presenterIntro.active?'در حال پخش معرفی؛ گفتار سوال و دستیار متوقف است.':'معرفی آماده است. برای شنیدن صدا، در Browser Source صدا را فعال کنید.';}
  if(!presenterDirty&&s.presenterDisplay){$('presenterEnabled').checked=s.presenterDisplay.enabled;$('presenterWidth').value=s.presenterDisplay.width;}
  if(s.session){const q=s.session;renderLessonFolders(q.lessonFolders);
  const sectionSelect=$('sessionSection');if(sectionSelect.options.length!==q.sections?.length){sectionSelect.replaceChildren(...(q.sections||[]).map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.label+' · '+g.count+' سؤال';o.dataset.count=g.count;return o;}));}
@@ -225,3 +227,8 @@ $('nextLesson').addEventListener('click',async()=>{if(await api('pause'))await a
 
 for(const id of ['presenterEnabled','presenterWidth'])$(id).addEventListener('input',()=>{presenterDirty=true;});
 $('savePresenter').addEventListener('click',async()=>{const result=await api('presenter-display',{enabled:$('presenterEnabled').checked,width:Number($('presenterWidth').value)});if(result){presenterDirty=false;render(result.state);}});
+
+$('introAuto').addEventListener('change',()=>{introDirty=true;});
+$('saveIntroAuto').addEventListener('click',async()=>{const r=await api('presenter-intro-settings',{auto:$('introAuto').checked});if(r){introDirty=false;render(r.state);}});
+$('playIntro').addEventListener('click',()=>api('presenter-intro-play'));
+$('stopIntro').addEventListener('click',()=>api('presenter-intro-stop'));

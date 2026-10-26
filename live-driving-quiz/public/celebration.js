@@ -63,6 +63,7 @@ $('enableMusic').addEventListener('click',()=>void activateAudio(true));
 for(const event of ['pointerdown','keydown'])document.addEventListener(event,()=>void activateAudio(),{once:true});
 export function renderCelebration(state){
  if(!state)return;current=state;
+ if(state.presenterIntro?.active){narrator.stop();welcomeSpeaker.stop();lessonSpeaker.stop();stopMusic();$('winnerCelebration').classList.add('hidden');document.getElementById('assistantCaption')?.classList.add('hidden');return;}
  if(!initializing){initializing=true;void activateAudio();}
  narrator.update(state,context);
  const greetingBusy=Boolean(narrator.source||narrator.pending||state.phase==='revealed'&&state.celebrationMusic&&state.celebration?.roundId===state.roundId&&state.serverTime-state.celebration.at<10000);
@@ -97,6 +98,7 @@ export function renderCelebration(state){
 }
 
 export function soundCountdown(state,left){
+ if(state.presenterIntro?.active)return;
  if(narrator.source||narrator.pending||welcomeSpeaker.source||welcomeSpeaker.pending||lessonSpeaker.source||lessonSpeaker.pending)return;
  if(!state?.timerSound||!context||context.state!=='running'||!state.roundId)return;
  const tick=state.phase==='open'&&left>=1&&left<=5;

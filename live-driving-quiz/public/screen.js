@@ -1,3 +1,4 @@
+import {renderPresenterIntro} from './presenter-intro-ui.js';
 import {renderPresenter} from './presenter-ui.js';
 import {renderOperator} from './operator-controls.js';
 import {renderMediaViewer} from './media-viewer.js';
@@ -16,7 +17,7 @@ function element(tag,className,text){const el=document.createElement(tag);el.cla
 function render(s){
   if(s.screenRevision!==undefined){if(activeScreenRevision!==undefined&&s.screenRevision!==activeScreenRevision){location.reload();return;}activeScreenRevision=s.screenRevision;}
   if(activeBuild&&s.build&&activeBuild!==s.build){location.reload();return;}activeBuild=s.build;
-  state=s;receivedAt=performance.now();const q=s.question;
+  state=s;receivedAt=performance.now();renderPresenterIntro(s);const q=s.question;
   $('show').classList.toggle('has-activity',Boolean(s.supporters?.length||s.activityFocus));
   $('show').classList.toggle('answer-comments',s.answerInput==='comments');
   $('show').classList.toggle('revealed',s.phase==='revealed');

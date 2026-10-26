@@ -15,6 +15,11 @@ test('local control requires a token; OBS state hides answers; live mode needs v
   const post=(path,data={},headers={})=>fetch(base+'/api/admin/'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+settings.token,...headers},body:JSON.stringify(data)});
   assert.equal((await fetch(base+'/screen')).status,200);const beforeRefresh=await(await fetch(base+'/api/state')).json();assert.equal((await post('refresh-screen')).status,200);const afterRefresh=await(await fetch(base+'/api/state')).json();assert.equal(afterRefresh.screenRevision,beforeRefresh.screenRevision+1);assert.equal(afterRefresh.phase,beforeRefresh.phase);assert.deepEqual(afterRefresh.session,beforeRefresh.session);
   assert.equal((await fetch(base+'/api/admin/assistant')).status,401);
+  assert.equal((await fetch(base+'/api/admin/presenter-intro-play',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,401);
+  assert.equal((await post('presenter-intro-play')).status,200);const introState=await(await fetch(base+'/api/state')).json();assert.equal(introState.phase,'paused');assert.equal(introState.presenterIntro.durationMs,30000);assert.ok(introState.presenterIntro.active);
+  assert.equal((await post('presenter-intro-stop')).status,200);assert.equal((await(await fetch(base+'/api/state')).json()).presenterIntro.active,null);
+  assert.equal((await post('presenter-intro-settings',{auto:false})).status,200);
+  const videoRange=await fetch(base+'/presenter/lesson-intro.mp4',{headers:{Range:'bytes=0-31'}});assert.equal(videoRange.status,206);assert.equal((await videoRange.arrayBuffer()).byteLength,32);
   assert.equal((await fetch(base+'/api/admin/technical-lesson')).status,401);
   const technical=await(await fetch(base+'/api/admin/technical-lesson',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(technical.questions.length,50);assert.ok(technical.questions.every(q=>q.explanation.length>100));
   const teacher=await(await fetch(base+'/api/admin/assistant',{headers:{authorization:'Bearer '+settings.token}})).json();assert.equal(teacher.settings.enabled,true);assert.equal(teacher.settings.showCaptions,false);
