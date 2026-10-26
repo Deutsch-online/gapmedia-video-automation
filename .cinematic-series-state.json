@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 11,
+  "next_episode": 12,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -92,6 +92,14 @@
       "platforms": {
         "tiktok": 2678,
         "instagram": 2679
+      }
+    },
+    "2026-10-26": {
+      "episode": 11,
+      "message_id": 2736,
+      "platforms": {
+        "tiktok": 2736,
+        "instagram": 2737
       }
     }
   },
@@ -1561,10 +1569,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 11,
       "title_de": "Der Deckel muss ab!",
       "title_fa": "درپوش باید جدا شود!",
@@ -1699,25 +1705,9 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    },
-    "date": "2026-10-26",
-    "status": "exporting",
-    "credit_from_scene": 8,
-    "credit_approval_required": true,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 503s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_notice_status": "sent",
-    "credit_notice_message_id": 2713,
-    "platform_receipts": {
-      "tiktok": 2736,
-      "instagram": 2737
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0011/tiktok/e0011-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0011/instagram/e0011-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0011/instagram/e0011-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
