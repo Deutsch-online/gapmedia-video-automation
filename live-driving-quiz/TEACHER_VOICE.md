@@ -1,23 +1,21 @@
-# Private teacher controls
+# Private practice and local recognition
 
-Open the private owner control panel, then **درس نوبت و مدرس**. The next lesson is a separate, ordered 30-question queue. Enable Persian and the assistant independently. At the end, explicitly repeat the same lesson or select the next lesson; no automatic repeat is introduced.
+The owner panel identifies the current or queued 30-question lesson and teaching note. The pronunciation practice section plays question/custom Persian text directly in the private panel without TikTok, the public screen or a LIVE connection. Playback uses a separate CPU speech worker. Recorded corrections apply to the next preview. Stop discards pending playback.
 
-## Guest audio
+## Input and recognition
 
-The TikTok event connector supplies comments, likes and gifts, not a guest's audio. The owner can explicitly share a TikTok browser tab **including its audio** through the panel, or route LIVE Studio/guest audio into the browser's default microphone using a virtual audio input. Tab-track speech recognition requires a browser supporting `SpeechRecognition.start(audioTrack)`; the panel requires desktop Chrome/Edge 135 or newer and refuses unsupported browsers instead of silently selecting their microphone. Test the input before using it in a lesson. No live guest audio has been verified until the owner performs that test. Neither this feature nor the connector joins a TikTok guest seat automatically.
+TikTok events do not include guest audio. Explicitly share a TikTok tab including sound, or route guest/LIVE Studio sound into a virtual microphone. Capture requires the owner's browser permission. There is no silent fallback to a different input.
 
-Microphone/tab sharing starts only after the owner clicks its button. Stop sharing releases all tracks. Recognition uses the browser's speech service when available, with `fa-AF`, falling back to `fa-IR` only if the browser rejects Dari recognition; there is no paid API fallback. The input does not verify a speaker's identity: enable it only for the owner's teaching segment. Only the enumerated lesson actions are accepted, never shell commands or arbitrary code.
+Edge/Chrome SpeechRecognition is no longer used. WebAudio captures bounded utterances with 300 ms pre-roll, 750 ms trailing silence and a five-second cap. Authenticated PCM is processed only on the existing free CPU host by faster-whisper 1.2.1 and PyAV 16.1.0. Multilingual small model revision: Systran/faster-whisper-small@536b0662742c02347bc0e980a01041f333bce120, MIT. Model files are downloaded during the image build; runtime uses local_files_only. No inference API, GPU or paid fallback is used. Raw command audio and transcripts stay in memory and are not persisted.
 
-## Silent pronunciation correction
+One transcription runs at a time, bounded by timeout; the worker is released after 120 seconds idle. Stopping ignores late results. Only explicit whitelisted lesson commands execute. The input does not verify speaker identity: enable it only for the owner's segment and use headphones. Persian/Dari recognition may be imperfect; typed commands and explicit recording remain available.
 
-Say `این کلمه را اینطور تلفظ کن`, pause, then say only the corrected word. The command arms a 30-second private server window. Specify the written target in the panel if recognition is uncertain. A separate record/stop workflow provides the reliable fallback: enter the target, record only that word, stop to save. No spoken acknowledgement is enqueued.
+## Silent correction
 
-Authenticated PCM uploads are mono 22050 Hz, 16-bit, 0.15–5 seconds, at most 240 kB, with silence and integrity validation. Original samples are cached outside public assets and stored in the existing private HF session Dataset. They are not committed to GitHub or sent to an external inference API. SHA-256 metadata is persisted with the owner's profile. Deleting a correction removes its active mapping; historical private Dataset commits are not erased.
+Say «این کلمه را اینطور تلفظ کن», pause, then say only the corrected word. Specify its written form in the panel if uncertain. Alternatively enter the word, record its pronunciation and stop to save. No spoken acknowledgement is enqueued.
 
-Future Persian assistant/question speech splices the teacher's actual word recording into locally generated surrounding speech. This is not complete voice cloning or continuous training. Recorded introductions, prebuilt welcome clips and German recordings are unchanged. Explicitly reread a current question to prepare corrected narration; public audio GET requests cannot trigger synthesis.
+Correction samples are 22050 Hz mono 16-bit PCM, 0.15–5 seconds and at most 240 kB, validated and SHA-256 checked. They are stored in the existing private HF Dataset and cached outside public assets; never published to GitHub or sent to an external inference API. Deleting a mapping does not erase private Dataset history.
 
-Private style settings store pace, volume and approved greeting/confusion/thanks/winner phrases. The winner template must retain `{names}` and receives only genuine winners. These are explicit preferences and examples, not inferred personality or emotional model training. The connected project's API credentials are not automatically copied to this app or billed by this feature.
+Future Persian speech splices the owner's recorded word into local speech. This is not full voice cloning, continuous emotional training or live facial lip sync. The portrait is a still image; only the recorded introduction has actual facial motion. German recordings, prebuilt welcomes and the recorded introduction are unchanged. Style settings are explicit preferences; winner templates retain real {names}.
 
-## LIVE demo
-
-`/live-demo` provides an isolated mobile preview with previous/next/repeat, pause/resume, answer reveal, image zoom, image/video height and demo gifts. Pause preserves the demo's question/video timeline. Demo messages are accepted only from the same-origin parent window and never invoke owner endpoints or alter real session progress. Real screen controls remain owner-token protected.
+/live-demo is an independent mobile preview. Its controls and simulated gifts never invoke owner actions or alter real lesson progress.

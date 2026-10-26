@@ -12,6 +12,10 @@ ENV QUIZ_TTS_PYTHON=/home/node/voice-env/bin/python
 COPY --chown=node:node data/questions.json ./data/questions.json
 COPY --chown=node:node prepare-narration.py speech-texts.json ./
 RUN /home/node/voice-env/bin/python prepare-narration.py
+# Server recognition avoids Edge/Chrome cloud speech services; CPU only.
+RUN python3 -m venv /home/node/asr-env && /home/node/asr-env/bin/pip install --no-cache-dir faster-whisper==1.2.1 av==16.1.0
+RUN HF_HUB_DISABLE_XET=1 /home/node/asr-env/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('Systran/faster-whisper-small',revision='536b0662742c02347bc0e980a01041f333bce120',local_dir='/home/node/asr-model',allow_patterns=['config.json','model.bin','tokenizer.json','vocabulary.*'])"
+ENV QUIZ_ASR_PYTHON=/home/node/asr-env/bin/python QUIZ_ASR_MODEL=/home/node/asr-model
 COPY --chown=node:node . .
 RUN node bank-media.mjs
 EXPOSE 7860
