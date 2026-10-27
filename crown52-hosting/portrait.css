@@ -6,7 +6,29 @@ body.screen-only{background:#050710;overflow:hidden;display:flex;justify-content
 .screen-only .play-area{display:flex;flex-direction:column;gap:14px}.screen-only .leader-panel{order:-1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:74px;height:74px;padding:9px 12px;text-align:right}.screen-only .leader-panel>.eyebrow,.screen-only .leader-panel>.rule-small,.screen-only .leader-panel>.round-mini{display:none}.screen-only .leader-panel h3{font-size:12px;margin:0}.screen-only #leader{display:flex;gap:14px;align-items:center}.screen-only .leader-empty{display:flex;align-items:center;gap:8px;padding:0;font-size:25px}.screen-only .leader-empty p{font-size:9px;margin:0}.screen-only .leader-person{margin:0;display:grid;grid-template-columns:32px auto;gap:2px 7px;align-items:center}.screen-only .leader-person .avatar{width:32px;height:32px;grid-row:span 3}.screen-only .leader-person b{font-size:10px;margin:0}.screen-only .leader-person small{font-size:7px}.screen-only .leader-score{font-size:11px!important;margin:0}
 .screen-only .deck-caption{font-size:10px;margin-bottom:10px;min-height:16px}.screen-only .deck{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}.screen-only .card{height:65px;min-height:0;aspect-ratio:auto;border-radius:7px}.screen-only .card .card-n{font-size:20px}.screen-only .card.open .card-n{font-size:9px}.screen-only .card-gift{font-size:23px;margin:0}.screen-only .card-value{font-size:9px}.screen-only .card-owner{left:2px;right:2px;bottom:2px;padding:1px;justify-content:flex-start;background:#080d1888}.screen-only .card-owner .avatar{width:13px;height:13px}.screen-only .card-owner span:last-child{display:block;font-size:7px}.screen-only .participant-area{position:absolute;left:20px;right:20px;bottom:49px;margin:0;padding-top:12px}.screen-only .participant-strip{min-height:59px}.screen-only .participant{min-width:115px;padding:8px}.screen-only .participant-head{font-size:10px}.screen-only .arena-footer{position:absolute;bottom:18px;left:20px;right:20px;font-size:8px;display:flex;flex-direction:row}.screen-only .guest-dock{bottom:155px;left:20px}.screen-only .reveal-layer{position:absolute;inset:0}.screen-only .reveal-card{width:310px;height:440px;max-width:none}.screen-only .gift-focus{position:absolute;bottom:160px;left:18px;width:210px;height:270px}.screen-only .screen-sound{top:24px;left:20px;font-size:10px}
 
-/* The browser may scroll vertically; the scene remains exactly 9:16. */
-html:has(body.screen-only){overflow-x:hidden;overflow-y:auto;height:auto;touch-action:pan-y pinch-zoom}
-body.screen-only{display:block;overflow-x:hidden;overflow-y:visible;min-height:var(--screen-height,100dvh);height:var(--screen-height,100dvh);margin:0;touch-action:pan-y pinch-zoom}
-.screen-only main{position:absolute;left:0;top:0;transform-origin:top left}
+/* Fit the complete 9:16 broadcast to both viewport dimensions. */
+html:has(body.screen-only){height:100%;overflow:hidden}
+body.screen-only{display:block;position:relative;margin:0;width:100%;height:100dvh;min-height:0;overflow:hidden}
+.screen-only main{position:absolute;left:var(--screen-left,0px);top:var(--screen-top,0px);transform-origin:top left}
+
+/* A landscape browser gets a readable 13-by-4 board; portrait Studio stays 9:16. */
+.screen-only.screen-landscape main{width:960px}
+.screen-only.screen-landscape .arena{width:960px;height:540px;padding:12px 20px}
+.screen-only.screen-landscape .arena-top{height:45px;padding-left:120px}
+.screen-only.screen-landscape .arena h2{font-size:20px}
+.screen-only.screen-landscape .arena-notice{margin:3px 0;min-height:20px;font-size:10px;padding:0}
+.screen-only.screen-landscape .deck-caption{margin:3px 0 8px;min-height:13px;font-size:9px}
+.screen-only.screen-landscape .deck,.screen-only.screen-landscape .fun-cards{grid-template-columns:repeat(13,minmax(0,1fr));gap:8px}
+.screen-only.screen-landscape .card,.screen-only.screen-landscape .fun-card{height:67px;min-height:67px}
+.screen-only.screen-landscape .supporter-stat{height:30px}
+.screen-only.screen-landscape .supporter-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;max-width:470px;margin-left:auto}
+.screen-only.screen-landscape .arrival-bubble{height:45px}
+.screen-only.screen-landscape .screen-sound{top:12px}
+.screen-only.screen-landscape .fun-board{padding-top:3px}
+.screen-only.screen-landscape .scene-modes{bottom:8px}
+.screen-only.screen-landscape #revealLayer:not([hidden]){inset:15px 120px}
+.screen-only.screen-landscape #revealCard{width:280px;height:430px}
+.screen-only.screen-landscape #giftVisual{width:220px;height:220px}
+.screen-only.screen-landscape .arena h2{font-size:18px;line-height:1.15;margin:2px 0}
+.screen-only.screen-landscape .on-air{font-size:9px;line-height:1.1}
+.screen-only.screen-landscape .admission-stage{font-size:8px;line-height:1.2;margin:0}
