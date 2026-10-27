@@ -44,9 +44,10 @@ elif mode=='persist':
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
-for name in ('game-audio.mjs','game.mjs','portrait.css','game-engine.mjs','language.mjs','water.mjs','water.css','index.html','gift-art.json','supporters.mjs'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
+(folder/'MOTION_SPEC.md').write_text((here/'MOTION_SPEC.md').read_text())
 from concurrent.futures import ThreadPoolExecutor
 def gift_art(asset):
  if not (asset['url'].startswith('https://raw.githubusercontent.com/tao-Isaman/tiktok-live-gift/main/public/gifts/') or asset['url'].startswith('https://p16-webcast.tiktokcdn.com/img/')) or '/' in asset['name'] or not asset['name'].endswith('.webp'):raise RuntimeError('Invalid gift art source')
