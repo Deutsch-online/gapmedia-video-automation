@@ -21,7 +21,7 @@ function keyboardPairs(rows){
 const persianPairs=keyboardPairs(PERSIAN_ROWS),latinPairs=keyboardPairs(LATIN_ROWS);
 function adjacentRatio(word,pairs){const chars=[...word];if(chars.length<2)return 0;let n=0;for(let i=1;i<chars.length;i++)if(pairs.has(chars[i-1]+chars[i]))n++;return n/(chars.length-1);}
 function repeatedOrLowVariety(word){const letters=[...word],unique=new Set(letters);if(letters.length>=3&&unique.size<=1)return true;if(letters.length>=5&&unique.size<=2)return true;return letters.length>=4&&/^(.{1,3})\1+$/u.test(word);}
-const keyboardMash=(word,pairs)=>[...word].length>=4&&adjacentRatio(word,pairs)>=.75;
+const keyboardMash=(word,pairs)=>[...word].length>=4&&adjacentRatio(word,pairs)>=.86;
 function latinGibberish(word){const w=word.toLowerCase();return LATIN_ROWS.some(row=>row.includes(w))||repeatedOrLowVariety(w)||keyboardMash(w,latinPairs);}
 export function speakableComment(value){
  const source=String(value||'');
@@ -30,7 +30,7 @@ export function speakableComment(value){
  if(!raw||numberOnly(raw)||!hasPersian(raw))return '';
  const kept=[];
  for(const token of raw.split(/\s+/)){
-  const persian=(token.match(/[\u0600-\u06ff]/gu)||[]).join('');
+  const persian=(token.match(/[\u0600-\u06ff]/gu)||[]).join('').replace(/[\u060c\u061b\u061f]/g,'');
   if(persian){if(!repeatedOrLowVariety(persian)&&!keyboardMash(persian,persianPairs))kept.push(persian+(/[؟?]/.test(token)?'؟':''));continue;}
   const latin=(token.match(/[A-Za-z]+/g)||[]).filter(word=>!latinGibberish(word));
   if(latin.length)kept.push(latin.join(' '));

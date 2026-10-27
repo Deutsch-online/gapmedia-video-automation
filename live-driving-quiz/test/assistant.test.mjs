@@ -29,7 +29,7 @@ test('Persian comments are rate-limited and numeric answers never get read or al
 test('only meaningful comments are read, with a warm named lead-in',async()=>{
  const {assistant,texts,setNow}=fixture();
  for(const [content,id] of [['هههه','g1'],['هاهاها','g2'],['ضصثقفغ','g3'],['اب','g4'],['😂🔥','g5'],['asdfqwer','g6'],['https://example.com/lesson','g7'],['www.example.com سلام','g8'],['123','g9'],['AAA','g10']])assert.equal(assistant.comment({content,user:{nickname:'سارا'},common:{msgId:id}},q,'open','r').reason,'not_readable',content);
- assert.equal(speakableComment('سلام asdf حق تقدم'),'سلام حق تقدم');
+ assert.equal(speakableComment('سلام asdf حق تقدم'),'سلام حق تقدم');assert.equal(speakableComment('ممنون'),'ممنون');assert.equal(speakableComment('حق تقدم یعنی چه؟'),'حق تقدم یعنی چه؟');
  assert.equal(commentLeadIn('سارا','حق تقدم چیست؟','seed').includes('سارا'),true);
  assert.match(commentLeadIn('سارا','حق تقدم چیست؟','seed'),/می‌گوید|سوال|می‌خوانم|نوشته|نوشتی|بشنویم/);
  assert.equal(commentLeadIn('Mary','سلام','1'),commentLeadIn('Mary','سلام','1'));
