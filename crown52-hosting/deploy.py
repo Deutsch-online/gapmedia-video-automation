@@ -29,6 +29,13 @@ with tarfile.open(here/'bootstrap.tar.gz') as t:
   p=Path(m.name)
   if p.is_absolute() or '..' in p.parts or m.issym() or m.islnk():raise RuntimeError('Invalid bootstrap archive')
  t.extractall(folder)
+def read_public(source,timeout=30):
+ for attempt in range(4):
+  try:
+   with urllib.request.urlopen(source,timeout=timeout) as response:return response.read(32000000)
+  except Exception:
+   if attempt==3:raise
+   time.sleep(.5*(attempt+1))
 if mode in ('bootstrap','repair'):
  api.add_space_secret(repo,key='CROWN_ADMIN_TOKEN',value=admin)
  api.add_space_variable(repo,key='PUBLIC_URL',value=url)
@@ -40,7 +47,7 @@ elif mode=='persist':
   api.add_space_secret(repo,key='CROWN_RECOVERY_JSON',value=json.dumps({'state':state['state'],'revision':state['revision']}))
  except Exception as e:raise RuntimeError('Could not protect the current game before media persistence: '+type(e).__name__) from None
  for asset in json.loads((folder/'assets-manifest.json').read_text()):
-  with urllib.request.urlopen(url+'/assets/'+asset['name'],timeout=60) as r:data=r.read()
+  data=read_public(url+'/assets/'+asset['name'],60)
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
@@ -51,8 +58,16 @@ for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water
 from concurrent.futures import ThreadPoolExecutor
 def gift_art(asset):
  if not (asset['url'].startswith('https://raw.githubusercontent.com/tao-Isaman/tiktok-live-gift/main/public/gifts/') or asset['url'].startswith('https://p16-webcast.tiktokcdn.com/img/')) or '/' in asset['name'] or not asset['name'].endswith('.webp'):raise RuntimeError('Invalid gift art source')
- with urllib.request.urlopen(asset['url'],timeout=30) as response:data=response.read(5000000)
- if data[:4]!=b'RIFF' or data[8:12]!=b'WEBP' or len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Invalid gift image')
+
+ sources=[url+'/gifts/'+asset['name'],'https://huggingface.co/spaces/'+repo+'/resolve/main/public/gifts/'+asset['name'],asset['url']]
+ data=None
+ for source in sources:
+  try:
+   candidate=read_public(source)
+   if candidate[:4]==b'RIFF' and candidate[8:12]==b'WEBP' and len(candidate)==asset['size'] and hashlib.sha256(candidate).hexdigest()==asset['sha256']:
+    data=candidate;break
+  except Exception:pass
+ if data is None:raise RuntimeError('Verified gift image unavailable: '+asset['name'])
  target=folder/'public/gifts'/asset['name'];target.parent.mkdir(exist_ok=True);target.write_bytes(data)
 with ThreadPoolExecutor(max_workers=8) as pool:list(pool.map(gift_art,json.loads((here/'gift-art.json').read_text())['files']))
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
