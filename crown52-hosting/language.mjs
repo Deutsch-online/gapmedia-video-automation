@@ -2,6 +2,7 @@ let language=localStorage.getItem('crown52-language')==='en'?'en':'fa';const ori
 export const getLanguage=()=>language;
 export function setLanguage(value){language=value==='en'?'en':'fa';localStorage.setItem('crown52-language',language);document.documentElement.lang=language;document.documentElement.dir=language==='en'?'ltr':'rtl';}
 const words={
+'ذخیرهٔ تنظیمات':'Save settings','تنظیمات ذخیره‌شده':'Saved settings','تغییرات ذخیره‌نشده':'Unsaved changes','تنظیمات ذخیره شد':'Settings saved','در حال ذخیره…':'Saving…','ذخیره انجام نشد؛ دوباره تلاش کنید.':'Save failed; try again.','ذخیره تأیید نشد؛ دوباره تلاش کنید.':'Save not confirmed; try again.','اتصال پنل برقرار نیست؛ دوباره تلاش کنید.':'Panel disconnected; reconnect and try again.',
 'گیفتر برتر':'Top gifter','لایکر برتر':'Top liker','آخرین گیفتر':'Latest gifter','آخرین لایکر':'Latest liker',
 
 'نئون':'Neon','طرح آبی':'Blueprint','پاپ‌آرت':'Pop art','پیکسلی':'Pixel art','طلایی':'Gold','حباب بامزه':'Funny bubble','دورنگ':'Duotone','آبرنگ':'Watercolor','نور وارونه':'Electric',
