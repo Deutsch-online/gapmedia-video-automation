@@ -93,7 +93,7 @@ def deploy():
     write_report(report)
     control=url+'/?panel=1#'+admin
     message=telegram(bot_token,'sendMessage',{'chat_id':chat,'link_preview_options':{'is_disabled':True},'text':
-        'Nations Race updated.\n\nLIVE:\n'+url+'/screen'+'\n\nPrivate panel:\n'+control+'\n\nLike and Move / Gift and Move'})
+        'Nations Race + Afterglow Dance updated.\n\nRace LIVE:\n'+url+'/screen'+'\n\nPrivate race panel:\n'+control+'\n\nDance LIVE:\n'+url+'/dance'+'\n\nPrivate dance panel:\n'+url+'/dance-control#'+admin+'\n\nFree interactive scenes. No gift triggers or coin prizes.'})
     report['private_link_delivered']=True;report['telegram_message_id']=message.get('message_id');write_report(report)
     print('RACE_LIVE_READY: '+json.dumps(report))
 

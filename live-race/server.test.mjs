@@ -16,7 +16,7 @@ test('authenticated free play rejects paid features and retires prerecorded asse
   const response=await fetch('http://127.0.0.1:'+port+'/screen');assert.equal(response.status,200);assert.match(await response.text(),/Nations Race/);
   const messages=[];socket=new WebSocket('ws://127.0.0.1:'+port+'/events');socket.on('message',raw=>messages.push(JSON.parse(raw)));await wait(()=>socket.readyState===1);await wait(()=>messages.find(m=>m.type==='snapshot'));
   const action=async(type,data={})=>{messages.length=0;socket.send(JSON.stringify({type,...data}));return await wait(()=>messages.find(m=>m.type==='snapshot'||m.type==='error'))};
-  assert.equal((await action('race-settings',{settings:{cars:5}})).type,'error');assert.equal((await action('race-refresh-screen')).type,'error');
+  assert.equal((await action('race-settings',{settings:{cars:5}})).type,'error');assert.equal((await action('race-refresh-screen')).type,'error');assert.equal((await action('dance-settings',{settings:{capacity:8}})).type,'error');
   messages.length=0;socket.send(JSON.stringify({type:'auth',token}));assert.equal((await wait(()=>messages.find(m=>m.type==='auth'))).ok,true);
   assert.equal((await action('race-settings',{settings:{cars:5,removeInactive:false,demoOpponents:false,giftMoveIntervalMs:0,giftScoreWindowMs:0}})).snapshot.race.settings.cars,5);
   let controlled=await action('race-control',{action:'stop'});assert.equal(controlled.snapshot.race.settings.running,false);controlled=await action('race-control',{action:'start'});assert.equal(controlled.snapshot.race.settings.running,true);controlled=await action('race-control',{action:'pause'});assert.equal(controlled.snapshot.race.settings.paused,true);controlled=await action('race-control',{action:'resume'});assert.equal(controlled.snapshot.race.settings.paused,false);
@@ -34,6 +34,13 @@ test('authenticated free play rejects paid features and retires prerecorded asse
   assert.equal((await action('race-slot',{index:0,giftId:'5655'})).type,'error');assert.equal((await action('race-audio-test',{kind:'voice'})).type,'error');
   const before=m.snapshot.race.slots[0].distance;m=await action('race-demo',{action:'drive',userId:'1',name:'Player 1'});assert.equal(m.snapshot.race.slots[0].distance,before+10);
   m=await action('race-demo',{action:'country',userId:'1',name:'Player 1',content:'Germany'});assert.equal(m.snapshot.race.slots[0].countryFlag,'🇩🇪');
+
+  for(const path of ['/dance','/dance-control','/dance.js','/dance-model.js','/dance-audio.js','/dance.css'])assert.equal((await fetch('http://127.0.0.1:'+port+path)).status,200,path);
+  m=await action('dance-settings',{settings:{capacity:3,style:'shuffle',giftsEnabled:true}});assert.equal(m.snapshot.dance.settings.capacity,3);assert.equal(m.snapshot.dance.settings.style,'shuffle');assert.equal('giftsEnabled' in m.snapshot.dance.settings,false);
+  await action('demo-comment',{userId:'dancer-1',name:'Dance guest',avatar:'https://example.com/portrait.png',content:'disco'});
+  messages.length=0;socket.send(JSON.stringify({type:'race-heartbeat'}));m=await wait(()=>messages.find(m=>m.type==='snapshot'));assert.equal(m.snapshot.dance.people.find(p=>p.id==='dancer-1').style,'disco');assert.equal(m.snapshot.dance.people.find(p=>p.id==='dancer-1').avatar,'https://example.com/portrait.png');
+  const musicURL='http://127.0.0.1:'+port+'/dance-music';assert.equal((await fetch(musicURL,{method:'POST',body:'x'})).status,401);assert.equal((await fetch(musicURL,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'text/html'},body:'x'})).status,415);
+  const wav=Buffer.alloc(48);wav.write('RIFF');wav.writeUInt32LE(40,4);wav.write('WAVEfmt ',8);wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);wav.writeUInt32LE(8000,24);wav.writeUInt32LE(16000,28);wav.writeUInt16LE(2,32);wav.writeUInt16LE(16,34);wav.write('data',36);wav.writeUInt32LE(4,40);assert.equal((await fetch(musicURL,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'audio/wav'},body:wav})).status,200);assert.deepEqual(Buffer.from(await(await fetch(musicURL)).arrayBuffer()),wav);
   messages.length=0;socket.send(JSON.stringify({type:'race-screen-ready'}));await wait(()=>messages.find(m=>m.type==='race-screen-refresh'));
 
  }finally{socket?.close();viewer?.close();child.kill('SIGTERM');if(child.exitCode===null)await new Promise(r=>child.once('exit',r));await rm(cwd,{recursive:true,force:true})}
