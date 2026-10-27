@@ -2,6 +2,7 @@ let language=localStorage.getItem('crown52-language')==='en'?'en':'fa';const ori
 export const getLanguage=()=>language;
 export function setLanguage(value){language=value==='en'?'en':'fa';localStorage.setItem('crown52-language',language);document.documentElement.lang=language;document.documentElement.dir=language==='en'?'ltr':'rtl';}
 const words={
+'این لینک را به منبع Link اضافه کنید، اندازهٔ منبع را 1080 × 1920 بگذارید و Fit to screen را بزنید.':'Add this URL as a Link source, set the source to 1080 × 1920, then choose Fit to screen.','کپی لینک TikTok Studio':'Copy TikTok Studio link','عرض: 1080 · ارتفاع: 1920 · برش: 0 · موقعیت: X=0 / Y=0':'Width: 1080 · Height: 1920 · Crop: 0 · Position: X=0 / Y=0',
 'ذخیرهٔ تنظیمات':'Save settings','تنظیمات ذخیره‌شده':'Saved settings','تغییرات ذخیره‌نشده':'Unsaved changes','تنظیمات ذخیره شد':'Settings saved','در حال ذخیره…':'Saving…','ذخیره انجام نشد؛ دوباره تلاش کنید.':'Save failed; try again.','ذخیره تأیید نشد؛ دوباره تلاش کنید.':'Save not confirmed; try again.','اتصال پنل برقرار نیست؛ دوباره تلاش کنید.':'Panel disconnected; reconnect and try again.',
 'گیفتر برتر':'Top gifter','لایکر برتر':'Top liker','آخرین گیفتر':'Latest gifter','آخرین لایکر':'Latest liker',
 

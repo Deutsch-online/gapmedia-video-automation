@@ -94,7 +94,7 @@ if(hosted){
 }
 
 // Keep the entire broadcast at 9:16 on desktop, mobile and Studio.
-if(document.body.classList.contains('screen-only')){const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/portrait.css';document.head.append(sheet);const fit=()=>{const viewport=visualViewport,width=Math.min(innerWidth,viewport?.width||innerWidth),height=Math.min(innerHeight,viewport?.height||innerHeight),landscape=width>height*1.1,sceneWidth=landscape?960:540,sceneHeight=landscape?540:960,scale=Math.min(width/sceneWidth,height/sceneHeight);document.body.classList.toggle('screen-landscape',landscape);document.documentElement.style.setProperty('--portrait-scale',scale);document.documentElement.style.setProperty('--screen-left',Math.max(0,(width-sceneWidth*scale)/2)+'px');document.documentElement.style.setProperty('--screen-top',Math.max(0,(height-sceneHeight*scale)/2)+'px');requestAnimationFrame(layoutSupporters);};fit();addEventListener('resize',fit);visualViewport?.addEventListener('resize',fit);}
+if(document.body.classList.contains('screen-only')){const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/portrait.css';document.head.append(sheet);const fit=()=>{const viewport=visualViewport,width=Math.min(innerWidth,viewport?.width||innerWidth),height=Math.min(innerHeight,viewport?.height||innerHeight),landscape=!new URLSearchParams(location.search).has('studio')&&width>height*1.1,sceneWidth=landscape?960:540,sceneHeight=landscape?540:960,scale=Math.min(width/sceneWidth,height/sceneHeight);document.body.classList.toggle('screen-landscape',landscape);document.documentElement.style.setProperty('--portrait-scale',scale);document.documentElement.style.setProperty('--screen-left',Math.max(0,(width-sceneWidth*scale)/2)+'px');document.documentElement.style.setProperty('--screen-top',Math.max(0,(height-sceneHeight*scale)/2)+'px');requestAnimationFrame(layoutSupporters);};fit();addEventListener('resize',fit);visualViewport?.addEventListener('resize',fit);}
 
 startWater(document.querySelector('#arena'));if(!screen){document.querySelector('.brand').href='/control';}localize();
 
@@ -137,3 +137,5 @@ const supportLayoutObserver=new ResizeObserver(()=>requestAnimationFrame(layoutS
 // Keep edits intact across live updates; save the whole draft in one acknowledged command.
 for(const id of ['motionSeconds','revealSeconds','arrivalSeconds','maxPlayers','registrationSeconds','minGiftCoins','funAutoJoin','funStyle','revealMode','autoMode']){const field=$('#'+id);const dirty=()=>{settingsDirty.set(id,++settingsEditVersion);settingStatus('تغییرات ذخیره‌نشده');};field.onchange=dirty;field.oninput=dirty;}
 $('#saveSettings').onclick=savePanelSettings;
+
+$('#copyStudioLink').onclick=async()=>{const url=location.origin+'/screen?studio=1';try{await navigator.clipboard.writeText(url);notify(getLanguage()==='en'?'Studio link copied':'لینک TikTok Studio کپی شد');}catch{window.prompt('TikTok Studio URL',url);}};
