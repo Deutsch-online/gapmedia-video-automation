@@ -37,21 +37,21 @@ elif mode=='persist':
  try:
   req=urllib.request.Request(url+'/api/admin/state',headers={'Authorization':'Bearer '+admin})
   with urllib.request.urlopen(req,timeout=20) as r:state=json.load(r)
-  if state.get('state',{}).get('guests'):api.add_space_secret(repo,key='CROWN_RECOVERY_JSON',value=json.dumps({'state':state['state'],'revision':state['revision']}))
+  api.add_space_secret(repo,key='CROWN_RECOVERY_JSON',value=json.dumps({'state':state['state'],'revision':state['revision']}))
  except Exception as e:raise RuntimeError('Could not protect the current game before media persistence: '+type(e).__name__) from None
  for asset in json.loads((folder/'assets-manifest.json').read_text()):
   with urllib.request.urlopen(url+'/assets/'+asset['name'],timeout=60) as r:data=r.read()
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
-for name in ('game-audio.mjs','game.mjs','portrait.css','game-engine.mjs','language.mjs','water.mjs','water.css','index.html','gift-art.json'):
+for name in ('game-audio.mjs','game.mjs','portrait.css','game-engine.mjs','language.mjs','water.mjs','water.css','index.html','gift-art.json','supporters.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 from concurrent.futures import ThreadPoolExecutor
 def gift_art(asset):
- if not asset['url'].startswith('https://raw.githubusercontent.com/tao-Isaman/tiktok-live-gift/main/public/gifts/') or '/' in asset['name'] or not asset['name'].endswith('.webp'):raise RuntimeError('Invalid gift art source')
+ if not (asset['url'].startswith('https://raw.githubusercontent.com/tao-Isaman/tiktok-live-gift/main/public/gifts/') or asset['url'].startswith('https://p16-webcast.tiktokcdn.com/img/')) or '/' in asset['name'] or not asset['name'].endswith('.webp'):raise RuntimeError('Invalid gift art source')
  with urllib.request.urlopen(asset['url'],timeout=30) as response:data=response.read(5000000)
- if data[:4]!=b'RIFF' or data[8:12]!=b'WEBP':raise RuntimeError('Invalid gift image')
+ if data[:4]!=b'RIFF' or data[8:12]!=b'WEBP' or len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Invalid gift image')
  target=folder/'public/gifts'/asset['name'];target.parent.mkdir(exist_ok=True);target.write_bytes(data)
 with ThreadPoolExecutor(max_workers=8) as pool:list(pool.map(gift_art,json.loads((here/'gift-art.json').read_text())['files']))
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
