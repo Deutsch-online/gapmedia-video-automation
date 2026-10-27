@@ -39,7 +39,7 @@ The manual workflow's `force` input starts today's episode early but never
 replays an already delivered day. A push can do the same only when that push
 actually changes `.cinematic-series-request.json`.
 
-Video descriptions and Telegram video captions are German only, with relevant German/English hashtags. Persian text remains in the in-video subtitles and is not included in video metadata.
+Social captions for the German A1 lessons, EasyDeutsch drills and the «Die Nachbarn» series use three lines: `Deutsch lernen leicht gemacht: <German topic>`, one short funny Persian/Dari line with at most one emoji, and exactly five hashtags (`#DeutschLeichtGemacht` `#DeutschLernen` `#DeutschFürAnfänger`, one lesson tag such as `#Alltagsdeutsch` or `#PraktischesDeutsch`, and one Persian tag, `#آلمانی_به_دری` or `#آموزش_زبان_آلمانی`). YouTube Shorts still appends `#Shorts`, so that export carries six tags. Marta & Lukas delivery captions stay German-only: the locked rule in `PROJECT_RULES.md` (2026-10-15 and 2026-10-16) forbids Persian in that series' title, caption and description. Persian remains in the burned-in subtitles, and that delivery caption is not switched to the three-line format until the locked rule is revised.
 
 ## Current owner requirements (2026-10-16)
 

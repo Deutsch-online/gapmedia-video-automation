@@ -4,6 +4,7 @@
 import { execFileSync, execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from "node:fs";
 import { buildEasyReelHTML } from "../lib/easy-reel.mjs";
+import { captionForSeries } from "../lib/social-caption.mjs";
 import { assertComposition } from "../lib/hf-check.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "../lib/telegram.mjs";
 
@@ -30,7 +31,7 @@ if (process.env.MODE === "transcribe" || !existsSync("veo-test/captions.json")) 
 const C = JSON.parse(readFileSync("veo-test/captions.json", "utf8"));
 mkdirSync("public/ai-cast/stage", { recursive: true }); mkdirSync("compositions/veo", { recursive: true }); mkdirSync("renders/veo", { recursive: true });
 copyFileSync(film, "public/ai-cast/stage/veo-film.mp4");
-const caption = `😂 ${C.title}\n${C.challenge ? `Challenge: ${C.challenge}\n` : ""}\n#DieNachbarn #Comedy #Alltag #Deutschland #Deutschlernen #LearnGerman #fyp`;
+const caption = captionForSeries({ title: C.title, titleFa: C.titleFa, captionFa: C.captionFa });
 for (const [theme, label] of [["tiktok", "TikTok"], ["easy", "Instagram"], ["youtube", "YouTube Shorts"]]) {
   const comp = `compositions/veo/film-${theme}.html`;
   // the picture and the audio of the film are used as they are: the composition only adds the captions on top

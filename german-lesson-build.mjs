@@ -12,6 +12,7 @@ import { assertComposition } from "./lib/hf-check.mjs";
 import { assertVisualProof } from "./lib/visual-proof.mjs";
 import { findLessonImage } from "./lib/lesson-image.mjs";
 import { GERMAN_A1, germanUnitAt, exampleGermanFor } from "./lib/german-a1.mjs";
+import { captionForLesson } from "./lib/social-caption.mjs";
 import { accentSpec } from "./music/mood.mjs";
 import { loadEnv, telegramConfig, sendVideo, sendMessage } from "./lib/telegram.mjs";
 import { fingerprint, check, register } from "./lib/dedupe.mjs";
@@ -117,7 +118,6 @@ function colorArticle(de) {
 }
 
 const COURSE_TOTAL = 100;
-const lessonCode = `A1-${String(episodeNo).padStart(3, "0")}`;
 const lessonCounter = `A1 • ${String(episodeNo).padStart(3, "0")}/${COURSE_TOTAL}`;const MIN_EPISODE_SECONDS = 60;
 // AAC/MP4 timestamps are quantised. A timeline calculated at exactly 60.000s
 // can be reported as 59.998s after its per-scene values are rounded, which
@@ -145,7 +145,7 @@ const pack = {
   })),
   outroAsk: `قسمت بعد: ${nextUnit.topic}`,
   payoff: "واژه، مکالمه و نکتهٔ گرامری تازه یاد گرفتی — سطح A1.",
-  tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}${isCorrection ? " (اصلاح‌شده)" : ""}\n\n#German #A1 #LearnGerman #GermanLessons #Vocabulary #Grammar`,
+  tgTitle: captionForLesson(unit, episodeNo),
   noCharacters: true,
   ink: { pair: ["#E53935", "#111111"], paper: "#F7F6F2", tint: "rgba(229,57,53,.08)" },
   outro: { tag: "هر روز یک قدم به آلمانی بهتر —<br/>ما را دنبال کن.", follow: "دنبال کنید +" },
@@ -165,13 +165,11 @@ const FORMAT_VARIANTS = [
     slug: "tiktok", label: "TikTok", platform: "tiktok",
     design: "german-tiktok-learning", mood: "lift", bpm: 108, musicVariant: 2,
     ink: { pair: ["#00F2EA", "#FE2C55"], paper: "#0B0E14", tint: "rgba(0,242,234,.12)" },
-    hashtags: "#LearnGerman #GermanA1 #DeutschLernen #TikTokLearn",
   },
   {
     slug: "instagram", label: "Instagram", platform: "instagram",
     design: "german-instagram-learning", mood: "warm", bpm: 96, musicVariant: 3,
     ink: { pair: ["#833AB4", "#FD1D1D"], paper: "#FFF8FC", tint: "rgba(131,58,180,.10)" },
-    hashtags: "#LearnGerman #GermanA1 #DeutschLernen #InstagramLearning",
   },
 ];
 
@@ -547,12 +545,10 @@ try {
     {
       slug: "tiktok-anim", label: "TikTok (انیمیشن)", platform: "tiktok", variant: "tiktok",
       mood: "play", bpm: 130, musicVariant: 1,
-      hashtags: "#LearnGerman #GermanA1 #DeutschLernen #Animation #viral",
     },
     {
       slug: "instagram-anim", label: "Instagram (انیمیشن)", platform: "instagram", variant: "instagram",
       mood: "craft", bpm: 124, musicVariant: 3,
-      hashtags: "#LearnGerman #GermanA1 #DeutschLernen #Animation #viral",
     },
   ];
   const vo = narrationFor(pack.id);
@@ -588,7 +584,7 @@ try {
       bpm: format.bpm,
       musicVariant: format.musicVariant,
       music: `music/auto/german-${pack.id}-${format.slug}${voice ? "-vo" : ""}.m4a`,
-      tgTitle: `🇩🇪 آموزش آلمانی هوشمند | ${lessonCode} — ${unit.topic}\n\n${format.hashtags}`,
+      tgTitle: captionForLesson(unit, episodeNo),
     };
     const comp = `${compDir}/${pack.id}-${format.slug}.html`;
     const silent = `${outDir}/${pack.id}-${format.slug}-silent.mp4`;
