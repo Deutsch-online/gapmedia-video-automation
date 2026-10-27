@@ -41,13 +41,13 @@ elif mode=='persist':
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
-api.upload_folder(repo_id=repo,repo_type='space',folder_path=str(folder),commit_message='Deploy Crown52 '+mode+' '+build[:12])
+commit=api.upload_folder(repo_id=repo,repo_type='space',folder_path=str(folder),commit_message='Deploy Crown52 '+mode+' '+build[:12])
 receipt={'url':url,'screen_url':url+'/screen','repo':repo,'mode':mode,'build':build,'hardware':'cpu-basic','sealed_admin':base64.b64encode(sealed).decode()};(out/'delivery.json').write_text(json.dumps(receipt));print('CROWN52_DEPLOYED '+json.dumps({k:v for k,v in receipt.items() if k!='sealed_admin'}),flush=True)
 for _ in range(95):
  runtime=free_runtime()
  try:
   with urllib.request.urlopen(url+'/health',timeout=15) as r:health=json.load(r)
-  if health.get('app')=='crown52' and health.get('build')==build:
+  if health.get('app')=='crown52' and health.get('build')==build and runtime.raw.get('sha')==commit.oid:
    if mode=='persist' and health.get('assetsInstalled')!=health.get('assetsExpected'):raise RuntimeError('Persistent media is missing')
    print('CROWN52_READY '+url,flush=True);break
  except Exception:pass
