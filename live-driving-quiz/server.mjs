@@ -159,7 +159,7 @@ const reconnect=new LiveReconnect({enabled:Boolean(hosting.publicOrigin)&&settin
 let resumeOnReconnect=false,connectGeneration=0;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;let recentJoins=[];
-function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const message=String(data.common?.msgId||'');const key=message&&!/^0+$/.test(message)?message:randomUUID();if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,avatar:profileAvatar(data),at:Date.now()});recentJoins=recentJoins.slice(-64);}
+function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const message=String(data.common?.msgId||'');const key=message&&!/^0+$/.test(message)?message:randomUUID();if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,avatar:profileAvatar(data),at:Date.now()});recentJoins=recentJoins.slice(-64);assistant.noteJoin(data);}
 const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,giftProfilesRecorded:0,giftProfilesUpdated:0,giftProgressReceived:0,giftDisplayRejected:0,giftDuplicates:0,lastGiftDisplayReject:null,lastCommentReject:null,lastGiftReject:null});
 let traffic=freshTraffic();let giftDisplayEvents=[];
 function recordGiftDisplay(event,result){
