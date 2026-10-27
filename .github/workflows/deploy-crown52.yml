@@ -9,7 +9,7 @@ permissions:
   contents: read
 concurrency:
   group: crown52-free-hosting
-  cancel-in-progress: false
+  cancel-in-progress: ${{ contains(github.event.head_commit.message, '[recovery]') }}
 jobs:
   deploy:
     runs-on: ubuntu-latest
