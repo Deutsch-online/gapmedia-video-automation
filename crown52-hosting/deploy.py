@@ -44,6 +44,8 @@ elif mode=='persist':
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
+for name in ('game-audio.mjs','game.mjs','portrait.css'):
+ (folder/'public'/name).write_text((here/name).read_text())
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
 commit=api.upload_folder(repo_id=repo,repo_type='space',folder_path=str(folder),commit_message='Deploy Crown52 '+mode+' '+build[:12])
 receipt={'url':url,'screen_url':url+'/screen','repo':repo,'mode':mode,'build':build,'hardware':'cpu-basic','sealed_admin':base64.b64encode(sealed).decode()};(out/'delivery.json').write_text(json.dumps(receipt));print('CROWN52_DEPLOYED '+json.dumps({k:v for k,v in receipt.items() if k!='sealed_admin'}),flush=True)
