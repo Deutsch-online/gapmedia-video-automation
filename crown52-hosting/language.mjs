@@ -2,6 +2,8 @@ let language=localStorage.getItem('crown52-language')==='en'?'en':'fa';const ori
 export const getLanguage=()=>language;
 export function setLanguage(value){language=value==='en'?'en':'fa';localStorage.setItem('crown52-language',language);document.documentElement.lang=language;document.documentElement.dir=language==='en'?'ltr':'rtl';}
 const words={
+'کنترل دستی و کد ورود':'Manual approval & entry code',
+
 'سرگرمی':'Fun','بازی':'Game','سرگرمی لایف':'LIVE fun studio','سبک‌های متنوع':'Mixed styles','کارت در حال انتخاب است':'Your reveal is on its way','شمارهٔ کارت خود را کامنت کن تا تصویرت تغییر کند.':'Comment your card number to transform your profile.','ورود تازه مستقیماً کارت شود':'Put new arrivals on numbered cards','سبک تصویر':'Portrait style','کمیک رنگی':'Color comic','طراحی با قلم':'Ink sketch','قهرمان فانتزی':'Fantasy hero','شمارهٔ کارت برای نمایش':'Card number to show','نمایش افکت این شماره':'Show this profile effect','بیننده با کامنت شمارهٔ کارت خودش، افکت تصویر را فعال می‌کند.':'Viewers activate their own portrait effect by commenting their card number.','ورود تازه به لایف':'New LIVE arrivals','مدت نمایش حباب (ثانیه)':'Arrival bubble duration (seconds)','تست ورود تازه':'Test a new arrival','حرکت کارت‌ها':'Card choreography','زمان هیجان قبل از نتیجه (ثانیه)':'Build-up before the result (seconds)','پس از حرکت‌ها، نتیجه 10 ثانیه نمایش داده می‌شود.':'After the choreography, the result is shown for 10 seconds.','حداقل کوین گیفت برای ورود':'Minimum gift coins to join','شمارهٔ کارتت را کامنت کن؛ هر بار یک غافلگیری':'Comment your card number for another surprise',
 
 'بدون شرکت‌کننده':'No player selected',

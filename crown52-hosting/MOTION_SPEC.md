@@ -1,7 +1,7 @@
 # Live Crown — interactive motion and fun mode
 
 - Portrait broadcast: logical 540 × 960, displayed at 1080 × 1920 or scaled to the control preview.
-- Game: six participant/result card spaces by default, filled center / left / right, then the next row. Higher capacities add spaces.
+- Game: no separate participant/result row. Each opened result remains in the original numbered cell with its owner photo. Admission requires the configurable gift minimum (100 coins by default). Private manual approval remains available to the host.
 - Profile admission: six different finite entrance families, with per-card depth, rotation and duration variants.
 - Gift-card reveal: a deterministic, seekable 20-second choreography, then the real gift artwork and owner badge for 10 seconds. Each of 52 cards has a unique seeded path. The result stays open with its owner's photo.
 - Hidden values remix every 20 seconds during play. Chosen prizes and revealed results stay unchanged. The private control preview can inspect current hidden values without revealing them publicly.
