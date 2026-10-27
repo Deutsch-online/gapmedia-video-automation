@@ -1,0 +1,2 @@
+export const FUN_STYLES=['comic','sketch','royal','neon','blueprint','popart','pixel','gold','bubble','duotone','watercolor','electric'];
+export const FUN_LABELS={mix:'سبک‌های متنوع',comic:'کمیک رنگی',sketch:'طراحی با قلم',royal:'قهرمان فانتزی',neon:'نئون',blueprint:'طرح آبی',popart:'پاپ‌آرت',pixel:'پیکسلی',gold:'طلایی',bubble:'حباب بامزه',duotone:'دورنگ',watercolor:'آبرنگ',electric:'نور وارونه'};
