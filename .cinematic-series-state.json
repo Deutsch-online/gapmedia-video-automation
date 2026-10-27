@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 12,
+  "next_episode": 13,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -100,6 +100,14 @@
       "platforms": {
         "tiktok": 2736,
         "instagram": 2737
+      }
+    },
+    "2026-10-28": {
+      "episode": 12,
+      "message_id": 2757,
+      "platforms": {
+        "tiktok": 2757,
+        "instagram": 2758
       }
     }
   },
@@ -1705,10 +1713,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 12,
       "title_de": "Erste oder zweite Klasse?",
       "title_fa": "درجه یک یا درجه دو؟",
@@ -1841,20 +1847,9 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    },
-    "date": "2026-10-28",
-    "status": "exporting",
-    "platform_receipts": {
-      "tiktok": 2757,
-      "instagram": 2758
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0012/tiktok/e0012-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0012/instagram/e0012-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0012/instagram/e0012-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
