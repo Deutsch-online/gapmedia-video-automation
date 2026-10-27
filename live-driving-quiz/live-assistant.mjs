@@ -1,7 +1,9 @@
 import {randomUUID} from 'node:crypto';
 import {cleanComment,hasPersian,answerComment,explainQuestion,teachingNote} from './teaching.mjs';
-export const ASSISTANT_DEFAULTS={enabled:true,showCaptions:false,readComments:true,replyComments:true,autoExplain:true,thankLikes:true,thankGifts:true,likeThreshold:1,commentGap:8,thankGap:20};
-export function validAssistantSettings(s){return s&&['enabled','showCaptions','readComments','replyComments','autoExplain','thankLikes','thankGifts'].every(k=>typeof s[k]==='boolean')&&Number.isInteger(s.likeThreshold)&&s.likeThreshold>=1&&s.likeThreshold<=1000&&Number.isInteger(s.commentGap)&&s.commentGap>=3&&s.commentGap<=60&&Number.isInteger(s.thankGap)&&s.thankGap>=10&&s.thankGap<=120;}
+export const ASSISTANT_DEFAULTS={enabled:true,showCaptions:false,readComments:true,replyComments:true,autoExplain:true,thankLikes:true,thankGifts:true,likeThreshold:501,commentGap:8,thankGap:20};
+export const LIKE_THANKS_AFTER=500;
+export function validAssistantSettings(s){return s&&['enabled','showCaptions','readComments','replyComments','autoExplain','thankLikes','thankGifts'].every(k=>typeof s[k]==='boolean')&&Number.isInteger(s.likeThreshold)&&s.likeThreshold>LIKE_THANKS_AFTER&&s.likeThreshold<=1000&&Number.isInteger(s.commentGap)&&s.commentGap>=3&&s.commentGap<=60&&Number.isInteger(s.thankGap)&&s.thankGap>=10&&s.thankGap<=120;}
+export function normalizeAssistantSettings(value){if(!value||typeof value!=='object')return null;const merged={...ASSISTANT_DEFAULTS,...value};if(!Number.isInteger(merged.likeThreshold)||merged.likeThreshold<=LIKE_THANKS_AFTER)merged.likeThreshold=ASSISTANT_DEFAULTS.likeThreshold;return validAssistantSettings(merged)?merged:null;}
 export function winnerEncouragement(names,seed='',template=null){const clean=[...new Set(names.map(name=>cleanComment(name,30).replace(/[^\p{L}\p{N}\s\u200c-]/gu,'').trim()).filter(Boolean))].slice(0,24);if(!clean.length)return '';const choices=['آفرین، {names}! خوب دقت کردید.','بسیار عالی، {names}! پاسخ‌تان درست بود.','{names}، آفرین! نکته را درست گرفتید.'];const index=[...String(seed)].reduce((sum,c)=>sum+c.codePointAt(0),0)%choices.length;return ' '+(template||choices[index]).replace('{names}',clean.join('، '));}
 const numberOnly=text=>/^[\s\d۰-۹٠-٩,،.؟?!]+$/.test(text);
 const personName=event=>cleanComment(event.user?.nickname||event.user?.displayId||event.user?.uniqueId||'بیننده').slice(0,40);
@@ -40,7 +42,7 @@ const QUESTION_LEADS=['خوب سوالی پرسیدی {name}!','{name} جان، 
 const STATEMENT_LEADS=['{name} می‌گوید:','{name} جان، این را نوشته:','چه خوب نوشتی {name}!','{name}، با هم بشنویم:'];
 export function commentLeadIn(name,text,seed=''){const choices=/[؟?]|چرا|چیست|چیه|چطور|چگونه|یعنی/.test(text)?QUESTION_LEADS:STATEMENT_LEADS;const index=[...String(seed||text)].reduce((sum,c)=>sum+c.codePointAt(0),0)%choices.length;return choices[index].replaceAll('{name}',spokenName(name));}
 export class LiveAssistant{
- constructor({voice,settings=()=>ASSISTANT_DEFAULTS,now=()=>Date.now(),style=()=>({})}={}){this.style=style;this.voice=voice;this.settings=settings;this.now=now;this.generation=0;this.preparing=false;this.queue=[];this.active=null;this.audio=new Map();this.seen=new Map();this.thanks=new Map();this.lastComment=-Infinity;this.lastThanks=-Infinity;this.lastError=null;this.history=[];this.stats={queued:0,spoken:0,dropped:0,errors:0};}
+ constructor({voice,settings=()=>ASSISTANT_DEFAULTS,now=()=>Date.now(),style=()=>({})}={}){this.style=style;this.voice=voice;this.settings=settings;this.now=now;this.generation=0;this.preparing=false;this.queue=[];this.active=null;this.audio=new Map();this.seen=new Map();this.thanks=new Map();this.thankedLikes=new Set();this.lastComment=-Infinity;this.lastThanks=-Infinity;this.lastError=null;this.history=[];this.stats={queued:0,spoken:0,dropped:0,errors:0};}
  enabled(){return this.settings().enabled;}
  seenEvent(key){if(!key)return false;const now=this.now();if(this.seen.has(key)&&now-this.seen.get(key)<180000)return true;this.seen.set(key,now);while(this.seen.size>1000)this.seen.delete(this.seen.keys().next().value);return false;}
  enqueue({text,title='دستیار درسی',kind='text',roundId=null,requiresReveal=false,priority=2,key=null}){
@@ -72,15 +74,22 @@ export class LiveAssistant{
  }
  explain(q,roundId,{revealed=false,owner=false,winners=[]}={}){const existing=revealed&&(this.queue.find(j=>j.kind==='explanation'&&j.roundId===roundId)||this.active?.kind==='explanation'&&this.active?.roundId===roundId&&this.active);if(existing)return {accepted:true,id:existing.id,reused:true};return this.enqueue({text:explainQuestion(q,{reveal:revealed})+(revealed?winnerEncouragement(winners,roundId,this.style().success):''),title:revealed?'تشریح سوال '+q.id:'نکتهٔ مهم سوال',kind:revealed?'explanation':'hint',roundId,requiresReveal:revealed,priority:owner?0:1,key:owner?null:'explain:'+roundId});}
  noteSupport(kind,event,{accepted,pending=false}={},total=1){
-  const s=this.settings();if(!accepted||pending||!this.enabled()||!(kind==='gift'?s.thankGifts:s.thankLikes)||kind==='like'&&total<s.likeThreshold)return;
+  const s=this.settings();if(!accepted||pending||!this.enabled()||!(kind==='gift'?s.thankGifts:s.thankLikes))return;
   const id=String(event.user?.id??event.user?.userId??'');if(!id)return;
-  this.thanks.set(kind+':'+id,{kind,name:personName(event),at:this.now()});while(this.thanks.size>200)this.thanks.delete(this.thanks.keys().next().value);
+  if(kind==='like'&&(total<=LIKE_THANKS_AFTER||total<s.likeThreshold||this.thankedLikes.has(id)))return;
+  this.thanks.set(kind+':'+id,{kind,id,name:personName(event),at:this.now()});while(this.thanks.size>200)this.thanks.delete(this.thanks.keys().next().value);
  }
  flushThanks(){
   if(!this.thanks.size||this.now()-this.lastThanks<this.settings().thankGap*1000||!this.enabled())return;
-  const people=[...this.thanks.values()].filter(p=>this.now()-p.at<90000);if(!people.length){this.thanks.clear();return;}
-  const parts=[];for(const [kind,label] of [['gift','فرستادن هدیه'],['like','لایک کردن لایف']]){const group=people.filter(p=>p.kind===kind);if(!group.length)continue;const names=[...new Set(group.slice(0,3).map(p=>spokenName(p.name)))].join(' و ');parts.push(kind==='like'?'تشکر، دوستان گرامی، از لایک‌های شما. لطفاً لایف را شییر کنید.':'از '+names+(group.length>3?' و همهٔ دوستان':'')+' برای '+label+' تشکر می‌کنم.');}
-  if(this.enqueue({text:[this.style().thanks, ...parts].filter(Boolean).join(' '),title:'تشکر از همراهی شما',kind:'thanks',priority:3}).accepted){this.thanks.clear();this.lastThanks=this.now();}
+  const fresh=[...this.thanks.entries()].filter(([,p])=>this.now()-p.at<90000);
+  for(const [key,p] of this.thanks)if(this.now()-p.at>=90000)this.thanks.delete(key);
+  if(!fresh.length)return;
+  const likes=fresh.filter(([,p])=>p.kind==='like').slice(0,3),gifts=fresh.filter(([,p])=>p.kind==='gift').slice(0,3),parts=[];
+  if(gifts.length){const names=[...new Set(gifts.map(([,p])=>spokenName(p.name)))].join(' و ');parts.push('از '+names+(fresh.filter(([,p])=>p.kind==='gift').length>3?' و همهٔ دوستان':'')+' برای فرستادن هدیه تشکر می‌کنم.');}
+  for(const [,p] of likes)parts.push('تشکر از لایکت، '+spokenName(p.name)+'!');
+  if(!parts.length||!this.enqueue({text:parts.join(' '),title:'تشکر از همراهی شما',kind:'thanks',priority:3}).accepted)return;
+  for(const [key,p] of [...gifts,...likes]){this.thanks.delete(key);if(p.kind==='like')this.thankedLikes.add(p.id);}
+  this.lastThanks=this.now();
  }
  tick({roundId,phase,canSpeak=false}={}){
   const now=this.now();if(!this.enabled()){this.clear();return null;}
@@ -95,5 +104,5 @@ export class LiveAssistant{
  getAudio(id){return this.audio.get(id)?.audio||null;}
  snapshot(context){const job=this.active;if(!job||context&&(job.roundId&&job.roundId!==context.roundId||['open','watching'].includes(context.phase)))return {active:null};return {active:{id:job.id,title:job.title,text:job.text,kind:job.kind,roundId:job.roundId,at:job.at,expiresAt:job.expiresAt,durationMs:job.durationMs,audioUrl:job.audioUrl}};}
  status(){return {queue:this.queue.map(j=>({id:j.id,title:j.title,status:j.status})),active:this.snapshot().active,stats:{...this.stats},engine:this.voice.state,lastError:this.lastError,history:this.history};}
- clear(){this.generation++;this.queue=[];this.active=null;this.audio.clear();this.thanks.clear();this.seen.clear();this.lastComment=-Infinity;this.lastThanks=-Infinity;}
+ clear(){this.generation++;this.queue=[];this.active=null;this.audio.clear();this.thanks.clear();this.thankedLikes.clear();this.seen.clear();this.lastComment=-Infinity;this.lastThanks=-Infinity;}
 }

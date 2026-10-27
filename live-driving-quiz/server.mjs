@@ -26,7 +26,7 @@ import {LocalRecognition} from './local-recognition.mjs';
 const localRecognition=new LocalRecognition();
 const auditRecognition=new LocalRecognition({timeout:120000});
 const pronunciationAudit={state:"idle",lastError:null,checked:0};
-import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
+import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,normalizeAssistantSettings} from './live-assistant.mjs';
 import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
 import {suspectWords,auditKey} from './pronunciation-audit.mjs';
 import {TeacherProfile,pronunciationKey,wordPattern,parseTeacherCommand,normalWord,validWord,validateSentenceAudio,textHash,validateWordAudio} from './teacher-profile.mjs';
@@ -83,7 +83,7 @@ const validPresenter=value=>value&&typeof value.enabled==='boolean'&&Number.isIn
 if(validPresenter(loadedProgress?.presenterDisplay))settings.presenterDisplay=loadedProgress.presenterDisplay;else if(!validPresenter(settings.presenterDisplay))settings.presenterDisplay=defaults.presenterDisplay;
 const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112,144,160,192].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
 if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
-if(validAssistantSettings(loadedProgress?.assistant))settings.assistant=loadedProgress.assistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
+const savedAssistant=normalizeAssistantSettings(loadedProgress?.assistant);if(savedAssistant)settings.assistant=savedAssistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
 // Upgrade existing small bubbles once; subsequent explicit size choices persist.
 if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBubbleVersion)!==3&&settings.joinDisplay.size<160)settings.joinDisplay={...settings.joinDisplay,size:160};settings.joinBubbleVersion=3;
 let teacher=new TeacherProfile(loadedProgress?.teacherProfile||settings.teacherProfile||{});settings.teacherProfile=teacher.export();

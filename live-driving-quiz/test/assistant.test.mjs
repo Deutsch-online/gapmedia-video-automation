@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,speakableComment,commentLeadIn} from '../live-assistant.mjs';
+import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,normalizeAssistantSettings,speakableComment,commentLeadIn} from '../live-assistant.mjs';
 import {answerComment,explainQuestion} from '../teaching.mjs';
 import {Quiz} from '../quiz.mjs';
 import {LiveSpeech} from '../live-speech.mjs';
@@ -37,11 +37,16 @@ test('only meaningful comments are read, with a warm named lead-in',async()=>{
  setNow(0);assert.equal(assistant.comment({content:'Schulterblick یعنی چه؟',user:{nickname:'سارا'},common:{msgId:'term'}},q,'open','r').accepted,true);await flush();
  assert.match(texts.at(-1),/سارا/);assert.match(texts.at(-1),/Schulterblick/);assert.match(texts.at(-1),/نقطهٔ کور/);
 });
-test('only accepted final gift events and real per-user like totals produce bounded grouped thanks',async()=>{
- const {assistant,settings,texts}=fixture();const event={user:{id:'sender',nickname:'مریم'}};
- assistant.noteSupport('gift',event,{accepted:true,pending:true});assistant.noteSupport('gift',event,{accepted:false});assistant.flushThanks();assert.equal(assistant.queue.length,0);
- settings.likeThreshold=100;assistant.noteSupport('like',event,{accepted:true},10);assistant.flushThanks();assert.equal(assistant.queue.length,0);
- assistant.noteSupport('gift',event,{accepted:true,pending:false});assistant.noteSupport('like',event,{accepted:true},100);assistant.flushThanks();await flush();assert.equal(assistant.queue.length,1);assert.match(texts[0],/هدیه/);assert.match(texts[0],/لایک/);assert.match(texts[0],/مریم/);assert.match(texts[0],/تشکر، دوستان گرامی، از لایک/);assert.match(texts[0],/لایف را شییر کنید/);assert.doesNotMatch(texts[0],/پخش زنده/);assert.equal(assistant.thanks.size,0);
+test('like thanks names only the person whose own likes passed 500, and only once',async()=>{
+ const {assistant,settings,texts,setNow}=fixture();const liker={user:{id:'sender',nickname:'مریم'}},quiet={user:{id:'quiet',nickname:'سارا'}},stranger={user:{id:'other',nickname:'علی'}};
+ assistant.noteSupport('like',liker,{accepted:false},800);assistant.noteSupport('like',liker,{accepted:true,pending:true},800);assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ settings.likeThreshold=100;assistant.noteSupport('like',liker,{accepted:true},10);assistant.noteSupport('like',liker,{accepted:true},500);assistant.noteSupport('like',quiet,{accepted:true},80);assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ assistant.noteSupport('like',liker,{accepted:true},501);assistant.flushThanks();await flush();assert.equal(assistant.queue.length,1);assert.match(texts[0],/تشکر از لایکت، مریم!/);assert.doesNotMatch(texts[0],/سارا|علی|شییر|دوستان گرامی|پخش زنده|همهٔ دوستان/);assert.equal(assistant.thanks.size,0);
+ assistant.noteSupport('like',liker,{accepted:true},900);assistant.flushThanks();assert.equal(assistant.queue.length,1);
+ setNow(settings.thankGap*1000-1);assistant.noteSupport('like',stranger,{accepted:true},700);assistant.flushThanks();assert.equal(assistant.queue.length,1);
+ const thankedAt=settings.thankGap*1000;setNow(thankedAt);assistant.flushThanks();await flush();assert.match(texts.at(-1),/تشکر از لایکت، علی!/);assert.doesNotMatch(texts.at(-1),/مریم|سارا/);
+ settings.thankGap=120;setNow(thankedAt+119999);assistant.noteSupport('like',quiet,{accepted:true},600);assistant.flushThanks();assert.equal(texts.length,2);setNow(thankedAt+120000);assistant.flushThanks();await flush();assert.match(texts.at(-1),/تشکر از لایکت، سارا!/);
+ const migrated=normalizeAssistantSettings({...ASSISTANT_DEFAULTS,likeThreshold:1,thankGap:40});assert.equal(migrated.likeThreshold,501);assert.equal(migrated.thankGap,40);
 });
 test('bounded queues, cancellation and voice errors cannot restart discarded speech or trigger a paid fallback',async()=>{
  let resolve;const assistant=new LiveAssistant({voice:{synthesize:()=>new Promise(r=>resolve=r)},settings:()=>ASSISTANT_DEFAULTS});for(let i=0;i<10;i++)assistant.enqueue({text:'سلام به شما '+i});assert.equal(assistant.queue.length,8);assistant.clear();resolve({audio:Buffer.from('RIFF'),durationMs:1000});await flush();assert.equal(assistant.queue.length,0);assert.equal(assistant.audio.size,0);
