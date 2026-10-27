@@ -1,0 +1,40 @@
+name: Send Crown52 panel and Studio screen links to owner Telegram
+on:
+  push:
+    branches: [codex/live-crown52-hosting]
+    paths:
+      - .github/workflows/send-crown52-links.yml
+permissions:
+  contents: read
+jobs:
+  send:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Deliver requested links to private bot conversation
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,urllib.error
+          bot=os.environ['TELEGRAM_BOT_TOKEN']
+          if not bot:raise RuntimeError('Telegram bot credential not configured')
+          chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or '7993801735'
+          def call(method,payload):
+              req=urllib.request.Request('https://api.telegram.org/bot'+bot+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as response:data=json.load(response)
+              except urllib.error.HTTPError as exc:
+                  raise RuntimeError('Telegram HTTP '+str(exc.code)) from None
+              except Exception:
+                  raise RuntimeError('Telegram request failed') from None
+              if not data.get('ok'):raise RuntimeError('Telegram delivery failed')
+              return data['result']
+          if call('getChat',{'chat_id':chat}).get('type')!='private':
+              raise RuntimeError('Private owner chat required')
+          text='پنل مدیریت بازی 52 کارت\n\nhttps://afgtakrun-live-crown-52.hf.space/control\n\nبا رمزی که برای پنل تعیین کردید وارد شوید. دکمهٔ «ذخیرهٔ تنظیمات» بالای پنل است.\n\nلینک نمایش برای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/screen\n\nاین لینک نمایش را در منبع وبِ TikTok Studio با اندازهٔ 1080 × 1920 اضافه کنید.\n\nاسکرول عمودی صفحه هم اصلاح شده است.'
+          result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+          print('CROWN52_LINKS_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
+          PY
