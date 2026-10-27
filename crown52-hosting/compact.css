@@ -6,3 +6,5 @@
 .settings-save{position:sticky;top:0;z-index:20;background:#10252d;border-bottom:1px solid #8ee1c644}.settings-save .control-note{margin:6px 0 0;min-height:18px;color:#b5e5d3}.control-preview{touch-action:pan-y pinch-zoom}.compact-control{overflow-y:auto;touch-action:pan-y pinch-zoom}
 
 .simple-admission #entryMode,.simple-admission label[for=entryMode],.simple-admission>.control-note{grid-column:1/-1}.simple-admission.free-entry #minGiftCoins,.simple-admission.free-entry label[for=minGiftCoins]{display:none}
+
+.card.tap-pending,.card.pending-open{outline:2px solid #ffc25a!important;outline-offset:1px}.card.tap-pending{filter:brightness(1.1)}
