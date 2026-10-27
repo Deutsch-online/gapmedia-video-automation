@@ -48,6 +48,13 @@ test('like thanks names only the person whose own likes passed 500, and only onc
  settings.thankGap=120;setNow(thankedAt+119999);assistant.noteSupport('like',quiet,{accepted:true},600);assistant.flushThanks();assert.equal(texts.length,2);setNow(thankedAt+120000);assistant.flushThanks();await flush();assert.match(texts.at(-1),/تشکر از لایکت، سارا!/);
  const migrated=normalizeAssistantSettings({...ASSISTANT_DEFAULTS,likeThreshold:1,thankGap:40});assert.equal(migrated.likeThreshold,501);assert.equal(migrated.thankGap,40);
 });
+test('gift thanks is short, named, and skips anyone who did not send a finished gift',async()=>{
+ const {assistant,settings,texts,setNow}=fixture();const giver={user:{id:'g',nickname:'مریم'}},second={user:{id:'g2',nickname:'سارا'}};
+ assistant.noteSupport('gift',giver,{accepted:true,pending:true});assistant.noteSupport('gift',{user:{id:'no',nickname:'علی'}},{accepted:false});assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ assistant.noteSupport('gift',giver,{accepted:true,pending:false});assistant.noteSupport('gift',second,{accepted:true});assistant.flushThanks();await flush();
+ assert.match(texts[0],/زنده باشین مریم، تشکر از هدیه‌ات!/);assert.match(texts[0],/زنده باشین سارا، تشکر از هدیه‌ات!/);assert.doesNotMatch(texts[0],/علی|همهٔ دوستان|شییر|دوستان گرامی/);
+ setNow(settings.thankGap*1000);assistant.noteSupport('gift',{user:{id:'latin',nickname:'Alex'}},{accepted:true});assistant.flushThanks();await flush();assert.match(texts.at(-1),/زنده باشین دوست گرامی، تشکر از هدیه‌ات!/);
+});
 test('bounded queues, cancellation and voice errors cannot restart discarded speech or trigger a paid fallback',async()=>{
  let resolve;const assistant=new LiveAssistant({voice:{synthesize:()=>new Promise(r=>resolve=r)},settings:()=>ASSISTANT_DEFAULTS});for(let i=0;i<10;i++)assistant.enqueue({text:'سلام به شما '+i});assert.equal(assistant.queue.length,8);assistant.clear();resolve({audio:Buffer.from('RIFF'),durationMs:1000});await flush();assert.equal(assistant.queue.length,0);assert.equal(assistant.audio.size,0);
  const bad=new LiveAssistant({voice:{synthesize:async()=>{throw Error('No native voice');}},settings:()=>ASSISTANT_DEFAULTS});bad.enqueue({text:'سلام'});await flush();assert.equal(bad.stats.errors,1);assert.match(bad.lastError,/پولی استفاده نشد/);assert.equal(bad.active,null);

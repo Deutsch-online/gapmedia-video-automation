@@ -85,7 +85,7 @@ export class LiveAssistant{
   for(const [key,p] of this.thanks)if(this.now()-p.at>=90000)this.thanks.delete(key);
   if(!fresh.length)return;
   const likes=fresh.filter(([,p])=>p.kind==='like').slice(0,3),gifts=fresh.filter(([,p])=>p.kind==='gift').slice(0,3),parts=[];
-  if(gifts.length){const names=[...new Set(gifts.map(([,p])=>spokenName(p.name)))].join(' و ');parts.push('از '+names+(fresh.filter(([,p])=>p.kind==='gift').length>3?' و همهٔ دوستان':'')+' برای فرستادن هدیه تشکر می‌کنم.');}
+  for(const [,p] of gifts)parts.push('زنده باشین '+spokenName(p.name)+'، تشکر از هدیه‌ات!');
   for(const [,p] of likes)parts.push('تشکر از لایکت، '+spokenName(p.name)+'!');
   if(!parts.length||!this.enqueue({text:parts.join(' '),title:'تشکر از همراهی شما',kind:'thanks',priority:3}).accepted)return;
   for(const [key,p] of [...gifts,...likes]){this.thanks.delete(key);if(p.kind==='like')this.thankedLikes.add(p.id);}
