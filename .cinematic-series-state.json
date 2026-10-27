@@ -1842,8 +1842,8 @@
       "mood": "comic",
       "duration_seconds": 45
     },
-    "date": "2026-10-27",
-    "status": "render-failed"
+    "date": "2026-10-28",
+    "status": "rendering"
   },
   "attempts": {
     "2026-10-15": 2,
