@@ -1707,7 +1707,144 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 12,
+      "title_de": "Erste oder zweite Klasse?",
+      "title_fa": "درجه یک یا درجه دو؟",
+      "summary": "Inside a regional train, Marta spots a spacious seat with a big yellow numeral 1 on the headrest and prepares to relax. Lukas points out that their monthly regional ticket is valid for second class. Marta quickly catches the distinction, moves into the next compartment marked with a 2, and tests out an equally comfortable seat.",
+      "cliffhanger": "With their train seats settled, Marta wonders how to check the platform number for their next transfer.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta proudly claims a plush train seat with a bright yellow number 1, unaware she has chosen first class.",
+      "everyday_problem": "Marta mistakes the train carriage class number for an individual seat number on the Regionalbahn.",
+      "practical_resolution": "Marta identifies the compartment marked with the number 2 and takes a valid second-class seat.",
+      "marta_goal": "Find a valid and comfortable seat for their regional train journey using her monthly ticket.",
+      "marta_decision": "Marta picks up her backpack, walks past the partition door into second class, and claims a regular seat.",
+      "visual_payoff": "Marta bounces happily on her second-class seat, holding up her ticket card with a broad triumphant grin.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replaced repetitive verbal checks with direct visual prop contrast between the bright yellow numeral 1 and numeral 2 headrest markers.",
+        "visible_comic_action": "Marta treats the class number 1 like a VIP seat reservation before casually relocating one row over to the numeral 2 section.",
+        "next_experiment": "In the upcoming station transfer scene, use an animated departure board display to cue character reaction timing."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Hier ist ein freier Platz!",
+          "fa": "اینجا یک جای خالی هست!",
+          "scene": "Medium shot inside a modern regional train car where Marta stands in the aisle next to an empty seat with a bold yellow number 1 on the headrest.",
+          "motion": "Marta taps the plush headrest with her ticket card and smiles excitedly at the empty space.",
+          "visible_objects": [
+            "ticket card",
+            "seat headrest"
+          ],
+          "object_action": "Marta taps the seat headrest with her ticket card."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Das ist die erste Klasse.",
+          "fa": "این بخش درجه یک است.",
+          "scene": "Medium shot of Lukas standing in the train aisle, looking upward toward the yellow class marker sign.",
+          "motion": "Lukas raises his hand to point up at the overhead yellow 1st class indicator symbol.",
+          "visible_objects": [
+            "overhead class sign"
+          ],
+          "object_action": "Lukas points his index finger at the overhead class sign."
+        },
+        {
+          "speaker": "marta",
+          "de": "Mein Ticket gilt überall, oder?",
+          "fa": "بلیت من همه‌جا معتبر است، درسته؟",
+          "scene": "Close-up of Marta beside the first-class seat, holding her plastic ticket card forward with an inquisitive expression.",
+          "motion": "Marta tilts her head playfully and raises her ticket card to chest height.",
+          "visible_objects": [
+            "ticket card"
+          ],
+          "object_action": "Marta holds her ticket card out flat in front of her."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Es gilt für die zweite Klasse.",
+          "fa": "این برای درجه دو معتبر است.",
+          "scene": "Medium shot of Lukas in the aisle holding his matching ticket card and gesturing toward the partition door behind him.",
+          "motion": "Lukas taps his card against his open palm and points toward the adjacent train compartment.",
+          "visible_objects": [
+            "ticket card",
+            "partition door"
+          ],
+          "object_action": "Lukas taps the ticket card against his palm."
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Zahl zeigt die Klasse?",
+          "fa": "این عدد درجه را نشان می‌دهد؟",
+          "scene": "Close framing of Marta looking at the large embroidered numeral 1 on the headrest, then turning toward the next compartment.",
+          "motion": "Marta traces the embroidered yellow number 1 with her index finger, eyes widening in realization.",
+          "visible_objects": [
+            "seat headrest"
+          ],
+          "object_action": "Marta traces the embroidered number 1 on the seat headrest."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, dort ist die zweite Klasse.",
+          "fa": "دقیقاً، درجه دو آنجاست.",
+          "scene": "Medium shot of Lukas stepping aside near the open glass partition door, pointing toward blue-fabric seats labeled 2.",
+          "motion": "Lukas extends an open hand toward the neighboring section marked with a large numeral 2.",
+          "visible_objects": [
+            "partition door"
+          ],
+          "object_action": "Lukas gestures with an open palm toward the second-class compartment."
+        },
+        {
+          "speaker": "marta",
+          "de": "Dann nehme ich diesen Sitz!",
+          "fa": "پس من این صندلی را برمی‌دارم!",
+          "scene": "Medium action shot of Marta lifting her canvas backpack from the first-class seat and stepping into the second-class section.",
+          "motion": "Marta picks up her backpack by its top handle and strides cheerfully through the open aisle.",
+          "visible_objects": [
+            "canvas backpack",
+            "train seat"
+          ],
+          "object_action": "Marta lifts her canvas backpack off the seat."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Hier ist es auch gemütlich.",
+          "fa": "اینجا هم دنج و راحت است.",
+          "scene": "Medium shot of Lukas resting one hand on a grab rail beside the second-class seating area, smiling supportively.",
+          "motion": "Lukas grips the silver overhead grab rail and nods approvingly toward the open seats.",
+          "visible_objects": [
+            "grab rail"
+          ],
+          "object_action": "Lukas grips the silver grab rail with his hand."
+        },
+        {
+          "speaker": "marta",
+          "de": "Zweite Klasse, beste Fahrt!",
+          "fa": "درجه دو، بهترین سفر!",
+          "scene": "Closer framing of Marta sitting down comfortably into the second-class seat with the large blue numeral 2 visible beside her shoulder.",
+          "motion": "Marta hugs her backpack on her lap, winks cheerfully, and flashes her valid ticket card toward the camera.",
+          "visible_objects": [
+            "canvas backpack",
+            "ticket card"
+          ],
+          "object_action": "Marta holds up her ticket card beside her backpack."
+        }
+      ],
+      "research_source": {
+        "topic": "Travel by regional train",
+        "url": "https://www.bahn.de/angebot/regio/deutschland-ticket",
+        "excerpt": "Deutschland-Ticket 63 Euro — Kauf, Gültigkeit & Kündigung | bahn.de Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ändern sich die Konditionen, der Preis erhöht sich auf 66,80 Euro. Stand: Oktober 2026. Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ",
+        "retrieved_at": "2026-10-27T02:21:51.364024+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-10-27",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
