@@ -1,196 +1,196 @@
 {
-  "at": "2026-10-25T14:22:14.705Z",
+  "at": "2026-10-27T16:33:55.042Z",
   "rows": [
     {
+      "cat": "instagram",
+      "title": "Instagram Tests 'Features' as Its First Deep Dive Into Long- ...",
+      "url": "https://www.techtimes.com/articles/329528/20261027/instagram-tests-features-its-first-deep-dive-long-form-videos-it-exclusive-us.htm",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": true,
+      "score": 30
+    },
+    {
       "cat": "tools",
-      "title": "AI Image & Video Model News Roundup – October 24, 2026 | kombitz",
-      "url": "https://www.kombitz.com/2026/10/24/ai-image-video-model-news-roundup-october-24-2026/",
-      "date": "2026-10-24",
+      "title": "Apple Creator Studio adds powerful new AI features and even more creative tools - Apple",
+      "url": "https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/",
+      "date": "2026-10-27",
+      "sources": 7,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "tools",
+      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
+      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models",
+      "date": "2026-10-27",
+      "sources": 5,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "instagram",
+      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/",
+      "date": "2026-10-26",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram rolls out limited Features test in the US",
+      "url": "https://www.socialmediatoday.com/news/instagram-rolls-out-limited-features-test-in-the-us/872825/",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Adds AI Shopping Assistant & One-Click Buying",
+      "url": "https://almcorp.com/news/tiktok-adds-ai-shopping-assistant-one-click-buying/",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "MAI Image 2.7 debuts above GPT Image 2.5 Flare on Artificial Analysis and #3 on Arena | Microsoft AI",
+      "url": "https://microsoft.ai/news/mai-image-2-7-debut/",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Ramps Up Video Strategy in Escalating TikTok, YouTube Rivalry - Bloomberg",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-26/instagram-ramps-up-video-strategy-in-escalating-tiktok-youtube-rivalry",
+      "date": "2026-10-26",
       "sources": 8,
       "clear": true,
       "score": 28
     },
     {
-      "cat": "tools",
-      "title": "ByteDance launches Seedance 2.5 4K video model for film production · TechNode",
-      "url": "https://technode.com/2026/10/23/bytedance-launches-seedance-2-5-4k-video-model-for-film-production/",
-      "date": "2026-10-23",
+      "cat": "tiktok",
+      "title": "TikTok Symphony: What TikTok Says Its AI Creative Suite and Creative Studio Do (2026)",
+      "url": "https://tiktoknewshub.com/videos/tiktok-symphony/",
+      "date": "2026-10-26",
       "sources": 8,
       "clear": true,
       "score": 28
+    },
+    {
+      "cat": "tiktok",
+      "title": "(October 26) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
+      "date": "2026-10-26",
+      "sources": 7,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tiktok",
+      "title": "Roster Adds TikTok Spark Permissions to Creator Workflow",
+      "url": "https://quasa.io/stories/roster-brings-tiktok-spark-permissions-into-the-same-creator-workflow",
+      "date": "2026-10-25",
+      "sources": 6,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram chases YouTube's TV watch time with 90-minute uploads. Will creators get paid, though? - Tubefilter",
+      "url": "https://www.tubefilter.com/2026/10/26/instagram-features-longer-uploads-clips-as-reels/",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": false,
+      "score": 26
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Will Now Enable You to Start Over in the App by Refreshing Your Algorithmic Recommendations • 10PM Curfew",
+      "url": "https://10pmcurfew.com/news/tiktok-will-now-enable-you-to-start-over-in-the-app-by-refreshing-your",
+      "date": "2026-10-27",
+      "sources": 8,
+      "clear": false,
+      "score": 26
     },
     {
       "cat": "tools",
       "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
       "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps",
       "date": "2026-10-23",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "instagram",
-      "title": "Meta Adds Audio Links to Edits and a New Way to Record Reels",
-      "url": "https://almcorp.com/news/meta-adds-audio-links-edits-new-way-record-reels/",
-      "date": "2026-10-21",
-      "sources": 8,
-      "clear": true,
-      "score": 26
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Shop multi-product link puts 10 products in one video",
-      "url": "https://kolvant.com/news/tiktok-shop-multi-product-link-beta/",
-      "date": "2026-10-22",
-      "sources": 7,
-      "clear": true,
-      "score": 26
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Voice Comments and Instagram AI Labels: October 2026",
-      "url": "https://www.honestfred.com/social-marketing/tiktok-voice-comments-polls-instagram-ai-profile-labels/",
-      "date": "2026-10-21",
       "sources": 7,
       "clear": true,
       "score": 25
     },
     {
       "cat": "tools",
-      "title": "fal launches FLUX 3 Max, claiming 22× faster AI video generation than Seedance 2.5 | VentureBeat",
-      "url": "https://venturebeat.com/technology/fal-launches-flux-3-max-claiming-22-faster-ai-video-generation-than-seedance-2-5",
-      "date": "2026-10-19",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
-      "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/",
-      "date": "2026-10-19",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram now lets you put posts you’re tagged in on your main grid · NewsThat.Rocks",
-      "url": "https://newsthat.rocks/instagram-tagged-posts-profile-grid/",
-      "date": "2026-10-19",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Creator Assistant: What TikTok Says It Does and Who Gets It (2026)",
-      "url": "https://tiktoknewshub.com/videos/tiktok-creator-assistant-explained/",
-      "date": "2026-10-18",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok AI Video Tool Free Launch Oct 28 | Miami Biz",
-      "url": "https://wilsonalvarez.com/it-tech/tiktok-ai-video-tool-october-2026/",
-      "date": "2026-10-19",
-      "sources": 8,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "Roster Adds TikTok Creator Discovery and Spark Ads, Giving Social, Brand and Paid Media Teams One Platform for Creator Marketing",
-      "url": "https://www.prweb.com/releases/roster-adds-tiktok-creator-discovery-and-spark-ads-giving-social-brand-and-paid-media-teams-one-platform-for-creator-marketing-302912312.html",
-      "date": "2026-10-20",
-      "sources": 6,
-      "clear": false,
-      "score": 22
-    },
-    {
-      "cat": "instagram",
-      "title": "AI-AP | Pro Photo Daily - Around the Net » State of the Art: Instagram's New AI Assistant Analyzes Your Reels and Suggests New Ideas",
-      "url": "https://www.ai-ap.com/publications/article/37420/state-of-the-art-instagrams-new-ai-assistant-ana.html",
-      "date": "2026-10-20",
-      "sources": 8,
-      "clear": false,
-      "score": 21
-    },
-    {
-      "cat": "instagram",
-      "title": "A Creator Spotted It First: Instagram Is Quietly Testing a Netflix-Style Way to Binge Your Reels | The Coaching Times",
-      "url": "https://www.thecoaching-times.com/story/a-creator-spotted-it-first-instagram-is-quietly-testing-a-netflix-style-way-to-b",
-      "date": "2026-10-20",
-      "sources": 5,
-      "clear": false,
-      "score": 21
-    },
-    {
-      "cat": "tools",
       "title": "Seedance 2.5 Launch: Now Available on Dreamina",
       "url": "https://dreamina.capcut.com/resource/seedance-2-5-launch",
       "date": "2026-10-23",
-      "sources": 3,
+      "sources": 4,
       "clear": true,
-      "score": 19
+      "score": 21
     }
   ],
   "shown": [
     {
       "n": 1,
-      "cat": "tools",
-      "title": "AI Image & Video Model News Roundup – October 24, 2026 | kombitz",
-      "url": "https://www.kombitz.com/2026/10/24/ai-image-video-model-news-roundup-october-24-2026/"
+      "cat": "instagram",
+      "title": "Instagram Tests 'Features' as Its First Deep Dive Into Long- ...",
+      "url": "https://www.techtimes.com/articles/329528/20261027/instagram-tests-features-its-first-deep-dive-long-form-videos-it-exclusive-us.htm"
     },
     {
       "n": 2,
-      "cat": "tools",
-      "title": "ByteDance launches Seedance 2.5 4K video model for film production · TechNode",
-      "url": "https://technode.com/2026/10/23/bytedance-launches-seedance-2-5-4k-video-model-for-film-production/"
+      "cat": "instagram",
+      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/"
     },
     {
       "n": 3,
-      "cat": "tools",
-      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
-      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps"
+      "cat": "instagram",
+      "title": "Instagram rolls out limited Features test in the US",
+      "url": "https://www.socialmediatoday.com/news/instagram-rolls-out-limited-features-test-in-the-us/872825/"
     },
     {
       "n": 4,
-      "cat": "instagram",
-      "title": "Meta Adds Audio Links to Edits and a New Way to Record Reels",
-      "url": "https://almcorp.com/news/meta-adds-audio-links-edits-new-way-record-reels/"
+      "cat": "tools",
+      "title": "Apple Creator Studio adds powerful new AI features and even more creative tools - Apple",
+      "url": "https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/"
     },
     {
       "n": 5,
-      "cat": "instagram",
-      "title": "Instagram’s First Draft makes a Reel in under 10 seconds — what it does and what it doesn’t",
-      "url": "https://www.orbitalaffairs.com/instagram-first-draft-edit-reels-10-seconds/"
+      "cat": "tools",
+      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
+      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models"
     },
     {
       "n": 6,
-      "cat": "instagram",
-      "title": "Instagram now lets you put posts you’re tagged in on your main grid · NewsThat.Rocks",
-      "url": "https://newsthat.rocks/instagram-tagged-posts-profile-grid/"
+      "cat": "tools",
+      "title": "MAI Image 2.7 debuts above GPT Image 2.5 Flare on Artificial Analysis and #3 on Arena | Microsoft AI",
+      "url": "https://microsoft.ai/news/mai-image-2-7-debut/"
     },
     {
       "n": 7,
       "cat": "tiktok",
-      "title": "TikTok Shop multi-product link puts 10 products in one video",
-      "url": "https://kolvant.com/news/tiktok-shop-multi-product-link-beta/"
+      "title": "TikTok Adds AI Shopping Assistant & One-Click Buying",
+      "url": "https://almcorp.com/news/tiktok-adds-ai-shopping-assistant-one-click-buying/"
     },
     {
       "n": 8,
       "cat": "tiktok",
-      "title": "TikTok Voice Comments and Instagram AI Labels: October 2026",
-      "url": "https://www.honestfred.com/social-marketing/tiktok-voice-comments-polls-instagram-ai-profile-labels/"
+      "title": "TikTok Symphony: What TikTok Says Its AI Creative Suite and Creative Studio Do (2026)",
+      "url": "https://tiktoknewshub.com/videos/tiktok-symphony/"
     },
     {
       "n": 9,
       "cat": "tiktok",
-      "title": "TikTok Creator Assistant: What TikTok Says It Does and Who Gets It (2026)",
-      "url": "https://tiktoknewshub.com/videos/tiktok-creator-assistant-explained/"
+      "title": "(October 26) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
     }
   ]
 }
