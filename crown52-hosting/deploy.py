@@ -44,8 +44,16 @@ elif mode=='persist':
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 else:raise RuntimeError('Unknown deployment mode')
-for name in ('game-audio.mjs','game.mjs','portrait.css'):
+for name in ('game-audio.mjs','game.mjs','portrait.css','game-engine.mjs','language.mjs','water.mjs','water.css','index.html','gift-art.json'):
  (folder/'public'/name).write_text((here/name).read_text())
+(folder/'server.mjs').write_text((here/'server.mjs').read_text())
+from concurrent.futures import ThreadPoolExecutor
+def gift_art(asset):
+ if not asset['url'].startswith('https://raw.githubusercontent.com/tao-Isaman/tiktok-live-gift/main/public/gifts/') or '/' in asset['name'] or not asset['name'].endswith('.webp'):raise RuntimeError('Invalid gift art source')
+ with urllib.request.urlopen(asset['url'],timeout=30) as response:data=response.read(5000000)
+ if data[:4]!=b'RIFF' or data[8:12]!=b'WEBP':raise RuntimeError('Invalid gift image')
+ target=folder/'public/gifts'/asset['name'];target.parent.mkdir(exist_ok=True);target.write_bytes(data)
+with ThreadPoolExecutor(max_workers=8) as pool:list(pool.map(gift_art,json.loads((here/'gift-art.json').read_text())['files']))
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
 commit=api.upload_folder(repo_id=repo,repo_type='space',folder_path=str(folder),commit_message='Deploy Crown52 '+mode+' '+build[:12])
 receipt={'url':url,'screen_url':url+'/screen','repo':repo,'mode':mode,'build':build,'hardware':'cpu-basic','sealed_admin':base64.b64encode(sealed).decode()};(out/'delivery.json').write_text(json.dumps(receipt));print('CROWN52_DEPLOYED '+json.dumps({k:v for k,v in receipt.items() if k!='sealed_admin'}),flush=True)
