@@ -16,6 +16,10 @@ def free_runtime():
  if r.hardware not in (None,'cpu-basic') or r.requested_hardware not in (None,'cpu-basic') or 'cpu-basic' not in (r.hardware,r.requested_hardware):raise RuntimeError('Only explicitly free CPU-basic is permitted')
  return r
 free_runtime();url=str(info.host).rstrip('/')
+if mode=='repair':
+ from huggingface_hub import hf_hub_download
+ marker=Path(hf_hub_download(repo_id=repo,repo_type='space',filename='README.md',token=os.environ['HF_TOKEN'])).read_text()
+ if 'App namespace: crown52-v1' not in marker:raise RuntimeError('Existing Space is not this app')
 if not url.startswith('https://') or not url.endswith('.hf.space'):raise RuntimeError('Unexpected Space origin')
 admin=hmac.new(os.environ['HF_TOKEN'].encode(),('live-crown52-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
 public=serialization.load_pem_public_key((here/'delivery-public.pem').read_bytes());sealed=public.encrypt(admin.encode(),padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
@@ -25,7 +29,7 @@ with tarfile.open(here/'bootstrap.tar.gz') as t:
   p=Path(m.name)
   if p.is_absolute() or '..' in p.parts or m.issym() or m.islnk():raise RuntimeError('Invalid bootstrap archive')
  t.extractall(folder)
-if mode=='bootstrap':
+if mode in ('bootstrap','repair'):
  api.add_space_secret(repo,key='CROWN_ADMIN_TOKEN',value=admin)
  api.add_space_variable(repo,key='PUBLIC_URL',value=url)
 elif mode=='persist':
@@ -43,6 +47,7 @@ else:raise RuntimeError('Unknown deployment mode')
 api.add_space_variable(repo,key='CROWN_BUILD_SHA',value=build)
 commit=api.upload_folder(repo_id=repo,repo_type='space',folder_path=str(folder),commit_message='Deploy Crown52 '+mode+' '+build[:12])
 receipt={'url':url,'screen_url':url+'/screen','repo':repo,'mode':mode,'build':build,'hardware':'cpu-basic','sealed_admin':base64.b64encode(sealed).decode()};(out/'delivery.json').write_text(json.dumps(receipt));print('CROWN52_DEPLOYED '+json.dumps({k:v for k,v in receipt.items() if k!='sealed_admin'}),flush=True)
+started=time.monotonic()
 for _ in range(95):
  runtime=free_runtime()
  try:
@@ -51,6 +56,6 @@ for _ in range(95):
    if mode=='persist' and health.get('assetsInstalled')!=health.get('assetsExpected'):raise RuntimeError('Persistent media is missing')
    print('CROWN52_READY '+url,flush=True);break
  except Exception:pass
- if str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR'):raise RuntimeError('Hosting failed: '+str(runtime.stage))
+ if time.monotonic()-started>45 and str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR') and runtime.raw.get('sha')==commit.oid:raise RuntimeError('Hosting failed: '+str(runtime.stage))
  time.sleep(7)
 else:raise RuntimeError('Hosting readiness timeout')
