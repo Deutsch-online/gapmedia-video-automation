@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from '../live-assistant.mjs';
+import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,speakableComment,commentLeadIn} from '../live-assistant.mjs';
 import {answerComment,explainQuestion} from '../teaching.mjs';
+import {Quiz} from '../quiz.mjs';
 import {LiveSpeech} from '../live-speech.mjs';
 const questions=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url))),q=questions[0],flush=()=>new Promise(r=>setImmediate(r));
 const fixture=()=>{let now=0;const texts=[],settings={...ASSISTANT_DEFAULTS},voice={state:'ready',synthesize:async text=>{texts.push(text);return {audio:Buffer.from('RIFF-test'),durationMs:1000};}},assistant=new LiveAssistant({voice,settings:()=>settings,now:()=>now});return {assistant,settings,texts,setNow:value=>{now=value;}};};
@@ -17,9 +18,24 @@ test('queue waits for an idle slot, preserves long explanations, deduplicates au
  setNow(10);assistant.tick({roundId:'round2',phase:'open',canSpeak:false});assert.equal(assistant.active,null);
 });
 test('Persian comments are rate-limited and numeric answers never get read or alter answer scoring',async()=>{
- const {assistant,setNow}=fixture();const event={content:'سلام، حق تقدم یعنی چه؟',user:{id:'1',nickname:'سارا'},common:{msgId:'a'}};
+ const {assistant,texts,setNow}=fixture();const event={content:'سلام، حق تقدم یعنی چه؟',user:{id:'1',nickname:'سارا'},common:{msgId:'a'}};
  assert.equal(assistant.comment(event,q,'open','r').accepted,true);assert.equal(assistant.comment(event,q,'open','r').reason,'duplicate');assert.equal(assistant.comment({...event,common:{msgId:'b'}},q,'open','r').reason,'cooldown');
  setNow(9000);assert.equal(assistant.comment({...event,content:'۱۲۳',common:{msgId:'c'}},q,'open','r').accepted,false);assert.equal(assistant.comment({...event,content:'نقطهٔ کور چیست؟',common:{msgId:'d'}},q,'open','r').accepted,true);await flush();
+ assert.match(texts[0],/سارا/);assert.match(texts[0],/حق تقدم/);assert.doesNotMatch(texts.join('\n'),/یکی از دوستان نوشته/);
+ const quiz=new Quiz(questions,{now:()=>1_700_000_000_000});quiz.start();
+ assert.equal(quiz.comment({comment:'2',user:{id:'u',nickname:'سارا'},common:{msgId:'score',createTime:1_700_000_000}}).accepted,true);
+ assert.equal(assistant.comment({content:'2',user:{id:'u',nickname:'سارا'},common:{msgId:'score-read'}},q,'open','r').reason,'not_readable');
+});
+test('only meaningful comments are read, with a warm named lead-in',async()=>{
+ const {assistant,texts,setNow}=fixture();
+ for(const [content,id] of [['هههه','g1'],['هاهاها','g2'],['ضصثقفغ','g3'],['اب','g4'],['😂🔥','g5'],['asdfqwer','g6'],['https://example.com/lesson','g7'],['www.example.com سلام','g8'],['123','g9'],['AAA','g10']])assert.equal(assistant.comment({content,user:{nickname:'سارا'},common:{msgId:id}},q,'open','r').reason,'not_readable',content);
+ assert.equal(speakableComment('سلام asdf حق تقدم'),'سلام حق تقدم');
+ assert.equal(commentLeadIn('سارا','حق تقدم چیست؟','seed').includes('سارا'),true);
+ assert.match(commentLeadIn('سارا','حق تقدم چیست؟','seed'),/می‌گوید|سوال|می‌خوانم|نوشته|نوشتی|بشنویم/);
+ assert.equal(commentLeadIn('Mary','سلام','1'),commentLeadIn('Mary','سلام','1'));
+ assert.match(commentLeadIn('Mary','سلام','1'),/دوست گرامی/);
+ setNow(0);assert.equal(assistant.comment({content:'Schulterblick یعنی چه؟',user:{nickname:'سارا'},common:{msgId:'term'}},q,'open','r').accepted,true);await flush();
+ assert.match(texts.at(-1),/سارا/);assert.match(texts.at(-1),/Schulterblick/);assert.match(texts.at(-1),/نقطهٔ کور/);
 });
 test('only accepted final gift events and real per-user like totals produce bounded grouped thanks',async()=>{
  const {assistant,settings,texts}=fixture();const event={user:{id:'sender',nickname:'مریم'}};

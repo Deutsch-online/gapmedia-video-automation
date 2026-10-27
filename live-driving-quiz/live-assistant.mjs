@@ -6,6 +6,39 @@ export function winnerEncouragement(names,seed='',template=null){const clean=[..
 const numberOnly=text=>/^[\s\d۰-۹٠-٩,،.؟?!]+$/.test(text);
 const personName=event=>cleanComment(event.user?.nickname||event.user?.displayId||event.user?.uniqueId||'بیننده').slice(0,40);
 const spokenName=name=>/^[\u0600-\u06ff\s\u200c]+$/.test(name)?name.slice(0,30):'دوست گرامی';
+const PERSIAN_ROWS=['ضصثقفغعهخحجچ','شسیبلاتنمکگ','ظطزرذدپو'];
+const LATIN_ROWS=['qwertyuiop','asdfghjkl','zxcvbnm'];
+function keyboardPairs(rows){
+ const pairs=new Set();
+ const link=(a,b)=>{if(a&&b&&a!==b){pairs.add(a+b);pairs.add(b+a);}};
+ rows.forEach((row,r)=>[...row].forEach((ch,i)=>{link(ch,row[i+1]);link(ch,rows[r+1]?.[i]);link(ch,rows[r+1]?.[i-1]);}));
+ return pairs;
+}
+const persianPairs=keyboardPairs(PERSIAN_ROWS),latinPairs=keyboardPairs(LATIN_ROWS);
+function adjacentRatio(word,pairs){const chars=[...word];if(chars.length<2)return 0;let n=0;for(let i=1;i<chars.length;i++)if(pairs.has(chars[i-1]+chars[i]))n++;return n/(chars.length-1);}
+function repeatedOrLowVariety(word){const letters=[...word],unique=new Set(letters);if(letters.length>=3&&unique.size<=1)return true;if(letters.length>=5&&unique.size<=2)return true;return letters.length>=4&&/^(.{1,3})\1+$/u.test(word);}
+const keyboardMash=(word,pairs)=>[...word].length>=4&&adjacentRatio(word,pairs)>=.75;
+function latinGibberish(word){const w=word.toLowerCase();return LATIN_ROWS.some(row=>row.includes(w))||repeatedOrLowVariety(w)||keyboardMash(w,latinPairs);}
+export function speakableComment(value){
+ const source=String(value||'');
+ if(/https?:|www\./i.test(source))return '';
+ const raw=cleanComment(source).replace(/\p{Extended_Pictographic}/gu,'').replace(/[\u200d\ufe0f]/g,'').replace(/\s+/g,' ').trim();
+ if(!raw||numberOnly(raw)||!hasPersian(raw))return '';
+ const kept=[];
+ for(const token of raw.split(/\s+/)){
+  const persian=(token.match(/[\u0600-\u06ff]/gu)||[]).join('');
+  if(persian){if(!repeatedOrLowVariety(persian)&&!keyboardMash(persian,persianPairs))kept.push(persian+(/[؟?]/.test(token)?'؟':''));continue;}
+  const latin=(token.match(/[A-Za-z]+/g)||[]).filter(word=>!latinGibberish(word));
+  if(latin.length)kept.push(latin.join(' '));
+ }
+ const letters=kept.join('').match(/[\u0600-\u06ff]/gu)||[];
+ const persianTokens=kept.filter(token=>/[\u0600-\u06ff]/.test(token));
+ if(letters.length<3||repeatedOrLowVariety(letters.join(''))||persianTokens.length>=3&&new Set(persianTokens).size===1)return '';
+ return kept.join(' ');
+}
+const QUESTION_LEADS=['خوب سوالی پرسیدی {name}!','{name} جان، سوال خوبی پرسیدی!','{name}، این سوالت را می‌خوانم:'];
+const STATEMENT_LEADS=['{name} می‌گوید:','{name} جان، این را نوشته:','چه خوب نوشتی {name}!','{name}، با هم بشنویم:'];
+export function commentLeadIn(name,text,seed=''){const choices=/[؟?]|چرا|چیست|چیه|چطور|چگونه|یعنی/.test(text)?QUESTION_LEADS:STATEMENT_LEADS;const index=[...String(seed||text)].reduce((sum,c)=>sum+c.codePointAt(0),0)%choices.length;return choices[index].replaceAll('{name}',spokenName(name));}
 export class LiveAssistant{
  constructor({voice,settings=()=>ASSISTANT_DEFAULTS,now=()=>Date.now(),style=()=>({})}={}){this.style=style;this.voice=voice;this.settings=settings;this.now=now;this.generation=0;this.preparing=false;this.queue=[];this.active=null;this.audio=new Map();this.seen=new Map();this.thanks=new Map();this.lastComment=-Infinity;this.lastThanks=-Infinity;this.lastError=null;this.history=[];this.stats={queued:0,spoken:0,dropped:0,errors:0};}
  enabled(){return this.settings().enabled;}
@@ -26,13 +59,13 @@ export class LiveAssistant{
   finally{this.preparing=false;this.prepare();}
  }
  comment(event,q,phase,roundId){
-  const config=this.settings(),text=cleanComment(event.content??event.comment??event.text),msg=String(event.common?.msgId??event.msgId??'');
-  if(!this.enabled()||!hasPersian(text)||numberOnly(text)||/https?:|www\./i.test(String(event.content??event.comment??'')))return {accepted:false,reason:'not_readable'};
+  const config=this.settings(),source=String(event.content??event.comment??event.text??''),text=speakableComment(source),msg=String(event.common?.msgId??event.msgId??'');
+  if(!this.enabled()||!text)return {accepted:false,reason:'not_readable'};
   if(msg&&!/^0+$/.test(msg)&&this.seenEvent('comment:'+msg))return {accepted:false,reason:'duplicate'};
   if(this.now()-this.lastComment<config.commentGap*1000)return {accepted:false,reason:'cooldown'};
   if(this.seenEvent('comment-text:'+q.id+':'+phase+':'+text.toLocaleLowerCase()))return {accepted:false,reason:'duplicate_text'};
-  const reply=config.replyComments?answerComment(text,q,{revealed:phase==='revealed',style:this.style()}):null;
-  const read=config.readComments?'یکی از دوستان نوشته: '+text.slice(0,160):'';
+  const reply=config.replyComments?answerComment(cleanComment(source),q,{revealed:phase==='revealed',style:this.style()}):null;
+  const read=config.readComments?commentLeadIn(personName(event),text,msg||text)+' '+text.slice(0,160):'';
   if(!read&&!reply)return {accepted:false,reason:'not_relevant'};
   const result=this.enqueue({text:[read,reply?.text].filter(Boolean).join(' '),title:'پاسخ به '+personName(event),kind:reply?'reply':'comment',roundId:reply?.questionBound?roundId:null,requiresReveal:phase==='revealed'&&reply?.questionBound===true,priority:2});
   if(result.accepted)this.lastComment=this.now();return result;
