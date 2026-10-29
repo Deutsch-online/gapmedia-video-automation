@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test --test-isolation=none race.test.mjs race-motion.test.mjs dance.test.mjs server.test.mjs"
+    "test": "node --test --test-isolation=none race.test.mjs race-motion.test.mjs dance.test.mjs dance-model.test.mjs server.test.mjs"
   },
   "dependencies": {
     "hpagent": "1.2.0",
