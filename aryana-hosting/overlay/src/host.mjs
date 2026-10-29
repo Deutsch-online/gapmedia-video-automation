@@ -7,6 +7,7 @@ const vowels=/[\u064b-\u065f\u0670]/g;
 export const languageOf=text=>/[\u0600-\u06ff]/.test(text)?'fa':'en';
 export function spokenName(value,extra=[]){
  const raw=normalize(value);
+ if(raw.length>80)return null;
  if(!raw||/[\p{N}]/u.test(raw))return null;
  const name=raw.replace(/[^\p{L}\p{M}\s]/gu,'').replace(/\s+/g,' ').trim();
  const words=name.split(' ');if(words.length>3)return null;
@@ -25,6 +26,12 @@ export function greeting(name,level,language='fa'){
 
 export class HostSession{
  constructor({now=()=>Date.now()}={}){this.now=now;this.reset();}
+ export(){return {donors:[...this.donors],likers:[...this.likers],seen:[...this.seen],startedAt:this.startedAt};}
+ restore(data){
+  if(!data||!Array.isArray(data.donors)||!Array.isArray(data.likers))return false;
+  const valid=rows=>rows.slice(0,5000).filter(item=>Array.isArray(item)&&typeof item[0]==='string'&&item[0].length<150&&item[1]&&typeof item[1].name==='string'&&item[1].name.length<=80&&['coins','count','likes'].every(k=>item[1][k]===undefined||Number.isSafeInteger(item[1][k])&&item[1][k]>=0&&item[1][k]<1e12));
+  this.donors=new Map(valid(data.donors));this.likers=new Map(valid(data.likers));this.seen=new Set((Array.isArray(data.seen)?data.seen:[]).filter(x=>typeof x==='string'&&x.length<250).slice(-5000));this.startedAt=Number.isFinite(data.startedAt)&&data.startedAt<=this.now()?data.startedAt:null;this.joins=[];this.log=[];return true;
+ }
  reset(){this.donors=new Map();this.likers=new Map();this.seen=new Set();this.combos=new Map();this.startedAt=null;this.joins=[];this.log=[];this.lastThanks=0;}
  identity(event){return String(event.user?.id??event.user?.userId??event.userId??'');}
  profile(event,settings){

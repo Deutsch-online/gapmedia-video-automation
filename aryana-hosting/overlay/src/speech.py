@@ -1,5 +1,6 @@
 """Generate complete speech; apply the private Aryana tone profile when configured."""
 import asyncio
+import signal
 import base64
 import subprocess
 import tempfile
@@ -10,9 +11,11 @@ import ssl
 import sys
 
 import edge_tts
+signal.signal(signal.SIGTERM,lambda *_:sys.exit(143))
 
 if os.environ.get('SSL_CERT_FILE'):
-    import edge_tts.communicate as transport
+    import edge_tts
+signal.signal(signal.SIGTERM,lambda *_:sys.exit(143)).communicate as transport
     transport._SSL_CTX = ssl.create_default_context(cafile=os.environ['SSL_CERT_FILE'])
 
 async def main():
@@ -24,8 +27,9 @@ async def main():
     target = Path(request['output'])
     target.parent.mkdir(parents=True, exist_ok=True)
     encoded_profile=os.environ.get('ARYANA_VOICE_PROFILE_B64')
-    with tempfile.TemporaryDirectory(prefix='aryana-speech-') as work:
-        source=Path(work)/'base.mp3' if encoded_profile else target
+    with tempfile.TemporaryDirectory(prefix='.aryana-speech-',dir=str(target.parent)) as work:
+        staged=Path(work)/'result.mp3'
+        source=Path(work)/'base.mp3' if encoded_profile else staged
         await asyncio.wait_for(edge_tts.Communicate(
             text, voice=voice, rate='-8%',
             proxy=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy'),
@@ -35,9 +39,12 @@ async def main():
             profile=json.loads(base64.b64decode(encoded_profile,validate=True))
             wave=Path(work)/'converted.wav'
             convert(source,wave,profile,os.environ.get('ARYANA_CLONE_ASSETS','/opt/aryana-voice-assets'))
-            subprocess.run(['ffmpeg','-v','error','-y','-i',str(wave),'-af','loudnorm=I=-16:TP=-1.5:LRA=11','-codec:a','libmp3lame','-b:a','128k',str(target)],check=True,timeout=30)
-    if not 1000 < target.stat().st_size < 2_000_000:
-        raise ValueError('Invalid generated audio')
+            subprocess.run(['ffmpeg','-v','error','-y','-i',str(wave),'-af','loudnorm=I=-16:TP=-1.5:LRA=11','-codec:a','libmp3lame','-b:a','128k',str(staged)],check=True,timeout=30)
+        if not 1000 < staged.stat().st_size < 2_000_000:
+            raise ValueError('Invalid generated audio')
+        probe=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(staged)],check=True,capture_output=True,text=True,timeout=10)
+        if not .15<float(probe.stdout.strip())<180:raise ValueError('Invalid speech duration')
+        os.replace(staged,target)
     print(json.dumps({'voice': 'Aryana custom tone' if encoded_profile else voice, 'bytes': target.stat().st_size}))
 
 if __name__ == '__main__':

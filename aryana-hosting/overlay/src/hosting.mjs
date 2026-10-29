@@ -7,4 +7,4 @@ export function hostingConfig(env,port){
  return {hosted:true,bind:'0.0.0.0',token,hosts:new Set([url.host,'127.0.0.1:'+port,'localhost:'+port]),origins:new Set([url.origin])};
 }
 export function tokenMatches(value,expected){return timingSafeEqual(createHash('sha256').update(String(value||'')).digest(),createHash('sha256').update(expected).digest());}
-export function publicState(state){return {persona:state.persona,focus:state.focus,rows:state.rows,joins:state.joins,connection:state.connection,revision:state.revision,utterances:state.utterances,giftTotal:state.giftTotal,likeTotal:state.likeTotal};}
+export function publicState(state){return {persona:state.persona,playback:state.playback,focus:state.focus,rows:state.rows,joins:state.joins,connection:state.connection,revision:state.revision,utterances:state.utterances,giftTotal:state.giftTotal,likeTotal:state.likeTotal};}

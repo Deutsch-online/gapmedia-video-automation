@@ -66,7 +66,7 @@ def fetch(url,admin=None,payload=None):
  if admin:headers['x-aryana-key']=admin
  if payload is not None:headers['Content-Type']='application/json'
  req=urllib.request.Request(url,data=None if payload is None else json.dumps(payload).encode(),headers=headers)
- with urllib.request.urlopen(req,timeout=25) as r:return r.status,r.read(),r.headers.get_content_type()
+ with urllib.request.urlopen(req,timeout=110 if url.endswith('/api/comment') else 25) as r:return r.status,r.read(),r.headers.get_content_type()
 
 def send_media(chat,method,field,file,mime,caption):
  boundary='aryana-'+uuid.uuid4().hex
@@ -94,6 +94,11 @@ def main():
  except RepositoryNotFoundError:
   api.create_repo(repo,repo_type='space',space_sdk='docker',space_hardware=SpaceHardware.CPU_BASIC,private=False);space=api.space_info(repo)
  free(api,repo);url=str(space.host).rstrip('/')
+ state_repo=account+'/aryana-live-private-state'
+ api.create_repo(state_repo,repo_type='dataset',private=True,exist_ok=True)
+ if not api.repo_info(state_repo,repo_type='dataset').private:raise RuntimeError('Persistent state must be private')
+ api.add_space_secret(repo,key='ARYANA_STATE_TOKEN',value=os.environ['HF_TOKEN'])
+ api.add_space_variable(repo,key='ARYANA_STATE_REPO',value=state_repo)
  if not url.startswith('https://') or not url.endswith('.hf.space'):raise RuntimeError('Invalid host')
  admin=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),('aryana-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
  build=os.environ['GITHUB_SHA'];api.add_space_secret(repo,key='ARYANA_ADMIN_TOKEN',value=admin);api.add_space_secret(repo,key='ARYANA_VOICE_PROFILE_B64',value=base64.b64encode(profile).decode());api.add_space_variable(repo,key='PUBLIC_URL',value=url);api.add_space_variable(repo,key='ARYANA_BUILD_SHA',value=build)
@@ -145,10 +150,28 @@ def main():
     time.sleep(2)
    speech[language]=valid
   except (OSError,ValueError):speech[language]=False
- report['live_speech_verified']=speech;report['custom_voice_profile_configured']=True;write()
+ _,owner_raw,_=fetch(url+'/api/state',admin);owner_state=json.loads(owner_raw)
+ fetch(url+'/api/settings',admin,{'volume':owner_state['settings']['volume']})
+ conversation_verified=False
+ try:
+  _,reply_raw,_=fetch(url+'/api/comment',admin,{'text':'یک جملهٔ کوتاه و مؤدبانه برای شروع لایف بگو.'})
+  reply_state=json.loads(reply_raw).get('state',{})
+  conversation_verified=reply_state.get('capabilities',{}).get('conversation')=='local' and reply_state.get('conversationStatus')=='ready'
+ except (OSError,ValueError):pass
+ report['local_conversation_verified']=conversation_verified
+ deadline=time.monotonic()+65
+ while time.monotonic()<deadline:
+  if api.file_exists(state_repo,'state.json',repo_type='dataset'):break
+  time.sleep(3)
+ else:raise RuntimeError('Private state write was not verified')
+ report['private_state_write_verified']=True
+ report['live_speech_verified']=speech;report['custom_voice_profile_configured']=True;report['private_state_repo']=state_repo;report['private_state_verified']=True;write()
  warning='' if all(speech.values()) else '\nتولید صدای دلخواه روی این سرور در آزمون شبکه تأیید نشد؛ صدای معرفی آماده پخش می‌شود.'
- message='🎙️ آریانا — لینک مستقیم آماده است.\n\n🎥 صحنه برای LIVE Studio / OBS، بدون ورود ChatGPT:\n'+url+'/live\n\n🔐 پنل خصوصی مدیریت:\n'+url+'/?studio=1#'+admin+'\n\nچهرهٔ مستقل با الهام از نمونهٔ شما ساخته شد؛ کپی دقیق عکس نیست. صدای اختصاصی با OpenVoice V2 از نمونهٔ ارسالی ساخته و فعال شد؛ این تبدیل رنگ صدا است و شباهت صددرصد تضمین نمی‌شود. خروجی را با اندازهٔ 1080 × 1920 اضافه کنید و صدای همان منبع را فعال کنید. پنل و صحنه از طریق سرور هماهنگ می‌شوند.\n\nاتصال تیک‌تاک از داخل پنل انجام می‌شود؛ دریافت رویدادها تا اتصال واقعی به حساب زنده تأیید نمی‌شود. کلیپ معرفی با چهره و صدای تازه از قبل ساخته شده است؛ حرکت پیوستهٔ لب و بدن برای پاسخ‌های تازه هنوز فعال نیست. میزبانی CPU رایگان است و GPU یا سرویس پولی فعال نشده. لینک مدیریت را خصوصی نگه دارید.'+warning
- sent=tg('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}});report['telegram_message_id']=sent['message_id'];report['private_link_delivered']=True;write();report['sample_audio_message_id']=send_media(chat,'sendAudio','audio',APP/'public/assets/voice-preview.mp3','audio/mpeg','نمونهٔ جملهٔ تازه با صدای اختصاصی آریانا؛ تبدیل رنگ صدا با OpenVoice V2.');report['sample_video_message_id']=send_media(chat,'sendVideo','video',APP/'public/assets/introduction.mp4','video/mp4','چهرهٔ مستقل آریانا، با صدای تبدیل‌شده از نمونهٔ شما.');write();print('ARYANA_READY '+json.dumps(report))
+ message='🎙️ آریانا — لینک مستقیم آماده است.\n\n🎥 صحنه برای LIVE Studio / OBS، بدون ورود ChatGPT:\n'+url+'/live\n\n🔐 پنل خصوصی مدیریت:\n'+url+'/?studio=1#'+admin+'\n\nچهرهٔ مستقل با الهام از نمونهٔ شما ساخته شد؛ کپی دقیق عکس نیست. صدای اختصاصی با OpenVoice V2 از نمونهٔ ارسالی ساخته و فعال شد؛ این تبدیل رنگ صدا است و شباهت صددرصد تضمین نمی‌شود. خروجی را با اندازهٔ 1080 × 1920 اضافه کنید و صدای همان منبع را فعال کنید. پنل و صحنه از طریق سرور هماهنگ می‌شوند.\n\nاتصال تیک‌تاک از داخل پنل انجام می‌شود؛ دریافت رویدادها تا اتصال واقعی به حساب زنده تأیید نمی‌شود. گفت‌وگوی محلیِ کوچک بدون API پولی، بازیابی خودکار اتصال، اولویت گفتار گیفت و مهمان ویژه، کنترل بلندی و قطع صدا، زیرنویس، توقف فوری و ذخیرهٔ خصوصی تنظیمات اضافه شدند. کلیپ معرفی با چهره و صدای تازه از قبل ساخته شده است؛ حرکت پیوستهٔ لب و بدن برای پاسخ‌های تازه هنوز فعال نیست. میزبانی CPU رایگان است و GPU یا سرویس پولی فعال نشده. لینک مدیریت را خصوصی نگه دارید.'+warning
+ sent=tg('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}});report['telegram_message_id']=sent['message_id'];report['private_link_delivered']=True;write();
+ if json.loads((ROOT/'aryana-hosting/request.json').read_text()).get('send_samples',True):
+  report['sample_audio_message_id']=send_media(chat,'sendAudio','audio',APP/'public/assets/voice-preview.mp3','audio/mpeg','نمونهٔ جملهٔ تازه با صدای اختصاصی آریانا؛ تبدیل رنگ صدا با OpenVoice V2.');report['sample_video_message_id']=send_media(chat,'sendVideo','video',APP/'public/assets/introduction.mp4','video/mp4','چهرهٔ مستقل آریانا، با صدای تبدیل‌شده از نمونهٔ شما.')
+ write();print('ARYANA_READY '+json.dumps(report))
 if __name__=='__main__':
  try:main()
  except Exception as e:

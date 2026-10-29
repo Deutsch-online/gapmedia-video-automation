@@ -70,3 +70,12 @@ npm start
 PUBLIC_URL enables an independent public HF Space. The /live output needs no ChatGPT login; the management panel requires ARYANA_ADMIN_TOKEN supplied privately as a URL fragment and removed from the address after use. Public websockets exclude settings, logs and errors.
 
 When ARYANA_VOICE_PROFILE_B64 is configured as a hosted secret, complete Persian/English base speech is converted through OpenVoice V2 to the private target tone. The original voice reference is never copied into the public source or container. A 10-second Persian runtime sample was generated locally and recognized as intelligible Persian; likeness still needs human listening. This is tone conversion, not a claim of identical voice, accent, or real-time video generation.
+
+
+## LIVE reliability update
+
+The hosted service now retries broken TikTok connections with bounded backoff while preserving session totals. Manual disconnection and stream end cancel retries. Speech is bounded and prioritized: operator commands, VIP welcomes and gifts precede likes. Emergency stop cancels queued speech, in-flight synthesis and local conversation. New audio files are validated and atomically published so cancellation cannot leave a truncated cache entry.
+
+The owner panel controls output volume, mute and captions, includes a comment rehearsal and shows actual readiness. Public display clients receive only display-safe state. A private HF dataset stores approved names, pronunciation corrections, playback preferences and current session counts; raw voice recordings, voice profiles and comment history are not included in that dataset. The last pending checkpoint may not survive an abrupt container shutdown.
+
+A pinned Qwen3-4B quantized CPU model supplies experimental bilingual conversation without paid API calls. It is not ChatGPT hosting and does not require a viewer account. Response quality and latency are limited by the small CPU model. AI-generated text may be imperfect. Full audio-driven lip and body motion still requires a separate realtime renderer; prerecorded introduction is identified separately. No real TikTok account reception or real three-hour broadcast has been tested without a supplied active account.
