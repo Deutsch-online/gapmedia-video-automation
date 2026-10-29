@@ -38,7 +38,7 @@ jobs:
                   signature = hashlib.sha256(("gapmedia-monitor-v1:" + token).encode()).hexdigest()
                   result["creative_feedback"] = get_json("https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/creative-feedback", {"X-Project-Authorization": signature})
               except Exception as exc:
-                  result["creative_feedback_error"] = type(exc).__name__
+                  result["creative_feedback_error"] = {"kind": type(exc).__name__, "http_status": getattr(exc, "code", None)}
           else:
               result["creative_feedback_error"] = "configured_authentication_unavailable"
           cf_token, account = os.environ.get("CLOUDFLARE_API_TOKEN", ""), os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
@@ -49,7 +49,7 @@ jobs:
                       url = "https://api.cloudflare.com/client/v4/accounts/" + account + "/storage/kv/namespaces/b9d8cdbf80af49b7987f59b7a9b09c01/values/social%3A" + key
                       result["stored_analytics"][key] = get_json(url, {"Authorization": "Bearer " + cf_token})
                   except Exception as exc:
-                      result["stored_analytics"][key] = {"read_error": type(exc).__name__}
+                      result["stored_analytics"][key] = {"read_error": type(exc).__name__, "http_status": getattr(exc, "code", None)}
           else:
               result["stored_analytics_status"] = "configured_cloudflare_read_credentials_unavailable"
           key, nonce = os.urandom(32), os.urandom(12)
