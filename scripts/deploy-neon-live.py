@@ -129,4 +129,3 @@ if __name__=='__main__':
         write_report(report)
         print('NEON_LIVE_BLOCKED: '+json.dumps(report))
         sys.exit(1)
-

@@ -82,4 +82,3 @@ export function drawRing(ctx,x,y,size,level,time,{speed=1,intensity=1,simpleStyl
  const art=frameArt.get(id);
  if(art&&ornaments){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.rect(-size*2,-size*2,size*4,size*4);ctx.arc(0,0,size*.32,0,TAU);ctx.clip('evenodd');const breathe=1+Math.sin(t*.9)*.007,span=size*1.61*breathe;ctx.rotate(t*(id==='fire'?.12:id==='ice'?-.07:.06));ctx.shadowColor=p[0];ctx.shadowBlur=size*(.025+.012*Math.sin(t*1.6)**2)*power;ctx.drawImage(art,-span/2,-span/2,span,span);ctx.restore();}
 }
-
