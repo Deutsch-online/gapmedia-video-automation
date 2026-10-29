@@ -78,6 +78,19 @@ def main():
     aad=(REPO+':'+BRANCH+':'+REQUEST_ID).encode()
     wrap_key=hashlib.sha256(b'aryana-private-wrap-v1\0'+BOT.encode()).digest()
 
+    if REQUEST['phase']=='advice':
+        receipt_path=ROOT/'advice-receipt.json'
+        if receipt_path.exists() and json.loads(receipt_path.read_text()).get('request_id')==REQUEST_ID:
+            print('ARYANA_ADVICE_ALREADY_DELIVERED')
+            return
+        text='آریانا — دانلود بهتر است یا لینک آنلاین؟\n\nبرای نسخهٔ فعلی روی لپ‌تاپ شما، پیشنهاد من دانلود و اجرای برنامه است. نمایش چهره و کلیپ از خود لپ‌تاپ انجام می‌شود و برای دریافت تصویر به سرور بیرونی وابسته نیست؛ ولی پخش تیک‌تاک، دریافت رویدادها و صدای آنلاین همچنان اینترنت می‌خواهند.\n\nلینک آنلاین نیاز به نصب ندارد، اما پایداری و تأخیر آن به اینترنت و توان سرور بستگی دارد. لینک به‌تنهایی کیفیت چهره یا سرعت ساخت حرکت را بهتر نمی‌کند. برای شخصیت واقعاً زنده و طبیعی، گزینهٔ مناسب‌تر در ادامه، پردازش روی سرور GPU و دریافت خروجی در TikTok LIVE Studio است؛ هنوز چنین سروری راه‌اندازی نشده است.\n\nبستهٔ ZIP و کلیپ معرفی در پیام‌های قبلی همین بات ارسال شده‌اند. فایل ZIP را دانلود و استخراج کنید؛ SETUP-WINDOWS.cmd را یک بار اجرا کنید و سپس START-WINDOWS.cmd را باز کنید.\n\nخروجی برنامه برای TikTok LIVE Studio، پس از اجرای برنامه روی همان لپ‌تاپ:\nhttp://127.0.0.1:4321/live\nاندازهٔ منبع: 1080 × 1920\n\nدانلود از تلگرام باعث کاهش کیفیت تصویر نمی‌شود. لینک فایل تلگرام جای لینک خروجی لایف را نمی‌گیرد. کلیپ معرفی را می‌توانید داخل تلگرام هم تماشا کنید، ولی آن کلیپ، برنامهٔ تعاملی نیست.\n\nنسخهٔ فعلی پیش‌نمایش است؛ حرکت پیوستهٔ زنده و بدن کامل هنوز تکمیل نشده‌اند. لینک اینترنتی آمادهٔ استفاده برای برنامه منتشر نشده است.'
+        result=tg('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+        receipt={'request_id':REQUEST_ID,'destination_type':'private','messages':[{'kind':'advice','message_id':result['message_id']}]}
+        receipt_path.write_text(json.dumps(receipt,indent=2))
+        commit_json('advice-receipt.json',receipt)
+        print('ARYANA_ADVICE_DELIVERED '+str(result['message_id']))
+        return
+
     if REQUEST['phase']=='prepare':
         if (ROOT/'key.json').exists():raise RuntimeError('Encryption key already prepared for this request')
         private=rsa.generate_private_key(public_exponent=65537,key_size=2048)
