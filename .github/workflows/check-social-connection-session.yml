@@ -1,0 +1,33 @@
+name: Check existing TikTok bot connection
+on:
+  push:
+    branches: [codex/read-social-feedback-20261029]
+    paths: [.github/workflows/check-social-connection-session.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - name: Check project connection using its existing Node client
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          node --input-type=module <<'NODE'
+          import {createHash} from 'node:crypto';
+          const root='https://afghanfollowers-telegram.afghan-video-bot.workers.dev';
+          const summary={checked_at:new Date().toISOString()};
+          for(const [label,path] of [['health','/health'],['monitor','/monitor-health'],['feedback','/internal/creative-feedback']]){
+            try{
+              const headers=label==='feedback'?{'X-Project-Authorization':createHash('sha256').update('gapmedia-monitor-v1:'+process.env.TELEGRAM_BOT_TOKEN).digest('hex')}:{};
+              const r=await fetch(root+path,{headers,signal:AbortSignal.timeout(25000)});
+              if(!r.ok){const body=await r.text();summary[label]={http_status:r.status,cloudflare_1010:body.includes('error code: 1010')};continue;}
+              const v=await r.json();
+              if(label==='health')summary[label]={http_status:r.status,worker:v.worker,telegram_token_valid:v.telegramTokenValid,webhook_configured:v.webhookConfigured};
+              if(label==='monitor')summary[label]={http_status:r.status,status:v.status,last_attempt:v.last_attempt,last_completed:v.last_completed,next_due:v.next_due,failures:v.failures};
+              if(label==='feedback')summary[label]={http_status:r.status,status:v.status,updated_at:v.updated_at,evidence_level:v.evidence_level,reference_candidate_count:v.reference_candidates?.length||0,tiktok_evidence_present:(v.reference_candidates||[]).some(x=>x.url?.includes('tiktok.com/@easydeutsches/video/'))};
+            }catch(e){summary[label]={error:e.name};}
+          }
+          console.log('CONNECTION_SUMMARY='+JSON.stringify(summary));
+          NODE
