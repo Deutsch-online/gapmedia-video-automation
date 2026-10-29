@@ -1849,7 +1849,145 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 13,
+      "title_de": "Bitte drücken!",
+      "title_fa": "لطفاً دکمه را فشار دهید!",
+      "summary": "When their regional train stops at the transfer station, Marta waits in front of the exit door expecting it to open automatically. After waving at the glass and wondering if she has to shout, Lukas points out the glowing green door button. Marta presses it firmly herself, releasing the sliding doors with a satisfying pneumatic hiss.",
+      "cliffhanger": "Safely on the platform, Marta looks up at the big electronic departure board to spot their next track.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta stands expectantly before the closed train exit door, frantically waving both hands at the glass like at an automatic supermarket entrance.",
+      "everyday_problem": "Marta expects the regional train doors to slide open automatically upon arrival at the station.",
+      "practical_resolution": "Lukas directs her attention to the illuminated door-open button, and Marta presses it herself to open the door.",
+      "marta_goal": "Open the train exit door so she and Lukas can exit at their transfer stop.",
+      "marta_decision": "Marta locates the glowing circular button on the door frame and presses it firmly with her palm.",
+      "visual_payoff": "The green ring illuminates brightly, pneumatic air hisses softly, and the double doors part smoothly as Marta steps forward with a proud smile.",
+      "creative_review": {
+        "previous_weakness_addressed": "Used an animated environmental cue with glowing button illumination and door motion instead of dialogue-heavy instructions.",
+        "visible_comic_action": "Marta waves her palms in wide arcs in front of the door glass as if summoning automatic supermarket sliding doors before discovering the push button.",
+        "next_experiment": "In the station transfer scene, sync character eye gaze directly with the rolling flip animation of the platform departure board."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Der Zug hält am Bahnhof an.",
+          "fa": "قطار در ایستگاه متوقف می‌شود.",
+          "scene": "Medium shot of Marta standing in the train exit vestibule beside the closed sliding doors.",
+          "motion": "Marta adjusts her backpack strap and turns squarely toward the closed train door.",
+          "visible_objects": [
+            "backpack strap",
+            "train exit door"
+          ],
+          "object_action": "Marta pulls her backpack strap snug against her shoulder while facing the door."
+        },
+        {
+          "speaker": "marta",
+          "de": "Warum geht die Tür nicht auf?",
+          "fa": "چرا در باز نمی‌شود؟",
+          "scene": "Closer framing of Marta looking puzzled in front of the stationary glass door panel.",
+          "motion": "Marta waves both palms in front of the door glass expecting an automatic sensor.",
+          "visible_objects": [
+            "train exit door",
+            "glass window"
+          ],
+          "object_action": "Marta waves her open hands up and down against the glass pane."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Die Tür geht nicht automatisch auf.",
+          "fa": "در به صورت خودکار باز نمی‌شود.",
+          "scene": "Medium shot of Lukas standing in the vestibule holding a folded paper timetable.",
+          "motion": "Lukas shakes his head gently with an amused smile and points toward the door frame.",
+          "visible_objects": [
+            "folded paper timetable"
+          ],
+          "object_action": "Lukas holds a folded timetable in one hand and gestures toward the door frame."
+        },
+        {
+          "speaker": "marta",
+          "de": "Muss ich etwa laut rufen?",
+          "fa": "نکند باید بلند صدا بزنم؟",
+          "scene": "Medium shot of Marta leaning slightly toward the door frame with a comedic questioning grin.",
+          "motion": "Marta playfully cups one hand near her mouth toward the door frame.",
+          "visible_objects": [
+            "train exit door",
+            "yellow grab rail"
+          ],
+          "object_action": "Marta cups her right hand near the door seam while holding the grab rail with her left."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Nein, schau mal auf diesen Knopf!",
+          "fa": "نه، به این دکمه نگاه کن!",
+          "scene": "Closer shot of Lukas pointing precisely at the circular green button beside the glass door.",
+          "motion": "Lukas taps his index finger close to the glowing circular button without pressing it.",
+          "visible_objects": [
+            "glowing green door button"
+          ],
+          "object_action": "Lukas points directly at the green illuminated button on the metal casing."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du musst fest darauf drücken.",
+          "fa": "باید محکم رویش فشار بدهی.",
+          "scene": "Medium framing of Lukas demonstrating a pressing motion in mid-air.",
+          "motion": "Lukas mimics pushing a large button forward with his open palm.",
+          "visible_objects": [
+            "folded paper timetable"
+          ],
+          "object_action": "Lukas tucks the timetable under his arm and makes a clear forward push gesture."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ach, dieser grüne Knopf hier?",
+          "fa": "آهان، این دکمه‌ی سبز اینجاست؟",
+          "scene": "Close-up of Marta focusing on the bright green illuminated push button on the door panel.",
+          "motion": "Marta hovers her right thumb directly in front of the illuminated symbol.",
+          "visible_objects": [
+            "glowing green door button"
+          ],
+          "object_action": "Marta brings her thumb right up to the glowing surface of the door button."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, einfach kräftig drücken!",
+          "fa": "دقیقاً، فقط محکم فشار بده!",
+          "scene": "Medium shot of Lukas giving an encouraging nod and a confident thumbs-up.",
+          "motion": "Lukas raises a cheerful thumbs-up toward the door while smiling warmly.",
+          "visible_objects": [
+            "folded paper timetable"
+          ],
+          "object_action": "Lukas taps his timetable against his side and gives a firm thumbs-up."
+        },
+        {
+          "speaker": "marta",
+          "de": "Hurra, die Tür geht auf!",
+          "fa": "هورا، در باز شد!",
+          "scene": "Wider medium shot of Marta as the train doors hiss and slide smoothly apart.",
+          "motion": "Marta presses the green button firmly with her palm and steps forward onto the platform.",
+          "visible_objects": [
+            "glowing green door button",
+            "open train door",
+            "backpack strap"
+          ],
+          "object_action": "Marta pushes the green button flat with her palm and takes a confident step forward."
+        }
+      ],
+      "research_source": {
+        "topic": "Travel by regional train",
+        "url": "https://www.bahn.de/angebot/regio/deutschland-ticket",
+        "excerpt": "Deutschland-Ticket 63 Euro — Kauf, Gültigkeit & Kündigung | bahn.de Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ändern sich die Konditionen, der Preis erhöht sich auf 66,80 Euro. Stand: Oktober 2026. Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ",
+        "retrieved_at": "2026-10-29T05:54:13.507569+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-10-29",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
