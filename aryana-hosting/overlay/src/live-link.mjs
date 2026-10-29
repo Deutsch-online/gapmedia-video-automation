@@ -15,7 +15,7 @@ export class LiveLink{
   client.on('ended',()=>{if(!current())return;this.stop('ended');this.ended();});
   client.on('disconnected',()=>{if(current())this.schedule(generation,client);});
   try{await client.connect();if(!current()){client.disconnect();return;}this.attempt=0;this.lastConnectedAt=Date.now();this.update('connected');}
-  catch{if(current())this.schedule(generation,client);if(initial)throw Error('اتصال برقرار نشد؛ برنامه به‌طور خودکار دوباره تلاش می‌کند.');}
+  catch{if(!current())return;this.schedule(generation,client);if(initial)throw Error('اتصال برقرار نشد؛ برنامه به‌طور خودکار دوباره تلاش می‌کند.');}
  }
  schedule(generation,client){
   if(!this.active||generation!==this.generation||this.client!==client)return;

@@ -14,8 +14,7 @@ import edge_tts
 signal.signal(signal.SIGTERM,lambda *_:sys.exit(143))
 
 if os.environ.get('SSL_CERT_FILE'):
-    import edge_tts
-signal.signal(signal.SIGTERM,lambda *_:sys.exit(143)).communicate as transport
+    import edge_tts.communicate as transport
     transport._SSL_CTX = ssl.create_default_context(cafile=os.environ['SSL_CERT_FILE'])
 
 async def main():

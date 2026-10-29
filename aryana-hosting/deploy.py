@@ -89,6 +89,7 @@ def main():
  manifest,profile=reconstruct(owner['id'])
  subprocess.run(['npm','ci','--ignore-scripts','--no-audit','--no-fund'],cwd=APP,check=True)
  subprocess.run(['npm','test'],cwd=APP,check=True)
+ subprocess.run([sys.executable,'-m','compileall','-q',str(APP/'src'),str(APP/'tools')],check=True)
  api=HfApi(token=os.environ['HF_TOKEN']);account=api.whoami()['name'];repo=account+'/aryana-live-studio'
  try:space=api.space_info(repo)
  except RepositoryNotFoundError:
@@ -150,6 +151,8 @@ def main():
     time.sleep(2)
    speech[language]=valid
   except (OSError,ValueError):speech[language]=False
+ report['live_speech_verified']=speech;write()
+ if not all(speech.values()):raise RuntimeError('Bilingual live speech verification failed')
  _,owner_raw,_=fetch(url+'/api/state',admin);owner_state=json.loads(owner_raw)
  fetch(url+'/api/settings',admin,{'volume':owner_state['settings']['volume']})
  conversation_verified=False

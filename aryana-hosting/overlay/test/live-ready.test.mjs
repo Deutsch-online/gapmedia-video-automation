@@ -12,6 +12,10 @@ test('recovery preserves ownership, backs off, and stops cancelled retries',asyn
  clients[0].emit('disconnected');assert.equal(link.status,'reconnecting');assert.equal(timers[0].delay,2000);await timers[0].fn();await new Promise(r=>setImmediate(r));assert.equal(link.status,'connected');clients[0].emit('gift',{});assert.equal(events.length,1);
  clients[1].emit('disconnected');link.stop();assert(timers[1].cancelled);await timers[1].fn();assert.equal(clients.length,2);assert.equal(link.status,'disconnected');
 });
+test('a failed connection attempt cannot resurrect a manually stopped session',async()=>{
+ let rejectConnect,timers=0;const client=new EventEmitter();client.connect=()=>new Promise((_,reject)=>{rejectConnect=reject;});client.disconnect=()=>{};
+ const link=new LiveLink({create:()=>client,timer:()=>{timers++;}});const connecting=link.start('account');link.stop();rejectConnect(Error('late network error'));await connecting;assert.equal(link.status,'disconnected');assert.equal(timers,0);
+});
 test('gift and VIP speech displace likes, stale items expire and stops discard old revisions',()=>{
  let now=0;const q=new SpeechQueue({now:()=>now,limit:2});q.push('like','like',1);q.push('join','join',1);assert(q.push('gift','gift',1));assert.equal(q.shift(1).text,'gift');assert.equal(q.push('join','join',1),false);now=61000;assert.equal(q.shift(1),null);q.push('old','gift',1);assert.equal(q.shift(2),null);
 });
