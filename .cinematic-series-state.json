@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 13,
+  "next_episode": 14,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -108,6 +108,14 @@
       "platforms": {
         "tiktok": 2757,
         "instagram": 2758
+      }
+    },
+    "2026-10-29": {
+      "episode": 13,
+      "message_id": 2763,
+      "platforms": {
+        "tiktok": 2763,
+        "instagram": 2764
       }
     }
   },
@@ -1847,10 +1855,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 13,
       "title_de": "Bitte drücken!",
       "title_fa": "لطفاً دکمه را فشار دهید!",
@@ -1984,20 +1990,9 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    },
-    "date": "2026-10-29",
-    "status": "exporting",
-    "platform_receipts": {
-      "tiktok": 2763,
-      "instagram": 2764
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0013/tiktok/e0013-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0013/instagram/e0013-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0013/instagram/e0013-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
