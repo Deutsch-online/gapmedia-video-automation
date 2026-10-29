@@ -1986,8 +1986,10 @@
       "duration_seconds": 45
     },
     "date": "2026-10-29",
-    "status": "dispatching",
-    "platform_receipts": {},
+    "status": "exporting",
+    "platform_receipts": {
+      "tiktok": 2763
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0013/tiktok/e0013-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0013/instagram/e0013-instagram-45s.mp4"
