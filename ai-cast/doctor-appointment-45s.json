@@ -25,22 +25,22 @@
     "note": "Illustrative app only, not a reproduction of a named provider. Availability, insurance acceptance, required data and confirmation vary by practice and app. No real patient details or booking request."
   },
   "creative_review": {
-    "previous_weakness_addressed": "Dialogue alone did not demonstrate how to solve a concrete newcomer problem; the app steps are now visibly designed.",
+    "previous_weakness_addressed": "The account feedback identifies an everyday task demonstration as a stronger reference. Use a specific newcomer task and visible app steps; no claim is made that graphics caused its views.",
     "visible_comic_action": "Marta lifts her phone to call, loses confidence, then replaces the anxious gesture with a relieved smile after confirmation.",
-    "next_experiment": "Change only the opening to a visible appointment problem; compare actual 24-hour watch ratio and completion against comparable 45-second organic posts."
+    "next_experiment": "This new story is exploratory. In a later matched 45-second comparison, vary only the opening. Compare same-age views and shares per view with promotion status recorded; use watch time only if supplied."
   },
   "scenes": [
     {
       "speaker": "marta",
       "de": "Ich brauche einen Arzttermin.",
       "fa": "باید از داکتر وقت بگیرم.",
-      "scene": "Marta holds her phone beside a notebook at the kitchen table; her worried face and phone are visible.",
-      "motion": "Marta lifts the phone, glances toward her off-camera friend and exhales; a small concerned eyebrow raise.",
+      "scene": "Opening close action shot: Marta has her phone already raised beside her worried face at the kitchen table, her notebook clearly in the foreground. The practical appointment problem must be readable from the first frame.",
+      "motion": "Within the first second Marta starts to bring the phone toward her ear, hesitates, then turns toward her off-camera friend with a questioning eyebrow raise. One restrained slow push-in keeps her mouth, phone and hand visible.",
       "visible_objects": [
         "phone",
         "notebook"
       ],
-      "object_action": "Marta lifts the phone, glances toward her off-camera friend and exhales; a small concerned eyebrow raise."
+      "object_action": "Marta raises the phone toward her ear, hesitates and brings it slightly forward as she asks her off-camera friend for help."
     },
     {
       "speaker": "lukas",
