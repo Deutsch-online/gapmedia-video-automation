@@ -1,0 +1,9 @@
+node_modules/
+.venv/
+.private/
+.env
+__pycache__/
+*.pyc
+
+.avatar-env/
+.avatar-models/

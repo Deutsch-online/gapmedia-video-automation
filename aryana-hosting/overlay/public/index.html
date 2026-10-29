@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>آریانا — استودیوی لایف</title><link rel="stylesheet" href="/style.css"></head>
+<body class="studio-body">
+<header class="topbar"><a class="brand" href="/"><span class="brand-mark">✳</span><span>آریانا<small>استودیوی مجری مجازی</small></span></a><span class="connection-pill" id="connection"><i></i>آمادهٔ آزمایش</span><a class="outline-button" href="/live" target="_blank" rel="noopener">بازکردن صفحهٔ پخش ↗</a></header>
+<dialog id="loginDialog"><form id="loginForm"><h2>ورود به پنل خصوصی آریانا</h2><p>کلید خصوصی ارسال‌شده در تلگرام را وارد کنید.</p><input id="adminToken" type="password" autocomplete="off" aria-label="کلید خصوصی" required><button class="primary" type="submit">ورود</button><p id="loginError" role="status"></p></form></dialog><main class="studio-grid">
+ <section class="workspace">
+  <div class="intro"><span class="eyebrow">ARYANA LIVE / 01</span><h1>یک چهره، یک شخصیت.<br><em>لایفِ شما.</em></h1><p>مجری زن با چهرهٔ اختصاصی، صدای فارسی و انگلیسی و واکنش به همراهان لایف.</p></div>
+  <div class="metrics"><div><span>گیفت ثبت‌شده</span><strong id="giftTotal">۰ <small>کوین</small></strong></div><div><span>لایک ثبت‌شده</span><strong id="likeTotal">۰</strong></div><div><span>صدای انتخاب‌شده</span><strong class="voice-name">دیلارا <small>فارسی</small></strong></div></div>
+  <nav class="tabs" aria-label="بخش‌های استودیو"><button class="active" data-tab="voice">گفتار و شخصیت</button><button data-tab="live">اتصال لایف</button><button data-tab="practice">تمرین تلفظ</button></nav>
+  <section class="panel" id="voice-panel">
+   <div class="panel-heading"><span class="step">01</span><div><h2>صدای آریانا را بشنوید</h2><p>متن فارسی یا انگلیسی بنویسید؛ زبان صدا خودکار انتخاب می‌شود. صدای اختصاصی پس از اتصال پروفایل فعال است.</p></div></div>
+   <label for="speechText">متن گفتار</label><textarea id="speechText" maxlength="600" rows="4">سلام دوستان عزیز، من آریانا هستم. به لایف ما خوش آمدید!</textarea>
+   <div class="actions"><button id="say" class="primary">▶ خواندن متن</button><button id="intro" class="secondary">پخش معرفی</button><button id="voiceSample" class="secondary">شنیدن صدای اختصاصی</button><button id="renderPreview" class="secondary" disabled>ساخت کلیپ متحرک</button><button id="stop" class="text-button">توقف گفتار</button></div>
+   <div class="capability-note"><span class="small-orb"></span><p id="avatarStatus">چهرهٔ اختصاصی آماده است؛ حرکت لب زنده هنوز متصل نیست.</p></div>
+   <p id="renderProgress" class="fine" role="status"></p><div class="divider"></div><h3>یک واکنش را امتحان کنید</h3><div class="demo-row"><label for="demoName">نام همراه<input id="demoName" value="مریم" maxlength="40"></label><button data-demo="gift">🎁 گیفت</button><button data-demo="like">♡ لایک</button><button data-demo="join">↗ ورود</button></div><p class="fine">آزمایش‌ها گیفت یا لایک واقعی نمی‌فرستند. نام عددی فقط تشکر عمومی دریافت می‌کند.</p>
+  </section>
+  <section class="panel" id="live-panel" hidden>
+   <div class="panel-heading"><span class="step">02</span><div><h2>لایف تیک‌تاک را وصل کنید</h2><p>این برنامه کاملاً از برنامهٔ رانندگی جدا است.</p></div></div>
+   <label for="username">یوزرنیم حساب تیک‌تاک</label><input id="username" dir="ltr" placeholder="@your_account" maxlength="25"><div class="actions"><button class="primary" id="connect">اتصال به لایف</button><button class="secondary" id="disconnect">قطع اتصال</button></div>
+   <label class="switch"><input type="checkbox" id="autoSpeak" checked> واکنش صوتی خودکار به همراهان</label><p>نفر اول مجموع گیفت و نفر اول مجموع لایک، هرکدام ۶۰ ثانیه در ستون چپ برجسته می‌شوند. عکس و نام تازه‌وارد از چپ تا وسط صفحه می‌آید و محو می‌شود.</p>
+   <div class="source-box"><span>نشانی منبع در TikTok LIVE Studio</span><code id="sourceUrl"></code><button class="text-button" id="copySource">کپی نشانی</button></div>
+   <p class="fine">اندازهٔ منبع: ۱۰۸۰ × ۱۹۲۰. صدا را فقط در همان صفحهٔ پخش فعال کنید. پاسخ آزاد به کامنت‌ها به اتصال مدل گفتگو نیاز دارد؛ بدون آن، فقط پاسخ‌های عمومی داده می‌شود.</p>
+  </section>
+  <section class="panel" id="practice-panel" hidden>
+   <div class="panel-heading"><span class="step">03</span><div><h2>خواندن فارسی را بهتر کنید</h2><p>اصلاح را ذخیره کنید و با صدای فعال آریانا بشنوید.</p></div></div>
+   <div class="field-pair"><label>کلمه<input id="word" placeholder="یک" maxlength="50"></label><label>همان کلمه با اعراب<input id="spoken" placeholder="یِک" maxlength="70"></label></div><button class="primary" id="saveCorrection">ذخیره و شنیدن تلفظ</button><p class="fine">این کار شیوهٔ خواندن متن را اصلاح می‌کند؛ آموزش وزن‌های مدل یا تضمین لهجهٔ دری نیست.</p>
+   <div id="corrections" class="correction-list"></div><div class="divider"></div><h3>نام تأییدشده اضافه کنید</h3><div class="actions"><input id="approvedName" placeholder="نام انسانی، بدون عدد" maxlength="50"><button id="saveName" class="secondary">ثبت نام</button></div><p class="fine">نام‌های نامطمئن خوانده نمی‌شوند. می‌توانید نام واقعیِ جاافتاده از فهرست را اینجا اضافه کنید.</p>
+  </section>
+  <section class="activity-panel"><div class="section-title"><h2>رویدادهای استودیو</h2><button id="reset" class="text-button">پاک‌کردن آزمایش‌ها</button></div><div id="eventLog" class="event-log"><p class="empty">هنوز رویدادی ثبت نشده است.</p></div></section>
+  <p id="notice" class="notice" role="status">برای شروع، صفحهٔ پخش را باز کنید و صدای آن را فعال کنید.</p>
+ </section>
+ <aside class="preview-column"><div class="preview-heading"><span><i class="live-dot"></i> نمای پخش</span><small>9:16</small></div><div class="phone-preview"><iframe src="/live" title="پیش‌نمایش آریانا" allow="autoplay"></iframe></div><div class="persona-caption"><span class="persona-avatar">آ</span><div><strong>آریانا <span>ARYANA</span></strong><p>گرم، مؤدب و خوش‌صحبت</p></div><span class="verified">✧</span></div><p class="preview-note">چهره و صدای این شخصیت با هوش مصنوعی تولید شده است.</p></aside>
+</main><footer class="studio-footer"><span>ARYANA STUDIO</span><span>شخصیت مستقل شما، برای لایف.</span><span>نسخهٔ اولیه · 0.1</span></footer><script type="module" src="/app.js"></script></body></html>

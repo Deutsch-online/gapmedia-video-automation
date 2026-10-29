@@ -1,0 +1,37 @@
+name: Publish independent Aryana to free Hugging Face hosting
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/request.json]
+permissions:
+  contents: read
+concurrency:
+  group: aryana-free-hf-deployment
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install hosting and encrypted-package clients
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2' cryptography==44.0.1
+      - name: Test, publish free CPU Space, verify boundaries and deliver owner links
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python aryana-hosting/deploy.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-hf-report
+          path: /tmp/aryana-hf-report.json
+          retention-days: 3

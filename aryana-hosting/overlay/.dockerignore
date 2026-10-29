@@ -1,0 +1,9 @@
+.git
+.private
+.env
+.venv
+.avatar-env
+.avatar-models
+node_modules
+__pycache__
+*.pyc

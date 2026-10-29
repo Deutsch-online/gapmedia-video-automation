@@ -1,0 +1,9 @@
+numpy==1.26.4
+librosa==0.10.2.post1
+soundfile==0.13.1
+pypinyin==0.55.0
+eng-to-ipa==0.0.2
+Unidecode==1.4.0
+inflect==7.5.0
+jieba==0.42.1
+cn2an==0.5.23

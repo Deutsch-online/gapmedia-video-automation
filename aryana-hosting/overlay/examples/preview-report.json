@@ -1,0 +1,23 @@
+{
+  "exit_code": 0,
+  "wall_seconds": 943.23,
+  "peak_child_rss_kib": 2382140,
+  "duration_seconds": 4.48,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "width": 940,
+  "height": 1672,
+  "fps": 25,
+  "realtime_factor": 210.54,
+  "cpu_threads": 2,
+  "cuda": false,
+  "realtime_lip_sync": false,
+  "body_animation": false,
+  "browser_checks": [
+    "desktop and mobile layout",
+    "pronunciation save",
+    "numeric-name generic reaction",
+    "authenticated render endpoint",
+    "Persian and English actual speech"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "delete": [],
+  "files": {
+    "public/assets/aryana.png": {
+      "file": "aryana.png",
+      "sha256": "54683d700d019ea2a7ba0b96f81438276d422fa82db9c2150d85a07dae72a6a0"
+    },
+    "public/assets/introduction.mp3": {
+      "file": "introduction.mp3",
+      "sha256": "83edca78515ddc551c0bf673df425d84923963bad8262963d52eaf698efa232f"
+    },
+    "public/assets/introduction.mp4": {
+      "file": "introduction.mp4",
+      "sha256": "b5889d031f98748372440a4c5deaa4c80eb5edb3c3512d50601dd13edf3222e1"
+    },
+    "public/assets/voice-preview.mp3": {
+      "file": "voice-preview.mp3",
+      "sha256": "f5b3a51ab565d19673f5b8ecfe8d7708e381a952dab3a24ee8dedebcfa357976"
+    }
+  }
+}
