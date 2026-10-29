@@ -25,6 +25,23 @@ def story():
 
 
 class DoctorStoryTests(unittest.TestCase):
+    def test_official_source_uses_native_node_without_accepting_a_wrong_topic(self):
+        source = series.TRUSTED_RESEARCH[0]
+        html = '<main>' + ('Useful official context. ' * 5) + source[2] + (' everyday dialogue.' * 10) + '</main>'
+        with patch.object(series, 'official_page', side_effect=[OSError(), html]) as fetch:
+            result = series.research_source(14, preferred_url=source[1])
+        self.assertEqual(result['url'], source[1])
+        self.assertEqual(result['transport'], 'node')
+        self.assertIn('Arztbesuch', result['excerpt'])
+        self.assertEqual([c.args[1] for c in fetch.call_args_list], ['urllib', 'node'])
+        with patch.object(series, 'official_page', return_value='<main>Unrelated page</main>'):
+            with self.assertRaisesRegex(RuntimeError, 'unavailable'):
+                series.research_source(14, preferred_url=source[1])
+        with patch.object(series.subprocess, 'run') as run:
+            with self.assertRaisesRegex(ValueError, 'approved'):
+                series.official_page('https://unapproved.example/', 'node')
+            run.assert_not_called()
+
     def test_owner_story_has_problem_friend_six_steps_and_a_complete_45s_ending(self):
         plan = story()
         plan['research_source'] = {'url': plan['research_url']}

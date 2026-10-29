@@ -1,8 +1,9 @@
 {
   "request": "owner-build-doctor-video-after-tiktok-review",
+  "attempt": 2,
+  "reason": "retry after official research transport fix; no GPU was requested on attempt 1",
   "episode": 14,
   "duration_seconds": 45,
   "paid_authorized": false,
-  "publish": false,
-  "analytics_source": "existing project bot feedback, 2026-10-29T16:00:58.615Z"
+  "publish": false
 }

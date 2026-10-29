@@ -78,6 +78,24 @@ class _PageText(HTMLParser):
         if not self.hidden:
             self.text.append(data)
 
+def official_page(url, transport):
+    if url not in [item[1] for item in TRUSTED_RESEARCH]:
+        raise ValueError('Research URL must be approved')
+    if transport == 'node':
+        script = ("const r=await fetch(process.argv[1],{signal:AbortSignal.timeout(18000)});"
+                  "if(!r.ok||!(r.headers.get('content-type')||'').toLowerCase().startsWith('text/html'))"
+                  "throw new Error('Official source HTTP '+r.status);"
+                  "console.log(JSON.stringify({html:(await r.text()).slice(0,750000)}));")
+        result = subprocess.run(['node', '--input-type=module', '-e', script, url],
+                                capture_output=True, text=True, check=True, timeout=22)
+        return json.loads(result.stdout)['html']
+    req = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-StoryResearch/1.0'})
+    with urllib.request.urlopen(req, timeout=18) as response:
+        if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
+            raise ValueError('official page did not return HTML')
+        return response.read(750_000).decode('utf-8', 'ignore')
+
+
 def research_source(episode, preferred_url=None):
     """Fetch an official page before drafting; never substitute an invented source."""
     failures = []
@@ -88,24 +106,23 @@ def research_source(episode, preferred_url=None):
             raise ValueError('Preferred research source must be approved')
         sources.sort(key=lambda item: item[1] != preferred_url)
     for topic, url, anchor in sources:
-        try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-StoryResearch/1.0'})
-            with urllib.request.urlopen(req, timeout=18) as response:
-                if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
-                    raise ValueError('official page did not return HTML')
-                page = response.read(750_000).decode('utf-8', 'ignore')
-            parsed = _PageText()
-            parsed.feed(page)
-            body = re.sub(r'\s+', ' ', ' '.join(parsed.text)).strip()
-            position = body.lower().find(anchor.lower())
-            if position < 0:
-                raise ValueError('expected source topic is absent')
-            excerpt = body[max(0, position - 100):position + 550]
-            if len(excerpt) < 90:
-                raise ValueError('source excerpt is too short')
-            return {'topic': topic, 'url': url, 'excerpt': excerpt, 'retrieved_at': datetime.now(timezone.utc).isoformat()}
-        except (OSError, ValueError) as exc:
-            failures.append(f'{topic}: {type(exc).__name__}')
+        for transport in ('urllib', 'node'):
+            try:
+                page = official_page(url, transport)
+                parsed = _PageText()
+                parsed.feed(page)
+                body = re.sub(r'\s+', ' ', ' '.join(parsed.text)).strip()
+                position = body.lower().find(anchor.lower())
+                if position < 0:
+                    raise ValueError('expected source topic is absent')
+                excerpt = body[max(0, position - 100):position + 550]
+                if len(excerpt) < 90:
+                    raise ValueError('source excerpt is too short')
+                return {'topic': topic, 'url': url, 'excerpt': excerpt, 'retrieved_at': datetime.now(timezone.utc).isoformat(),
+                        'transport': transport}
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                failures.append(f'{topic}/{transport}: {type(exc).__name__}')
+                print('Official research retry: ' + topic + '/' + transport + ': ' + provider_error(exc), flush=True)
     raise RuntimeError('Official story research unavailable: ' + ', '.join(failures))
 
 def command(args, **kwargs):
