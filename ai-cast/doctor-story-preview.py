@@ -65,7 +65,7 @@ def main():
             x = 50 + index * 110
             draw.rounded_rectangle((x, 160, x + 90, 169), radius=4,
                                    fill='#137F82' if index <= i else '#CEDDDF')
-        width = 540 if i >= 3 else 980
+        width = 500 if i >= 3 else 980
         draw.rounded_rectangle((40, 245, 40 + width, 1050), radius=30, fill='white')
         draw.text((75, 290), f'{i + 1:02} / 09', font=font(30, True), fill='#137F82')
         y = 375
@@ -78,7 +78,7 @@ def main():
         draw.text((60, 1180), '45 Sekunden · ein Problem · eine Lösung', font=font(32, True), fill='#137F82')
         if i >= 3:
             phone = panel(scene['graphic_step'], folder / f'phone-{i}.png')
-            still.paste(Image.open(phone), (650, 210), Image.open(phone))
+            still.paste(Image.open(phone), (580, 210), Image.open(phone))
         image_path = folder / f'board-{i}.png'
         still.save(image_path)
         thumbs.append(still.resize((270, 480)))
@@ -92,14 +92,14 @@ def main():
                 graphic = prepare_step(scene, audios[i], folder, i)
                 inputs += ['-loop', '1', '-framerate', '30', '-i', str(graphic['ring']), '-i', str(graphic['audio'])]
                 onset = graphic['tap_at']
-                vf = '[0:v]null[v];' if onset is None else f"[0:v][2:v]overlay=650:210:enable='between(t,{onset},{onset+.28})'[v];"
+                vf = '[0:v]null[v];' if onset is None else f"[0:v][2:v]overlay=580:210:enable='between(t,{onset},{onset+.28})'[v];"
                 vf += '[1:a][3:a]amix=inputs=2:normalize=0:duration=first[a]'
             audio_options = ['-map', '[a]', '-c:a', 'aac', '-ar', '48000', '-b:a', '192k']
         elif i >= 3 and scene['graphic_step'] != 'confirmed':
             ring = folder / f'ring-{i}.png'
             tap_ring(scene['graphic_step'], ring)
             inputs += ['-loop', '1', '-framerate', '30', '-i', str(ring)]
-            vf = "[0:v][1:v]overlay=650:210:enable='between(t,3.8,4.08)'[v]"
+            vf = "[0:v][1:v]overlay=580:210:enable='between(t,3.8,4.08)'[v]"
         else:
             vf = '[0:v]null[v]'
         subprocess.run(['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex', vf,

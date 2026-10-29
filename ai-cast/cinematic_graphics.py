@@ -143,12 +143,12 @@ def prepare_step(scene, audio, folder, index):
 def filters(graphic):
     # Fit the complete speaking frame at left; preserve face, hands and props.
     # Every UI panel occupies the same slot, with a deterministic, brief tap cue.
-    result = ('[0:v]scale=620:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
+    result = ('[0:v]scale=540:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
               'pad=1080:1920:0:0:color=0xEEF4F8,setsar=1,fps=30[base];'
-              '[base][2:v]overlay=650:210[phone];')
+              '[base][2:v]overlay=580:210[phone];')
     onset = graphic['tap_at']
     if onset is None:
         result += '[phone]null[v];'
     else:
-        result += f"[phone][3:v]overlay=650:210:enable='between(t,{onset:.6f},{onset + .28:.6f})'[v];"
+        result += f"[phone][3:v]overlay=580:210:enable='between(t,{onset:.6f},{onset + .28:.6f})'[v];"
     return result + '[1:a][4:a]amix=inputs=2:duration=first:normalize=0,atrim=0:5,aresample=48000[a]'
