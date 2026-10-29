@@ -11,6 +11,8 @@ on:
       - ai-cast/cinematic-series.py
       - ai-cast/cinematic_music.py
       - ai-cast/cinematic_speech.py
+      - ai-cast/cinematic_graphics.py
+      - ai-cast/doctor-appointment-45s.json
       - ai-cast/comedy-pilot.json
       - ai-cast/everyday-pilot.json
       - public/ai-cast/wg-chaos/**
@@ -111,6 +113,7 @@ jobs:
           python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8' gradio_client pillow 'huggingface_hub>=0.34'
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+          python -m unittest discover -s tests -p test_cinematic_graphics.py -v
       - name: Restore completed cinematic scenes
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         uses: actions/cache/restore@v4
@@ -165,7 +168,9 @@ jobs:
             renders/cinematic-series/**/delivery-*.json
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/episode.json
+            renders/cinematic-series/**/graphics-report.json
             renders/cinematic-series/**/contact.jpg
             renders/cinematic-series-cache/**/narration-timing.json
           if-no-files-found: warn
           retention-days: 14
+
