@@ -48,7 +48,7 @@ class DoctorStoryTests(unittest.TestCase):
         series.validate_plan(plan, 10, [])
         self.assertEqual([s['speaker'] for s in plan['scenes'][:3]], ['marta', 'lukas', 'marta'])
         self.assertEqual([s['graphic_step'] for s in plan['scenes'][3:]], list(graphics.STEPS))
-        self.assertIn('bestätigt', plan['scenes'][-1]['de'])
+        self.assertIn('bestätigt', plan['scenes'][-1]['de'].lower())
         self.assertTrue(all(len(s['de']) < 51 for s in plan['scenes']))
 
     def test_graphics_cannot_skip_a_step_or_masquerade_as_a_real_booking(self):

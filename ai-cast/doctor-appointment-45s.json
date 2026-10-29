@@ -133,8 +133,8 @@
     },
     {
       "speaker": "marta",
-      "de": "Ja, bestätigt! Jetzt bin ich erleichtert.",
-      "fa": "بله، تأیید شد! حالا خیالم راحت شد.",
+      "de": "Bestätigt! Das hat geklappt!",
+      "fa": "تأیید شد! درست شد!",
       "scene": "Marta smiles at the same kitchen table with the phone and notebook; the designed example shows confirmation.",
       "motion": "Marta checks the phone, sets her notebook down and relaxes her shoulders with a relieved smile.",
       "visible_objects": [

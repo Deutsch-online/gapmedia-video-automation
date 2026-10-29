@@ -1,8 +1,7 @@
 {
   "request": "owner-build-doctor-video-after-tiktok-review",
-  "source_repair": 3,
   "generation_attempt": 1,
-  "reason": "No GPU was requested in prior source checks; consume the scoped official source actually retrieved through the approved web connector",
+  "reason": "Continue preflight after shortening only the measured 4.58-second closing line. No GPU requested in prior preflights; preserve eight validated voices.",
   "episode": 14,
   "duration_seconds": 45,
   "paid_authorized": false,
