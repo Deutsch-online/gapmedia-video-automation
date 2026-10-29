@@ -1,0 +1,35 @@
+name: Deliver Aryana preview privately to owner Telegram
+on:
+  push:
+    branches: [delivery/aryana-20261029]
+    paths: [aryana-delivery/request.json]
+permissions:
+  contents: write
+concurrency:
+  group: aryana-private-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: aryana-delivery
+      - name: Install encryption support
+        run: python -m pip install --disable-pip-version-check cryptography==44.0.1
+      - name: Prepare or deliver the requested private package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python aryana-delivery/deliver.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-delivery-receipt
+          path: aryana-delivery/receipt.json
+          if-no-files-found: ignore
+          retention-days: 3
