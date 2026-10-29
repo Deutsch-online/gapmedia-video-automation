@@ -9,6 +9,10 @@
     {
       "kind": "video",
       "message_id": 2768
+    },
+    {
+      "kind": "guide",
+      "message_id": 2769
     }
   ]
 }
