@@ -38,7 +38,7 @@ jobs:
                   signature = hashlib.sha256(("gapmedia-monitor-v1:" + token).encode()).hexdigest()
                   result["creative_feedback"] = get_json("https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/creative-feedback", {"X-Project-Authorization": signature})
               except Exception as exc:
-                  result["creative_feedback_error"] = {"kind": type(exc).__name__, "http_status": getattr(exc, "code", None)}
+                  result["creative_feedback_error"] = {"kind": type(exc).__name__, "http_status": getattr(exc, "code", None), "body": exc.read(1000).decode("utf-8", "replace") if hasattr(exc, "read") else None, "server": exc.headers.get("Server") if hasattr(exc, "headers") else None}
           else:
               result["creative_feedback_error"] = "configured_authentication_unavailable"
           cf_token, account = os.environ.get("CLOUDFLARE_API_TOKEN", ""), os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
