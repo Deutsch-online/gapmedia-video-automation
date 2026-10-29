@@ -16,11 +16,9 @@ jobs:
           const urls=['https://withruntime.com/','https://withruntime.com/llms.txt'];
           for(const url of urls){
           try{
-           const r=await fetch(url,{headers:{accept:'text/html,text/markdown;q=0.9,text/plain;q=0.8'},signal:AbortSignal.timeout(20000)});
+           const r=await fetch(url,{headers:{accept:'text/markdown'},signal:AbortSignal.timeout(20000)});
            const body=await r.text();
-           const links=[...body.matchAll(/href=["']([^"']+)["']/g)].map(x=>x[1]);
-           const clean=r.headers.get('content-type')?.includes('html')?body.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\\s+/g,' '):body;
-           console.log('PUBLIC_RUNTIME_PAGE='+JSON.stringify({url,final_url:r.url,status:r.status,content_type:r.headers.get('content-type'),links:[...new Set(links)].slice(0,100),text:clean.slice(0,42000)}));
+           console.log('PUBLIC_RUNTIME_PAGE='+JSON.stringify({url,final_url:r.url,status:r.status,content_type:r.headers.get('content-type'),text:body.slice(0,42000)}));
           }catch(e){console.log(JSON.stringify({url,error:e.name}));}
           }
           NODE
