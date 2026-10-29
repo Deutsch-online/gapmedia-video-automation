@@ -1,7 +1,8 @@
 {
   "request": "owner-build-doctor-video-after-tiktok-review",
-  "attempt": 2,
-  "reason": "retry after official research transport fix; no GPU was requested on attempt 1",
+  "source_repair": 3,
+  "generation_attempt": 1,
+  "reason": "No GPU was requested in prior source checks; consume the scoped official source actually retrieved through the approved web connector",
   "episode": 14,
   "duration_seconds": 45,
   "paid_authorized": false,

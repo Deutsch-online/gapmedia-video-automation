@@ -62,9 +62,16 @@ jobs:
                   raise RuntimeError('An existing episode is pending; this request must not replace it')
               plan=series.load_json('ai-cast/doctor-appointment-45s.json')
               plan['episode']=state['next_episode']
-              source=series.research_source(plan['episode'],preferred_url=plan['research_url'])
-              if source['url']!=plan['research_url']:
-                  raise RuntimeError('The matching official doctor-dialogue source is unavailable')
+              import hashlib
+              from datetime import datetime, timezone
+              source=series.load_json('ai-cast/doctor-source-receipt.json')
+              digest=hashlib.sha256(json.dumps(source,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+              age=(datetime.now(timezone.utc)-datetime.fromisoformat(source['retrieved_at'])).total_seconds()
+              if (digest!='1e3ebfe1602250f23f39c89d22a7c0acfd14fed4d8d43cf419c7dd03baa3b365' or not 0<=age<=86400 or
+                      source['url']!=plan['research_url'] or source['episode']!=plan['episode'] or
+                      source['story_id']!=plan['story_id'] or 'Arztbesuch' not in source['excerpt']):
+                  raise RuntimeError('The scoped official-source receipt is invalid or stale')
+              print('Using the official Goethe page retrieved in this authorized review via the web connector: '+source['retrieved_at'],flush=True)
               plan['research_source']=source
               series.validate_plan(plan,plan['episode'],state['history'],config)
               status.write_text(json.dumps({'status':'rendering','episode':plan['episode'],'duration_seconds':45,'quota':preflight}))
