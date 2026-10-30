@@ -1,0 +1,54 @@
+name: Build edited one-minute Aryana motion using existing HF credits
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/motion-request.json]
+permissions:
+  contents: write
+concurrency:
+  group: aryana-motion-minute
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check gradio_client==2.0.0 mediapipe==0.10.32 opencv-python-headless
+      - name: Install and verify media tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version
+          ffprobe -version
+      - name: Download face-analysis model
+        run: |
+          python -c "import urllib.request; urllib.request.urlretrieve('https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task', '/tmp/aryana-face-landmarker.task')"
+      - name: Build distinct edited motion with a prepaid-credit ceiling
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: '1'
+          MPLCONFIGDIR: /tmp/aryana-mpl
+        run: python aryana-hosting/build-motion-minute.py
+      - name: Save preview candidates on isolated delivery branch
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add aryana-hosting/motion-minute
+          if ! git diff --cached --quiet; then
+            git commit -m 'Stage edited one-minute motion candidate for review'
+            git pull --rebase origin delivery/aryana-hf-20261029
+            git push origin HEAD:delivery/aryana-hf-20261029
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-motion-minute
+          path: aryana-hosting/motion-minute
+          retention-days: 3
