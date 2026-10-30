@@ -2138,7 +2138,7 @@
     }
   ],
   "pending": {
-    "status": "planned",
+    "status": "rendering",
     "date": "2026-10-31",
     "plan": {
       "story_id": "doctor-appointment-language-anxiety-v1",
