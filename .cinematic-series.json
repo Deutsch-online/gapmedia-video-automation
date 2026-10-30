@@ -32,6 +32,13 @@
     "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
+  "next_story": {
+    "from_episode": 15,
+    "story_id": "doctor-appointment-language-anxiety-v1",
+    "path": "ai-cast/doctor-appointment-45s.json",
+    "require_graphics": true,
+    "duration_seconds": 45
+  },
   "duration_exceptions": [],
   "duration_from_episode": 9
 }

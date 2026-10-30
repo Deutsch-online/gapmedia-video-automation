@@ -1,0 +1,28 @@
+Human appearance assets and attribution
+
+Body: Soldier.glb (renamed dancer.glb) from the three.js examples, originally
+an Adobe Mixamo character. Integrated into this dance application.
+Source: https://github.com/mrdoob/three.js/blob/dev/examples/models/gltf/Soldier.glb
+Mixamo usage terms: https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html
+
+Face: Infinite, 3D Head Scan by Lee Perry-Smith, based on work at
+www.triplegangers.com, licensed under Creative Commons Attribution 3.0 Unported.
+Original source: http://www.ir-ltd.net/
+Distribution source: https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/LeePerrySmith
+License: https://creativecommons.org/licenses/by/3.0/
+Original notice is reproduced in HEAD-LICENSE.txt.
+The face geometry has been cropped below the neck, scaled and attached to a
+replacement body. Its color and tangent-space normal maps are retained.
+The scan has closed eyes; it is not a facial-expression or lip-sync model.
+
+Motion: SambaDance skeletal performance from Michelle.glb in the three.js
+examples, originally an Adobe Mixamo character/animation. dance-motion.glb
+contains only its skeleton and animation tracks; the rendered Michelle mesh
+and textures have been removed. Motion is retargeted onto the replacement body.
+Source: https://github.com/mrdoob/three.js/blob/dev/examples/models/gltf/Michelle.glb
+
+GLTFLoader.js and toTrianglesDrawMode are from three.js r160, by the three.js
+authors, under the MIT license reproduced in ../vendor/three.LICENSE.txt.
+Only ES module imports/exports were adapted to the application's THREE global.
+The existing renderer is also three.js r160. All assets are served locally;
+no runtime CDN, Hugging Face inference service or paid API is required.

@@ -25,6 +25,41 @@ def story():
 
 
 class DoctorStoryTests(unittest.TestCase):
+    def test_live_next_episode_uses_doctor_story_and_cannot_substitute_the_train(self):
+        state = series.load_json(ROOT / '.cinematic-series-state.json')
+        config = series.load_json(ROOT / '.cinematic-series.json')
+        # This is the actual unplanned episode at integration time, including
+        # all previous dialogue for repetition checks. No model or GPU call.
+        state = copy.deepcopy(state)
+        state['next_episode'] = 15
+        state['history'] = [h for h in state['history'] if h['episode'] < 15]
+        source = {'url': story()['research_url'], 'excerpt': 'Arztbesuch'}
+        with patch.object(series, 'research_source', return_value=source), \
+             patch.object(series, 'request_json') as llm:
+            plan = series.make_plan(state)
+        self.assertEqual(plan['story_id'], config['next_story']['story_id'])
+        self.assertEqual(plan['episode'], 15)
+        series.validate_plan(plan, 15, state['history'], config)
+        llm.assert_not_called()
+        replacement = copy.deepcopy(state['history'][-1])
+        replacement['episode'] = 15
+        with self.assertRaisesRegex(ValueError, 'owner-requested doctor story'):
+            series.validate_plan(replacement, 15, state['history'], config)
+        for field in ('graphic_story', 'duration_seconds'):
+            broken = copy.deepcopy(plan)
+            broken.pop(field)
+            with self.assertRaisesRegex(ValueError, 'all app graphics'):
+                series.validate_plan(broken, 15, state['history'], config)
+
+    def test_doctor_research_failure_never_falls_back_to_an_unrelated_story(self):
+        state = series.new_state()
+        state['next_episode'] = 15
+        with patch.object(series, 'research_source', side_effect=RuntimeError('source unavailable')), \
+             patch.object(series, 'request_json') as llm:
+            with self.assertRaisesRegex(RuntimeError, 'source unavailable'):
+                series.make_plan(state)
+        llm.assert_not_called()
+
     def test_official_source_uses_native_node_without_accepting_a_wrong_topic(self):
         source = series.TRUSTED_RESEARCH[0]
         html = '<main>' + ('Useful official context. ' * 5) + source[2] + (' everyday dialogue.' * 10) + '</main>'

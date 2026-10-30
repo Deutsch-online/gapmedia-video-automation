@@ -1,14 +1,32 @@
 {
-  "at": "2026-10-27T16:33:55.042Z",
+  "at": "2026-10-29T20:16:23.805Z",
   "rows": [
     {
-      "cat": "instagram",
-      "title": "Instagram Tests 'Features' as Its First Deep Dive Into Long- ...",
-      "url": "https://www.techtimes.com/articles/329528/20261027/instagram-tests-features-its-first-deep-dive-long-form-videos-it-exclusive-us.htm",
-      "date": "2026-10-27",
+      "cat": "tiktok",
+      "title": "TikTok expands into restaurant guides with 'Must Eat' feature | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/28/tiktok-expands-into-restaurant-guides-with-must-eat-feature/",
+      "date": "2026-10-28",
       "sources": 8,
       "clear": true,
-      "score": 30
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok is going after Yelp and Google Maps with an in-app restaurant guide | The Verge",
+      "url": "https://www.theverge.com/news/1020267/tiktok-viral-restaurant-recommendations-must-eat-yelp",
+      "date": "2026-10-28",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Genspark Media Studio: Video Agent with 70+ Model Versions | TPS",
+      "url": "https://tpsreport.news/news/genspark-media-studio-video-agent-70-model-versions",
+      "date": "2026-10-29",
+      "sources": 7,
+      "clear": true,
+      "score": 29
     },
     {
       "cat": "tools",
@@ -17,16 +35,7 @@
       "date": "2026-10-27",
       "sources": 7,
       "clear": true,
-      "score": 30
-    },
-    {
-      "cat": "tools",
-      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
-      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models",
-      "date": "2026-10-27",
-      "sources": 5,
-      "clear": true,
-      "score": 30
+      "score": 28
     },
     {
       "cat": "instagram",
@@ -35,34 +44,52 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "instagram",
       "title": "Instagram rolls out limited Features test in the US",
-      "url": "https://www.socialmediatoday.com/news/instagram-rolls-out-limited-features-test-in-the-us/872825/",
-      "date": "2026-10-27",
+      "url": "https://tech.yahoo.com/social-media/articles/instagram-rolls-limited-features-test-190540357.html",
+      "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Is a Streaming Service Now | WIRED",
+      "url": "https://www.wired.com/story/instagram-is-a-streaming-service-now/",
+      "date": "2026-10-27",
+      "sources": 7,
+      "clear": true,
+      "score": 27
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Adds AI Shopping Assistant & One-Click Buying",
-      "url": "https://almcorp.com/news/tiktok-adds-ai-shopping-assistant-one-click-buying/",
+      "title": "TikTok Is Turning Creators into Series Producers",
+      "url": "https://www.ytviews.in/tiktok-is-turning-creators-into-series-producers/",
       "date": "2026-10-27",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tools",
-      "title": "MAI Image 2.7 debuts above GPT Image 2.5 Flare on Artificial Analysis and #3 on Arena | Microsoft AI",
-      "url": "https://microsoft.ai/news/mai-image-2-7-debut/",
+      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
+      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models",
       "date": "2026-10-27",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram chases YouTube with a push for longer, widescreen videos | The Verge",
+      "url": "https://www.theverge.com/tech/1018688/instagram-longform-widescreen-video-features-youtube",
+      "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 26
     },
     {
       "cat": "instagram",
@@ -71,7 +98,7 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -80,49 +107,13 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tiktok",
-      "title": "(October 26) 2026 TikTok updates, news, and features - SocialBee",
-      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
-      "date": "2026-10-26",
-      "sources": 7,
-      "clear": true,
-      "score": 28
-    },
-    {
-      "cat": "tiktok",
-      "title": "Roster Adds TikTok Spark Permissions to Creator Workflow",
-      "url": "https://quasa.io/stories/roster-brings-tiktok-spark-permissions-into-the-same-creator-workflow",
+      "title": "TikTok's Agentic Commerce AI: What Creators Need to Know · Episodo",
+      "url": "https://episodo.ai/blog/tiktok-s-agentic-commerce-ai-what-creators-need-to-know",
       "date": "2026-10-25",
-      "sources": 6,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram chases YouTube's TV watch time with 90-minute uploads. Will creators get paid, though? - Tubefilter",
-      "url": "https://www.tubefilter.com/2026/10/26/instagram-features-longer-uploads-clips-as-reels/",
-      "date": "2026-10-27",
-      "sources": 8,
-      "clear": false,
-      "score": 26
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Will Now Enable You to Start Over in the App by Refreshing Your Algorithmic Recommendations • 10PM Curfew",
-      "url": "https://10pmcurfew.com/news/tiktok-will-now-enable-you-to-start-over-in-the-app-by-refreshing-your",
-      "date": "2026-10-27",
-      "sources": 8,
-      "clear": false,
-      "score": 26
-    },
-    {
-      "cat": "tools",
-      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
-      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps",
-      "date": "2026-10-23",
       "sources": 7,
       "clear": true,
       "score": 25
@@ -132,65 +123,74 @@
       "title": "Seedance 2.5 Launch: Now Available on Dreamina",
       "url": "https://dreamina.capcut.com/resource/seedance-2-5-launch",
       "date": "2026-10-23",
-      "sources": 4,
+      "sources": 5,
       "clear": true,
-      "score": 21
+      "score": 23
+    },
+    {
+      "cat": "tools",
+      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
+      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps",
+      "date": "2026-10-23",
+      "sources": 8,
+      "clear": true,
+      "score": 23
     }
   ],
   "shown": [
     {
       "n": 1,
-      "cat": "instagram",
-      "title": "Instagram Tests 'Features' as Its First Deep Dive Into Long- ...",
-      "url": "https://www.techtimes.com/articles/329528/20261027/instagram-tests-features-its-first-deep-dive-long-form-videos-it-exclusive-us.htm"
+      "cat": "tiktok",
+      "title": "TikTok expands into restaurant guides with 'Must Eat' feature | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/28/tiktok-expands-into-restaurant-guides-with-must-eat-feature/"
     },
     {
       "n": 2,
-      "cat": "instagram",
-      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/"
+      "cat": "tiktok",
+      "title": "TikTok is going after Yelp and Google Maps with an in-app restaurant guide | The Verge",
+      "url": "https://www.theverge.com/news/1020267/tiktok-viral-restaurant-recommendations-must-eat-yelp"
     },
     {
       "n": 3,
-      "cat": "instagram",
-      "title": "Instagram rolls out limited Features test in the US",
-      "url": "https://www.socialmediatoday.com/news/instagram-rolls-out-limited-features-test-in-the-us/872825/"
+      "cat": "tiktok",
+      "title": "TikTok Is Turning Creators into Series Producers",
+      "url": "https://www.ytviews.in/tiktok-is-turning-creators-into-series-producers/"
     },
     {
       "n": 4,
+      "cat": "tools",
+      "title": "Genspark Media Studio: Video Agent with 70+ Model Versions | TPS",
+      "url": "https://tpsreport.news/news/genspark-media-studio-video-agent-70-model-versions"
+    },
+    {
+      "n": 5,
       "cat": "tools",
       "title": "Apple Creator Studio adds powerful new AI features and even more creative tools - Apple",
       "url": "https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/"
     },
     {
-      "n": 5,
+      "n": 6,
       "cat": "tools",
       "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
       "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models"
     },
     {
-      "n": 6,
-      "cat": "tools",
-      "title": "MAI Image 2.7 debuts above GPT Image 2.5 Flare on Artificial Analysis and #3 on Arena | Microsoft AI",
-      "url": "https://microsoft.ai/news/mai-image-2-7-debut/"
-    },
-    {
       "n": 7,
-      "cat": "tiktok",
-      "title": "TikTok Adds AI Shopping Assistant & One-Click Buying",
-      "url": "https://almcorp.com/news/tiktok-adds-ai-shopping-assistant-one-click-buying/"
+      "cat": "instagram",
+      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/"
     },
     {
       "n": 8,
-      "cat": "tiktok",
-      "title": "TikTok Symphony: What TikTok Says Its AI Creative Suite and Creative Studio Do (2026)",
-      "url": "https://tiktoknewshub.com/videos/tiktok-symphony/"
+      "cat": "instagram",
+      "title": "Instagram rolls out limited Features test in the US",
+      "url": "https://tech.yahoo.com/social-media/articles/instagram-rolls-limited-features-test-190540357.html"
     },
     {
       "n": 9,
-      "cat": "tiktok",
-      "title": "(October 26) 2026 TikTok updates, news, and features - SocialBee",
-      "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
+      "cat": "instagram",
+      "title": "Instagram Is a Streaming Service Now | WIRED",
+      "url": "https://www.wired.com/story/instagram-is-a-streaming-service-now/"
     }
   ]
 }

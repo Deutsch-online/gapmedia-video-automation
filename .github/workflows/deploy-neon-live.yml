@@ -1,0 +1,52 @@
+name: Deploy Neon LIVE Arena and deliver owner Telegram links
+on:
+  push:
+    branches: [main]
+    paths:
+      - neon-live-arena/**
+      - scripts/deploy-neon-live.py
+      - tests/test_neon_deploy.py
+      - .github/workflows/deploy-neon-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: neon-live-arena-free-hosting
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test human rigs, studio entry and owner authentication
+        working-directory: neon-live-arena
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+          node --check dist/dance-human.js
+          node --check dist/dance.js
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check publication readiness guards
+        run: python -m unittest discover -s tests -p test_neon_deploy.py
+      - name: Install official hosting client
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2'
+      - name: Publish Neon Space and deliver private Telegram links
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python scripts/deploy-neon-live.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: neon-live-deployment
+          path: /tmp/neon-live-deployment.json
+          if-no-files-found: ignore
+          retention-days: 14

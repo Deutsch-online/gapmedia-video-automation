@@ -228,6 +228,17 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history, config=None):
+    if episode >= 7:
+        config = config if config is not None else load_json(CONFIG)
+        request = config.get('next_story')
+        if request and episode >= request['from_episode'] and not any(
+                h.get('story_id') == request['story_id'] for h in history):
+            if plan.get('story_id') != request['story_id']:
+                raise ValueError('The next episode must be the owner-requested doctor story')
+            if plan.get('duration_seconds') != request['duration_seconds'] or not plan.get('graphic_story'):
+                raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
+            from cinematic_graphics import validate_graphic_story
+            validate_graphic_story(plan)
     target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
     expected = target // 5
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
