@@ -1,0 +1,49 @@
+{
+  "checked_date": "2026-10-30",
+  "preferred_funding": "existing_hugging_face_credits",
+  "hf_account_pro_verified": true,
+  "included_daily_seconds": 0,
+  "included_quota_resets_at": "2026-10-31T08:12:39.371Z",
+  "credit_route_generation_verified": true,
+  "purchases_requested": false,
+  "live_deployed": false,
+  "target_seconds": 60,
+  "status": "credit_access_verified_quality_target_not_met",
+  "candidates": [
+    {
+      "model": "victor/LongCat-Video-Avatar-1.5",
+      "file": "idle-credit-probe.mp4",
+      "duration_seconds": 5,
+      "sha256": "b8f8363973da34704b52419bd4151617b2c1a3581523b1900c97cd4052d2af02",
+      "generated": true,
+      "approved_for_live": false,
+      "blink_measurement": {
+        "method": "MediaPipe face blendshapes, average eyeBlinkLeft/Right >= 0.45",
+        "estimated_events": 3,
+        "longest_closed_eye_seconds": 1.32,
+        "face_detected_all_frames": true
+      },
+      "rejection_reason": "Frequent blinking and prolonged eye closure; does not meet one-minute requirement."
+    },
+    {
+      "model": "Lightricks/LTX-2-3",
+      "generated": false,
+      "failure": "Queue is full; no generation accepted."
+    },
+    {
+      "model": "linoyts/LTX-2-3",
+      "generated": false,
+      "failure": "Model runtime returned no video; no automatic retry."
+    }
+  ],
+  "limits": {
+    "longcat_single_attempt_max_credit_usd": 0.8,
+    "ltx_single_attempt_max_credit_usd": 0.13,
+    "actual_charged_amount_verified": false
+  },
+  "next_requirements": [
+    "Review a successful longer-motion model sample before generating a batch.",
+    "At least sixty seconds of varied motion; do not label repetition of the five-second sample as a new one-minute take.",
+    "Preserve the approved face and existing speech media; assess blink frequency before deployment."
+  ]
+}
