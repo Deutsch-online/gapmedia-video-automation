@@ -1,0 +1,7 @@
+{
+  "request": "existing-hf-ltx25-natural-motion-v1",
+  "use_existing_hf_credits": true,
+  "max_generations": 1,
+  "max_credit_usd": 1.34,
+  "purchase_credits": false
+}
