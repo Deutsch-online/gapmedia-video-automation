@@ -23,7 +23,7 @@ report.update(status='submitting',audio_seconds=audio_seconds,phrase=text,quota_
 job=None;started=time.time()
 try:
  client=Client('fffiloni/LatentSync',token=token,verbose=False,download_files='/tmp/aryana-neural-downloads')
- job=client.submit({'video':handle_file(str(video))},handle_file(str(audio)),api_name='/generate_lip_sync_video')
+ job=client.submit(handle_file(str(video)),handle_file(str(audio)),api_name='/generate_lip_sync_video')
  value=job.result(timeout=300)
  if isinstance(value,(tuple,list)):value=value[0]
  if isinstance(value,dict):value=value.get('video') or value.get('path')
