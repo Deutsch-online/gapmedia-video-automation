@@ -19,7 +19,7 @@ config=json.loads((root/'aryana-hosting/ltx-request.json').read_text())
 if config.get('use_existing_hf_credits') is not True or config.get('max_generations')!=1 or config.get('max_credit_usd')!=0.13 or config.get('purchase_credits') is not False:raise RuntimeError('Explicit bounded prepaid-credit request required')
 # Verify the remote function still reserves at most 240 xlarge seconds before submitting.
 import ast
-with urllib.request.urlopen('https://huggingface.co/spaces/Lightricks/LTX-2-3/raw/main/app.py',timeout=25) as response:
+with urllib.request.urlopen('https://huggingface.co/spaces/linoyts/LTX-2-3/raw/main/app.py',timeout=25) as response:
  app_source=response.read().decode()
 tree=ast.parse(app_source)
 functions=[n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='generate_video']
@@ -31,7 +31,7 @@ image=root/'aryana-hosting/assets/aryana.png';assert hashlib.sha256(image.read_b
 silence=out/'idle-driving.wav';subprocess.run(['ffmpeg','-v','error','-y','-f','lavfi','-i','anullsrc=r=16000:cl=mono','-t','6',str(silence)],check=True)
 plans=[('idle-ltx-probe',silence,'A photoreal locked-camera recording of this same adult woman seated in this same teal chair, wearing the same teal hoodie. Preserve her exact face, facial proportions and hairstyle. She listens silently with relaxed closed lips, gently breathes, makes a small natural nod, slightly shifts her shoulders, briefly smiles and calmly returns to her original pose. Her eyes stay comfortably open and attentive throughout this ten-second take. The framing, camera distance, background and lighting remain constant.')]
 try:
- client=Client('Lightricks/LTX-2-3',token=token,verbose=False,download_files='/tmp/aryana-gpu-downloads')
+ client=Client('linoyts/LTX-2-3',token=token,verbose=False,download_files='/tmp/aryana-gpu-downloads')
  for name,audio,prompt in plans:
   remaining=quota()
   # The user explicitly authorized existing HF credits after included quota exhaustion.
