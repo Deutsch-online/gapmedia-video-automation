@@ -1,0 +1,10 @@
+{
+  "status": "reviewed_ready",
+  "duration": 60.0,
+  "blink_events": 6,
+  "missing_face_frames": 0,
+  "sha256": "f48e2929dd1d26fac0868eba958c8f112eb626459d73757266be081709b8e1d3",
+  "gpu_calls_in_assembly": 0,
+  "source_funding": "existing_hf_credits",
+  "cross_dissolves": false
+}
