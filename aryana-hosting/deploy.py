@@ -135,7 +135,7 @@ def main():
  _,page,_=fetch(url+'/live')
  if b'live.js' not in page:raise RuntimeError('Output page unavailable')
  _,mobile,_=fetch(url+'/mobile')
- if mobile!=page or b'KI-Generated' not in page:raise RuntimeError('Clean mobile output unavailable')
+ if mobile!=page or b'AI-Generated' not in page:raise RuntimeError('Clean mobile output unavailable')
  for name in ('mpfb.glb','talkinghead.bundle.mjs','headworklet.min.mjs','model-en-mixed.bin'):
   _,asset,_=fetch(url+'/assets/avatar/'+name)
   if len(asset)<1000:raise RuntimeError('Animated avatar asset missing')
@@ -195,7 +195,7 @@ def main():
  report['private_state_write_verified']=True
  report['live_speech_verified']=speech;report['custom_voice_profile_configured']=True;report['private_state_repo']=state_repo;report['private_state_verified']=True;write()
  warning='' if all(speech.values()) else '\nتولید صدای دلخواه روی این سرور در آزمون شبکه تأیید نشد؛ صدای معرفی آماده پخش می‌شود.'
- message='🎙️ واکنش تشکر با چهرهٔ اختصاصی آریانا اضافه شد.\n\n🔐 پنل خصوصی:\n'+url+'/?studio=1#'+admin+'\n\nدکمهٔ «تشکر با چهرهٔ اختصاصی» را بزنید. کلیپ حدود دو ثانیه با صدای اختصاصی می‌گوید «بسیار تشکر!». در حالت چهرهٔ اختصاصی، نام‌های عددی یا نامطمئن نیز همین تشکر عمومی را دریافت می‌کنند؛ نام‌های واقعی پاسخ نام‌دار قبلی را دارند. کلیپ فقط برای همین جمله است و برای پاسخ‌های تازه حرکت لب تولید نمی‌کند.\n\n🎥 خروجی استودیو: '+url+'/live\n📱 موبایل: '+url+'/mobile\n\nبرچسب خروجی KI-Generated است. این یک واکنش آماده است؛ حرکت طبیعی و پیوستهٔ چهرهٔ اختصاصی هنوز فعال نیست. مدل سه‌بعدی آزمایشی همچنان جداگانه قابل انتخاب است. لینک مدیریت را خصوصی نگه دارید.'+warning
+ message='🎙️ واکنش تشکر با چهرهٔ اختصاصی آریانا اضافه شد.\n\n🔐 پنل خصوصی:\n'+url+'/?studio=1#'+admin+'\n\nدکمهٔ «تشکر با چهرهٔ اختصاصی» را بزنید. کلیپ حدود دو ثانیه با صدای اختصاصی می‌گوید «بسیار تشکر!». در حالت چهرهٔ اختصاصی، نام‌های عددی یا نامطمئن نیز همین تشکر عمومی را دریافت می‌کنند؛ نام‌های واقعی پاسخ نام‌دار قبلی را دارند. کلیپ فقط برای همین جمله است و برای پاسخ‌های تازه حرکت لب تولید نمی‌کند.\n\n🎥 خروجی استودیو: '+url+'/live\n📱 موبایل: '+url+'/mobile\n\nبرچسب خروجی AI-Generated است. این یک واکنش آماده است؛ حرکت طبیعی و پیوستهٔ چهرهٔ اختصاصی هنوز فعال نیست. مدل سه‌بعدی آزمایشی همچنان جداگانه قابل انتخاب است. لینک مدیریت را خصوصی نگه دارید.'+warning
  sent=tg('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}});report['telegram_message_id']=sent['message_id'];report['private_link_delivered']=True;write();
  if json.loads((ROOT/'aryana-hosting/request.json').read_text()).get('send_samples',True):
   report['sample_audio_message_id']=send_media(chat,'sendAudio','audio',APP/'public/assets/voice-preview.mp3','audio/mpeg','نمونهٔ جملهٔ تازه با صدای اختصاصی آریانا؛ تبدیل رنگ صدا با OpenVoice V2.');report['sample_video_message_id']=send_media(chat,'sendVideo','video',APP/'public/assets/introduction.mp4','video/mp4','چهرهٔ مستقل آریانا، با صدای تبدیل‌شده از نمونهٔ شما.')

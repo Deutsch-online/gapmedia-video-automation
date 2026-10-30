@@ -56,14 +56,14 @@ try:
  if request.get('video_only'):
   release.fetch(url+'/api/settings',admin,{'avatarMode':request.get('default_mode','portrait')})
   _,page,_=release.fetch(url+'/live')
-  if b'<img' in page or b'poster=' in page or b'KI-Generated' not in page:raise RuntimeError('Published video-only output failed')
+  if b'<img' in page or b'poster=' in page or b'AI-Generated' not in page:raise RuntimeError('Published video-only output failed')
   for name in ['idle.mp4','introduction.mp4','reaction-thanks.mp4']:
    _,data,_=release.fetch(url+'/assets/'+name)
    if hashlib.sha256(data).hexdigest()!=hashlib.sha256((release.APP/'public/assets'/name).read_bytes()).hexdigest():raise RuntimeError('Published media mismatch')
   report['video_only_verified']=True
  report.update(status='ready',connection=state['connection'],connection_resumed=state['connection']=='connected' if connected else None,recorded_welcome_ready=state.get('capabilities',{}).get('recordedReactions',0)>=2,username_preserved=True)
  message='قانون واکنش آریانا اصلاح شد:\nورود: سلام، خوش آمدید.\nگیفت و لایک: بسیار تشکر.\nنام‌های عددی خوانده نمی‌شوند. خوش‌آمد ویژهٔ مهمانان شناخته‌شدهٔ بالای لیول ۲۵ حفظ شد.\n'+('اتصال دریافت تیک‌تاک دوباره متصل است.' if report['connection_resumed'] else 'وضعیت اتصال را در پنل بررسی کنید.')
- if request.get('video_only'):message+='\n\nتصویر ثابت از صفحهٔ لایف حذف شد. همان ظاهر طبیعیِ عکس با ویدیوی متحرک نمایش داده می‌شود؛ مدل سه‌بعدی نمایش داده نمی‌شود و قاب بدون زوم است. برای دریافت نسخهٔ تازه، منبع Browser/Link در LIVE Studio را یک بار Refresh کنید و صدا را فعال کنید. ویدیوی انتظار پیوسته تکرار می‌شود؛ خوش‌آمد و تشکر ویدیوی هماهنگ دارند. پاسخ‌های تازه فعلاً صوتی‌اند و حرکت لبِ تازه تولید نمی‌شود. فقط KI-Generated نمایش داده می‌شود.\nhttps://afgtakrun-aryana-live-studio.hf.space/live'
+ if request.get('video_only'):message+='\n\nتصویر ثابت از صفحهٔ لایف حذف شد. همان ظاهر طبیعیِ عکس با ویدیوی متحرک نمایش داده می‌شود؛ مدل سه‌بعدی نمایش داده نمی‌شود و قاب بدون زوم است. برای دریافت نسخهٔ تازه، منبع Browser/Link در LIVE Studio را یک بار Refresh کنید و صدا را فعال کنید. ویدیوی انتظار پیوسته تکرار می‌شود؛ خوش‌آمد و تشکر ویدیوی هماهنگ دارند. پاسخ‌های تازه فعلاً صوتی‌اند و حرکت لبِ تازه تولید نمی‌شود. فقط AI-Generated نمایش داده می‌شود.\nhttps://afgtakrun-aryana-live-studio.hf.space/live'
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise
