@@ -3,11 +3,11 @@ import hashlib,json,math,os,re,shutil,subprocess,time,urllib.request
 from pathlib import Path
 from gradio_client import Client,handle_file
 
-root=Path.cwd();out=root/'aryana-hosting/motion-minute-v2';out.mkdir(parents=True,exist_ok=True)
+root=Path.cwd();out=root/'aryana-hosting/motion-minute-v3';out.mkdir(parents=True,exist_ok=True)
 token=os.environ['HF_TOKEN'];cfg=json.loads((root/'aryana-hosting/motion-request.json').read_text())
 assert cfg.get('use_existing_hf_credits') is True and cfg.get('purchase_credits') is False
-assert cfg.get('max_generations')==24 and cfg.get('max_credit_usd')==6
-report={'funding':'existing_hf_credits','purchase_requested':False,'auto_deploy':False,'max_credit_usd':6,'max_generations':24,'attempts':[],'accepted':[],'status':'building'}
+assert cfg.get('max_generations')==16 and cfg.get('max_credit_usd')==4
+report={'funding':'existing_hf_credits','purchase_requested':False,'auto_deploy':False,'max_credit_usd':4,'max_generations':16,'attempts':[],'accepted':[],'status':'building'}
 def save():
  (out/'report.json').write_text(json.dumps(report,indent=2));print('ARYANA_MOTION '+json.dumps(report),flush=True)
 def get(path):
@@ -44,11 +44,13 @@ image=root/'aryana-hosting/assets/aryana.png'
 if hashlib.sha256(image.read_bytes()).hexdigest()!='54683d700d019ea2a7ba0b96f81438276d422fa82db9c2150d85a07dae72a6a0':raise RuntimeError('Reference changed')
 existing=root/'aryana-hosting/ltx25-candidates/idle-ltx25-probe.mp4'
 if hashlib.sha256(existing.read_bytes()).hexdigest()!='81902439e25666909afc8464ae67acf74ea76828eb2351f61a42e95c8941fa4b':raise RuntimeError('Reviewed existing clip changed')
-accept(existing,'take-00');save()
-for number in (1,2):
- previous=root/('aryana-hosting/motion-minute/take-%02d-raw.mp4'%number)
- try:accept(previous,'reuse-%02d'%number)
- except Exception as e:report.setdefault('reuse_skipped',[]).append({'take':number,'reason':error_text(e)})
+previous_dir=root/'aryana-hosting/motion-minute-v2'
+previous_report=json.loads((previous_dir/'report.json').read_text())
+for clip in previous_report['accepted']:
+ source_clip=previous_dir/clip['file']
+ if hashlib.sha256(source_clip.read_bytes()).hexdigest()!=clip['sha256']:raise RuntimeError('Approved checkpoint changed')
+ shutil.copyfile(source_clip,out/clip['file']);report['accepted'].append(clip)
+report['resumed_edited_seconds']=sum(x['seconds'] for x in report['accepted'])
 save()
 gestures=[
  'She makes one small nod, relaxes her shoulders and gives a restrained closed-mouth smile.',
@@ -68,11 +70,11 @@ base='A continuous photoreal camera recording of this exact adult woman seated i
 ending=' Gentle restrained motion, relaxed open eyes. Finish with her head upright, shoulders relaxed, and gaze forward in the original pose.'
 client=Client('Lightricks/LTX-2.5',token=token,verbose=False,download_files='/tmp/aryana-minute-downloads')
 failures=0
-for i,gesture in enumerate((gestures*2)[:24]):
+for i,gesture in enumerate((gestures*2)[:16]):
  if sum(x['seconds'] for x in report['accepted'])>=66:break
- began=time.time();job=None;name='take-%02d'%(i+3)
+ began=time.time();job=None;name='take-%02d'%(i+11)
  try:
-  job=client.submit(base+gesture+ending,handle_file(str(image)),896,512,5.0,6203+i*173,'conv',False,False,False,api_name='/run')
+  job=client.submit(base+gesture+ending,handle_file(str(image)),896,512,5.0,15403+i*173,'conv',False,False,False,api_name='/run')
   result=job.result(timeout=600);value=result[0] if isinstance(result,(tuple,list)) else result
   if isinstance(value,dict):value=value.get('video') or value.get('path')
   if isinstance(value,dict):value=value.get('path')
@@ -85,7 +87,7 @@ for i,gesture in enumerate((gestures*2)[:24]):
    try:job.cancel()
    except Exception:pass
   failures+=1;report['attempts'].append({'take':name,'status':'failed','error':error_text(e),'wall_seconds':round(time.time()-began,2)})
-  if failures>=2:report['stopped_reason']='two_failed_candidates_no_more_credit_spending';save();break
+  if failures>=4:report['stopped_reason']='four_failed_candidates_no_more_credit_spending';save();break
  save()
 total=sum(x['seconds'] for x in report['accepted']);report['unique_edited_source_seconds']=round(total,3)
 if total>=66:

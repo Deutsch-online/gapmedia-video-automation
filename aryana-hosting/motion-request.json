@@ -1,8 +1,8 @@
 {
-  "request": "sixty-second-edited-motion-v2-global-blink-spacing",
+  "request": "sixty-second-edited-motion-v3-resume-approved-takes",
   "use_existing_hf_credits": true,
   "purchase_credits": false,
-  "max_generations": 24,
-  "max_credit_usd": 6,
+  "max_generations": 16,
+  "max_credit_usd": 4,
   "auto_deploy": false
 }
