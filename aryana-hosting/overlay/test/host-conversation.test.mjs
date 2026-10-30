@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {TopicConversation} from '../src/topics.mjs';
+import {SpeechQueue} from '../src/speech-queue.mjs';
+import {latinLabel} from '../public/latin-label.js';
+test('Display names contain no Persian text and keep Latin and numeric names',()=>{for(const name of ['مریم','احمد محمد','۹۹۹۹','همراه','عایشه','فارسی‌نویس'])assert.doesNotMatch(latinLabel(name),/[\u0600-\u06ff]/);assert.equal(latinLabel('مریم'),'Maryam');assert.equal(latinLabel('۹۹۹۹'),'9999');assert.equal(latinLabel('Sara'),'Sara');});
+test('Topic host stays quiet while disconnected, paused or responding to a viewer',()=>{let now=100000;const planner=new TopicConversation({now:()=>now});now+=30000;const context={connected:true,enabled:true,autoSpeak:true,busy:false};for(const override of [{connected:false},{enabled:false},{autoSpeak:false},{busy:true},{lastActivity:now-1000}])assert.equal(planner.take({...context,...override}),null);assert.match(planner.take(context),/منتو/);assert.equal(planner.take(context),null);});
+test('Topic speech changes its question after the interval and follows English selection',()=>{let now=0;const planner=new TopicConversation({now:()=>now});const context={connected:true,enabled:true,autoSpeak:true,busy:false,language:'en',topic:'travel'};now=30000;const first=planner.take(context);assert.match(first,/city/);assert.doesNotMatch(first,/[\u0600-\u06ff]/);now+=74999;assert.equal(planner.take(context),null);now++;const next=planner.take(context);assert.notEqual(next,first);});
+test('Gift and comment replies displace low-priority topic speech',()=>{const queue=new SpeechQueue({limit:1});queue.push('topic','topic',1);assert(queue.push('viewer reply','reply',1));assert.equal(queue.shift(1).text,'viewer reply');queue.push('gift','gift',1);assert.equal(queue.push('topic','topic',1),false);});

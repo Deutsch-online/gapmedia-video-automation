@@ -1,6 +1,6 @@
-import {createEngagementOverlay} from '/engagement.js?v=events-v4';
+import {createEngagementOverlay} from '/engagement.js?v=host-v5';
 const $=id=>document.getElementById(id),video=$('hostVideo'),idle=$('idleVideo');
-let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false;
+let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false,localMuted=new URLSearchParams(location.search).get('preview')==='1';
 const seen=new Set();let idlePath='/assets/idle.mp4?v=0061e1f4605708e7',idleBlocked=false,idleStarting=false;
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
 function manualPlay(){const button=$('enableAudio');button.classList.toggle('needs-play',idleBlocked&&!idle.hidden);button.hidden=enabled&&!idleBlocked;}
@@ -22,18 +22,19 @@ function finish(token){if(token!==epoch||!current)return;current=null;const node
 function startAudio(){
  const item=current;if(!item||!item.buffer||source||context?.state!=='running')return;
  const offset=item.video?video.currentTime:0;if(offset>=item.buffer.duration)return;
- const token=item.token,node=context.createBufferSource();source=node;node.buffer=item.buffer;node.connect(gain);gain.gain.value=muted?0:volume;
+ const token=item.token,node=context.createBufferSource();source=node;node.buffer=item.buffer;node.connect(gain);gain.gain.value=(muted||localMuted)?0:volume;
  const startAt=context.currentTime+.02;node.onended=()=>{if(source===node)finish(token);};node.start(startAt,offset);
  if(item.video){const sync=()=>{if(token!==epoch||!playing||current!==item||source!==node)return;const expected=offset+context.currentTime-startAt;if(expected>=0){const delta=expected-video.currentTime;if(Math.abs(delta)>.18)video.currentTime=Math.max(0,expected);video.playbackRate=Math.max(.96,Math.min(1.04,1+delta*.15));}requestAnimationFrame(sync);};requestAnimationFrame(sync);}
  report('playing');
 }
+window.aryanaSetLocalMuted=value=>{localMuted=Boolean(value);if(gain)gain.gain.value=(muted||localMuted)?0:volume;return localMuted;};
 window.aryanaActivateAudio=async()=>{startIdle(true);try{await audioContext().resume();enabled=context.state==='running';manualPlay();if(enabled){startAudio();void next();}report(enabled?'ready':'locked');return enabled;}catch(error){report('error',error.message);return false;}};
 $('enableAudio').onclick=()=>void window.aryanaActivateAudio();
 const engagement=createEngagementOverlay({rail:$('supporterRail'),arrivals:$('arrivalToasts')});
 function render(state){
  engagement.render(state);
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
- idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=muted?0:volume;
+ idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=(muted||localMuted)?0:volume;
  for(const item of state.utterances||[]){if(seen.has(item.id))continue;seen.add(item.id);while(seen.size>1000)seen.delete(seen.values().next().value);if(Date.now()-item.at<60000)queue.push(item);}
  queue.sort((a,b)=>(b.priority||0)-(a.priority||0)||a.at-b.at);queue=queue.slice(0,6);void next();
 }

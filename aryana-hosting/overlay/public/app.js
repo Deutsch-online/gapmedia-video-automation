@@ -1,5 +1,10 @@
 const $=id=>document.getElementById(id);
 const fa=new Intl.NumberFormat('fa-IR');let key='',current;
+let previewMuted=true;try{previewMuted=localStorage.getItem('aryana-preview-muted')!=='false';}catch{}
+function applyPreviewMute(){ $('previewMuted').checked=previewMuted;$('livePreview').contentWindow.aryanaSetLocalMuted?.(previewMuted); }
+$('livePreview').addEventListener('load',applyPreviewMute);
+$('previewMuted').onchange=()=>{previewMuted=$('previewMuted').checked;try{localStorage.setItem('aryana-preview-muted',String(previewMuted));}catch{}applyPreviewMute();};
+applyPreviewMute();
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(action,data={}){
  if(['say','thanks','intro','voice-sample','demo','comment','correction','lip-publish'].includes(action)){void $('livePreview').contentWindow.aryanaActivateAudio?.();notice('درخواست ارسال شد؛ منتظر آماده‌شدن صدا باشید…');}
@@ -8,7 +13,7 @@ async function api(action,data={}){
 }
 const labels={connected:'لایف متصل است',disconnected:'تیک‌تاک متصل نیست',connecting:'در حال اتصال…',error:'اتصال برقرار نشد',reconnecting:'در حال اتصال مجدد…',ended:'لایف پایان یافت'};
 function render(state){
- if(!state)return;current=state;if(document.activeElement!==$('outputLanguage'))$('outputLanguage').value=state.settings.language||'auto';$('mirrorNotice').hidden=!state.capabilities.mirror;for(const id of ['connect','disconnect','reset'])$(id).disabled=Boolean(state.capabilities.mirror);for(const b of document.querySelectorAll('[data-demo]'))b.disabled=Boolean(state.capabilities.mirror);$('thanksClip').disabled=!state.capabilities.recordedReactions;$('connection').lastChild.textContent=labels[state.connection]||state.connection;$('connection').classList.toggle('connected',state.connection==='connected');
+ if(!state)return;current=state;$('topicEnabled').checked=state.settings.topicEnabled!==false;if(document.activeElement!==$('topic'))$('topic').value=state.settings.topic||'food';if(document.activeElement!==$('outputLanguage'))$('outputLanguage').value=state.settings.language||'auto';$('mirrorNotice').hidden=!state.capabilities.mirror;for(const id of ['connect','disconnect','reset'])$(id).disabled=Boolean(state.capabilities.mirror);for(const b of document.querySelectorAll('[data-demo]'))b.disabled=Boolean(state.capabilities.mirror);$('thanksClip').disabled=!state.capabilities.recordedReactions;$('connection').lastChild.textContent=labels[state.connection]||state.connection;$('connection').classList.toggle('connected',state.connection==='connected');
  $('giftTotal').replaceChildren(document.createTextNode(fa.format(state.giftTotal)+' '));const unit=document.createElement('small');unit.textContent='کوین';$('giftTotal').append(unit);$('likeTotal').textContent=fa.format(state.likeTotal);
  for(const field of ['muted','subtitles','conversationEnabled'])$(field).checked=Boolean(state.settings[field]);if(document.activeElement!==$('volume'))$('volume').value=state.settings.volume??85;
  if(state.settings.avatarMode==='portrait')$('modelStatus').textContent=state.capabilities.idleVideo?'چهرهٔ اختصاصی با ویدیوی انتظار حرکت می‌کند؛ واکنش‌های معرفی و تشکر آماده‌اند. پاسخ تازه پس از آماده‌شدن ویدیوی لب‌خوانی پخش می‌شود.':'چهرهٔ اختصاصی با کلیپ‌های معرفی و تشکر؛ حرکت انتظار آماده نیست.';
@@ -39,13 +44,16 @@ $('ask').onclick=()=>api('comment',{text:$('commentText').value});$('emergency')
 for(const field of ['muted','subtitles','conversationEnabled'])$(field).onchange=()=>api('settings',{[field]:$(field).checked});$('volume').onchange=()=>api('settings',{volume:Number($('volume').value)});
 $('voiceSample').onclick=()=>api('voice-sample');
 $('renderPreview').onclick=()=>api('render',{text:$('speechText').value});
+$('topicEnabled').onchange=()=>api('settings',{topicEnabled:$('topicEnabled').checked});
+$('topic').onchange=()=>api('settings',{topic:$('topic').value});
+$('stopTopic').onclick=async()=>{await api('settings',{topicEnabled:false});await api('stop');};
 $('outputLanguage').onchange=()=>api('settings',{language:$('outputLanguage').value});
 $('englishExample').onclick=()=>{ $('speechText').value='Hello dear friends, I am Aryana. Welcome to our live!';$('outputLanguage').value='en';void api('settings',{language:'en'});};
 $('say').onclick=()=>api('say',{text:$('speechText').value});$('intro').onclick=()=>api('intro');$('stop').onclick=()=>api('stop');
 $('connect').onclick=()=>api('connect',{username:$('username').value});$('disconnect').onclick=()=>api('disconnect');$('autoSpeak').onchange=()=>api('settings',{autoSpeak:$('autoSpeak').checked});
 for(const button of document.querySelectorAll('[data-demo]'))button.onclick=()=>api('demo',{kind:button.dataset.demo,name:$('demoName').value});
 $('reset').onclick=()=>api('reset');$('saveCorrection').onclick=()=>api('correction',{word:$('word').value,spoken:$('spoken').value});$('saveName').onclick=()=>api('name',{name:$('approvedName').value});
-$('sourceUrl').textContent=location.origin+'/live?v=output-lips-v3';$('copySource').onclick=()=>navigator.clipboard.writeText(location.origin+'/live').then(()=>notice('نشانی صفحهٔ پخش کپی شد.')).catch(()=>notice('نشانی را از کادر بالا کپی کنید.'));
+$('sourceUrl').textContent=location.origin+'/live?v=host-v5';$('copySource').onclick=()=>navigator.clipboard.writeText(location.origin+'/live').then(()=>notice('نشانی صفحهٔ پخش کپی شد.')).catch(()=>notice('نشانی را از کادر بالا کپی کنید.'));
 let polling=false,loading=false;
 async function loadState(){if(loading||!key)return;loading=true;try{const response=await fetch('/api/state',{headers:{'x-aryana-key':key},cache:'no-store'});if(response.status===401){key='';sessionStorage.removeItem('aryana-admin');if(!$('loginDialog').open)$('loginDialog').showModal();throw Error('کلید مدیریت معتبر نیست.');}if(!response.ok)throw Error('ارتباط سرور برقرار نیست.');render(await response.json());}catch(e){notice(e.message,true);}finally{loading=false;}}
 $('loginForm').onsubmit=async event=>{event.preventDefault();key=$('adminToken').value.trim();await loadState();if(key){sessionStorage.setItem('aryana-admin',key);$('adminToken').value='';$('loginDialog').close();}else $('loginError').textContent='کلید معتبر نیست.';};
@@ -59,7 +67,7 @@ setInterval(()=>void loadState(),1500);
 $('lipPrepare').onclick=()=>void api('lip-prepare');
 $('lipPublish').onclick=()=>void api('lip-publish',{id:current?.lipTest?.id});
 $('lipTest').onclick=()=>void api('lip-test',{text:$('speechText').value.trim()});
-$('activatePreview').onclick=()=>void $('livePreview').contentWindow.aryanaActivateAudio?.();
+$('activatePreview').onclick=()=>{previewMuted=false;try{localStorage.setItem('aryana-preview-muted','false');}catch{}applyPreviewMute();void $('livePreview').contentWindow.aryanaActivateAudio?.();};
 $('togglePreview').onclick=()=>{const open=$('previewColumn').classList.toggle('mobile-open');if(open)$('previewColumn').scrollIntoView({behavior:'smooth',block:'start'});};
 addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('livePreview').contentWindow||event.data?.type!=='aryana-player')return;const labels={locked:'صدا قفل است؛ دکمهٔ فعال‌کردن صدا را بزنید.',ready:'پخش آماده است.',loading:'در حال دریافت صدای آماده‌شده…',playing:'آریانا اکنون صحبت می‌کند.','playing-muted':'حرکت لب فعال است؛ برای شنیدن صدا در همین صفحه دکمهٔ پخش را بزنید.',disconnected:'ارتباط صفحهٔ پخش قطع شده؛ تلاش مجدد…','idle-error':'ویدیوی انتظار اجرا نشد؛ اتصال و پخش ویدیو را بررسی کنید.',error:'خطای پخش: '+(event.data.detail||'دوباره امتحان کنید')};$('playerStatus').textContent=labels[event.data.status]||event.data.status;});
 

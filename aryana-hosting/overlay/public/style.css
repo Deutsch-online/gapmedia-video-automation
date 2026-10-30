@@ -51,10 +51,11 @@ button,.outline-button{min-height:44px}.source-box{min-width:0}.preview-column{m
 .live-supporters .featured .fan-copy small{font-size:23px;font-weight:700;color:#ffe4a0}
 .fan-crown{position:absolute;top:3px;right:12px;font:17px Arial;color:#ffe4a0}
 .live-stage .live-joins{inset:0;z-index:7;height:auto;pointer-events:none;overflow:hidden}
-.live-joins .arrival{left:100%;right:auto;bottom:auto;top:calc(300px + var(--arrival-lane,0)*126px);width:370px;max-width:370px;min-height:102px;padding:12px 20px;gap:18px;direction:ltr;border:2px solid #83ead0;border-radius:60px;background:linear-gradient(120deg,#0a304bed,#125247ed);box-shadow:0 0 22px #55e5c333;animation:aryana-arrival-right 6.3s ease-in-out both}
+.live-joins .arrival{left:auto;right:26px;bottom:auto;top:100%;width:370px;max-width:370px;min-height:102px;padding:12px 20px;gap:18px;direction:ltr;border:2px solid #83ead0;border-radius:60px;background:linear-gradient(120deg,#0a304bed,#125247ed);box-shadow:0 0 22px #55e5c333;animation:aryana-arrival-up 6.3s ease-in-out both}
 .live-joins .arrival .fan-face{width:72px;height:72px;flex-basis:72px;font-size:32px}
 .live-joins .arrival strong{font-size:30px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext}
-@keyframes aryana-arrival-right{0%{transform:translateX(0);opacity:0}12%{opacity:1}60%,84%{transform:translateX(calc(-540px - 50%));opacity:1}100%{transform:translateX(calc(-540px - 50%));opacity:0}}
+@keyframes aryana-arrival-up{0%{transform:translateY(0);opacity:0}12%{opacity:1}60%,84%{transform:translateY(calc(-960px - 50% - var(--arrival-lane,0)*120px));opacity:1}100%{transform:translateY(calc(-960px - 50% - var(--arrival-lane,0)*120px));opacity:0}}
 /* Keep the complete 9:16 canvas and its audience rail visible on tall phones. */
 .live-body.mobile-output .live-stage{transform:translate(-50%,-50%) scale(var(--live-scale,1))}
+
 

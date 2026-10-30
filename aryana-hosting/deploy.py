@@ -66,7 +66,7 @@ def fetch(url,admin=None,payload=None):
  if admin:headers['x-aryana-key']=admin
  if payload is not None:headers['Content-Type']='application/json'
  req=urllib.request.Request(url,data=None if payload is None else json.dumps(payload).encode(),headers=headers)
- with urllib.request.urlopen(req,timeout=110 if url.endswith('/api/comment') else 25) as r:return r.status,r.read(),r.headers.get_content_type()
+ with urllib.request.urlopen(req,timeout=180 if url.endswith('/api/connect') else 110 if url.endswith('/api/comment') else 25) as r:return r.status,r.read(),r.headers.get_content_type()
 
 def send_media(chat,method,field,file,mime,caption):
  boundary='aryana-'+uuid.uuid4().hex

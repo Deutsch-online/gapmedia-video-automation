@@ -17,6 +17,7 @@ import {LocalChat} from './local-chat.mjs';
 import {stockReply} from './replies.mjs';
 import {loadReactionClips} from './reaction-clips.mjs';
 import {NeuralLipSync} from './neural-lipsync.mjs';
+import {TopicConversation,topicChoices} from './topics.mjs';
 import {SpeechEngine} from './speech-engine.mjs';
 import {languageChoices,outputLanguage,localizedReply,localizedReaction} from './languages.mjs';
 
@@ -27,11 +28,12 @@ const port=Number(process.env.PORT||4321);
 const hosting=hostingConfig(process.env,port),key=hosting.token||randomBytes(24).toString('hex');
 if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Invalid port');
 const settingsPath=join(privateDir,'settings.json');
-const defaults={language:'auto',names:[],corrections:{},autoSpeak:true,conversationEnabled:true,volume:85,muted:false,subtitles:false,avatarMode:'portrait',lastUsername:''};
-function cleanSettings(data){return {language:languageChoices.has(data?.language)?data.language:'auto',names:(Array.isArray(data?.names)?data.names:[]).filter(n=>typeof n==='string'&&/^[\p{L}\p{M}\s]{2,50}$/u.test(n)).slice(0,200),corrections:Object.fromEntries(Object.entries(data?.corrections||{}).filter(([w,v])=>typeof v==='string'&&/^[\p{L}\p{M}\u200c]{1,50}$/u.test(w)&&/^[\p{L}\p{M}\u200c]{1,70}$/u.test(v)&&correctionKey(w)===correctionKey(v)).slice(0,200)),autoSpeak:typeof data?.autoSpeak==='boolean'?data.autoSpeak:true,conversationEnabled:typeof data?.conversationEnabled==='boolean'?data.conversationEnabled:true,volume:Number.isInteger(data?.volume)&&data.volume>=0&&data.volume<=100?data.volume:85,muted:data?.muted===true,subtitles:false,avatarMode:data?.avatarMode==='animated'?'animated':'portrait',lastUsername:typeof data?.lastUsername==='string'&&/^[a-zA-Z0-9_.]{2,24}$/.test(data.lastUsername)?data.lastUsername:''};}
+const defaults={topicEnabled:true,topic:'food',language:'auto',names:[],corrections:{},autoSpeak:true,conversationEnabled:true,volume:85,muted:false,subtitles:false,avatarMode:'portrait',lastUsername:''};
+function cleanSettings(data){return {topicEnabled:data?.topicEnabled!==false,topic:topicChoices.includes(data?.topic)?data.topic:'food',language:languageChoices.has(data?.language)?data.language:'auto',names:(Array.isArray(data?.names)?data.names:[]).filter(n=>typeof n==='string'&&/^[\p{L}\p{M}\s]{2,50}$/u.test(n)).slice(0,200),corrections:Object.fromEntries(Object.entries(data?.corrections||{}).filter(([w,v])=>typeof v==='string'&&/^[\p{L}\p{M}\u200c]{1,50}$/u.test(w)&&/^[\p{L}\p{M}\u200c]{1,70}$/u.test(v)&&correctionKey(w)===correctionKey(v)).slice(0,200)),autoSpeak:typeof data?.autoSpeak==='boolean'?data.autoSpeak:true,conversationEnabled:typeof data?.conversationEnabled==='boolean'?data.conversationEnabled:true,volume:Number.isInteger(data?.volume)&&data.volume>=0&&data.volume<=100?data.volume:85,muted:data?.muted===true,subtitles:false,avatarMode:data?.avatarMode==='animated'?'animated':'portrait',lastUsername:typeof data?.lastUsername==='string'&&/^[a-zA-Z0-9_.]{2,24}$/.test(data.lastUsername)?data.lastUsername:''};}
 let settings={...defaults};try{if(existsSync(settingsPath))settings=cleanSettings(JSON.parse(readFileSync(settingsPath,'utf8')));}catch{}
 const session=new HostSession();let connectionStatus='disconnected';
 let lastError='',speechStatus='idle',busy=false,revision=0,utterances=[],lastAuto=0,currentSpeech=null;
+const topicConversation=new TopicConversation();
 const queue=new SpeechQueue(),joinThanks=new Map(),recentSpeech=new Map();let lastSessionSave=0;
 const durable=new DurableState({repo:process.env.ARYANA_STATE_REPO,token:process.env.ARYANA_STATE_TOKEN});
 function persisted(){return {version:1,settings,session:session.export(),lipSyncBudget:neural.budget.snapshot(),savedAt:Date.now()};}
@@ -182,7 +184,7 @@ const server=http.createServer(async(req,res)=>{
     const kind=['gift','like','join'].includes(data.kind)?data.kind:'join';
     receive(kind,{user:{id:'demo-'+String(data.name||'مریم'),nickname:String(data.name||'مریم'),payGrade:{level:30}},giftId:'demo',diamondCount:100,repeatCount:1,count:50,common:{msgId:randomUUID(),createTime:Date.now()}});
    }
-   else if(action==='settings'){if(data.language!==undefined){if(!languageChoices.has(data.language))throw Error('زبان معتبر نیست.');if(settings.language!==data.language)stopSpeech();settings.language=data.language;}if(['animated','portrait'].includes(data.avatarMode))settings.avatarMode=data.avatarMode;for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
+   else if(action==='settings'){if(data.topic!==undefined){if(!topicChoices.includes(data.topic))throw Error('موضوع معتبر نیست.');settings.topic=data.topic;topicConversation.defer();}if(typeof data.topicEnabled==='boolean'){settings.topicEnabled=data.topicEnabled;topicConversation.defer();}if(data.language!==undefined){if(!languageChoices.has(data.language))throw Error('زبان معتبر نیست.');if(settings.language!==data.language)stopSpeech();settings.language=data.language;}if(['animated','portrait'].includes(data.avatarMode))settings.avatarMode=data.avatarMode;for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
    else if(action==='correction'){
     const word=String(data.word||'').trim(),spoken=String(data.spoken||'').trim();
     if(!/^[\p{L}\p{M}\u200c]{1,50}$/u.test(word)||!/^[\p{L}\p{M}\u200c]{1,70}$/u.test(spoken)||correctionKey(word)!==correctionKey(spoken))throw Error('همان کلمه را با اعراب اصلاح کنید؛ واژه عوض نشود.');
@@ -202,7 +204,7 @@ const server=http.createServer(async(req,res)=>{
   if(url.pathname==='/'||url.pathname==='/studio')file=join(publicDir,'index.html');else if(url.pathname==='/live'||url.pathname==='/screen'||url.pathname==='/mobile'||url.pathname==='/live/mobile')file=join(publicDir,'live.html');
   else if(/^\/audio\/[a-f0-9]{64}\.mp3$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
   else if(/^\/video\/[a-f0-9]{64}\.mp4$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
-  else if(/^\/(app\.js|live\.js|engagement\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
+  else if(/^\/(app\.js|live\.js|engagement\.js|latin-label\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(/^\/assets\/avatar\/(talkinghead\.bundle\.mjs|headaudio\.min\.mjs|headworklet\.min\.mjs|playback-worklet\.js|mpfb\.glb|model-en-mixed\.bin|LICENSES\.txt)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(/^\/assets\/reaction-[a-z-]+\.(mp3|mp4)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(url.pathname==='/assets/idle.mp4')file=join(publicDir,'assets/idle.mp4');
@@ -216,6 +218,7 @@ const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===fals
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
 if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);neural.restoreBudget(restored.lipSyncBudget);}
 async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
+const topicTimer=setInterval(()=>{const text=topicConversation.take({connected:connectionStatus==='connected',enabled:settings.topicEnabled,autoSpeak:settings.autoSpeak,busy:busy||queue.length>0||Boolean(localChat.pending)||speechEngine.snapshot().pending||neural.status().pending>0||Date.now()-(utterances.at(-1)?.at||0)<15000,lastActivity:lastAuto,topic:settings.topic,language:settings.language});if(text){try{enqueue(text,'topic');}catch{topicConversation.defer();}}},4000);topicTimer.unref();
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
 process.on('SIGTERM',()=>{stopSpeech();speechEngine.close();localChat.cancel();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});

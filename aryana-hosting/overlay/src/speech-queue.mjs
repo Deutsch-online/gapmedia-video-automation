@@ -1,4 +1,4 @@
-const priority={manual:100,gift:85,vip:90,reply:65,join:35,like:15,thanks:10};
+const priority={topic:5,manual:100,gift:85,vip:90,reply:65,join:35,like:15,thanks:10};
 export class SpeechQueue{
  constructor({now=()=>Date.now(),limit=6}={}){this.now=now;this.limit=limit;this.items=[];}
  push(text,kind='manual',revision=0){
