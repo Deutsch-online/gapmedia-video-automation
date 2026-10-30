@@ -1,6 +1,39 @@
 {
   "paid_requested": false,
   "generation_limit": 3,
-  "clips": [],
-  "quota_before": 2400
+  "clips": [
+    {
+      "name": "intro",
+      "status": "generated",
+      "elapsed_seconds": 88.03,
+      "duration": 2.32,
+      "width": 480,
+      "height": 832,
+      "sha256": "4eff7dd3000feb2aef64e25a6c791cb7ab9d3c634925762d6ab60390866b44de",
+      "remaining_seconds": 2227.080182
+    },
+    {
+      "name": "idle",
+      "status": "generated",
+      "elapsed_seconds": 82.81,
+      "duration": 5.0,
+      "width": 480,
+      "height": 832,
+      "sha256": "0044bfcd1ba2a9e01b6b16f55cee66b74325d6c3b05e21fe5475b1ccf3878142",
+      "remaining_seconds": 2064.7851220000002
+    },
+    {
+      "name": "thanks",
+      "status": "generated",
+      "elapsed_seconds": 82.62,
+      "duration": 2.48,
+      "width": 480,
+      "height": 832,
+      "sha256": "d0874839ad0ab110daa304a50fa36625fca9fab5fdaed6d501ac74763557dc36",
+      "remaining_seconds": 1902.744474
+    }
+  ],
+  "quota_before": 2400,
+  "elapsed_seconds": 255.04,
+  "quota_after": 1902.744474
 }
