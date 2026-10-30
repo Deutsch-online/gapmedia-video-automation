@@ -1,0 +1,57 @@
+{
+  "status": "tested_for_review",
+  "purchase_requested": false,
+  "hourly_gpu_requested": false,
+  "funding": "existing_hf_credits",
+  "max_test_reserved_credit_usd": 0.7,
+  "tests": [
+    {
+      "language": "fa",
+      "phrase": "\u0644\u0628\u200c\u0647\u0627\u06cc\u0645 \u0628\u0627 \u0635\u062f\u0627\u06cc\u0645 \u0647\u0645\u0627\u0647\u0646\u06af \u0627\u0633\u062a.",
+      "roundtrip_seconds": 5.445,
+      "audio_seconds": 2.904,
+      "video_seconds": 2.916667,
+      "metrics": {
+        "audio_seconds": 2.904,
+        "video_frames": 70,
+        "render_wall_seconds": 5.031,
+        "model": "MuseTalk 1.5",
+        "edited_region": "mouth_only"
+      },
+      "sha256": "5ee5ce77fb90ca4d37d32a248ec8e627b5a053178fcaab3ddb4cfde08ef7627e"
+    },
+    {
+      "language": "en",
+      "phrase": "This is a fresh live reply.",
+      "roundtrip_seconds": 4.944,
+      "audio_seconds": 2.352,
+      "video_seconds": 2.375,
+      "metrics": {
+        "audio_seconds": 2.352,
+        "video_frames": 57,
+        "render_wall_seconds": 4.528,
+        "model": "MuseTalk 1.5",
+        "edited_region": "mouth_only"
+      },
+      "sha256": "5318ddfce7528fa220ef68260c0079b11e7eba6bf3294637d81df4a454be8c53"
+    }
+  ],
+  "repo": "afgtakrun/aryana-live-lipsync",
+  "private": true,
+  "created": true,
+  "worker_commit": "8206edc16462f7cbe723c3a76ddf6a7a9a4d327d",
+  "model_lock": {
+    "musetalk": "2bcb936e2fddb4d86db4c62fd45b387d0c061571",
+    "vae": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+    "whisper": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af",
+    "reference_sha256": "0061e1f4605708e7f002f1f2eca31fad4f41a3f3a0e3032f7635610093c7ede1"
+  },
+  "warmup_seconds": 40.93,
+  "preparation": {
+    "ready": true,
+    "cached": false,
+    "frames": 1440,
+    "preparation_seconds": 40.65
+  },
+  "worst_reply_roundtrip_seconds": 5.445
+}
