@@ -11,6 +11,7 @@ RUN CC=gcc CXX=g++ CMAKE_BUILD_PARALLEL_LEVEL=2 CMAKE_ARGS='-DGGML_NATIVE=OFF -D
 COPY tools/prepare-chat-model.py /tmp/prepare-chat-model.py
 RUN /opt/venv/bin/python /tmp/prepare-chat-model.py /opt/aryana-chat/qwen.gguf
 COPY . .
+RUN /opt/venv/bin/python tools/prepare-avatar-ui.py
 RUN mkdir -p .private && chown -R node:node /app
 USER node
 ENV PORT=7860 ARYANA_PYTHON=/opt/venv/bin/python ARYANA_CHAT_MODEL=/opt/aryana-chat/qwen.gguf

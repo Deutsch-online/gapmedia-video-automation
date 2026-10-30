@@ -1,0 +1,50 @@
+[
+  {
+    "repo": "TalkingHead",
+    "revision": "166b443a445eeb63a4ea02270aa9e7d6ba8b4d88",
+    "path": "modules/talkinghead.mjs",
+    "sha256": "d305a73b70c86f12c3572ce83d8c4e274faa5949e2f4f84951a927fffa12a602"
+  },
+  {
+    "repo": "TalkingHead",
+    "revision": "166b443a445eeb63a4ea02270aa9e7d6ba8b4d88",
+    "path": "modules/retargeter.mjs",
+    "sha256": "aae6954f90f35263d6116737b3e34a202f3f1430ffd1ce1368f7af7d2e8774cd"
+  },
+  {
+    "repo": "TalkingHead",
+    "revision": "166b443a445eeb63a4ea02270aa9e7d6ba8b4d88",
+    "path": "modules/dynamicbones.mjs",
+    "sha256": "e3e754a8c4296b470a763be3705694d10dfa00cb7a0b311fa6d4751297ab8d82"
+  },
+  {
+    "repo": "TalkingHead",
+    "revision": "166b443a445eeb63a4ea02270aa9e7d6ba8b4d88",
+    "path": "modules/playback-worklet.js",
+    "sha256": "96cf3ed946e3f7a9a478e4f135aa107a1fcd912d0be4690cc361d69f1439843f"
+  },
+  {
+    "repo": "TalkingHead",
+    "revision": "166b443a445eeb63a4ea02270aa9e7d6ba8b4d88",
+    "path": "avatars/mpfb.glb",
+    "sha256": "63c645a2a863b9972e9a9c2ed576a1de4c390b8475508e1473e69c87a3ee299c"
+  },
+  {
+    "repo": "HeadAudio",
+    "revision": "c6d8af35034068b1c98dcc0fa3ec9602d711e784",
+    "path": "dist/headaudio.min.mjs",
+    "sha256": "112ce8a1ae40f7ec8bfbcd12251d834bdbdb39656a3992a9738d1f53d1fd0a7b"
+  },
+  {
+    "repo": "HeadAudio",
+    "revision": "c6d8af35034068b1c98dcc0fa3ec9602d711e784",
+    "path": "dist/headworklet.min.mjs",
+    "sha256": "2c31bb9b85d56f16ced68b64b02827237573beb7a5f6435ca8374469770a400d"
+  },
+  {
+    "repo": "HeadAudio",
+    "revision": "c6d8af35034068b1c98dcc0fa3ec9602d711e784",
+    "path": "dist/model-en-mixed.bin",
+    "sha256": "0358f68989b5861f9b7d18871b010fa6cbf88a53bda4954a954d8c548bbcf251"
+  }
+]

@@ -134,6 +134,13 @@ def main():
  if mime!='image/png' or hashlib.sha256(image).hexdigest()!=report['portrait_sha256']:raise RuntimeError('Portrait verification failed')
  _,page,_=fetch(url+'/live')
  if b'live.js' not in page:raise RuntimeError('Output page unavailable')
+ _,mobile,_=fetch(url+'/mobile')
+ if mobile!=page or 'هوش مصنوعی'.encode() not in page:raise RuntimeError('Clean mobile output unavailable')
+ for name in ('mpfb.glb','talkinghead.bundle.mjs','headworklet.min.mjs','model-en-mixed.bin'):
+  _,asset,_=fetch(url+'/assets/avatar/'+name)
+  if len(asset)<1000:raise RuntimeError('Animated avatar asset missing')
+ report['animated_3d_assets_verified']=True
+ report['mobile_output_url']=url+'/mobile'
  # Verify the websocket is output-only: no private logs/settings.
  check="""import WebSocket from 'ws';const w=new WebSocket(process.env.ARYANA_CHECK_URL.replace('https:','wss:')+'/events');const t=setTimeout(()=>process.exit(2),15000);w.on('message',r=>{const s=JSON.parse(r);clearTimeout(t);w.close();process.exit(('settings'in s||'log'in s||'lastError'in s)?3:0)});w.on('error',()=>process.exit(4));"""
  subprocess.run(['node','--input-type=module','-e',check],cwd=APP,env=dict(os.environ,ARYANA_CHECK_URL=url),check=True,timeout=20)
@@ -170,7 +177,7 @@ def main():
  report['private_state_write_verified']=True
  report['live_speech_verified']=speech;report['custom_voice_profile_configured']=True;report['private_state_repo']=state_repo;report['private_state_verified']=True;write()
  warning='' if all(speech.values()) else '\nتولید صدای دلخواه روی این سرور در آزمون شبکه تأیید نشد؛ صدای معرفی آماده پخش می‌شود.'
- message='🎙️ آریانا — لینک مستقیم آماده است.\n\n🎥 صحنه برای LIVE Studio / OBS، بدون ورود ChatGPT:\n'+url+'/live\n\n🔐 پنل خصوصی مدیریت:\n'+url+'/?studio=1#'+admin+'\n\nچهرهٔ مستقل با الهام از نمونهٔ شما ساخته شد؛ کپی دقیق عکس نیست. صدای اختصاصی با OpenVoice V2 از نمونهٔ ارسالی ساخته و فعال شد؛ این تبدیل رنگ صدا است و شباهت صددرصد تضمین نمی‌شود. خروجی را با اندازهٔ 1080 × 1920 اضافه کنید و صدای همان منبع را فعال کنید. پنل و صحنه از طریق سرور هماهنگ می‌شوند.\n\nاتصال تیک‌تاک از داخل پنل انجام می‌شود؛ دریافت رویدادها تا اتصال واقعی به حساب زنده تأیید نمی‌شود. گفت‌وگوی محلیِ کوچک بدون API پولی، بازیابی خودکار اتصال، اولویت گفتار گیفت و مهمان ویژه، کنترل بلندی و قطع صدا، زیرنویس، توقف فوری و ذخیرهٔ خصوصی تنظیمات اضافه شدند. کلیپ معرفی با چهره و صدای تازه از قبل ساخته شده است؛ حرکت پیوستهٔ لب و بدن برای پاسخ‌های تازه هنوز فعال نیست. میزبانی CPU رایگان است و GPU یا سرویس پولی فعال نشده. لینک مدیریت را خصوصی نگه دارید.'+warning
+ message='🎙️ آریانا — پنل موبایل و دسکتاپ به‌روزرسانی شد.\n\n🎥 خروجی 1080 × 1920 برای LIVE Studio / OBS:\n'+url+'/live\n\n📱 پخش تمام‌صفحهٔ موبایل:\n'+url+'/mobile\n\n🔐 پنل خصوصی:\n'+url+'/?studio=1#'+admin+'\n\nدکمهٔ فعال‌کردن صدای پیش‌نمایش را یک بار بزنید، سپس معرفی یا نمونهٔ صدا را امتحان کنید. وضعیت آماده‌شدن و پخش صدا داخل پنل دیده می‌شود. برای خروجی مستقل، یک بار تصویر صفحهٔ پخش را لمس کنید. فقط یک منبع صدا را هنگام نشر روشن نگه دارید.\n\nگزینهٔ مدل سه‌بعدی آزمایشی اضافه شد: حرکت مداوم سر، پلک و بدن و حرکت لب بر اساس صدا. چهرهٔ این مدل با تصویر اختصاصی شما متفاوت است و فوتورئال نیست. گزینهٔ چهرهٔ اختصاصی همچنان تصویر و کلیپ کوتاه معرفی است و حرکت پیوسته ندارد. در پنل بین این دو انتخاب کنید. بار اول مدل حدود ۳۷ مگابایت دریافت می‌شود.\n\nروی تصویر عمومی فقط «هوش مصنوعی» نوشته شده است؛ آمار و نام‌ها نمایش داده نمی‌شوند. لینک موبایل به‌تنهایی لایف تیک‌تاک را شروع نمی‌کند؛ نشر از موبایل به قابلیت اشتراک‌گذاری صفحه یا برنامهٔ پخش سازگار حساب شما نیاز دارد. اتصال واقعی تیک‌تاک هنوز بدون یوزرنیم و لایف فعال آزموده نشده است. میزبانی رایگان CPU است. لینک مدیریت خصوصی بماند.'+warning
  sent=tg('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}});report['telegram_message_id']=sent['message_id'];report['private_link_delivered']=True;write();
  if json.loads((ROOT/'aryana-hosting/request.json').read_text()).get('send_samples',True):
   report['sample_audio_message_id']=send_media(chat,'sendAudio','audio',APP/'public/assets/voice-preview.mp3','audio/mpeg','نمونهٔ جملهٔ تازه با صدای اختصاصی آریانا؛ تبدیل رنگ صدا با OpenVoice V2.');report['sample_video_message_id']=send_media(chat,'sendVideo','video',APP/'public/assets/introduction.mp4','video/mp4','چهرهٔ مستقل آریانا، با صدای تبدیل‌شده از نمونهٔ شما.')

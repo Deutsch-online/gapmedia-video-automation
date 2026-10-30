@@ -79,3 +79,12 @@ The hosted service now retries broken TikTok connections with bounded backoff wh
 The owner panel controls output volume, mute and captions, includes a comment rehearsal and shows actual readiness. Public display clients receive only display-safe state. A private HF dataset stores approved names, pronunciation corrections, playback preferences and current session counts; raw voice recordings, voice profiles and comment history are not included in that dataset. The last pending checkpoint may not survive an abrupt container shutdown.
 
 A pinned Qwen3-4B quantized CPU model supplies experimental bilingual conversation without paid API calls. It is not ChatGPT hosting and does not require a viewer account. Response quality and latency are limited by the small CPU model. AI-generated text may be imperfect. Full audio-driven lip and body motion still requires a separate realtime renderer; prerecorded introduction is identified separately. No real TikTok account reception or real three-hour broadcast has been tested without a supplied active account.
+
+
+## Responsive player and experimental 3D mode
+
+`/live` is a 9:16 OBS/LIVE Studio source; `/mobile` fills a mobile viewport. The public output shows only the Persian AI disclosure. Tap the picture once to unlock audio, or use the private panel's preview audio button. The player shares one Web Audio context and cancels old playback on emergency stop.
+
+The experimental animated mode uses the CC0 MPFB sample avatar with MIT TalkingHead, Three.js and HeadAudio, self-hosted with pinned revisions and integrity checks. It provides rigged idle movement and audio-driven visemes, not a photorealistic recreation of Aryana's custom portrait. The private selector retains the custom portrait and prerecorded introduction. Desktop/mobile WebGL support is required. Browser rendering performance and Persian viseme accuracy vary; no actual phone hardware or three-hour animated render has been verified.
+
+Run `python tools/prepare-avatar-ui.py` once before local use to fetch ~37 MB of public avatar assets and build the local JS bundle. Docker does this automatically. Licenses are in `public/assets/avatar/LICENSES.txt`. No raw voice sample or profile is published.

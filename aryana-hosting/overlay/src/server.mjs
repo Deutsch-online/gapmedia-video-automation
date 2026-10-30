@@ -21,8 +21,8 @@ const port=Number(process.env.PORT||4321);
 const hosting=hostingConfig(process.env,port),key=hosting.token||randomBytes(24).toString('hex');
 if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Invalid port');
 const settingsPath=join(privateDir,'settings.json');
-const defaults={names:[],corrections:{},autoSpeak:true,conversationEnabled:true,volume:85,muted:false,subtitles:true,lastUsername:''};
-function cleanSettings(data){return {names:(Array.isArray(data?.names)?data.names:[]).filter(n=>typeof n==='string'&&/^[\p{L}\p{M}\s]{2,50}$/u.test(n)).slice(0,200),corrections:Object.fromEntries(Object.entries(data?.corrections||{}).filter(([w,v])=>typeof v==='string'&&/^[\p{L}\p{M}\u200c]{1,50}$/u.test(w)&&/^[\p{L}\p{M}\u200c]{1,70}$/u.test(v)&&correctionKey(w)===correctionKey(v)).slice(0,200)),autoSpeak:typeof data?.autoSpeak==='boolean'?data.autoSpeak:true,conversationEnabled:typeof data?.conversationEnabled==='boolean'?data.conversationEnabled:true,volume:Number.isInteger(data?.volume)&&data.volume>=0&&data.volume<=100?data.volume:85,muted:data?.muted===true,subtitles:data?.subtitles!==false,lastUsername:typeof data?.lastUsername==='string'&&/^[a-zA-Z0-9_.]{2,24}$/.test(data.lastUsername)?data.lastUsername:''};}
+const defaults={names:[],corrections:{},autoSpeak:true,conversationEnabled:true,volume:85,muted:false,subtitles:false,avatarMode:'animated',lastUsername:''};
+function cleanSettings(data){return {names:(Array.isArray(data?.names)?data.names:[]).filter(n=>typeof n==='string'&&/^[\p{L}\p{M}\s]{2,50}$/u.test(n)).slice(0,200),corrections:Object.fromEntries(Object.entries(data?.corrections||{}).filter(([w,v])=>typeof v==='string'&&/^[\p{L}\p{M}\u200c]{1,50}$/u.test(w)&&/^[\p{L}\p{M}\u200c]{1,70}$/u.test(v)&&correctionKey(w)===correctionKey(v)).slice(0,200)),autoSpeak:typeof data?.autoSpeak==='boolean'?data.autoSpeak:true,conversationEnabled:typeof data?.conversationEnabled==='boolean'?data.conversationEnabled:true,volume:Number.isInteger(data?.volume)&&data.volume>=0&&data.volume<=100?data.volume:85,muted:data?.muted===true,subtitles:false,avatarMode:data?.avatarMode==='portrait'?'portrait':'animated',lastUsername:typeof data?.lastUsername==='string'&&/^[a-zA-Z0-9_.]{2,24}$/.test(data.lastUsername)?data.lastUsername:''};}
 let settings={...defaults};try{if(existsSync(settingsPath))settings=cleanSettings(JSON.parse(readFileSync(settingsPath,'utf8')));}catch{}
 const session=new HostSession();let connectionStatus='disconnected';
 let lastError='',speechStatus='idle',busy=false,revision=0,utterances=[],lastAuto=0,currentSpeech=null;
@@ -36,7 +36,7 @@ const renderer=new AvatarRenderer({root,privateDir,changed:()=>broadcast()});let
 SignConfig.apiKey=undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
 const python=process.env.ARYANA_PYTHON||(process.platform==='win32'?join(root,'.venv','Scripts','python.exe'):join(root,'.venv','bin','python'));
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:settings.subtitles},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},capabilities:{portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:false,voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},capabilities:{portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual'){
@@ -106,12 +106,12 @@ const allowedOrigins=hosting.origins;
 const allowed=req=>allowedHosts.has(req.headers.host)&&(!req.headers.origin||allowedOrigins.has(req.headers.origin));
 const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data));};
 async function body(req){let data='';for await(const chunk of req){data+=chunk;if(data.length>12000)throw Error('درخواست بزرگ است.');}return JSON.parse(data||'{}');}
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.mp3':'audio/mpeg','.mp4':'video/mp4','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.glb':'model/gltf-binary','.bin':'application/octet-stream','.css':'text/css; charset=utf-8','.png':'image/png','.mp3':'audio/mpeg','.mp4':'video/mp4','.woff2':'font/woff2','.txt':'text/plain; charset=utf-8'};
 const server=http.createServer(async(req,res)=>{
  try{
   if(!allowed(req))return json(res,403,{error:'Origin rejected'});
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
-  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; media-src 'self'; connect-src 'self' ws:; frame-ancestors 'self'");
+  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self'; connect-src 'self' ws: blob:; worker-src 'self'; frame-ancestors 'self'");
   const url=new URL(req.url,'http://127.0.0.1:'+port);
   if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:false});
   if(req.method==='GET'&&url.pathname==='/api/session')return json(res,200,hosting.hosted?{requiresToken:true}:{key});
@@ -139,7 +139,7 @@ const server=http.createServer(async(req,res)=>{
     const kind=['gift','like','join'].includes(data.kind)?data.kind:'join';
     receive(kind,{user:{id:'demo-'+String(data.name||'مریم'),nickname:String(data.name||'مریم'),payGrade:{level:30}},giftId:'demo',diamondCount:100,repeatCount:1,count:50,common:{msgId:randomUUID(),createTime:Date.now()}});
    }
-   else if(action==='settings'){for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
+   else if(action==='settings'){if(['animated','portrait'].includes(data.avatarMode))settings.avatarMode=data.avatarMode;for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
    else if(action==='correction'){
     const word=String(data.word||'').trim(),spoken=String(data.spoken||'').trim();
     if(!/^[\p{L}\p{M}\u200c]{1,50}$/u.test(word)||!/^[\p{L}\p{M}\u200c]{1,70}$/u.test(spoken)||correctionKey(word)!==correctionKey(spoken))throw Error('همان کلمه را با اعراب اصلاح کنید؛ واژه عوض نشود.');
@@ -156,10 +156,11 @@ const server=http.createServer(async(req,res)=>{
   }
   if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
   let file;
-  if(url.pathname==='/'||url.pathname==='/studio')file=join(publicDir,'index.html');else if(url.pathname==='/live'||url.pathname==='/screen')file=join(publicDir,'live.html');
+  if(url.pathname==='/'||url.pathname==='/studio')file=join(publicDir,'index.html');else if(url.pathname==='/live'||url.pathname==='/screen'||url.pathname==='/mobile'||url.pathname==='/live/mobile')file=join(publicDir,'live.html');
   else if(/^\/audio\/[a-f0-9]{64}\.mp3$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
   else if(/^\/video\/[a-f0-9]{64}\.mp4$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
-  else if(/^\/(app\.js|live\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
+  else if(/^\/(app\.js|live\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
+  if(/^\/assets\/avatar\/(talkinghead\.bundle\.mjs|headaudio\.min\.mjs|headworklet\.min\.mjs|playback-worklet\.js|mpfb\.glb|model-en-mixed\.bin|LICENSES\.txt)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(!file||!existsSync(file))return json(res,404,{error:'Not found'});
   const ext='.'+file.split('.').at(-1);res.writeHead(200,{'content-type':types[ext]||'application/octet-stream','cache-control':'no-cache'});res.end(readFileSync(file));
  }catch(error){json(res,400,{error:String(error.message||'خطا').slice(0,220)});}

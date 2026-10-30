@@ -2,7 +2,8 @@ const $=id=>document.getElementById(id);
 const fa=new Intl.NumberFormat('fa-IR');let key='',current;
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(action,data={}){
- try{const response=await fetch('/api/'+action,{method:'POST',headers:{'content-type':'application/json','x-aryana-key':key},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'خطا');render(result.state);notice('انجام شد.');return result;}
+ if(['say','intro','voice-sample','demo','comment','correction'].includes(action)){void $('livePreview').contentWindow.aryanaActivateAudio?.();notice('درخواست ارسال شد؛ منتظر آماده‌شدن صدا باشید…');}
+ try{const response=await fetch('/api/'+action,{method:'POST',headers:{'content-type':'application/json','x-aryana-key':key},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'خطا');render(result.state);notice(['say','intro','voice-sample','demo','comment','correction'].includes(action)?'درخواست پذیرفته شد؛ وضعیت صدا در بخش پیش‌نمایش نمایش داده می‌شود.':'انجام شد.');return result;}
  catch(error){notice(error.message,true);return null;}
 }
 const labels={connected:'لایف متصل است',disconnected:'آمادهٔ آزمایش',connecting:'در حال اتصال…',error:'اتصال برقرار نشد',reconnecting:'در حال اتصال مجدد…',ended:'لایف پایان یافت'};
@@ -10,11 +11,12 @@ function render(state){
  if(!state)return;current=state;$('connection').lastChild.textContent=labels[state.connection]||state.connection;$('connection').classList.toggle('connected',state.connection==='connected');
  $('giftTotal').replaceChildren(document.createTextNode(fa.format(state.giftTotal)+' '));const unit=document.createElement('small');unit.textContent='کوین';$('giftTotal').append(unit);$('likeTotal').textContent=fa.format(state.likeTotal);
  for(const field of ['muted','subtitles','conversationEnabled'])$(field).checked=Boolean(state.settings[field]);if(document.activeElement!==$('volume'))$('volume').value=state.settings.volume??85;
- const readiness=[['صحنهٔ پخش',state.displayClients>0,'پنجرهٔ پخش را باز کنید'],['صدای اختصاصی',state.capabilities.voiceClone&&state.speech!=='error',state.speech==='error'?'خطا در تولید صدا':'دیلارا جایگزین است'],['گفت‌وگوی آزمایشی',state.capabilities.conversation!=='not_configured'&&state.conversationStatus!=='error',state.conversationStatus==='error'?'مدل گفت‌وگو خطا دارد':'مدل گفت‌وگو تنظیم نشده'],['ذخیرهٔ خصوصی',state.storage==='ready',state.storage==='local_only'?'فعلاً فقط روی سرور محلی ذخیره می‌شود':'ذخیرهٔ ابری در دسترس نیست'],['تیک‌تاک',state.connection==='connected',labels[state.connection]||'متصل نیست'],['حرکت لب هم‌زمان',state.capabilities.liveLipSync,'فعلاً فقط کلیپ معرفی متحرک است']];
+ if(document.activeElement!==$('avatarMode'))$('avatarMode').value=state.settings.avatarMode||'animated';
+ const readiness=[['صحنهٔ پخش',state.displayClients>0,'پنجرهٔ پخش را باز کنید'],['صدای اختصاصی',state.capabilities.voiceClone&&state.speech!=='error',state.speech==='error'?'خطا در تولید صدا':'دیلارا جایگزین است'],['گفت‌وگوی آزمایشی',state.capabilities.conversation!=='not_configured'&&state.conversationStatus!=='error',state.conversationStatus==='error'?'مدل گفت‌وگو خطا دارد':'مدل گفت‌وگو تنظیم نشده'],['ذخیرهٔ خصوصی',state.storage==='ready',state.storage==='local_only'?'فعلاً فقط روی سرور محلی ذخیره می‌شود':'ذخیرهٔ ابری در دسترس نیست'],['تیک‌تاک',state.connection==='connected',labels[state.connection]||'متصل نیست'],['مدل سه‌بعدی متحرک',state.capabilities.animated3d,'مدل متحرک نصب نشده است']];
  $('readiness').replaceChildren(...readiness.map(([label,ok,detail])=>{const p=document.createElement('p');p.className=ok?'':'needs-attention';p.textContent=(ok?'✓ ':'○ ')+label+(ok?' · آماده':' · '+detail);return p;}));$('ask').disabled=['loading','answering'].includes(state.conversationStatus);$('ask').textContent=state.conversationStatus==='answering'?'در حال آماده‌کردن پاسخ…':'پاسخ به کامنت آزمایشی';
  $('autoSpeak').checked=state.settings.autoSpeak;document.querySelector('.voice-name').textContent=state.capabilities.voiceClone?'صدای اختصاصی آریانا':'دیلارا · فارسی';
  $('say').disabled=state.speech==='generating';$('say').textContent=state.speech==='generating'?'در حال آماده‌کردن صدا…':'▶ خواندن متن';
- $('avatarStatus').textContent=state.capabilities.introductionVideo?'ویدیوی معرفی آماده است؛ حرکت لب زنده هنوز متصل نیست.':'چهره و صدای اختصاصی آماده‌اند؛ حرکت لب زنده هنوز متصل نیست.';
+ $('avatarStatus').textContent='مدل سه‌بعدی آزمایشی: حرکت سر، پلک و لب با صدا. چهرهٔ اختصاصی: تصویر و کلیپ کوتاه معرفی؛ حرکت پیوسته ندارد.';
  const avatar=state.avatar||{},rendering=avatar.preparing||avatar.job?.status==='rendering';
  $('renderPreview').disabled=!avatar.configured||rendering;
  $('renderProgress').textContent=rendering?'در حال ساخت کلیپ آفلاین · '+(avatar.job?.progress||0)+'٪ · ممکن است چند دقیقه زمان ببرد.':avatar.configured?'موتور کلیپ آفلاین متصل است؛ ساخت جملهٔ کوتاه تا 100 نویسه.':'برای ساخت حرکت لب، موتور آفلاین باید جداگانه نصب شود؛ راهنما داخل بسته است.';
@@ -43,3 +45,10 @@ const session=await(await fetch('/api/session')).json();if(!session.requiresToke
 if(key){await loadState();if(key&&session.requiresToken)sessionStorage.setItem('aryana-admin',key);}else $('loginDialog').showModal();
 setInterval(()=>void loadState(),1500);
 
+
+$('activatePreview').onclick=()=>void $('livePreview').contentWindow.aryanaActivateAudio?.();
+$('togglePreview').onclick=()=>{const open=$('previewColumn').classList.toggle('mobile-open');if(open)$('previewColumn').scrollIntoView({behavior:'smooth',block:'start'});};
+addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('livePreview').contentWindow||event.data?.type!=='aryana-player')return;const labels={locked:'صدا قفل است؛ دکمهٔ فعال‌کردن صدا را بزنید.',ready:'پخش آماده است.',loading:'در حال دریافت صدای آماده‌شده…',playing:'آریانا اکنون صحبت می‌کند.',disconnected:'ارتباط صفحهٔ پخش قطع شده؛ تلاش مجدد…',error:'خطای پخش: '+(event.data.detail||'دوباره امتحان کنید')};$('playerStatus').textContent=labels[event.data.status]||event.data.status;});
+
+$('avatarMode').onchange=()=>api('settings',{avatarMode:$('avatarMode').value});
+addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('livePreview').contentWindow||event.data?.type!=='aryana-avatar')return;const labels={loading:'مدل سه‌بعدی در حال بارگذاری است؛ بار اول حدود ۳۷ مگابایت دریافت می‌شود.',ready:'مدل سه‌بعدی متحرک آماده است. چهرهٔ آن آزمایشی و متفاوت از تصویر اختصاصی است.',error:'مدل سه‌بعدی اجرا نشد: '+event.data.detail,'lip-error':'حرکت لب در این مرورگر اجرا نشد: '+event.data.detail};$('modelStatus').textContent=labels[event.data.status]||event.data.status;});
