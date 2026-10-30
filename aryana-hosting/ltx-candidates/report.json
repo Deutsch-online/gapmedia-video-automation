@@ -8,11 +8,11 @@
     {
       "name": "idle-ltx-probe",
       "status": "failed",
-      "error": "Queue is full! Please try again.",
-      "elapsed_seconds": 1.1
+      "error": "RuntimeError",
+      "elapsed_seconds": 5.31
     }
   ],
   "quota_before": 0,
-  "elapsed_seconds": 2.49,
+  "elapsed_seconds": 6.79,
   "quota_after": 0
 }
