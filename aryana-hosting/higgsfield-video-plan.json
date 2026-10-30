@@ -1,5 +1,5 @@
 {
-  "status": "prepared_not_generated",
+  "status": "blocked_insufficient_credits",
   "skill_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
   "skills": [
     "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-generate/SKILL.md",
@@ -9,7 +9,7 @@
   "framing": "Same approved natural frontal chair portrait, head to waist, fixed camera, no zoom, no 3D or still-photo startup",
   "reference": "https://afgtakrun-aryana-live-studio.hf.space/assets/aryana.png",
   "overlay": "AI-Generated",
-  "model": "seedance_2_5 (must verify full catalog and live schema before submitting)",
+  "model": "seedance_2_5",
   "route": [
     "Reference-guided 30-second first take",
     "Seamless 30-second video extension with the same reference identity",
@@ -28,5 +28,25 @@
     "no_paid_fallback": true,
     "no_oauth_codes_or_tokens_in_logs": true,
     "no_soul_training_without_required_approved_photos": true
-  }
+  },
+  "access": {
+    "connected_app_verified": true,
+    "cli_login_required_for_connected_app": false,
+    "checked_date": "2026-10-30"
+  },
+  "cost_preflight": {
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "generate_audio": false,
+    "first_take_seconds": 30,
+    "first_take_credits": 210,
+    "extension_seconds": 30,
+    "extension_credits": 210,
+    "estimated_total_credits": 420,
+    "available_credits": 10,
+    "shortfall_credits": 410,
+    "generation_submitted": false,
+    "automatic_purchase": false
+  },
+  "free_generation_note": "One Genjutsu motion-control/replacement attempt is available up to 30 seconds. It requires a matching authorized driving video and does not cover this Seedance 60-second plan."
 }
