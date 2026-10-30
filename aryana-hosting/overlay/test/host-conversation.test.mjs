@@ -16,7 +16,7 @@ test('Host invites AI-versus-human opinions, questions, screen taps and sharing 
   for(let turn=0;turn<6;turn++){now=30000+turn*75000;spoken.push(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}));}
   const all=spoken.join(' ');
   if(language==='en'){assert.match(all,/human host/);assert.match(all,/AI host/);assert.match(all,/thoughts/);assert.match(all,/comments/);assert.match(all,/questions.*answer/);assert.match(all,/tap the screen/);assert.match(all,/share.*friends/);assert.doesNotMatch(all,/Afghan|pulao|mantu/i);}
-  else{assert.match(all,/مجری انسانی/);assert.match(all,/مجری هوش مصنوعی/);assert.match(all,/نظریات/);assert.match(all,/کمنت/);assert.match(all,/سوال.*جواب/);assert.match(all,/تپ‌تپ/);assert.match(all,/دوستان.*شریک/);}
+  else{assert.match(all,/مجری انسانی/);assert.match(all,/مجری هوش مصنوعی/);assert.match(all,/نظریات/);assert.match(all,/کومنت/);assert.match(all,/سوال.*جواب/);assert.match(all,/تپ‌تپ/);assert.match(all,/دوستان.*شریک/);}
   assert(!/share|شریک/.test(spoken[0]));assert(!/share|شریک/.test(spoken[1]));assert(!/share|شریک/.test(spoken[2]));assert(new Set(spoken).size===spoken.length);
   assert.equal(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}),null);
  }
