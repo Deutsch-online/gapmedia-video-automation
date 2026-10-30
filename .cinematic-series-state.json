@@ -2135,7 +2135,8 @@
     "credit_from_scene": 7,
     "credit_approval_required": true,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 368s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_notice_status": "dispatching"
+    "credit_notice_status": "sent",
+    "credit_notice_message_id": 2785
   },
   "attempts": {
     "2026-10-15": 2,
