@@ -16,6 +16,7 @@ if token:
  if report['hf_account']['verified']:
   quota=get('/api/spaces/zero-gpu/quota',True)
   current=quota.get('current')
+  report['hf_quota_metadata']={'field_names':sorted(quota.keys()),'limits_and_reset':{k:v for k,v in quota.items() if k in ['current','max','limit','remaining','dailyQuota','daily_quota','resetAt','reset_at','resetsAt','resets_at','secondsUntilReset','seconds_until_reset','remainingSeconds','remaining_seconds','paidQuota','paid_quota'] and (v is None or isinstance(v,(int,float,bool)) or (isinstance(v,str) and len(v)<80))}}
   report['hf_included_quota']={'verified':not isinstance(current,bool) and isinstance(current,(float,int)) and math.isfinite(current),'remaining_seconds':max(0,current) if not isinstance(current,bool) and isinstance(current,(float,int)) and math.isfinite(current) else None,'error':quota.get('audit_error')}
  else:report['hf_included_quota']={'verified':False,'remaining_seconds':None,'error':'account_not_verified'}
 spaces=['fahrfit-driving-live','ludo-live-nations','live-rings-studio','nations-live-race','live-crown-52','neon-live-arena','aryana-live-studio']
