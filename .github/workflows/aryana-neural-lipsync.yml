@@ -1,0 +1,41 @@
+name: Test one fresh Persian neural lip-sync reply with existing HF credits
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/neural-lipsync-request.json]
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check gradio_client==2.0.0 edge-tts==7.3.1
+      - name: Test one bounded lip-sync inference off air
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python aryana-hosting/test-neural-lipsync.py
+      - name: Save diagnostic media on its isolated branch
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add aryana-hosting/neural-lipsync-trial
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record fresh Persian neural lip-sync quality and measured latency'
+            git pull --rebase origin delivery/aryana-hf-20261029
+            git push origin HEAD:delivery/aryana-hf-20261029
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-neural-lipsync
+          path: aryana-hosting/neural-lipsync-trial
+          retention-days: 3

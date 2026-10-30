@@ -1,0 +1,7 @@
+{
+  "request": "fresh-persian-dynamic-mouth-v1",
+  "max_generations": 1,
+  "max_reserved_credit_usd": 0.3,
+  "purchase_credits": false,
+  "on_air": false
+}
