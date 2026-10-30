@@ -1,0 +1,41 @@
+{
+  "file": "idle-minute.mp4",
+  "duration": 60.0,
+  "fps": 24.0,
+  "frames": 1440,
+  "missing_face_frames": 0,
+  "blink_threshold": 0.45,
+  "blink_events": [
+    {
+      "start": 0.333,
+      "duration": 0.125
+    },
+    {
+      "start": 9.083,
+      "duration": 0.208
+    },
+    {
+      "start": 19.5,
+      "duration": 0.208
+    },
+    {
+      "start": 21.917,
+      "duration": 0.042
+    },
+    {
+      "start": 29.917,
+      "duration": 0.125
+    },
+    {
+      "start": 39.708,
+      "duration": 0.167
+    },
+    {
+      "start": 50.208,
+      "duration": 0.208
+    }
+  ],
+  "blinks_per_minute": 7.0,
+  "max_jaw_open": 0.035,
+  "note": "Blink detector is an estimate; identity and motion still require visual review."
+}

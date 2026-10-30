@@ -1,0 +1,227 @@
+{
+  "funding": "existing_hf_credits",
+  "purchase_requested": false,
+  "auto_deploy": false,
+  "max_credit_usd": 4,
+  "max_generations": 16,
+  "attempts": [
+    {
+      "take": "take-11",
+      "status": "accepted",
+      "wall_seconds": 16.69
+    },
+    {
+      "take": "take-12",
+      "status": "accepted",
+      "wall_seconds": 15.55
+    },
+    {
+      "take": "take-13",
+      "status": "accepted",
+      "wall_seconds": 15.94
+    },
+    {
+      "take": "take-14",
+      "status": "accepted",
+      "wall_seconds": 15.84
+    },
+    {
+      "take": "take-15",
+      "status": "accepted",
+      "wall_seconds": 16.17
+    },
+    {
+      "take": "take-16",
+      "status": "accepted",
+      "wall_seconds": 24.05
+    },
+    {
+      "take": "take-17",
+      "status": "accepted",
+      "wall_seconds": 23.98
+    },
+    {
+      "take": "take-18",
+      "status": "accepted",
+      "wall_seconds": 24.7
+    },
+    {
+      "take": "take-19",
+      "status": "accepted",
+      "wall_seconds": 17.51
+    },
+    {
+      "take": "take-20",
+      "status": "accepted",
+      "wall_seconds": 15.92
+    }
+  ],
+  "accepted": [
+    {
+      "file": "take-00.mp4",
+      "seconds": 6.458,
+      "blink_events": 1,
+      "blinks_per_minute": 9.3,
+      "last_blink_end": 0.458,
+      "sha256": "b4c2dd18fb3de461b62bf4caac57abc33d5d3a3fa05e081a8f876aad9f3b5594"
+    },
+    {
+      "file": "reuse-01.mp4",
+      "seconds": 2.375,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 0.458,
+      "sha256": "c3cba51ce681d79afdca495c25245fbb75e427346c4391d4210984315303f297"
+    },
+    {
+      "file": "reuse-02.mp4",
+      "seconds": 3.042,
+      "blink_events": 1,
+      "blinks_per_minute": 19.7,
+      "last_blink_end": 9.541,
+      "sha256": "70b95b685e930e24242fcad0231416193831fb7cc95779952a7927b51b8af5d7"
+    },
+    {
+      "file": "take-03.mp4",
+      "seconds": 3.792,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 9.541,
+      "sha256": "95983e1f03eb7715100c25a3f9c5553cda4667eb116148c48b6e496893f47cd3"
+    },
+    {
+      "file": "take-04.mp4",
+      "seconds": 3.75,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 9.541,
+      "sha256": "d4afc215a33e3713c96f61df1f4e18f2fe9f62c5f3ec9c5404d62b3cf661a185"
+    },
+    {
+      "file": "take-06.mp4",
+      "seconds": 3.125,
+      "blink_events": 1,
+      "blinks_per_minute": 19.2,
+      "last_blink_end": 20.292,
+      "sha256": "a4ad0d0d4e32e7cc5675d53032819240c0fccbe98affe8e34db40e73b10d33ca"
+    },
+    {
+      "file": "take-07.mp4",
+      "seconds": 3.833,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 20.292,
+      "sha256": "e1d55efcf9e73f435ef63cd33ec3eed84b986ed6c4fcb3d9a108dda09d360daf"
+    },
+    {
+      "file": "take-08.mp4",
+      "seconds": 4.167,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 20.292,
+      "sha256": "331041bc92d8e08ad5ad82237432efd80a44214175a22ae77065f237b2f7aaf8"
+    },
+    {
+      "file": "take-09.mp4",
+      "seconds": 3.375,
+      "blink_events": 1,
+      "blinks_per_minute": 17.8,
+      "last_blink_end": 31.0,
+      "sha256": "af751b5f2640a0d6ae06dba0245dd926e086cbb228e65f6fb3ea82e6ee94f5cc"
+    },
+    {
+      "file": "take-11.mp4",
+      "seconds": 3.5,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 31.0,
+      "sha256": "628191aa95f3a4fba1c3801061b452b149de3847f1dad4023ef6b2948e3c4735"
+    },
+    {
+      "file": "take-12.mp4",
+      "seconds": 3.292,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 31.0,
+      "sha256": "20cef73ea36f518a21aa1833f3a18394671f39dcb94faf4d7a52c6e08ef0f126"
+    },
+    {
+      "file": "take-13.mp4",
+      "seconds": 3.042,
+      "blink_events": 1,
+      "blinks_per_minute": 19.7,
+      "last_blink_end": 41.209,
+      "sha256": "4c14f80b3a0f37f8b2378dc38b128151044f2018b06f25b02086d34d5f5fb8d1"
+    },
+    {
+      "file": "take-14.mp4",
+      "seconds": 3.333,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 41.209,
+      "sha256": "191f0440fc115f2a7389ad8a001f798a9169cbed33bbea297663e04376bdfd23"
+    },
+    {
+      "file": "take-15.mp4",
+      "seconds": 4.333,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 41.209,
+      "sha256": "da32d79b8ffbfe7d60a2f5874c1dedea10552759637d0f91413040fc4d3ebe5d"
+    },
+    {
+      "file": "take-16.mp4",
+      "seconds": 4.625,
+      "blink_events": 1,
+      "blinks_per_minute": 13.0,
+      "last_blink_end": 52.125,
+      "sha256": "fe0f751cb56aa7f100c04a6c8a8f89245a10662688b8df9b1e1c77f80390298d"
+    },
+    {
+      "file": "take-17.mp4",
+      "seconds": 3.792,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 52.125,
+      "sha256": "c9d0d019fbd43d3d31458221cd9bd5f19917c6f55711d7cc98c10beb7d0249f3"
+    },
+    {
+      "file": "take-18.mp4",
+      "seconds": 3.833,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 52.125,
+      "sha256": "7b0d59861ad7f1aa823a3bbf352c024477db6c07f750f14475d277ec5976b111"
+    },
+    {
+      "file": "take-19.mp4",
+      "seconds": 2.25,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 52.125,
+      "sha256": "de450baa79183b6c48f15bb16bfa76f4ba470e44794ae4b3ba767f9734cf1550"
+    },
+    {
+      "file": "take-20.mp4",
+      "seconds": 3.875,
+      "blink_events": 1,
+      "blinks_per_minute": 15.5,
+      "last_blink_end": 66.501,
+      "sha256": "3ee804d1436756d0f7e9e6bfda3e7fb8926b597c3acff1497f5c1912017cfd2d"
+    }
+  ],
+  "status": "ready_for_visual_review",
+  "quota_before": 0,
+  "max_reserved_credit_per_attempt_usd": 0.25,
+  "resumed_edited_seconds": 33.917,
+  "unique_edited_source_seconds": 69.792,
+  "final": {
+    "file": "idle-minute.mp4",
+    "duration": 60.0,
+    "blink_events": 7,
+    "blinks_per_minute": 7.0,
+    "missing_face_frames": 0,
+    "sha256": "a1861479d1c9d71b26217161ea4ef9f9f89645c9246671d4da53ab0eab2ed2ba"
+  },
+  "quota_after": 0
+}

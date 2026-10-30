@@ -1,0 +1,33 @@
+{
+  "file": "take-12-raw.mp4",
+  "duration": 5.042,
+  "fps": 24.0,
+  "frames": 121,
+  "missing_face_frames": 0,
+  "blink_threshold": 0.45,
+  "blink_events": [
+    {
+      "start": 0.5,
+      "duration": 0.25
+    },
+    {
+      "start": 0.917,
+      "duration": 0.375
+    },
+    {
+      "start": 2.625,
+      "duration": 0.125
+    },
+    {
+      "start": 3.542,
+      "duration": 0.208
+    },
+    {
+      "start": 4.208,
+      "duration": 0.208
+    }
+  ],
+  "blinks_per_minute": 59.5,
+  "max_jaw_open": 0.003,
+  "note": "Blink detector is an estimate; identity and motion still require visual review."
+}

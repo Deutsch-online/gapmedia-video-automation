@@ -1,0 +1,17 @@
+{
+  "file": "take-16.mp4",
+  "duration": 4.625,
+  "fps": 24.0,
+  "frames": 111,
+  "missing_face_frames": 0,
+  "blink_threshold": 0.45,
+  "blink_events": [
+    {
+      "start": 0.5,
+      "duration": 0.208
+    }
+  ],
+  "blinks_per_minute": 13.0,
+  "max_jaw_open": 0.002,
+  "note": "Blink detector is an estimate; identity and motion still require visual review."
+}
