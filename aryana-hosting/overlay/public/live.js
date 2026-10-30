@@ -31,7 +31,7 @@ window.aryanaSetLocalMuted=value=>{localMuted=Boolean(value);if(gain)gain.gain.v
 window.aryanaActivateAudio=async()=>{startIdle(true);try{await audioContext().resume();enabled=context.state==='running';manualPlay();if(enabled){startAudio();void next();}report(enabled?'ready':'locked');return enabled;}catch(error){report('error',error.message);return false;}};
 $('enableAudio').onclick=()=>void window.aryanaActivateAudio();
 const engagement=createEngagementOverlay({rail:$('supporterRail'),arrivals:$('arrivalToasts')});
-let outputRefreshToken;
+let outputRefreshToken,topicRevision;
 window.aryanaRefreshSupported=true;
 function reloadOutput(token){
  try{sessionStorage.setItem('aryana-seen-speech',JSON.stringify([...seen].slice(-1000)));}catch{}
@@ -40,11 +40,14 @@ function reloadOutput(token){
 function render(state){
  const token=state.playback?.refreshToken||'';if(outputRefreshToken===undefined)outputRefreshToken=token;else if(token!==outputRefreshToken){outputRefreshToken=token;if(token){reloadOutput(token);return;}}
 
+ const topicVersion=state.playback?.topicRevision||0;
+ if(topicRevision!==undefined&&topicVersion!==topicRevision){queue=queue.filter(item=>item.kind!=='topic');if(current?.kind==='topic'){const saved=queue;stop();queue=saved;}}
+ topicRevision=topicVersion;
  engagement.render(state);
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=(muted||localMuted)?0:volume;
  for(const item of state.utterances||[]){if(seen.has(item.id))continue;seen.add(item.id);while(seen.size>1000)seen.delete(seen.values().next().value);if(Date.now()-item.at<60000)queue.push(item);}
- queue.sort((a,b)=>(b.priority||0)-(a.priority||0)||a.at-b.at);queue=queue.slice(0,6);void next();
+ queue.sort((a,b)=>(b.priority||0)-(a.priority||0)||a.at-b.at);queue=queue.slice(0,6);if(current&&current.kind!=='reply'&&queue.some(item=>item.kind==='reply')){const saved=queue;stop();queue=saved;}void next();
 }
 async function next(){
  if(playing)return;queue=queue.filter(item=>Date.now()-item.at<60000);if(!queue.length)return;

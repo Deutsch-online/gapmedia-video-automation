@@ -21,9 +21,15 @@ export class NeuralLipSync{
   this.referenceHash=existsSync(this.reference)?hash(readFileSync(this.reference)):'';this.budget=new LipSyncBudget({limit:6,changed:budgetChanged});
   this.pending=[];this.active=null;this.child=null;this.generation=0;this.ready=false;this.lastLatency=null;this.lastError='';this.runner=runner||this.runChild.bind(this);
  }
- status(){return {configured:this.configured,ready:this.ready,mode:'neural_per_reply',streaming:false,pending:this.pending.length+(this.active?1:0),lastLatencySeconds:this.lastLatency,lastError:this.lastError,budget:this.budget.snapshot()};}
+ status(){return {configured:this.configured,ready:this.ready,mode:'neural_per_reply',streaming:false,pending:this.pending.length+(this.active?1:0),activeKind:this.active?.kind||null,lastLatencySeconds:this.lastLatency,lastError:this.lastError,budget:this.budget.snapshot()};}
  restoreBudget(data){this.budget.restore(data);}
  cancel(){this.generation++;for(const job of this.pending.splice(0))job.reject(Error('لب‌خوانی لغو شد.'));const child=this.child;if(child?.pid){try{process.kill(-child.pid,'SIGTERM');}catch{}const timer=setTimeout(()=>{if(child.exitCode===null&&!child.signalCode){try{process.kill(-child.pid,'SIGKILL');}catch{}}},2500);timer.unref();}this.changed();}
+ cancelTopics(){
+  for(const job of this.pending.filter(job=>job.kind==='topic'))job.reject(Error('گفتگوی موضوعی برای پاسخ به کامنت کنار رفت.'));
+  this.pending=this.pending.filter(job=>job.kind!=='topic');
+  if(this.active?.kind==='topic'){this.active.cancelled=true;const child=this.child;if(child?.pid){try{process.kill(-child.pid,'SIGTERM');}catch{}const timer=setTimeout(()=>{if(child.exitCode===null&&!child.signalCode){try{process.kill(-child.pid,'SIGKILL');}catch{}}},2500);timer.unref();}}
+  this.changed();
+ }
  runChild(input){return new Promise((resolve,reject)=>{
   const child=spawn(this.python,[this.script],{detached:process.platform!=='win32',stdio:['pipe','pipe','ignore'],env:{...process.env}});this.child=child;let output='';
   const timer=setTimeout(()=>{try{process.kill(-child.pid,'SIGTERM');}catch{}reject(Error('مهلت آماده‌سازی حرکت لب تمام شد.'));},input.action==='prepare'?300000:240000);
@@ -32,38 +38,38 @@ export class NeuralLipSync{
   child.once('exit',code=>{clearTimeout(timer);if(this.child===child)this.child=null;try{const line=output.split('\n').filter(x=>x.startsWith('ARYANA_LIPSYNC_RESULT ')).at(-1);const data=JSON.parse(line.slice(22));if(code!==0||!data.ok)throw Error();resolve(data);}catch{reject(Error('سرویس لب‌خوانی پاسخ معتبر نداد؛ اتصال یا اعتبار Hugging Face بررسی شود.'));}});
   child.stdin.end(JSON.stringify({...input,space:this.space,reference_sha256:this.referenceHash}));
  });}
- submit(audioPath){
+ submit(audioPath,{kind='manual',priority=50}={}){
   if(!this.configured)return Promise.reject(Error('سرویس لب‌خوانی جمله‌های تازه تنظیم نشده است.'));
-  if(this.pending.length>=2)return Promise.reject(Error('صف لب‌خوانی پر است؛ پاسخ‌های قبلی در حال آماده‌شدن‌اند.'));
-  return new Promise((resolve,reject)=>{this.pending.push({action:'render',audioPath,resolve,reject,generation:this.generation,at:Date.now()});this.changed();void this.pump();});
+  if(this.pending.length>=2){const lowest=this.pending.reduce((a,b)=>(a.priority||0)<=(b.priority||0)?a:b);if((lowest.priority||0)>=priority)return Promise.reject(Error('صف لب‌خوانی پر است؛ پاسخ‌های قبلی در حال آماده‌شدن‌اند.'));this.pending.splice(this.pending.indexOf(lowest),1);lowest.reject(Error('پاسخ مهم‌تر جایگزین این درخواست شد.'));}
+  return new Promise((resolve,reject)=>{this.pending.push({action:'render',audioPath,kind,priority,resolve,reject,generation:this.generation,at:Date.now()});this.pending.sort((a,b)=>(b.priority||0)-(a.priority||0));this.changed();void this.pump();});
  }
  prepare(){
   if(this.pending.length>=2)return Promise.reject(Error('صف آماده‌سازی پر است.'));
   if(!this.configured)return Promise.reject(Error('سرویس لب‌خوانی تنظیم نشده است.'));
-  return new Promise((resolve,reject)=>{this.pending.push({action:'prepare',resolve,reject,generation:this.generation,at:Date.now()});this.changed();void this.pump();});
+  return new Promise((resolve,reject)=>{this.pending.push({action:'prepare',kind:'prepare',priority:200,resolve,reject,generation:this.generation,at:Date.now()});this.changed();void this.pump();});
  }
  async pump(){
   if(this.active)return;
-  while(this.pending.length){const job=this.pending.shift();if(job.generation!==this.generation){job.reject(Error('لب‌خوانی لغو شد.'));continue;}
+  while(this.pending.length){const job=this.pending.shift();if(job.cancelled||job.generation!==this.generation){job.reject(Error('لب‌خوانی لغو شد.'));continue;}
    if(Date.now()-job.at>60000){job.reject(Error('پاسخ قدیمی از صف لب‌خوانی حذف شد.'));continue;}
    this.active=job;this.changed();let ticket,partial;
    try{
     const duration=job.action==='render'?await this.durationProbe(job.audioPath):0;
-    if(job.generation!==this.generation)throw Error('لب‌خوانی لغو شد.');
+    if(job.cancelled||job.generation!==this.generation)throw Error('لب‌خوانی لغو شد.');
     const identity=job.action==='render'?createHash('sha256').update('musetalk-mouth-v1').update(this.revision).update(this.referenceHash).update(readFileSync(job.audioPath)).digest('hex'):null;
     const directory=join(this.privateDir,'video');mkdirSync(directory,{recursive:true,mode:0o700});
     const target=identity?join(directory,identity+'.mp4'):null,manifest=identity?join(directory,identity+'.json'):null;
     if(target){try{const saved=JSON.parse(readFileSync(manifest,'utf8'));if(saved.audioHash===hash(readFileSync(job.audioPath))&&saved.videoHash===hash(readFileSync(target))){job.resolve('/video/'+identity+'.mp4');this.ready=true;continue;}}catch{}}
     const reserve=(180+120*Math.ceil(duration/6))/600;ticket=this.budget.reserve(reserve);
-    partial=target?target+'.'+randomUUID()+'.partial.mp4':null;const started=Date.now();
+    partial=target?target+'.'+randomUUID()+'.partial.mp4':null;const started=Date.now();job.startedAt=started;
     const result=await this.runner({action:job.action,audio:job.audioPath,output:partial,offset_seconds:(Date.now()/1000)%60});
-    if(job.generation!==this.generation)throw Error('لب‌خوانی لغو شد.');
+    if(job.cancelled||job.generation!==this.generation)throw Error('لب‌خوانی لغو شد.');
     this.budget.settle(ticket,(Date.now()-started)/1000/600);ticket=null;this.ready=true;this.lastError='';this.lastLatency=(Date.now()-started)/1000;
     if(job.action==='prepare'){job.resolve(result);continue;}
     if(!existsSync(partial)||Math.abs(result.video_seconds-duration)>.3||result.reference_sha256!==this.referenceHash||!result.has_audio)throw Error('ویدیو با صدا و چهرهٔ همین پاسخ مطابقت ندارد.');
     renameSync(partial,target);writeFileSync(manifest,JSON.stringify({audioHash:hash(readFileSync(job.audioPath)),videoHash:hash(readFileSync(target)),duration:result.video_seconds,model:this.revision}),{mode:0o600});
     job.resolve('/video/'+identity+'.mp4');
-   }catch(error){this.ready=false;this.lastError=error.message;job.reject(error);}
+   }catch(error){if(job.cancelled&&ticket){this.budget.settle(ticket,((Date.now()-(job.startedAt||Date.now()))/1000+180)/600);ticket=null;}if(!job.cancelled){this.ready=false;this.lastError=error.message;}job.reject(error);}
    finally{if(partial)rmSync(partial,{force:true});this.active=null;this.changed();}
   }
  }

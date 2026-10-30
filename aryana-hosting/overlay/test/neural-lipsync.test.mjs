@@ -51,3 +51,17 @@ test('A wrong-face or silent model result is never accepted as speech',async t=>
  const f=fixture(t,async input=>{writeFileSync(input.output,'invalid-model-video');return {ok:true,video_seconds:2,has_audio:false,reference_sha256:'wrong-reference'};});
  await assert.rejects(f.engine.submit(f.audio),/مطابقت/);assert.equal(f.engine.ready,false);assert.equal(readdirSync(join(f.privateDir,'video')).length,0);
 });
+
+test('A comment displaces queued topics and cancels a late topic video without losing model readiness',async t=>{
+ let release,entered=false,engine;const gate=new Promise(resolve=>release=resolve);
+ const f=fixture(t,async input=>{if(!entered){entered=true;await gate;}writeFileSync(input.output,'valid-video');return {ok:true,video_seconds:2,has_audio:true,reference_sha256:engine.referenceHash};});engine=f.engine;engine.ready=true;
+ const topic=engine.submit(f.audio,{kind:'topic',priority:5});while(!entered)await delay();const rejected=assert.rejects(topic,/لغو/);engine.cancelTopics();
+ const reply=engine.submit(f.audio,{kind:'reply',priority:110});release();await rejected;assert.match(await reply,/video/);assert.equal(engine.ready,true);assert.equal(engine.lastError,'');
+});
+test('Low priority queued lip jobs cannot keep a comment behind them',async t=>{
+ let release,entered=false,engine;const order=[],gate=new Promise(resolve=>release=resolve);
+ const f=fixture(t,async input=>{order.push(readFileSync(input.audio,'utf8'));if(!entered){entered=true;await gate;}writeFileSync(input.output,'valid-video');return {ok:true,video_seconds:2,has_audio:true,reference_sha256:engine.referenceHash};});engine=f.engine;
+ const first=engine.submit(f.audio);while(!entered)await delay();
+ const low=join(f.root,'low.mp3'),high=join(f.root,'high.mp3');writeFileSync(low,'low-priority');writeFileSync(high,'comment-answer');
+ const lowPromise=engine.submit(low,{kind:'join',priority:35}),reply=engine.submit(high,{kind:'reply',priority:110});release();await Promise.all([first,lowPromise,reply]);assert.deepEqual(order,['approved-generated-audio','comment-answer','low-priority']);
+});

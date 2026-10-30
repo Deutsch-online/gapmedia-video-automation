@@ -1,6 +1,8 @@
+import {HOST_ORIGIN} from './replies.mjs';
 export const languageChoices=new Set(['auto','fa','en']);
 export function outputLanguage(selected,text){return selected==='fa'||selected==='en'?selected:/[\u0600-\u06ff]/.test(String(text))?'fa':'en';}
 const english=new Map([
+ [HOST_ORIGIN.fa,HOST_ORIGIN.en],
  ['بسیار تشکر!','Thank you very much!'],
  ['سلام، خوش آمدید!','Hello, welcome!'],
  ['سلام دوستان عزیز، من آریانا هستم. به لایف ما خوش آمدید!','Hello dear friends, I am Aryana. Welcome to our live!'],

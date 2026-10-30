@@ -21,3 +21,5 @@ test('Host invites AI-versus-human opinions, questions, screen taps and sharing 
   assert.equal(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}),null);
  }
 });
+
+test('AI topics explain an idea with examples before requesting audience opinions',()=>{for(const language of ['en','fa']){let now=0;const planner=new TopicConversation({now:()=>now});now=30000;const first=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'});assert.doesNotMatch(first,/[?؟]/);assert.match(first,language==='en'?/patterns.*example|examples.*autocomplete/is:/الگو.*مثال/);now+=150000;const next=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'});assert(next);}});
