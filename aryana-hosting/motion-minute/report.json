@@ -1,0 +1,36 @@
+{
+  "funding": "existing_hf_credits",
+  "purchase_requested": false,
+  "auto_deploy": false,
+  "max_credit_usd": 6,
+  "max_generations": 12,
+  "attempts": [
+    {
+      "take": "take-01",
+      "status": "failed",
+      "error": "Edited blink quality gate failed",
+      "wall_seconds": 13.02
+    },
+    {
+      "take": "take-02",
+      "status": "failed",
+      "error": "Edited blink quality gate failed",
+      "wall_seconds": 14.23
+    }
+  ],
+  "accepted": [
+    {
+      "file": "take-00.mp4",
+      "seconds": 6.458,
+      "blink_events": 1,
+      "blinks_per_minute": 9.3,
+      "sha256": "b4c2dd18fb3de461b62bf4caac57abc33d5d3a3fa05e081a8f876aad9f3b5594"
+    }
+  ],
+  "status": "insufficient_accepted_motion_no_deployment",
+  "quota_before": 0,
+  "max_reserved_credit_per_attempt_usd": 0.49333333333333335,
+  "stopped_reason": "two_failed_candidates_no_more_credit_spending",
+  "unique_edited_source_seconds": 6.458,
+  "quota_after": 0
+}
