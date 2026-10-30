@@ -1,0 +1,117 @@
+name: Produce requested 45-second doctor video
+on:
+  push:
+    branches: [codex/doctor-appointment-45s]
+    paths: [.doctor-production-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install the existing production tools
+        run: |
+          python -m pip install --disable-pip-version-check 'edge-tts>=7.2,<8' gradio_client 'pillow>=11,<13' 'huggingface_hub>=0.34'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Verify production and budget safeguards
+        run: python -m unittest discover -s tests -p 'test_cinematic_*.py'
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: doctor-45s-native-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: doctor-45s-native-v1-
+      - name: Generate the actual voiced, lip-conditioned episode without social posting
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          BEATAPI_API_KEY: ${{ secrets.BEATAPI_API_KEY }}
+          BEAT_API_KEY: ${{ secrets.BEAT_API_KEY }}
+          BEATAPI_KEY: ${{ secrets.BEATAPI_KEY }}
+          CINEMATIC_FREE_PLANNING_ONLY: 'on'
+          PAID_FALLBACK: 'off'
+          REQUIRE_VOICE: 'on'
+          PYTHONUNBUFFERED: '1'
+        run: |
+          python - <<'PY'
+          import importlib.util, json, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path('ai-cast').resolve()))
+          import cinematic_budget as budget
+          spec=importlib.util.spec_from_file_location('series', 'ai-cast/cinematic-series.py')
+          series=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(series)
+          status=Path('renders/doctor-build-status.json')
+          status.parent.mkdir(parents=True,exist_ok=True)
+          try:
+              preflight=budget.preflight()
+              print('Included allowance preflight: '+json.dumps(preflight),flush=True)
+              config=series.load_json(series.CONFIG)
+              state=series.load_json(series.STATE,series.new_state())
+              if state.get('pending'):
+                  raise RuntimeError('An existing episode is pending; this request must not replace it')
+              plan=series.load_json('ai-cast/doctor-appointment-45s.json')
+              plan['episode']=state['next_episode']
+              import hashlib
+              from datetime import datetime, timezone
+              source=series.load_json('ai-cast/doctor-source-receipt.json')
+              digest=hashlib.sha256(json.dumps(source,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+              age=(datetime.now(timezone.utc)-datetime.fromisoformat(source['retrieved_at'])).total_seconds()
+              if (digest!='1e3ebfe1602250f23f39c89d22a7c0acfd14fed4d8d43cf419c7dd03baa3b365' or not 0<=age<=86400 or
+                      source['url']!=plan['research_url'] or source['episode']!=plan['episode'] or
+                      source['story_id']!=plan['story_id'] or 'Arztbesuch' not in source['excerpt']):
+                  raise RuntimeError('The scoped official-source receipt is invalid or stale')
+              print('Using the official Goethe page retrieved in this authorized review via the web connector: '+source['retrieved_at'],flush=True)
+              plan['research_source']=source
+              series.validate_plan(plan,plan['episode'],state['history'],config)
+              status.write_text(json.dumps({'status':'rendering','episode':plan['episode'],'duration_seconds':45,'quota':preflight}))
+              def persist(repaired):
+                  series.atomic_json(Path('renders/doctor-approved-runtime-plan.json'),repaired)
+              master=series.render(plan,config,history=state['history'],persist_plan=persist)
+              exports=series.export_platforms(master)
+              captions={
+                'tiktok':'Arzttermin auf Deutsch: Wenn dir am Telefon die Worte fehlen. Schritt für Schritt mit Marta und Lukas. Beispiel-App, keine echte Buchung. #DeutschLernen #DeutschImAlltag #Arzttermin #DeutschA1 #DeutschA2',
+                'instagram':'Arzttermin vereinbaren: ein Alltagsschritt auf Deutsch. Mit deutscher und persischer Übersetzung. Beispiel-App, keine echte Buchung. #DeutschLernen #DeutschImAlltag #Arzttermin'}
+              series.atomic_json(Path(master).parent/'posting-captions.json',captions)
+              status.write_text(json.dumps({'status':'completed','duration_seconds':45,'master':master,'exports':exports,'published':False,'messages_sent':False}))
+              print('DOCTOR_VIDEO_COMPLETE='+json.dumps({'master':master,'exports':exports}),flush=True)
+          except Exception as exc:
+              status.write_text(json.dumps({'status':'blocked','reason':series.provider_error(exc),'paid_credits_used':False}))
+              print('DOCTOR_BUILD_BLOCKED='+series.provider_error(exc),flush=True)
+              raise
+          
+          PY
+      - name: Preserve completed signed takes for continuation
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: doctor-45s-native-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Keep final video and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doctor-video-45s-${{ github.run_id }}
+          path: |
+            renders/doctor-build-status.json
+            renders/doctor-approved-runtime-plan.json
+            renders/cinematic-series/**/e*-cinematic-fa-de.mp4
+            renders/cinematic-series/**/*-45s.mp4
+            renders/cinematic-series/**/quality.json
+            renders/cinematic-series/**/graphics-report.json
+            renders/cinematic-series/**/episode.json
+            renders/cinematic-series/**/posting-captions.json
+            renders/cinematic-series/**/contact.jpg
+            renders/cinematic-series-cache/**/narration-timing.json
+          retention-days: 14
+          if-no-files-found: warn

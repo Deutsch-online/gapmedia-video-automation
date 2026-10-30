@@ -1,0 +1,148 @@
+{
+  "story_id": "doctor-appointment-language-anxiety-v1",
+  "episode": 10,
+  "duration_seconds": 45,
+  "series_version": "wg-alltag-v1",
+  "series_name": "Marta & Lukas: Alltag in Deutschland",
+  "content_basis": "everyday-reenactment",
+  "title_de": "Arzttermin: Mir fehlen die Worte",
+  "title_fa": "وقت داکتر؛ وقتی کلمه‌ها یادت نمی‌آیند",
+  "summary": "Marta needs a non-urgent doctor appointment but feels anxious speaking German on the phone. She tells Lukas, then books in an explicitly illustrative app, checking location, insurance, availability and details before reading confirmation.",
+  "cliffhanger": "Next everyday challenge: understanding the appointment reminder.",
+  "mood": "comic",
+  "visual_hook": "Marta raises a phone with a worried expression: she needs an appointment but cannot find the German words.",
+  "everyday_problem": "A newcomer hesitates to call a doctor's practice because she cannot find the German words on the phone.",
+  "practical_resolution": "Marta uses an illustrative appointment app step by step, checks the practice and appointment details, submits and reads an explicit confirmation.",
+  "marta_goal": "Marta wants to arrange a non-urgent appointment herself despite her anxiety about speaking German on the phone.",
+  "marta_decision": "Marta checks a suitable practice, location, insurance and available time, reviews her details and submits the appointment request herself.",
+  "visual_payoff": "Marta reads the explicit example confirmation and relaxes her shoulders; her anxious phone gesture becomes a confident smile.",
+  "research_url": "https://www.goethe.de/de/spr/ueb/lua.html",
+  "graphic_story": {
+    "version": 1,
+    "kind": "doctor-appointment-demo",
+    "disclosure_de": "BEISPIEL · KEINE ECHTE BUCHUNG",
+    "real_booking": false,
+    "note": "Illustrative app only, not a reproduction of a named provider. Availability, insurance acceptance, required data and confirmation vary by practice and app. No real patient details or booking request."
+  },
+  "creative_review": {
+    "previous_weakness_addressed": "The account feedback identifies an everyday task demonstration as a stronger reference. Use a specific newcomer task and visible app steps; no claim is made that graphics caused its views.",
+    "visible_comic_action": "Marta lifts her phone to call, loses confidence, then replaces the anxious gesture with a relieved smile after confirmation.",
+    "next_experiment": "This new story is exploratory. In a later matched 45-second comparison, vary only the opening. Compare same-age views and shares per view with promotion status recorded; use watch time only if supplied."
+  },
+  "scenes": [
+    {
+      "speaker": "marta",
+      "de": "Ich brauche einen Arzttermin.",
+      "fa": "باید از داکتر وقت بگیرم.",
+      "scene": "Opening close action shot: Marta has her phone already raised beside her worried face at the kitchen table. A CLOSED teal notebook with a completely plain unmarked cover is clearly in the foreground. No letters, numbers or writing on any prop. The appointment problem is readable from the first frame.",
+      "motion": "Within the first second Marta starts to bring the phone toward her ear, hesitates, then turns toward her off-camera friend with a questioning eyebrow raise. One restrained slow push-in keeps her mouth, phone and hand visible.",
+      "visible_objects": [
+        "phone",
+        "notebook"
+      ],
+      "object_action": "Marta raises the phone toward her ear, hesitates and brings it slightly forward as she asks her off-camera friend for help."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Was ist denn los, Marta?",
+      "fa": "چی شده، مارتا؟",
+      "scene": "Reverse medium shot of Lukas at the same table; Marta stays entirely off-camera.",
+      "motion": "Lukas leans forward, puts his mug down and opens one hand to invite her to explain.",
+      "visible_objects": [
+        "mug",
+        "table"
+      ],
+      "object_action": "Lukas leans forward, puts his mug down and opens one hand to invite her to explain."
+    },
+    {
+      "speaker": "marta",
+      "de": "Am Telefon fehlen mir die Worte.",
+      "fa": "پشت تلفن کلمه‌ها یادم می‌روند.",
+      "scene": "Close action shot of Marta and her phone at the same table; notebook stays in her other hand.",
+      "motion": "Marta starts to raise the phone to her ear, hesitates, then lowers it and points to her notebook.",
+      "visible_objects": [
+        "phone",
+        "notebook"
+      ],
+      "object_action": "Marta starts to raise the phone to her ear, hesitates, then lowers it and points to her notebook."
+    },
+    {
+      "speaker": "lukas",
+      "de": "Such hier nach einer Hausarztpraxis.",
+      "fa": "اینجا دنبال مطب داکتر عمومی بگرد.",
+      "scene": "Lukas points to a phone on the table; the actual screen is blank for a separate designed example overlay.",
+      "motion": "Lukas points once to the phone, then looks encouragingly toward Marta off-camera.",
+      "visible_objects": [
+        "phone",
+        "table"
+      ],
+      "object_action": "Lukas points once to the phone, then looks encouragingly toward Marta off-camera.",
+      "graphic_step": "search"
+    },
+    {
+      "speaker": "marta",
+      "de": "Ich prüfe Ort und Versicherung.",
+      "fa": "محل و نوع بیمه را بررسی می‌کنم.",
+      "scene": "Marta compares the phone with a plain insurance card; no generated writing on either prop.",
+      "motion": "Marta places the card beside her phone and checks both carefully, then nods.",
+      "visible_objects": [
+        "phone",
+        "insurance card"
+      ],
+      "object_action": "Marta places the card beside her phone and checks both carefully, then nods.",
+      "graphic_step": "check"
+    },
+    {
+      "speaker": "lukas",
+      "de": "Wähl einen passenden freien Termin.",
+      "fa": "یک وقت خالی مناسب انتخاب کن.",
+      "scene": "Lukas gestures to the phone beside a plain desk calendar in the same kitchen.",
+      "motion": "Lukas points to the calendar, then gives a small open-handed gesture toward the phone.",
+      "visible_objects": [
+        "phone",
+        "desk calendar"
+      ],
+      "object_action": "Lukas points to the calendar, then gives a small open-handed gesture toward the phone.",
+      "graphic_step": "slot"
+    },
+    {
+      "speaker": "marta",
+      "de": "Jetzt prüfe ich meine Angaben.",
+      "fa": "حالا مشخصاتم را بررسی می‌کنم.",
+      "scene": "Marta holds her phone above the table and compares it with her notebook.",
+      "motion": "Marta traces one notebook line with a finger, checks the phone and nods with growing confidence.",
+      "visible_objects": [
+        "phone",
+        "notebook"
+      ],
+      "object_action": "Marta traces one notebook line with a finger, checks the phone and nods with growing confidence.",
+      "graphic_step": "details"
+    },
+    {
+      "speaker": "marta",
+      "de": "Ich bestätige. Ist der Termin gebucht?",
+      "fa": "تأیید می‌کنم. وقت ثبت شد؟",
+      "scene": "Marta holds the phone steady, face and tapping hand visible; confirmation has not appeared yet.",
+      "motion": "Marta taps once, holds still briefly while waiting, then raises her eyebrows expectantly.",
+      "visible_objects": [
+        "phone",
+        "table"
+      ],
+      "object_action": "Marta taps once, holds still briefly while waiting, then raises her eyebrows expectantly.",
+      "graphic_step": "submit"
+    },
+    {
+      "speaker": "marta",
+      "de": "Bestätigt! Das hat geklappt!",
+      "fa": "تأیید شد! درست شد!",
+      "scene": "Marta smiles at the same kitchen table with the phone and notebook; the designed example shows confirmation.",
+      "motion": "Marta checks the phone, sets her notebook down and relaxes her shoulders with a relieved smile.",
+      "visible_objects": [
+        "phone",
+        "notebook"
+      ],
+      "object_action": "Marta checks the phone, sets her notebook down and relaxes her shoulders with a relieved smile.",
+      "graphic_step": "confirmed"
+    }
+  ]
+}

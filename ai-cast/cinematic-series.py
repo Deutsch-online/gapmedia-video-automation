@@ -21,6 +21,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'ai-cast'))
 STATE = Path('.cinematic-series-state.json')
 CONFIG = Path('.cinematic-series.json')
 STYLE = ('Polished original theatrical 3D CARTOON everyday-life animation, appealing exaggerated adult cartoon proportions, '
@@ -77,29 +78,51 @@ class _PageText(HTMLParser):
         if not self.hidden:
             self.text.append(data)
 
-def research_source(episode):
+def official_page(url, transport):
+    if url not in [item[1] for item in TRUSTED_RESEARCH]:
+        raise ValueError('Research URL must be approved')
+    if transport == 'node':
+        script = ("const r=await fetch(process.argv[1],{signal:AbortSignal.timeout(18000)});"
+                  "if(!r.ok||!(r.headers.get('content-type')||'').toLowerCase().startsWith('text/html'))"
+                  "throw new Error('Official source HTTP '+r.status);"
+                  "console.log(JSON.stringify({html:(await r.text()).slice(0,750000)}));")
+        result = subprocess.run(['node', '--input-type=module', '-e', script, url],
+                                capture_output=True, text=True, check=True, timeout=22)
+        return json.loads(result.stdout)['html']
+    req = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-StoryResearch/1.0'})
+    with urllib.request.urlopen(req, timeout=18) as response:
+        if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
+            raise ValueError('official page did not return HTML')
+        return response.read(750_000).decode('utf-8', 'ignore')
+
+
+def research_source(episode, preferred_url=None):
     """Fetch an official page before drafting; never substitute an invented source."""
     failures = []
-    for offset in range(len(TRUSTED_RESEARCH)):
-        topic, url, anchor = TRUSTED_RESEARCH[(episode - 7 + offset) % len(TRUSTED_RESEARCH)]
-        try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-StoryResearch/1.0'})
-            with urllib.request.urlopen(req, timeout=18) as response:
-                if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
-                    raise ValueError('official page did not return HTML')
-                page = response.read(750_000).decode('utf-8', 'ignore')
-            parsed = _PageText()
-            parsed.feed(page)
-            body = re.sub(r'\s+', ' ', ' '.join(parsed.text)).strip()
-            position = body.lower().find(anchor.lower())
-            if position < 0:
-                raise ValueError('expected source topic is absent')
-            excerpt = body[max(0, position - 100):position + 550]
-            if len(excerpt) < 90:
-                raise ValueError('source excerpt is too short')
-            return {'topic': topic, 'url': url, 'excerpt': excerpt, 'retrieved_at': datetime.now(timezone.utc).isoformat()}
-        except (OSError, ValueError) as exc:
-            failures.append(f'{topic}: {type(exc).__name__}')
+    sources = [TRUSTED_RESEARCH[(episode - 7 + offset) % len(TRUSTED_RESEARCH)]
+               for offset in range(len(TRUSTED_RESEARCH))]
+    if preferred_url:
+        if preferred_url not in [item[1] for item in sources]:
+            raise ValueError('Preferred research source must be approved')
+        sources.sort(key=lambda item: item[1] != preferred_url)
+    for topic, url, anchor in sources:
+        for transport in ('urllib', 'node'):
+            try:
+                page = official_page(url, transport)
+                parsed = _PageText()
+                parsed.feed(page)
+                body = re.sub(r'\s+', ' ', ' '.join(parsed.text)).strip()
+                position = body.lower().find(anchor.lower())
+                if position < 0:
+                    raise ValueError('expected source topic is absent')
+                excerpt = body[max(0, position - 100):position + 550]
+                if len(excerpt) < 90:
+                    raise ValueError('source excerpt is too short')
+                return {'topic': topic, 'url': url, 'excerpt': excerpt, 'retrieved_at': datetime.now(timezone.utc).isoformat(),
+                        'transport': transport}
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                failures.append(f'{topic}/{transport}: {type(exc).__name__}')
+                print('Official research retry: ' + topic + '/' + transport + ': ' + provider_error(exc), flush=True)
     raise RuntimeError('Official story research unavailable: ' + ', '.join(failures))
 
 def command(args, **kwargs):
@@ -205,6 +228,17 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history, config=None):
+    if episode >= 7:
+        config = config if config is not None else load_json(CONFIG)
+        request = config.get('next_story')
+        if request and episode >= request['from_episode'] and not any(
+                h.get('story_id') == request['story_id'] for h in history):
+            if plan.get('story_id') != request['story_id']:
+                raise ValueError('The next episode must be the owner-requested doctor story')
+            if plan.get('duration_seconds') != request['duration_seconds'] or not plan.get('graphic_story'):
+                raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
+            from cinematic_graphics import validate_graphic_story
+            validate_graphic_story(plan)
     target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
     expected = target // 5
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
@@ -272,12 +306,34 @@ def validate_plan(plan, episode, history, config=None):
         if len(textwrap.wrap(s['de'], 36)) > 2 or len(textwrap.wrap(s['fa'], 40)) > 2:
             raise ValueError('Bilingual captions must fit two separate non-overlapping lines each')
         lines.append(s['de'].strip().lower())
+    if plan.get('graphic_story') or any(s.get('graphic_step') for s in plan['scenes']):
+        from cinematic_graphics import validate_graphic_story
+        validate_graphic_story(plan)
     if len(set(lines)) != expected:
         raise ValueError('Repeated dialogue inside episode')
     if sum(l in old_lines for l in lines) >= 4:
         raise ValueError('Episode repeats too much previous dialogue')
     if any(h.get('title_de', '').lower() == plan['title_de'].lower() for h in history):
         raise ValueError('Repeated episode title')
+    return plan
+
+def parse_story_response(raw):
+    """Accept harmless provider formatting, never infer an unknown character."""
+    if not isinstance(raw, str) or len(raw) > 100_000:
+        raise ValueError('Story response must be bounded JSON text')
+    raw = raw.strip().lstrip('\ufeff').strip()
+    fenced = re.fullmatch(r'```(?:json)?\s*([\s\S]*?)\s*```', raw, flags=re.IGNORECASE)
+    if fenced:
+        raw = fenced.group(1)
+    plan = json.loads(raw)
+    if not isinstance(plan, dict) or not isinstance(plan.get('scenes'), list):
+        raise ValueError('Story response must be an object with scenes')
+    for scene in plan['scenes']:
+        if not isinstance(scene, dict):
+            raise ValueError('Every scene must be a JSON object')
+        speaker = scene.get('speaker')
+        if isinstance(speaker, str) and speaker.strip().casefold() in VOICES:
+            scene['speaker'] = speaker.strip().casefold()
     return plan
 
 def request_json(url, payload, headers):
@@ -445,6 +501,17 @@ def make_plan(state):
         return validate_plan(load_json(ROOT / 'ai-cast/everyday-pilot.json'), episode, state['history'])
     if episode == 1:
         return validate_plan(first_episode(), 1, state['history'])
+    # The owner's authored story is used once, at the next unplanned 45s episode.
+    # A pending production bypasses make_plan and keeps all its signed assets.
+    if episode >= 9 and episode_seconds(episode) == DEFAULT_SECONDS:
+        template = load_json(ROOT / 'ai-cast/doctor-appointment-45s.json', {})
+        if template and not any(h.get('story_id') == template['story_id'] or
+                                h.get('title_de') == template['title_de'] for h in state['history']):
+            source = research_source(episode, preferred_url=template['research_url'])
+            if source['url'] != template['research_url']:
+                raise RuntimeError('The requested doctor story needs its matching official source')
+            template.update(episode=episode, research_source=source)
+            return validate_plan(template, episode, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
                'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', []),
                'previous_creative_review': h.get('creative_review', {})} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
@@ -461,17 +528,17 @@ def make_plan(state):
               'Use a familiar real-life activity: groceries, commuting, laundry, a medical appointment, '
               'cooking, housework or a practical administrative task. Natural speech and credible actions only. '
               'Use recognizable situational comedy: an understandable language misunderstanding, a visual reveal, and a short friendly payoff. '
-              'For comic episodes, make the physical complication visible in the first 2 seconds, build two small believable escalations, '
-              'then land a clean visual joke from an object or routine the audience has already seen. Let a reaction carry part of the joke. '
+              'Make the real-life problem visible in the first 2 seconds. Marta tells her friend what she needs, '
+              'then demonstrates a useful solution in order, one visible action per shot. '
               'Keep the mood cheerful and optimistic: no scheduled sad episodes. '
-              'In nine shots, use shots 1-2 for the visible problem, 3-6 for two believable comic complications, '
-              'and 7-9 for Marta taking the practical decision and a cheerful visual payoff. '
+              'In nine shots, use shots 1-3 for the problem and telling her friend, then shots 4-9 for '
+              'the step-by-step solution and a complete visible resolution. Do not force comic complications. '
               'Do not repeat the same question or explanation in different words. Let props, quick purposeful gestures '
               'and expressive reactions carry the humor; do not rely on dialogue alone. '
               'Humor comes from confusing everyday routines, never from mocking accents, nationality or immigrants. '
               'No fantasy gadgets, implausible accidents, humiliation or lectures. '
               'Open immediately with Marta facing a visually legible everyday problem; make the relevant object visible. '
-              'Use one clear setup, a small escalation, a helpful correction and a memorable comic payoff. '
+              'Use one clear setup, supportive help, visible practical steps and a relieved final reaction. '
               'Teach only ONE useful German phrase or distinction through the action. Avoid dense explanations and unrelated vocabulary. '
               'These are illustrative everyday reenactments, NOT documented true events. Never claim that a specific '
               'real person experienced this or invent a source, quote, current price or legal requirement. '
@@ -508,6 +575,12 @@ def make_plan(state):
               'Choose dialogue about items physically available in the setting; do not show an absent item as present. '
               'Alternate medium action shots and closer product-and-speaker framing, not identical portraits. '
               'Only one visible face per speaking shot; the listener and all other people remain off-camera. '
+              'Start with a concrete immigrant daily-life problem, then have Marta explain it to Lukas. '
+              'Show the solution step by step, with one action per shot and a complete resolution by 45 seconds. '
+              'Prefer language anxiety, booking appointments, understanding letters or finding suitable services. '
+              'Use anticipation, one purposeful hand action, then a readable reaction in every shot. '
+              'Use one restrained camera move; keep the mouth, hands and object visible and spatially consistent. '
+              'speaker is an exact lowercase enum: "marta" or "lukas". No other speaker or name is permitted. '
               'No asset field, no visible generated text in images, no markup or line breaks in JSON strings. '
               f'Episode number: {episode}. Requested mood: {mood}. '
               'The episode situation must match this freshly retrieved official source topic. '
@@ -571,7 +644,7 @@ def make_plan(state):
                                   'response_format': {'type': 'json_object'}, 'temperature': .7, 'max_tokens': 5000},
                                  {'Authorization': 'Bearer ' + key})
                 raw = r['choices'][0]['message']['content']
-            plan = json.loads(raw)
+            plan = parse_story_response(raw)
             if research:
                 plan['research_source'] = research
                 plan['mood'] = mood
@@ -948,18 +1021,30 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
         print(f'Cached scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
     # Finish all GPU work before spending CPU time on layout and muxing.
+    graphic_reports = []
     for i, scene in enumerate(plan['scenes']):
         clip = cache / f'{i:02}.mp4'
         part = folder / f'part-{i:02}.mp4'
-        command(['ffmpeg', '-y', '-v', 'error', '-i', clip, '-i', audios[i], '-filter_complex',
-                 '[0:v]' + scene_layout() + '[v];'
-                 '[1:a]atrim=0:5,aresample=48000[a]', '-map', '[v]', '-map', '[a]', '-t', '5',
+        inputs = ['-i', clip, '-i', audios[i]]
+        layout = '[0:v]' + scene_layout() + '[v];[1:a]atrim=0:5,aresample=48000[a]'
+        if scene.get('graphic_step'):
+            from cinematic_graphics import prepare_step, filters
+            graphic = prepare_step(scene, audios[i], folder, i)
+            inputs += ['-i', graphic['panel'], '-i', graphic['ring'], '-i', graphic['audio']]
+            layout = filters(graphic)
+            graphic_reports.append({'scene': i + 1, 'step': graphic['step'],
+                                    'tap_at': graphic['tap_at'], 'protected_speech': graphic['protected_speech']})
+        command(['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex',
+                 layout, '-map', '[v]', '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         part_video = next(s for s in ffprobe(part)['streams'] if s['codec_type'] == 'video')
         if int(part_video.get('nb_frames', 0)) != 150:
             raise RuntimeError('A five-second scene must retain exactly 150 frames')
         parts.append(part)
         print(f'Completed scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
+    if graphic_reports:
+        atomic_json(folder / 'graphics-report.json', {'illustrative_only': True,
+                    'real_booking': False, 'steps': graphic_reports})
     subs = folder / 'subtitles.ass'
     subs.write_text(ass, encoding='utf-8')
     concat = folder / 'concat.txt'
@@ -1080,8 +1165,6 @@ def production(force=False):
     print('HF allowance preflight: ' + json.dumps(state['gpu_preflight']), flush=True)
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     checkpoint(state)
-    if not any(os.getenv(key) for key in ('BEATAPI_API_KEY', 'BEAT_API_KEY', 'BEATAPI_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GROQ_API_KEY')):
-        raise RuntimeError('A continuing series needs a configured story provider')
     bot('verify')
     pending = state.get('pending')
     plan = pending['plan'] if pending else make_plan(state)
@@ -1212,3 +1295,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

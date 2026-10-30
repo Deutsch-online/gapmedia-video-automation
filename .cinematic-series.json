@@ -24,12 +24,22 @@
   },
   "content_direction": {
     "from_episode": 6,
-    "premise": "Marta is the clear protagonist: a recently arrived adult newcomer facing relatable everyday problems in Germany. Lukas supports her without replacing her choices.",
+    "premise": "Marta starts with a concrete newcomer problem, tells Lukas, then demonstrates the practical solution step by step.",
     "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
-    "continuity": "Cheerful original 3D everyday comedy: one visible problem, two short believable physical complications, Marta makes the practical decision, and a clear happy visual payoff. Nine natural-speed shots, no repetitive teaching drills.",
+    "continuity": "Exactly nine natural-speed five-second shots, never more than 45 seconds: problem, tell a friend, demonstrate each solution step and finish with a resolved problem. Warm natural reactions; no forced comic escalation.",
+    "requested_story": "ai-cast/doctor-appointment-45s.json",
+    "graphics": "Clearly labelled illustrative appointment app beside the speaker. A real named app needs verified UI. No real booking, patient data, face cloning or voice cloning.",
     "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
+  },
+  "next_story": {
+    "from_episode": 15,
+    "story_id": "doctor-appointment-language-anxiety-v1",
+    "path": "ai-cast/doctor-appointment-45s.json",
+    "require_graphics": true,
+    "duration_seconds": 45
   },
   "duration_exceptions": [],
   "duration_from_episode": 9
 }
+
