@@ -3,12 +3,14 @@
   "funding": "existing_hf_credits",
   "purchase_requested": false,
   "max_reserved_credit_usd": 0.3,
-  "status": "failed",
+  "status": "generated_for_review",
   "on_air": false,
   "audio_seconds": 2.904,
   "phrase": "\u0644\u0628\u200c\u0647\u0627\u06cc\u0645 \u0628\u0627 \u0635\u062f\u0627\u06cc\u0645 \u0647\u0645\u0627\u0647\u0646\u06af \u0627\u0633\u062a.",
   "quota_before": 0,
-  "wall_seconds": 2.0,
-  "error": "1 validation error for FileData\n  Value error, The 'meta' field must be explicitly provided in the input data and be equal to {'_type': 'gradio.FileData'}. [type=value_error, input_value={'video': {'path': '/tmp/...e': 'gradio.FileData'}}}, input_type=dict]\n    For further information visit [URL]",
+  "wall_seconds": 35.76,
+  "video_seconds": 2.56,
+  "has_audio": true,
+  "sha256": "cb73956538d0f2f67eee44705c37074dff2d20ef60d154218ffe549f604cdb14",
   "quota_after": 0
 }
