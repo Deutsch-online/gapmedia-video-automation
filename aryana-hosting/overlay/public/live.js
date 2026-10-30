@@ -1,7 +1,7 @@
 import {createEngagementOverlay} from '/engagement.js?v=host-v5';
 const $=id=>document.getElementById(id),video=$('hostVideo'),idle=$('idleVideo');
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false,localMuted=new URLSearchParams(location.search).get('preview')==='1';
-const seen=new Set();let idlePath='/assets/idle.mp4?v=0061e1f4605708e7',idleBlocked=false,idleStarting=false;
+const seen=new Set();try{const saved=JSON.parse(sessionStorage.getItem('aryana-seen-speech')||'[]');if(Array.isArray(saved))for(const id of saved.slice(-1000))if(typeof id==='string')seen.add(id);}catch{}let idlePath='/assets/idle.mp4?v=0061e1f4605708e7',idleBlocked=false,idleStarting=false;
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
 function manualPlay(){const button=$('enableAudio');button.classList.toggle('needs-play',idleBlocked&&!idle.hidden);button.hidden=enabled&&!idleBlocked;}
 function startIdle(userGesture=false){
@@ -31,7 +31,15 @@ window.aryanaSetLocalMuted=value=>{localMuted=Boolean(value);if(gain)gain.gain.v
 window.aryanaActivateAudio=async()=>{startIdle(true);try{await audioContext().resume();enabled=context.state==='running';manualPlay();if(enabled){startAudio();void next();}report(enabled?'ready':'locked');return enabled;}catch(error){report('error',error.message);return false;}};
 $('enableAudio').onclick=()=>void window.aryanaActivateAudio();
 const engagement=createEngagementOverlay({rail:$('supporterRail'),arrivals:$('arrivalToasts')});
+let outputRefreshToken;
+window.aryanaRefreshSupported=true;
+function reloadOutput(token){
+ try{sessionStorage.setItem('aryana-seen-speech',JSON.stringify([...seen].slice(-1000)));}catch{}
+ const target=new URL(location.href);target.searchParams.set('refresh',token);location.replace(target.href);
+}
 function render(state){
+ const token=state.playback?.refreshToken||'';if(outputRefreshToken===undefined)outputRefreshToken=token;else if(token!==outputRefreshToken){outputRefreshToken=token;if(token){reloadOutput(token);return;}}
+
  engagement.render(state);
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=(muted||localMuted)?0:volume;
