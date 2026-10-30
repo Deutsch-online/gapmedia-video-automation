@@ -25,7 +25,7 @@ export class NeuralLipSync{
  restoreBudget(data){this.budget.restore(data);}
  cancel(){this.generation++;for(const job of this.pending.splice(0))job.reject(Error('لب‌خوانی لغو شد.'));const child=this.child;if(child?.pid){try{process.kill(-child.pid,'SIGTERM');}catch{}const timer=setTimeout(()=>{if(child.exitCode===null&&!child.signalCode){try{process.kill(-child.pid,'SIGKILL');}catch{}}},2500);timer.unref();}this.changed();}
  cancelTopics(){
-  for(const job of this.pending.filter(job=>job.kind==='topic'))job.reject(Error('گفتگوی موضوعی برای پاسخ به کامنت کنار رفت.'));
+  for(const job of this.pending.filter(job=>job.kind==='topic'))job.reject(Error('گفتگوی موضوعی برای پاسخ به کومنت کنار رفت.'));
   this.pending=this.pending.filter(job=>job.kind!=='topic');
   if(this.active?.kind==='topic'){this.active.cancelled=true;const child=this.child;if(child?.pid){try{process.kill(-child.pid,'SIGTERM');}catch{}const timer=setTimeout(()=>{if(child.exitCode===null&&!child.signalCode){try{process.kill(-child.pid,'SIGKILL');}catch{}}},2500);timer.unref();}}
   this.changed();

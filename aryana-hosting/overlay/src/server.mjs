@@ -109,10 +109,10 @@ async function answer(comment){
  const language=outputLanguage(settings.language,comment);
  const quizLanguage=settings.language==='auto'&&entertainment.selection(comment)?entertainment.active.locale||'fa':language;
  const quizAnswer=entertainment.answer(comment,quizLanguage);if(quizAnswer)return quizAnswer;
- if(!settings.conversationEnabled)return language==='en'?'Thank you for your comment!':'از کامنت‌تان تشکر!';
+ if(!settings.conversationEnabled)return language==='en'?'Thank you for your comment!':'از کومنت‌تان تشکر!';
  const stock=stockReply(comment),localized=stock&&localizedReply(stock,settings.language);if(localized)return localized;
  if(localChat.configured&&process.env.ARYANA_LLM_ENABLED!=='true')return localChat.ask(comment,language);
- if(process.env.ARYANA_LLM_ENABLED!=='true')return language==='en'?'Thank you for your comment. It is lovely to have you here!':'از کامنت‌تان تشکر! خوشحالم که همراه ما هستید.';
+ if(process.env.ARYANA_LLM_ENABLED!=='true')return language==='en'?'Thank you for your comment. It is lovely to have you here!':'از کومنت‌تان تشکر! خوشحالم که همراه ما هستید.';
  const endpoint=process.env.ARYANA_LLM_URL,model=process.env.ARYANA_LLM_MODEL,token=process.env.ARYANA_LLM_KEY;
  if(!endpoint||!model||!token)throw Error('تنظیمات مدل گفتگو کامل نیست.');
  const url=new URL(endpoint);if(url.protocol!=='https:')throw Error('نشانی مدل باید HTTPS باشد.');
@@ -170,7 +170,7 @@ const server=http.createServer(async(req,res)=>{
    if(!tokenMatches(req.headers['x-aryana-key'],key))return json(res,401,{error:'دسترسی پنل لازم است.'});
    const data=await body(req),action=url.pathname.slice(5);
    if(action==='say')enqueue(data.text);
-   else if(action==='comment'){const text=String(data.text||'').trim();if(!text||text.length>300)throw Error('کامنت باید 1 تا 300 نویسه باشد.');commentInbox.push(text,{revision,source:'manual'},randomUUID());}
+   else if(action==='comment'){const text=String(data.text||'').trim();if(!text||text.length>300)throw Error('کومنت باید 1 تا 300 نویسه باشد.');commentInbox.push(text,{revision,source:'manual'},randomUUID());}
    else if(action==='thanks'){if(!reactionClips.has('بسیار تشکر!'))throw Error('کلیپ تشکر هنوز آماده نیست.');settings.avatarMode='portrait';save();enqueue('بسیار تشکر!');}
    else if(action==='intro')enqueue(localizedReaction('سلام، خوش آمدید!',settings.language));
    else if(action==='voice-sample')enqueue(settings.language==='en'?'Hello dear friends, I am Aryana. Welcome to our live!':'سلام دوستان عزیز، من آریانا هستم. به لایف ما خوش آمدید!');
