@@ -1,0 +1,32 @@
+{
+  "status": "prepared_not_generated",
+  "skill_revision": "4d0757471a704dac8729ea3c2ef0f3f330e0d9b6",
+  "skills": [
+    "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-generate/SKILL.md",
+    "https://github.com/higgsfield-ai/skills/blob/4d0757471a704dac8729ea3c2ef0f3f330e0d9b6/higgsfield-soul-id/SKILL.md"
+  ],
+  "target_seconds": 60,
+  "framing": "Same approved natural frontal chair portrait, head to waist, fixed camera, no zoom, no 3D or still-photo startup",
+  "reference": "https://afgtakrun-aryana-live-studio.hf.space/assets/aryana.png",
+  "overlay": "AI-Generated",
+  "model": "seedance_2_5 (must verify full catalog and live schema before submitting)",
+  "route": [
+    "Reference-guided 30-second first take",
+    "Seamless 30-second video extension with the same reference identity",
+    "Review face geometry and blink frequency; reject morphing or obvious short repeats",
+    "Publish only after review; preserve entry welcomes and exact gift/like thanks"
+  ],
+  "prompt": "Locked eye-level camera and the exact reference framing, seated frontally from head to waist. Preserve the reference identity, facial proportions, hairstyle, hoodie, chair and lighting throughout. She quietly listens with gentle breathing, small natural head turns, brief mild closed-mouth smiles, tiny shoulder adjustments and occasional restrained hand movement. Her eyes remain comfortably open with only one or two brief natural blinks during this thirty-second take. Smooth continuous movement and a relaxed expression. Finish calmly facing forward with open eyes. Photoreal live-camera appearance.",
+  "extension_prompt": "Continue the previous take seamlessly with the exact same identity, facial proportions, clothing, chair, lighting and fixed camera. A different restrained gesture sequence: a gentle nod, a small glance aside and return, relaxed shoulders and a subtle closed-mouth smile. Eyes remain comfortably open with only one or two brief natural blinks. Finish in the original calm forward-facing pose. Preserve the reference face in every frame.",
+  "speech_checks": [
+    "Use the existing approved voice audio; verify synchronization separately",
+    "Accept natural mouth and jaw articulation; reject identity changes, face warping and scene/wardrobe jumps",
+    "Do not claim that arbitrary LIVE replies are visually synchronized until demonstrated"
+  ],
+  "constraints": {
+    "no_generation_in_preflight": true,
+    "no_paid_fallback": true,
+    "no_oauth_codes_or_tokens_in_logs": true,
+    "no_soul_training_without_required_approved_photos": true
+  }
+}
