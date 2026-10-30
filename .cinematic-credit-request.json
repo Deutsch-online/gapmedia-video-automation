@@ -1,22 +1,24 @@
 {
-  "id": "55e5a2b767b34e7b8fe86333",
-  "status": "completed",
-  "plan_sha": "ed6d9d80ed6464332fec0f248768a639ede54cc2298d57bd7d7ced1113924018",
+  "id": "6fb289c8468def45f9dc4950",
+  "status": "sending",
+  "plan_sha": "54b6436782ea5c1fbae5b807097bc47682a8bf1d7f015cba5fab48966e23ea69",
   "simple_text_approval": true,
   "kind": "episode",
-  "episode": 14,
+  "episode": 15,
   "scenes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
     7,
     8
   ],
   "chat_id": "7993801735",
-  "expires_at": "2026-10-31T09:14:46.016Z",
-  "text_approve_sha": "1bf938b592d2108bb5dcfb3bb555ec24ad42041d0432443a87e5dd3602e65d8b",
-  "text_reject_sha": "22788aeffd2d99189b2e6f358306f0738629478acc60c59af6b8c384aebde834",
-  "created_at": "2026-10-30T09:14:46.016Z",
-  "message_id": 2785,
-  "decided_at": "2026-10-30T09:37:36.903Z",
-  "decision_method": "telegram-simple-text",
-  "decision_message_id": 2787,
-  "active_run": "41034829453:1"
+  "expires_at": "2026-10-31T23:52:36.148Z",
+  "text_approve_sha": "5db9b045b3d1ab8850e4a6f7bd4cec7dcd65032f307730f96813dbc2a2cbcea2",
+  "text_reject_sha": "8532008d760ae4cd470b9e2afd3523ff02e85afa30ec2b6dcf48aa5721528202",
+  "created_at": "2026-10-30T23:52:36.148Z"
 }
