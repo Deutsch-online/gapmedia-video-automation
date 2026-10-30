@@ -1,1 +1,5 @@
-{"request": "metadata-only-compute-audit-20261030", "generation": false, "billing": false}
+{
+  "request": "post-higgsfield-connection-20261030",
+  "generation_requested": false,
+  "billing_requested": false
+}
