@@ -1,3 +1,4 @@
+import {createEngagementOverlay} from '/engagement.js?v=events-v4';
 const $=id=>document.getElementById(id),video=$('hostVideo'),idle=$('idleVideo');
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false;
 const seen=new Set();let idlePath='/assets/idle.mp4?v=0061e1f4605708e7',idleBlocked=false,idleStarting=false;
@@ -14,7 +15,7 @@ idle.addEventListener('playing',()=>{idleBlocked=false;manualPlay();});
 idle.addEventListener('error',()=>{idleBlocked=true;manualPlay();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshIdle();});
 const mobile=location.pathname.includes('mobile');document.body.classList.toggle('mobile-output',mobile);
-function fit(){document.documentElement.style.setProperty('--live-scale',(mobile?Math.max:Math.min)(innerWidth/1080,innerHeight/1920));}addEventListener('resize',fit);fit();
+function fit(){document.documentElement.style.setProperty('--live-scale',Math.min(innerWidth/1080,innerHeight/1920));}addEventListener('resize',fit);fit();
 function audioContext(){context??=new AudioContext();if(!gain){gain=context.createGain();gain.connect(context.destination);}return context;}
 function stop(){epoch++;queue=[];current=null;try{source?.stop();}catch{}source=null;video.onended=null;video.pause();video.playbackRate=1;video.hidden=true;playing=false;refreshIdle();report(enabled?'ready':'locked');}
 function finish(token){if(token!==epoch||!current)return;current=null;const node=source;source=null;try{node?.stop();}catch{}video.onended=null;video.pause();video.playbackRate=1;video.hidden=true;playing=false;refreshIdle();report(enabled?'ready':'locked');void next();}
@@ -28,7 +29,9 @@ function startAudio(){
 }
 window.aryanaActivateAudio=async()=>{startIdle(true);try{await audioContext().resume();enabled=context.state==='running';manualPlay();if(enabled){startAudio();void next();}report(enabled?'ready':'locked');return enabled;}catch(error){report('error',error.message);return false;}};
 $('enableAudio').onclick=()=>void window.aryanaActivateAudio();
+const engagement=createEngagementOverlay({rail:$('supporterRail'),arrivals:$('arrivalToasts')});
 function render(state){
+ engagement.render(state);
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=muted?0:volume;
  for(const item of state.utterances||[]){if(seen.has(item.id))continue;seen.add(item.id);while(seen.size>1000)seen.delete(seen.values().next().value);if(Date.now()-item.at<60000)queue.push(item);}
@@ -52,3 +55,4 @@ async function poll(){if(lastStateAt&&Date.now()-lastStateAt<4500)return;try{con
 refreshIdle();connect();void poll();setInterval(()=>void poll(),2500);
 // OBS/LIVE Studio may permit audio without a gesture. A blocked resume never blocks video.
 void window.aryanaActivateAudio();
+

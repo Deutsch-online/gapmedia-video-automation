@@ -1,9 +1,10 @@
 {
-  "request": "live-output-visible-mouth-and-language-v3",
+  "request": "audience-left-rail-right-arrivals-minute-leaders-v4",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
   "motion_release": true,
   "playback_compatibility": true,
-  "neural_lipsync": true
+  "neural_lipsync": true,
+  "engagement_overlay": true
 }

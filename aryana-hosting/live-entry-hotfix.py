@@ -30,7 +30,7 @@ try:
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
@@ -93,8 +93,8 @@ try:
   report['public_output_fallback_verified']=True
   report['neural_prepared']=True
   report['initial_preparation_seconds']=state.get('livePreparation',{}).get('seconds')
-  if state['connection']=='connected' or state.get('live',{}).get('active'):
-   report['private_neural_test']='skipped_active_live'
+  if state['connection']=='connected' or state.get('live',{}).get('active') or request.get('engagement_overlay'):
+   report['private_neural_test']='skipped_ui_only_change' if request.get('engagement_overlay') else 'skipped_active_live'
   else:
    _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'اکنون در خروجی لایف هم حرکت لب دیده می‌شود.','language':'fa'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
    deadline=time.monotonic()+240
@@ -128,7 +128,8 @@ try:
   version=hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()[:16]
   message='مشکل نمایش ویدیوی آریانا اصلاح شد. پخش بخش‌بخشی ویدیو و سازگاری فایل برای مرورگرهای موبایل به‌روزرسانی شد. ویدیو همان نسخهٔ ۶۰ثانیه‌ای با چشمک‌های کمتر است. اگر مرورگر پخش خودکار را مسدود کرد، ▶ را لمس کنید. فقط AI-Generated روی خروجی دیده می‌شود.\n\n'+url+'/live?v='+version+'\nنسخهٔ موبایل:\n'+url+'/mobile?v='+version+'\nاگر منبع باز در LIVE Studio هنوز صفحهٔ قبلی را دارد، یک بار Refresh کنید. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند.'
  if request.get('neural_lipsync'):
-  message='اصلاح نمایش لب‌خوانی در خروجی لایف و انتخاب زبان منتشر شد. حرکت لب حتی اگر صدای مرورگر قفل باشد نمایش داده می‌شود. برای شنیدن صدا، داخل همان منبع LIVE Studio/OBS یک بار دکمهٔ پخش را بزنید. در پنل، فارسی/دری، English و خودکار اضافه شد. آزمایش خصوصی فقط داخل پنل است؛ برای فرستادن همان کلیپ به خروجی، دکمهٔ «پخش کلیپ آماده در لایف» را بزنید. منبع را یک بار تازه کنید.\n\nلب‌خوانی جمله‌های تازهٔ آریانا فعال شد. برای پاسخ تازه، ویدیو از صدای همان جمله ساخته می‌شود؛ ساخت ویدیو چند ثانیه زمان می‌برد و زمان ساخت متن و صدا نیز جداست. چهره و ویدیوی انتظار همان است و مدل فقط ناحیهٔ دهان را پردازش می‌کند.\n\nدر پنل بخش «لب‌خوانی پاسخ‌های تازه» اضافه شد: «آماده‌سازی لب‌ها» و «آزمایش خصوصی متن بالا». آزمایش خصوصی روی خروجی LIVE پخش نمی‌شود. پنل را یک بار تازه کنید.\n\n'+url+'/live?v=output-lips-v3\nفقط AI-Generated نمایش داده می‌شود. این سرویس از سهمیه یا اعتبار Hugging Face استفاده می‌کند؛ سقف احتیاطی برنامه ۶ دلار در روز است و خرید یا شارژ خودکار انجام نمی‌دهد.\n'+('دریافت تیک‌تاک متصل است.' if state['connection']=='connected' else 'دریافت تیک‌تاک فعلاً متصل نیست؛ وضعیت اتصال را در پنل بررسی کنید.')
+  message='نمایش همراهان لایف منتشر شد: اعلان ورود از بالا سمت راست تا وسط می‌رود و محو می‌شود. کارت‌های گیفت و لایک سمت چپ هستند؛ گیفتر برتر و لایک‌کنندهٔ برتر به‌نوبت هرکدام یک دقیقه با حاشیهٔ طلایی و نام پررنگ برجسته می‌شوند. پنل و منبع LIVE Studio/OBS را یک بار تازه کنید.\n\nاصلاح نمایش لب‌خوانی در خروجی لایف و انتخاب زبان منتشر شد. حرکت لب حتی اگر صدای مرورگر قفل باشد نمایش داده می‌شود. برای شنیدن صدا، داخل همان منبع LIVE Studio/OBS یک بار دکمهٔ پخش را بزنید. در پنل، فارسی/دری، English و خودکار اضافه شد. آزمایش خصوصی فقط داخل پنل است؛ برای فرستادن همان کلیپ به خروجی، دکمهٔ «پخش کلیپ آماده در لایف» را بزنید. منبع را یک بار تازه کنید.\n\nلب‌خوانی جمله‌های تازهٔ آریانا فعال شد. برای پاسخ تازه، ویدیو از صدای همان جمله ساخته می‌شود؛ ساخت ویدیو چند ثانیه زمان می‌برد و زمان ساخت متن و صدا نیز جداست. چهره و ویدیوی انتظار همان است و مدل فقط ناحیهٔ دهان را پردازش می‌کند.\n\nدر پنل بخش «لب‌خوانی پاسخ‌های تازه» اضافه شد: «آماده‌سازی لب‌ها» و «آزمایش خصوصی متن بالا». آزمایش خصوصی روی خروجی LIVE پخش نمی‌شود. پنل را یک بار تازه کنید.\n\n'+url+'/live?v=events-v4\nفقط AI-Generated نمایش داده می‌شود. این سرویس از سهمیه یا اعتبار Hugging Face استفاده می‌کند؛ سقف احتیاطی برنامه ۶ دلار در روز است و خرید یا شارژ خودکار انجام نمی‌دهد.\n'+('دریافت تیک‌تاک متصل است.' if state['connection']=='connected' else 'دریافت تیک‌تاک فعلاً متصل نیست؛ وضعیت اتصال را در پنل بررسی کنید.')
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise
+

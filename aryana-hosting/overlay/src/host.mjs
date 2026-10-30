@@ -35,9 +35,10 @@ export class HostSession{
  reset(){this.donors=new Map();this.likers=new Map();this.seen=new Set();this.combos=new Map();this.startedAt=null;this.joins=[];this.log=[];this.lastThanks=0;}
  identity(event){return String(event.user?.id??event.user?.userId??event.userId??'');}
  profile(event,settings){
-  const name=spokenName(event.user?.nickname||event.name,settings.names),urls=event.user?.avatarThumb?.urlList||[];
+  const name=spokenName(event.user?.nickname||event.name,settings.names),thumbnail=event.user?.avatarThumb,urls=[...(Array.isArray(thumbnail?.urlList)?thumbnail.urlList:[]),event.user?.profilePictureUrl,event.profilePictureUrl,typeof thumbnail==='string'?thumbnail:null].filter(value=>typeof value==='string');
   let avatar=null;for(const url of urls){try{const u=new URL(url);if(u.protocol==='https:'&&/(^|\.)(tiktokcdn(-us|-eu)?\.com|byteimg\.com|ibyteimg\.com|ibytedtos\.com)$/.test(u.hostname)){avatar=u.href;break;}}catch{}}
-  return {name:name||'همراه',spokenName:name,avatar};
+  const display=normalize(event.user?.nickname||event.name).replace(/[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/g,'').slice(0,80);
+  return {name:display||name||'همراه',spokenName:name,avatar};
  }
  remember(key){if(this.seen.has(key))return false;this.seen.add(key);while(this.seen.size>5000)this.seen.delete(this.seen.values().next().value);return true;}
  record(kind,text){this.log.unshift({key:randomUUID(),kind,text,at:this.now()});this.log=this.log.slice(0,30);}
@@ -73,7 +74,7 @@ export class HostSession{
   return null;
  }
  snapshot(){
-  const gifts=[...this.donors.values()].sort((a,b)=>b.coins-a.coins||b.count-a.count),likes=[...this.likers.values()].sort((a,b)=>b.likes-a.likes);
+  const gifts=[...this.donors].map(([id,p])=>({...p,likes:this.likers.get(id)?.likes||0})).sort((a,b)=>b.coins-a.coins||b.count-a.count),likes=[...this.likers].map(([id,p])=>({...p,coins:this.donors.get(id)?.coins||0,count:this.donors.get(id)?.count||0,unknown:this.donors.get(id)?.unknown||false})).sort((a,b)=>b.likes-a.likes);
   const gift=gifts[0],like=likes[0],giftTurn=gift&&(!like||Math.floor((this.now()-(this.startedAt??this.now()))/60000)%2===0);
   const focus=giftTurn?{...gift,kind:'gift'}:like?{...like,kind:'like'}:null;
   const displayed=new Set(focus?[focus.key]:[]);
@@ -81,3 +82,4 @@ export class HostSession{
   return {focus,rows,joins:this.joins.filter(p=>this.now()-p.at<9000),log:this.log,giftTotal:gifts.reduce((n,p)=>n+p.coins,0),likeTotal:likes.reduce((n,p)=>n+p.likes,0)};
  }
 }
+

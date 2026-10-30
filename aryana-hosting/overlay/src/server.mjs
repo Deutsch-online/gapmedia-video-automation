@@ -202,7 +202,7 @@ const server=http.createServer(async(req,res)=>{
   if(url.pathname==='/'||url.pathname==='/studio')file=join(publicDir,'index.html');else if(url.pathname==='/live'||url.pathname==='/screen'||url.pathname==='/mobile'||url.pathname==='/live/mobile')file=join(publicDir,'live.html');
   else if(/^\/audio\/[a-f0-9]{64}\.mp3$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
   else if(/^\/video\/[a-f0-9]{64}\.mp4$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
-  else if(/^\/(app\.js|live\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
+  else if(/^\/(app\.js|live\.js|engagement\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(/^\/assets\/avatar\/(talkinghead\.bundle\.mjs|headaudio\.min\.mjs|headworklet\.min\.mjs|playback-worklet\.js|mpfb\.glb|model-en-mixed\.bin|LICENSES\.txt)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(/^\/assets\/reaction-[a-z-]+\.(mp3|mp4)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(url.pathname==='/assets/idle.mp4')file=join(publicDir,'assets/idle.mp4');
@@ -219,3 +219,4 @@ async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reacti
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
 process.on('SIGTERM',()=>{stopSpeech();speechEngine.close();localChat.cancel();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});
+
