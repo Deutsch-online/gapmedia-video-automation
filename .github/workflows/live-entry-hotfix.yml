@@ -1,0 +1,36 @@
+name: Fix Aryana entry welcomes and preserve the active TikTok receiver
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/live-entry-hotfix-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: aryana-free-hf-deployment
+  cancel-in-progress: false
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2' cryptography==44.0.1
+      - name: Apply only reaction rules and restore the saved connection
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python aryana-hosting/live-entry-hotfix.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-entry-hotfix
+          path: /tmp/aryana-entry-hotfix.json
+          retention-days: 3

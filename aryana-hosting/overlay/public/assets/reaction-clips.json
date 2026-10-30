@@ -9,6 +9,14 @@
       "video": "/assets/reaction-thanks.mp4",
       "audioSha256": "5d393534bb72d0756f805e1764c81348fd125d4c37788c4f8c2e3ea789961e5b",
       "videoSha256": "bf7086c4ba199bd63004aa2ad8b7da12f15d69886ff1492d3b64f3099a7403eb"
+    },
+    {
+      "text": "سلام، خوش آمدید!",
+      "duration": 2.2,
+      "audio": "/assets/introduction.mp3",
+      "video": "/assets/introduction.mp4",
+      "audioSha256": "83edca78515ddc551c0bf673df425d84923963bad8262963d52eaf698efa232f",
+      "videoSha256": "b5889d031f98748372440a4c5deaa4c80eb5edb3c3512d50601dd13edf3222e1"
     }
   ]
 }

@@ -19,7 +19,7 @@ export function applyCorrections(text,rules){
  return normalize(text).split(/([\p{L}\p{M}\u200c]+)/u).map(part=>rules[correctionKey(part)]||part).join('');
 }
 export function greeting(name,level,language='fa'){
- if(!name)return language==='en'?'Thank you for joining!':'تشکر از همراهی‌تان!';
+ if(!name)return language==='en'?'Welcome!':'سلام، خوش آمدید!';
  if(Number.isInteger(level)&&level>25)return language==='en'?`A very warm welcome, ${name}. It is lovely to have you here!`:`${name} جان، با احترام فراوان خوش آمدید! از حضور و همراهی‌تان خوشحال هستم.`;
  return language==='en'?`Welcome, ${name}!`:`${name} جان، خوش آمدید!`;
 }
@@ -57,14 +57,14 @@ export class HostSession{
    const known=Number.isSafeInteger(unit)&&unit>0&&unit*count<=1e9;
    this.donors.set(id,{key:old?.key||this.likers.get(id)?.key||randomUUID(),...profile,coins:(old?.coins||0)+(known?unit*count:0),count:(old?.count||0)+count,unknown:Boolean(old?.unknown||!known),at});
    this.startedAt??=at;this.record(kind,profile.name+' · '+(known?unit*count+' کوین':'گیفت با ارزش نامعلوم'));
-   return {kind,profile,text:profile.spokenName?`${profile.spokenName} جان، از گیفت‌تان بسیار تشکر!`:'از گیفت‌تان تشکر!'};
+   return {kind,profile,text:'بسیار تشکر!'};
   }
   if(!this.remember(kind+':'+msg))return null;
   if(kind==='like'){
    const count=Number(event.count);if(!Number.isSafeInteger(count)||count<1||count>100000)return null;
    const old=this.likers.get(id);if(!old&&this.likers.size>=5000)return null;
    this.likers.set(id,{key:old?.key||this.donors.get(id)?.key||randomUUID(),...profile,likes:(old?.likes||0)+count,at});
-   return {kind,profile,text:profile.spokenName?`${profile.spokenName} جان، تشکر از لایک‌های‌تان!`:'از لایک‌های‌تان تشکر!'};
+   return {kind,profile,text:'بسیار تشکر!'};
   }
   if(kind==='join'){
    const level=Number(event.user?.payGrade?.level);const row={key:randomUUID(),...profile,at};this.joins.push(row);this.joins=this.joins.slice(-20);

@@ -85,7 +85,7 @@ function receive(kind,event){
  const reaction=session.accept(kind,event,settings);if(!reaction)return;checkpoint();broadcast();
  if(kind==='join'){const id=session.identity(event),previous=joinThanks.get(id)||0;if(Date.now()-previous<600000)return;joinThanks.set(id,Date.now());while(joinThanks.size>5000)joinThanks.delete(joinThanks.keys().next().value);}
  const interval=kind==='like'?30000:kind==='join'?5000:2000;
- if(settings.autoSpeak&&(reaction.vip||kind==='gift'||Date.now()-lastAuto>=interval)){lastAuto=Date.now();try{enqueue(!reaction.profile.spokenName&&reactionClips.has('بسیار تشکر!')?'بسیار تشکر!':reaction.text,reaction.vip?'vip':reaction.profile.spokenName?kind:'thanks');}catch{}}
+ if(settings.autoSpeak&&(reaction.vip||kind==='gift'||Date.now()-lastAuto>=interval)){lastAuto=Date.now();try{enqueue(reaction.text,reaction.vip?'vip':kind==='join'?'join':reaction.profile.spokenName?kind:'thanks');}catch{}}
 }
 const link=new LiveLink({create:username=>{
  const client=new TikTokLiveConnection(username,{authenticateWs:false,processInitialData:false,enableExtendedGiftInfo:false});

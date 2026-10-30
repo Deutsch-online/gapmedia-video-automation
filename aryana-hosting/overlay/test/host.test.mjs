@@ -4,7 +4,7 @@ import {HostSession,spokenName,greeting,applyCorrections} from '../src/host.mjs'
 test('numeric and uncertain names never receive a spoken name, including decorated numeric names',()=>{
  for(const name of ['12345','مریم۲۵','user_998','♥ ١٢٣','notarealname'])assert.equal(spokenName(name),null);
  assert.equal(spokenName('مریم'),'مریم');assert.equal(spokenName('Sarah'),'Sarah');assert.equal(spokenName('Newname',['Newname']),'Newname');
- assert.equal(greeting(null,40),'تشکر از همراهی‌تان!');assert.match(greeting('مریم',26),/احترام فراوان/);assert.doesNotMatch(greeting('مریم',25),/احترام فراوان/);
+ assert.equal(greeting(null,40),'سلام، خوش آمدید!');assert.match(greeting('مریم',26),/احترام فراوان/);assert.doesNotMatch(greeting('مریم',25),/احترام فراوان/);
 });
 test('gift totals count completed combos once and rotate exactly every minute without timer resets',()=>{
  let now=100000;const host=new HostSession({now:()=>now}),settings={names:[]};
@@ -20,8 +20,14 @@ test('shared donor and liker identity is never duplicated, and numeric entrants 
  host.accept('like',{user:{id:'one',nickname:'Sara'},count:500,common:{msgId:'l'}},settings);
  assert.equal(host.snapshot().rows.length,0);
  const reaction=host.accept('join',{user:{id:'numeric',nickname:'9999',payGrade:{level:40}},common:{msgId:'j'}},settings);
- assert.equal(reaction.vip,false);assert.equal(reaction.text,'تشکر از همراهی‌تان!');
+ assert.equal(reaction.vip,false);assert.equal(reaction.text,'سلام، خوش آمدید!');
 });
 test('pronunciation overrides match whole words and preserve other vocabulary',()=>{
  assert.equal(applyCorrections('یک موتر و موترها',{'یک':'یِک','موتر':'موتَر'}),'یِک موتَر و موترها');
+});
+
+test('every entry welcomes, every gift and like says only the exact thanks phrase',()=>{
+ for(const nickname of ['مریم','12345']){const host=new HostSession(),settings={names:[]};
+  for(const kind of ['gift','like','join']){const reaction=host.accept(kind,{user:{id:nickname,nickname},giftId:'rose',diamondCount:1,count:5,common:{msgId:kind+nickname}},settings);assert.ok(reaction);if(kind==='join'){assert.match(reaction.text,/خوش آمدید/);assert.doesNotMatch(reaction.text,/تشکر/);}else assert.equal(reaction.text,'بسیار تشکر!');}
+ }
 });
