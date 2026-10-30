@@ -6,7 +6,7 @@ const mobile=location.pathname.includes('mobile');document.body.classList.toggle
 function fit(){document.documentElement.style.setProperty('--live-scale',(mobile?Math.max:Math.min)(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fit);fit();
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
-function stop(){epoch++;queue=[];source?.stop();source=null;video.pause();video.hidden=true;playing=false;report(enabled?'ready':'locked');}
+function stop(){epoch++;queue=[];try{source?.stop();}catch{}source=null;video.pause();video.hidden=true;playing=false;report(enabled?'ready':'locked');}
 window.aryanaActivateAudio=async()=>{
  try{
   context??=new AudioContext();if(!gain){gain=context.createGain();gain.connect(context.destination);}
