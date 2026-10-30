@@ -1,0 +1,18 @@
+{
+  "paid_requested": true,
+  "funding": "existing_hf_credits",
+  "purchase_requested": false,
+  "generation_limit": 1,
+  "upper_bound_credit_usd": 0.13,
+  "clips": [
+    {
+      "name": "idle-ltx-probe",
+      "status": "failed",
+      "error": "Queue is full! Please try again.",
+      "elapsed_seconds": 1.1
+    }
+  ],
+  "quota_before": 0,
+  "elapsed_seconds": 2.49,
+  "quota_after": 0
+}
