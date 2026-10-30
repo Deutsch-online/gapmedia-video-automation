@@ -1,0 +1,12 @@
+{
+  "file": "reuse-01.mp4",
+  "duration": 2.375,
+  "fps": 24.0,
+  "frames": 57,
+  "missing_face_frames": 0,
+  "blink_threshold": 0.45,
+  "blink_events": [],
+  "blinks_per_minute": 0.0,
+  "max_jaw_open": 0.036,
+  "note": "Blink detector is an estimate; identity and motion still require visual review."
+}

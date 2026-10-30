@@ -1,0 +1,23 @@
+{
+  "source_seconds": 5.041666666666667,
+  "output_seconds": 3.75,
+  "detected_eyelid_dips": 5,
+  "kept_native_blinks": 0,
+  "removed_intervals": [
+    [
+      0.20833333333333334,
+      0.9166666666666666
+    ],
+    [
+      2.9166666666666665,
+      3.2083333333333335
+    ],
+    [
+      3.375,
+      3.9166666666666665
+    ]
+  ],
+  "join_bridges": 3,
+  "native_frame_speed_preserved": true,
+  "speech_media_modified": false
+}

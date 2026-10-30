@@ -1,0 +1,131 @@
+{
+  "funding": "existing_hf_credits",
+  "purchase_requested": false,
+  "auto_deploy": false,
+  "max_credit_usd": 6,
+  "max_generations": 24,
+  "attempts": [
+    {
+      "take": "take-03",
+      "status": "accepted",
+      "wall_seconds": 23.61
+    },
+    {
+      "take": "take-04",
+      "status": "accepted",
+      "wall_seconds": 15.63
+    },
+    {
+      "take": "take-05",
+      "status": "failed",
+      "error": "Command '['python', 'aryana-hosting/edit-motion-blinks.py', '/home/runner/work/gapmedia-video-automation/gapmedia-video-automation/aryana-hosting/motion-minute-v2/take-05-raw.mp4', '/home/runner/work/gapmedia-video-automation/gapmedia-video-automation/aryana-hosting/motion-minute-v2/take-05.mp4']' returned non-zero exit status 1.",
+      "wall_seconds": 12.78
+    },
+    {
+      "take": "take-06",
+      "status": "accepted",
+      "wall_seconds": 15.5
+    },
+    {
+      "take": "take-07",
+      "status": "accepted",
+      "wall_seconds": 16.25
+    },
+    {
+      "take": "take-08",
+      "status": "accepted",
+      "wall_seconds": 15.76
+    },
+    {
+      "take": "take-09",
+      "status": "accepted",
+      "wall_seconds": 15.67
+    },
+    {
+      "take": "take-10",
+      "status": "failed",
+      "error": "Command '['python', 'aryana-hosting/edit-motion-blinks.py', '/home/runner/work/gapmedia-video-automation/gapmedia-video-automation/aryana-hosting/motion-minute-v2/take-10-raw.mp4', '/home/runner/work/gapmedia-video-automation/gapmedia-video-automation/aryana-hosting/motion-minute-v2/take-10.mp4']' returned non-zero exit status 1.",
+      "wall_seconds": 12.73
+    }
+  ],
+  "accepted": [
+    {
+      "file": "take-00.mp4",
+      "seconds": 6.458,
+      "blink_events": 1,
+      "blinks_per_minute": 9.3,
+      "last_blink_end": 0.458,
+      "sha256": "b4c2dd18fb3de461b62bf4caac57abc33d5d3a3fa05e081a8f876aad9f3b5594"
+    },
+    {
+      "file": "reuse-01.mp4",
+      "seconds": 2.375,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 0.458,
+      "sha256": "c3cba51ce681d79afdca495c25245fbb75e427346c4391d4210984315303f297"
+    },
+    {
+      "file": "reuse-02.mp4",
+      "seconds": 3.042,
+      "blink_events": 1,
+      "blinks_per_minute": 19.7,
+      "last_blink_end": 9.541,
+      "sha256": "70b95b685e930e24242fcad0231416193831fb7cc95779952a7927b51b8af5d7"
+    },
+    {
+      "file": "take-03.mp4",
+      "seconds": 3.792,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 9.541,
+      "sha256": "95983e1f03eb7715100c25a3f9c5553cda4667eb116148c48b6e496893f47cd3"
+    },
+    {
+      "file": "take-04.mp4",
+      "seconds": 3.75,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 9.541,
+      "sha256": "d4afc215a33e3713c96f61df1f4e18f2fe9f62c5f3ec9c5404d62b3cf661a185"
+    },
+    {
+      "file": "take-06.mp4",
+      "seconds": 3.125,
+      "blink_events": 1,
+      "blinks_per_minute": 19.2,
+      "last_blink_end": 20.292,
+      "sha256": "a4ad0d0d4e32e7cc5675d53032819240c0fccbe98affe8e34db40e73b10d33ca"
+    },
+    {
+      "file": "take-07.mp4",
+      "seconds": 3.833,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 20.292,
+      "sha256": "e1d55efcf9e73f435ef63cd33ec3eed84b986ed6c4fcb3d9a108dda09d360daf"
+    },
+    {
+      "file": "take-08.mp4",
+      "seconds": 4.167,
+      "blink_events": 0,
+      "blinks_per_minute": 0.0,
+      "last_blink_end": 20.292,
+      "sha256": "331041bc92d8e08ad5ad82237432efd80a44214175a22ae77065f237b2f7aaf8"
+    },
+    {
+      "file": "take-09.mp4",
+      "seconds": 3.375,
+      "blink_events": 1,
+      "blinks_per_minute": 17.8,
+      "last_blink_end": 31.0,
+      "sha256": "af751b5f2640a0d6ae06dba0245dd926e086cbb228e65f6fb3ea82e6ee94f5cc"
+    }
+  ],
+  "status": "insufficient_accepted_motion_no_deployment",
+  "quota_before": 0,
+  "max_reserved_credit_per_attempt_usd": 0.25,
+  "stopped_reason": "two_failed_candidates_no_more_credit_spending",
+  "unique_edited_source_seconds": 33.917,
+  "quota_after": 0
+}
