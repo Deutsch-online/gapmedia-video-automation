@@ -2138,7 +2138,7 @@
     }
   ],
   "pending": {
-    "status": "rendering",
+    "status": "render-failed",
     "date": "2026-10-31",
     "plan": {
       "story_id": "doctor-appointment-language-anxiety-v1",
@@ -2298,7 +2298,10 @@
         "scope": "Illustrative language-learning context only; no verified named app or real appointment."
       }
     },
-    "owner_request": "2026-10-30: next round must follow the requested doctor appointment story"
+    "owner_request": "2026-10-30: next round must follow the requested doctor appointment story",
+    "credit_from_scene": 0,
+    "credit_approval_required": true,
+    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 0s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed"
   },
   "attempts": {
     "2026-10-15": 2,
@@ -2328,8 +2331,8 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-10-30",
-    "not_before": "2026-10-30T14:16:40.359856+00:00",
+    "date": "2026-10-31",
+    "not_before": "2026-10-31T04:54:32.010418+00:00",
     "reason": "ZeroGPU quota exhausted"
   },
   "manual_recovery_reason": {
