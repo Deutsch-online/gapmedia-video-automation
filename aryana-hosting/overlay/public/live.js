@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0;
-const seen=new Set(),video=$('hostVideo'),idle=$('idleVideo');let idlePath='/assets/idle.mp4';
+const seen=new Set(),video=$('hostVideo'),idle=$('idleVideo');let idlePath='/assets/idle.mp4?v=f48e2929dd1d26fa';
 function refreshIdle(){const show=Boolean(idlePath&&video.hidden);idle.hidden=!show;if(show){if(idle.getAttribute('src')!==idlePath)idle.src=idlePath;idle.muted=true;void idle.play().catch(()=>report('idle-error','حرکت انتظار در مرورگر اجرا نشد.'));}else idle.pause();}
 const mobile=location.pathname.includes('mobile');document.body.classList.toggle('mobile-output',mobile);
 function fit(){document.documentElement.style.setProperty('--live-scale',(mobile?Math.max:Math.min)(innerWidth/1080,innerHeight/1920));}
@@ -21,7 +21,7 @@ let volume=.85,muted=false,avatarMode='animated';
 function render(state){
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  
- idlePath=state.playback?.idleVideo||'/assets/idle.mp4';refreshIdle();
+ idlePath=state.playback?.idleVideo||'/assets/idle.mp4?v=f48e2929dd1d26fa';refreshIdle();
  volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);
  if(gain)gain.gain.value=muted?0:volume;
  for(const item of state.utterances||[]){

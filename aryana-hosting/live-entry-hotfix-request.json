@@ -1,1 +1,7 @@
-{"request": "natural-video-ai-generated-label-v3", "video_only": true, "default_mode": "portrait", "on_air_test_speech": false}
+{
+  "request": "reviewed-one-minute-sparse-blinks-v1",
+  "video_only": true,
+  "default_mode": "portrait",
+  "on_air_test_speech": false,
+  "motion_release": true
+}
