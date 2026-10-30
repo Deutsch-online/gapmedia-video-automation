@@ -1,0 +1,55 @@
+name: Fix Aryana browser media delivery and publish verified playback
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/playback-request.json]
+permissions:
+  contents: write
+concurrency:
+  group: aryana-free-hf-deployment
+  cancel-in-progress: false
+jobs:
+  playback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2' cryptography==44.0.1
+      - name: Prepare compatible existing video on CPU
+        run: python aryana-hosting/prepare-browser-playback.py
+      - name: Save exact compatible assets and cache versions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add aryana-hosting/assets/idle.mp4 aryana-hosting/assets.json aryana-hosting/overlay/src/server.mjs aryana-hosting/overlay/public/live.js aryana-hosting/overlay/public/live.html aryana-hosting/live-entry-hotfix-request.json aryana-hosting/playback-release.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save browser-compatible sixty-second Aryana video and exact cache version'
+          fi
+          git pull --rebase origin delivery/aryana-hf-20261029
+          git push origin HEAD:delivery/aryana-hf-20261029
+      - name: Verify tests and publish without on-air speech
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          TASK_SOURCE_SHA=$(git rev-parse HEAD)
+          ARYANA_SOURCE_SHA="$TASK_SOURCE_SHA" python aryana-hosting/live-entry-hotfix.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-browser-playback
+          path: |
+            /tmp/aryana-entry-hotfix.json
+            aryana-hosting/playback-release.json
+          retention-days: 3

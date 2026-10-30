@@ -1,16 +1,40 @@
 const $=id=>document.getElementById(id);
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0;
 const seen=new Set(),video=$('hostVideo'),idle=$('idleVideo');let idlePath='/assets/idle.mp4?v=f48e2929dd1d26fa';
-function refreshIdle(){const show=Boolean(idlePath&&video.hidden);idle.hidden=!show;if(show){if(idle.getAttribute('src')!==idlePath)idle.src=idlePath;idle.muted=true;void idle.play().catch(()=>report('idle-error','حرکت انتظار در مرورگر اجرا نشد.'));}else idle.pause();}
+let idleBlocked=false,idleStarting=false;
+function manualPlay(needed){const button=$('enableAudio');needed=Boolean(needed&&!idle.hidden);button.classList.toggle('needs-play',needed);button.hidden=enabled&&!needed;}
+function startIdle(userGesture=false){
+ if(idle.hidden)return;
+ if(!idle.paused&&!idle.error){manualPlay(false);return;}
+ if(idleBlocked&&!userGesture){manualPlay(true);return;}
+ if(idleStarting&&!userGesture)return;
+ if(userGesture&&idle.error){idle.load();idleBlocked=false;}
+ idle.muted=true;idle.defaultMuted=true;idleStarting=true;
+ try{
+  Promise.resolve(idle.play()).then(()=>{idleBlocked=false;manualPlay(false);}).catch(error=>{
+   if(error.name==='AbortError')return;
+   idleBlocked=true;manualPlay(true);report('idle-error','برای شروع پخش، دکمهٔ پخش را لمس کنید.');
+  }).finally(()=>{idleStarting=false;});
+ }catch{idleStarting=false;idleBlocked=true;manualPlay(true);}
+}
+function refreshIdle(){
+ const show=Boolean(idlePath&&video.hidden);idle.hidden=!show;
+ if(show){if(idle.getAttribute('src')!==idlePath){idleBlocked=false;idle.src=idlePath;}startIdle();}
+ else{idle.pause();manualPlay(false);}
+}
+idle.addEventListener('playing',()=>{idleBlocked=false;manualPlay(false);});
+idle.addEventListener('error',()=>{if(!idle.hidden){idleBlocked=true;manualPlay(true);report('idle-error','دریافت ویدیو انجام نشد؛ برای تلاش دوباره پخش را لمس کنید.');}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshIdle();});
 const mobile=location.pathname.includes('mobile');document.body.classList.toggle('mobile-output',mobile);
 function fit(){document.documentElement.style.setProperty('--live-scale',(mobile?Math.max:Math.min)(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fit);fit();
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
 function stop(){epoch++;queue=[];try{source?.stop();}catch{}source=null;video.pause();video.hidden=true;playing=false;refreshIdle();report(enabled?'ready':'locked');}
 window.aryanaActivateAudio=async()=>{
+ startIdle(true);
  try{
   context??=new AudioContext();if(!gain){gain=context.createGain();gain.connect(context.destination);}
-  await context.resume();enabled=context.state==='running';$('enableAudio').hidden=enabled;
+  await context.resume();enabled=context.state==='running';manualPlay(idleBlocked);
   report(enabled?'ready':'locked');if(enabled)void next();return enabled;
  }catch(e){report('error',e.message);return false;}
 };
@@ -43,7 +67,7 @@ async function next(){
   gain.gain.value=muted?0:volume;
   const node=context.createBufferSource();source=node;node.buffer=buffer;node.connect(gain);if(token!==epoch)return;
   node.onended=()=>{if(token!==epoch)return;source=null;playing=false;video.pause();video.hidden=true;refreshIdle();report('ready');void next();};
-  if(item.video){video.src=item.video;video.muted=true;video.hidden=false;refreshIdle();await video.play().catch(()=>{video.hidden=true;});}
+  if(item.video){video.src=item.video;video.muted=true;try{await video.play();if(token!==epoch)return;video.hidden=false;refreshIdle();}catch{video.hidden=true;refreshIdle();}}
   if(token!==epoch){video.pause();video.hidden=true;return;}
   node.start();report('playing');
  }catch(e){if(token!==epoch)return;playing=false;video.hidden=true;refreshIdle();report('error',e.message);void next();}

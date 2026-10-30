@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {serveStaticFile} from './media-http.mjs';
 import {WebSocketServer} from 'ws';
 import {TikTokLiveConnection,WebcastEvent,ControlEvent,SignConfig} from 'tiktok-live-connector';
 import {readFileSync,writeFileSync,mkdirSync,existsSync,readdirSync,statSync,unlinkSync,renameSync} from 'node:fs';
@@ -113,7 +114,7 @@ const server=http.createServer(async(req,res)=>{
  try{
   if(!allowed(req))return json(res,403,{error:'Origin rejected'});
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
-  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self'; connect-src 'self' ws: blob:; worker-src 'self'; frame-ancestors 'self'");
+  res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self'; connect-src 'self' ws: wss: blob:; worker-src 'self'; frame-ancestors 'self'");
   const url=new URL(req.url,'http://127.0.0.1:'+port);
   if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:false});
   if(req.method==='GET'&&url.pathname==='/api/session')return json(res,200,hosting.hosted?{requiresToken:true}:{key});
@@ -157,7 +158,7 @@ const server=http.createServer(async(req,res)=>{
    else return json(res,404,{error:'Unknown action'});
    broadcast();return json(res,200,{ok:true,state:state()});
   }
-  if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
+  if(req.method!=='GET'&&req.method!=='HEAD')return json(res,405,{error:'Method not allowed'});
   let file;
   if(url.pathname==='/'||url.pathname==='/studio')file=join(publicDir,'index.html');else if(url.pathname==='/live'||url.pathname==='/screen'||url.pathname==='/mobile'||url.pathname==='/live/mobile')file=join(publicDir,'live.html');
   else if(/^\/audio\/[a-f0-9]{64}\.mp3$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
@@ -167,7 +168,7 @@ const server=http.createServer(async(req,res)=>{
   if(/^\/assets\/reaction-[a-z-]+\.(mp3|mp4)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(url.pathname==='/assets/idle.mp4')file=join(publicDir,'assets/idle.mp4');
   if(!file||!existsSync(file))return json(res,404,{error:'Not found'});
-  const ext='.'+file.split('.').at(-1);res.writeHead(200,{'content-type':types[ext]||'application/octet-stream','cache-control':'no-cache'});res.end(readFileSync(file));
+  const ext='.'+file.split('.').at(-1);return serveStaticFile(req,res,file,types[ext]||'application/octet-stream');
  }catch(error){json(res,400,{error:String(error.message||'خطا').slice(0,220)});}
 });
 server.on('upgrade',(req,socket,head)=>{if(req.url!=='/events'||!allowed(req)||wss.clients.size>=30){socket.destroy();return;}wss.handleUpgrade(req,socket,head,ws=>{wss.emit('connection',ws,req);ws.send(JSON.stringify(hosting.hosted?publicState(state()):state()));ws.alive=true;ws.on('pong',()=>{ws.alive=true;});ws.on('message',()=>ws.close(1008));});});
