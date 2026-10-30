@@ -30,7 +30,7 @@ try:
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
@@ -53,7 +53,7 @@ try:
  else:raise RuntimeError('Hotfix readiness timed out')
  _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
  if state['settings'].get('lastUsername')!=username:raise RuntimeError('Saved username was not preserved')
- if connected and state['connection']!='connected':release.fetch(url+'/api/connect',admin,{'username':username})
+ if connected and state['connection']!='connected':release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
  deadline=time.monotonic()+60
  while connected and time.monotonic()<deadline:
   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
@@ -91,6 +91,17 @@ try:
   public=json.loads(public_raw)
   if any(key in public for key in ['settings','lipTest','voiceEngine','storage','livePreparation']):raise RuntimeError('Private state exposed by output fallback')
   report['public_output_fallback_verified']=True
+  if not state.get('live',{}).get('active') and state['connection']!='connected':
+   release.fetch(url+'/api/entertainment-prepare',admin,{})
+   deadline=time.monotonic()+300
+   while time.monotonic()<deadline:
+    _,fun_raw,_=release.fetch(url+'/api/state',admin);state=json.loads(fun_raw)
+    if state.get('entertainment',{}).get('cachedClips',0)>=3 and not state.get('entertainment',{}).get('preparing'):break
+    if state.get('speech')=='error' or state.get('entertainment',{}).get('preparation')=='error':raise RuntimeError('Entertainment preparation failed')
+    time.sleep(2)
+   else:raise RuntimeError('Entertainment preparation timed out')
+   report['entertainment_starters_prepared']=state['entertainment']['cachedClips']
+  else:report['entertainment_starters_prepared']='deferred_to_active_live'
   report['neural_prepared']=True
   report['initial_preparation_seconds']=state.get('livePreparation',{}).get('seconds')
   if state['connection']=='connected' or state.get('live',{}).get('active') or request.get('engagement_overlay'):
@@ -121,14 +132,14 @@ try:
 
   if not state.get('capabilities',{}).get('liveLipSync'):raise RuntimeError('Fresh lip-sync capability was not ready')
   report.update(neural_lipsync_verified=True,lip_sync_delivery='generated_per_reply',streaming=False)
- report.update(status='ready',connection=state['connection'],connection_resumed=state['connection']=='connected' if connected else None,recorded_welcome_ready=state.get('capabilities',{}).get('recordedReactions',0)>=2,username_preserved=True,conversation_language=state['settings'].get('language'),conversation_topic=state['settings'].get('topic'),viewer_invitations_enabled=True,comment_priority_enabled=True,origin_reply='virtual_ai_company')
+ report.update(status='ready',connection=state['connection'],connection_resumed=state['connection']=='connected' if connected else None,recorded_welcome_ready=state.get('capabilities',{}).get('recordedReactions',0)>=2,username_preserved=True,conversation_language=state['settings'].get('language'),conversation_topic=state['settings'].get('topic'),viewer_invitations_enabled=True,comment_priority_enabled=True,origin_reply='virtual_ai_company',continuous_entertainment_enabled=state['settings'].get('entertainmentEnabled',False),like_milestones=[100,500,1000],named_gift_thanks=True)
  message='قانون واکنش آریانا اصلاح شد:\nورود: سلام، خوش آمدید.\nگیفت و لایک: بسیار تشکر.\nنام‌های عددی خوانده نمی‌شوند. خوش‌آمد ویژهٔ مهمانان شناخته‌شدهٔ بالای لیول ۲۵ حفظ شد.\n'+('اتصال دریافت تیک‌تاک دوباره متصل است.' if report['connection_resumed'] else 'وضعیت اتصال را در پنل بررسی کنید.')
  if request.get('video_only'):message+='\n\nویدیوی انتظار آریانا به‌روزرسانی شد: ۶۰ ثانیه با حرکت‌های متفاوت و حدود ۶ پلک‌زدن کوتاه در دقیقه. چشمک‌های اضافی حذف و اتصال‌های دوچهره‌ای اصلاح شدند. پخش پس از اتصال دوباره باید فایل جدید را خودکار بگیرد؛ اگر هنوز نسخهٔ قبلی را می‌بینید، منبع Browser/Link را یک بار Refresh کنید. فقط AI-Generated نمایش داده می‌شود. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند و حرکت لبِ تازه تولید نمی‌شود.\nhttps://afgtakrun-aryana-live-studio.hf.space/live?v=f48e2929dd1d26fa'
  if request.get('playback_compatibility'):
   version=hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()[:16]
   message='مشکل نمایش ویدیوی آریانا اصلاح شد. پخش بخش‌بخشی ویدیو و سازگاری فایل برای مرورگرهای موبایل به‌روزرسانی شد. ویدیو همان نسخهٔ ۶۰ثانیه‌ای با چشمک‌های کمتر است. اگر مرورگر پخش خودکار را مسدود کرد، ▶ را لمس کنید. فقط AI-Generated روی خروجی دیده می‌شود.\n\n'+url+'/live?v='+version+'\nنسخهٔ موبایل:\n'+url+'/mobile?v='+version+'\nاگر منبع باز در LIVE Studio هنوز صفحهٔ قبلی را دارد، یک بار Refresh کنید. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند.'
  if request.get('neural_lipsync'):
-  message='پاسخ‌ها و گفتگوی آریانا اصلاح شد.\nبرای سوال دربارهٔ اصالت یا سازنده می‌گوید: من یک شخصیت مجازی از شرکت هوش مصنوعی هستم؛ در English: I am a virtual host from an AI company.\nکامنت‌ها صف مستقل و بالاترین اولویت دارند؛ پاسخ آماده، خوش‌آمد و صحبت موضوعی را کنار می‌زند. برای گرفتن قابلیت توقف صحبت موضوعی، دکمهٔ «رفرش لایف» را در پنل بزنید. تولید صدای تازه و حرکت لب همچنان زمان می‌برد.\nگفتگوی AI شامل توضیح و مثال کوتاه است، همراه با دعوت به سوال و نظر.\n'+('اتصال تیک‌تاک برقرار است.' if state['connection']=='connected' else 'دریافت تیک‌تاک را از پنل وصل کنید.')
+  message='سرگرمی آریانا اضافه شد: گفتگوی پیوسته‌تر، جوک با خندهٔ صوتی ملایم، کوییز با A/B یا ۱/۲ و توضیح جواب. دعوت به ماندن، نظر دادن و شریک‌کردن لایف هم میان برنامه است؛ پاسخ کامنت اولویت دارد.\n\nتشکر نام‌دار برای گیفت و رسیدن لایک هر نفر به ۱۰۰، ۵۰۰ و ۱۰۰۰ اضافه شد؛ هر مرحله یک بار در همان لایف. نام‌های عددی و نامطمئن خوانده نمی‌شوند.\n\nپنل را تازه کنید و «رفرش لایف» را بزنید. برای کم‌شدن وقفه، پیش از اتصال، «آماده‌سازی سرگرمی پیش از لایف» را اجرا کنید. در شروعِ آماده‌سازی یا هنگام تولید جواب تازه ممکن است مکث باشد؛ بخش‌های آماده دوباره با همان صدا و لب‌خوانی هماهنگ پخش می‌شوند.\n'+('اتصال تیک‌تاک برقرار است.' if state['connection']=='connected' else 'دریافت تیک‌تاک را از پنل وصل کنید.')
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise

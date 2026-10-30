@@ -24,6 +24,11 @@ export function greeting(name,level,language='fa'){
  return language==='en'?`Welcome, ${name}!`:`${name} جان، خوش آمدید!`;
 }
 
+export function gratitude(name,kind,milestone,language='fa'){
+ if(!name)return language==='en'?'Thank you very much!':'بسیار تشکر!';
+ if(language==='en')return kind==='gift'?'Thank you very much for the gift, '+name+'!':'Thank you very much for '+milestone+' likes, '+name+'!';
+ return kind==='gift'?name+' جان، از گیفت‌تان بسیار تشکر!':name+' جان، برای '+milestone+' لایک بسیار تشکر!';
+}
 export class HostSession{
  constructor({now=()=>Date.now()}={}){this.now=now;this.reset();}
  export(){return {donors:[...this.donors],likers:[...this.likers],seen:[...this.seen],startedAt:this.startedAt};}
@@ -58,14 +63,15 @@ export class HostSession{
    const known=Number.isSafeInteger(unit)&&unit>0&&unit*count<=1e9;
    this.donors.set(id,{key:old?.key||this.likers.get(id)?.key||randomUUID(),...profile,coins:(old?.coins||0)+(known?unit*count:0),count:(old?.count||0)+count,unknown:Boolean(old?.unknown||!known),at});
    this.startedAt??=at;this.record(kind,profile.name+' · '+(known?unit*count+' کوین':'گیفت با ارزش نامعلوم'));
-   return {kind,profile,text:'بسیار تشکر!'};
+   return {kind,profile,text:gratitude(profile.spokenName,'gift')};
   }
   if(!this.remember(kind+':'+msg))return null;
   if(kind==='like'){
    const count=Number(event.count);if(!Number.isSafeInteger(count)||count<1||count>100000)return null;
    const old=this.likers.get(id);if(!old&&this.likers.size>=5000)return null;
-   this.likers.set(id,{key:old?.key||this.donors.get(id)?.key||randomUUID(),...profile,likes:(old?.likes||0)+count,at});
-   return {kind,profile,text:'بسیار تشکر!'};
+   const total=(old?.likes||0)+count,previous=[100,500,1000].includes(old?.thankedMilestone)?old.thankedMilestone:0,milestone=[100,500,1000].filter(level=>total>=level&&level>previous).at(-1)||null;
+   this.likers.set(id,{key:old?.key||this.donors.get(id)?.key||randomUUID(),...profile,likes:total,thankedMilestone:milestone||previous,at});
+   return {kind,profile,milestone,text:milestone?gratitude(profile.spokenName,'like',milestone):'بسیار تشکر!'};
   }
   if(kind==='join'){
    const level=Number(event.user?.payGrade?.level);const row={key:randomUUID(),...profile,at};this.joins.push(row);this.joins=this.joins.slice(-20);

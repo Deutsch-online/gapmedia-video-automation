@@ -1,3 +1,5 @@
+import {gratitude} from './host.mjs';
+import {latinLabel} from '../public/latin-label.js';
 import {HOST_ORIGIN} from './replies.mjs';
 export const languageChoices=new Set(['auto','fa','en']);
 export function outputLanguage(selected,text){return selected==='fa'||selected==='en'?selected:/[\u0600-\u06ff]/.test(String(text))?'fa':'en';}
@@ -13,4 +15,4 @@ const english=new Map([
 ]);
 const persian=new Map([...english].map(([fa,en])=>[en,fa]));
 export function localizedReply(text,selected){if(selected==='en')return english.get(text)||(!/[\u0600-\u06ff]/.test(text)?text:null);if(selected==='fa')return persian.get(text)||(/[\u0600-\u06ff]/.test(text)?text:null);return text;}
-export function localizedReaction(text,selected){if(selected!=='en')return text;return english.get(text)||(/خوش آمدید/.test(text)?(text.match(/^(.+?) جان،/)?.[1]?`A warm welcome, ${text.match(/^(.+?) جان،/)[1]}! It is lovely to have you here.`:'Welcome! It is an honor to have you here.'):text);}
+export function localizedReaction(text,selected){if(selected!=='en')return text;const gift=text.match(/^(.+?) جان، از گیفت‌تان بسیار تشکر!$/),like=text.match(/^(.+?) جان، برای (100|500|1000) لایک بسیار تشکر!$/);if(gift)return gratitude(latinLabel(gift[1]),'gift',null,'en');if(like)return gratitude(latinLabel(like[1]),'like',Number(like[2]),'en');return english.get(text)||(/خوش آمدید/.test(text)?(text.match(/^(.+?) جان،/)?.[1]?`A warm welcome, ${text.match(/^(.+?) جان،/)[1]}! It is lovely to have you here.`:'Welcome! It is an honor to have you here.'):text);}

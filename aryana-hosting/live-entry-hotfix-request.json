@@ -1,5 +1,5 @@
 {
-  "request": "ai-company-identity-comment-priority-and-explained-topics-v8",
+  "request": "continuous-entertainment-quizzes-and-named-like-gift-thanks-v9",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
@@ -8,5 +8,6 @@
   "neural_lipsync": true,
   "engagement_overlay": true,
   "viewer_invitations": true,
-  "comment_priority": true
+  "comment_priority": true,
+  "continuous_entertainment": true
 }

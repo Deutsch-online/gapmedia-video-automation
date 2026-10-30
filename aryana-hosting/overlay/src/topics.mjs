@@ -18,8 +18,9 @@ const invitations={
   'If you enjoy this conversation, tap the screen and share this live with your friends to support it. Invite them to join our AI conversation!'
  ]
 };
+export function topicContent(topic='ai',language='fa',index=0){if(language==='en')topic='ai';const bank=topics[topic]||topics.ai,locale=language==='en'?'en':'fa';return index%2===1?invitations[locale][Math.floor(index/2)%invitations[locale].length]:bank[locale][Math.floor(index/2)%bank[locale].length];}
 export class TopicConversation{
  constructor({now=()=>Date.now(),interval=75000}={}){this.now=now;this.interval=interval;this.nextAt=now()+30000;this.turns=new Map();}
- take({connected,enabled,autoSpeak,busy,lastActivity=0,topic='ai',language='fa'}){const time=this.now();if(!connected||!enabled||!autoSpeak||busy||time<this.nextAt||time-lastActivity<15000)return null;if(language==='en')topic='ai';const bank=topics[topic]||topics.ai,locale=language==='en'?'en':'fa',key=topic+locale,index=this.turns.get(key)||0;this.turns.set(key,index+1);this.nextAt=time+this.interval;return index%2===1?invitations[locale][Math.floor(index/2)%invitations[locale].length]:bank[locale][Math.floor(index/2)%bank[locale].length];}
+ take({connected,enabled,autoSpeak,busy,lastActivity=0,topic='ai',language='fa'}){const time=this.now();if(!connected||!enabled||!autoSpeak||busy||time<this.nextAt||time-lastActivity<15000)return null;if(language==='en')topic='ai';const key=topic+language,index=this.turns.get(key)||0;this.turns.set(key,index+1);this.nextAt=time+this.interval;return topicContent(topic,language,index);}
  defer(){this.nextAt=this.now()+30000;}
 }

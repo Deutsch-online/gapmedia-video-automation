@@ -1,8 +1,8 @@
-const priority={topic:5,manual:100,gift:85,vip:90,reply:110,join:35,like:15,thanks:10};
+const priority={milestone:80,topic:5,manual:100,gift:85,vip:90,reply:110,join:35,like:15,thanks:10};
 export class SpeechQueue{
  constructor({now=()=>Date.now(),limit=6}={}){this.now=now;this.limit=limit;this.items=[];}
- push(text,kind='manual',revision=0){
-  const item={text,kind,revision,priority:priority[kind]??50,at:this.now()};
+ push(text,kind='manual',revision=0,meta={}){
+  const item={text,kind,revision,meta,priority:priority[kind]??50,at:this.now()};
   if(this.items.some(x=>x.revision===revision&&x.text===text))return false;
   if(this.items.length>=this.limit){const lowest=this.items.reduce((a,b)=>a.priority<=b.priority?a:b);if(lowest.priority>=item.priority)return false;this.items.splice(this.items.indexOf(lowest),1);}
   this.items.push(item);this.items.sort((a,b)=>b.priority-a.priority||a.at-b.at);return true;
