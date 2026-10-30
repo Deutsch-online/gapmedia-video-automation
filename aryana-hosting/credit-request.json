@@ -1,0 +1,7 @@
+{
+  "request": "existing-hf-credit-probe-v1",
+  "use_existing_hf_credits": true,
+  "max_generations": 1,
+  "max_credit_usd": 0.8,
+  "purchase_credits": false
+}
