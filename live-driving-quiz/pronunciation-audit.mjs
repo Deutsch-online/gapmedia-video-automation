@@ -1,7 +1,7 @@
 // A transcript disagreement is a review candidate, never proof of bad pronunciation.
 import {createHash} from 'node:crypto';
 import {pronunciationKey,validWord} from './teacher-profile.mjs';
-const aliases=new Map(Object.entries({'راننده':'دریور','رانندگان':'دریورها','خودرو':'موتر','لاستیک':'تایر','ترمز':'بریک','موتور':'انجین','دنده':'گیر','لایو':'لایف','شییر':'شیر'}));
+const aliases=new Map(Object.entries({'راننده':'دریور','رانندگان':'دریورها','خودرو':'موتر','لاستیک':'تایر','ترمز':'بریک','موتور':'انجین','دنده':'گیر','لایو':'لایف','شییر':'همرسانی','share':'همرسانی'}));
 const tokens=text=>(pronunciationKey(text).match(/[\p{Script=Arabic}\u200c]+/gu)||[]).map(word=>({word,key:aliases.get(word)||word}));
 export function suspectWords(expected,heard){
  const a=tokens(expected),b=tokens(heard);if(a.length<3||b.length<3||a.length>300||b.length>300)return [];

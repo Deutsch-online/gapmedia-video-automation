@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from '../live-assistant.mjs';
+import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,normalizeAssistantSettings,speakableComment,commentLeadIn,JOIN_GREET_GAP_MS,JOIN_GREET_WINDOW_MS} from '../live-assistant.mjs';
 import {answerComment,explainQuestion} from '../teaching.mjs';
+import {Quiz} from '../quiz.mjs';
 import {LiveSpeech} from '../live-speech.mjs';
 const questions=JSON.parse(readFileSync(new URL('../data/questions.json',import.meta.url))),q=questions[0],flush=()=>new Promise(r=>setImmediate(r));
 const fixture=()=>{let now=0;const texts=[],settings={...ASSISTANT_DEFAULTS},voice={state:'ready',synthesize:async text=>{texts.push(text);return {audio:Buffer.from('RIFF-test'),durationMs:1000};}},assistant=new LiveAssistant({voice,settings:()=>settings,now:()=>now});return {assistant,settings,texts,setNow:value=>{now=value;}};};
@@ -17,15 +18,59 @@ test('queue waits for an idle slot, preserves long explanations, deduplicates au
  setNow(10);assistant.tick({roundId:'round2',phase:'open',canSpeak:false});assert.equal(assistant.active,null);
 });
 test('Persian comments are rate-limited and numeric answers never get read or alter answer scoring',async()=>{
- const {assistant,setNow}=fixture();const event={content:'سلام، حق تقدم یعنی چه؟',user:{id:'1',nickname:'سارا'},common:{msgId:'a'}};
+ const {assistant,texts,setNow}=fixture();const event={content:'سلام، حق تقدم یعنی چه؟',user:{id:'1',nickname:'سارا'},common:{msgId:'a'}};
  assert.equal(assistant.comment(event,q,'open','r').accepted,true);assert.equal(assistant.comment(event,q,'open','r').reason,'duplicate');assert.equal(assistant.comment({...event,common:{msgId:'b'}},q,'open','r').reason,'cooldown');
  setNow(9000);assert.equal(assistant.comment({...event,content:'۱۲۳',common:{msgId:'c'}},q,'open','r').accepted,false);assert.equal(assistant.comment({...event,content:'نقطهٔ کور چیست؟',common:{msgId:'d'}},q,'open','r').accepted,true);await flush();
+ assert.match(texts[0],/سارا/);assert.match(texts[0],/حق تقدم/);assert.doesNotMatch(texts.join('\n'),/یکی از دوستان نوشته/);
+ const quiz=new Quiz(questions,{now:()=>1_700_000_000_000});quiz.start();
+ assert.equal(quiz.comment({comment:'2',user:{id:'u',nickname:'سارا'},common:{msgId:'score',createTime:1_700_000_000}}).accepted,true);
+ assert.equal(assistant.comment({content:'2',user:{id:'u',nickname:'سارا'},common:{msgId:'score-read'}},q,'open','r').reason,'not_readable');
 });
-test('only accepted final gift events and real per-user like totals produce bounded grouped thanks',async()=>{
- const {assistant,settings,texts}=fixture();const event={user:{id:'sender',nickname:'مریم'}};
- assistant.noteSupport('gift',event,{accepted:true,pending:true});assistant.noteSupport('gift',event,{accepted:false});assistant.flushThanks();assert.equal(assistant.queue.length,0);
- settings.likeThreshold=100;assistant.noteSupport('like',event,{accepted:true},10);assistant.flushThanks();assert.equal(assistant.queue.length,0);
- assistant.noteSupport('gift',event,{accepted:true,pending:false});assistant.noteSupport('like',event,{accepted:true},100);assistant.flushThanks();await flush();assert.equal(assistant.queue.length,1);assert.match(texts[0],/هدیه/);assert.match(texts[0],/لایک/);assert.match(texts[0],/مریم/);assert.match(texts[0],/تشکر، دوستان گرامی، از لایک/);assert.match(texts[0],/لایف را شییر کنید/);assert.doesNotMatch(texts[0],/پخش زنده/);assert.equal(assistant.thanks.size,0);
+test('only meaningful comments are read, with a warm named lead-in',async()=>{
+ const {assistant,texts,setNow}=fixture();
+ for(const [content,id] of [['هههه','g1'],['هاهاها','g2'],['ضصثقفغ','g3'],['اب','g4'],['😂🔥','g5'],['asdfqwer','g6'],['https://example.com/lesson','g7'],['www.example.com سلام','g8'],['123','g9'],['AAA','g10']])assert.equal(assistant.comment({content,user:{nickname:'سارا'},common:{msgId:id}},q,'open','r').reason,'not_readable',content);
+ assert.equal(speakableComment('سلام asdf حق تقدم'),'سلام حق تقدم');assert.equal(speakableComment('ممنون'),'ممنون');assert.equal(speakableComment('حق تقدم یعنی چه؟'),'حق تقدم یعنی چه؟');
+ assert.equal(commentLeadIn('سارا','حق تقدم چیست؟','seed').includes('سارا'),true);
+ assert.match(commentLeadIn('سارا','حق تقدم چیست؟','seed'),/می‌گوید|سوال|می‌خوانم|نوشته|نوشتی|بشنویم/);
+ assert.equal(commentLeadIn('Mary','سلام','1'),commentLeadIn('Mary','سلام','1'));
+ assert.match(commentLeadIn('Mary','سلام','1'),/دوست گرامی/);
+ setNow(0);assert.equal(assistant.comment({content:'Schulterblick یعنی چه؟',user:{nickname:'سارا'},common:{msgId:'term'}},q,'open','r').accepted,true);await flush();
+ assert.match(texts.at(-1),/سارا/);assert.match(texts.at(-1),/Schulterblick/);assert.match(texts.at(-1),/نقطهٔ کور/);
+});
+test('like thanks names only the person whose own likes passed 500, and only once',async()=>{
+ const {assistant,settings,texts,setNow}=fixture();const liker={user:{id:'sender',nickname:'مریم'}},quiet={user:{id:'quiet',nickname:'سارا'}},stranger={user:{id:'other',nickname:'علی'}};
+ assistant.noteSupport('like',liker,{accepted:false},800);assistant.noteSupport('like',liker,{accepted:true,pending:true},800);assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ settings.likeThreshold=100;assistant.noteSupport('like',liker,{accepted:true},10);assistant.noteSupport('like',liker,{accepted:true},500);assistant.noteSupport('like',quiet,{accepted:true},80);assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ assistant.noteSupport('like',liker,{accepted:true},501);assistant.flushThanks();await flush();assert.equal(assistant.queue.length,1);assert.match(texts[0],/تشکر از لایکت، مریم!/);assert.doesNotMatch(texts[0],/سارا|علی|شییر|دوستان گرامی|پخش زنده|همهٔ دوستان/);assert.equal(assistant.thanks.size,0);
+ assistant.noteSupport('like',liker,{accepted:true},900);assistant.flushThanks();assert.equal(assistant.queue.length,1);
+ setNow(settings.thankGap*1000-1);assistant.noteSupport('like',stranger,{accepted:true},700);assistant.flushThanks();assert.equal(assistant.queue.length,1);
+ const thankedAt=settings.thankGap*1000;setNow(thankedAt);assistant.flushThanks();await flush();assert.match(texts.at(-1),/تشکر از لایکت، علی!/);assert.doesNotMatch(texts.at(-1),/مریم|سارا/);
+ settings.thankGap=120;setNow(thankedAt+119999);assistant.noteSupport('like',quiet,{accepted:true},600);assistant.flushThanks();assert.equal(texts.length,2);setNow(thankedAt+120000);assistant.flushThanks();await flush();assert.match(texts.at(-1),/تشکر از لایکت، سارا!/);
+ const migrated=normalizeAssistantSettings({...ASSISTANT_DEFAULTS,likeThreshold:1,thankGap:40});assert.equal(migrated.likeThreshold,501);assert.equal(migrated.thankGap,40);
+});
+test('gift thanks is short, named, and skips anyone who did not send a finished gift',async()=>{
+ const {assistant,settings,texts,setNow}=fixture();const giver={user:{id:'g',nickname:'مریم'}},second={user:{id:'g2',nickname:'سارا'}};
+ assistant.noteSupport('gift',giver,{accepted:true,pending:true});assistant.noteSupport('gift',{user:{id:'no',nickname:'علی'}},{accepted:false});assistant.flushThanks();assert.equal(assistant.queue.length,0);
+ assistant.noteSupport('gift',giver,{accepted:true,pending:false});assistant.noteSupport('gift',second,{accepted:true});assistant.flushThanks();await flush();
+ assert.match(texts[0],/زنده باشین مریم، تشکر از هدیه‌ات!/);assert.match(texts[0],/زنده باشین سارا، تشکر از هدیه‌ات!/);assert.doesNotMatch(texts[0],/علی|همهٔ دوستان|شییر|دوستان گرامی/);
+ setNow(settings.thankGap*1000);assistant.noteSupport('gift',{user:{id:'latin',nickname:'Alex'}},{accepted:true});assistant.flushThanks();await flush();assert.match(texts.at(-1),/زنده باشین دوست گرامی، تشکر از هدیه‌ات!/);
+});
+test('new joiners are greeted by name within a minute, batched, and held during a lesson explanation',async()=>{
+ const {assistant,settings,texts,setNow}=fixture();
+ assert.equal(ASSISTANT_DEFAULTS.greetJoins,true);assert.equal(validAssistantSettings({...ASSISTANT_DEFAULTS,greetJoins:false}),true);
+ assert.equal(normalizeAssistantSettings({enabled:true,showCaptions:false,readComments:true,replyComments:true,autoExplain:true,thankLikes:true,thankGifts:true,likeThreshold:501,commentGap:8,thankGap:20}).greetJoins,true);
+ assert.equal(assistant.noteJoin({user:{id:'1',nickname:'سارا'}}).accepted,true);assert.equal(assistant.noteJoin({user:{id:'1',nickname:'سارا'}}).reason,'duplicate');
+ assistant.noteJoin({user:{id:'2',nickname:'مریم'}});assistant.noteJoin({user:{id:'3',nickname:'نرگس'}});assistant.noteJoin({user:{nickname:'Alex'}});
+ assistant.tick({roundId:'r',phase:'revealed',canSpeak:true});await flush();assert.match(texts[0],/سارا و مریم و نرگس و دوست گرامی، خوش آمدید!/);
+ setNow(JOIN_GREET_GAP_MS-1);assistant.noteJoin({user:{id:'4',nickname:'علی'}});assistant.tick({roundId:'r',phase:'revealed',canSpeak:true});await flush();assert.equal(texts.length,1);
+ setNow(JOIN_GREET_GAP_MS);assistant.tick({roundId:'r',phase:'revealed',canSpeak:true});await flush();assert.match(texts.at(-1),/علی، خوش آمدی!/);
+ setNow(JOIN_GREET_GAP_MS+JOIN_GREET_WINDOW_MS+1);assistant.noteJoin({user:{id:'late',nickname:'کامران'},at:0});assistant.joins.set('stale',{name:'قدیمی',at:0});assistant.tick({roundId:'r',phase:'revealed',canSpeak:true});await flush();assert.match(texts.at(-1),/کامران، خوش آمدی!/);assert.doesNotMatch(texts.at(-1),/قدیمی/);
+ settings.greetJoins=false;assert.equal(assistant.noteJoin({user:{id:'off',nickname:'لیلا'}}).reason,'disabled');
+ assistant.clear();settings.greetJoins=true;setNow(0);assistant.explain(q,'round',{revealed:true});await flush();const spoken=assistant.tick({roundId:'round',phase:'revealed',canSpeak:true});assert.equal(spoken.kind,'explanation');
+ const during=texts.length;assistant.noteJoin({user:{id:'during',nickname:'سارا'}});assistant.tick({roundId:'round',phase:'revealed',canSpeak:true});await flush();assert.equal(texts.slice(during).some(text=>text.includes('خوش آمدی')),false);
+ setNow(spoken.expiresAt);assistant.tick({roundId:'round',phase:'revealed',canSpeak:true});await flush();assert.match(texts.at(-1),/سارا، خوش آمدی!/);
+ assert.match(readFileSync(new URL('../server.mjs',import.meta.url),'utf8'),/assistant\.noteJoin\(data\)/);
+ assert.match(readFileSync(new URL('../public/control.html',import.meta.url),'utf8'),/id="assistantGreetJoins"/);
 });
 test('bounded queues, cancellation and voice errors cannot restart discarded speech or trigger a paid fallback',async()=>{
  let resolve;const assistant=new LiveAssistant({voice:{synthesize:()=>new Promise(r=>resolve=r)},settings:()=>ASSISTANT_DEFAULTS});for(let i=0;i<10;i++)assistant.enqueue({text:'سلام به شما '+i});assert.equal(assistant.queue.length,8);assistant.clear();resolve({audio:Buffer.from('RIFF'),durationMs:1000});await flush();assert.equal(assistant.queue.length,0);assert.equal(assistant.audio.size,0);

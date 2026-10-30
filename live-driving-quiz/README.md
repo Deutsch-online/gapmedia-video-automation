@@ -420,8 +420,9 @@ Persian recordings and resident speech share the same careful profile: length
 scale 1.25, volume 0.78 and steadier synthesis variation. German question speed
 is unchanged. Speech text preserves half-spaces instead of splitting Persian
 suffixes, canonicalizes explicit ه‌ی ezafe spelling, and uses targeted readings
-for the requested LIVE/share wording. Explicit شییر/share is distinguished from
-the ordinary Persian شیر; ordinary words and displayed bank text are retained.
+for the requested LIVE/share wording. Explicit شییر/share is spoken as the
+Afghan Dari word همرسانی, and ordinary شیر is left unchanged. Displayed bank
+text is retained.
 Versioned narration metadata rejects stale clips from the previous voice profile.
 
 Social messages default to Persian. Selecting Persian question narration forces

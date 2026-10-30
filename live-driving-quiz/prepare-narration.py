@@ -36,8 +36,9 @@ def speech_text(text, lang):
         # Preserve the sound of Persian suffixes rather than reading each half
         # of a half-spaced word separately. Only explicit ezafe spelling is changed.
         text = re.sub(r'ه\u200cی(?=\s|$|[،.؟!])', 'هٔ', text)
-        # Explicit LIVE loanwords: do not change ordinary شیر (milk/lion).
-        text = re.sub(r'(?<!\w)(?:شی{2,}ر|شی+[ \u200c]+ی*ر|share)(?!\w)', 'شِیر', text, flags=re.IGNORECASE)
+        # Share is Afghan Dari «همرسانی». Stretched شییر is misread by the voice;
+        # ordinary شیر (milk/lion) is left unchanged.
+        text = re.sub(r'(?<!\w)(?:شی{2,}ر|شی+[ \u200c]+ی*ر|share)(?!\w)', 'همرسانی', text, flags=re.IGNORECASE)
         text = text.replace('پخش زنده', 'لایف').replace('لایو', 'لایف')
         # Afghan vocabulary affects speech only, never source bank text or keys.
         # Explicit vowels avoid eSpeak's felash / darivar readings.
