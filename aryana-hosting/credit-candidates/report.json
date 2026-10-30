@@ -1,0 +1,22 @@
+{
+  "paid_requested": true,
+  "funding": "existing_hf_credits",
+  "purchase_requested": false,
+  "generation_limit": 1,
+  "upper_bound_credit_usd": 0.8,
+  "clips": [
+    {
+      "name": "idle-credit-probe",
+      "status": "generated",
+      "elapsed_seconds": 92.06,
+      "duration": 5.0,
+      "width": 480,
+      "height": 832,
+      "sha256": "b8f8363973da34704b52419bd4151617b2c1a3581523b1900c97cd4052d2af02",
+      "remaining_seconds": 0
+    }
+  ],
+  "quota_before": 0,
+  "elapsed_seconds": 93.5,
+  "quota_after": 0
+}
