@@ -1,0 +1,6 @@
+{
+  "request": "cached-musetalk-mouth-only-v1",
+  "private": true,
+  "hourly_gpu": false,
+  "max_test_reserved_credit_usd": 0.7
+}
