@@ -39,7 +39,7 @@ try:
   worker_info=api.space_info('afgtakrun/aryana-live-lipsync')
   worker_config=json.loads((release.APP/'src/lipsync-config.json').read_text())
   if not worker_info.private or worker_info.sha!=worker_config['revision']:raise RuntimeError('Private worker revision was not verified')
-  paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile','src/speech-engine.mjs','src/speech.py','src/voice_clone.py']
+  paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile','src/speech-engine.mjs','src/speech.py','src/voice_clone.py','src/languages.mjs','src/local-chat.mjs','src/local-chat.py']
  uploaded=api.create_commit(repo,repo_type='space',operations=[CommitOperationAdd(path_in_repo=p,path_or_fileobj=str(release.APP/p)) for p in paths],commit_message='Fix entry welcomes and exact gift thanks '+source_sha[:12])
  report['status']='building';write();deadline=time.monotonic()+600
  while time.monotonic()<deadline:
@@ -87,12 +87,16 @@ try:
    if state.get('lipSync',{}).get('lastError') and not state.get('lipSync',{}).get('pending'):raise RuntimeError('Neural worker preparation failed')
    time.sleep(2)
   else:raise RuntimeError('Neural worker warmup timed out')
+  _,public_raw,_=release.fetch(url+'/api/playback')
+  public=json.loads(public_raw)
+  if any(key in public for key in ['settings','lipTest','voiceEngine','storage','livePreparation']):raise RuntimeError('Private state exposed by output fallback')
+  report['public_output_fallback_verified']=True
   report['neural_prepared']=True
   report['initial_preparation_seconds']=state.get('livePreparation',{}).get('seconds')
   if state['connection']=='connected' or state.get('live',{}).get('active'):
    report['private_neural_test']='skipped_active_live'
   else:
-   _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'این صدای تازه با لب‌ها هماهنگ است.'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
+   _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'اکنون در خروجی لایف هم حرکت لب دیده می‌شود.','language':'fa'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
    deadline=time.monotonic()+240
    while time.monotonic()<deadline:
     _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw);test=state.get('lipTest') or {}
@@ -104,6 +108,17 @@ try:
    media=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-show_streams','-of','json',str(proof)]))
    if not any(x.get('codec_type')=='audio' for x in media['streams']) or not test.get('voiceClone'):raise RuntimeError('Approved voice neural test failed')
    report.update(private_neural_test='passed_not_broadcast',fresh_reply_elapsed_seconds=test['elapsedSeconds'],fresh_reply_video_seconds=float(media['format']['duration']),fresh_reply_voice_clone=True)
+   _,english_raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'Hello, welcome to Aryana live!','language':'en'})
+   english_id=json.loads(english_raw)['state']['lipTest']['id'];deadline=time.monotonic()+240
+   while time.monotonic()<deadline:
+    _,english_raw,_=release.fetch(url+'/api/state',admin);english_state=json.loads(english_raw);english=english_state.get('lipTest') or {}
+    if english.get('id')==english_id and english.get('status')=='ready':break
+    if english.get('id')==english_id and english.get('status') in ['error','cancelled']:raise RuntimeError('English private speech test failed')
+    time.sleep(2)
+   else:raise RuntimeError('English private speech test timed out')
+   if not english.get('voiceClone') or not english.get('video'):raise RuntimeError('English cloned voice clip not ready')
+   report.update(english_private_test='passed_not_broadcast',english_reply_elapsed_seconds=english['elapsedSeconds'])
+
   if not state.get('capabilities',{}).get('liveLipSync'):raise RuntimeError('Fresh lip-sync capability was not ready')
   report.update(neural_lipsync_verified=True,lip_sync_delivery='generated_per_reply',streaming=False)
  report.update(status='ready',connection=state['connection'],connection_resumed=state['connection']=='connected' if connected else None,recorded_welcome_ready=state.get('capabilities',{}).get('recordedReactions',0)>=2,username_preserved=True)
@@ -113,7 +128,7 @@ try:
   version=hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()[:16]
   message='مشکل نمایش ویدیوی آریانا اصلاح شد. پخش بخش‌بخشی ویدیو و سازگاری فایل برای مرورگرهای موبایل به‌روزرسانی شد. ویدیو همان نسخهٔ ۶۰ثانیه‌ای با چشمک‌های کمتر است. اگر مرورگر پخش خودکار را مسدود کرد، ▶ را لمس کنید. فقط AI-Generated روی خروجی دیده می‌شود.\n\n'+url+'/live?v='+version+'\nنسخهٔ موبایل:\n'+url+'/mobile?v='+version+'\nاگر منبع باز در LIVE Studio هنوز صفحهٔ قبلی را دارد، یک بار Refresh کنید. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند.'
  if request.get('neural_lipsync'):
-  message='لب‌خوانی جمله‌های تازهٔ آریانا فعال شد. برای پاسخ تازه، ویدیو از صدای همان جمله ساخته می‌شود؛ ساخت ویدیو چند ثانیه زمان می‌برد و زمان ساخت متن و صدا نیز جداست. چهره و ویدیوی انتظار همان است و مدل فقط ناحیهٔ دهان را پردازش می‌کند.\n\nدر پنل بخش «لب‌خوانی پاسخ‌های تازه» اضافه شد: «آماده‌سازی لب‌ها» و «آزمایش خصوصی متن بالا». آزمایش خصوصی روی خروجی LIVE پخش نمی‌شود. پنل را یک بار تازه کنید.\n\n'+url+'/live?v=neural-mouth-v1\nفقط AI-Generated نمایش داده می‌شود. این سرویس از سهمیه یا اعتبار Hugging Face استفاده می‌کند؛ سقف احتیاطی برنامه ۶ دلار در روز است و خرید یا شارژ خودکار انجام نمی‌دهد.\n'+('دریافت تیک‌تاک متصل است.' if state['connection']=='connected' else 'دریافت تیک‌تاک فعلاً متصل نیست؛ وضعیت اتصال را در پنل بررسی کنید.')
+  message='اصلاح نمایش لب‌خوانی در خروجی لایف و انتخاب زبان منتشر شد. حرکت لب حتی اگر صدای مرورگر قفل باشد نمایش داده می‌شود. برای شنیدن صدا، داخل همان منبع LIVE Studio/OBS یک بار دکمهٔ پخش را بزنید. در پنل، فارسی/دری، English و خودکار اضافه شد. آزمایش خصوصی فقط داخل پنل است؛ برای فرستادن همان کلیپ به خروجی، دکمهٔ «پخش کلیپ آماده در لایف» را بزنید. منبع را یک بار تازه کنید.\n\nلب‌خوانی جمله‌های تازهٔ آریانا فعال شد. برای پاسخ تازه، ویدیو از صدای همان جمله ساخته می‌شود؛ ساخت ویدیو چند ثانیه زمان می‌برد و زمان ساخت متن و صدا نیز جداست. چهره و ویدیوی انتظار همان است و مدل فقط ناحیهٔ دهان را پردازش می‌کند.\n\nدر پنل بخش «لب‌خوانی پاسخ‌های تازه» اضافه شد: «آماده‌سازی لب‌ها» و «آزمایش خصوصی متن بالا». آزمایش خصوصی روی خروجی LIVE پخش نمی‌شود. پنل را یک بار تازه کنید.\n\n'+url+'/live?v=output-lips-v3\nفقط AI-Generated نمایش داده می‌شود. این سرویس از سهمیه یا اعتبار Hugging Face استفاده می‌کند؛ سقف احتیاطی برنامه ۶ دلار در روز است و خرید یا شارژ خودکار انجام نمی‌دهد.\n'+('دریافت تیک‌تاک متصل است.' if state['connection']=='connected' else 'دریافت تیک‌تاک فعلاً متصل نیست؛ وضعیت اتصال را در پنل بررسی کنید.')
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise

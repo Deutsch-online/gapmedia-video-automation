@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {outputLanguage,localizedReply,localizedReaction} from '../src/languages.mjs';
+test('Explicit output languages override comment detection',()=>{assert.equal(outputLanguage('en','سلام'),'en');assert.equal(outputLanguage('fa','Hello'),'fa');assert.equal(outputLanguage('auto','سلام'),'fa');assert.equal(outputLanguage('auto','Hello'),'en');});
+test('English greetings and gift thanks keep the correct meaning',()=>{assert.equal(localizedReaction('سلام، خوش آمدید!','en'),'Hello, welcome!');assert.equal(localizedReaction('بسیار تشکر!','en'),'Thank you very much!');assert.match(localizedReaction('مریم جان، با احترام فراوان خوش آمدید! از حضور و همراهی‌تان خوشحال هستم.','en'),/مریم/);assert.equal(localizedReaction('بسیار تشکر!','fa'),'بسیار تشکر!');});
+test('Stock conversation replies respect the selected language',()=>{assert.equal(localizedReply('سلام، خوش آمدید! از همراهی‌تان خوشحالم.','en'),'Hello, welcome! It is lovely to have you here.');assert.equal(localizedReply('Hello, welcome! It is lovely to have you here.','fa'),'سلام، خوش آمدید! از همراهی‌تان خوشحالم.');assert.equal(localizedReply('I am doing well, thank you for asking! How are you?','en'),'I am doing well, thank you for asking! How are you?');assert.equal(localizedReply('متن ناشناخته','en'),null);});
