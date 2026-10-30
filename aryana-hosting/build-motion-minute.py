@@ -3,11 +3,11 @@ import hashlib,json,math,os,re,shutil,subprocess,time,urllib.request
 from pathlib import Path
 from gradio_client import Client,handle_file
 
-root=Path.cwd();out=root/'aryana-hosting/motion-minute';out.mkdir(parents=True,exist_ok=True)
+root=Path.cwd();out=root/'aryana-hosting/motion-minute-v2';out.mkdir(parents=True,exist_ok=True)
 token=os.environ['HF_TOKEN'];cfg=json.loads((root/'aryana-hosting/motion-request.json').read_text())
 assert cfg.get('use_existing_hf_credits') is True and cfg.get('purchase_credits') is False
-assert cfg.get('max_generations')==12 and cfg.get('max_credit_usd')==6
-report={'funding':'existing_hf_credits','purchase_requested':False,'auto_deploy':False,'max_credit_usd':6,'max_generations':12,'attempts':[],'accepted':[],'status':'building'}
+assert cfg.get('max_generations')==24 and cfg.get('max_credit_usd')==6
+report={'funding':'existing_hf_credits','purchase_requested':False,'auto_deploy':False,'max_credit_usd':6,'max_generations':24,'attempts':[],'accepted':[],'status':'building'}
 def save():
  (out/'report.json').write_text(json.dumps(report,indent=2));print('ARYANA_MOTION '+json.dumps(report),flush=True)
 def get(path):
@@ -19,10 +19,13 @@ def accept(raw,name):
  stats=analyze(raw)
  if stats['missing_face_frames'] or stats['duration']<3:raise RuntimeError('Insufficient usable face motion')
  target=out/(name+'.mp4')
- subprocess.run(['python','aryana-hosting/edit-motion-blinks.py',str(raw),str(target)],check=True)
+ elapsed=sum(x['seconds'] for x in report['accepted'])
+ last_blink=max((x.get('last_blink_end',-8) for x in report['accepted']),default=-8)
+ edit_env=dict(os.environ,ARYANA_KEEP_BLINK='1' if elapsed-last_blink>=8 else '0')
+ subprocess.run(['python','aryana-hosting/edit-motion-blinks.py',str(raw),str(target)],check=True,env=edit_env)
  stats=analyze(target)
- if stats['missing_face_frames'] or stats['blinks_per_minute']>16 or any(e['duration']>0.4 for e in stats['blink_events']):raise RuntimeError('Edited blink quality gate failed')
- report['accepted'].append({'file':target.name,'seconds':stats['duration'],'blink_events':len(stats['blink_events']),'blinks_per_minute':stats['blinks_per_minute'],'sha256':hashlib.sha256(target.read_bytes()).hexdigest()})
+ if stats['missing_face_frames'] or len(stats['blink_events'])>1 or any(e['duration']>0.4 for e in stats['blink_events']):raise RuntimeError('Edited blink quality gate failed')
+ report['accepted'].append({'file':target.name,'seconds':stats['duration'],'blink_events':len(stats['blink_events']),'blinks_per_minute':stats['blinks_per_minute'],'last_blink_end':elapsed+stats['blink_events'][-1]['start']+stats['blink_events'][-1]['duration'] if stats['blink_events'] else last_blink,'sha256':hashlib.sha256(target.read_bytes()).hexdigest()})
  save()
 def error_text(e):
  s=str(e).replace(token,'[REDACTED]');return re.sub(r'https?://\S+','[URL]',s)[:400]
@@ -32,9 +35,9 @@ if identity.get('name')!='afgtakrun' or not identity.get('isPro'):raise RuntimeE
 report['quota_before']=get('/api/spaces/zero-gpu/quota').get('current')
 with urllib.request.urlopen('https://huggingface.co/spaces/Lightricks/LTX-2.5/raw/main/app.py',timeout=30) as r:source=r.read()
 if hashlib.sha256(source).hexdigest()!='9cb16da2545228511423c0d3394519445ddc035f9e7a3e4410eddf04afbeecdb':raise RuntimeError('Reviewed GPU implementation changed')
-# Fixed 896x512 input, conv decoder, auto length capped at 361 frames.
-# Reviewed reservation: int(30 + pixels/1_500_000 + 8) = 148 xlarge seconds.
-reservation=int(min(400,max(60,30+896*512*361/1500000+8)))
+# Fixed 896x512 input, conv decoder, fixed 121 frames.
+# Reviewed reservation: int(30 + pixels/1_500_000 + 8) = 75 xlarge seconds.
+reservation=int(min(400,max(60,30+896*512*121/1500000+8)))
 report['max_reserved_credit_per_attempt_usd']=reservation*2/600
 if cfg['max_generations']*report['max_reserved_credit_per_attempt_usd']>cfg['max_credit_usd']:raise RuntimeError('Credit ceiling would be exceeded')
 image=root/'aryana-hosting/assets/aryana.png'
@@ -42,6 +45,11 @@ if hashlib.sha256(image.read_bytes()).hexdigest()!='54683d700d019ea2a7ba0b96f814
 existing=root/'aryana-hosting/ltx25-candidates/idle-ltx25-probe.mp4'
 if hashlib.sha256(existing.read_bytes()).hexdigest()!='81902439e25666909afc8464ae67acf74ea76828eb2351f61a42e95c8941fa4b':raise RuntimeError('Reviewed existing clip changed')
 accept(existing,'take-00');save()
+for number in (1,2):
+ previous=root/('aryana-hosting/motion-minute/take-%02d-raw.mp4'%number)
+ try:accept(previous,'reuse-%02d'%number)
+ except Exception as e:report.setdefault('reuse_skipped',[]).append({'take':number,'reason':error_text(e)})
+save()
 gestures=[
  'She makes one small nod, relaxes her shoulders and gives a restrained closed-mouth smile.',
  'She briefly glances a little to her left, returns her gaze to the lens, and rests calmly.',
@@ -56,15 +64,15 @@ gestures=[
  'She naturally breathes, slightly straightens her back, smiles softly and relaxes again.',
  'She makes a tiny nod of acknowledgment and a small shoulder shift, keeping a calm expression.'
 ]
-base='A continuous fifteen-second photoreal camera recording of this exact adult woman seated in this same teal chair, wearing this same teal hoodie. Preserve her facial identity, proportions, hairstyle and clothing. Locked eye-level camera, constant head-to-waist framing and lighting. She listens silently with relaxed closed lips and a steady attentive gaze. '
+base='A continuous photoreal camera recording of this exact adult woman seated in this same teal chair, wearing this same teal hoodie. Preserve her facial identity, proportions, hairstyle and clothing. Locked eye-level camera, constant head-to-waist framing and lighting. She listens silently with relaxed closed lips and a steady attentive gaze. '
 ending=' Gentle restrained motion, relaxed open eyes. Finish with her head upright, shoulders relaxed, and gaze forward in the original pose.'
 client=Client('Lightricks/LTX-2.5',token=token,verbose=False,download_files='/tmp/aryana-minute-downloads')
 failures=0
-for i,gesture in enumerate(gestures):
+for i,gesture in enumerate((gestures*2)[:24]):
  if sum(x['seconds'] for x in report['accepted'])>=66:break
- began=time.time();job=None;name='take-%02d'%(i+1)
+ began=time.time();job=None;name='take-%02d'%(i+3)
  try:
-  job=client.submit(base+gesture+ending,handle_file(str(image)),896,512,5.0,1107+i*173,'conv',True,False,False,api_name='/run')
+  job=client.submit(base+gesture+ending,handle_file(str(image)),896,512,5.0,6203+i*173,'conv',False,False,False,api_name='/run')
   result=job.result(timeout=600);value=result[0] if isinstance(result,(tuple,list)) else result
   if isinstance(value,dict):value=value.get('video') or value.get('path')
   if isinstance(value,dict):value=value.get('path')

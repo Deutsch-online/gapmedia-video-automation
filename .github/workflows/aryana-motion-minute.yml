@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add aryana-hosting/motion-minute
+          git add aryana-hosting/motion-minute-v2
           if ! git diff --cached --quiet; then
             git commit -m 'Stage edited one-minute motion candidate for review'
             git pull --rebase origin delivery/aryana-hf-20261029
@@ -49,6 +49,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: aryana-motion-minute
-          path: aryana-hosting/motion-minute
+          name: aryana-motion-minute-v2
+          path: aryana-hosting/motion-minute-v2
           retention-days: 3

@@ -1,4 +1,4 @@
-import json,sys,subprocess
+import json,sys,subprocess,os
 from pathlib import Path
 import cv2,numpy as np
 
@@ -18,7 +18,7 @@ for i,b in enumerate(scores):
 if active is not None:events.append([active,len(scores)-1])
 # Keep the first clearly closed, short natural blink. Remove the other eyelid dips.
 eligible=[e for e in events if max(scores[e[0]:e[1]+1])>=0.65 and (e[1]-e[0]+1)/fps<=0.4]
-kept=eligible[:1];cuts=[]
+kept=eligible[:1] if os.environ.get('ARYANA_KEEP_BLINK','1')=='1' else [];cuts=[]
 for start,end in events:
  if [start,end] in kept:continue
  while start>0 and scores[start-1]>0.22:start-=1
