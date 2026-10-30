@@ -1992,7 +1992,147 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 14,
+      "title_de": "Das Ticket, das kein Ticket ist",
+      "title_fa": "بلیتی که بلیت نیست",
+      "summary": "On a Berlin platform, Marta proudly shows her phone with the Deutschlandticket in an app, but the yellow ticket machine keeps beeping whenever she scans the screen. Lukas explains the ticket is a subscription, not sold at the machine. Marta spots the blue app and a valid scan on the train's reader, and happily boards.",
+      "cliffhanger": "Boarded at last, Marta wonders how to find the right platform for the return trip home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "A bright phone screen displaying a green valid ticket flashing red on the yellow machine's scanner, beside a wide-eyed Marta",
+      "everyday_problem": "Marta tries to buy or activate her subscription ticket at the ticket machine instead of using the app, and the machine rejects the phone screen",
+      "practical_resolution": "Marta scans the ticket in the transit app at the train's on-board reader, where it shows valid, and boards with Lukas",
+      "marta_goal": "Get a working ticket to board the regional train using her Deutschlandticket",
+      "marta_decision": "Stops fighting the yellow machine and holds the phone steady at the blue reader inside the train doorway herself",
+      "visual_payoff": "Marta holds her phone flat with both hands at the blue reader; it flashes green, she does a small victory hop over the threshold while Lukas claps",
+      "creative_review": {
+        "previous_weakness_addressed": "Removed passive station Q&A by making the phone-versus-machine conflict the visual engine of the first two shots",
+        "visible_comic_action": "Marta repeatedly waves and taps her phone screen against the flat yellow scanner while the screen blinks red, then holds the same phone flat and still at the blue reader",
+        "next_experiment": "In the upcoming platform-search scene, let a large departure board's rolling destination text physically cue Marta's head turn in the same shot"
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Warum piept dieser Automat immer wieder?",
+          "fa": "چرا این دستگاه مدام بوق می‌زند؟",
+          "scene": "Medium shot on the platform: Marta holds her phone screen up to the flat yellow scanner of a ticket machine, its red light blinking",
+          "motion": "Marta waves the phone slowly across the scanner, then checks the screen with a puzzled frown",
+          "visible_objects": [
+            "phone with green ticket screen",
+            "yellow ticket machine scanner"
+          ],
+          "object_action": "Marta presses her phone flat against the scanner plate"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich halte das Handy ganz ruhig.",
+          "fa": "گوشی را کاملاً بی‌حرکت نگه می‌دارم.",
+          "scene": "Close framing of Marta's hands pinning the phone to the scanner while the machine's screen shows a red cross",
+          "motion": "Marta grips the phone with both hands and freezes, then lifts it as the red cross flashes",
+          "visible_objects": [
+            "phone with green ticket screen",
+            "yellow ticket machine screen with red cross"
+          ],
+          "object_action": "Marta flattens the phone against the machine and holds still"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Das Ticket kauft man nicht am Automaten.",
+          "fa": "این بلیت را از دستگاه نمی‌خری.",
+          "scene": "Medium shot of Lukas beside Marta, one hand relaxed, nodding toward her phone",
+          "motion": "Lukas points at the app tile on Marta's phone and gives a small shrug",
+          "visible_objects": [
+            "phone with dark app tile",
+            "yellow ticket machine"
+          ],
+          "object_action": "Lukas taps the app icon on Marta's phone screen"
+        },
+        {
+          "speaker": "marta",
+          "de": "Nicht? Wie funktioniert es dann?",
+          "fa": "نه؟ پس چطور کار می‌کند؟",
+          "scene": "Closer framing of Marta turning her phone toward herself, eyebrows raised",
+          "motion": "Marta tilts the phone and scrolls within the app with her thumb",
+          "visible_objects": [
+            "phone with app home screen"
+          ],
+          "object_action": "Marta scrolls the app with her thumb"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Es ist ein Abo. Immer im Handy.",
+          "fa": "یک اشتراک است. همیشه توی گوشی.",
+          "scene": "Medium shot of Lukas tapping his own phone screen near the platform edge",
+          "motion": "Lukas lifts his phone showing a subscription card and taps it once",
+          "visible_objects": [
+            "Lukas's phone with subscription card"
+          ],
+          "object_action": "Lukas taps the subscription card on his own phone"
+        },
+        {
+          "speaker": "marta",
+          "de": "Aha, dann lasse ich den Automaten.",
+          "fa": "آها، پس دستگاه را رها می‌کنم.",
+          "scene": "Close framing of Marta pushing her phone into her pocket and stepping back from the yellow machine",
+          "motion": "Marta slides the phone into her pocket and turns her body toward the arriving red train",
+          "visible_objects": [
+            "phone with green ticket screen",
+            "yellow ticket machine"
+          ],
+          "object_action": "Marta pockets her phone with a relieved nod"
+        },
+        {
+          "speaker": "marta",
+          "de": "Hier innen ist ein blauer Leser!",
+          "fa": "اینجا داخل یک خوانندهٔ آبی هست!",
+          "scene": "Medium shot at the open train door: Marta leans in and spots a small blue reader by the doorframe",
+          "motion": "Marta steps onto the doorway and reaches toward the blue reader with her phone",
+          "visible_objects": [
+            "blue ticket reader",
+            "train doorway frame"
+          ],
+          "object_action": "Marta hovers her phone in front of the blue reader"
+        },
+        {
+          "speaker": "marta",
+          "de": "Grün! Es hat geklappt!",
+          "fa": "سبز! درست شد!",
+          "scene": "Close framing of the phone at the blue reader with a green light confirming",
+          "motion": "Marta holds the phone steady as the green light blinks, then pulls it back with a grin",
+          "visible_objects": [
+            "phone with green check screen",
+            "blue ticket reader with green light"
+          ],
+          "object_action": "Marta holds the phone flat against the reader until it blinks green"
+        },
+        {
+          "speaker": "marta",
+          "de": "Deutschlandticket, endlich verstanden!",
+          "fa": "بلیت آلمان، بالاخره فهمیدم!",
+          "scene": "Medium shot inside the train: Marta does a small hop over the threshold while Lukas claps behind her",
+          "motion": "Marta hops into the aisle, pockets her phone and grins at Lukas",
+          "visible_objects": [
+            "phone with green check screen",
+            "train interior seat"
+          ],
+          "object_action": "Marta pockets the phone and adjusts her bag strap"
+        }
+      ],
+      "research_source": {
+        "topic": "Public transport in Berlin and Brandenburg",
+        "url": "https://www.vbb.de/abonnements/deutschlandticket/",
+        "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB © VBB Das Deutschlandticket als Abo © PhotoGranary - stock.adobe.com Das bundesweit gültige Deutschlandticket wird für monatlich 63 Euro und nur im Abonnement mit monatlicher Kündigungsmöglichkeit angeboten. Für das Deutschlandticket haben Bund und Länder besondere Regularien vorgegeben. Das Deutschlandticket ist nicht frei verkäuflich am Automaten erhältlich und muss beantragt werden . Dementsprechend wird ein Vertrag zwischen Verkehrsunternehmen und Fahrgast geschlossen, inkl. Übermitt",
+        "retrieved_at": "2026-10-30T08:54:16.842999+00:00"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-10-30",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
