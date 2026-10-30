@@ -9,3 +9,15 @@ test('Topic speech changes its question after the interval and follows English s
 test('Gift and comment replies displace low-priority topic speech',()=>{const queue=new SpeechQueue({limit:1});queue.push('topic','topic',1);assert(queue.push('viewer reply','reply',1));assert.equal(queue.shift(1).text,'viewer reply');queue.push('gift','gift',1);assert.equal(queue.push('topic','topic',1),false);});
 
 test('English LIVE never selects Afghanistan food topics, including restored legacy selections',()=>{let now=0;const planner=new TopicConversation({now:()=>now});now=30000;const text=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language:'en',topic:'food'});assert.match(text,/AI/);assert.doesNotMatch(text,/Afghan|mantu|ashak|pulao/i);});
+
+test('Host invites AI-versus-human opinions, questions, screen taps and sharing with friends in both languages',()=>{
+ for(const language of ['fa','en']){
+  let now=0;const planner=new TopicConversation({now:()=>now}),spoken=[];
+  for(let turn=0;turn<6;turn++){now=30000+turn*75000;spoken.push(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}));}
+  const all=spoken.join(' ');
+  if(language==='en'){assert.match(all,/human host/);assert.match(all,/AI host/);assert.match(all,/thoughts/);assert.match(all,/comments/);assert.match(all,/questions.*answer/);assert.match(all,/tap the screen/);assert.match(all,/share.*friends/);assert.doesNotMatch(all,/Afghan|pulao|mantu/i);}
+  else{assert.match(all,/مجری انسانی/);assert.match(all,/مجری هوش مصنوعی/);assert.match(all,/نظریات/);assert.match(all,/کمنت/);assert.match(all,/سوال.*جواب/);assert.match(all,/تپ‌تپ/);assert.match(all,/دوستان.*شریک/);}
+  assert(!/share|شریک/.test(spoken[0]));assert(!/share|شریک/.test(spoken[1]));assert(!/share|شریک/.test(spoken[2]));assert(new Set(spoken).size===spoken.length);
+  assert.equal(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}),null);
+ }
+});

@@ -1,10 +1,11 @@
 {
-  "request": "panel-refresh-live-and-english-ai-topics-v6",
+  "request": "audience-questions-opinions-sharing-and-screen-tap-invitations-v7",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
   "motion_release": true,
   "playback_compatibility": true,
   "neural_lipsync": true,
-  "engagement_overlay": true
+  "engagement_overlay": true,
+  "viewer_invitations": true
 }
