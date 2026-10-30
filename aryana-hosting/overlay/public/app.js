@@ -2,13 +2,13 @@ const $=id=>document.getElementById(id);
 const fa=new Intl.NumberFormat('fa-IR');let key='',current;
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(action,data={}){
- if(['say','intro','voice-sample','demo','comment','correction'].includes(action)){void $('livePreview').contentWindow.aryanaActivateAudio?.();notice('درخواست ارسال شد؛ منتظر آماده‌شدن صدا باشید…');}
- try{const response=await fetch('/api/'+action,{method:'POST',headers:{'content-type':'application/json','x-aryana-key':key},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'خطا');render(result.state);notice(['say','intro','voice-sample','demo','comment','correction'].includes(action)?'درخواست پذیرفته شد؛ وضعیت صدا در بخش پیش‌نمایش نمایش داده می‌شود.':'انجام شد.');return result;}
+ if(['say','thanks','intro','voice-sample','demo','comment','correction'].includes(action)){void $('livePreview').contentWindow.aryanaActivateAudio?.();notice('درخواست ارسال شد؛ منتظر آماده‌شدن صدا باشید…');}
+ try{const response=await fetch('/api/'+action,{method:'POST',headers:{'content-type':'application/json','x-aryana-key':key},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'خطا');render(result.state);notice(['say','thanks','intro','voice-sample','demo','comment','correction'].includes(action)?'درخواست پذیرفته شد؛ وضعیت صدا در بخش پیش‌نمایش نمایش داده می‌شود.':'انجام شد.');return result;}
  catch(error){notice(error.message,true);return null;}
 }
 const labels={connected:'لایف متصل است',disconnected:'آمادهٔ آزمایش',connecting:'در حال اتصال…',error:'اتصال برقرار نشد',reconnecting:'در حال اتصال مجدد…',ended:'لایف پایان یافت'};
 function render(state){
- if(!state)return;current=state;$('connection').lastChild.textContent=labels[state.connection]||state.connection;$('connection').classList.toggle('connected',state.connection==='connected');
+ if(!state)return;current=state;$('thanksClip').disabled=!state.capabilities.recordedReactions;$('connection').lastChild.textContent=labels[state.connection]||state.connection;$('connection').classList.toggle('connected',state.connection==='connected');
  $('giftTotal').replaceChildren(document.createTextNode(fa.format(state.giftTotal)+' '));const unit=document.createElement('small');unit.textContent='کوین';$('giftTotal').append(unit);$('likeTotal').textContent=fa.format(state.likeTotal);
  for(const field of ['muted','subtitles','conversationEnabled'])$(field).checked=Boolean(state.settings[field]);if(document.activeElement!==$('volume'))$('volume').value=state.settings.volume??85;
  if(document.activeElement!==$('avatarMode'))$('avatarMode').value=state.settings.avatarMode||'animated';
@@ -16,7 +16,7 @@ function render(state){
  $('readiness').replaceChildren(...readiness.map(([label,ok,detail])=>{const p=document.createElement('p');p.className=ok?'':'needs-attention';p.textContent=(ok?'✓ ':'○ ')+label+(ok?' · آماده':' · '+detail);return p;}));$('ask').disabled=['loading','answering'].includes(state.conversationStatus);$('ask').textContent=state.conversationStatus==='answering'?'در حال آماده‌کردن پاسخ…':'پاسخ به کامنت آزمایشی';
  $('autoSpeak').checked=state.settings.autoSpeak;document.querySelector('.voice-name').textContent=state.capabilities.voiceClone?'صدای اختصاصی آریانا':'دیلارا · فارسی';
  $('say').disabled=state.speech==='generating';$('say').textContent=state.speech==='generating'?'در حال آماده‌کردن صدا…':'▶ خواندن متن';
- $('avatarStatus').textContent='مدل سه‌بعدی آزمایشی: حرکت سر، پلک و لب با صدا. چهرهٔ اختصاصی: تصویر و کلیپ کوتاه معرفی؛ حرکت پیوسته ندارد.';
+ $('avatarStatus').textContent='مدل سه‌بعدی آزمایشی: حرکت سر، پلک و لب با صدا. چهرهٔ اختصاصی: تصویر و کلیپ‌های آمادهٔ معرفی و تشکر؛ حرکت پیوسته ندارد.';
  const avatar=state.avatar||{},rendering=avatar.preparing||avatar.job?.status==='rendering';
  $('renderPreview').disabled=!avatar.configured||rendering;
  $('renderProgress').textContent=rendering?'در حال ساخت کلیپ آفلاین · '+(avatar.job?.progress||0)+'٪ · ممکن است چند دقیقه زمان ببرد.':avatar.configured?'موتور کلیپ آفلاین متصل است؛ ساخت جملهٔ کوتاه تا 100 نویسه.':'برای ساخت حرکت لب، موتور آفلاین باید جداگانه نصب شود؛ راهنما داخل بسته است.';
@@ -52,3 +52,5 @@ addEventListener('message',event=>{if(event.origin!==location.origin||event.sour
 
 $('avatarMode').onchange=()=>api('settings',{avatarMode:$('avatarMode').value});
 addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('livePreview').contentWindow||event.data?.type!=='aryana-avatar')return;const labels={loading:'مدل سه‌بعدی در حال بارگذاری است؛ بار اول حدود ۳۷ مگابایت دریافت می‌شود.',ready:'مدل سه‌بعدی متحرک آماده است. چهرهٔ آن آزمایشی و متفاوت از تصویر اختصاصی است.',error:'مدل سه‌بعدی اجرا نشد: '+event.data.detail,'lip-error':'حرکت لب در این مرورگر اجرا نشد: '+event.data.detail};$('modelStatus').textContent=labels[event.data.status]||event.data.status;});
+
+$('thanksClip').onclick=()=>api('thanks');

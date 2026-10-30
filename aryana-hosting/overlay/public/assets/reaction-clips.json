@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "portraitSha256": "54683d700d019ea2a7ba0b96f81438276d422fa82db9c2150d85a07dae72a6a0",
+  "entries": [
+    {
+      "text": "بسیار تشکر!",
+      "duration": 2.24,
+      "audio": "/assets/reaction-thanks.mp3",
+      "video": "/assets/reaction-thanks.mp4",
+      "audioSha256": "5d393534bb72d0756f805e1764c81348fd125d4c37788c4f8c2e3ea789961e5b",
+      "videoSha256": "bf7086c4ba199bd63004aa2ad8b7da12f15d69886ff1492d3b64f3099a7403eb"
+    }
+  ]
+}

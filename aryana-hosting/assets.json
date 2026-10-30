@@ -16,6 +16,14 @@
     "public/assets/voice-preview.mp3": {
       "file": "voice-preview.mp3",
       "sha256": "f5b3a51ab565d19673f5b8ecfe8d7708e381a952dab3a24ee8dedebcfa357976"
+    },
+    "public/assets/reaction-thanks.mp3": {
+      "file": "reaction-thanks.mp3",
+      "sha256": "5d393534bb72d0756f805e1764c81348fd125d4c37788c4f8c2e3ea789961e5b"
+    },
+    "public/assets/reaction-thanks.mp4": {
+      "file": "reaction-thanks.mp4",
+      "sha256": "bf7086c4ba199bd63004aa2ad8b7da12f15d69886ff1492d3b64f3099a7403eb"
     }
   }
 }

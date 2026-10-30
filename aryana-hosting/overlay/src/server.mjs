@@ -14,9 +14,11 @@ import {SpeechQueue} from './speech-queue.mjs';
 import {DurableState} from './durable-state.mjs';
 import {LocalChat} from './local-chat.mjs';
 import {stockReply} from './replies.mjs';
+import {loadReactionClips} from './reaction-clips.mjs';
 
 const root=fileURLToPath(new URL('..',import.meta.url)),publicDir=join(root,'public'),privateDir=join(root,'.private');
 mkdirSync(privateDir,{recursive:true,mode:0o700});mkdirSync(join(privateDir,'audio'),{recursive:true,mode:0o700});
+const reactionClips=loadReactionClips(publicDir);
 const port=Number(process.env.PORT||4321);
 const hosting=hostingConfig(process.env,port),key=hosting.token||randomBytes(24).toString('hex');
 if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Invalid port');
@@ -36,7 +38,7 @@ const renderer=new AvatarRenderer({root,privateDir,changed:()=>broadcast()});let
 SignConfig.apiKey=undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
 const python=process.env.ARYANA_PYTHON||(process.platform==='win32'?join(root,'.venv','Scripts','python.exe'):join(root,'.venv','bin','python'));
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},capabilities:{portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},capabilities:{recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual'){
@@ -62,7 +64,7 @@ async function pump(){
  if(busy)return;busy=true;
  try{while(queue.length){const item=queue.shift(revision);if(!item)continue;
   speechStatus='generating';broadcast();
-  try{const audio=await synthesize(item.text);if(item.revision!==revision)continue;utterances.push({id:randomUUID(),audio,text:item.text,kind:item.kind,priority:item.priority,at:Date.now()});utterances=utterances.slice(-8);speechStatus='ready';lastError='';broadcast();}
+  try{const recorded=applyCorrections(item.text,settings.corrections)===item.text?reactionClips.get(item.text):null,audio=recorded?.audio||await synthesize(item.text);if(item.revision!==revision)continue;utterances.push({id:randomUUID(),audio,video:recorded?.video||null,text:item.text,kind:item.kind,priority:item.priority,at:Date.now()});utterances=utterances.slice(-8);speechStatus='ready';lastError='';broadcast();}
   catch(error){if(item.revision===revision){speechStatus='error';recordError(error.message);}}
  }}finally{busy=false;if(speechStatus!=='error')speechStatus='idle';broadcast();}
 }
@@ -83,7 +85,7 @@ function receive(kind,event){
  const reaction=session.accept(kind,event,settings);if(!reaction)return;checkpoint();broadcast();
  if(kind==='join'){const id=session.identity(event),previous=joinThanks.get(id)||0;if(Date.now()-previous<600000)return;joinThanks.set(id,Date.now());while(joinThanks.size>5000)joinThanks.delete(joinThanks.keys().next().value);}
  const interval=kind==='like'?30000:kind==='join'?5000:2000;
- if(settings.autoSpeak&&(reaction.vip||kind==='gift'||Date.now()-lastAuto>=interval)){lastAuto=Date.now();try{enqueue(reaction.text,reaction.vip?'vip':reaction.profile.spokenName?kind:'thanks');}catch{}}
+ if(settings.autoSpeak&&(reaction.vip||kind==='gift'||Date.now()-lastAuto>=interval)){lastAuto=Date.now();try{enqueue(!reaction.profile.spokenName&&reactionClips.has('بسیار تشکر!')?'بسیار تشکر!':reaction.text,reaction.vip?'vip':reaction.profile.spokenName?kind:'thanks');}catch{}}
 }
 const link=new LiveLink({create:username=>{
  const client=new TikTokLiveConnection(username,{authenticateWs:false,processInitialData:false,enableExtendedGiftInfo:false});
@@ -121,6 +123,7 @@ const server=http.createServer(async(req,res)=>{
    const data=await body(req),action=url.pathname.slice(5);
    if(action==='say')enqueue(data.text);
    else if(action==='comment'){const generation=revision;const text=String(data.text||'').trim();if(!text||text.length>300)throw Error('کامنت باید 1 تا 300 نویسه باشد.');const reply=await answer(text);if(generation===revision)enqueue(reply,'reply');}
+   else if(action==='thanks'){if(!reactionClips.has('بسیار تشکر!'))throw Error('کلیپ تشکر هنوز آماده نیست.');settings.avatarMode='portrait';save();enqueue('بسیار تشکر!');}
    else if(action==='intro'){utterances.push({id:randomUUID(),audio:'/assets/introduction.mp3',video:existsSync(join(publicDir,'assets/introduction.mp4'))?'/assets/introduction.mp4':null,text:'سلام، خوش آمدید!',kind:'intro',at:Date.now()});utterances=utterances.slice(-8);}
    else if(action==='voice-sample'){if(!existsSync(join(publicDir,'assets/voice-preview.mp3')))throw Error('نمونهٔ صدا آماده نیست.');utterances.push({id:randomUUID(),audio:'/assets/voice-preview.mp3',text:'سلام دوستان عزیز، من آریانا هستم. به لایف ما خوش آمدید. از همراهی و محبت شما بسیار تشکر می‌کنم.',kind:'sample',at:Date.now()});utterances=utterances.slice(-8);}
    else if(action==='stop'){stopSpeech();}
@@ -161,6 +164,7 @@ const server=http.createServer(async(req,res)=>{
   else if(/^\/video\/[a-f0-9]{64}\.mp4$/.test(url.pathname))file=join(privateDir,url.pathname.slice(1));
   else if(/^\/(app\.js|live\.js|avatar\.js|style\.css|assets\/(aryana\.png|font\.woff2|FONT-LICENSE\.txt|(introduction\.(mp3|mp4)|voice-preview\.mp3)))$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(/^\/assets\/avatar\/(talkinghead\.bundle\.mjs|headaudio\.min\.mjs|headworklet\.min\.mjs|playback-worklet\.js|mpfb\.glb|model-en-mixed\.bin|LICENSES\.txt)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
+  if(/^\/assets\/reaction-[a-z-]+\.(mp3|mp4)$/.test(url.pathname))file=join(publicDir,url.pathname.slice(1));
   if(!file||!existsSync(file))return json(res,404,{error:'Not found'});
   const ext='.'+file.split('.').at(-1);res.writeHead(200,{'content-type':types[ext]||'application/octet-stream','cache-control':'no-cache'});res.end(readFileSync(file));
  }catch(error){json(res,400,{error:String(error.message||'خطا').slice(0,220)});}
@@ -170,7 +174,7 @@ const timer=setInterval(broadcast,1000);timer.unref();
 const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===false){ws.terminate();continue;}ws.alive=false;ws.ping();}},30000);heartbeat.unref();
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
 if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);}
-async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64)return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
+async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
 process.on('SIGTERM',()=>{stopSpeech();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});

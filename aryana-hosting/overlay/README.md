@@ -88,3 +88,8 @@ A pinned Qwen3-4B quantized CPU model supplies experimental bilingual conversati
 The experimental animated mode uses the CC0 MPFB sample avatar with MIT TalkingHead, Three.js and HeadAudio, self-hosted with pinned revisions and integrity checks. It provides rigged idle movement and audio-driven visemes, not a photorealistic recreation of Aryana's custom portrait. The private selector retains the custom portrait and prerecorded introduction. Desktop/mobile WebGL support is required. Browser rendering performance and Persian viseme accuracy vary; no actual phone hardware or three-hour animated render has been verified.
 
 Run `python tools/prepare-avatar-ui.py` once before local use to fetch ~37 MB of public avatar assets and build the local JS bundle. Docker does this automatically. Licenses are in `public/assets/avatar/LICENSES.txt`. No raw voice sample or profile is published.
+
+
+## Exact recorded portrait reactions
+
+The custom portrait's prepared thanks clip is an offline SadTalker render of the exact cloned sentence `بسیار تشکر!`. The private thanks button selects portrait mode and queues it. Unrecognized/numeric usernames use this generic thanks when available; recognized names retain their personalized speech. A recorded clip is selected only for its exact sentence with unchanged pronunciation. The manifest binds the portrait and both media files by SHA-256; missing or corrupt assets fall back to normal speech. This is a prepared reaction, not continuous or realtime photoreal animation.
