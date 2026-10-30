@@ -1,5 +1,5 @@
 {
-  "request": "existing-hf-ltx-probe-v1",
+  "request": "existing-hf-ltx-probe-v2-reviewed-mirror",
   "use_existing_hf_credits": true,
   "max_generations": 1,
   "max_credit_usd": 0.13,
