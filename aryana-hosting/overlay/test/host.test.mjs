@@ -14,7 +14,7 @@ test('gift totals count completed combos once and rotate exactly every minute wi
  const combo=event('combo','new',{gift:{type:1},groupId:'group',repeatCount:5,repeatEnd:0});assert.equal(host.accept('gift',combo,settings),null);
  host.accept('gift',{...combo,repeatEnd:1},settings);host.accept('gift',{...combo,repeatEnd:1,common:{msgId:'different'}},settings);assert.equal(host.snapshot().giftTotal,81);
 });
-test('shared donor and liker identity is never duplicated, and numeric entrants get only generic thanks',()=>{
+test('shared donor and liker identity is never duplicated, and numeric entrants receive no spoken name or VIP status',()=>{
  const host=new HostSession(),settings={names:[]};
  host.accept('gift',{user:{id:'one',nickname:'Sara'},giftId:'gift',diamondCount:100,common:{msgId:'g'}},settings);
  host.accept('like',{user:{id:'one',nickname:'Sara'},count:500,common:{msgId:'l'}},settings);

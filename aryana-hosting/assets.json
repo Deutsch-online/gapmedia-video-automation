@@ -11,7 +11,7 @@
     },
     "public/assets/introduction.mp4": {
       "file": "introduction.mp4",
-      "sha256": "b5889d031f98748372440a4c5deaa4c80eb5edb3c3512d50601dd13edf3222e1"
+      "sha256": "2775af2d741e821d5457e3be1a77f4440e991acb44fb2dcd95b8573b1d777434"
     },
     "public/assets/voice-preview.mp3": {
       "file": "voice-preview.mp3",
@@ -23,7 +23,11 @@
     },
     "public/assets/reaction-thanks.mp4": {
       "file": "reaction-thanks.mp4",
-      "sha256": "bf7086c4ba199bd63004aa2ad8b7da12f15d69886ff1492d3b64f3099a7403eb"
+      "sha256": "7399516bac6e6bb874b4fbfa718fcb0b43ca99686b0c9fb8e193a858a18e4087"
+    },
+    "public/assets/idle.mp4": {
+      "file": "idle.mp4",
+      "sha256": "268b44b78ad52382415f6abfe2e00cbe2506d5188d1c1aa025bd6aa17dad011c"
     }
   }
 }

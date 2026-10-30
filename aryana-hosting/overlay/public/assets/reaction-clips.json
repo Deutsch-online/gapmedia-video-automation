@@ -4,19 +4,19 @@
   "entries": [
     {
       "text": "بسیار تشکر!",
-      "duration": 2.24,
+      "duration": 2.32,
       "audio": "/assets/reaction-thanks.mp3",
       "video": "/assets/reaction-thanks.mp4",
       "audioSha256": "5d393534bb72d0756f805e1764c81348fd125d4c37788c4f8c2e3ea789961e5b",
-      "videoSha256": "bf7086c4ba199bd63004aa2ad8b7da12f15d69886ff1492d3b64f3099a7403eb"
+      "videoSha256": "7399516bac6e6bb874b4fbfa718fcb0b43ca99686b0c9fb8e193a858a18e4087"
     },
     {
       "text": "سلام، خوش آمدید!",
-      "duration": 2.2,
+      "duration": 2.28,
       "audio": "/assets/introduction.mp3",
       "video": "/assets/introduction.mp4",
       "audioSha256": "83edca78515ddc551c0bf673df425d84923963bad8262963d52eaf698efa232f",
-      "videoSha256": "b5889d031f98748372440a4c5deaa4c80eb5edb3c3512d50601dd13edf3222e1"
+      "videoSha256": "2775af2d741e821d5457e3be1a77f4440e991acb44fb2dcd95b8573b1d777434"
     }
   ]
 }
