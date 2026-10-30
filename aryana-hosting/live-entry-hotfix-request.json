@@ -1,7 +1,8 @@
 {
-  "request": "reviewed-one-minute-sparse-blinks-v1",
+  "request": "browser-video-range-and-autoplay-recovery-v1",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
-  "motion_release": true
+  "motion_release": true,
+  "playback_compatibility": true
 }

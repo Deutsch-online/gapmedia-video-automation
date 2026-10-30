@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0;
-const seen=new Set(),video=$('hostVideo'),idle=$('idleVideo');let idlePath='/assets/idle.mp4?v=f48e2929dd1d26fa';
+const seen=new Set(),video=$('hostVideo'),idle=$('idleVideo');let idlePath='/assets/idle.mp4?v=0061e1f4605708e7';
 let idleBlocked=false,idleStarting=false;
 function manualPlay(needed){const button=$('enableAudio');needed=Boolean(needed&&!idle.hidden);button.classList.toggle('needs-play',needed);button.hidden=enabled&&!needed;}
 function startIdle(userGesture=false){
@@ -45,7 +45,7 @@ let volume=.85,muted=false,avatarMode='animated';
 function render(state){
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  
- idlePath=state.playback?.idleVideo||'/assets/idle.mp4?v=f48e2929dd1d26fa';refreshIdle();
+ idlePath=state.playback?.idleVideo||'/assets/idle.mp4?v=0061e1f4605708e7';refreshIdle();
  volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);
  if(gain)gain.gain.value=muted?0:volume;
  for(const item of state.utterances||[]){

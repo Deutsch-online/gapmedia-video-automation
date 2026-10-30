@@ -1,0 +1,12 @@
+{
+  "status": "prepared",
+  "generation_calls": 0,
+  "duration": 60.0,
+  "sha256": "0061e1f4605708e7f002f1f2eca31fad4f41a3f3a0e3032f7635610093c7ede1",
+  "version": "0061e1f4605708e7",
+  "bytes": 7971429,
+  "codec": "h264",
+  "profile": "Main",
+  "pixel_format": "yuv420p",
+  "color_range": "tv"
+}
