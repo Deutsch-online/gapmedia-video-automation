@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 14,
+  "next_episode": 15,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -116,6 +116,14 @@
       "platforms": {
         "tiktok": 2763,
         "instagram": 2764
+      }
+    },
+    "2026-10-30": {
+      "episode": 14,
+      "message_id": 2790,
+      "platforms": {
+        "tiktok": 2790,
+        "instagram": 2791
       }
     }
   },
@@ -1990,10 +1998,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 14,
       "title_de": "Das Ticket, das kein Ticket ist",
       "title_fa": "بلیتی که بلیت نیست",
@@ -2129,22 +2135,9 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    },
-    "date": "2026-10-30",
-    "status": "exporting",
-    "credit_from_scene": 7,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 368s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "platform_receipts": {
-      "tiktok": 2790,
-      "instagram": 2791
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0014/tiktok/e0014-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0014/instagram/e0014-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0014/instagram/e0014-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
