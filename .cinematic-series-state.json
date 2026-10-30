@@ -2131,12 +2131,9 @@
       "duration_seconds": 45
     },
     "date": "2026-10-30",
-    "status": "render-failed",
+    "status": "rendering",
     "credit_from_scene": 7,
-    "credit_approval_required": true,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 368s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_notice_status": "sent",
-    "credit_notice_message_id": 2785
+    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 368s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed"
   },
   "attempts": {
     "2026-10-15": 2,

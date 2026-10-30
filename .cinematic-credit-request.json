@@ -1,6 +1,6 @@
 {
   "id": "55e5a2b767b34e7b8fe86333",
-  "status": "approved",
+  "status": "running",
   "plan_sha": "ed6d9d80ed6464332fec0f248768a639ede54cc2298d57bd7d7ced1113924018",
   "simple_text_approval": true,
   "kind": "episode",
@@ -17,5 +17,6 @@
   "message_id": 2785,
   "decided_at": "2026-10-30T09:37:36.903Z",
   "decision_method": "telegram-simple-text",
-  "decision_message_id": 2787
+  "decision_message_id": 2787,
+  "active_run": "41034829453:1"
 }
