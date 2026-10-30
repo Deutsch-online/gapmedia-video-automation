@@ -35,6 +35,11 @@ try:
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
   if '<img' in page or 'poster=' in page or 'autoplay' not in page:raise RuntimeError('Video-only startup contract failed')
+ if request.get('neural_lipsync'):
+  worker_info=api.space_info('afgtakrun/aryana-live-lipsync')
+  worker_config=json.loads((release.APP/'src/lipsync-config.json').read_text())
+  if not worker_info.private or worker_info.sha!=worker_config['revision']:raise RuntimeError('Private worker revision was not verified')
+  paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile']
  uploaded=api.create_commit(repo,repo_type='space',operations=[CommitOperationAdd(path_in_repo=p,path_or_fileobj=str(release.APP/p)) for p in paths],commit_message='Fix entry welcomes and exact gift thanks '+source_sha[:12])
  report['status']='building';write();deadline=time.monotonic()+600
  while time.monotonic()<deadline:
@@ -72,12 +77,41 @@ try:
   with urllib.request.urlopen(urllib.request.Request(asset,method='HEAD'),timeout=30) as response:
    if response.status!=200 or int(response.headers.get('Content-Length','-1'))!=(release.APP/'public/assets/idle.mp4').stat().st_size:raise RuntimeError('Public media HEAD probe failed')
   report.update(byte_range_verified=True,head_verified=True)
+ if request.get('neural_lipsync'):
+  release.fetch(url+'/api/lip-prepare',admin,{})
+  deadline=time.monotonic()+240
+  while time.monotonic()<deadline:
+   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
+   if state.get('lipSync',{}).get('ready'):break
+   if state.get('lipSync',{}).get('lastError') and not state.get('lipSync',{}).get('pending'):raise RuntimeError('Neural worker preparation failed')
+   time.sleep(2)
+  else:raise RuntimeError('Neural worker warmup timed out')
+  report['neural_prepared']=True
+  if state['connection']=='connected' or state.get('live',{}).get('active'):
+   report['private_neural_test']='skipped_active_live'
+  else:
+   _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'حالا لب‌ها با صدای تازه هماهنگ است.'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
+   deadline=time.monotonic()+240
+   while time.monotonic()<deadline:
+    _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw);test=state.get('lipTest') or {}
+    if test.get('id')==test_id and test.get('status')=='ready':break
+    if test.get('id')==test_id and test.get('status') in ['error','cancelled']:raise RuntimeError('Private neural speech test failed')
+    time.sleep(2)
+   else:raise RuntimeError('Private neural speech test timed out')
+   _,clip,_=release.fetch(url+test['video']);proof=Path('/tmp/aryana-neural-live-proof.mp4');proof.write_bytes(clip)
+   media=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-show_streams','-of','json',str(proof)]))
+   if not any(x.get('codec_type')=='audio' for x in media['streams']) or not test.get('voiceClone'):raise RuntimeError('Approved voice neural test failed')
+   report.update(private_neural_test='passed_not_broadcast',fresh_reply_elapsed_seconds=test['elapsedSeconds'],fresh_reply_video_seconds=float(media['format']['duration']),fresh_reply_voice_clone=True)
+  if not state.get('capabilities',{}).get('liveLipSync'):raise RuntimeError('Fresh lip-sync capability was not ready')
+  report.update(neural_lipsync_verified=True,lip_sync_delivery='generated_per_reply',streaming=False)
  report.update(status='ready',connection=state['connection'],connection_resumed=state['connection']=='connected' if connected else None,recorded_welcome_ready=state.get('capabilities',{}).get('recordedReactions',0)>=2,username_preserved=True)
  message='قانون واکنش آریانا اصلاح شد:\nورود: سلام، خوش آمدید.\nگیفت و لایک: بسیار تشکر.\nنام‌های عددی خوانده نمی‌شوند. خوش‌آمد ویژهٔ مهمانان شناخته‌شدهٔ بالای لیول ۲۵ حفظ شد.\n'+('اتصال دریافت تیک‌تاک دوباره متصل است.' if report['connection_resumed'] else 'وضعیت اتصال را در پنل بررسی کنید.')
  if request.get('video_only'):message+='\n\nویدیوی انتظار آریانا به‌روزرسانی شد: ۶۰ ثانیه با حرکت‌های متفاوت و حدود ۶ پلک‌زدن کوتاه در دقیقه. چشمک‌های اضافی حذف و اتصال‌های دوچهره‌ای اصلاح شدند. پخش پس از اتصال دوباره باید فایل جدید را خودکار بگیرد؛ اگر هنوز نسخهٔ قبلی را می‌بینید، منبع Browser/Link را یک بار Refresh کنید. فقط AI-Generated نمایش داده می‌شود. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند و حرکت لبِ تازه تولید نمی‌شود.\nhttps://afgtakrun-aryana-live-studio.hf.space/live?v=f48e2929dd1d26fa'
  if request.get('playback_compatibility'):
   version=hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()[:16]
   message='مشکل نمایش ویدیوی آریانا اصلاح شد. پخش بخش‌بخشی ویدیو و سازگاری فایل برای مرورگرهای موبایل به‌روزرسانی شد. ویدیو همان نسخهٔ ۶۰ثانیه‌ای با چشمک‌های کمتر است. اگر مرورگر پخش خودکار را مسدود کرد، ▶ را لمس کنید. فقط AI-Generated روی خروجی دیده می‌شود.\n\n'+url+'/live?v='+version+'\nنسخهٔ موبایل:\n'+url+'/mobile?v='+version+'\nاگر منبع باز در LIVE Studio هنوز صفحهٔ قبلی را دارد، یک بار Refresh کنید. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند.'
+ if request.get('neural_lipsync'):
+  message='لب‌خوانی جمله‌های تازهٔ آریانا فعال شد. برای پاسخ تازه، ویدیو از صدای همان جمله ساخته می‌شود؛ ساخت ویدیو چند ثانیه زمان می‌برد و زمان ساخت متن و صدا نیز جداست. چهره و ویدیوی انتظار همان است و مدل فقط ناحیهٔ دهان را پردازش می‌کند.\n\nدر پنل بخش «لب‌خوانی پاسخ‌های تازه» اضافه شد: «آماده‌سازی لب‌ها» و «آزمایش خصوصی متن بالا». آزمایش خصوصی روی خروجی LIVE پخش نمی‌شود. پنل را یک بار تازه کنید.\n\n'+url+'/live?v=neural-mouth-v1\nفقط AI-Generated نمایش داده می‌شود. این سرویس از سهمیه یا اعتبار Hugging Face استفاده می‌کند؛ سقف احتیاطی برنامه ۶ دلار در روز است و خرید یا شارژ خودکار انجام نمی‌دهد.\n'+('دریافت تیک‌تاک متصل است.' if state['connection']=='connected' else 'دریافت تیک‌تاک فعلاً متصل نیست؛ وضعیت اتصال را در پنل بررسی کنید.')
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise

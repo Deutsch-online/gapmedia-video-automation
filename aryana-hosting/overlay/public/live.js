@@ -29,7 +29,7 @@ const mobile=location.pathname.includes('mobile');document.body.classList.toggle
 function fit(){document.documentElement.style.setProperty('--live-scale',(mobile?Math.max:Math.min)(innerWidth/1080,innerHeight/1920));}
 addEventListener('resize',fit);fit();
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
-function stop(){epoch++;queue=[];try{source?.stop();}catch{}source=null;video.pause();video.hidden=true;playing=false;refreshIdle();report(enabled?'ready':'locked');}
+function stop(){epoch++;queue=[];try{source?.stop();}catch{}source=null;video.pause();video.playbackRate=1;video.hidden=true;playing=false;refreshIdle();report(enabled?'ready':'locked');}
 window.aryanaActivateAudio=async()=>{
  startIdle(true);
  try{
@@ -66,10 +66,14 @@ async function next(){
   if(context.state!=='running'){playing=false;queue.unshift(item);enabled=false;$('enableAudio').hidden=false;report('locked');return;}
   gain.gain.value=muted?0:volume;
   const node=context.createBufferSource();source=node;node.buffer=buffer;node.connect(gain);if(token!==epoch)return;
-  node.onended=()=>{if(token!==epoch)return;source=null;playing=false;video.pause();video.hidden=true;refreshIdle();report('ready');void next();};
+  node.onended=()=>{if(token!==epoch)return;source=null;playing=false;video.pause();video.playbackRate=1;video.hidden=true;refreshIdle();report('ready');void next();};
   if(item.video){video.src=item.video;video.muted=true;try{await video.play();if(token!==epoch)return;video.hidden=false;refreshIdle();}catch{video.hidden=true;refreshIdle();}}
   if(token!==epoch){video.pause();video.hidden=true;return;}
-  node.start();report('playing');
+  const startAt=context.currentTime+.02;
+  if(item.video&&!video.hidden)video.currentTime=0;
+  node.start(startAt);
+  if(item.video&&!video.hidden){const sync=()=>{if(token!==epoch||!playing||video.hidden)return;const expected=context.currentTime-startAt;if(expected>=0){const delta=expected-video.currentTime;if(Math.abs(delta)>.18)video.currentTime=Math.max(0,expected);video.playbackRate=Math.max(.96,Math.min(1.04,1+delta*.15));}requestAnimationFrame(sync);};requestAnimationFrame(sync);}
+  report('playing');
  }catch(e){if(token!==epoch)return;playing=false;video.hidden=true;refreshIdle();report('error',e.message);void next();}
 }
 function connect(){const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/events');ws.onmessage=e=>{try{render(JSON.parse(e.data));}catch{report('error','پیام نامعتبر پخش');}};ws.onclose=()=>{report('disconnected');setTimeout(connect,2000);};}

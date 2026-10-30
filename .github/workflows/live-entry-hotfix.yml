@@ -11,7 +11,7 @@ concurrency:
 jobs:
   fix:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2' cryptography==44.0.1
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
       - name: Apply only reaction rules and restore the saved connection
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

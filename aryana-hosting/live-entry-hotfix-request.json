@@ -1,8 +1,9 @@
 {
-  "request": "browser-video-range-and-autoplay-recovery-v1",
+  "request": "fresh-reply-neural-lipsync-v1",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
   "motion_release": true,
-  "playback_compatibility": true
+  "playback_compatibility": true,
+  "neural_lipsync": true
 }

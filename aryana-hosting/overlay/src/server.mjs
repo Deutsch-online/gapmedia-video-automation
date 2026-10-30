@@ -16,6 +16,7 @@ import {DurableState} from './durable-state.mjs';
 import {LocalChat} from './local-chat.mjs';
 import {stockReply} from './replies.mjs';
 import {loadReactionClips} from './reaction-clips.mjs';
+import {NeuralLipSync} from './neural-lipsync.mjs';
 
 const root=fileURLToPath(new URL('..',import.meta.url)),publicDir=join(root,'public'),privateDir=join(root,'.private');
 mkdirSync(privateDir,{recursive:true,mode:0o700});mkdirSync(join(privateDir,'audio'),{recursive:true,mode:0o700});
@@ -31,15 +32,18 @@ const session=new HostSession();let connectionStatus='disconnected';
 let lastError='',speechStatus='idle',busy=false,revision=0,utterances=[],lastAuto=0,currentSpeech=null;
 const queue=new SpeechQueue(),joinThanks=new Map(),recentSpeech=new Map();let lastSessionSave=0;
 const durable=new DurableState({repo:process.env.ARYANA_STATE_REPO,token:process.env.ARYANA_STATE_TOKEN});
-function persisted(){return {version:1,settings,session:session.export(),savedAt:Date.now()};}
+function persisted(){return {version:1,settings,session:session.export(),lipSyncBudget:neural.budget.snapshot(),savedAt:Date.now()};}
 function checkpoint(force=false){if(!force&&Date.now()-lastSessionSave<30000)return;lastSessionSave=Date.now();const data=persisted();const target=join(privateDir,'session.json');writeFileSync(target+'.tmp',JSON.stringify(data),{mode:0o600});renameSync(target+'.tmp',target);durable.schedule(data);}
 const save=()=>{writeFileSync(settingsPath+'.tmp',JSON.stringify(settings,null,2),{mode:0o600});renameSync(settingsPath+'.tmp',settingsPath);checkpoint(true);};
 const wss=new WebSocketServer({noServer:true,maxPayload:12000});
 const renderer=new AvatarRenderer({root,privateDir,changed:()=>broadcast()});let avatarPreparing=false;
 SignConfig.apiKey=undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
 const python=process.env.ARYANA_PYTHON||(process.platform==='win32'?join(root,'.venv','Scripts','python.exe'):join(root,'.venv','bin','python'));
+let neuralConfig={};try{neuralConfig=JSON.parse(readFileSync(join(root,'src/lipsync-config.json'),'utf8'));}catch{}
+const neural=new NeuralLipSync({root,privateDir,python,space:process.env.ARYANA_LIPSYNC_SPACE||neuralConfig.space,revision:process.env.ARYANA_LIPSYNC_REVISION||neuralConfig.revision,changed:()=>broadcast(),budgetChanged:()=>checkpoint(true)});
+let lipTest=null;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),lipTest,capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual'){
@@ -65,7 +69,16 @@ async function pump(){
  if(busy)return;busy=true;
  try{while(queue.length){const item=queue.shift(revision);if(!item)continue;
   speechStatus='generating';broadcast();
-  try{const recorded=applyCorrections(item.text,settings.corrections)===item.text?reactionClips.get(item.text):null,audio=recorded?.audio||await synthesize(item.text);if(item.revision!==revision)continue;utterances.push({id:randomUUID(),audio,video:recorded?.video||null,text:item.text,kind:item.kind,priority:item.priority,at:Date.now()});utterances=utterances.slice(-8);speechStatus='ready';lastError='';broadcast();}
+  try{
+   const recorded=applyCorrections(item.text,settings.corrections)===item.text?reactionClips.get(item.text):null;
+   const audio=recorded?.audio||await synthesize(item.text);if(item.revision!==revision)continue;
+   const publish=video=>{if(item.revision!==revision)return;utterances.push({id:randomUUID(),audio,video,text:item.text,kind:item.kind,priority:item.priority,at:Date.now()});utterances=utterances.slice(-8);speechStatus='ready';lastError='';broadcast();};
+   if(recorded?.video)publish(recorded.video);
+   else if(neural.configured){
+    const requestedAt=Date.now();speechStatus='lip-preparing';broadcast();
+    void neural.submit(join(privateDir,audio.slice(1))).then(video=>{if(Date.now()-requestedAt>60000){if(item.revision===revision)recordError('پاسخ دیررس از صف پخش حذف شد.');return;}publish(video);}).catch(error=>{if(item.revision===revision){speechStatus='error';recordError(error.message);}});
+   }else publish(null);
+  }
   catch(error){if(item.revision===revision){speechStatus='error';recordError(error.message);}}
  }}finally{busy=false;if(speechStatus!=='error')speechStatus='idle';broadcast();}
 }
@@ -99,10 +112,10 @@ const link=new LiveLink({create:username=>{
  lastAuto=Date.now();session.record('comment',comment);const generation=revision;
  void answer(comment).then(text=>{if(link.status==='connected'&&generation===revision)enqueue(text,'reply');}).catch(e=>{if(generation===revision)recordError(e.message);});
 }});
-function stopSpeech(){revision++;queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');localChat.cancel();speechStatus='idle';renderer.cancel();}
+function stopSpeech(){revision++;queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
 async function connect(username){
  username=String(username||'').replace(/^@/,'').trim();if(!/^[a-zA-Z0-9_.]{2,24}$/.test(username))throw Error('یوزرنیم تیک‌تاک معتبر نیست.');
- if(settings.lastUsername!==username){session.reset();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await link.start(username);
+ if(settings.lastUsername!==username){session.reset();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';if(neural.configured&&!neural.ready)await neural.prepare();await link.start(username);
 }
 const allowedHosts=hosting.hosts;
 const allowedOrigins=hosting.origins;
@@ -116,7 +129,7 @@ const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self'; connect-src 'self' ws: wss: blob:; worker-src 'self'; frame-ancestors 'self'");
   const url=new URL(req.url,'http://127.0.0.1:'+port);
-  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:false});
+  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:neural.configured&&neural.ready,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false});
   if(req.method==='GET'&&url.pathname==='/api/session')return json(res,200,hosting.hosted?{requiresToken:true}:{key});
   if(req.method==='GET'&&url.pathname==='/api/state'){if(hosting.hosted&&!tokenMatches(req.headers['x-aryana-key'],key))return json(res,401,{error:'کلید خصوصی مدیریت لازم است.'});return json(res,200,state());}
   if(req.method==='POST'&&url.pathname.startsWith('/api/')){
@@ -135,6 +148,18 @@ const server=http.createServer(async(req,res)=>{
     if(avatarPreparing||renderer.child)throw Error('پیش‌نمایش قبلی هنوز در حال ساخت است.');
     avatarPreparing=true;const generation=revision;
     void (async()=>{try{const audio=await synthesize(text);if(generation!==revision)return;const video=await renderer.render(join(privateDir,audio.slice(1)));if(generation!==revision)return;utterances.push({id:randomUUID(),audio,video,text,kind:'preview',at:Date.now()});utterances=utterances.slice(-8);lastError='';}catch(error){recordError(error.message);}finally{avatarPreparing=false;broadcast();}})();
+   }
+   else if(action==='lip-prepare'){void neural.prepare().then(()=>{lastError='';broadcast();}).catch(error=>recordError(error.message));}
+   else if(action==='lip-test'){
+    if(link.active||busy||queue.length||neural.status().pending)throw Error('آزمایش خصوصی را هنگام خالی‌بودن صف و قطع اتصال دریافت تیک‌تاک اجرا کنید.');
+    const text=String(data.text||'').trim();if(!text||text.length>120)throw Error('برای آزمایش یک جملهٔ کوتاه بنویسید.');
+    const generation=revision,started=Date.now(),id=randomUUID();lipTest={id,status:'preparing',private:true};busy=true;
+    void (async()=>{try{
+     const audio=await synthesize(text);if(generation!==revision)throw Error('آزمایش لغو شد.');
+     const video=await neural.submit(join(privateDir,audio.slice(1)));if(generation!==revision)throw Error('آزمایش لغو شد.');
+     lipTest={id,status:'ready',private:true,audio,video,text,elapsedSeconds:(Date.now()-started)/1000,voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64)};
+    }catch(error){if(generation===revision)lipTest={id,status:'error',private:true,error:error.message};}
+    finally{busy=false;broadcast();void pump();}})();
    }
    else if(action==='connect')await connect(data.username);
    else if(action==='disconnect'){link.stop();stopSpeech();checkpoint(true);}
@@ -175,7 +200,7 @@ server.on('upgrade',(req,socket,head)=>{if(req.url!=='/events'||!allowed(req)||w
 const timer=setInterval(broadcast,1000);timer.unref();
 const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===false){ws.terminate();continue;}ws.alive=false;ws.ping();}},30000);heartbeat.unref();
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
-if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);}
+if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);neural.restoreBudget(restored.lipSyncBudget);}
 async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
