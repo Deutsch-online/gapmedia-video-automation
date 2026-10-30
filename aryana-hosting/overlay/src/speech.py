@@ -17,8 +17,7 @@ if os.environ.get('SSL_CERT_FILE'):
     import edge_tts.communicate as transport
     transport._SSL_CTX = ssl.create_default_context(cafile=os.environ['SSL_CERT_FILE'])
 
-async def main():
-    request = json.loads(sys.stdin.read(16000))
+async def synthesize(request):
     text = request['text']
     if not isinstance(text, str) or not 1 <= len(text) <= 1000:
         raise ValueError('Invalid sentence')
@@ -44,7 +43,32 @@ async def main():
         probe=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(staged)],check=True,capture_output=True,text=True,timeout=10)
         if not .15<float(probe.stdout.strip())<180:raise ValueError('Invalid speech duration')
         os.replace(staged,target)
-    print(json.dumps({'voice': 'Aryana custom tone' if encoded_profile else voice, 'bytes': target.stat().st_size}))
+    return {'voice': 'Aryana custom tone' if encoded_profile else voice, 'bytes': target.stat().st_size}
+
+def warmup(request):
+    encoded=os.environ.get('ARYANA_VOICE_PROFILE_B64')
+    if not encoded:return {'warmed':True,'clone':False}
+    from voice_clone import convert
+    profile=json.loads(base64.b64decode(encoded,validate=True))
+    sample=Path(request['sample']);directory=Path(request['directory']);directory.mkdir(parents=True,exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='.voice-warm-',dir=str(directory)) as temp:
+        source=Path(temp)/'source.wav';output=Path(temp)/'warm.wav'
+        subprocess.run(['ffmpeg','-v','error','-y','-i',str(sample),'-t','1.5','-ar','22050','-ac','1',str(source)],check=True,timeout=20)
+        convert(source,output,profile,os.environ.get('ARYANA_CLONE_ASSETS','/opt/aryana-voice-assets'))
+    return {'warmed':True,'clone':True}
+
+def worker():
+    print(json.dumps({'ready':True}),flush=True)
+    for line in sys.stdin:
+        if len(line)>20000:continue
+        request=None
+        try:
+            request=json.loads(line)
+            result=warmup(request) if request.get('action')=='warmup' else asyncio.run(synthesize(request))
+            print(json.dumps({'id':request['id'],'ok':True,'result':result}),flush=True)
+        except Exception:
+            print(json.dumps({'id':request.get('id') if isinstance(request,dict) else None,'ok':False}),flush=True)
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    if '--worker' in sys.argv:worker()
+    else:print(json.dumps(asyncio.run(synthesize(json.loads(sys.stdin.read(16000))))))

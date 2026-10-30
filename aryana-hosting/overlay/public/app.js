@@ -13,8 +13,8 @@ function render(state){
  for(const field of ['muted','subtitles','conversationEnabled'])$(field).checked=Boolean(state.settings[field]);if(document.activeElement!==$('volume'))$('volume').value=state.settings.volume??85;
  if(state.settings.avatarMode==='portrait')$('modelStatus').textContent=state.capabilities.idleVideo?'چهرهٔ اختصاصی با ویدیوی انتظار حرکت می‌کند؛ واکنش‌های معرفی و تشکر آماده‌اند. پاسخ تازه پس از آماده‌شدن ویدیوی لب‌خوانی پخش می‌شود.':'چهرهٔ اختصاصی با کلیپ‌های معرفی و تشکر؛ حرکت انتظار آماده نیست.';
  if($('lipSyncStatus')){
-  const lip=state.lipSync;const pending=lip?.pending||0;
-  $('lipSyncStatus').textContent=lip?.configured?(pending?'در حال آماده‌سازی حرکت لب…':lip.ready?'لب‌خوانی پاسخ تازه آماده است'+(lip.lastLatencySeconds?' · آخرین ساخت: '+fa.format(lip.lastLatencySeconds.toFixed(1))+' ثانیه':''):lip.lastError||'پیش از لایف، آماده‌سازی لب‌ها را بزنید.'):'سرویس لب‌خوانی تازه تنظیم نشده است.';
+  const lip=state.lipSync;const pending=(lip?.pending||0)+(state.voiceEngine?.pending?1:0)+(state.livePreparation?.status==='preparing'?1:0);
+  $('lipSyncStatus').textContent=lip?.configured?(pending?'در حال آماده‌سازی صدا و حرکت لب…':lip.ready?'لب‌خوانی پاسخ تازه آماده است'+(lip.lastLatencySeconds?' · آخرین ساخت: '+fa.format(lip.lastLatencySeconds.toFixed(1))+' ثانیه':''):lip.lastError||'پیش از لایف، آماده‌سازی لب‌ها را بزنید.'):'سرویس لب‌خوانی تازه تنظیم نشده است.';
   $('lipPrepare').disabled=!lip?.configured||pending>0;$('lipTest').disabled=!lip?.configured||pending>0||state.connection==='connected';
   const test=state.lipTest;$('lipTestStatus').textContent=test?.status==='preparing'?'آزمایش خصوصی در حال ساخت است؛ روی خروجی LIVE پخش نمی‌شود.':test?.status==='ready'?'آزمایش تازه در '+fa.format(test.elapsedSeconds.toFixed(1))+' ثانیه آماده شد.':test?.error||'آزمایش خصوصی روی صفحهٔ LIVE پخش نمی‌شود.';
   if(test?.status==='ready'){const player=$('lipTestPreview');player.hidden=false;if(player.getAttribute('src')!==test.video)player.src=test.video;}

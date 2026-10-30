@@ -1,10 +1,11 @@
 """CPU tone conversion for Aryana; private profile never leaves server memory."""
-import contextlib,hashlib,json,os,sys
+import contextlib,hashlib,json,os,sys,functools
 from pathlib import Path
 import numpy as np
 import soundfile as sf
 import torch
 ASSET_HASHES={'checkpoint.pth':'9652c27e92b6b2a91632590ac9962ef7ae2b712e5c5b7f4c34ec55ee2b37ab9e','config.json':'9dfff60350b8c63f2c664efd92a61b2516efb22671466960f0e5dfebd881fa47'}
+@functools.lru_cache(maxsize=1)
 def converter(root):
  root=Path(root)
  for name,digest in ASSET_HASHES.items():

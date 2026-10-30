@@ -17,6 +17,7 @@ import {LocalChat} from './local-chat.mjs';
 import {stockReply} from './replies.mjs';
 import {loadReactionClips} from './reaction-clips.mjs';
 import {NeuralLipSync} from './neural-lipsync.mjs';
+import {SpeechEngine} from './speech-engine.mjs';
 
 const root=fileURLToPath(new URL('..',import.meta.url)),publicDir=join(root,'public'),privateDir=join(root,'.private');
 mkdirSync(privateDir,{recursive:true,mode:0o700});mkdirSync(join(privateDir,'audio'),{recursive:true,mode:0o700});
@@ -39,11 +40,22 @@ const wss=new WebSocketServer({noServer:true,maxPayload:12000});
 const renderer=new AvatarRenderer({root,privateDir,changed:()=>broadcast()});let avatarPreparing=false;
 SignConfig.apiKey=undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
 const python=process.env.ARYANA_PYTHON||(process.platform==='win32'?join(root,'.venv','Scripts','python.exe'):join(root,'.venv','bin','python'));
+const speechEngine=new SpeechEngine({python,script:join(root,'src/speech.py'),sample:join(publicDir,'assets/voice-preview.mp3'),directory:join(privateDir,'audio'),changed:()=>broadcast()});
 let neuralConfig={};try{neuralConfig=JSON.parse(readFileSync(join(root,'src/lipsync-config.json'),'utf8'));}catch{}
 const neural=new NeuralLipSync({root,privateDir,python,space:process.env.ARYANA_LIPSYNC_SPACE||neuralConfig.space,revision:process.env.ARYANA_LIPSYNC_REVISION||neuralConfig.revision,changed:()=>broadcast(),budgetChanged:()=>checkpoint(true)});
 let lipTest=null;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),lipTest,capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+let livePreparation={status:'idle'},livePreparationPromise=null;
+function prepareLive(){
+ if(livePreparationPromise)return livePreparationPromise;
+ if(localChat.pending)return Promise.reject(Error('مدل گفتگو در حال پاسخ است؛ کمی صبر کنید.'));
+ livePreparation={status:'preparing',at:Date.now()};broadcast();
+ const jobs=[speechEngine.warmup()];if(neural.configured)jobs.push(neural.prepare());
+ if(settings.conversationEnabled&&localChat.configured&&!localChat.ready)jobs.push(localChat.ask('سلام. فقط یک خوش‌آمد کوتاه بنویس.'));
+ livePreparationPromise=Promise.all(jobs).then(()=>{livePreparation={status:'ready',seconds:(Date.now()-livePreparation.at)/1000};lastError='';broadcast();}).catch(error=>{livePreparation={status:'error',error:error.message};broadcast();throw error;}).finally(()=>{livePreparationPromise=null;});
+ return livePreparationPromise;
+}
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},queue:{pending:queue.length,speech:speechStatus},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual'){
@@ -54,13 +66,7 @@ function enqueue(text,kind='manual'){
 async function synthesize(text){
  const language=languageOf(text),spoken=applyCorrections(text,settings.corrections);
  const hash=createHash('sha256').update(language+'\n'+spoken+'\n'+(process.env.ARYANA_VOICE_PROFILE_B64||'')).digest('hex'),target=join(privateDir,'audio',hash+'.mp3');
- if(!existsSync(target))await new Promise((resolve,reject)=>{
-  const child=spawn(python,[join(root,'src/speech.py')],{stdio:['pipe','ignore','ignore']});currentSpeech=child;
-  const timer=setTimeout(()=>{child.kill();reject(Error('مهلت تولید صدا تمام شد.'));},process.env.ARYANA_VOICE_PROFILE_B64?180000:55000);
-  child.once('error',()=>{clearTimeout(timer);reject(Error('محیط صدای Python آماده نیست؛ SETUP-WINDOWS.cmd را اجرا کنید.'));});
-  child.once('exit',code=>{if(currentSpeech===child)currentSpeech=null;clearTimeout(timer);code===0&&existsSync(target)?resolve():reject(Error('تولید صدای آنلاین موفق نشد؛ متن دوباره امتحان شود.'));});
-  child.stdin.on('error',()=>{});child.stdin.end(JSON.stringify({text:spoken,language,output:target}));
- });
+ if(!existsSync(target))await speechEngine.synthesize({text:spoken,language,output:target});
  const files=readdirSync(join(privateDir,'audio')).filter(n=>/^[a-f0-9]{64}\.mp3$/.test(n)).map(n=>({n,at:statSync(join(privateDir,'audio',n)).mtimeMs})).sort((a,b)=>a.at-b.at);
  while(files.length>64){const old=files.shift();if(old.n!==hash+'.mp3')unlinkSync(join(privateDir,'audio',old.n));}
  return '/audio/'+hash+'.mp3';
@@ -112,10 +118,10 @@ const link=new LiveLink({create:username=>{
  lastAuto=Date.now();session.record('comment',comment);const generation=revision;
  void answer(comment).then(text=>{if(link.status==='connected'&&generation===revision)enqueue(text,'reply');}).catch(e=>{if(generation===revision)recordError(e.message);});
 }});
-function stopSpeech(){revision++;queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
+function stopSpeech(){revision++;queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
 async function connect(username){
  username=String(username||'').replace(/^@/,'').trim();if(!/^[a-zA-Z0-9_.]{2,24}$/.test(username))throw Error('یوزرنیم تیک‌تاک معتبر نیست.');
- if(settings.lastUsername!==username){session.reset();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';if(neural.configured&&!neural.ready)await neural.prepare();await link.start(username);
+ if(settings.lastUsername!==username){session.reset();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();await link.start(username);
 }
 const allowedHosts=hosting.hosts;
 const allowedOrigins=hosting.origins;
@@ -129,7 +135,7 @@ const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; media-src 'self'; connect-src 'self' ws: wss: blob:; worker-src 'self'; frame-ancestors 'self'");
   const url=new URL(req.url,'http://127.0.0.1:'+port);
-  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:neural.configured&&neural.ready,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false});
+  if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true,version:'aryana-host-v1',build:process.env.ARYANA_BUILD_SHA||'local',hosted:hosting.hosted,liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false});
   if(req.method==='GET'&&url.pathname==='/api/session')return json(res,200,hosting.hosted?{requiresToken:true}:{key});
   if(req.method==='GET'&&url.pathname==='/api/state'){if(hosting.hosted&&!tokenMatches(req.headers['x-aryana-key'],key))return json(res,401,{error:'کلید خصوصی مدیریت لازم است.'});return json(res,200,state());}
   if(req.method==='POST'&&url.pathname.startsWith('/api/')){
@@ -149,7 +155,7 @@ const server=http.createServer(async(req,res)=>{
     avatarPreparing=true;const generation=revision;
     void (async()=>{try{const audio=await synthesize(text);if(generation!==revision)return;const video=await renderer.render(join(privateDir,audio.slice(1)));if(generation!==revision)return;utterances.push({id:randomUUID(),audio,video,text,kind:'preview',at:Date.now()});utterances=utterances.slice(-8);lastError='';}catch(error){recordError(error.message);}finally{avatarPreparing=false;broadcast();}})();
    }
-   else if(action==='lip-prepare'){void neural.prepare().then(()=>{lastError='';broadcast();}).catch(error=>recordError(error.message));}
+   else if(action==='lip-prepare'){void prepareLive().catch(error=>recordError(error.message));}
    else if(action==='lip-test'){
     if(link.active||busy||queue.length||neural.status().pending)throw Error('آزمایش خصوصی را هنگام خالی‌بودن صف و قطع اتصال دریافت تیک‌تاک اجرا کنید.');
     const text=String(data.text||'').trim();if(!text||text.length>120)throw Error('برای آزمایش یک جملهٔ کوتاه بنویسید.');
@@ -204,4 +210,4 @@ if(restored?.version===1){settings=cleanSettings(restored.settings);session.rest
 async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
-process.on('SIGTERM',()=>{stopSpeech();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});
+process.on('SIGTERM',()=>{stopSpeech();speechEngine.close();localChat.cancel();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});

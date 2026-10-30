@@ -1,5 +1,5 @@
 {
-  "request": "fresh-reply-neural-lipsync-v1",
+  "request": "fresh-reply-neural-lipsync-warm-voice-v2",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,

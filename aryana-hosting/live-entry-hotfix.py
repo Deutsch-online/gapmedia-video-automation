@@ -39,7 +39,7 @@ try:
   worker_info=api.space_info('afgtakrun/aryana-live-lipsync')
   worker_config=json.loads((release.APP/'src/lipsync-config.json').read_text())
   if not worker_info.private or worker_info.sha!=worker_config['revision']:raise RuntimeError('Private worker revision was not verified')
-  paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile']
+  paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile','src/speech-engine.mjs','src/speech.py','src/voice_clone.py']
  uploaded=api.create_commit(repo,repo_type='space',operations=[CommitOperationAdd(path_in_repo=p,path_or_fileobj=str(release.APP/p)) for p in paths],commit_message='Fix entry welcomes and exact gift thanks '+source_sha[:12])
  report['status']='building';write();deadline=time.monotonic()+600
  while time.monotonic()<deadline:
@@ -82,15 +82,17 @@ try:
   deadline=time.monotonic()+240
   while time.monotonic()<deadline:
    _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
-   if state.get('lipSync',{}).get('ready'):break
+   if state.get('livePreparation',{}).get('status')=='ready' and state.get('voiceEngine',{}).get('warmed') and state.get('lipSync',{}).get('ready'):break
+   if state.get('livePreparation',{}).get('status')=='error':raise RuntimeError('Live voice and lip preparation failed')
    if state.get('lipSync',{}).get('lastError') and not state.get('lipSync',{}).get('pending'):raise RuntimeError('Neural worker preparation failed')
    time.sleep(2)
   else:raise RuntimeError('Neural worker warmup timed out')
   report['neural_prepared']=True
+  report['initial_preparation_seconds']=state.get('livePreparation',{}).get('seconds')
   if state['connection']=='connected' or state.get('live',{}).get('active'):
    report['private_neural_test']='skipped_active_live'
   else:
-   _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'حالا لب‌ها با صدای تازه هماهنگ است.'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
+   _,raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'این صدای تازه با لب‌ها هماهنگ است.'});started_state=json.loads(raw)['state'];test_id=started_state['lipTest']['id']
    deadline=time.monotonic()+240
    while time.monotonic()<deadline:
     _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw);test=state.get('lipTest') or {}
