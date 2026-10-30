@@ -12,6 +12,30 @@ try:
  if bot.get('username','').lower()!='afgsocial_bot':raise RuntimeError('Unexpected bot identity')
  chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or os.environ['TELEGRAM_CHAT_ID'];owner=release.tg('getChat',{'chat_id':chat})
  if owner.get('type')!='private':raise RuntimeError('Owner chat must be private')
+ if request.get('resume_only'):
+  api=HfApi(token=os.environ['HF_TOKEN'])
+  if api.whoami()['name']!='afgtakrun':raise RuntimeError('Unexpected owner')
+  import hmac
+  url='https://afgtakrun-aryana-live-studio.hf.space'
+  admin=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+  _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
+  username=state['settings'].get('lastUsername','')
+  if not username:raise RuntimeError('Saved username unavailable')
+  error=''
+  if state['connection']!='connected':
+   try:release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
+   except urllib.error.HTTPError as exc:
+    try:error=str(json.loads(exc.read()).get('error','Connection recovery rejected')).replace(username,'[account]')
+    except Exception:error='Connection recovery rejected'
+  deadline=time.monotonic()+60
+  while time.monotonic()<deadline:
+   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
+   if state['connection']=='connected':break
+   time.sleep(3)
+  report.update(status='ready' if state['connection']=='connected' else 'recovery_pending',connection=state['connection'],resume_only=True,lip_sync_ready=state.get('capabilities',{}).get('liveLipSync',False),recovery_error=error)
+  write()
+  if state['connection']!='connected':raise RuntimeError('Live connection recovery remains pending')
+  sys.exit(0)
  release.reconstruct(owner['id'])
  subprocess.run(['npm','ci','--ignore-scripts','--no-audit','--no-fund'],cwd=release.APP,check=True)
  subprocess.run(['npm','test'],cwd=release.APP,check=True)
