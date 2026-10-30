@@ -1,0 +1,50 @@
+name: Test one longer Aryana LTX motion clip using existing HF credits
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/ltx-request.json]
+permissions:
+  contents: write
+concurrency:
+  group: aryana-prepaid-ltx-probe
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check gradio_client==2.0.0
+      - name: Install and verify media tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version
+          ffprobe -version
+      - name: Generate one ltx-bounded candidate
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: '1'
+        run: python aryana-hosting/generate-ltx-candidate.py
+      - name: Save preview candidates on isolated delivery branch
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add aryana-hosting/ltx-candidates
+          if ! git diff --cached --quiet; then
+            git commit -m 'Stage one prepaid HF motion candidate for review'
+            git pull --rebase origin delivery/aryana-hf-20261029
+            git push origin HEAD:delivery/aryana-hf-20261029
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aryana-ltx-candidate
+          path: aryana-hosting/ltx-candidates
+          retention-days: 3

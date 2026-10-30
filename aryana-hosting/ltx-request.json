@@ -1,0 +1,7 @@
+{
+  "request": "existing-hf-ltx-probe-v1",
+  "use_existing_hf_credits": true,
+  "max_generations": 1,
+  "max_credit_usd": 0.13,
+  "purchase_credits": false
+}
