@@ -33,7 +33,10 @@ jobs:
             }
             if(item?.video){
               report.video={id:item.id,description:item.desc,duration:item.video.duration,author:item.author?.uniqueId};
-              const media=item.video.downloadAddr||item.video.playAddr;
+              const cover=item.video.originCover||item.video.cover;
+              if(typeof cover==='string'){const c=await fetch(cover,{signal:AbortSignal.timeout(20000)});report.cover_http=c.status;if(c.ok)await fs.writeFile('/tmp/reference/cover.jpg',Buffer.from(await c.arrayBuffer()));}
+              for(const track of item.video.subtitleInfos||[]){if(['deu-DE','eng-US'].includes(track.LanguageCodeName)&&typeof track.Url==='string'){const s=await fetch(track.Url,{signal:AbortSignal.timeout(20000)});report['subtitle_'+track.LanguageCodeName]=s.status;if(s.ok)await fs.writeFile('/tmp/reference/'+track.LanguageCodeName+'.vtt',(await s.text()).slice(0,100000));}}
+              const media=item.video.playAddr||item.video.downloadAddr;
               if(typeof media==='string'&&media.startsWith('https://')){
                 const response=await fetch(media,{signal:AbortSignal.timeout(60000)});
                 report.media_http=response.status;
