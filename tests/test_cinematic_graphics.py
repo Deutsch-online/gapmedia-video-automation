@@ -24,10 +24,75 @@ def story():
     return json.loads((ROOT / 'ai-cast/doctor-appointment-45s.json').read_text())
 
 
+class RentalStoryTests(unittest.TestCase):
+    def plan(self):
+        plan = series.load_json(ROOT / 'ai-cast/rental-warning-45s.json')
+        plan['research_source'] = {'url': plan['research_url']}
+        return plan
+
+    def test_requested_rental_story_is_selected_with_real_history_and_correct_source(self):
+        state = series.load_json(ROOT / '.cinematic-series-state.json')
+        config = series.load_json(ROOT / '.cinematic-series.json')
+        state = copy.deepcopy(state)
+        state['next_episode'] = 16
+        state['history'] = [h for h in state['history'] if h['episode'] < 16]
+        with patch.object(series, 'research_source', return_value={'url': self.plan()['research_url']}) as fetch, \
+             patch.object(series, 'request_json') as llm:
+            plan = series.make_plan(state)
+        self.assertEqual(plan['story_id'], 'rental-advance-payment-near-miss-v1')
+        self.assertEqual(tuple(s['graphic_step'] for s in plan['scenes']), graphics.RENTAL_STEPS)
+        series.validate_plan(plan, 16, state['history'], config)
+        fetch.assert_called_once_with(16, preferred_url=plan['research_url'])
+        llm.assert_not_called()
+        with patch.object(series, 'research_source', side_effect=RuntimeError('source unavailable')), \
+             patch.object(series, 'request_json') as llm:
+            with self.assertRaisesRegex(RuntimeError, 'source unavailable'):
+                series.make_plan(state)
+            llm.assert_not_called()
+
+    def test_rental_panels_cannot_be_real_payment_or_doctor_booking(self):
+        for mutate in (
+            lambda p: p['graphic_story'].update(real_payment=True),
+            lambda p: p['graphic_story'].update(disclosure_de=graphics.DISCLOSURE),
+            lambda p: p['scenes'][0].update(graphic_step='search'),
+            lambda p: p['scenes'].reverse(),
+            lambda p: p.update(duration_seconds=60),
+        ):
+            plan = self.plan()
+            mutate(plan)
+            with self.assertRaises(ValueError):
+                graphics.validate_graphic_story(plan)
+
+    @unittest.skipUnless(shutil.which('ffmpeg'), 'FFmpeg required')
+    def test_new_rental_layout_muxes_both_tap_and_silent_ending_at_native_duration(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            video, audio = folder / 'source.mp4', folder / 'speech.wav'
+            subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                'testsrc2=size=90x160:rate=30:duration=5', '-c:v', 'libx264',
+                '-preset', 'ultrafast', str(video)], check=True)
+            graphics.tap_audio(audio, None)
+            for index in (0, 8):
+                with self.subTest(index=index), patch('cinematic_music.protected_speech', return_value=[[0, 2]]):
+                    graphic = graphics.prepare_step(self.plan()['scenes'][index], audio, folder, index)
+                final = folder / f'rental-{index}.mp4'
+                subprocess.run(['ffmpeg', '-v', 'error', '-i', str(video), '-i', str(audio),
+                    '-i', str(graphic['panel']), '-i', str(graphic['ring']), '-i', str(graphic['audio']),
+                    '-filter_complex', graphics.filters(graphic), '-map', '[v]', '-map', '[a]',
+                    '-t', '5', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', str(final)], check=True)
+                info = series.ffprobe(final)
+                stream = next(s for s in info['streams'] if s['codec_type'] == 'video')
+                self.assertEqual((stream['width'], stream['height'], int(stream['nb_frames'])), (1080, 1920, 150))
+                self.assertEqual(float(info['format']['duration']), 5)
+                self.assertEqual(graphic['tap_at'] is None, index == 8)
+
+
 class DoctorStoryTests(unittest.TestCase):
     def test_live_next_episode_uses_doctor_story_and_cannot_substitute_the_train(self):
         state = series.load_json(ROOT / '.cinematic-series-state.json')
         config = series.load_json(ROOT / '.cinematic-series.json')
+        config['next_story'] = {'from_episode': 15, 'story_id': story()['story_id'],
+                                'duration_seconds': 45, 'require_graphics': True}
         # This is the actual unplanned episode at integration time, including
         # all previous dialogue for repetition checks. No model or GPU call.
         state = copy.deepcopy(state)
@@ -43,7 +108,7 @@ class DoctorStoryTests(unittest.TestCase):
         llm.assert_not_called()
         replacement = copy.deepcopy(state['history'][-1])
         replacement['episode'] = 15
-        with self.assertRaisesRegex(ValueError, 'owner-requested doctor story'):
+        with self.assertRaisesRegex(ValueError, 'owner-requested story'):
             series.validate_plan(replacement, 15, state['history'], config)
         for field in ('graphic_story', 'duration_seconds'):
             broken = copy.deepcopy(plan)

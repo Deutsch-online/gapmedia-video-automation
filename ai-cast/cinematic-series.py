@@ -61,6 +61,7 @@ TRUSTED_RESEARCH = (
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
     ('Posting a letter', 'https://www.deutschepost.de/de/b/briefmarken.html', 'Briefmarken'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
+    ('Rental advance-payment warning', 'https://www.polizei-beratung.de/aktuelles/detailansicht/vorsicht-vor-betrug-bei-der-wohnungssuche/', 'Vorsicht vor Betrug bei der Wohnungssuche'),
 )
 
 class _PageText(HTMLParser):
@@ -234,9 +235,9 @@ def validate_plan(plan, episode, history, config=None):
         if request and episode >= request['from_episode'] and not any(
                 h.get('story_id') == request['story_id'] for h in history):
             if plan.get('story_id') != request['story_id']:
-                raise ValueError('The next episode must be the owner-requested doctor story')
+                raise ValueError('The next episode must be the owner-requested story')
             if plan.get('duration_seconds') != request['duration_seconds'] or not plan.get('graphic_story'):
-                raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
+                raise ValueError('The requested story needs all app graphics and exactly 45 seconds')
             from cinematic_graphics import validate_graphic_story
             validate_graphic_story(plan)
     target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
@@ -504,12 +505,21 @@ def make_plan(state):
     # The owner's authored story is used once, at the next unplanned 45s episode.
     # A pending production bypasses make_plan and keeps all its signed assets.
     if episode >= 9 and episode_seconds(episode) == DEFAULT_SECONDS:
-        template = load_json(ROOT / 'ai-cast/doctor-appointment-45s.json', {})
+        request = load_json(CONFIG).get('next_story', {})
+        path = 'ai-cast/doctor-appointment-45s.json'
+        if episode >= request.get('from_episode', 10**9) and not any(
+                h.get('story_id') == request.get('story_id') for h in state['history']):
+            path = request['path']
+            if path not in ('ai-cast/doctor-appointment-45s.json', 'ai-cast/rental-warning-45s.json'):
+                raise ValueError('Unknown requested story path')
+        template = load_json(ROOT / path, {})
+        if path == request.get('path') and not template:
+            raise ValueError('The owner-requested story template is missing')
         if template and not any(h.get('story_id') == template['story_id'] or
                                 h.get('title_de') == template['title_de'] for h in state['history']):
             source = research_source(episode, preferred_url=template['research_url'])
             if source['url'] != template['research_url']:
-                raise RuntimeError('The requested doctor story needs its matching official source')
+                raise RuntimeError('The requested story needs its matching official source')
             template.update(episode=episode, research_source=source)
             return validate_plan(template, episode, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
@@ -1295,4 +1305,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
