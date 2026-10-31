@@ -1,0 +1,77 @@
+name: Review the completed exact-step take without GPU
+on:
+  push:
+    branches: [codex/rental-story-45s]
+    paths: [.cached-quality-review.json]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU review tools
+        run: |
+          python -m pip install 'pillow>=11,<13'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-quality-preview-41220295921
+          fail-on-cache-miss: true
+      - name: Mux only the signed completed first take and capture review frames
+        env:
+          CINEMATIC_CACHED_ONLY: 'on'
+        run: |
+          python - <<'PY'
+          import importlib.util,json,shutil,subprocess
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('series','ai-cast/cinematic-series.py')
+          series=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(series)
+          import cinematic_graphics as graphics, cinematic_speech as speech
+          from PIL import Image
+          plan=series.load_json('ai-cast/rental-warning-45s.json')
+          root=Path('renders/cinematic-series-cache/preview-e0016')
+          out=Path('renders/quality-review')
+          out.mkdir(parents=True,exist_ok=True)
+          audio=root/'00.aligned.wav'
+          clip=root/'00.mp4'
+          # Cached-only ensure_clip validates exact audio, image, model and motion.
+          scene=plan['scenes'][0]
+          motion=scene['motion']+' Object action: '+scene['object_action']+' Start the physical action promptly; add a readable natural facial reaction. '+' Keep these objects visible and stable: '+', '.join(scene['visible_objects'])
+          speech.ensure_clip(root/'00.png',audio,clip,motion,plan['episode']*1009)
+          graphic=graphics.prepare_step(scene,audio,out,0)
+          raw=out/'mux.mp4'
+          series.command(['ffmpeg','-y','-v','error','-i',clip,'-i',audio,'-i',graphic['panel'],'-i',graphic['ring'],'-i',graphic['audio'],'-filter_complex',graphics.filters(graphic),'-map','[v]','-map','[a]','-t','5','-c:v','libx264','-preset','fast','-crf','18','-c:a','aac',raw])
+          subs=out/'subtitles.ass'
+          subs.write_text(series.build_subtitles(plan))
+          final=out/'quality-sample-only-5s.mp4'
+          series.command(['ffmpeg','-y','-v','error','-i',raw,'-vf','ass='+str(subs),'-af','loudnorm=I=-16:TP=-1.5:LRA=9','-c:v','libx264','-preset','fast','-crf','18','-c:a','aac','-movflags','+faststart',final])
+          series.conform_duration(final,5)
+          raw.unlink()
+          contact=Image.new('RGB',(1080,1152),'#101820')
+          for i in range(15):
+              t=i/3
+              frame=out/f'frame-{i:02}.jpg'
+              series.command(['ffmpeg','-v','error','-ss',str(t),'-i',final,'-frames:v','1','-q:v','3',frame])
+              contact.paste(Image.open(frame).resize((216,384)),((i%5)*216,(i//5)*384))
+          contact.save(out/'frame-contact.jpg')
+          for name in ('00.mp3','08.mp3'):
+              shutil.copyfile(Path('renders/cinematic-series-cache/e0016')/name,out/name)
+          shutil.copyfile(root/'00.png',out/'kitchen-reference.png')
+          info=series.ffprobe(final)
+          series.atomic_json(out/'review-status.json',{'kind':'single-real-native-take-for-review','duration':float(info['format']['duration']),'generation_requested':False,'paid_authorized':False,'delivered':False,'rest_of_episode':'blocked by free GPU quota','quality_profile':speech.QUALITY_PROFILE})
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: completed-exact-step-take-review
+          path: renders/quality-review
+          retention-days: 7
