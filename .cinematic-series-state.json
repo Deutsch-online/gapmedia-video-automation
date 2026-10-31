@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 15,
+  "next_episode": 16,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -124,6 +124,14 @@
       "platforms": {
         "tiktok": 2790,
         "instagram": 2791
+      }
+    },
+    "2026-10-31": {
+      "episode": 15,
+      "message_id": 2806,
+      "platforms": {
+        "tiktok": 2806,
+        "instagram": 2807
       }
     }
   },
@@ -2135,12 +2143,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "status": "exporting",
-    "date": "2026-10-31",
-    "plan": {
+    },
+    {
       "story_id": "doctor-appointment-language-anxiety-v1",
       "episode": 15,
       "duration_seconds": 45,
@@ -2297,24 +2301,9 @@
         "cache_note": "The web connector reported Crawled: yesterday; retrieved during preparation of this pending episode.",
         "scope": "Illustrative language-learning context only; no verified named app or real appointment."
       }
-    },
-    "owner_request": "2026-10-30: next round must follow the requested doctor appointment story",
-    "credit_from_scene": 0,
-    "credit_approval_required": true,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 0s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_notice_status": "sent",
-    "credit_notice_message_id": 2803,
-    "platform_receipts": {
-      "tiktok": 2806,
-      "instagram": 2807
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0015/tiktok/e0015-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0015/instagram/e0015-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0015/instagram/e0015-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
