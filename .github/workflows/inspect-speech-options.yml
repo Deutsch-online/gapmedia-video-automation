@@ -1,0 +1,50 @@
+name: Inspect native speech options and reported frames
+on:
+  push:
+    branches: [codex/rental-story-45s]
+    paths: [.speech-quality-inspect.json]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read public provider implementation without generating media
+        run: |
+          mkdir -p /tmp/speech-inspect
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs/promises';
+          const u='https://huggingface.co/spaces/victor/LongCat-Video-Avatar-1.5/raw/main/app.py';
+          const r=await fetch(u,{signal:AbortSignal.timeout(30000)});
+          if(!r.ok)throw Error('Provider source HTTP '+r.status);
+          const text=await r.text();
+          await fs.writeFile('/tmp/speech-inspect/provider-app.py',text);
+          console.log(text.split('\n').filter(l=>/fast|quality|DBCache|Clean speech|duration|segments|frame|preset|Dropdown/.test(l)).join('\n').slice(0,18000));
+          JS
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '13037168409'
+          run-id: '41186540110'
+          github-token: ${{ github.token }}
+          path: /tmp/delivered-episode
+      - name: Extract the reported eye and mouth frames
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          movie=next(Path('/tmp/delivered-episode').rglob('e0015-cinematic-fa-de.mp4'))
+          for t in (0.5,1,1.5,3,10.5,11,11.5):
+              subprocess.run(['ffmpeg','-v','error','-ss',str(t),'-i',str(movie),'-frames:v','1','-q:v','3',f'/tmp/speech-inspect/frame-{t}.jpg'],check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-speech-source-and-reported-frames
+          path: /tmp/speech-inspect
+          retention-days: 3
