@@ -2138,7 +2138,7 @@
     }
   ],
   "pending": {
-    "status": "dispatching",
+    "status": "exporting",
     "date": "2026-10-31",
     "plan": {
       "story_id": "doctor-appointment-language-anxiety-v1",
@@ -2304,7 +2304,9 @@
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 0s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
     "credit_notice_status": "sent",
     "credit_notice_message_id": 2803,
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2806
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0015/tiktok/e0015-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0015/instagram/e0015-instagram-45s.mp4"
