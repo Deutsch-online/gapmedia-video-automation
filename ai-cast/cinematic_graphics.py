@@ -68,6 +68,8 @@ def panel(step, target):
     from PIL import Image, ImageDraw
     if step not in PANELS:
         raise ValueError('Unknown appointment graphic step')
+    if step in RENTAL_STEPS:
+        return rental_panel(step, target)
     image = Image.new('RGBA', (400, 900), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
     draw.rounded_rectangle((0, 0, 399, 899), radius=44, fill='#173B45')
@@ -120,10 +122,49 @@ def panel(step, target):
     return target
 
 
+def rental_panel(step, target):
+    """One large visual decision per shot instead of a miniature checklist."""
+    from PIL import Image, ImageDraw
+    image = Image.new('RGBA', (400, 900), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    draw.rounded_rectangle((0, 0, 399, 899), radius=36, fill='#173B45')
+    draw.rounded_rectangle((9, 9, 390, 890), radius=29, fill='#F5FAF8')
+    title, rows, selected = PANELS[step]
+    n = RENTAL_STEPS.index(step)
+    color = '#A3412B' if n < 5 else '#137F82'
+    def words(text, size, y, fill, width=330):
+        face = font(size, True)
+        line, lines = '', []
+        for word in text.split():
+            trial = (line + ' ' + word).strip()
+            if draw.textlength(trial, font=face) > width and line:
+                lines.append(line)
+                line = word
+            else:
+                line = trial
+        for line in lines + [line]:
+            draw.text((34, y), line, font=face, fill=fill)
+            y += size + 9
+        return y
+    words(title, 33, 43, '#173B45')
+    symbols = ['800 €', '800 €', 'GESEHEN?', '800 €', 'STOPP', 'BELEGE', 'MELDEN', 'ABBRUCH', '0 €']
+    draw.text((30, 210), symbols[n], font=font(84 if n in (0, 1, 3, 8) else 54, True), fill=color)
+    draw.rounded_rectangle((24, 355, 376, 650), radius=22, fill='#FBE5DA' if n < 5 else '#D5F0E9')
+    words(rows[selected], 43, 382, '#173B45', 308)
+    words('Noch nichts gesendet' if n < 5 else '0 Euro überwiesen', 29, 680, color)
+    draw.rounded_rectangle((23, 780, 377, 866), radius=12, fill='#FBE8CA')
+    draw.text((35, 789), 'BEISPIEL', font=font(27, True), fill='#694C27')
+    draw.text((35, 829), 'KEINE ECHTE ZAHLUNG', font=font(20, True), fill='#694C27')
+    target = Path(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    image.save(target)
+    return target
+
+
 def tap_ring(step, target):
     from PIL import Image, ImageDraw
     image = Image.new('RGBA', (400, 900), (0, 0, 0, 0))
-    y = 352 + PANELS[step][2] * 110
+    y = 600 if step in RENTAL_STEPS else 352 + PANELS[step][2] * 110
     draw = ImageDraw.Draw(image)
     draw.ellipse((318, y - 25, 368, y + 25), outline='#E58D47', width=5)
     draw.ellipse((336, y - 7, 350, y + 7), fill='#E58D47')

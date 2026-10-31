@@ -27,6 +27,11 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_cinematic_*.py'
           python -m unittest discover -s tests -p test_wan2gp_backend.py
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-rental-voices-${{ github.run_id }}
+          restore-keys: cinematic-series-v2-rental-voices-
       - name: Measure all nine actual voices before any GPU request
         env:
           PAID_FALLBACK: 'off'
