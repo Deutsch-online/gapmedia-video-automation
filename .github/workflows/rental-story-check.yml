@@ -1,0 +1,75 @@
+name: Check rental story and actual German voices
+on:
+  pull_request:
+    paths:
+      - ai-cast/rental-warning-45s.json
+      - ai-cast/cinematic-series.py
+      - ai-cast/cinematic_graphics.py
+      - tests/test_cinematic_graphics.py
+      - .github/workflows/rental-story-check.yml
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU and free speech tools
+        run: |
+          python -m pip install 'pillow>=11,<13' 'edge-tts>=7.2,<8'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Check story, all layouts, duration and budget safeguards
+        run: |
+          python -m unittest discover -s tests -p 'test_cinematic_*.py'
+          python -m unittest discover -s tests -p test_wan2gp_backend.py
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-rental-voices-${{ github.run_id }}
+          restore-keys: cinematic-series-v2-rental-voices-
+      - name: Measure all nine actual voices before any GPU request
+        env:
+          PAID_FALLBACK: 'off'
+        run: |
+          python - <<'PY'
+          import importlib.util, json
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('series','ai-cast/cinematic-series.py')
+          series=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(series)
+          config=series.load_json(series.CONFIG)
+          state=series.load_json(series.STATE)
+          plan=series.load_json('ai-cast/rental-warning-45s.json')
+          plan['research_source']={'url':plan['research_url']}
+          history=[h for h in state['history'] if h['episode']<16]
+          series.validate_plan(plan,16,history,config)
+          cache=Path('renders/cinematic-series-cache/e0016')
+          voices=series.prepare_narration(plan,cache,config,history)
+          import cinematic_graphics as graphics
+          from PIL import Image
+          contact=Image.new('RGB',(720,1620),'#EEF4F8')
+          for i,scene in enumerate(plan['scenes']):
+              panel=graphics.panel(scene['graphic_step'],cache/f'panel-{i}.png')
+              contact.paste(Image.open(panel).convert('RGB').resize((240,540)),((i%3)*240,(i//3)*540))
+          contact.save(cache/'panels.jpg')
+          print('All nine natural-speed voices passed. No images, video GPU, payment or messages requested.')
+          PY
+      - name: Keep validated narration for the normal next episode
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-rental-voices-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rental-story-voice-and-panel-review
+          path: |
+            renders/cinematic-series-cache/e0016/narration-timing.json
+            renders/cinematic-series-cache/e0016/panels.jpg
+          retention-days: 7

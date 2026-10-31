@@ -61,6 +61,7 @@ TRUSTED_RESEARCH = (
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
     ('Posting a letter', 'https://www.deutschepost.de/de/b/briefmarken.html', 'Briefmarken'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
+    ('Rental advance-payment warning', 'https://www.polizei-beratung.de/aktuelles/detailansicht/vorsicht-vor-betrug-bei-der-wohnungssuche/', 'Vorsicht vor Betrug bei der Wohnungssuche'),
 )
 
 class _PageText(HTMLParser):
@@ -234,9 +235,9 @@ def validate_plan(plan, episode, history, config=None):
         if request and episode >= request['from_episode'] and not any(
                 h.get('story_id') == request['story_id'] for h in history):
             if plan.get('story_id') != request['story_id']:
-                raise ValueError('The next episode must be the owner-requested doctor story')
+                raise ValueError('The next episode must be the owner-requested story')
             if plan.get('duration_seconds') != request['duration_seconds'] or not plan.get('graphic_story'):
-                raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
+                raise ValueError('The requested story needs all app graphics and exactly 45 seconds')
             from cinematic_graphics import validate_graphic_story
             validate_graphic_story(plan)
     target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
@@ -292,6 +293,15 @@ def validate_plan(plan, episode, history, config=None):
     for s in plan['scenes']:
         if s.get('speaker') not in VOICES:
             raise ValueError('Unknown speaking character')
+        if plan.get('layout_profile') == 'vertical-full-frame-v1':
+            if s.get('visible_character') != 'marta':
+                raise ValueError('This requested profile shows only Marta')
+            if s.get('speaker') == 'lukas' and (s.get('voiceover') is not True or s.get('framing') != 'hands-only'):
+                raise ValueError('Lukas must be an off-camera voice over a hands-only shot')
+            if s.get('vocal_delivery') not in VOCAL_DELIVERY:
+                raise ValueError('The new profile requires an explicit supported vocal delivery')
+            if len(s['de'].split()) > 6:
+                raise ValueError('Use short German lines so both languages can be read in five seconds')
         for key in ('de', 'fa', 'scene', 'motion'):
             if not isinstance(s.get(key), str) or not s[key].strip():
                 raise ValueError('Every scene needs dialogue, translation, a setting and genuine action')
@@ -504,12 +514,21 @@ def make_plan(state):
     # The owner's authored story is used once, at the next unplanned 45s episode.
     # A pending production bypasses make_plan and keeps all its signed assets.
     if episode >= 9 and episode_seconds(episode) == DEFAULT_SECONDS:
-        template = load_json(ROOT / 'ai-cast/doctor-appointment-45s.json', {})
+        request = load_json(CONFIG).get('next_story', {})
+        path = 'ai-cast/doctor-appointment-45s.json'
+        if episode >= request.get('from_episode', 10**9) and not any(
+                h.get('story_id') == request.get('story_id') for h in state['history']):
+            path = request['path']
+            if path not in ('ai-cast/doctor-appointment-45s.json', 'ai-cast/rental-warning-45s.json'):
+                raise ValueError('Unknown requested story path')
+        template = load_json(ROOT / path, {})
+        if path == request.get('path') and not template:
+            raise ValueError('The owner-requested story template is missing')
         if template and not any(h.get('story_id') == template['story_id'] or
                                 h.get('title_de') == template['title_de'] for h in state['history']):
             source = research_source(episode, preferred_url=template['research_url'])
             if source['url'] != template['research_url']:
-                raise RuntimeError('The requested doctor story needs its matching official source')
+                raise RuntimeError('The requested story needs its matching official source')
             template.update(episode=episode, research_source=source)
             return validate_plan(template, episode, state['history'])
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
@@ -693,8 +712,18 @@ class NarrationTimingError(RuntimeError):
 
 
 def narration_signature(scene):
-    return hashlib.sha256(json.dumps(['narration-timing-v2', VOICES[scene['speaker']],
-                                     scene['de']], ensure_ascii=False).encode()).hexdigest()
+    value = ['narration-timing-v2', VOICES[scene['speaker']], scene['de']]
+    if scene.get('vocal_delivery'):
+        value.append(scene['vocal_delivery'])
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False).encode()).hexdigest()
+
+
+VOCAL_DELIVERY = {
+    'worried': ('-12%', '-4Hz'),
+    'thoughtful': ('-10%', '-2Hz'),
+    'calm-firm': ('-9%', '-2Hz'),
+    'relieved': ('-10%', '+3Hz'),
+}
 
 
 def measured_narration(scene, audio):
@@ -709,9 +738,14 @@ def measured_narration(scene, audio):
     marker.unlink(missing_ok=True)
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finish requires validated existing narration')
-    for rate in ('-5%', '+3%'):
+    delivery = scene.get('vocal_delivery')
+    if delivery is not None and delivery not in VOCAL_DELIVERY:
+        raise ValueError('Unknown vocal delivery; do not invent unsupported emotional SSML')
+    rates = (VOCAL_DELIVERY[delivery][0],) if delivery else ('-5%', '+3%')
+    for rate in rates:
         command(['python3', '-m', 'edge_tts', '--voice', VOICES[scene['speaker']],
-                 '--text', scene['de'], '--rate=' + rate, '--write-media', audio])
+                 '--text', scene['de'], '--rate=' + rate,
+                 *(['--pitch=' + VOCAL_DELIVERY[delivery][1]] if delivery else []), '--write-media', audio])
         duration = seconds(audio)
         if .4 < duration <= 4.5:
             marker.write_text(signature)
@@ -896,12 +930,17 @@ def caption_text(text, family, size, width=950):
             return r'\N'.join(lines), 60
     raise ValueError('Caption is too long for the large readable layout')
 
-def scene_layout():
+def scene_layout(profile=None):
     """Keep the entire action above the earliest subtitle card (y=1350)."""
+    if profile == 'vertical-full-frame-v1':
+        return ('scale=1080:1920:force_original_aspect_ratio=increase:force_divisible_by=2,'
+                'crop=1080:1920,setsar=1,fps=30')
     return ('scale=1080:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
             'pad=1080:1920:(ow-iw)/2:0:color=0xEEF4F8,setsar=1,fps=30')
 
 def build_subtitles(plan):
+    if plan.get('layout_profile') == 'vertical-full-frame-v1':
+        return full_frame_subtitles(plan)
     ass = '''[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -933,6 +972,36 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             ass += f'Dialogue: 1,{start},{end},CARD,,0,0,0,,{{\\an7\\pos(40,{top+28})\\1c{accent}\\p1}}{rounded(8,height-56,4)}{{\\p0}}\n'
             ass += f'Dialogue: 2,{start},{end},{lang.upper()},,0,0,0,,{{\\pos(540,{y})\\fs{fitted_size}}}{text}\n'
     return ass
+
+
+def full_frame_subtitles(plan):
+    """Large German, smaller Persian; no white cards or language color tabs."""
+    ass = '''[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: DE,DejaVu Sans,88,&H00FFFFFF,&H00FFFFFF,&H00171717,&H80000000,-1,0,0,0,100,100,0,0,1,4,1,5,70,90,0,1
+Style: FA,Noto Naskh Arabic,66,&H00FFFFFF,&H00FFFFFF,&H00171717,&H80000000,-1,0,0,0,100,100,0,0,1,3,1,5,70,90,0,1
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+'''
+    for i, scene in enumerate(plan['scenes']):
+        start, end = subtitle_time(i*5), subtitle_time((i+1)*5)
+        for lang, y, size, family in [('de', 1400, 88, 'DejaVu Sans:style=Bold'),
+                                       ('fa', 1600, 66, 'Noto Naskh Arabic:style=Bold')]:
+            text, fitted = caption_text(scene[lang], family, size, width=900)
+            ass += f'Dialogue: 2,{start},{end},{lang.upper()},,0,0,0,,{{\\pos(510,{y})\\fs{fitted}}}{text}\n'
+    return ass
+
+
+def scene_conditioning(scene, audio, cache, index):
+    if scene.get('voiceover'):
+        import cinematic_speech as speech
+        return speech.silent_conditioning(Path(cache) / f'{index:02}.listener-silence.wav')
+    return audio
 
 
 def render(plan, config, preview=False, history=(), persist_plan=None):
@@ -974,7 +1043,14 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     for i, scene in enumerate(plan['scenes']):
         budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
-        signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        visible = scene.get('visible_character', scene['speaker'])
+        image_ref = speaker_refs[visible]
+        if plan.get('layout_profile') == 'vertical-full-frame-v1' and i > 0:
+            image_ref = cache / '00.png'
+        image_signature = ['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene]
+        if plan.get('layout_profile') == 'vertical-full-frame-v1':
+            image_signature.append(hashlib.sha256(image_ref.read_bytes()).hexdigest())
+        signature = hashlib.sha256(json.dumps(image_signature, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
         if not sigfile.exists() or sigfile.read_text() != signature:
             png.unlink(missing_ok=True)
@@ -982,7 +1058,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         if not png.exists():
             if (not scene.get('visible_objects') and
                     (config.get('single_speaker_takes') or (preview and config.get('single_speaker_preview')))):
-                shutil.copyfile(speaker_refs[scene['speaker']], png)
+                shutil.copyfile(image_ref, png)
             elif scene.get('asset'):
                 shutil.copyfile(art / scene['asset'], png)
             else:
@@ -1003,16 +1079,26 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                           'Use a fresh scene layout and suitable camera distance showing both the speaker mouth '
                           'and the objects. Preserve the character identity, not the original supermarket backdrop. '
                           'Faces and important action in upper three quarters; calm lower area for later captions.')
+                if plan.get('layout_profile') == 'vertical-full-frame-v1':
+                    prompt = ('Use the provided Marta reference and preserve the EXACT SAME kitchen, wall, table, lighting, '
+                              'costume and character identity. Full vertical 9:16 composition, no white borders. '
+                              'Only Marta may be visible. No man, no cafe, no supermarket. '
+                              'Keep her face and essential hand action in frame with room for overlaid lower captions. '
+                              + STYLE + scene['scene'] + ' Action: ' + scene['object_action'])
+                    if scene.get('voiceover'):
+                        prompt += (' Strict hands-only insert: show only Marta\'s hands, sleeves and phone on the same kitchen table. '
+                                   'All heads, eyes and mouths are OUTSIDE the image. No visible speaker or listener.')
                 def create_still():
                     return shots.first_working(shots.KONTEXT,
-                        {'input_image': handle_file(str(speaker_refs[scene['speaker']])), 'prompt': prompt,
+                        {'input_image': handle_file(str(image_ref)), 'prompt': prompt,
                          'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
                 result = budget.run_gpu(create_still, required_seconds=120)
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
-        speech.ensure_clip(png, audios[i], clip,
+        conditioning = scene_conditioning(scene, audios[i], cache, i)
+        speech.ensure_clip(png, conditioning, clip,
                            scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
                            ' Start the physical action promptly; add a readable natural facial reaction. '
                            ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])),
@@ -1026,7 +1112,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         clip = cache / f'{i:02}.mp4'
         part = folder / f'part-{i:02}.mp4'
         inputs = ['-i', clip, '-i', audios[i]]
-        layout = '[0:v]' + scene_layout() + '[v];[1:a]atrim=0:5,aresample=48000[a]'
+        layout = '[0:v]' + scene_layout(plan.get('layout_profile')) + '[v];[1:a]atrim=0:5,aresample=48000[a]'
         if scene.get('graphic_step'):
             from cinematic_graphics import prepare_step, filters
             graphic = prepare_step(scene, audios[i], folder, i)
@@ -1079,7 +1165,11 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     if frozen > (3 if preview else plan.get('duration_seconds', DEFAULT_SECONDS) * 13 / 60):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True,
+                'caption_design': plan.get('layout_profile', 'cream-large-v2'),
+                'audio_conditioned_lips': True, 'lip_sync_visually_reviewed': False,
+                'eyes_visually_reviewed': False, 'speech_quality_profile': speech.QUALITY_PROFILE,
+                'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     if not preview:
@@ -1295,4 +1385,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
