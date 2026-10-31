@@ -54,7 +54,9 @@ jobs:
           subs.write_text(series.build_subtitles(plan))
           final=out/'quality-sample-only-5s.mp4'
           series.command(['ffmpeg','-y','-v','error','-i',raw,'-vf','ass='+str(subs),'-af','loudnorm=I=-16:TP=-1.5:LRA=9','-c:v','libx264','-preset','fast','-crf','18','-c:a','aac','-movflags','+faststart',final])
-          series.conform_duration(final,5)
+          video_info=next(s for s in series.ffprobe(final)['streams'] if s['codec_type']=='video')
+          if float(video_info['duration'])!=5 or int(video_info['nb_frames'])!=150:
+              raise RuntimeError('The review take must be exactly 150 native-speed output frames')
           raw.unlink()
           contact=Image.new('RGB',(1080,1152),'#101820')
           for i in range(15):
@@ -66,6 +68,7 @@ jobs:
           for name in ('00.mp3','08.mp3'):
               shutil.copyfile(Path('renders/cinematic-series-cache/e0016')/name,out/name)
           shutil.copyfile(root/'00.png',out/'kitchen-reference.png')
+          if (root/'01.png').exists(): shutil.copyfile(root/'01.png',out/'second-reference.png')
           info=series.ffprobe(final)
           series.atomic_json(out/'review-status.json',{'kind':'single-real-native-take-for-review','duration':float(info['format']['duration']),'generation_requested':False,'paid_authorized':False,'delivered':False,'rest_of_episode':'blocked by free GPU quota','quality_profile':speech.QUALITY_PROFILE})
           PY
