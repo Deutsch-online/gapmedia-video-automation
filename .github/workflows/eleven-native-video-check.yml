@@ -1,0 +1,50 @@
+name: Verify ElevenLabs native video access without generating
+on:
+  push:
+    branches: [codex/eleven-native-video-check]
+    paths: [.eleven-native-video-check.json]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read plan and video endpoint availability
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: |
+          mkdir -p /tmp/eleven-native
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs/promises';
+          const key=process.env.ELEVEN_API_KEY;
+          if(!key)throw Error('ELEVEN_API_KEY is not configured');
+          const report={key_configured:true,generation_requested:false};
+          for(const p of ['/v1/user/subscription','/v1/flows/video','/v1/flows/models']){
+            try{
+              const r=await fetch('https://api.elevenlabs.io'+p,{headers:{'xi-api-key':key},signal:AbortSignal.timeout(25000)});
+              let j={};try{j=await r.json();}catch{}
+              const row={http:r.status};
+              if(p==='/v1/user/subscription'&&r.ok){
+                row.tier=j.tier;row.status=j.status;row.capacity_readable=Number.isFinite(j.character_limit)&&Number.isFinite(j.character_count);
+                row.native_api_plan_eligible=['pro','scale','business','enterprise','growing_business'].includes(j.tier);
+              }else if(r.ok){
+                row.response_keys=Object.keys(j);row.count=Array.isArray(j)?j.length:undefined;
+              }else{
+                row.error_code=j.detail?.status||j.detail?.code||j.code||null;
+                row.message=typeof j.detail==='string'?j.detail.slice(0,180):j.detail?.message?.slice(0,180);
+              }
+              report[p]=row;
+            }catch(e){report[p]={error:e.name};}
+          }
+          await fs.writeFile('/tmp/eleven-native/access.json',JSON.stringify(report,null,2));
+          console.log(JSON.stringify(report));
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eleven-native-video-access
+          path: /tmp/eleven-native/access.json
+          retention-days: 3
