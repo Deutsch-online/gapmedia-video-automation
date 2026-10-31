@@ -2138,7 +2138,7 @@
     }
   ],
   "pending": {
-    "status": "exporting",
+    "status": "dispatching",
     "date": "2026-10-31",
     "plan": {
       "story_id": "doctor-appointment-language-anxiety-v1",
@@ -2311,8 +2311,8 @@
       "tiktok": "renders/cinematic-series/e0015/tiktok/e0015-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0015/instagram/e0015-instagram-45s.mp4"
     },
-    "file": "renders/cinematic-series/e0015/tiktok/e0015-tiktok-45s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0015/instagram/e0015-instagram-45s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
