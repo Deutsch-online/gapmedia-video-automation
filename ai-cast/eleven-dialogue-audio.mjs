@@ -7,7 +7,19 @@ if(plan.duration_seconds!==60||plan.rounds.length!==5||plan.round_seconds!==12)t
 const turns=plan.rounds.flatMap((r,round)=>r.turns.map((t,turn)=>({...t,round,turn})));
 if(turns.reduce((n,t)=>n+t.text.length,0)>1600)throw Error('Dialogue exceeds its character scope');
 const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
-async function get(p){const r=await fetch('https://api.elevenlabs.io'+p,{headers:{'xi-api-key':key},signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('ElevenLabs metadata HTTP '+r.status);return r.json();}
+async function get(p){
+ for(let attempt=0;attempt<3;attempt++){
+  const r=await fetch('https://api.elevenlabs.io'+p,{headers:{'xi-api-key':key},signal:AbortSignal.timeout(25000)});
+  if(r.status===429&&attempt<2){
+   const requested=Number(r.headers.get('retry-after'))||30;
+   if(requested>90)throw Error('Metadata retry interval exceeds this bounded attempt');
+   console.log('Read-only metadata rate limit; respecting its retry interval');
+   await new Promise(resolve=>setTimeout(resolve,Math.max(5,requested)*1000));continue;
+  }
+  if(!r.ok)throw Error('ElevenLabs metadata HTTP '+r.status);
+  return r.json();
+ }
+}
 const [catalog,models]=await Promise.all([get('/v1/voices'),get('/v1/models')]);
 if(!models.some(m=>m.model_id===plan.model&&m.can_do_text_to_speech))throw Error('Requested speech model unavailable');
 for(const v of Object.values(plan.voices)){
@@ -23,6 +35,8 @@ for(let i=0;i<turns.length;i++){
  if(cached){console.log('Reused verified dialogue '+(i+1)+'/20');continue;}
  if(ledger.some(x=>x.signature===signature&&x.status==='uncertain'))throw Error('Uncertain earlier submission; refusing an automatic duplicate');
  if(ledger.reduce((n,x)=>n+x.characters,0)+turn.text.length>1600)throw Error('One-dialogue generation cap reached');
+ // The account-metadata endpoint has a tighter limit than speech generation.
+ await new Promise(resolve=>setTimeout(resolve,6500));
  const quota=await get('/v1/user/subscription');
  if(!Number.isFinite(quota.character_limit)||!Number.isFinite(quota.character_count)||quota.character_limit-quota.character_count<turn.text.length+64)throw Error('Included capacity insufficient; no top-up or overage');
  const item={signature,characters:turn.text.length,status:'uncertain'};ledger.push(item);await fs.writeFile(root+'/ledger.json',JSON.stringify(ledger));
