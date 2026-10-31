@@ -1,0 +1,46 @@
+name: Verify configured ElevenLabs access without generating speech
+on:
+  push:
+    branches: [codex/eleven-faceless-60s]
+    paths: [.eleven-access-check.json]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read available models, licensed voices and included capacity
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs/promises';
+          const key=process.env.ELEVEN_API_KEY;
+          if(!key)throw Error('ELEVEN_API_KEY is not configured for this repository');
+          async function get(path){
+            const r=await fetch('https://api.elevenlabs.io'+path,{headers:{'xi-api-key':key},signal:AbortSignal.timeout(25000)});
+            if(!r.ok)throw Error('ElevenLabs metadata HTTP '+r.status+' at '+path);
+            return r.json();
+          }
+          const results=await Promise.allSettled([get('/v1/models'),get('/v1/voices'),get('/v1/user/subscription')]);
+          if(results[0].status!=='fulfilled'||results[1].status!=='fulfilled')throw Error('Model or voice metadata could not be read');
+          const models=results[0].value.filter(m=>m.can_do_text_to_speech).map(m=>({id:m.model_id,languages:m.languages?.map(l=>l.language_id),cost:m.character_cost_multiplier,supports_style:m.supports_style,supports_speaker_boost:m.supports_speaker_boost}));
+          const voices=results[1].value.voices.filter(v=>['premade','professional'].includes(v.category)).map(v=>({id:v.voice_id,name:v.name,category:v.category,labels:v.labels,description:v.description,verified_languages:v.verified_languages,rate:v.sharing?.rate}));
+          let capacity={readable:false};
+          if(results[2].status==='fulfilled'){
+            const s=results[2].value;
+            capacity={readable:true,sufficient_for_1600_characters:(s.character_limit-s.character_count)>=1600,can_extend:false};
+          }
+          await fs.mkdir('/tmp/eleven-check',{recursive:true});
+          await fs.writeFile('/tmp/eleven-check/metadata.json',JSON.stringify({models,voices,capacity},null,2));
+          console.log(JSON.stringify({key_configured:true,models_read:true,licensed_voices:voices.length,capacity,generation_requested:false}));
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eleven-access-metadata
+          path: /tmp/eleven-check/metadata.json
+          retention-days: 3
