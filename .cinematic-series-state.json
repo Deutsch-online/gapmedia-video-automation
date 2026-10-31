@@ -2138,7 +2138,7 @@
     }
   ],
   "pending": {
-    "status": "dispatching",
+    "status": "exporting",
     "date": "2026-10-31",
     "plan": {
       "story_id": "doctor-appointment-language-anxiety-v1",
@@ -2305,7 +2305,8 @@
     "credit_notice_status": "sent",
     "credit_notice_message_id": 2803,
     "platform_receipts": {
-      "tiktok": 2806
+      "tiktok": 2806,
+      "instagram": 2807
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0015/tiktok/e0015-tiktok-45s.mp4",
