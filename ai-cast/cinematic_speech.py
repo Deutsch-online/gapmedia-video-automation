@@ -8,6 +8,7 @@ import subprocess
 from pathlib import Path
 
 MODEL = os.getenv('LIPSYNC_SPACE', 'victor/LongCat-Video-Avatar-1.5')
+QUALITY_PROFILE = 'exact8-stable-face-v2'
 
 def backend():
     name = os.getenv('CINEMATIC_SPEECH_BACKEND', 'gradio')
@@ -19,7 +20,7 @@ def model_identity():
     if backend() == 'wan2gp':
         from wan2gp_worker import MODEL as model, REVISION
         return 'wan2gp:' + model + ':' + REVISION
-    return MODEL
+    return MODEL + ':' + QUALITY_PROFILE
 
 def probe(path):
     return json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_format',
@@ -47,10 +48,12 @@ def aligned_audio(source, target):
 def generate(png, audio, output, motion, seed):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finishing cannot generate speaking clips')
-    prompt = ('One visible speaking adult cartoon character. Accurate lip and jaw movement driven by the supplied German speech. '
-              'Natural real-time blinking and breathing, lively purposeful upper-body and hand actions, '
-              'clear expressive comic reactions without distorting facial anatomy. No slow motion or idle portrait posing. '
-              'The listener is off-camera. Keep identity and facial anatomy stable. ' + motion)
+    prompt = ('One adult cartoon character. If the face is visible, use small anatomically restrained lip and jaw movement '
+              'only when driven by the supplied speech. Keep both pupils aligned on a stable gaze target, '
+              'gentle infrequent natural blinks and stable eyelids. No eye wobble, crossed eyes, asymmetric pupils, '
+              'large mouth openings, exaggerated vowels or rubbery face. Minimal head rotation; purposeful small hand actions. '
+              'For a silent listening or hands-only shot do not invent talking or an on-screen speaker. '
+              'Natural speed, no slow motion. ' + motion)
     if backend() == 'wan2gp':
         root = Path(os.environ.get('WAN2GP_ROOT', '/workspace/Wan2GP')).resolve()
         python = os.environ.get('WAN2GP_PYTHON', str(root / '.venv/bin/python'))
@@ -64,7 +67,7 @@ def generate(png, audio, output, motion, seed):
     def call():
         c = shots.client(MODEL)
         result = c.predict(handle_file(str(png)), handle_file(str(audio)), prompt,
-                           '480p', seed, 'Clean speech (fast)', 'DBCache faster', api_name='/generate')
+                           '480p', seed, 'Clean speech (fast)', 'Exact 8-step', api_name='/generate')
         if isinstance(result, (list, tuple)):
             result = result[0]
         if isinstance(result, dict):
@@ -90,3 +93,14 @@ def ensure_clip(png, audio, output, motion, seed):
             raise RuntimeError('Speaking clip does not cover the aligned audio at natural speed')
         marker.write_text(json.dumps(signature, sort_keys=True))
     return str(output)
+
+
+def silent_conditioning(target):
+    """Off-camera speech must never drive the visible listener's mouth."""
+    import wave
+    target = Path(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with wave.open(str(target), 'wb') as wav:
+        wav.setparams((1, 2, 48000, 0, 'NONE', 'not compressed'))
+        wav.writeframes(b'\0\0' * 240000)
+    return str(target)

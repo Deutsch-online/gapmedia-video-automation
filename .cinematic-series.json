@@ -28,7 +28,7 @@
     "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
     "continuity": "Exactly nine five-second shots. Show a consequential choice in the first frame, tell a friend immediately, reveal a missing fact, demonstrate the decision and prevention steps, and finish with a visual payoff by 45 seconds. Avoid a 15-second introduction or a narrated checklist without suspense.",
     "requested_story": "ai-cast/rental-warning-45s.json",
-    "graphics": "Clearly labelled illustrative interface; no real payment, report, booking, personal data or cloning. Keep the character larger and the same location in every scene.",
+    "graphics": "Full-frame vertical footage in one kitchen; only Marta visible. Lukas is off-camera over hands-only inserts. Short German lines, larger German captions and smaller Persian captions on footage, no white background or colored tabs. German-labelled illustrative UI; no real payment, booking or cloning.",
     "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },

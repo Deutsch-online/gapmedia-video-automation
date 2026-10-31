@@ -2334,120 +2334,148 @@
         "note": "Fictional amount, listing and interface. No real person, address, bank details, payment or report. A demand for money before viewing is a warning sign, not proof of guilt. No claim that viewing alone guarantees safety or that money already sent is recovered."
       },
       "creative_review": {
-        "previous_weakness_addressed": "Owner found episode 15 unengaging. Its contact sheet shows repeated talking poses, generous empty space and inconsistent kitchen/shop locations. This episode opens with a specific potential loss and an unresolved decision, keeps one room and uses readable payment stakes from frame one.",
+        "previous_weakness_addressed": "Owner found episode 15 unengaging. Its contact sheet shows repeated talking poses, generous empty space and inconsistent kitchen/shop locations. This episode opens with a specific potential loss and an unresolved decision, keeps one room and uses readable payment stakes from frame one. Latest owner feedback keeps 45 seconds: shorten each line, use full-frame footage and outlined German-first captions, one kitchen, off-camera male voice only, exact uncached 8-step generation and explicit voice prosody.",
         "visible_comic_action": "Marta starts with her thumb ready to reserve a dream home, then pulls it away after Lukas asks the overlooked question. In the payoff she protects her little savings pig instead of receiving imaginary keys.",
         "next_experiment": "Treat the stronger opening as a creative hypothesis, not proven growth. Record same-age views and shares per view where available, promotion status and retention only if actually supplied. Topic, panels and staging change together, so do not attribute a result to the hook alone."
       },
       "scenes": [
         {
           "speaker": "marta",
-          "de": "Achthundert Euro? Sonst ist die Wohnung weg!",
-          "fa": "هشتصد یورو؟ وگرنه خانه را از دست می‌دهم!",
-          "scene": "Tight opening action shot: Marta's anxious face, phone and hovering thumb. A closed coral suitcase beside the small teal table establishes her housing search. No payment has been sent. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "de": "800 Euro? Jetzt zahlen?",
+          "fa": "۸۰۰ یورو؟ همین حالا بفرستم؟",
+          "scene": "Medium close action shot with face and hands both in frame: Marta's anxious face, phone and hovering thumb. A closed coral suitcase beside the small teal table establishes her housing search. No payment has been sent. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta's thumb approaches the phone, pauses visibly before touching it and she looks sharply toward her off-camera friend.",
           "visible_objects": [
             "phone",
             "closed coral suitcase"
           ],
           "object_action": "Marta holds the phone steady and stops her hovering thumb above its blank screen.",
-          "graphic_step": "rental_offer"
+          "graphic_step": "rental_offer",
+          "vocal_delivery": "worried",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "marta",
-          "de": "Lukas, ich will diese Wohnung unbedingt!",
-          "fa": "لوکاس، این خانه را خیلی می‌خواهم!",
-          "scene": "Medium shot in the same room: Marta turns her phone toward Lukas, who remains completely off-camera. The same closed coral suitcase sits beside the teal table. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "de": "Lukas, ich will sie!",
+          "fa": "لوکاس، این خانه را می‌خواهم!",
+          "scene": "Medium shot in the same kitchen: Marta turns her phone toward Lukas, who remains completely off-camera. The same closed coral suitcase sits beside the teal table. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta leans forward eagerly and shows the phone, then tightens her free hand on the suitcase handle.",
           "visible_objects": [
             "phone",
             "closed coral suitcase"
           ],
           "object_action": "Marta holds the phone toward her friend while gripping her suitcase handle.",
-          "graphic_step": "rental_hope"
+          "graphic_step": "rental_hope",
+          "vocal_delivery": "worried",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "lukas",
-          "de": "Hast du sie schon persönlich gesehen?",
-          "fa": "خودت خانه را از نزدیک دیده‌ای؟",
-          "scene": "Reverse close-up of Lukas at the same teal table. Only Lukas is visible; Marta stays off-camera. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
-          "motion": "Lukas looks from the phone on the table toward Marta off-camera, raises one eyebrow and points gently at the phone.",
+          "de": "Schon besichtigt?",
+          "fa": "خانه را از نزدیک دیده‌ای؟",
+          "scene": "Hands-only close action insert at the SAME teal table in the same modest kitchen. Only Marta's hands, mustard sleeves, teal clothing edge and phone are visible. No face, eyes, mouth or man is anywhere in the frame. Lukas speaks off-camera. Cream wall and pale wooden cabinets remain from the first scene. Plain phone screen for the separately drawn demonstration.",
+          "motion": "Marta's hands hold her phone, with a small deliberate pause and one restrained movement. The entire shot stays below all faces. No mouth or head is visible.",
           "visible_objects": [
             "phone",
             "teal table"
           ],
-          "object_action": "Lukas points once at the phone and holds the questioning gesture.",
-          "graphic_step": "rental_question"
+          "object_action": "Marta's hands hold the phone steady and pause above its blank screen.",
+          "graphic_step": "rental_question",
+          "vocal_delivery": "thoughtful",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-phone",
+          "voiceover": true,
+          "framing": "hands-only"
         },
         {
           "speaker": "marta",
-          "de": "Nein. Erst Geld, dann den Schlüssel.",
+          "de": "Nein. Erst Geld, dann Schlüssel.",
           "fa": "نه. اول پول، بعد کلید.",
-          "scene": "Close-up of Marta in the same room with her phone. Her hopeful smile fades as she notices the condition. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "scene": "Close-up of Marta in the same kitchen with her phone. Her hopeful smile fades as she notices the condition. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta reads the phone and lowers her raised thumb, then looks back toward Lukas with a small uncertain head shake.",
           "visible_objects": [
             "phone",
             "closed coral suitcase"
           ],
           "object_action": "Marta lowers the phone slightly and moves her thumb away from its screen.",
-          "graphic_step": "rental_warning"
+          "graphic_step": "rental_warning",
+          "vocal_delivery": "worried",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "lukas",
-          "de": "Stopp! Vor der Besichtigung kein Geld.",
-          "fa": "صبر کن! پیش از دیدن خانه پول نفرست.",
-          "scene": "Medium close-up of Lukas at the same teal table with the phone resting in view. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
-          "motion": "Lukas raises an open palm in a calm stop gesture without grabbing Marta or her phone, then nods toward her.",
+          "de": "Stopp! Nicht vorher zahlen!",
+          "fa": "صبر کن! پیش از بازدید پول نفرست!",
+          "scene": "Hands-only close action insert at the SAME teal table in the same modest kitchen. Only Marta's hands, mustard sleeves, teal clothing edge and phone are visible. No face, eyes, mouth or man is anywhere in the frame. Lukas speaks off-camera. Cream wall and pale wooden cabinets remain from the first scene. Plain phone screen for the separately drawn demonstration.",
+          "motion": "Marta's hands hold her phone, with a small deliberate pause and one restrained movement. The entire shot stays below all faces. No mouth or head is visible.",
           "visible_objects": [
             "phone",
             "teal table"
           ],
-          "object_action": "Lukas holds his open palm above the table beside the phone without touching it.",
-          "graphic_step": "rental_pause"
+          "object_action": "Marta's hands hold the phone steady and pause above its blank screen.",
+          "graphic_step": "rental_pause",
+          "vocal_delivery": "calm-firm",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-phone",
+          "voiceover": true,
+          "framing": "hands-only"
         },
         {
           "speaker": "marta",
-          "de": "Ich sichere die Anzeige als Screenshot.",
+          "de": "Ich sichere einen Screenshot.",
           "fa": "از آگهی عکس صفحه می‌گیرم.",
-          "scene": "Medium shot of Marta seated at the same teal table, phone and both hands clearly visible. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "scene": "Medium shot of Marta seated at the same teal table, phone and both hands clearly visible. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta deliberately presses the phone's side buttons once to demonstrate saving evidence, then nods.",
           "visible_objects": [
             "phone",
             "teal table"
           ],
           "object_action": "Marta presses the phone side buttons once while holding it upright.",
-          "graphic_step": "rental_capture"
+          "graphic_step": "rental_capture",
+          "vocal_delivery": "calm-firm",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "marta",
-          "de": "Dann melde ich das verdächtige Angebot.",
-          "fa": "بعد آگهی مشکوک را گزارش می‌دهم.",
-          "scene": "Over-table medium shot of Marta in the same room. The phone screen is blank for the separate designed reporting demonstration. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "de": "Ich melde die Anzeige.",
+          "fa": "آگهی را گزارش می‌دهم.",
+          "scene": "Over-table medium shot of Marta in the same kitchen. The phone screen is blank for the separate designed reporting demonstration. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta taps the phone once with a confident finger, keeps it steady and relaxes her brow.",
           "visible_objects": [
             "phone",
             "closed coral suitcase"
           ],
           "object_action": "Marta taps the phone once to demonstrate reporting the suspicious offer.",
-          "graphic_step": "rental_report"
+          "graphic_step": "rental_report",
+          "vocal_delivery": "calm-firm",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "marta",
-          "de": "Und diese Zahlung breche ich ab.",
-          "fa": "این پرداخت را هم لغو می‌کنم.",
-          "scene": "Close action shot of Marta's face and phone at the same teal table. Her transfer is still unsent. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "de": "Ich breche die Zahlung ab.",
+          "fa": "پرداخت را لغو می‌کنم.",
+          "scene": "Close action shot of Marta's face and phone at the same teal table. Her transfer is still unsent. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta clearly taps the phone once, pulls her hand away and lays the phone face down.",
           "visible_objects": [
             "phone",
             "teal table"
           ],
           "object_action": "Marta makes one cancellation tap and places the phone face down on the table.",
-          "graphic_step": "rental_cancel"
+          "graphic_step": "rental_cancel",
+          "vocal_delivery": "calm-firm",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         },
         {
           "speaker": "marta",
-          "de": "Kein Schlüssel. Aber mein Geld bleibt!",
-          "fa": "کلیدی نگرفتم، اما پولم سر جایش است!",
-          "scene": "Warm medium shot of Marta at the same teal table with a plain small teal savings pig and her face-down phone. Same closed coral suitcase stays beside the table. Continuity lock: the SAME modest apartment entry room, cream wall, teal table and closed coral suitcase throughout. No shop, supermarket shelves, cafe, street, hospital or location change. Keep the speaking face, hands and relevant prop visible. All generated screens and objects are plain with no text; graphic words are composed separately.",
+          "de": "Mein Geld bleibt hier!",
+          "fa": "پولم سر جایش ماند!",
+          "scene": "Warm medium shot of Marta at the same teal table with a plain small teal savings pig and her face-down phone. Same closed coral suitcase stays beside the table. Continuity lock: the SAME modest kitchen, cream wall, pale wooden kitchen cabinets, teal table, closed coral suitcase and warm daylight throughout. No supermarket shelves, cafe, street, hospital or location change. Full vertical composition with no white borders. Marta has relaxed natural eye alignment and a gently closed resting mouth before speaking. All generated screens and objects are plain with no text.",
           "motion": "Marta hugs the savings pig close to her chest with a playful protective smile, then glances toward her suitcase with renewed determination.",
           "visible_objects": [
             "teal savings pig",
@@ -2455,9 +2483,17 @@
             "closed coral suitcase"
           ],
           "object_action": "Marta lifts her savings pig from beside the face-down phone and holds it safely against her chest.",
-          "graphic_step": "rental_relief"
+          "graphic_step": "rental_relief",
+          "vocal_delivery": "relieved",
+          "visible_character": "marta",
+          "graphic_layout": "full-frame-badge"
         }
       ],
+      "layout_profile": "vertical-full-frame-v1",
+      "visible_cast": [
+        "marta"
+      ],
+      "voice_direction": "Edge supports rate and pitch, not emotional acting SSML. Compare worried and relieved takes by listening; do not claim genuine expressive acting from a label alone.",
       "research_source": {
         "topic": "Rental advance-payment warning",
         "url": "https://www.polizei-beratung.de/aktuelles/detailansicht/vorsicht-vor-betrug-bei-der-wohnungssuche/",

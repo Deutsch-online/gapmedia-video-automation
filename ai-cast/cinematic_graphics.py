@@ -77,7 +77,7 @@ def panel(step, target):
     draw.rounded_rectangle((142, 22, 258, 37), radius=8, fill='#173B45')
     rental = step in RENTAL_STEPS
     draw.text((30, 64), 'WOHNUNG GESUCHT' if rental else 'ARZTTERMIN', font=font(24, True), fill='#173B45')
-    draw.text((30, 102), 'Illustrative App', font=font(18), fill='#4D666E')
+    draw.text((30, 102), 'Beispiel-App', font=font(18), fill='#4D666E')
     steps = RENTAL_STEPS if rental else STEPS
     n = steps.index(step)
     for index in range(len(steps)):
@@ -199,18 +199,52 @@ def prepare_step(scene, audio, folder, index):
     onset = max(1.0, max(b for _, b in protected) + .08)
     if onset > 4.75 or step in ('confirmed', 'rental_relief'):
         onset = None
-    png = panel(step, folder / f'graphic-{index:02}.png')
+    compact = scene.get('graphic_layout') == 'full-frame-badge'
+    png = rental_badge(step, folder / f'graphic-{index:02}.png') if compact else panel(step, folder / f'graphic-{index:02}.png')
     ring = folder / f'graphic-{index:02}-tap.png'
     tap_ring(step, ring)
+    if compact:
+        from PIL import Image, ImageDraw
+        mark = Image.new('RGBA', (400, 270), (0, 0, 0, 0))
+        ImageDraw.Draw(mark).ellipse((335, 185, 380, 230), outline='#E58D47', width=5)
+        mark.save(ring)
     wav = folder / f'graphic-{index:02}-tap.wav'
     tap_audio(wav, onset)
     return {'panel': png, 'ring': ring, 'audio': wav, 'tap_at': onset,
-            'protected_speech': protected, 'step': step}
+            'protected_speech': protected, 'step': step,
+            'layout': scene.get('graphic_layout')}
+
+
+def rental_badge(step, target):
+    from PIL import Image, ImageDraw
+    image = Image.new('RGBA', (400, 270), (16, 42, 46, 235))
+    draw = ImageDraw.Draw(image)
+    n = RENTAL_STEPS.index(step)
+    labels = ['800 €?', '800 €?', 'GESEHEN?', 'ERST ZAHLEN?', 'STOPP', 'SCREENSHOT', 'MELDEN', 'ABBRECHEN', '0 € gesendet']
+    draw.text((20, 28), labels[n], font=font(42 if n in (3, 5, 7) else 47, True), fill='#FFFFFF')
+    draw.text((20, 118), 'Beispiel', font=font(30, True), fill='#F7D7A0')
+    draw.text((20, 171), 'Keine echte', font=font(31, True), fill='#F7D7A0')
+    draw.text((20, 215), 'Zahlung', font=font(31, True), fill='#F7D7A0')
+    image.save(target)
+    return Path(target)
 
 
 def filters(graphic):
     # Fit the complete speaking frame at left; preserve face, hands and props.
     # Every UI panel occupies the same slot, with a deterministic, brief tap cue.
+    if graphic.get('layout') in ('full-frame-badge', 'full-frame-phone'):
+        compact = graphic['layout'] == 'full-frame-badge'
+        width, height, x, y = (340, 230, 630, 1050) if compact else (340, 765, 630, 180)
+        result = ('[0:v]scale=1080:1920:force_original_aspect_ratio=increase:force_divisible_by=2,'
+                  'crop=1080:1920,setsar=1,fps=30[base];'
+                  f'[2:v]scale={width}:{height}[panel];[base][panel]overlay={x}:{y}[phone];')
+        onset = graphic['tap_at']
+        if onset is None:
+            result += '[phone]null[v];'
+        else:
+            result += f'[3:v]scale={width}:{height}[ring];'
+            result += f"[phone][ring]overlay={x}:{y}:enable='between(t,{onset:.6f},{onset + .28:.6f})'[v];"
+        return result + '[1:a][4:a]amix=inputs=2:duration=first:normalize=0,atrim=0:5,aresample=48000[a]'
     if graphic['step'] in RENTAL_STEPS:
         result = ('[0:v]scale=640:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
                   'pad=1080:1920:0:60:color=0xEEF4F8,setsar=1,fps=30[base];'

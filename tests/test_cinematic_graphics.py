@@ -63,6 +63,39 @@ class RentalStoryTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 graphics.validate_graphic_story(plan)
 
+    def test_only_marta_is_visible_and_voiceover_never_drives_her_mouth(self):
+        plan = self.plan()
+        config = series.load_json(ROOT / '.cinematic-series.json')
+        series.validate_plan(plan, 16, [], config)
+        self.assertTrue(all(s['visible_character'] == 'marta' for s in plan['scenes']))
+        with tempfile.TemporaryDirectory() as tmp:
+            spoken = Path(tmp) / 'lukas.wav'
+            spoken.write_bytes(b'off-camera voice')
+            scene = next(s for s in plan['scenes'] if s['speaker'] == 'lukas')
+            conditioning = series.scene_conditioning(scene, spoken, tmp, 2)
+            self.assertNotEqual(str(conditioning), str(spoken))
+            with wave.open(str(conditioning)) as wav:
+                self.assertEqual((wav.getframerate(), wav.getnframes()), (48000, 240000))
+                self.assertFalse(any(wav.readframes(240000)))
+            self.assertEqual(series.scene_conditioning(plan['scenes'][0], spoken, tmp, 0), spoken)
+        broken = copy.deepcopy(plan)
+        broken['scenes'][2]['voiceover'] = False
+        with self.assertRaisesRegex(ValueError, 'off-camera voice'):
+            series.validate_plan(broken, 16, [], config)
+
+    def test_full_frame_caption_dwell_and_language_hierarchy(self):
+        plan = self.plan()
+        ass = series.build_subtitles(plan)
+        self.assertIn('Style: DE,DejaVu Sans,88,', ass)
+        self.assertIn('Style: FA,Noto Naskh Arabic,66,', ass)
+        self.assertNotIn(',CARD,', ass)
+        self.assertNotIn('\\p1', ass)
+        events = [s for s in ass.splitlines() if s.startswith('Dialogue:')]
+        self.assertEqual(len(events), 18)
+        self.assertIn(',0:00:00.00,0:00:05.00,DE,', events[0])
+        self.assertIn(',0:00:40.00,0:00:45.00,FA,', events[-1])
+        self.assertTrue(all(len(s['de'].split()) <= 6 for s in plan['scenes']))
+
     @unittest.skipUnless(shutil.which('ffmpeg'), 'FFmpeg required')
     def test_new_rental_layout_muxes_both_tap_and_silent_ending_at_native_duration(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -85,6 +118,10 @@ class RentalStoryTests(unittest.TestCase):
                 self.assertEqual((stream['width'], stream['height'], int(stream['nb_frames'])), (1080, 1920, 150))
                 self.assertEqual(float(info['format']['duration']), 5)
                 self.assertEqual(graphic['tap_at'] is None, index == 8)
+                # A full-frame profile must not reintroduce the old pale border.
+                corner = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(final),
+                    '-vf', 'crop=2:2:0:0', '-frames:v', '1', '-pix_fmt', 'rgb24', '-f', 'rawvideo', '-'])
+                self.assertTrue(any(v < 150 for v in corner))
 
 
 class DoctorStoryTests(unittest.TestCase):
