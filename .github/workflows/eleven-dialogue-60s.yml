@@ -1,0 +1,54 @@
+name: Prepare two German ElevenLabs voices for the reference-style lesson
+on:
+  push:
+    branches: [codex/eleven-dialogue-60s]
+    paths: [.eleven-dialogue-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: gapmedia-eleven-dialogue
+  cancel-in-progress: false
+jobs:
+  dialogue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check preparation code
+        run: |
+          node --check ai-cast/eleven-dialogue-audio.mjs
+          python -m py_compile ai-cast/eleven-dialogue-mix.py
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/eleven-dialogue-60s/cache
+          key: eleven-dialogue-60s-v1-${{ github.run_id }}
+          restore-keys: eleven-dialogue-60s-v1-
+      - name: Generate only the two-voice German dialogue, within included capacity
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: node ai-cast/eleven-dialogue-audio.mjs
+      - name: Mix the actual voices into five twelve-second learning rounds
+        run: python ai-cast/eleven-dialogue-mix.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: renders/eleven-dialogue-60s/cache
+          key: eleven-dialogue-60s-v1-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: actual-german-dialogue-audio-only
+          path: |
+            renders/eleven-dialogue-60s/arzttermin-dialogue-60s.m4a
+            renders/eleven-dialogue-60s/timing.json
+            renders/eleven-dialogue-60s/script.txt
+            renders/eleven-dialogue-60s/status.json
+          retention-days: 14

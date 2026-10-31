@@ -1,0 +1,136 @@
+{
+  "id": "doctor-dialogue-storybook-60-v1",
+  "duration_seconds": 60,
+  "round_seconds": 12,
+  "reference": "user-uploaded 72-second famdeutsch example",
+  "visual_brief": "Original warm 2D illustrated storybook, two adult characters in the same full-frame clinic-street setting, gentle natural gestures, German speech bubbles. No single-person portrait or financial infographic. This file prepares audio only; native video API access is currently blocked on Starter.",
+  "model": "eleven_multilingual_v2",
+  "max_characters": 1600,
+  "voices": {
+    "learner": {
+      "id": "pFZP5JQG7iQjIQuC4Bku",
+      "name": "Lily"
+    },
+    "helper": {
+      "id": "CwhRBWXzGAHq8TQ4Fs17",
+      "name": "Roger"
+    }
+  },
+  "rounds": [
+    {
+      "topic": "Einen Termin bekommen",
+      "correct": "Ich brauche einen Termin.",
+      "fa": "باید وقت بگیرم.",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Ich brauche Termin."
+        },
+        {
+          "role": "helper",
+          "text": "Fast: Ich brauche einen Termin."
+        },
+        {
+          "role": "learner",
+          "text": "Ich brauche einen Termin."
+        },
+        {
+          "role": "helper",
+          "text": "Genau."
+        }
+      ]
+    },
+    {
+      "topic": "Eine Frage stellen",
+      "correct": "Ich habe eine Frage.",
+      "fa": "یک سؤال دارم.",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Ich habe ein Frage."
+        },
+        {
+          "role": "helper",
+          "text": "Eine Frage. Ich habe eine Frage."
+        },
+        {
+          "role": "learner",
+          "text": "Ich habe eine Frage."
+        },
+        {
+          "role": "helper",
+          "text": "Sehr gut."
+        }
+      ]
+    },
+    {
+      "topic": "Den Tag nennen",
+      "correct": "Ich komme am Montag.",
+      "fa": "دوشنبه می‌آیم.",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Ich komme an Montag."
+        },
+        {
+          "role": "helper",
+          "text": "Am Montag. Ich komme am Montag."
+        },
+        {
+          "role": "learner",
+          "text": "Ich komme am Montag."
+        },
+        {
+          "role": "helper",
+          "text": "Richtig."
+        }
+      ]
+    },
+    {
+      "topic": "Die Uhrzeit sagen",
+      "correct": "Ich komme um neun Uhr.",
+      "fa": "ساعت نُه می‌آیم.",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Ich komme am neun Uhr."
+        },
+        {
+          "role": "helper",
+          "text": "Um neun Uhr. Ich komme um neun Uhr."
+        },
+        {
+          "role": "learner",
+          "text": "Ich komme um neun Uhr."
+        },
+        {
+          "role": "helper",
+          "text": "Genau."
+        }
+      ]
+    },
+    {
+      "topic": "Den Termin annehmen",
+      "correct": "Ich nehme den Termin.",
+      "fa": "این وقت را قبول می‌کنم.",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Ich nehme der Termin."
+        },
+        {
+          "role": "helper",
+          "text": "Den Termin. Ich nehme den Termin."
+        },
+        {
+          "role": "learner",
+          "text": "Ich nehme den Termin."
+        },
+        {
+          "role": "helper",
+          "text": "Perfekt."
+        }
+      ]
+    }
+  ]
+}
