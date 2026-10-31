@@ -1,32 +1,41 @@
 {
-  "at": "2026-10-29T20:16:23.805Z",
+  "at": "2026-10-31T21:29:09.169Z",
   "rows": [
     {
       "cat": "tiktok",
-      "title": "TikTok expands into restaurant guides with 'Must Eat' feature | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/28/tiktok-expands-into-restaurant-guides-with-must-eat-feature/",
-      "date": "2026-10-28",
+      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/",
+      "date": "2026-10-31",
+      "sources": 7,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
+      "date": "2026-10-31",
       "sources": 8,
       "clear": true,
       "score": 29
     },
     {
       "cat": "tiktok",
-      "title": "TikTok is going after Yelp and Google Maps with an in-app restaurant guide | The Verge",
-      "url": "https://www.theverge.com/news/1020267/tiktok-viral-restaurant-recommendations-must-eat-yelp",
-      "date": "2026-10-28",
+      "title": "TikTok Must Eat makes food creators a local search channel",
+      "url": "https://www.contentgrip.com/tiktok-must-eat-local-search/",
+      "date": "2026-10-29",
       "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tools",
-      "title": "Genspark Media Studio: Video Agent with 70+ Model Versions | TPS",
-      "url": "https://tpsreport.news/news/genspark-media-studio-video-agent-70-model-versions",
+      "title": "Introducing Pika H3 Flex — Pika Blog",
+      "url": "https://pika.art/blog/pika-h3-flex",
       "date": "2026-10-29",
-      "sources": 7,
+      "sources": 8,
       "clear": true,
-      "score": 29
+      "score": 27
     },
     {
       "cat": "tools",
@@ -35,16 +44,16 @@
       "date": "2026-10-27",
       "sources": 7,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "instagram",
       "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
       "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/",
       "date": "2026-10-26",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "instagram",
@@ -53,43 +62,34 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram Is a Streaming Service Now | WIRED",
-      "url": "https://www.wired.com/story/instagram-is-a-streaming-service-now/",
-      "date": "2026-10-27",
-      "sources": 7,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Is Turning Creators into Series Producers",
-      "url": "https://www.ytviews.in/tiktok-is-turning-creators-into-series-producers/",
-      "date": "2026-10-27",
-      "sources": 8,
-      "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tools",
       "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
       "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models",
       "date": "2026-10-27",
-      "sources": 7,
+      "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
+    },
+    {
+      "cat": "tools",
+      "title": "Runway News | Introducing Runway App Studio",
+      "url": "https://runway.com/news/company-news/introducing-runway-app-studio",
+      "date": "2026-10-26",
+      "sources": 8,
+      "clear": true,
+      "score": 25
     },
     {
       "cat": "instagram",
       "title": "Instagram chases YouTube with a push for longer, widescreen videos | The Verge",
       "url": "https://www.theverge.com/tech/1018688/instagram-longform-widescreen-video-features-youtube",
       "date": "2026-10-26",
-      "sources": 8,
+      "sources": 7,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "instagram",
@@ -98,7 +98,16 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram wants in on 'long-form,' widescreen videos and its test begins now | Android Central",
+      "url": "https://www.androidcentral.com/apps-software/meta/instagram-wants-in-on-long-form-widescreen-videos-and-its-test-begins-now",
+      "date": "2026-10-26",
+      "sources": 8,
+      "clear": true,
+      "score": 24
     },
     {
       "cat": "tiktok",
@@ -107,7 +116,7 @@
       "date": "2026-10-26",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tiktok",
@@ -116,51 +125,42 @@
       "date": "2026-10-25",
       "sources": 7,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tools",
-      "title": "Seedance 2.5 Launch: Now Available on Dreamina",
-      "url": "https://dreamina.capcut.com/resource/seedance-2-5-launch",
-      "date": "2026-10-23",
-      "sources": 5,
-      "clear": true,
       "score": 23
     },
     {
       "cat": "tools",
-      "title": "Introducing Kling 4.0 in YouCam Apps: Direct Cinematic AI Videos Shot by Shot",
-      "url": "https://www.perfectcorp.com/consumer/blog/video-editing/kling-4-youcam-apps",
-      "date": "2026-10-23",
-      "sources": 8,
+      "title": "The week in AI video production · 18–31 October 2026 · SceneOS Knowledge Hub",
+      "url": "https://sceneos.io/kb/the-week-in-ai-video-2026-10-31/",
+      "date": "2026-10-31",
+      "sources": 3,
       "clear": true,
-      "score": 23
+      "score": 21
     }
   ],
   "shown": [
     {
       "n": 1,
       "cat": "tiktok",
-      "title": "TikTok expands into restaurant guides with 'Must Eat' feature | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/28/tiktok-expands-into-restaurant-guides-with-must-eat-feature/"
+      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/"
     },
     {
       "n": 2,
       "cat": "tiktok",
-      "title": "TikTok is going after Yelp and Google Maps with an in-app restaurant guide | The Verge",
-      "url": "https://www.theverge.com/news/1020267/tiktok-viral-restaurant-recommendations-must-eat-yelp"
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature"
     },
     {
       "n": 3,
       "cat": "tiktok",
-      "title": "TikTok Is Turning Creators into Series Producers",
-      "url": "https://www.ytviews.in/tiktok-is-turning-creators-into-series-producers/"
+      "title": "TikTok Must Eat makes food creators a local search channel",
+      "url": "https://www.contentgrip.com/tiktok-must-eat-local-search/"
     },
     {
       "n": 4,
       "cat": "tools",
-      "title": "Genspark Media Studio: Video Agent with 70+ Model Versions | TPS",
-      "url": "https://tpsreport.news/news/genspark-media-studio-video-agent-70-model-versions"
+      "title": "Introducing Pika H3 Flex — Pika Blog",
+      "url": "https://pika.art/blog/pika-h3-flex"
     },
     {
       "n": 5,
@@ -189,8 +189,8 @@
     {
       "n": 9,
       "cat": "instagram",
-      "title": "Instagram Is a Streaming Service Now | WIRED",
-      "url": "https://www.wired.com/story/instagram-is-a-streaming-service-now/"
+      "title": "Instagram chases YouTube with a push for longer, widescreen videos | The Verge",
+      "url": "https://www.theverge.com/tech/1018688/instagram-longform-widescreen-video-features-youtube"
     }
   ]
 }
