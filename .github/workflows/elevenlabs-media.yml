@@ -1,0 +1,48 @@
+name: ElevenLabs manual image and video
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        type: choice
+        options: [validate-image, validate-video, submit-image, submit-video, status-image, status-video]
+        default: validate-image
+        required: true
+      request_json:
+        description: Exact model request JSON. Read only for validate/submit operations.
+        type: string
+        default: '{}'
+      generation_id:
+        description: Existing job ID for a status operation.
+        type: string
+      allow_paid_generation:
+        description: Authorise exactly one paid submission from this request.
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned official ElevenLabs CLI
+        run: npm install --global @elevenlabs/cli@1.8.0
+      - name: Validate guards without provider requests
+        run: node --test test-elevenlabs-media.mjs
+      - name: Check account before any paid submission
+        if: startsWith(inputs.operation, 'submit-')
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY }}
+        run: node scripts/elevenlabs-preflight.mjs
+      - name: Run only the selected operation using the repository secret
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY }}
+        run: node scripts/elevenlabs-media.mjs

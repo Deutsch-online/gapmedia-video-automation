@@ -48,3 +48,29 @@ the process environment:
 ```sh
 node scripts/elevenlabs-preflight.mjs
 ```
+
+## Run with the existing GitHub secret
+
+The manual **ElevenLabs manual image and video** workflow runs the pinned official
+CLI `@elevenlabs/cli@1.8.0` inside GitHub Actions. It reuses `ELEVEN_API_KEY` in
+place; no copy of the key is sent to Codex. The default operation is local
+`validate-image`. Choose `validate-video` to check a video request without a
+provider call. Provide the exact ElevenLabs model body in `request_json`.
+
+`submit-image` or `submit-video` additionally requires explicit
+`allow_paid_generation=true` for exactly one request. A read-only account
+preflight runs first and blocks submission while the Creator/402 restriction
+remains. The request is locally validated before a single no-retry POST. This
+workflow is manual only; it has no schedule, push generation, or automatic
+resubmission. Do not use GitHub's rerun button for an uncertain paid submission.
+
+`status-image` and `status-video` read an existing `generation_id`. Logs contain
+only the provider, modality, job ID and recognised status. Prompts, reference
+media, API headers and signed output URLs are not logged or uploaded as
+artifacts. The workflow does not publish or deliver media. A final download
+still requires an authenticated API client; the workflow does not export the
+secret or a private content URL into this public repository's logs.
+
+Secret-free PR checks test both modules. Current validation coverage is ten
+tests covering credential handling, paid-operation guards, dry-run behaviour,
+single submission, uncertain-outcome handling, and status-only reads.
