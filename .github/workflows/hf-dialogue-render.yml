@@ -25,7 +25,7 @@ jobs:
           gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13056352509/zip > /tmp/dialogue/audio.zip
           unzip -q /tmp/dialogue/audio.zip -d /tmp/dialogue/audio
           find /tmp/dialogue/audio -type f -name '*.m4a' -exec cp {} /tmp/dialogue/input.m4a \;
-          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13088336285/zip > /tmp/dialogue/first.zip
+          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13088535498/zip > /tmp/dialogue/first.zip
           unzip -q /tmp/dialogue/first.zip -d renders/hf-dialogue
       - name: Generate one genuine audio-conditioned take using included quota only
         env:
@@ -43,15 +43,15 @@ jobs:
               remaining=q.get('current')
               if not isinstance(remaining,(int,float)) or remaining<115:raise RuntimeError('Included quota insufficient; no paid fallback')
               audio=f'/tmp/dialogue/round-{n+1}.wav'
-              subprocess.run(['ffmpeg','-v','error','-y','-ss',str(n*12),'-i','/tmp/dialogue/input.m4a','-t','12','-ar','24000','-ac','1',audio],check=True)
-              prompt='Warm hand-painted 2D storybook animation with original recorded German audio. Two adult friends stand on a sunny European cobblestone street outside the same medical practice. Throughout all twelve seconds preserve the reference background: buildings, trees, plants, pavement, clinic door and green medical cross stay visible. Fixed camera, continuous single take, preserve exact character sizes and screen positions. The woman on the LEFT in yellow cardigan speaks at 0-2 seconds. The man on the RIGHT in blue jacket answers at 2-5 seconds. The woman repeats at 6-9 seconds. The man praises briefly at 11 seconds. Only one speaker moves their lips at a time, the listener listens with closed mouth. Gentle supportive gestures, subtle nods, stable expressive eyes, restrained mouth movement. Clean uninterrupted illustrated scene, blank surfaces, natural clothing.'
-              rec={'round':n+1,'model':'multimodalart/ltx2-audio-to-video','declared_gpu_seconds':85,'included_quota_before':remaining,'paid_route':False,'seed':2191+n,'status':'started'}
+              subprocess.run(['ffmpeg','-v','error','-y','-ss','55','-i','/tmp/dialogue/input.m4a','-t','5','-ar','24000','-ac','1',audio],check=True)
+              prompt='Continuous warm hand-painted 2D animation, fixed camera. The same two adult friends stay on the detailed sunny European street outside a medical practice. LEFT woman in yellow finishes a phrase at the start, both listen quietly, RIGHT man in blue speaks briefly during the last second. All buildings, clinic door, plants and pavement remain clearly visible for the entire clip. Gentle movements, natural expressions, modest lip movements. The shot continues without any transition; the final frame looks like the middle of the same scene.'
+              rec={'round':n+1,'model':'multimodalart/ltx2-audio-to-video','declared_gpu_seconds':85,'included_quota_before':remaining,'paid_route':False,'seed':2391+n,'status':'started'}
               records.append(rec)
               try:
-                  result=client.predict(handle_file('ai-cast/hf-dialogue/duo.png'),handle_file(audio),prompt,'white background, empty background, blank studio, background disappearing, scene transition, cutaway, subtitles, captions, text, letters, typography, writing, watermark, logos, lower thirds, garbled symbols, deformed eyes, flicker, face distortion, huge mouth, simultaneous speaking, scene cuts, extra fingers',12.0,2191+n,api_name='/generate')
+                  result=client.predict(handle_file('ai-cast/hf-dialogue/duo.png'),handle_file(audio),prompt,'fade out, fade to white, fade to black, white screen, blank screen, ending, background disappearing, subtitles, captions, text, letters, typography, writing, watermark, logos, lower thirds, garbled symbols, deformed eyes, flicker, face distortion, huge mouth, simultaneous speaking, scene cuts, extra fingers',5.0,2391+n,api_name='/generate')
                   video=result[0]
                   if isinstance(video,dict):video=video.get('video',video).get('path') if isinstance(video.get('video',video),dict) else video.get('video')
-                  shutil.copyfile(video,f'renders/hf-dialogue/round-{n+1:02d}.mp4')
+                  shutil.copyfile(video,'renders/hf-dialogue/ending-05.mp4')
                   rec['status']='generated'
               except Exception as e:
                   rec['status']='failed';rec['error']=str(e)[:1800];raise
