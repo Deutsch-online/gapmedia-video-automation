@@ -43,7 +43,7 @@ jobs:
           path='renders/hf-dialogue/receipt.json'
           open(path,'w').write(json.dumps(receipt,indent=2))
           try:
-              client=Client('multimodalart/ltx2-audio-to-video',hf_token=token)
+              client=Client('multimodalart/ltx2-audio-to-video',token=token)
               result=client.predict(handle_file('ai-cast/hf-dialogue/duo.png'),handle_file('/tmp/dialogue/round.wav'),prompt,'deformed eyes, flicker, face distortion, large open mouth, simultaneous speaking, text, subtitles, scene cuts, extra fingers',12.0,2091,api_name='/generate')
               print('Generation completed; output types:',[type(x).__name__ for x in result])
               video=result[0]
