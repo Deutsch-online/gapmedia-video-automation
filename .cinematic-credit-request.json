@@ -1,6 +1,6 @@
 {
   "id": "f8c62b7cdaeaef41af42aff6",
-  "status": "sending",
+  "status": "pending",
   "plan_sha": "6aa6142439c775f08883136ac1df24112e8ba1fad8967f77d7f6a88fde725d12",
   "simple_text_approval": true,
   "kind": "episode",
@@ -20,5 +20,6 @@
   "expires_at": "2026-11-02T01:33:02.257Z",
   "text_approve_sha": "d24cf89db2e0495a216127e65348946f6f9dcd139ff27cec356e77f9dafe74b3",
   "text_reject_sha": "0fc2f0967c47ec1d7d057191c1ece822d96c2beb524df8b44145f78a781681f8",
-  "created_at": "2026-11-01T01:33:02.258Z"
+  "created_at": "2026-11-01T01:33:02.258Z",
+  "message_id": 2811
 }
