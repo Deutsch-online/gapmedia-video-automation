@@ -2470,7 +2470,7 @@
     "2026-10-29": 2,
     "2026-10-30": 3,
     "2026-10-31": 2,
-    "2026-11-01": 1
+    "2026-11-01": 2
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2487,14 +2487,14 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-01T01:28:51.143616+00:00",
+    "checked_at": "2026-11-01T07:59:22.296026+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
       "hf-anonymous-free"
     ],
     "status": "verified",
-    "remaining_seconds": 300.0,
+    "remaining_seconds": 255.686314,
     "can_admit_one_speaking_take": false,
     "fallback": "hf-anonymous-free"
   }
