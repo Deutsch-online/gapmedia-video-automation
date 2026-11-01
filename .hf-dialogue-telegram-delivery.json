@@ -8,6 +8,12 @@
       "duration": 60,
       "message_id": 2818,
       "confirmed_at": "2026-11-01T15:22:11.272Z"
+    },
+    "tiktok": {
+      "status": "dispatching",
+      "file": "renders/hf-dialogue/tiktok-arzttermin-60s.mp4",
+      "sha256": "7fd6f99dbd144aa70bb993741863687eee7ea42c408858b239afc682ba294099",
+      "duration": 60
     }
   }
 }
