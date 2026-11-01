@@ -1,10 +1,10 @@
 {
-  "id": "6fb289c8468def45f9dc4950",
-  "status": "expired",
-  "plan_sha": "54b6436782ea5c1fbae5b807097bc47682a8bf1d7f015cba5fab48966e23ea69",
+  "id": "f8c62b7cdaeaef41af42aff6",
+  "status": "sending",
+  "plan_sha": "6aa6142439c775f08883136ac1df24112e8ba1fad8967f77d7f6a88fde725d12",
   "simple_text_approval": true,
   "kind": "episode",
-  "episode": 15,
+  "episode": 16,
   "scenes": [
     0,
     1,
@@ -17,9 +17,8 @@
     8
   ],
   "chat_id": "7993801735",
-  "expires_at": "2026-10-31T23:52:36.148Z",
-  "text_approve_sha": "5db9b045b3d1ab8850e4a6f7bd4cec7dcd65032f307730f96813dbc2a2cbcea2",
-  "text_reject_sha": "8532008d760ae4cd470b9e2afd3523ff02e85afa30ec2b6dcf48aa5721528202",
-  "created_at": "2026-10-30T23:52:36.148Z",
-  "message_id": 2803
+  "expires_at": "2026-11-02T01:33:02.257Z",
+  "text_approve_sha": "d24cf89db2e0495a216127e65348946f6f9dcd139ff27cec356e77f9dafe74b3",
+  "text_reject_sha": "0fc2f0967c47ec1d7d057191c1ece822d96c2beb524df8b44145f78a781681f8",
+  "created_at": "2026-11-01T01:33:02.258Z"
 }
