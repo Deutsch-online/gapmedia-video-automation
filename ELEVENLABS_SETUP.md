@@ -1,5 +1,16 @@
 # ElevenLabs repository credential connection
 
+## Verified account result
+
+The integration-branch workflow run
+[41288737329](https://github.com/Deutsch-online/gapmedia-video-automation/actions/runs/41288737329)
+found the existing secret under `ELEVEN_API_KEY`. Authentication succeeded and
+the subscription endpoint returned the **Creator** tier. Both image and video
+listing endpoints returned **402 paid_plan_required**. Upgrading to an eligible
+plan is an account action; no subscription change or paid generation was made.
+The workflow's failing preflight therefore reports a confirmed entitlement
+block, not missing credentials. Local unit tests passed in GitHub Actions.
+
 The read-only **ElevenLabs key and media access** workflow passes the existing
 GitHub Actions secret into the provider check as an environment variable.
 Supported secret names are `ELEVENLABS_API_KEY`, `ELEVEN_LABS_API_KEY`, and
