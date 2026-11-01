@@ -1,0 +1,71 @@
+name: Deliver requested HF video to the project Telegram bot
+on:
+  push:
+    branches: [codex/hf-dialogue-60s]
+    paths: [.hf-dialogue-telegram-request.json]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: hf-dialogue-private-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install export tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
+          pip install 'pillow>=11,<13'
+          git config user.name 'gapmedia-delivery'
+          git config user.email 'actions@users.noreply.github.com'
+      - name: Restore the exact approved generated takes and existing ElevenLabs audio
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p renders/hf-dialogue /tmp/hf-audio
+          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13088183532/zip > /tmp/hf-scenes.zip
+          unzip -q /tmp/hf-scenes.zip -d renders/hf-dialogue
+          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13056352509/zip > /tmp/hf-audio.zip
+          unzip -q /tmp/hf-audio.zip -d /tmp/hf-audio
+          find /tmp/hf-audio -type f -name '*.m4a' -exec cp {} renders/hf-dialogue/arzttermin-dialogue-60s.m4a \;
+          cp ai-cast/hf-dialogue/timing.json renders/hf-dialogue/timing.json
+          mv renders/hf-dialogue/round-05.mp4 renders/hf-dialogue/round-05-before-ending-edit.mp4
+          ffmpeg -v error -y -i renders/hf-dialogue/round-05-before-ending-edit.mp4 -i renders/hf-dialogue/ending-05.mp4 -filter_complex '[0:v]trim=duration=7,setpts=PTS-STARTPTS[a];[1:v]trim=duration=5,setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1:a=0[v]' -map '[v]' -an -c:v libx264 -crf 18 -preset fast -pix_fmt yuv420p -t 12 renders/hf-dialogue/round-05.mp4
+      - name: Rebuild approved speech-bubble composition without new AI calls
+        run: python ai-cast/hf-dialogue/compose.py --assets renders/hf-dialogue
+      - name: Export Instagram and TikTok using the project encoding profiles
+        run: |
+          python - <<'PY'
+          import subprocess
+          from pathlib import Path
+          root=Path('renders/hf-dialogue')
+          for platform,rate,maximum in [('instagram','3500k','4000k'),('tiktok','4500k','5000k')]:
+              subprocess.run(['ffmpeg','-v','error','-y','-i',str(root/'arzttermin-huggingface-elevenlabs-60s.mp4'),'-vf','scale=1080:1920,setsar=1,fps=30','-c:v','libx264','-profile:v','high','-level:v','4.2','-preset','fast','-b:v',rate,'-maxrate',maximum,'-bufsize','10000k','-pix_fmt','yuv420p','-c:a','copy','-t','60','-map_metadata','-1','-movflags','+faststart',str(root/(platform+'-arzttermin-60s.mp4'))],check=True)
+          PY
+      - name: Deliver both versions to the usual private project bot and persist separate receipts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: node ai-cast/hf-dialogue/deliver.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hf-dialogue-telegram-platform-delivery
+          path: |
+            renders/hf-dialogue/instagram-arzttermin-60s.mp4
+            renders/hf-dialogue/tiktok-arzttermin-60s.mp4
+            renders/hf-dialogue/delivery-*.json
+            .hf-dialogue-telegram-delivery.json
+          include-hidden-files: true
+          retention-days: 14
