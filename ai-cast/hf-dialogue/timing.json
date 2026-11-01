@@ -1,0 +1,222 @@
+[
+  {
+    "start": 0,
+    "end": 2,
+    "speech_start": 0.12,
+    "speech_end": 1.4667708333333334,
+    "role": "learner",
+    "text": "Ich brauche Termin.",
+    "correct": "Ich brauche einen Termin.",
+    "fa": "باید وقت بگیرم.",
+    "round": 1
+  },
+  {
+    "start": 2,
+    "end": 6.4,
+    "speech_start": 2.12,
+    "speech_end": 4.2098125,
+    "role": "helper",
+    "text": "Fast: Ich brauche einen Termin.",
+    "correct": "Ich brauche einen Termin.",
+    "fa": "باید وقت بگیرم.",
+    "round": 1
+  },
+  {
+    "start": 6.4,
+    "end": 11.0,
+    "speech_start": 6.5200000000000005,
+    "speech_end": 8.006083333333335,
+    "role": "learner",
+    "text": "Ich brauche einen Termin.",
+    "correct": "Ich brauche einen Termin.",
+    "fa": "باید وقت بگیرم.",
+    "round": 1
+  },
+  {
+    "start": 11.0,
+    "end": 12.0,
+    "speech_start": 11.12,
+    "speech_end": 11.863041666666666,
+    "role": "helper",
+    "text": "Genau.",
+    "correct": "Ich brauche einen Termin.",
+    "fa": "باید وقت بگیرم.",
+    "round": 1
+  },
+  {
+    "start": 12,
+    "end": 14.111166666666666,
+    "speech_start": 12.12,
+    "speech_end": 13.931166666666666,
+    "role": "learner",
+    "text": "Ich habe ein Frage.",
+    "correct": "Ich habe eine Frage.",
+    "fa": "یک سؤال دارم.",
+    "round": 2
+  },
+  {
+    "start": 14.111166666666666,
+    "end": 18.412614583333333,
+    "speech_start": 14.231166666666665,
+    "speech_end": 16.506729166666666,
+    "role": "helper",
+    "text": "Eine Frage. Ich habe eine Frage.",
+    "correct": "Ich habe eine Frage.",
+    "fa": "یک سؤال دارم.",
+    "round": 2
+  },
+  {
+    "start": 18.412614583333333,
+    "end": 22.9140625,
+    "speech_start": 18.532614583333334,
+    "speech_end": 20.018697916666667,
+    "role": "learner",
+    "text": "Ich habe eine Frage.",
+    "correct": "Ich habe eine Frage.",
+    "fa": "یک سؤال دارم.",
+    "round": 2
+  },
+  {
+    "start": 22.9140625,
+    "end": 24.0,
+    "speech_start": 23.0340625,
+    "speech_end": 23.87,
+    "role": "helper",
+    "text": "Sehr gut.",
+    "correct": "Ich habe eine Frage.",
+    "fa": "یک سؤال دارم.",
+    "round": 2
+  },
+  {
+    "start": 24,
+    "end": 26,
+    "speech_start": 24.12,
+    "speech_end": 25.698958333333334,
+    "role": "learner",
+    "text": "Ich komme an Montag.",
+    "correct": "Ich komme am Montag.",
+    "fa": "دوشنبه می‌آیم.",
+    "round": 3
+  },
+  {
+    "start": 26,
+    "end": 30.380260416666665,
+    "speech_start": 26.12,
+    "speech_end": 28.767083333333336,
+    "role": "helper",
+    "text": "Am Montag. Ich komme am Montag.",
+    "correct": "Ich komme am Montag.",
+    "fa": "دوشنبه می‌آیم.",
+    "round": 3
+  },
+  {
+    "start": 30.380260416666665,
+    "end": 34.960520833333334,
+    "speech_start": 30.500260416666666,
+    "speech_end": 32.125677083333336,
+    "role": "learner",
+    "text": "Ich komme am Montag.",
+    "correct": "Ich komme am Montag.",
+    "fa": "دوشنبه می‌آیم.",
+    "round": 3
+  },
+  {
+    "start": 34.960520833333334,
+    "end": 36.0,
+    "speech_start": 35.08052083333333,
+    "speech_end": 35.87,
+    "role": "helper",
+    "text": "Richtig.",
+    "correct": "Ich komme am Montag.",
+    "fa": "دوشنبه می‌آیم.",
+    "round": 3
+  },
+  {
+    "start": 36,
+    "end": 38,
+    "speech_start": 36.12,
+    "speech_end": 37.652520833333334,
+    "role": "learner",
+    "text": "Ich komme am neun Uhr.",
+    "correct": "Ich komme um neun Uhr.",
+    "fa": "ساعت نُه می‌آیم.",
+    "round": 4
+  },
+  {
+    "start": 38,
+    "end": 42.380260416666665,
+    "speech_start": 38.12,
+    "speech_end": 40.67420833333333,
+    "role": "helper",
+    "text": "Um neun Uhr. Ich komme um neun Uhr.",
+    "correct": "Ich komme um neun Uhr.",
+    "fa": "ساعت نُه می‌آیم.",
+    "round": 4
+  },
+  {
+    "start": 42.380260416666665,
+    "end": 46.960520833333334,
+    "speech_start": 42.50026041666666,
+    "speech_end": 44.40430208333333,
+    "role": "learner",
+    "text": "Ich komme um neun Uhr.",
+    "correct": "Ich komme um neun Uhr.",
+    "fa": "ساعت نُه می‌آیم.",
+    "round": 4
+  },
+  {
+    "start": 46.960520833333334,
+    "end": 48.0,
+    "speech_start": 47.08052083333333,
+    "speech_end": 47.87,
+    "role": "helper",
+    "text": "Genau.",
+    "correct": "Ich komme um neun Uhr.",
+    "fa": "ساعت نُه می‌آیم.",
+    "round": 4
+  },
+  {
+    "start": 48,
+    "end": 50,
+    "speech_start": 48.12,
+    "speech_end": 49.55964583333333,
+    "role": "learner",
+    "text": "Ich nehme der Termin.",
+    "correct": "Ich nehme den Termin.",
+    "fa": "این وقت را قبول می‌کنم.",
+    "round": 5
+  },
+  {
+    "start": 50,
+    "end": 54.3338125,
+    "speech_start": 50.12,
+    "speech_end": 52.442,
+    "role": "helper",
+    "text": "Den Termin. Ich nehme den Termin.",
+    "correct": "Ich nehme den Termin.",
+    "fa": "این وقت را قبول می‌کنم.",
+    "round": 5
+  },
+  {
+    "start": 54.3338125,
+    "end": 58.867625000000004,
+    "speech_start": 54.4538125,
+    "speech_end": 55.80058333333333,
+    "role": "learner",
+    "text": "Ich nehme den Termin.",
+    "correct": "Ich nehme den Termin.",
+    "fa": "این وقت را قبول می‌کنم.",
+    "round": 5
+  },
+  {
+    "start": 58.867625000000004,
+    "end": 60.00000000000001,
+    "speech_start": 58.987625,
+    "speech_end": 59.870000000000005,
+    "role": "helper",
+    "text": "Perfekt.",
+    "correct": "Ich nehme den Termin.",
+    "fa": "این وقت را قبول می‌کنم.",
+    "round": 5
+  }
+]

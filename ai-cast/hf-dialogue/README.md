@@ -1,0 +1,5 @@
+Original 60-second German dialogue: two illustrated adult friends outside a clinic. Visual animation: multimodalart/ltx2-audio-to-video; recorded dialogue: existing authorized ElevenLabs Lily/Roger takes. No cloning or publication. Included Hugging Face quota only; no paid route.
+
+All five scenes contain generated motion at native 24 fps. Original model resolution is 512x768; final crop is 324x576, scaled to 1080x1920. The closer composition removes hallucinated lower-frame text from the first take. The fifth scene uses its first 7 seconds followed by a separately generated 5-second ending, using exactly the matching original audio interval at 55–60 seconds. This replaces an unacceptable generated white fade. No frozen-frame or slow-motion padding.
+
+To reproduce compositing, put approved round-01.mp4 through round-05.mp4, timing.json and arzttermin-dialogue-60s.m4a in one asset directory and run python compose.py --assets PATH. Requires FFmpeg, Pillow with RAQM, DejaVu Sans and Noto Sans Arabic fonts. Model generation workflows remain manually triggered by an explicit request-file commit and guard included quota before each call. Do not publish automatically.
