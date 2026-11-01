@@ -2,10 +2,12 @@
   "request": "owner-request-2026-11-01-hf-dialogue",
   "platforms": {
     "instagram": {
-      "status": "dispatching",
+      "status": "delivered",
       "file": "renders/hf-dialogue/instagram-arzttermin-60s.mp4",
       "sha256": "2d6fa312e3f56d7d862d80fe247c12cf7eb0236d05835c3952ecb6601a191870",
-      "duration": 60
+      "duration": 60,
+      "message_id": 2818,
+      "confirmed_at": "2026-11-01T15:22:11.272Z"
     }
   }
 }
