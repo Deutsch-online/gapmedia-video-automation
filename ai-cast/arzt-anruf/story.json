@@ -1,0 +1,120 @@
+{
+  "id": "arzt-anruf-story-60-v1",
+  "duration_seconds": 60,
+  "round_seconds": 12,
+  "model": "eleven_multilingual_v2",
+  "max_characters": 1600,
+  "voices": {
+    "learner": {
+      "id": "pFZP5JQG7iQjIQuC4Bku",
+      "name": "Lily"
+    },
+    "helper": {
+      "id": "CwhRBWXzGAHq8TQ4Fs17",
+      "name": "Roger"
+    },
+    "reception": {
+      "id": "XrExE9yKIg1WjnnlVkGX",
+      "name": "Matilda"
+    }
+  },
+  "rounds": [
+    {
+      "beat": "Das aufgeschobene Telefonat",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Seit Tagen schiebe ich den Anruf auf. Am Telefon verstehe ich zu wenig.",
+          "fa": "چند روز است تماس را عقب می‌اندازم؛ پشت تلفن کم می‌فهمم.",
+          "speed": 0.97
+        },
+        {
+          "role": "helper",
+          "text": "Dann bereiten wir ihn zusammen vor.",
+          "fa": "پس با هم برایش آماده می‌شویم.",
+          "speed": 1
+        }
+      ]
+    },
+    {
+      "beat": "Drei Notizen statt Angst",
+      "turns": [
+        {
+          "role": "helper",
+          "text": "Notier deinen Namen, warum du einen Termin brauchst und wann du Zeit hast.",
+          "fa": "نامت، دلیل گرفتن نوبت و زمان خالی‌ات را یادداشت کن.",
+          "speed": 1
+        },
+        {
+          "role": "learner",
+          "text": "Okay. Ich versuche es.",
+          "fa": "باشه، امتحان می‌کنم.",
+          "speed": 0.97
+        }
+      ]
+    },
+    {
+      "beat": "Sie ruft selbst an",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Guten Tag, ich heiße Marta Weber. Ich möchte einen Kontrolltermin vereinbaren.",
+          "fa": "سلام، مارتا وبر هستم. می‌خواهم برای معاینه نوبت بگیرم.",
+          "speed": 0.98
+        },
+        {
+          "role": "reception",
+          "text": "Gerne. Waren Sie schon einmal bei uns?",
+          "fa": "حتماً. قبلاً پیش ما آمده‌اید؟",
+          "speed": 1.08
+        }
+      ]
+    },
+    {
+      "beat": "Nachfragen hilft",
+      "turns": [
+        {
+          "role": "learner",
+          "text": "Entschuldigung, könnten Sie bitte langsamer sprechen?",
+          "fa": "ببخشید، می‌شود لطفاً آهسته‌تر صحبت کنید؟",
+          "speed": 0.94
+        },
+        {
+          "role": "reception",
+          "text": "Natürlich. Waren Sie schon einmal in unserer Praxis?",
+          "fa": "البته. قبلاً به مطب ما آمده‌اید؟",
+          "speed": 0.93
+        },
+        {
+          "role": "learner",
+          "text": "Nein, zum ersten Mal.",
+          "fa": "نه، بار اولم است.",
+          "speed": 1
+        }
+      ]
+    },
+    {
+      "beat": "Bestätigen statt raten",
+      "turns": [
+        {
+          "role": "reception",
+          "text": "Dienstag um zehn Uhr. Passt Ihnen das?",
+          "fa": "سه‌شنبه ساعت ده. برایتان مناسب است؟",
+          "speed": 0.98
+        },
+        {
+          "role": "learner",
+          "text": "Dienstag, zehn Uhr. Ja, danke!",
+          "fa": "سه‌شنبه، ساعت ده. بله، ممنون!",
+          "speed": 0.97
+        },
+        {
+          "role": "helper",
+          "text": "Geschafft. Nachfragen ist völlig okay.",
+          "fa": "شد! دوباره پرسیدن کاملاً عادی است.",
+          "speed": 1
+        }
+      ]
+    }
+  ]
+}
