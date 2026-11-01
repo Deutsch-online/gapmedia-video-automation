@@ -25,9 +25,7 @@ for(const platform of ['instagram','tiktok']){
  const sha=createHash('sha256').update(readFileSync(file)).digest('hex');
  state.platforms[platform]={status:'dispatching',file,sha256:sha,duration:60};
  checkpoint();
- const caption=platform==='instagram'
- ? 'Instagram Reels | Beim Arzt: fünf Sätze für deinen Termin.\nHören, nachsprechen und sicherer Deutsch sprechen. Speichere diese Übung für deinen nächsten Arztbesuch.\n\n#DeutschLernen #Alltagsdeutsch #Arzttermin #GermanLearning #DeutschA1'
- : 'TikTok | Ich brauche Termin? So sagst du es richtig!\nFünf typische Fehler beim Arzttermin — hör zu und sprich mit.\n\n#DeutschLernen #LearnGerman #DeutschA1 #Arzttermin #GermanDialog';
+ const caption=platform==='instagram' ? 'Beim Arzt: fünf Sätze. #DeutschLernen #Alltagsdeutsch' : 'Arzttermin: Sag es richtig! #DeutschLernen #LearnGerman';
  const result=await sendVideo({token:tg.token,chatId:tg.reviewChatId,file,caption,attempts:1});
  if(!result?.message_id)throw Error('Telegram did not confirm upload; intent remains unresolved');
  state.platforms[platform]={...state.platforms[platform],status:'delivered',message_id:result.message_id,confirmed_at:new Date().toISOString()};
