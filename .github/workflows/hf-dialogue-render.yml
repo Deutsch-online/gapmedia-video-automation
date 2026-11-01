@@ -57,7 +57,7 @@ jobs:
               except Exception as e:
                   rec['status']='failed';rec['error']=str(e)[:1800];raise
               finally:open('renders/hf-dialogue/receipts.json','w').write(json.dumps(records,indent=2))
-                    PY
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
