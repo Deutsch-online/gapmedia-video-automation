@@ -2303,7 +2303,146 @@
       }
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 16,
+      "title_de": "Karton oder Plastik?",
+      "title_fa": "مقوا یا پلاستیک؟",
+      "summary": "In the hallway recycling area, Marta wants to throw away an entire delivery package into the blue paper bin, unaware that the bulky bubble wrap inside belongs elsewhere. Lukas points out the difference between paper and plastic packaging. Marta pulls out the crinkly plastic wrap, drops it into the yellow bin, flattens the cardboard box with a cheerful double-hand stomp, and slides it neatly into the paper bin.",
+      "cliffhanger": "Next everyday newcomer challenge: decoding the quiet hours notice posted on the building bulletin board.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta stands over the narrow blue paper bin holding an enormous cardboard shipping carton bulging with puffing plastic bubble wrap that cannot possibly fit.",
+      "everyday_problem": "Marta does not know how to separate mixed packaging materials like cardboard delivery boxes and plastic cushioning film for German recycling bins.",
+      "practical_resolution": "Marta separates the plastic film into the yellow bin, flattens the cardboard carton completely, and slides it easily into the blue paper container.",
+      "marta_goal": "Dispose of an empty online delivery parcel correctly without jamming the building recycling containers.",
+      "marta_decision": "Marta removes the plastic bubble wrap from the box, sorts it into the yellow bin, and crushes the cardboard flat before recycling.",
+      "visual_payoff": "Marta firmly crushes the bulky shipping box into an ultra-thin slice with both palms and slides it into the paper bin with effortless satisfaction.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replaced abstract digital phone screens with tactile kitchen-hallway prop interactions that make waste separation legible entirely through physical gestures.",
+        "visible_comic_action": "Marta pulls an unexpectedly endless trail of squeaky bubble wrap from the box, then flattens the cardboard box with a firm, decisive double-handed chop.",
+        "next_experiment": "In the upcoming hallway bulletin board scene, use a handheld camera push-in synced to Marta's finger tracing the German quiet-hours schedule."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Wohin kommt dieser große Karton?",
+          "fa": "این جعبه مقوایی بزرگ کجا می‌ره؟",
+          "scene": "Medium shot of Marta in the hallway sorting area holding an open shipping box packed with plastic bubble wrap over a blue recycling bin.",
+          "motion": "Marta lifts the bulky parcel slightly, tilting it toward the blue paper bin while looking puzzled.",
+          "visible_objects": [
+            "cardboard box",
+            "bubble wrap"
+          ],
+          "object_action": "Marta holds an open cardboard box filled with puffy bubble wrap above a blue paper bin."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Zuerst trennen wir Karton und Plastik.",
+          "fa": "اول مقوا و پلاستیک را از هم جدا می‌کنیم.",
+          "scene": "Medium shot of Lukas standing beside the yellow recycling bin and the blue paper container.",
+          "motion": "Lukas rests a hand on the yellow bin lid and gestures clearly between the two containers.",
+          "visible_objects": [
+            "yellow recycling bin",
+            "blue paper bin"
+          ],
+          "object_action": "Lukas rests one hand on the yellow bin lid and gestures clearly toward the two separate bins."
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Plastikfolie kommt also hier raus?",
+          "fa": "پس این نایلون حباب‌دار از این تو میاد بیرون؟",
+          "scene": "Closer framing of Marta pulling a long sheet of crinkly bubble wrap out of the cardboard box.",
+          "motion": "Marta gathers the transparent bubble wrap in both hands, drawing it fully out of the carton.",
+          "visible_objects": [
+            "bubble wrap",
+            "cardboard box"
+          ],
+          "object_action": "Marta pulls the crinkly plastic bubble wrap out of the cardboard box with both hands."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, Plastik gehört in die Gelbe Tonne.",
+          "fa": "دقیقاً، پلاستیک مال سطل زرد رنگه.",
+          "scene": "Medium shot of Lukas holding open the yellow recycling bin lid, smiling encouragingly.",
+          "motion": "Lukas lifts the yellow bin lid higher and nods toward the open compartment.",
+          "visible_objects": [
+            "yellow recycling bin"
+          ],
+          "object_action": "Lukas lifts the lid of the yellow recycling bin, gesturing welcomingly inside."
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Folie ist im Gelben Sack!",
+          "fa": "نایلون پلاستیکی رفت توی سطل زرد!",
+          "scene": "Medium shot of Marta dropping the crinkled plastic cushioning directly into the open yellow container.",
+          "motion": "Marta pushes the puffy plastic wrap down into the yellow bin and dusts her hands cheerfully.",
+          "visible_objects": [
+            "bubble wrap",
+            "yellow recycling bin"
+          ],
+          "object_action": "Marta drops the crumpled ball of plastic bubble wrap straight into the open yellow bin."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Jetzt machen wir den Karton ganz flach.",
+          "fa": "حالا جعبه مقوایی را کاملاً صاف می‌کنیم.",
+          "scene": "Medium shot of Lukas demonstrating a downward pressing motion with both flat hands.",
+          "motion": "Lukas presses his palms downward in mid-air to illustrate flattening a bulky box.",
+          "visible_objects": [
+            "cardboard box"
+          ],
+          "object_action": "Lukas places his palms flat and presses downward in mid-air to show how to flatten a box."
+        },
+        {
+          "speaker": "marta",
+          "de": "Schau mal, er ist ganz flach!",
+          "fa": "نگاه کن، کاملاً صاف شد!",
+          "scene": "Closer framing of Marta pressing down firmly on the cardboard box against a low sorting ledge.",
+          "motion": "Marta flattens the box with a crisp double-handed push, turning it into a slender flat board.",
+          "visible_objects": [
+            "cardboard box"
+          ],
+          "object_action": "Marta presses down firmly with both palms, crushing the cardboard box completely flat against the table."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Perfekt! Das Altpapier hat jetzt viel Platz.",
+          "fa": "عالیه! حالا سطل کاغذ باطله کلی جا داره.",
+          "scene": "Medium shot of Lukas pointing with an approving smile at the slim slot of the blue paper bin.",
+          "motion": "Lukas taps the rim of the blue paper bin approvingly and steps back to give room.",
+          "visible_objects": [
+            "blue paper bin"
+          ],
+          "object_action": "Lukas points down into the slim slot of the blue paper bin with an encouraging nod."
+        },
+        {
+          "speaker": "marta",
+          "de": "Pappe und Plastik sind sauber getrennt!",
+          "fa": "مقوا و پلاستیک تمیز از هم جدا شدند!",
+          "scene": "Closer framing of Marta easily sliding the flattened cardboard into the blue bin slot, beaming with success.",
+          "motion": "Marta guides the flat carton neatly into the narrow slot and folds her arms with a satisfied smile.",
+          "visible_objects": [
+            "cardboard box",
+            "blue paper bin"
+          ],
+          "object_action": "Marta slides the flattened cardboard smoothly into the narrow opening of the blue paper bin."
+        }
+      ],
+      "research_source": {
+        "topic": "Sorting household waste",
+        "url": "https://www.muelltrennung-wirkt.de/de/muelltrennung/",
+        "excerpt": "Mülltrennung: Das musst Du wissen | Mülltrennung wirkt! Mülltrennung leicht gemacht. Hier findest du Tipps & Tricks zur Mülltrennung: 1. Verpackungen werden je nach Materialart in unterschiedlichen Abfallbehältern gesammelt In der Papiertonne, in der Gelben Tonne/ im Gelben Sack oder in der Wertstofftonne, in Altglascontainern, Rest- und Bioabfälle gehören in die dafür zur Verfügung stehenden Behälter. 2. Unterschiedliche Bestandteile einer Verpackung sollten voneinander getrennt werden Zum Beispiel Verpackungen und ihre Deckel. Die einzelnen K",
+        "retrieved_at": "2026-11-01T01:28:55.153613+00:00",
+        "transport": "urllib"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-11-01",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
