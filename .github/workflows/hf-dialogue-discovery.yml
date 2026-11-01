@@ -1,0 +1,54 @@
+name: Discover eligible Hugging Face dialogue backends
+on:
+  push:
+    branches: [codex/hf-dialogue-60s]
+    paths: [.hf-dialogue-discovery.json]
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read included quota and public model runtime metadata
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          mkdir -p /tmp/hf-dialogue-discovery
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs/promises';
+          async function get(url,headers={}){
+            const r=await fetch(url,{headers,signal:AbortSignal.timeout(20000)});
+            if(!r.ok)throw Error('HTTP '+r.status);
+            return r.json();
+          }
+          let quota={verified:false};
+          if(process.env.HF_TOKEN){
+            try{const q=await get('https://huggingface.co/api/spaces/zero-gpu/quota',{'Authorization':'Bearer '+process.env.HF_TOKEN});quota={verified:true,remaining:q.current};}catch(e){quota.error=e.message;}
+          }
+          const queries=['InfiniteTalk','MultiTalk','LTX-2','Wan2.2-S2V'];
+          const all=[];
+          for(const query of queries){
+            try{const rows=await get('https://huggingface.co/api/spaces?search='+encodeURIComponent(query)+'&limit=12&sort=likes&direction=-1');for(const row of rows)all.push({id:row.id,likes:row.likes,query});}catch(e){console.log(query+': '+e.message);}
+          }
+          const unique=[...new Map(all.map(s=>[s.id,s])).values()];
+          const known=['fffiloni/Meigen-MultiTalk','MeiGen-AI/InfiniteTalk','lynloveyounever/InfiniteTalk'];
+          for(const id of known)if(!unique.some(x=>x.id===id))unique.unshift({id,query:'known public reference'});
+          const output=[];
+          for(const space of unique){
+            try{
+              const meta=await get('https://huggingface.co/api/spaces/'+space.id);
+              output.push({...space,sdk:meta.sdk,stage:meta.runtime?.stage,hardware:meta.runtime?.hardware,host:meta.host,files:meta.siblings?.map(s=>s.rfilename).filter(f=>['app.py','app_new.py','main.py','gradio_app.py','README.md'].includes(f))});
+            }catch(e){output.push({...space,error:e.message});}
+          }
+          await fs.writeFile('/tmp/hf-dialogue-discovery/metadata.json',JSON.stringify({quota,spaces:output},null,2));
+          console.log(JSON.stringify({quota,spaces:output.map(x=>({id:x.id,stage:x.stage,hardware:x.hardware,error:x.error}))}));
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: huggingface-dialogue-discovery
+          path: /tmp/hf-dialogue-discovery/metadata.json
+          retention-days: 7
