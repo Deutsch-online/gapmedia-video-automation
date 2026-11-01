@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install gradio_client==2.5.0 huggingface_hub
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Download existing authorized ElevenLabs audio
         env:
           GH_TOKEN: ${{ github.token }}
