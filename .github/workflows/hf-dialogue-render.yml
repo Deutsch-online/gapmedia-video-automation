@@ -9,7 +9,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,39 +25,42 @@ jobs:
           gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13056352509/zip > /tmp/dialogue/audio.zip
           unzip -q /tmp/dialogue/audio.zip -d /tmp/dialogue/audio
           find /tmp/dialogue/audio -type f -name '*.m4a' -exec cp {} /tmp/dialogue/input.m4a \;
-          ffmpeg -v error -y -i /tmp/dialogue/input.m4a -t 12 -ar 24000 -ac 1 /tmp/dialogue/round.wav
+          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13088096417/zip > /tmp/dialogue/first.zip
+          unzip -q /tmp/dialogue/first.zip -d renders/hf-dialogue
+          mv renders/hf-dialogue/round-01-raw.mp4 renders/hf-dialogue/round-01.mp4
       - name: Generate one genuine audio-conditioned take using included quota only
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           python - <<'PY'
-          import os,json,urllib.request,shutil,time
+          import os,json,urllib.request,shutil,subprocess
           from gradio_client import Client,handle_file
           token=os.environ['HF_TOKEN']
-          req=urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',headers={'Authorization':'Bearer '+token})
-          with urllib.request.urlopen(req,timeout=30) as r:q=json.load(r)
-          remaining=q.get('current')
-          if not isinstance(remaining,(int,float)) or remaining<115:raise RuntimeError('Included quota cannot cover declared 85 GPU seconds plus reserve')
-          prompt='Warm hand-painted 2D storybook animation. Fixed camera, two adult friends outside a medical practice. Preserve exactly the reference characters and background. LEFT woman in mustard cardigan speaks first at 0.1-2 seconds, RIGHT blue-jacket man responds supportively at roughly 2-6 seconds, LEFT woman repeats at roughly 6-10 seconds, RIGHT man gives short praise near the end. Only the active speaker moves their lips; the listener keeps lips closed. Small natural head nods and gentle hand gestures, attentive expressions, stable eyes, restrained mouth shapes, original German dialogue synchronized to supplied audio. No written text, no captions, no camera cuts.'
-          receipt={'model':'multimodalart/ltx2-audio-to-video','declared_gpu_seconds':85,'included_quota_before':remaining,'paid_route':False,'duration_requested':12,'seed':2091,'status':'started'}
-          path='renders/hf-dialogue/receipt.json'
-          open(path,'w').write(json.dumps(receipt,indent=2))
-          try:
-              client=Client('multimodalart/ltx2-audio-to-video',token=token)
-              result=client.predict(handle_file('ai-cast/hf-dialogue/duo.png'),handle_file('/tmp/dialogue/round.wav'),prompt,'deformed eyes, flicker, face distortion, large open mouth, simultaneous speaking, text, subtitles, scene cuts, extra fingers',12.0,2091,api_name='/generate')
-              print('Generation completed; output types:',[type(x).__name__ for x in result])
-              video=result[0]
-              if isinstance(video,dict):video=video.get('video',video).get('path') if isinstance(video.get('video',video),dict) else video.get('video')
-              shutil.copyfile(video,'renders/hf-dialogue/round-01-raw.mp4')
-              receipt['status']='generated'
-          except Exception as e:
-              receipt['status']='failed';receipt['error']=str(e)[:1800]
-              raise
-          finally:open(path,'w').write(json.dumps(receipt,indent=2))
-          PY
+          client=Client('multimodalart/ltx2-audio-to-video',token=token)
+          records=[]
+          for n in range(1,5):
+              req=urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',headers={'Authorization':'Bearer '+token})
+              with urllib.request.urlopen(req,timeout=30) as r:q=json.load(r)
+              remaining=q.get('current')
+              if not isinstance(remaining,(int,float)) or remaining<115:raise RuntimeError('Included quota insufficient; no paid fallback')
+              audio=f'/tmp/dialogue/round-{n+1}.wav'
+              subprocess.run(['ffmpeg','-v','error','-y','-ss',str(n*12),'-i','/tmp/dialogue/input.m4a','-t','12','-ar','24000','-ac','1',audio],check=True)
+              prompt='Warm hand-painted 2D storybook animation with original recorded German audio. Two adult friends outside the same medical practice, fixed camera, preserve the reference identities and scene. The woman on the LEFT in yellow cardigan speaks at 0-2 seconds. The man on the RIGHT in blue jacket answers at 2-5 seconds. The woman repeats at 6-9 seconds. The man praises briefly at 11 seconds. Only one speaker moves their lips at a time, the listener listens with closed mouth. Gentle supportive gestures, subtle nods, stable expressive eyes, restrained mouth movement. Clean uninterrupted illustrated scene, blank surfaces, natural clothing.'
+              rec={'round':n+1,'model':'multimodalart/ltx2-audio-to-video','declared_gpu_seconds':85,'included_quota_before':remaining,'paid_route':False,'seed':2091+n,'status':'started'}
+              records.append(rec)
+              try:
+                  result=client.predict(handle_file('ai-cast/hf-dialogue/duo.png'),handle_file(audio),prompt,'subtitles, captions, text, letters, typography, writing, watermark, logos, lower thirds, garbled symbols, deformed eyes, flicker, face distortion, huge mouth, simultaneous speaking, scene cuts, extra fingers',12.0,2091+n,api_name='/generate')
+                  video=result[0]
+                  if isinstance(video,dict):video=video.get('video',video).get('path') if isinstance(video.get('video',video),dict) else video.get('video')
+                  shutil.copyfile(video,f'renders/hf-dialogue/round-{n+1:02d}.mp4')
+                  rec['status']='generated'
+              except Exception as e:
+                  rec['status']='failed';rec['error']=str(e)[:1800];raise
+              finally:open('renders/hf-dialogue/receipts.json','w').write(json.dumps(records,indent=2))
+                    PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: hf-original-dialogue-sample
+          name: hf-original-dialogue-five-scenes
           path: renders/hf-dialogue/
           retention-days: 7
