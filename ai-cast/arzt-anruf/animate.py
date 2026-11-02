@@ -3,7 +3,7 @@ from gradio_client import Client,handle_file
 root=pathlib.Path('renders/arzt-anruf');takes=root/'short-takes';takes.mkdir(exist_ok=True)
 events=json.loads((root/'timing.json').read_text())
 request=json.loads(pathlib.Path('.arzt-anruf-motion.json').read_text())
-token=os.environ['HF_TOKEN'];client=Client('multimodalart/ltx2-audio-to-video',token=token)
+token=os.environ['HF_TOKEN']
 for n in request['clips']:
  start=(n-1)*5;audio=root/f'condition-short-{n:02d}.wav'
  subprocess.run(['ffmpeg','-v','error','-y','-ss',str(start),'-i',str(root/'conditioning.wav'),'-t','5','-ar','24000','-ac','1',str(audio)],check=True)
@@ -33,8 +33,11 @@ for n in request['clips']:
  req=urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',headers={'Authorization':'Bearer '+token})
  with urllib.request.urlopen(req,timeout=30) as r:q=json.load(r)
  remaining=q.get('current')
- if not isinstance(remaining,(int,float)) or remaining<115:raise ValueError('Insufficient included quota for 85 seconds plus reserve; paid route disabled')
- record={'clip':n,'signature':sig,'status':'uncertain','included_quota_before':remaining,'gpu_declared_seconds':85,'paid_route':False,'seed':seed}
+ credential=token if isinstance(remaining,(int,float)) and remaining>=115 else False
+ route='included' if credential else 'explicit-anonymous-free'
+ client=Client('multimodalart/ltx2-audio-to-video',token=credential)
+ print('Eligible free route:',route,flush=True)
+ record={'clip':n,'signature':sig,'status':'uncertain','included_quota_before':remaining,'gpu_declared_seconds':85,'paid_route':False,'route':route,'seed':seed}
  receipt.write_text(json.dumps(record,indent=2))
  try:
   result=client.predict(handle_file('ai-cast/arzt-anruf/reference.png'),handle_file(str(audio)),prompt,negative,5.0,seed,api_name='/generate')

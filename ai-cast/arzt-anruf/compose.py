@@ -18,6 +18,13 @@ def wrap(text,font,width,direction=None):
     if current:lines.append(current)
     return lines
 def command(args):subprocess.run([str(x) for x in args],check=True)
+
+if not (root/'generated-60.mp4').exists() and all((root/f'clip-{n:02d}.mp4').exists() for n in range(1,13)):
+    args=['ffmpeg','-v','error','-y']
+    for n in range(1,13):args+=['-i',root/f'clip-{n:02d}.mp4']
+    parts=[f'[{n}:v]trim=duration=5,setpts=PTS-STARTPTS[v{n}]' for n in range(12)]
+    parts.append(''.join(f'[v{n}]' for n in range(12))+'concat=n=12:v=1:a=0[joined]')
+    command(args+['-filter_complex_threads','1','-filter_complex',';'.join(parts),'-map','[joined]','-an','-r','24','-t','60','-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p',root/'generated-60.mp4'])
 for i,e in enumerate(events):
     image=Image.new('RGBA',(1080,1920));d=ImageDraw.Draw(image)
     color={'learner':'#263A43','helper':'#216A58','reception':'#355A86'}[e['role']]
@@ -71,7 +78,10 @@ for scene in ([a.scene] if a.scene else range(1,6)):
         overlays.extend([(root/'notes-1.png',.5,2.5),(root/'notes-2.png',2.5,4.5),(root/'notes-3.png',4.5,12)])
     elif scene in (3,4):overlays.append((root/'call.png',0,12))
     elif scene==5:overlays.append((root/'appointment.png',4,12))
-    args=['ffmpeg','-v','error','-y','-i',root/f'raw-{scene:02d}.mp4']
+    args=['ffmpeg','-v','error','-y']
+    if (root/'generated-60.mp4').exists():
+        args+=['-ss',str((scene-1)*12),'-i',root/'generated-60.mp4']
+    else:args+=['-i',root/f'raw-{scene:02d}.mp4']
     for image,_,_ in overlays:args+=['-loop','1','-i',image]
     filters=['[0:v]trim=duration=12,setpts=PTS-STARTPTS,crop=432:768:40:0,scale=1080:1920:flags=lanczos,setsar=1[base]']
     previous='base'
