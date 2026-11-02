@@ -2,6 +2,7 @@ let language=localStorage.getItem('crown52-language')==='en'?'en':'fa';const ori
 export const getLanguage=()=>language;
 export function setLanguage(value,{persist=true}={}){language=value==='en'?'en':'fa';if(persist)localStorage.setItem('crown52-language',language);document.documentElement.lang=language;document.documentElement.dir=language==='en'?'ltr':'rtl';}
 const words={
+'موسیقی پس‌زمینه روشن / خاموش':'Background music on / off','شروع خودکار لیگ و دور بعد':'Automatically start league and next round','هر کوین گیفت نیز 10 امتیاز اضافه می‌کند.':'Each gift coin also adds 10 points.','هر کامنت معتبر تیم هنگام اجرای تایمر 10 امتیاز می‌دهد.':'Each valid team comment adds 10 points during the match.','هر کامنت معتبر تیم و هر کوین گیفت، 10 امتیاز مسابقه است.':'Each valid team comment and each gift coin adds 10 match points.',
 'تازه‌سازی کارت‌ها':'Refresh cards','توقف ورود خودکار':'Pause new arrivals','ادامهٔ ورود خودکار':'Resume new arrivals','پاک‌کردن کارت انتخابی':'Clear selected card','پاک‌کردن صف':'Clear waiting queue',
 'بازنمایش کارت‌ها':'Replay cards','کارت بازشده یا برنده':'Revealed card or winner','هنوز کارتی باز نشده است':'No cards revealed yet','زوم کارت':'Zoom card','نمایش دوباره':'Replay reveal','این کارت هنوز باز نشده است':'This card has not been revealed yet',
 'در انتظار:':'Waiting:','عکس تازه‌وارد 10 ثانیه در کارت می‌ماند؛ در صورت پُربودن کارت‌ها، در صف قرار می‌گیرد.':'A new arrival stays on a card for 10 seconds. When all cards are occupied, arrivals wait in a queue.',
