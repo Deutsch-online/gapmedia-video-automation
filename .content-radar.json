@@ -1,196 +1,163 @@
 {
-  "at": "2026-10-31T21:29:09.169Z",
+  "at": "2026-11-02T23:29:47.069Z",
   "rows": [
     {
-      "cat": "tiktok",
-      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/",
-      "date": "2026-10-31",
-      "sources": 7,
+      "cat": "tools",
+      "title": "Copilot Fusion, Pika H3 Flex reviewed: AI verdicts",
+      "url": "https://theverdictstack.beehiiv.com/p/issue-4-copilot-picks-your-model-pika-opens-its-video-model-and-roblox-builds-the-level",
+      "date": "2026-11-02",
+      "sources": 8,
       "clear": true,
       "score": 30
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
-      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
-      "date": "2026-10-31",
+      "title": "(November 2) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
+      "date": "2026-11-02",
       "sources": 8,
       "clear": true,
       "score": 29
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Must Eat makes food creators a local search channel",
-      "url": "https://www.contentgrip.com/tiktok-must-eat-local-search/",
-      "date": "2026-10-29",
+      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
+      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
+      "date": "2026-11-02",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 29
     },
     {
       "cat": "tools",
-      "title": "Introducing Pika H3 Flex — Pika Blog",
-      "url": "https://pika.art/blog/pika-h3-flex",
-      "date": "2026-10-29",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Apple Creator Studio adds powerful new AI features and even more creative tools - Apple",
-      "url": "https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/",
-      "date": "2026-10-27",
+      "title": "Pika H3 Flex takes up to 12 references for a short video",
+      "url": "https://pinoyaiworks.com/news/pika-h3-flex-open-video-model/",
+      "date": "2026-11-02",
       "sources": 7,
       "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Hands-On With Grok Imagine Video: 13 Clips, Nine Tests and a $3 Bill for a Tech-News B-Roll Desk",
+      "url": "https://quasa.io/stories/hands-on-with-grok-imagine-video-13-clips-nine-tests-and-a-3-bill-for-a-tech-news-b-roll-desk",
+      "date": "2026-11-02",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Genie 4 World Model: 4 Surprising Creator Changes",
+      "url": "https://ohwx.ai/genie-4-world-model-creator-changes/",
+      "date": "2026-11-02",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Imagination Studio Packs Video, Voice, and Image Generation Into One Local App | Hermes AI News",
+      "url": "https://hermes-ai.net/news/imagination-studio-packs-video-voice-and-image-generation-into-one-local-app/",
+      "date": "2026-11-02",
+      "sources": 6,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/",
+      "date": "2026-10-31",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Is Going Beyond Reels With Features, Clips As Reels & Series: Adam Mosseri Explains What Is Changing",
+      "url": "https://gadgetsnow.indiatimes.com/tech-news/instagram-is-going-beyond-reels-with-features-clips-as-reels-series-adam-mosseri-explains-what-is-changing/articleshow/135453569.cms",
+      "date": "2026-11-02",
+      "sources": 7,
+      "clear": false,
       "score": 26
     },
     {
-      "cat": "instagram",
-      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/",
-      "date": "2026-10-26",
-      "sources": 7,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram rolls out limited Features test in the US",
-      "url": "https://tech.yahoo.com/social-media/articles/instagram-rolls-limited-features-test-190540357.html",
-      "date": "2026-10-26",
+      "cat": "tiktok",
+      "title": "TikTok Launches Must Eat Food and Restaurant Platform",
+      "url": "https://www.hollywoodreporter.com/business/digital/tiktok-launches-must-eat-food-restaurant-platform-1236741746/",
+      "date": "2026-10-28",
       "sources": 8,
       "clear": true,
       "score": 25
     },
     {
-      "cat": "tools",
-      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
-      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models",
+      "cat": "instagram",
+      "title": "Instagram Tests 90-Minute Videos With Features",
+      "url": "https://www.techrepublic.com/article/news-instagram-features-90-minute-horizontal-videos/",
       "date": "2026-10-27",
       "sources": 8,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tools",
-      "title": "Runway News | Introducing Runway App Studio",
-      "url": "https://runway.com/news/company-news/introducing-runway-app-studio",
-      "date": "2026-10-26",
-      "sources": 8,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram chases YouTube with a push for longer, widescreen videos | The Verge",
-      "url": "https://www.theverge.com/tech/1018688/instagram-longform-widescreen-video-features-youtube",
-      "date": "2026-10-26",
-      "sources": 7,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram Ramps Up Video Strategy in Escalating TikTok, YouTube Rivalry - Bloomberg",
-      "url": "https://www.bloomberg.com/news/articles/2026-10-26/instagram-ramps-up-video-strategy-in-escalating-tiktok-youtube-rivalry",
-      "date": "2026-10-26",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram wants in on 'long-form,' widescreen videos and its test begins now | Android Central",
-      "url": "https://www.androidcentral.com/apps-software/meta/instagram-wants-in-on-long-form-widescreen-videos-and-its-test-begins-now",
-      "date": "2026-10-26",
-      "sources": 8,
-      "clear": true,
       "score": 24
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Symphony: What TikTok Says Its AI Creative Suite and Creative Studio Do (2026)",
-      "url": "https://tiktoknewshub.com/videos/tiktok-symphony/",
-      "date": "2026-10-26",
+      "title": "TikTok is going after Yelp and Google Maps with an in-app restaurant guide | The Verge",
+      "url": "https://www.theverge.com/news/1020267/tiktok-viral-restaurant-recommendations-must-eat-yelp",
+      "date": "2026-10-28",
       "sources": 8,
       "clear": true,
       "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok's Agentic Commerce AI: What Creators Need to Know · Episodo",
-      "url": "https://episodo.ai/blog/tiktok-s-agentic-commerce-ai-what-creators-need-to-know",
-      "date": "2026-10-25",
-      "sources": 7,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tools",
-      "title": "The week in AI video production · 18–31 October 2026 · SceneOS Knowledge Hub",
-      "url": "https://sceneos.io/kb/the-week-in-ai-video-2026-10-31/",
-      "date": "2026-10-31",
-      "sources": 3,
-      "clear": true,
-      "score": 21
     }
   ],
   "shown": [
     {
       "n": 1,
-      "cat": "tiktok",
-      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/"
+      "cat": "tools",
+      "title": "Copilot Fusion, Pika H3 Flex reviewed: AI verdicts",
+      "url": "https://theverdictstack.beehiiv.com/p/issue-4-copilot-picks-your-model-pika-opens-its-video-model-and-roblox-builds-the-level"
     },
     {
       "n": 2,
+      "cat": "tools",
+      "title": "Pika H3 Flex takes up to 12 references for a short video",
+      "url": "https://pinoyaiworks.com/news/pika-h3-flex-open-video-model/"
+    },
+    {
+      "n": 3,
+      "cat": "tools",
+      "title": "Hands-On With Grok Imagine Video: 13 Clips, Nine Tests and a $3 Bill for a Tech-News B-Roll Desk",
+      "url": "https://quasa.io/stories/hands-on-with-grok-imagine-video-13-clips-nine-tests-and-a-3-bill-for-a-tech-news-b-roll-desk"
+    },
+    {
+      "n": 4,
+      "cat": "tiktok",
+      "title": "(November 2) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
+    },
+    {
+      "n": 5,
       "cat": "tiktok",
       "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
       "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature"
     },
     {
-      "n": 3,
-      "cat": "tiktok",
-      "title": "TikTok Must Eat makes food creators a local search channel",
-      "url": "https://www.contentgrip.com/tiktok-must-eat-local-search/"
-    },
-    {
-      "n": 4,
-      "cat": "tools",
-      "title": "Introducing Pika H3 Flex — Pika Blog",
-      "url": "https://pika.art/blog/pika-h3-flex"
-    },
-    {
-      "n": 5,
-      "cat": "tools",
-      "title": "Apple Creator Studio adds powerful new AI features and even more creative tools - Apple",
-      "url": "https://www.apple.com/newsroom/2026/10/apple-creator-studio-adds-powerful-new-ai-features-and-even-more-creative-tools/"
-    },
-    {
       "n": 6,
-      "cat": "tools",
-      "title": "Introducing Oracle AI Media Models on OCI in Preview | ai-data-science",
-      "url": "https://blogs.oracle.com/ai-and-datascience/oracle-ai-media-models"
+      "cat": "tiktok",
+      "title": "From restaurant guides to payments, here’s how TikTok is building a super app | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/31/tiktoks-road-to-becoming-a-super-app/"
     },
     {
       "n": 7,
       "cat": "instagram",
-      "title": "Watch out, YouTube — Instagram goes from short-form to 90-minute videos | TechCrunch",
-      "url": "https://techcrunch.com/2026/10/26/watch-out-youtube-instagram-goes-from-short-form-to-90-minute-videos/"
+      "title": "Instagram Is Going Beyond Reels With Features, Clips As Reels & Series: Adam Mosseri Explains What Is Changing",
+      "url": "https://gadgetsnow.indiatimes.com/tech-news/instagram-is-going-beyond-reels-with-features-clips-as-reels-series-adam-mosseri-explains-what-is-changing/articleshow/135453569.cms"
     },
     {
       "n": 8,
       "cat": "instagram",
-      "title": "Instagram rolls out limited Features test in the US",
-      "url": "https://tech.yahoo.com/social-media/articles/instagram-rolls-limited-features-test-190540357.html"
-    },
-    {
-      "n": 9,
-      "cat": "instagram",
-      "title": "Instagram chases YouTube with a push for longer, widescreen videos | The Verge",
-      "url": "https://www.theverge.com/tech/1018688/instagram-longform-widescreen-video-features-youtube"
+      "title": "Instagram Tests 90-Minute Videos With Features",
+      "url": "https://www.techrepublic.com/article/news-instagram-features-90-minute-horizontal-videos/"
     }
   ]
 }
