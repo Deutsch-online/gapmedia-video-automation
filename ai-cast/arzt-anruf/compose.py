@@ -1,4 +1,4 @@
-import argparse, hashlib, json, pathlib, subprocess
+import argparse, array, hashlib, json, math, pathlib, subprocess, wave
 from PIL import Image, ImageDraw, ImageFont
 
 p=argparse.ArgumentParser()
@@ -85,7 +85,20 @@ for scene in ([a.scene] if a.scene else range(1,6)):
 if not a.scene or a.scene==5:
     (root/'concat.txt').write_text(''.join(f"file '{root}/scene-{n:02d}.mp4'\n" for n in range(1,6)))
     output=root/'arzt-anruf-story-60s.mp4'
-    command(['ffmpeg','-v','error','-y','-f','concat','-safe','0','-i',root/'concat.txt','-i',root/'story.m4a','-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','192k','-t','60','-movflags','+faststart',output])
+    cues=[(22.3,.65,425,.014),(54.4,.22,660,.009)]
+    sfx=array.array('h',[0])*(48000*60)
+    for start,duration,hz,volume in cues:
+        if any(start<e['speech_end']+.12 and start+duration>e['speech_start']-.12 for e in events):
+            raise ValueError('A sound cue overlaps protected dialogue')
+        for n in range(round(duration*48000)):
+            t=n/48000
+            fade=min(1,t/.025,(duration-t)/.06)
+            value=math.sin(2*math.pi*hz*t)
+            if hz==660:value=(value+math.sin(2*math.pi*880*t))*.5
+            sfx[round(start*48000)+n]=round(32767*volume*fade*value)
+    with wave.open(str(root/'sfx.wav'),'wb') as f:
+        f.setparams((1,2,48000,0,'NONE','not compressed'));f.writeframes(sfx.tobytes())
+    command(['ffmpeg','-v','error','-y','-f','concat','-safe','0','-i',root/'concat.txt','-i',root/'story.m4a','-i',root/'sfx.wav','-filter_complex','[1:a][2:a]amix=inputs=2:normalize=0:duration=first[a]','-map','0:v','-map','[a]','-c:v','copy','-c:a','aac','-b:a','192k','-t','60','-movflags','+faststart',output])
     info=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(output)]))
     v=next(s for s in info['streams'] if s['codec_type']=='video')
     if float(info['format']['duration'])!=60 or (v['width'],v['height'],v['nb_frames'])!=(1080,1920,'1440'):raise ValueError('Exact output duration/frame validation failed')

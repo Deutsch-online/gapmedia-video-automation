@@ -24,9 +24,9 @@ jobs:
           pip install gradio_client==2.5.0 huggingface_hub
       - uses: actions/cache/restore@v4
         with:
-          path: renders/arzt-anruf/takes
-          key: arzt-anruf-motion-v1-${{ github.run_id }}
-          restore-keys: arzt-anruf-motion-v1-
+          path: renders/arzt-anruf/short-takes
+          key: arzt-anruf-motion-v2-${{ github.run_id }}
+          restore-keys: arzt-anruf-motion-v2-
       - name: Restore the actual newly recorded dialogue
         env:
           GH_TOKEN: ${{ github.token }}
@@ -42,15 +42,15 @@ jobs:
       - uses: actions/cache/save@v4
         if: always()
         with:
-          path: renders/arzt-anruf/takes
-          key: arzt-anruf-motion-v1-${{ github.run_id }}
+          path: renders/arzt-anruf/short-takes
+          key: arzt-anruf-motion-v2-${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: arzt-anruf-genuine-motion
+          name: arzt-anruf-short-motion
           path: |
-            renders/arzt-anruf/raw-*.mp4
-            renders/arzt-anruf/takes/*.json
+            renders/arzt-anruf/clip-*.mp4
+            renders/arzt-anruf/short-takes/*.json
             renders/arzt-anruf/timing.json
             renders/arzt-anruf/story.m4a
           retention-days: 14
