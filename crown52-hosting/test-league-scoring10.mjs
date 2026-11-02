@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {Game} from './public/game-engine.mjs';
+import {processLiveEvent} from './public/live-events.mjs';
+import {leagueState,leaguePause} from './public/football-engine.mjs';
+let clock=1000;const g=new Game({now:()=>clock});g.s.liveExperience='football';g.presentationSettings({viewMode:'fun',funLayout:'football'});g.tick();const l=leagueState(g.s.fun);assert.equal(l.phase,'playing');
+const vote=(id,text='۴')=>processLiveEvent(g,{type:'comment',userId:'fan',nickname:'Fan',comment:text,eventId:id});
+assert.equal(vote('c1').accepted,true);assert.equal(l.scores[3],10);assert.equal(vote('c1').accepted,false);assert.equal(l.scores[3],10);
+assert.equal(processLiveEvent(g,{type:'gift',userId:'fan',coins:1,giftName:'Rose',eventId:'g1'}).accepted,true);assert.equal(l.scores[3],20);assert.equal(l.active.points,10);assert.equal(l.active.coins,1);
+assert.equal(processLiveEvent(g,{type:'gift',userId:'fan',coins:1,giftName:'Rose',eventId:'g1'}).accepted,false);assert.equal(l.scores[3],20);
+vote('c2','MU');assert.equal(l.scores[3],30);assert.equal(l.matchSupporters[0].coins,1);
+clock=l.deadline;g.tick();assert.equal(l.phase,'finished');clock+=10000;g.tick();assert.equal(l.display,'standings');clock+=10000;g.tick();assert.equal(l.phase,'playing');assert.equal(l.round,2);assert.equal(l.scores[3],0);
+leaguePause(g.s.fun,clock);g.tick(clock+1000);assert.equal(l.phase,'paused');
+console.log('PASS automatic start with no comment,10 points per choice and coin, Rose=10, selected team credited, duplicates suppressed, actual coins preserved, podium/standings/automatic next round, intentional pause respected');
