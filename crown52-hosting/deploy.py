@@ -54,13 +54,13 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())
 docker=(folder/'Dockerfile').read_text()
 if 'server.mjs assets-manifest.json' not in docker:raise RuntimeError('Unexpected container copy layout')
-(folder/'Dockerfile').write_text(docker.replace('server.mjs assets-manifest.json','server.mjs live-bridge.mjs assets-manifest.json'))
+(folder/'Dockerfile').write_text(docker.replace('server.mjs assets-manifest.json','server.mjs live-bridge.mjs assets-manifest.json').replace('WORKDIR /home/node/app','RUN apt-get update && apt-get install -y --no-install-recommends espeak-ng && rm -rf /var/lib/apt/lists/*\nWORKDIR /home/node/app'))
 
 (folder/'MOTION_SPEC.md').write_text((here/'MOTION_SPEC.md').read_text())
 from concurrent.futures import ThreadPoolExecutor
@@ -95,3 +95,4 @@ for _ in range(95):
  if time.monotonic()-started>45 and str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR') and runtime.raw.get('sha')==commit.oid:raise RuntimeError('Hosting failed: '+str(runtime.stage))
  time.sleep(7)
 else:raise RuntimeError('Hosting readiness timeout')
+
