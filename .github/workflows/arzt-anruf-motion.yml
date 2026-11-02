@@ -1,0 +1,56 @@
+name: Animate grounded doctor-call story on included HF quota
+on:
+  push:
+    branches: [codex/arzt-anruf-story-60s]
+    paths: [.arzt-anruf-motion.json]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: arzt-anruf-motion
+  cancel-in-progress: false
+jobs:
+  motion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          pip install gradio_client==2.5.0 huggingface_hub
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/arzt-anruf/takes
+          key: arzt-anruf-motion-v1-${{ github.run_id }}
+          restore-keys: arzt-anruf-motion-v1-
+      - name: Restore the actual newly recorded dialogue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p renders/arzt-anruf
+          gh api repos/Deutsch-online/gapmedia-video-automation/actions/artifacts/13103339673/zip > /tmp/arzt-audio.zip
+          unzip -oq /tmp/arzt-audio.zip -d renders/arzt-anruf
+      - name: Generate bounded native-speed audio-conditioned character acting
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PYTHONUNBUFFERED: '1'
+        run: python ai-cast/arzt-anruf/animate.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: renders/arzt-anruf/takes
+          key: arzt-anruf-motion-v1-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arzt-anruf-genuine-motion
+          path: |
+            renders/arzt-anruf/raw-*.mp4
+            renders/arzt-anruf/takes/*.json
+            renders/arzt-anruf/timing.json
+            renders/arzt-anruf/story.m4a
+          retention-days: 14
