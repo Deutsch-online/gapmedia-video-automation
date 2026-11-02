@@ -34,7 +34,7 @@ jobs:
               return data['result']
           if call('getChat',{'chat_id':chat}).get('type')!='private':
               raise RuntimeError('Private owner chat required')
-          text="نسخهٔ جدید لیگ فوتبال و سرگرمی لایف آماده است.\n\nپنل کنترل:\nhttps://afgtakrun-live-crown-52.hf.space/control\n\nنمایش مخصوص TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/screen?studio=1\n\nاندازهٔ منبع Link: 1080 × 1920 — سپس Fit to screen.\n\nبرای آزمایش بدون لایف: سرگرمی ← نمایش دیمو همین حالا.\nصفحهٔ نمایش انگلیسی است. تایمر، افکت گیفت، سه تیم و سه حامی برتر و جدول لیگ در پنل آماده‌اند.\n\nپنل و منبع نمایش استودیو را یک‌بار Refresh کنید. با همان پسورد تعیین‌شده وارد شوید."
+          text="لیگ فوتبال اکنون در تب مستقل است.\n\nپنل اختصاصی لیگ فوتبال:\nhttps://afgtakrun-live-crown-52.hf.space/league/control\n\nنمایش مخصوص لیگ در TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/league/screen?studio=1\n\nاندازهٔ منبع Link: 1080 × 1920 — سپس Fit to screen.\nبرای شنیدن نام کاربران و اعلام برنده‌ها، روی Enable sound در صفحهٔ نمایش بزنید.\n\nهر کامنت عدد تیم = 1 امتیاز؛ تکرار عدد هم امتیاز دارد. شروع خودکار با اولین عدد در پنل قابل تنظیم است. عکس کاربر برای 5 ثانیه جای عکس بازیکن می‌آید.\n\nبازی قبلی 52 کارت جدا مانده است:\nhttps://afgtakrun-live-crown-52.hf.space/control\n\nبرای تست بدون لایف: در تب لیگ، «نمایش دیمو همین حالا» را بزنید. با همان پسورد پنل وارد شوید."
           result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
           print('CROWN52_LINKS_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
           PY
