@@ -54,7 +54,7 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())
@@ -95,4 +95,5 @@ for _ in range(95):
  if time.monotonic()-started>45 and str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR') and runtime.raw.get('sha')==commit.oid:raise RuntimeError('Hosting failed: '+str(runtime.stage))
  time.sleep(7)
 else:raise RuntimeError('Hosting readiness timeout')
+
 
