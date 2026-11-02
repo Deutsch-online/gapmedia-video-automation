@@ -81,3 +81,23 @@ body.screen-only.screen-landscape.football-fun .fun-cards{grid-auto-rows:140px}b
 .league-shortcut{display:block;font-size:6px;line-height:1.2;letter-spacing:1px;color:#e9d499;margin-top:2px}.league-monogram{font:900 11px Arial,sans-serif!important;letter-spacing:-.5px}.league-fx-card .league-monogram{font-size:17px!important}.league-fx-card .league-shortcut{font-size:9px}body.screen-only.screen-landscape.football-fun .league-monogram{font-size:10px!important}body.screen-only.screen-landscape.football-fun .league-fx-card .league-monogram{font-size:17px!important}
 .fun-card.league-card:has(.league-player) .league-supporter{bottom:27px;left:44px;right:9px}
 body.football-fun .portrait-instruction{display:none!important}
+
+/* Fixed stadium slots: athlete remains clear, every reaction stays inside its card. */
+body.football-fun .fun-card.league-card{transform-origin:50% 50%;background:radial-gradient(ellipse at 48% 26%,color-mix(in srgb,var(--club) 80%,#d9f6ff) 0%,color-mix(in srgb,var(--club) 44%,#102839) 30%,transparent 67%),linear-gradient(155deg,#12283b,#020810 80%);box-shadow:inset 0 0 0 1px #b9d8e04f,0 6px 14px #0009;}
+.league-card .league-stadium-lines{position:absolute;inset:0;background:repeating-conic-gradient(from 145deg at 50% 108%,transparent 0 7deg,#b4eafa16 8deg 10deg,transparent 11deg 24deg);z-index:0;opacity:.8;pointer-events:none;}
+.league-card .league-foil{position:absolute;inset:0;background:linear-gradient(120deg,transparent 18%,#fff6b51c 31%,transparent 44%,#73dcff1c 70%,transparent 83%);mix-blend-mode:screen;z-index:3;pointer-events:none;}
+body.football-fun .league-card .league-player-star{top:3px;height:151px;width:109%;object-position:50% 0;filter:contrast(1.16) saturate(1.18) drop-shadow(0 0 2px #eaffff) drop-shadow(-4px 0 7px var(--club)) drop-shadow(4px 0 7px var(--club-accent));mask-image:linear-gradient(#000 71%,#0009 86%,transparent);}
+body.football-fun .league-card:has(.league-player)>.league-crest{top:auto;bottom:41px;left:auto;right:10px;transform:none;width:31px;height:31px;z-index:13;filter:drop-shadow(0 2px 3px #000b);}
+body.football-fun .league-card .league-energy{opacity:.75;inset:20px 0 26px;mix-blend-mode:screen;}
+body.football-fun .league-card .league-monogram{display:none;}
+body.football-fun .league-card .league-club-name{background:linear-gradient(90deg,#020a12e8,#132d3ce8,#020a12e8);letter-spacing:.15px;}
+.league-slot-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit;z-index:22;box-shadow:inset 0 0 18px color-mix(in srgb,var(--club-accent) 75%,transparent);animation:slot-light 1.1s ease-out both;}
+.slot-flare{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 65%,transparent 25%,color-mix(in srgb,var(--club-accent) 30%,transparent) 80%);}
+.slot-sweep{position:absolute;inset:-40%;background:linear-gradient(110deg,transparent 44%,#e1fcffb0 50%,transparent 56%);animation:slot-shimmer .8s ease-out both;}
+.slot-gift-label{position:absolute;left:5px;right:5px;bottom:39px;display:flex;align-items:center;justify-content:center;gap:4px;background:#06111de8;border:1px solid #f8d783;border-radius:5px;color:#ffe5a4;font:900 10px Arial;padding:3px;}
+.slot-gift-label img{width:23px;height:23px;object-fit:contain;}
+@keyframes slot-light{0%{opacity:0}18%,55%{opacity:1}100%{opacity:0}}
+@keyframes slot-shimmer{from{transform:translateX(-55%);opacity:0}40%{opacity:.9}to{transform:translateX(55%);opacity:0}}
+body.screen-only.screen-landscape.football-fun .league-card .league-player-star{height:116px;}
+body.screen-only.screen-landscape.football-fun .league-card:has(.league-player)>.league-crest{top:auto;bottom:34px;width:24px;height:24px;right:8px;}
+@media(prefers-reduced-motion:reduce){.league-slot-fx,.slot-sweep{animation:none}}

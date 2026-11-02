@@ -1,0 +1,35 @@
+name: Generate one requested ElevenLabs football card flip
+on:
+  push:
+    branches: [codex/live-crown52-hosting]
+    paths: [.github/workflows/crown-card-flip.yml]
+permissions:
+  contents: write
+concurrency:
+  group: crown52-one-elevenlabs-card-flip
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate a single short flip with no paid retries
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: python .github/scripts/crown-card-flip.py
+      - name: Save generated asset and embedded audio
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add crown52-hosting/audio/card-flip-elevenlabs.mp3 crown52-hosting/audio/elevenlabs-flip-receipt.json crown52-hosting/league-audio.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Save requested ElevenLabs card-flip foley for in-place team cards'
+          git push origin HEAD:codex/live-crown52-hosting
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crown52-elevenlabs-card-flip
+          path: crown52-hosting/audio
+          if-no-files-found: warn
