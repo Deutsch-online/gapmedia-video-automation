@@ -1,0 +1,35 @@
+name: Compose requested happy football stadium music and paper card foley
+on:
+  push:
+    branches: [codex/live-crown52-hosting]
+    paths: [.github/workflows/crown-stadium-audio.yml]
+permissions:
+  contents: write
+concurrency:
+  group: crown52-stadium45-audio
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate bounded original football audio once
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: python .github/scripts/crown-stadium-audio.py
+      - name: Preserve generated assets and embedded audio
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add crown52-hosting/audio/football-stadium-happy-v45.* crown52-hosting/audio/card-paper-flutter-*-v45.* crown52-hosting/audio/stadium45-receipt.json crown52-hosting/league-audio.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Save original joyful stadium music and flowing paper-card foley from ElevenLabs'
+          git push origin HEAD:codex/live-crown52-hosting
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crown52-stadium45-generated-audio
+          path: crown52-hosting/audio
+          if-no-files-found: warn
