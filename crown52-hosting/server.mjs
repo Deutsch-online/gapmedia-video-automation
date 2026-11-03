@@ -1,3 +1,4 @@
+import {gunzipSync} from 'node:zlib';
 import {eventSpeech,resultSpeech} from './public/league-voice.mjs';
 import {execFile} from 'node:child_process';
 import {leagueState,leagueReset,leagueStart,leaguePause,leagueFinish,leagueView} from './public/football-engine.mjs';
@@ -23,7 +24,7 @@ async function panelLogin(value,address){
  const ok=crypto.timingSafeEqual(actual,panelPasswordHash);if(ok)passwordAttempts.delete(address);return ok;
 }
 const game=new Game();let revision=0,live=null,liveBusy=false,liveGeneration=0,liveStatus={type:'bridgeStatus',state:'idle',message:'تیک‌تاک وصل نیست؛ آزمایش بدون لایف آماده است.'},autoTieAt=0,autoTieRound=0;
-try{const data=existsSync(file)?JSON.parse(readFileSync(file)):process.env.CROWN_RECOVERY_JSON?JSON.parse(process.env.CROWN_RECOVERY_JSON):null;if(data){game.restore(data.state);revision=data.revision||0}}catch{console.log('No valid saved game; starting an empty lobby')}
+try{const data=existsSync(file)?JSON.parse(readFileSync(file)):process.env.CROWN_RECOVERY_GZIP?JSON.parse(gunzipSync(Buffer.from(process.env.CROWN_RECOVERY_GZIP,'base64')).toString('utf8')):process.env.CROWN_RECOVERY_JSON?JSON.parse(process.env.CROWN_RECOVERY_JSON):null;if(data){game.restore(data.state);revision=data.revision||0}}catch{console.log('No valid saved game; starting an empty lobby')}
 game.s.audio??={musicEnabled:false};
 if(!game.s.presentation.quietLeagueVersion){game.s.presentation.quietLeagueVersion=1;game.s.audio.musicEnabled=false;leagueState(game.s.fun).voiceEnabled=false;leagueState(game.s.fun).demoEnabled=true;}
 if(game.s.presentation.audioModeVersion!==42){game.s.presentation.audioModeVersion=42;game.s.audio={...game.s.audio,musicEnabled:false,volume:.32};leagueState(game.s.fun).voiceEnabled=true;}
