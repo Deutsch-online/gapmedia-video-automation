@@ -2583,7 +2583,7 @@
       "duration_seconds": 45
     },
     "date": "2026-11-03",
-    "status": "rendering",
+    "status": "render-failed",
     "credit_from_scene": 8,
     "credit_approval_required": true,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 501s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
@@ -2622,7 +2622,7 @@
   },
   "quota_recovery": {
     "date": "2026-11-03",
-    "not_before": "2026-11-03T07:13:20.208031+00:00",
+    "not_before": "2026-11-03T13:40:24.102075+00:00",
     "reason": "ZeroGPU quota exhausted"
   },
   "manual_recovery_reason": {
