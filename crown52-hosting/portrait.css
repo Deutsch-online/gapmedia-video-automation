@@ -38,3 +38,29 @@ body.screen-only{display:block;position:relative;margin:0;width:100%;height:100d
 .screen-only.screen-landscape .supporter-stat{height:46px}
 .screen-only.screen-landscape .supporter-stat .avatar{width:38px;height:38px;flex:0 0 38px;font-size:16px}
 .screen-only.screen-landscape .supporter-stat strong{font-size:11px}
+
+/* Activity-driven profile studio, visually separate from the football league. */
+.experience-portraits #funCards{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:91px;gap:6px;}
+.experience-portraits .profile-slot{position:relative;min-height:0;height:91px;overflow:hidden;border-radius:8px;border:1px solid #c1d8e044;background:#07141f;color:#fff;transform-origin:center;}
+.profile-slot .fun-portrait{position:absolute;inset:0 0 15px!important;width:auto!important;height:auto!important;border-radius:6px!important;overflow:hidden;}
+.profile-slot .fun-portrait>.avatar{width:100%;height:100%;border-radius:0!important;font-size:25px;background:#143046;}.profile-slot .fun-portrait>.avatar img{object-fit:cover;}
+.profile-slot .profile-name{position:absolute;bottom:2px;left:3px;right:3px;text-align:center;font:800 7px/1.2 Arial;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:9;text-shadow:0 1px 3px #000;}
+.profile-slot .profile-level{position:absolute;left:3px;top:3px;font:800 6px Arial;background:#051421d9;padding:2px;border-radius:3px;z-index:12;}
+.profile-slot .fun-number{position:absolute;right:3px;top:3px;bottom:auto!important;left:auto!important;font-size:8px;background:#071623df;border:1px solid var(--profile-accent,#86cce4);padding:1px 3px;z-index:13;}
+.profile-slot .profile-activity{position:absolute;left:3px;bottom:18px;font:800 6px Arial;z-index:10;color:#fff3b7;text-shadow:0 1px 3px #000;}.profile-slot .profile-jewels{position:absolute;right:2px;bottom:18px;font:800 8px Arial;z-index:10;color:var(--profile-accent);text-shadow:0 0 8px currentColor;}
+.profile-slot.occupied{border-color:var(--profile-accent,#76d4ee);box-shadow:inset 0 0 10px #ffffff18,0 0 calc(2px + var(--profile-glow,0px)) color-mix(in srgb,var(--profile-accent) 45%,transparent);}
+.theme-stadium{--profile-accent:#6ed8ff}.theme-neon{--profile-accent:#ff65ea}.theme-royal{--profile-accent:#f8ce6d}.theme-ice{--profile-accent:#b7eeff}.theme-fire{--profile-accent:#ff9e45}.theme-diamond{--profile-accent:#e6dcff}.theme-aurora{--profile-accent:#67ffd2}.theme-cosmic{--profile-accent:#ae83ff}
+.profile-slot .profile-aura{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 45%,color-mix(in srgb,var(--profile-accent) 45%,transparent));pointer-events:none;z-index:4;}
+.profile-slot.level-0{--profile-glow:0px}.profile-slot.level-1{--profile-glow:2px}.profile-slot.level-2{--profile-glow:4px}.profile-slot.level-3{--profile-glow:6px}.profile-slot.level-4{--profile-glow:8px}.profile-slot.level-5,.profile-slot.level-6{--profile-glow:11px;border-width:2px;}
+.profile-slot.level-3:after,.profile-slot.level-4:after,.profile-slot.level-5:after,.profile-slot.level-6:after{content:'';position:absolute;inset:0;border:1px solid var(--profile-accent);background:linear-gradient(120deg,transparent 35%,#fff6 50%,transparent 65%);opacity:.5;pointer-events:none;animation:profile-foil 5s ease-in-out infinite;z-index:5;}
+.profile-reacting{filter:brightness(1.2);}.profile-spark{position:absolute;bottom:15px;font-style:normal;font-size:13px;color:var(--profile-accent,#ffe59a);z-index:18;pointer-events:none;text-shadow:0 0 7px currentColor;}
+.profile-round-panel{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:5px;margin:0 0 8px;padding:8px 10px;border:1px solid #c5aa6a77;border-radius:8px;background:#081b2bed;color:#ffe4a7;}.profile-round-panel strong{font:900 11px Arial;}.profile-round-panel small{width:100%;font:700 6px Arial;letter-spacing:.5px;color:#bcd3e4;}.profile-clock{font:900 24px monospace;color:#fff0c7;}
+.profile-round-result{position:absolute;inset:160px 65px 220px;z-index:85;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;border:2px solid #ffe49c;border-radius:20px;background:radial-gradient(ellipse at top,#b78b3633,transparent 65%),#051424f5;color:#ffe6aa;box-shadow:0 0 60px #e3bd5144;text-align:center;}.profile-round-result[hidden]{display:none}.profile-round-result .fun-portrait{width:180px!important;height:210px!important;border-radius:18px;overflow:hidden;}.profile-round-result .avatar{width:100%;height:100%;font-size:90px;}.profile-round-result h3{font-size:22px;margin:0;}.profile-round-result>b{font:900 23px Arial;}
+.experience-portraits #funHero{background:radial-gradient(ellipse at center,#051625b3,transparent 70%);}.experience-portraits #funHeroCard{border:2px solid #f9d890;box-shadow:0 0 45px #72d5ff55,0 20px 60px #0008;}
+@keyframes profile-foil{0%,100%{opacity:.1}50%{opacity:.5}}
+@media(prefers-reduced-motion:reduce){.profile-slot:after{animation:none!important}}
+/* Keep all seven rows, arrivals and four supporter tiles inside the portrait stage. */
+.experience-portraits #funCards{grid-auto-rows:83px!important;}
+.experience-portraits .profile-slot:not(.occupied){background:#fffdf2;color:#1b2634;}
+.experience-portraits .profile-slot .profile-name{display:block!important;top:auto!important;transform:none!important;bottom:2px!important;}
+.experience-portraits .profile-slot .fun-number{transform:none!important;top:3px!important;}
