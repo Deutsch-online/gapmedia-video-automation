@@ -27,6 +27,7 @@ try{const data=existsSync(file)?JSON.parse(readFileSync(file)):process.env.CROWN
 game.s.audio??={musicEnabled:false};
 if(!game.s.presentation.quietLeagueVersion){game.s.presentation.quietLeagueVersion=1;game.s.audio.musicEnabled=false;leagueState(game.s.fun).voiceEnabled=false;leagueState(game.s.fun).demoEnabled=true;}
 if(game.s.presentation.audioModeVersion!==42){game.s.presentation.audioModeVersion=42;game.s.audio={...game.s.audio,musicEnabled:false,volume:.32};leagueState(game.s.fun).voiceEnabled=true;}
+if(game.s.presentation.welcomeVersion!==45){game.s.presentation.welcomeVersion=45;game.s.presentation.arrivalSeconds=5;}
 game.s.liveExperience??=game.s.viewMode==='fun'?(game.s.fun.layout||'football'):'game';
 if(game.s.phase==='lobby'&&game.s.catalogVersion!=='paired-five-tiers-v2'){game.s.catalog=GIFTS.map(g=>({...g}));game.s.catalogVersion='paired-five-tiers-v2';}
 function persist(){const temp=file+'.tmp';writeFileSync(temp,JSON.stringify({state:game.s,revision}));renameSync(temp,file)}

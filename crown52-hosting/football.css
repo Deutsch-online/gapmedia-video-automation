@@ -101,3 +101,18 @@ body.football-fun .league-card .league-club-name{background:linear-gradient(90de
 body.screen-only.screen-landscape.football-fun .league-card .league-player-star{height:116px;}
 body.screen-only.screen-landscape.football-fun .league-card:has(.league-player)>.league-crest{top:auto;bottom:34px;width:24px;height:24px;right:8px;}
 @media(prefers-reduced-motion:reduce){.league-slot-fx,.slot-sweep{animation:none}}
+
+.league-bubble-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:58;}
+.league-bubble-particle{box-shadow:inset 0 0 8px #ffffff8c,0 0 13px #68d5ff6b;border-color:#d5f8ffd9;background:radial-gradient(circle at 30% 20%,#ffffffa1,transparent 45%),#2b6e9b3d;}
+.league-slot-fx{animation-duration:var(--reaction-ms,3000ms);}.slot-sweep{animation-iteration-count:3;}
+body.football-fun .arrival-bubble{display:flex;flex-direction:column;justify-content:center;align-items:center;width:108px;height:116px;padding:7px 5px;gap:5px;border:2px solid #ffe5a0;background:linear-gradient(145deg,#163c59,#061729);box-shadow:0 0 17px #f1d28965,inset 0 0 15px #ffffff17;opacity:1;filter:none;animation:league-arrival-clear 5s cubic-bezier(.2,.75,.2,1) both;}
+body.football-fun .arrival-bubble .avatar{width:56px;height:56px;flex:0 0 56px;border:3px solid #fff4ce;box-shadow:0 0 14px #a5efff88;}
+body.football-fun .arrival-bubble .avatar img{opacity:1;filter:brightness(1.13) contrast(1.08);}
+body.football-fun .arrival-bubble>div:not(.avatar){width:100%;text-align:center;min-width:0;}
+body.football-fun .arrival-bubble strong{display:block;color:#fff;font-size:12px!important;font-weight:900!important;line-height:1.15;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-shadow:0 2px 3px #000;max-height:28px;overflow:hidden;}
+body.football-fun .arrival-bubble small{display:block;color:#ffe8aa;font-size:9px!important;font-weight:700;line-height:1.15;}
+@keyframes league-arrival-clear{0%{transform:translateY(var(--entry-rise,300px));opacity:1}5%,100%{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){body.football-fun .arrival-bubble{animation:none}}
+
+body.football-fun .arrival-bubble .avatar{font-size:28px!important;font-weight:900;color:#fff;background:#173c62;}
+body.football-fun .league-card .league-player-star{top:8px;height:146px;}
