@@ -5,6 +5,7 @@ on:
     paths: [.github/workflows/crown-stadium-audio.yml]
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: crown52-stadium45-audio
   cancel-in-progress: false
@@ -15,9 +16,23 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: Generate bounded original football audio once
+      - uses: actions/download-artifact@v4
+        with:
+          name: crown52-stadium45-generated-audio
+          path: crown52-hosting/audio
+          run-id: 41579735410
+          github-token: ${{ github.token }}
+      - name: Install audio encoder
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Verify all already-generated assets are present
+        run: |
+          test -s crown52-hosting/audio/football-stadium-happy-v45.mp3
+          test -s crown52-hosting/audio/card-paper-flutter-a-v45.mp3
+          test -s crown52-hosting/audio/card-paper-flutter-b-v45.mp3
+      - name: Encode already-generated audio without further paid generation
         env:
           ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+          GENERATION_REUSE_ONLY: '1'
         run: python .github/scripts/crown-stadium-audio.py
       - name: Preserve generated assets and embedded audio
         run: |
