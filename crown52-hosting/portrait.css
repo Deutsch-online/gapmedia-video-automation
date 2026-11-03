@@ -116,3 +116,8 @@ body.experience-portraits #funCards{grid-auto-rows:60px!important;}body.experien
 .rank-reaction{background:linear-gradient(transparent 65%,#061323b0);padding-bottom:14px;}.rank-reaction .rank-emote{position:absolute;top:2px;right:2px;font-size:15px;}.profile-podium-card .rank-reaction .rank-emote{top:4px;right:3px;font-size:22px;}.rank-reaction .rank-change{margin-top:auto;}
 
 .profile-podium-card .fx-mist{display:none;}.profile-podium-card .profile-fx-overlay{opacity:.55;}.profile-podium-card .profile-spark{font-size:9px;}
+
+.profile-retention-controls{margin:10px 0 18px;padding:12px;border:1px solid #79dce955;border-radius:12px;background:#0b2234}.profile-retention-controls small{display:block;color:#bdd7e4;font-size:10px;line-height:1.7;margin-top:9px}.profile-retention-controls #profileRetentionStatus{font-size:11px;line-height:1.8;color:#c4eeff}.profile-retention-controls input,.profile-retention-controls select{min-height:42px}.experience-cards #profileRetentionControls{display:none}
+
+/* Only occupied portrait cards are shown, clustered around the podium. */
+body.experience-portraits #funCards .profile-slot:not(.occupied){visibility:hidden!important;pointer-events:none!important;box-shadow:none!important;background:none!important;border-color:transparent!important;}body.experience-portraits #funCards .profile-slot.occupied{visibility:visible!important;}body.experience-portraits #funCards{perspective:1400px;}
