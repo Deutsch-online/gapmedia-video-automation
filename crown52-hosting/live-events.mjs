@@ -1,9 +1,10 @@
+import {profileCountryFromComment} from './fun-styles.mjs';
 import {GIFTS} from './game-engine.mjs';
 import {leagueGift,leagueActivity,leagueTouch,leagueState,leagueGiftNotice,leagueVote,leagueChoice} from './football-engine.mjs';
 import{normalizeLiveEvent,eventIds,personFromEvent,recordSupporter,liveNumber}from'./supporters.mjs';
 export function processLiveEvent(game,raw){const view=game.s.viewMode,layout=game.s.fun.layout,target=game.s.liveExperience;if(target){game.s.viewMode=target==='game'?'game':'fun';if(target!=='game')game.s.fun.layout=target;}try{return processForExperience(game,raw);}finally{game.s.viewMode=view;game.s.fun.layout=layout;}}
 function processForExperience(game,raw){const d=normalizeLiveEvent(raw),person=personFromEvent(d),ids=eventIds(d),supporterChanged=recordSupporter(game.s,d,game.now());let g=ids.map(id=>game.guest(id)).find(Boolean);if(g){g.aliases=[...new Set([...(g.aliases||[]),...ids.filter(id=>id!==g.id)])];if(person.avatar)g.avatar=person.avatar;}const touched=game.s.viewMode==='fun'&&game.s.fun.layout==='football'&&['comment','gift','like'].includes(d.type)?leagueTouch(game.s.fun,game.now()):false;const result={kind:d.type,person:person.name||person.id,number:d.comment,coins:0,accepted:false,changed:touched,supporterChanged,reason:''};
-if(game.s.viewMode==='fun'&&game.s.fun.layout==='portraits'){
+if(game.s.viewMode==='fun'&&game.s.fun.layout==='portraits'){if(d.type==='comment'){const country=profileCountryFromComment(d.comment);if(country)Object.assign(person,country);}
  if(['leave','left'].includes(d.type)){result.accepted=result.changed=game.profileLeave(person,game.now());return result;}
  if(['comment','like','gift'].includes(d.type)){if(d.type==='gift'&&d.giftType===1&&!d.repeatEnd)return result;const amount=d.type==='gift'?Number(d.coins??d.diamondCount*d.repeatCount):d.type==='like'?Number(d.likeCount||d.count||1):1;if(!Number.isFinite(amount)||amount<1)return result;const receipt=d.type==='gift'&&d.groupId&&String(d.groupId)!=='0'?String(d.groupId)+':'+d.giftId:d.eventId;const entry=game.profileActivity(person,d.type,amount,receipt,game.now());result.accepted=Boolean(entry);result.changed=result.accepted;result.coins=d.type==='gift'?amount:0;result.reason=result.accepted?'فعالیت و ارتقای پروفایل ثبت شد':'پروفایل در انتظار جایگاه است';return result;}
 }
