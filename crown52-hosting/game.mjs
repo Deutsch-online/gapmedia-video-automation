@@ -8,7 +8,7 @@ import {recordSupporter,personFromEvent,activeSupporters} from './supporters.mjs
 import {Game,SHOW_MS,normalizeId,shuffle,GIFTS} from './game-engine.mjs?v=52-2';
 import {localize,setLanguage,getLanguage} from './language.mjs';
 import {startWater} from './water.mjs';
-import {LiveSound} from './game-audio.mjs?v=profile55';
+import {LiveSound} from './game-audio.mjs?v=voice56';
 const experience=location.pathname.startsWith('/league/')?'football':location.pathname.startsWith('/fun/')?'portraits':'game',controlPath=experience==='football'?'/league/control':experience==='portraits'?'/fun/control':'/control',screenPath=experience==='football'?'/league/screen':experience==='portraits'?'/fun/screen':'/screen';let experienceActivated=false;const hosted=location.pathname.endsWith('/control')||location.pathname.endsWith('/screen');let serverAuthed=false,serverOnline=false,serverRevision=0,recovering=false;let privateToken='';try{privateToken=location.hash.slice(1)||sessionStorage.getItem('crown52-admin')||'';if(privateToken){sessionStorage.setItem('crown52-admin',privateToken);history.replaceState(null,'',location.pathname+location.search)}}catch{}
 const $=s=>document.querySelector(s),fa=n=>Number(n).toLocaleString('de-DE'),screen=location.pathname.endsWith('/screen')||new URLSearchParams(location.search).has('screen')||new URLSearchParams(location.search).has('overlay');
 if(screen)document.body.classList.add('screen-only');else document.body.classList.add('compact-control');

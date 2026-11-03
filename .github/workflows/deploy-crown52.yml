@@ -23,6 +23,7 @@ jobs:
       - name: Deploy using existing Hugging Face connection on free CPU-basic
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
           PYTHONUNBUFFERED: '1'
         run: python crown52-hosting/deploy.py
       - uses: actions/upload-artifact@v4

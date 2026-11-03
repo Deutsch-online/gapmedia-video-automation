@@ -16,6 +16,23 @@ def free_runtime():
  if r.hardware not in (None,'cpu-basic') or r.requested_hardware not in (None,'cpu-basic') or 'cpu-basic' not in (r.hardware,r.requested_hardware):raise RuntimeError('Only explicitly free CPU-basic is permitted')
  return r
 free_runtime();url=str(info.host).rstrip('/')
+# Reuse the owner's existing ElevenLabs connection; no key enters public files.
+eleven_key=os.environ.get('ELEVEN_API_KEY','')
+if not eleven_key:raise RuntimeError('Existing ElevenLabs credential unavailable')
+req=urllib.request.Request('https://api.elevenlabs.io/v1/voices',headers={'xi-api-key':eleven_key})
+try:
+ with urllib.request.urlopen(req,timeout=25) as response:voices=json.load(response).get('voices',[])
+except Exception:raise RuntimeError('Could not verify the existing ElevenLabs voice connection') from None
+preferred=['Sarah','Rachel','Bella','Charlotte','Matilda','Jessica','Alice','Lily']
+voice=next((v for name in preferred for v in voices if v.get('name')==name),None) or next((v for v in voices if v.get('labels',{}).get('gender')=='female'),None)
+if not voice:raise RuntimeError('No available female ElevenLabs voice found')
+sample_text='Welcome to the live! Thank you for your wonderful support.'
+probe=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':sample_text,'model_id':'eleven_turbo_v2_5','voice_settings':{'stability':.55,'similarity_boost':.75,'style':.18,'use_speaker_boost':True,'speed':.96}}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
+try:
+ with urllib.request.urlopen(probe,timeout=30) as response:voice_sample=response.read(3000000)
+except Exception:raise RuntimeError('Female ElevenLabs speech test failed; current app not replaced') from None
+if len(voice_sample)<100:raise RuntimeError('Invalid ElevenLabs speech sample')
+print('CROWN52_VOICE_SELECTED '+json.dumps({'provider':'ElevenLabs','name':voice['name'],'daily_character_limit':5000}),flush=True)
 if mode=='repair':
  from huggingface_hub import hf_hub_download
  marker=Path(hf_hub_download(repo_id=repo,repo_type='space',filename='README.md',token=os.environ['HF_TOKEN'])).read_text()
@@ -29,6 +46,7 @@ with tarfile.open(here/'bootstrap.tar.gz') as t:
   p=Path(m.name)
   if p.is_absolute() or '..' in p.parts or m.issym() or m.islnk():raise RuntimeError('Invalid bootstrap archive')
  t.extractall(folder)
+(folder/'public/narrator-preview.mp3').write_bytes(voice_sample)
 def read_public(source,timeout=30):
  for attempt in range(4):
   try:
@@ -57,6 +75,9 @@ elif mode=='persist':
   print('CROWN52_BACKUP_PROTECTED bytes='+str(len(backup.encode()))+' compressed='+str(len(protected_backup)),flush=True)
  except Exception as e:raise RuntimeError('Could not protect the current game before media persistence: '+(str(e) if isinstance(e,RuntimeError) else type(e).__name__)) from None
 else:raise RuntimeError('Unknown deployment mode')
+api.add_space_secret(repo,key='CROWN_ELEVEN_API_KEY',value=eleven_key)
+api.add_space_variable(repo,key='CROWN_ELEVEN_VOICE_ID',value=voice['voice_id'])
+api.add_space_variable(repo,key='CROWN_ELEVEN_VOICE_NAME',value=voice['name'])
 if mode in ('persist','repair'):
  for asset in json.loads((folder/'assets-manifest.json').read_text()):
   source=('https://huggingface.co/spaces/'+repo+'/resolve/main/public/assets/'+asset['name']) if mode=='repair' else (url+'/assets/'+asset['name'])
