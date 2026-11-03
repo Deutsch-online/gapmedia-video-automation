@@ -2471,7 +2471,8 @@
     "2026-10-30": 3,
     "2026-10-31": 2,
     "2026-11-01": 3,
-    "2026-11-02": 3
+    "2026-11-02": 3,
+    "2026-11-03": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2488,14 +2489,14 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-02T19:44:31.008805+00:00",
+    "checked_at": "2026-11-03T01:49:46.343056+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
       "hf-anonymous-free"
     ],
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 2222.15204,
     "can_admit_one_speaking_take": true,
     "fallback": null
   }
