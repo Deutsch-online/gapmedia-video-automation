@@ -121,3 +121,48 @@ body.experience-portraits #funCards{grid-auto-rows:60px!important;}body.experien
 
 /* Only occupied portrait cards are shown, clustered around the podium. */
 body.experience-portraits #funCards .profile-slot:not(.occupied){visibility:hidden!important;pointer-events:none!important;box-shadow:none!important;background:none!important;border-color:transparent!important;}body.experience-portraits #funCards .profile-slot.occupied{visibility:visible!important;}body.experience-portraits #funCards{perspective:1400px;}
+
+/* Larger, face-first podium portraits within the same 9:16 broadcast stage. */
+body.experience-portraits #funCards{grid-auto-rows:54px!important;}
+#funCards .profile-live-podium{grid-column:2 / 8;grid-row:3 / 6;padding:14px 4px 4px;gap:7px;}
+#funCards .profile-podium-card{max-width:none!important;height:130px;padding:4px;gap:2px;}
+#funCards .profile-podium-card.place-1{height:150px;}
+#funCards .profile-podium-card .fun-portrait{width:84px!important;height:80px!important;margin-top:6px;border-radius:10px!important;}
+#funCards .profile-podium-card.place-1 .fun-portrait{width:94px!important;height:94px!important;margin-top:8px;border-radius:12px!important;}
+#funCards .profile-podium-card .avatar{font-size:43px!important;}
+#funCards .profile-podium-card.place-1 .avatar{font-size:48px!important;}
+#funCards .podium-name{font-size:9px;line-height:1.15;max-width:100%;color:#fff;}
+#funCards .podium-points{font-size:12px;line-height:1.1;}
+#funCards .place-1 .podium-name{font-size:10px;}
+#funCards .place-1 .podium-points{font-size:14px;}
+#funCards .podium-metrics{font-size:5.5px;line-height:1.1;}
+#funCards .podium-crown{width:68px;height:42px;top:-17px;}
+#funCards .podium-rank{font-size:10px;}
+#funCards .podium-medal{font-size:18px;top:41px;left:2px;}
+#funCards .podium-trophy{top:-9px;right:3px;}
+#funCards .podium-ornaments{font-size:4px;letter-spacing:.7px;bottom:1px;}
+#funCards .showcase-character .podium-name{font-size:7px;}
+#funCards .showcase-character .podium-metrics{font-size:5px;}
+.profile-round-result>.profile-live-podium{height:270px;}
+.profile-round-result .profile-podium-card{height:196px;}
+.profile-round-result .profile-podium-card.place-1{height:220px;}
+.profile-round-result .profile-podium-card .fun-portrait{width:88px!important;height:96px!important;}
+.profile-round-result .profile-podium-card.place-1 .fun-portrait{width:104px!important;height:112px!important;}
+
+/* Leaders at the top; all remaining ranks flow in rows beneath them. */
+body.experience-portraits #funCards{grid-template-rows:190px repeat(7,42px)!important;grid-auto-rows:42px!important;gap:5px;}
+#funCards .profile-live-podium{grid-column:1 / 9;grid-row:1;padding:14px 4px 4px;gap:9px;}
+#funCards .profile-podium-card{height:148px;}
+#funCards .profile-podium-card.place-1{height:168px;}
+#funCards .profile-podium-card .fun-portrait{width:96px!important;height:94px!important;margin-top:6px;}
+#funCards .profile-podium-card.place-1 .fun-portrait{width:112px!important;height:108px!important;margin-top:8px;}
+#funCards .podium-name{font-size:10px;}
+#funCards .place-1 .podium-name{font-size:11px;}
+#funCards .podium-points{font-size:14px;}
+#funCards .place-1 .podium-points{font-size:16px;}
+#funCards .podium-metrics{font-size:6px;}
+#funCards .showcase-character .podium-name{font-size:8px;}
+#funCards .showcase-character .podium-metrics{font-size:6px;}
+.profile-round-result{left:30px;right:30px;}
+.profile-round-result .profile-podium-card .fun-portrait{width:96px!important;height:104px!important;}
+.profile-round-result .profile-podium-card.place-1 .fun-portrait{width:112px!important;height:118px!important;}
