@@ -2447,7 +2447,144 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "episode": 17,
+      "title_de": "Regional-Express erlaubt?",
+      "title_fa": "آیا رجیونال اکسپرس مجاز است؟",
+      "summary": "On the railway platform, Marta prepares to travel with her monthly Deutschland-Ticket, but hesitates when the platform monitor displays 'Regional-Express'. Fearing that 'Express' means an excluded long-distance train, she checks with Lukas, who clarifies that RE is included regional transit. Relieved, Marta puts her phone ticket safely away and boards the red train.",
+      "cliffhanger": "Next time, Marta learns what to do when her train makes an unscheduled stop on an unfamiliar platform.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "visual_hook": "Marta freezes mid-step on the platform, squinting suspiciously between the glowing 'RE' departure sign and her phone screen.",
+      "everyday_problem": "Marta worries that the word 'Express' in Regional-Express means her regional subscription ticket is not valid.",
+      "practical_resolution": "Lukas clarifies that RE belongs to regular regional transit; Marta confirms the red regional train livery and boards.",
+      "marta_goal": "Board the correct train without accidentally taking an excluded high-speed service.",
+      "marta_decision": "Verify that RE is covered by her regional ticket, stash her phone, and press the door button herself.",
+      "visual_payoff": "Marta comically measures the red train carriage against her phone screen, sighs with relief, slides the phone into her coat pocket, and steps aboard.",
+      "creative_review": {
+        "previous_weakness_addressed": "Moved away from indoor recycling back to active transit navigation, grounding the situational comedy in Marta's expressive distrust of the word 'Express'.",
+        "visible_comic_action": "Marta treats the 'E' in 'RE' on the platform screen like a flashing red alarm before happily realizing it is just her everyday red regional train.",
+        "next_experiment": "In the upcoming station-stop scene, use ambient platform loudspeaker chime cues to prompt Marta's head turn and reaction."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Kommt hier unser Zug?",
+          "fa": "قطار ما اینجا می‌آید؟",
+          "scene": "Medium shot of Marta standing on the open-air station platform, looking up toward the digital track display.",
+          "motion": "Marta holds her smartphone in one hand and points upward with her other index finger toward the track sign.",
+          "visible_objects": [
+            "smartphone",
+            "track sign"
+          ],
+          "object_action": "Marta holds her smartphone upright while pointing toward the track sign above."
+        },
+        {
+          "speaker": "marta",
+          "de": "Da steht aber Regional-Express!",
+          "fa": "اما آنجا نوشته شده رجیونال اکسپرس!",
+          "scene": "Closer framing of Marta looking puzzled as she compares the platform sign with her digital ticket.",
+          "motion": "Marta taps the phone glass with a worried expression, eyeing the glowing screen.",
+          "visible_objects": [
+            "smartphone"
+          ],
+          "object_action": "Marta taps her smartphone screen with her fingertip and glances off-camera with raised eyebrows."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Keine Sorge, das ist regional.",
+          "fa": "نگران نباش، این منطقه‌ای است.",
+          "scene": "Medium shot of Lukas holding a folded paper timetable brochure on the platform.",
+          "motion": "Lukas smiles reassuringly, tapping the paper timetable lightly with his knuckles.",
+          "visible_objects": [
+            "paper timetable"
+          ],
+          "object_action": "Lukas holds the paper timetable flat in both hands and taps the route column."
+        },
+        {
+          "speaker": "marta",
+          "de": "Gilt mein Ticket wirklich dafür?",
+          "fa": "بلیت من واقعاً برای این معتبر است؟",
+          "scene": "Closer shot of Marta tilting her phone screen forward to display the QR code ticket app.",
+          "motion": "Marta tilts the phone forward, offering the display for inspection with an inquiring head tilt.",
+          "visible_objects": [
+            "smartphone"
+          ],
+          "object_action": "Marta presents the smartphone display forward with both hands held steady."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Ja, RE gehört zum Nahverkehr.",
+          "fa": "بله، آر-ای متعلق به حمل و نقل محلی است.",
+          "scene": "Medium shot of Lukas standing near the tactile platform paving, gesturing calmly toward the tracks.",
+          "motion": "Lukas gives a supportive nod and points along the platform edge where the train approaches.",
+          "visible_objects": [
+            "paper timetable"
+          ],
+          "object_action": "Lukas folds the paper timetable once and taps his chest lightly with it."
+        },
+        {
+          "speaker": "marta",
+          "de": "Der Zug ist auch rot!",
+          "fa": "قطار هم قرمز است!",
+          "scene": "Closer action framing of Marta turning toward the arriving red double-decker regional train.",
+          "motion": "Marta lowers her phone slightly and points eagerly toward the red passenger car.",
+          "visible_objects": [
+            "smartphone",
+            "red train carriage"
+          ],
+          "object_action": "Marta holds the phone at waist level and points her index finger at the red train carriage."
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau, wir können einsteigen.",
+          "fa": "دقیقاً، می‌توانیم سوار شویم.",
+          "scene": "Medium shot of Lukas adjusting his shoulder backpack strap beside the slowing train.",
+          "motion": "Lukas tightens his backpack strap with one hand and gestures forward toward the door.",
+          "visible_objects": [
+            "backpack strap"
+          ],
+          "object_action": "Lukas grips his backpack strap firmly and takes one step forward."
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich stecke das Ticket ein.",
+          "fa": "من بلیت را داخل جیب می‌گذارم.",
+          "scene": "Closer framing of Marta visibly relieved, securing her smartphone in her jacket pocket.",
+          "motion": "Marta smoothly slides the smartphone into her outer jacket pocket with a bright smile.",
+          "visible_objects": [
+            "smartphone",
+            "jacket pocket"
+          ],
+          "object_action": "Marta slides the smartphone into her jacket pocket and pats it flat with her palm."
+        },
+        {
+          "speaker": "marta",
+          "de": "Regional-Express, wir kommen jetzt!",
+          "fa": "رجیونال اکسپرس، ما الان آمدیم!",
+          "scene": "Medium shot of Marta reaching toward the glowing green train door push button.",
+          "motion": "Marta presses the train door button with a decisive palm tap and takes a confident step forward.",
+          "visible_objects": [
+            "train door button"
+          ],
+          "object_action": "Marta presses the circular green door button with her right palm."
+        }
+      ],
+      "research_source": {
+        "topic": "Travel by regional train",
+        "url": "https://www.bahn.de/angebot/regio/deutschland-ticket",
+        "excerpt": "Deutschland-Ticket 63 Euro — Kauf, Gültigkeit & Kündigung | bahn.de Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027 ändern sich die Konditionen, der Preis erhöht sich auf 66,80 Euro. Stand: November 2026. Deutschland-Ticket Das Deutschland-Ticket kostet 63 Euro pro Monat und gilt deutschlandweit in Bus, U-, S- und Regionalbahn. Es ist monatlich kündbar und nur als Abo erhältlich. Zum 1. Januar 2027",
+        "retrieved_at": "2026-11-03T01:49:50.314592+00:00",
+        "transport": "urllib"
+      },
+      "mood": "comic",
+      "duration_seconds": 45
+    },
+    "date": "2026-11-03",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
