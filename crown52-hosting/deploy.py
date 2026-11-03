@@ -44,8 +44,17 @@ elif mode=='persist':
  try:
   req=urllib.request.Request(url+'/api/admin/state',headers={'Authorization':'Bearer '+admin})
   with urllib.request.urlopen(req,timeout=20) as r:state=json.load(r)
-  api.add_space_secret(repo,key='CROWN_RECOVERY_JSON',value=json.dumps({'state':state['state'],'revision':state['revision']}))
- except Exception as e:raise RuntimeError('Could not protect the current game before media persistence: '+type(e).__name__) from None
+  backup=json.dumps({'state':state['state'],'revision':state['revision']},ensure_ascii=False,separators=(',',':'))
+  for attempt in range(4):
+   try:
+    api.add_space_secret(repo,key='CROWN_RECOVERY_JSON',value=backup)
+    break
+   except Exception as error:
+    status=getattr(getattr(error,'response',None),'status_code','unknown')
+    if attempt==3:raise RuntimeError('Recovery secret update failed HTTP '+str(status)+'; backup bytes='+str(len(backup.encode()))) from None
+    time.sleep(2**attempt)
+  print('CROWN52_BACKUP_PROTECTED bytes='+str(len(backup.encode())),flush=True)
+ except Exception as e:raise RuntimeError('Could not protect the current game before media persistence: '+(str(e) if isinstance(e,RuntimeError) else type(e).__name__)) from None
 else:raise RuntimeError('Unknown deployment mode')
 if mode in ('persist','repair'):
  for asset in json.loads((folder/'assets-manifest.json').read_text()):
