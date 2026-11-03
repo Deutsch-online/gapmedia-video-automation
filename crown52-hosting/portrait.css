@@ -196,3 +196,26 @@ body.experience-portraits .profile-slot .profile-activity,body.experience-portra
 .profile-round-result .profile-podium-card .podium-name{bottom:11px;}
 .profile-round-result .profile-podium-card .podium-points{bottom:37px;left:10px;}
 body.experience-portraits #funCards .profile-podium-card .fun-portrait,body.experience-portraits .profile-round-result .profile-podium-card .fun-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;border:0!important;outline:0!important;box-shadow:none!important;}
+
+/* Match the exact frame image used by the football league. */
+.profile-league-frame{position:absolute;inset:-1px;background-image:url('/api/league-frame?v=55');background-size:100% 100%;pointer-events:none;z-index:14;}
+.profile-podium-card .profile-country-frame{display:none!important;}
+.profile-podium-card.country-portrait{border:0!important;box-shadow:none!important;}
+.profile-podium-card .podium-energy{border-left:0!important;border-right:0!important;}
+.profile-podium-card .podium-crown,.profile-podium-card .podium-trophy,.profile-podium-card .podium-medal{z-index:22;}
+.profile-podium-card .podium-rank,.profile-podium-card .country-crest,.profile-podium-card .country-prompt,.profile-podium-card .profile-country-banner{z-index:21;}
+/* Readable portrait gallery: six columns, taller photos, at most24 per view. */
+body.experience-portraits #funCards{grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-template-rows:210px repeat(4,74px)!important;grid-auto-rows:74px!important;gap:5px;}
+#funCards .profile-live-podium{grid-column:1 / 7;}
+body.experience-portraits #funCards .profile-slot[data-page-hidden="true"]{display:none!important;}
+body.experience-portraits #funCards .profile-slot .fun-portrait{bottom:18px!important;}
+body.experience-portraits #funCards .profile-slot strong.profile-name{font:900 10px/1.15 Arial!important;min-height:18px;padding:3px 2px;}
+body.experience-portraits #funCards .profile-slot .fun-number{font-size:8px!important;}
+body.experience-portraits #funCards .profile-slot .profile-idle-clock{top:18px;font-size:6px;}
+body.experience-portraits #funCards .profile-slot .profile-jewels{bottom:20px;font-size:6px;}
+.profile-host-controls{margin:10px 0 18px;padding:12px;border:1px solid #e7c98a66;border-radius:12px;background:#0e2537;}.profile-host-seat{margin:10px 0;padding:8px;background:#061624;border-radius:9px;}.profile-host-seat>strong{display:block;margin-bottom:5px;color:#ffe5a9;font-size:11px;}.profile-host-seat select{min-height:42px;}.profile-host-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px;}.profile-host-actions button{min-height:40px;}.experience-cards #profileHostControls{display:none;}
+/* Keep names and points readable above the shared frame's bottom metal edge. */
+.profile-podium-card .podium-name{left:10px;right:10px;bottom:15px;z-index:20;padding:3px 1px;background:linear-gradient(90deg,#03132188,#031321e8,#03132188);border-radius:3px;}
+.profile-podium-card .podium-points{z-index:20;bottom:37px;left:12px;}
+.profile-round-result .profile-podium-card .podium-name{bottom:18px;}
+.profile-round-result .profile-podium-card .podium-points{bottom:44px;left:12px;}
