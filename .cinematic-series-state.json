@@ -2614,7 +2614,7 @@
     "2026-10-31": 2,
     "2026-11-01": 3,
     "2026-11-02": 3,
-    "2026-11-03": 2
+    "2026-11-03": 3
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2631,7 +2631,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-03T08:38:17.580404+00:00",
+    "checked_at": "2026-11-03T16:38:43.815152+00:00",
     "generation_requested": false,
     "order": [
       "hf-included",
