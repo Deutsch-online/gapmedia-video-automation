@@ -9,7 +9,7 @@ permissions:
 jobs:
   send:
     if: github.run_attempt == 1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 25
     steps:
       - name: Deliver requested links to private bot conversation
@@ -40,7 +40,7 @@ jobs:
           for attempt in range(120):
               try:
                   health=json.loads(read_app('/health'))
-                  if health.get('build')=='7802db1a6c823a139c321469f30950a4f9a62b44':break
+                  if health.get('build')=='9c4f05ab990a289d21f7fc06cda952a248b873bb':break
               except Exception:pass
               time.sleep(10)
           else:raise RuntimeError('Expected profile62 deployment is not ready')
