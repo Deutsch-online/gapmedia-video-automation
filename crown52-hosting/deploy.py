@@ -26,6 +26,14 @@ except Exception:raise RuntimeError('Could not verify the existing ElevenLabs vo
 preferred=['Sarah','Rachel','Bella','Charlotte','Matilda','Jessica','Alice','Lily']
 voice=next((v for name in preferred for v in voices if v.get('name')==name),None) or next((v for v in voices if v.get('labels',{}).get('gender')=='female'),None)
 if not voice:raise RuntimeError('No available female ElevenLabs voice found')
+fa_model='eleven_v3'
+try:
+ req=urllib.request.Request('https://api.elevenlabs.io/v1/models',headers={'xi-api-key':eleven_key})
+ with urllib.request.urlopen(req,timeout=25) as response:models=json.load(response)
+ candidates=[m for m in models if m.get('can_do_text_to_speech',True) and any(l.get('language_id') in ('fa','fas','fa-IR') for l in m.get('languages',[]))]
+ if candidates:fa_model=next((m['model_id'] for m in candidates if m.get('model_id')=='eleven_v3'),candidates[0]['model_id'])
+except Exception:pass
+print('CROWN61_PERSIAN_MODEL '+fa_model,flush=True)
 sample_text='Welcome to the live! Thank you for your wonderful support.'
 probe=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':sample_text,'model_id':'eleven_turbo_v2_5','voice_settings':{'stability':.55,'similarity_boost':.75,'style':.18,'use_speaker_boost':True,'speed':.96}}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
 try:
@@ -54,6 +62,34 @@ def read_public(source,timeout=30):
   except Exception:
    if attempt==3:raise
    time.sleep(.5*(attempt+1))
+# Reusable bilingual files are generated once per script/voice/model and verified on reuse.
+scripts=json.loads((here/'narration-scripts.mjs').read_text().split('=',1)[1].strip().rstrip(';'))
+old_manifest={}
+try:old_manifest=json.loads(read_public(url+'/narration-manifest.json',10))
+except Exception:pass
+manifest={}
+for language,items in scripts.items():
+ for kind,text in items.items():
+  name='narration-'+kind+'-'+language+'.mp3';model_id=fa_model if language=='fa' else 'eleven_turbo_v2_5'
+  text_hash=hashlib.sha256(text.encode()).hexdigest();old=old_manifest.get(name,{})
+  audio=None
+  if old.get('text_sha')==text_hash and old.get('voice')==voice['voice_id'] and old.get('model')==model_id:
+   try:
+    candidate=read_public(url+'/'+name,15)
+    if len(candidate)>100 and hashlib.sha256(candidate).hexdigest()==old.get('sha256'):audio=candidate
+   except Exception:pass
+  if audio is None:
+   settings={'stability':.5} if language=='fa' else {'stability':.48,'similarity_boost':.75,'use_speaker_boost':True,'speed':1.01}
+   req=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':text,'model_id':model_id,'language_code':language,'voice_settings':settings}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
+   try:
+    with urllib.request.urlopen(req,timeout=90) as response:audio=response.read(3000000)
+   except urllib.error.HTTPError as error:raise RuntimeError('Bilingual ElevenLabs sample failed HTTP '+str(error.code)+' language='+language+' model='+model_id) from None
+   if len(audio)<100:raise RuntimeError('Invalid narrator sample: '+name)
+  (folder/'public'/name).write_bytes(audio)
+  manifest[name]={'voice':voice['voice_id'],'model':model_id,'language':language,'text_sha':text_hash,'sha256':hashlib.sha256(audio).hexdigest(),'size':len(audio)}
+(folder/'public/narration-manifest.json').write_text(json.dumps(manifest))
+print('CROWN61_BILINGUAL_AUDIO_READY '+json.dumps({'languages':list(scripts),'files':len(manifest)}),flush=True)
+
 if mode in ('bootstrap','repair'):
  api.add_space_secret(repo,key='CROWN_ADMIN_TOKEN',value=admin)
  api.add_space_variable(repo,key='PUBLIC_URL',value=url)
@@ -78,6 +114,7 @@ else:raise RuntimeError('Unknown deployment mode')
 api.add_space_secret(repo,key='CROWN_ELEVEN_API_KEY',value=eleven_key)
 api.add_space_variable(repo,key='CROWN_ELEVEN_VOICE_ID',value=voice['voice_id'])
 api.add_space_variable(repo,key='CROWN_ELEVEN_VOICE_NAME',value=voice['name'])
+api.add_space_variable(repo,key='CROWN_ELEVEN_FA_MODEL',value=fa_model)
 if mode in ('persist','repair'):
  for asset in json.loads((folder/'assets-manifest.json').read_text()):
   source=('https://huggingface.co/spaces/'+repo+'/resolve/main/public/assets/'+asset['name']) if mode=='repair' else (url+'/assets/'+asset['name'])
@@ -85,7 +122,7 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())
@@ -126,5 +163,6 @@ for _ in range(95):
  if time.monotonic()-started>45 and str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR') and runtime.raw.get('sha')==commit.oid:raise RuntimeError('Hosting failed: '+str(runtime.stage))
  time.sleep(7)
 else:raise RuntimeError('Hosting readiness timeout')
+
 
 

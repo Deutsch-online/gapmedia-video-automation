@@ -250,5 +250,53 @@ body.experience-portraits #funCards{grid-template-rows:270px repeat(4,68px)!impo
 .profile-preview-grid .profile-podium-card .fun-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;max-width:none!important;border:0!important;outline:0!important;border-radius:inherit!important;overflow:hidden!important;z-index:3;}
 .profile-preview-grid .profile-podium-card .avatar{width:100%!important;height:100%!important;border-radius:0!important;}.profile-preview-grid .podium-name{font-size:12px;}.profile-preview-grid .podium-points{font-size:15px;}.profile-preview-grid .podium-label{font-size:8px;}.profile-preview-grid .podium-social-stat small{font-size:7px;}.profile-preview-grid .podium-follow-call strong{font-size:7px;}.profile-preview-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.profile-preview-actions button{min-height:44px;}
 @media(max-width:480px){.profile-preview-dialog{padding:10px;}.profile-preview-grid .profile-live-podium{gap:5px;}.profile-preview-grid .podium-social{left:5px;right:5px;padding:4px 2px;}.profile-preview-grid .podium-social-stat small{font-size:5px;}.profile-preview-grid .podium-follow-call{left:5px;right:5px;}.profile-preview-grid .podium-follow-call strong{font-size:5px;}.profile-preview-dialog h2{font-size:16px;}}
-.profile-preview-grid .social-value{font-size:clamp(14px,2vw,24px)!important;}
+
 .profile-preview-grid{overflow:clip;}.profile-preview-dialog{overflow-x:hidden;}.profile-preview-actions{grid-template-columns:repeat(2,minmax(0,1fr));}.profile-preview-dialog .control-note{max-width:100%;white-space:normal;overflow-wrap:anywhere;}
+
+/* Sharp text plane: no 3D rasterization or bloom on names and profile totals. */
+body.experience-portraits .profile-podium-card{animation:none!important;transform:none!important;filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;perspective:none!important;transform-style:flat!important;will-change:auto!important;}
+.profile-podium-card .podium-name,.profile-podium-card .podium-points,.profile-podium-card .podium-social,.profile-podium-card .podium-social-stat,.profile-podium-card .social-value,.profile-podium-card .podium-social-stat small{filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-shadow:none!important;transform:none!important;opacity:1!important;font-family:Arial,sans-serif;letter-spacing:0;will-change:auto!important;}
+#funCards .profile-podium-card .podium-name{font-size:16px!important;line-height:20px;font-weight:800!important;bottom:119px!important;left:7px;right:7px;padding:3px 2px;background:#03111f!important;color:#fff!important;border-radius:2px;}
+#funCards .profile-podium-card .podium-points{bottom:145px!important;font-size:16px!important;line-height:20px;background:#03111fe8;padding:1px 4px;border-radius:2px;}
+.profile-podium-card .podium-social{background:#03111f!important;box-shadow:none!important;border:1px solid #ecd48b;}
+.profile-podium-card .podium-social-stat{background:#0c2336!important;}.profile-podium-card .podium-social-stat[data-social="followers"]{background:#26301b!important;}
+.profile-podium-card .social-value{font-weight:800!important;line-height:18px!important;color:#fff!important;}
+.profile-podium-card .podium-social-stat[data-social="followers"] .social-value{color:#ffe58c!important;}
+.profile-podium-card .podium-social-stat small{font-size:7.5px!important;line-height:10px!important;font-weight:700!important;color:#fff!important;}
+.profile-podium-card .profile-fx-overlay .fx-mist{display:none!important;}
+.profile-podium-card .rank-reaction{left:auto!important;right:5px!important;top:37px!important;bottom:auto!important;max-width:40px;}
+.profile-podium-card .rank-reaction .rank-change,.profile-podium-card .rank-reaction .rank-encouragement{display:none!important;}
+.profile-preview-grid .profile-podium-card .podium-name{font-size:16px!important;line-height:20px;background:#03111f!important;bottom:119px!important;}.profile-preview-grid .profile-podium-card .podium-points{bottom:145px!important;}
+@media(max-width:480px){.profile-preview-grid .profile-podium-card .podium-social-stat small{font-size:5px!important;}.profile-preview-grid .profile-podium-card .podium-name{font-size:12px!important;}}
+
+/* Only the artwork turns; all identity and numeric text stays on a stable plane. */
+.profile-card-art{position:absolute;inset:0;z-index:1;isolation:isolate;border-radius:inherit;overflow:hidden;backface-visibility:hidden;will-change:transform;transform-origin:50% 50%;--art-rim:#f4d07a;animation:profile-art-yaw 7s ease-in-out infinite;}
+.place-2 .profile-card-art{animation:profile-art-lean 8.1s ease-in-out infinite;}.place-3 .profile-card-art{animation:profile-art-float 7.5s ease-in-out infinite;}
+.profile-card-art:after{content:'';position:absolute;inset:3px;border-radius:inherit;z-index:16;pointer-events:none;border:1px solid var(--art-rim);background:linear-gradient(110deg,transparent 25%,color-mix(in srgb,var(--art-rim) 15%,transparent) 45%,transparent 65%);background-size:250% 100%;animation:profile-art-foil 5s ease-in-out infinite;}
+.profile-card-art[data-design="1"]{--art-rim:#88efff;}.profile-card-art[data-design="2"]{--art-rim:#ff9ac8;}.profile-card-art[data-design="3"]{--art-rim:#bca8ff;}.profile-card-art[data-design="4"]{--art-rim:#8cffd1;}.profile-card-art[data-design="5"]{--art-rim:#ffc389;}
+@keyframes profile-art-yaw{0%,100%{transform:perspective(800px) rotateY(-4deg)}50%{transform:perspective(800px) rotateY(4deg)}}
+@keyframes profile-art-lean{0%,100%{transform:perspective(800px) rotateX(3deg) rotateZ(.4deg)}50%{transform:perspective(800px) rotateX(-3deg) rotateZ(-.4deg)}}
+@keyframes profile-art-float{0%,100%{transform:perspective(800px) translateY(-2px) rotateY(3deg)}50%{transform:perspective(800px) translateY(2px) rotateY(-3deg)}}
+@keyframes profile-art-foil{0%,100%{background-position:150% 0}50%{background-position:-50% 0}}
+@media(prefers-reduced-motion:reduce){.profile-card-art,.profile-card-art:after{animation:none!important;transform:none!important;}}
+.profile-podium-card .profile-country-banner{transform:none!important;filter:none!important;box-shadow:none!important;background:#03111f!important;}.profile-podium-card .country-name{font-size:10px!important;line-height:12px;text-shadow:none!important;}.profile-podium-card .country-prompt{font-size:9px;animation:none!important;background:#03111f!important;}
+
+/* CompactK/M totals free the portrait instead of occupying three tall rows. */
+.profile-podium-card .podium-social{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;}
+.profile-podium-card .podium-social-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:2px 1px;border:1px solid transparent;}
+.profile-podium-card .podium-social-stat[data-social="followers"]{border-color:#ecd48b;}
+.profile-podium-card .podium-social-stat b{order:1;}.profile-podium-card .podium-social-stat small{order:2;font-size:7px!important;line-height:10px!important;white-space:nowrap;}
+#funCards .profile-podium-card .podium-name,.profile-preview-grid .profile-podium-card .podium-name{bottom:79px!important;}
+#funCards .profile-podium-card .podium-points,.profile-preview-grid .profile-podium-card .podium-points{bottom:105px!important;}
+.profile-podium-card .country-crest{bottom:107px;}
+@media(max-width:480px){.profile-preview-grid .profile-podium-card .podium-social-stat small{font-size:4px!important;}.profile-preview-grid .podium-social{gap:1px;}}
+
+/* Temporary real supporter spotlight borrows one side seat; rankings are untouched. */
+.profile-live-podium.thanks-like>.place-2,.profile-live-podium.thanks-gift>.place-3{visibility:hidden!important;}
+.profile-thanks-spotlight{position:absolute;bottom:4px;width:calc((100% - 26px)/3);height:calc(100% - 36px);z-index:28;border-radius:9px;background:#091c2b;border:2px solid var(--thanks-colour,#ff80b1);box-shadow:0 0 12px color-mix(in srgb,var(--thanks-colour,#ff80b1) 40%,transparent);overflow:hidden;--thanks-colour:#ff80b1;}
+.profile-thanks-spotlight.thanks-like{left:4px;}.profile-thanks-spotlight.thanks-gift{right:4px;--thanks-colour:#ffe184;}.profile-thanks-spotlight[data-design="1"]{--thanks-colour:#7ae5ff;}.profile-thanks-spotlight[data-design="2"]{--thanks-colour:#d0a1ff;}.profile-thanks-spotlight[data-design="3"]{--thanks-colour:#79ffd3;}.profile-thanks-spotlight[data-design="4"]{--thanks-colour:#ffb47f;}
+.profile-thanks-art{position:absolute;inset:0;overflow:hidden;isolation:isolate;backface-visibility:hidden;}.profile-thanks-art>.fun-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;}.profile-thanks-art .avatar{width:100%!important;height:100%!important;border-radius:0!important;font-size:44px;}.profile-thanks-art .avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-thanks-icon{position:absolute;top:8px;right:8px;z-index:24;font:900 24px Arial;color:var(--thanks-colour);animation:thanks-icon-beat 1.1s ease-in-out infinite;}.profile-thanks-heading{position:absolute;left:5px;right:5px;top:10px;z-index:22;font:900 8px Arial;color:#fff;background:#071420d9;padding:3px;text-align:center;}
+.profile-thanks-name,.profile-thanks-amount,.profile-thanks-note{position:absolute;left:7px;right:7px;z-index:23;text-align:center;background:#041321f5;color:#fff;text-shadow:none;filter:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 1px;}.profile-thanks-name{bottom:62px;font:800 12px Arial;}.profile-thanks-amount{bottom:31px;font:900 17px Arial;color:var(--thanks-colour);}.profile-thanks-note{bottom:10px;font:800 6px Arial;letter-spacing:.3px;}
+.profile-preview-grid .profile-thanks-spotlight{height:calc(100% - 48px);bottom:10px;width:calc((100% - 26px)/3);}.profile-preview-grid .profile-thanks-name{font-size:11px;}.profile-preview-actions+.profile-preview-actions{margin-top:9px;}
+@keyframes thanks-icon-beat{0%,100%{scale:1}50%{scale:1.13}}@media(prefers-reduced-motion:reduce){.profile-thanks-icon{animation:none!important;}}
