@@ -24,7 +24,7 @@ try:
  with urllib.request.urlopen(req,timeout=25) as response:voices=json.load(response).get('voices',[])
 except Exception:raise RuntimeError('Could not verify the existing ElevenLabs voice connection') from None
 preferred=['Sarah','Rachel','Bella','Charlotte','Matilda','Jessica','Alice','Lily']
-voice=next((v for name in preferred for v in voices if v.get('name')==name),None) or next((v for v in voices if v.get('labels',{}).get('gender')=='female'),None)
+voice=next((v for name in preferred for v in voices if v.get('name')==name or v.get('name','').startswith(name+' -')),None) or next((v for v in voices if v.get('labels',{}).get('gender')=='female'),None)
 if not voice:raise RuntimeError('No available female ElevenLabs voice found')
 fa_model='eleven_v3'
 try:
