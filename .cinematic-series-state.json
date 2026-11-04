@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 17,
+  "next_episode": 18,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -140,6 +140,14 @@
       "platforms": {
         "tiktok": 2831,
         "instagram": 2832
+      }
+    },
+    "2026-11-04": {
+      "episode": 17,
+      "message_id": 2844,
+      "platforms": {
+        "tiktok": 2844,
+        "instagram": 2845
       }
     }
   },
@@ -2445,10 +2453,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "episode": 17,
       "title_de": "Regional-Express erlaubt?",
       "title_fa": "آیا رجیونال اکسپرس مجاز است؟",
@@ -2581,25 +2587,9 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    },
-    "date": "2026-11-04",
-    "status": "exporting",
-    "credit_from_scene": 8,
-    "credit_approval_required": true,
-    "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 501s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
-    "credit_notice_status": "sent",
-    "credit_notice_message_id": 2836,
-    "platform_receipts": {
-      "tiktok": 2844,
-      "instagram": 2845
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0017/tiktok/e0017-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0017/instagram/e0017-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0017/instagram/e0017-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
