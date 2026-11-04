@@ -2583,14 +2583,15 @@
       "duration_seconds": 45
     },
     "date": "2026-11-04",
-    "status": "dispatching",
+    "status": "exporting",
     "credit_from_scene": 8,
     "credit_approval_required": true,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 501s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
     "credit_notice_status": "sent",
     "credit_notice_message_id": 2836,
     "platform_receipts": {
-      "tiktok": 2844
+      "tiktok": 2844,
+      "instagram": 2845
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0017/tiktok/e0017-tiktok-45s.mp4",
