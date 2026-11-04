@@ -10,7 +10,7 @@ jobs:
   send:
     if: github.run_attempt == 1
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 25
     steps:
       - name: Deliver requested links to private bot conversation
         env:
@@ -18,7 +18,7 @@ jobs:
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
         run: |
           python - <<'PY'
-          import os,json,urllib.request,urllib.error
+          import os,json,time,urllib.request,urllib.error
           bot=os.environ['TELEGRAM_BOT_TOKEN']
           if not bot:raise RuntimeError('Telegram bot credential not configured')
           chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or '7993801735'
@@ -37,15 +37,20 @@ jobs:
           origin='https://afgtakrun-live-crown-52.hf.space'
           def read_app(path):
               with urllib.request.urlopen(origin+path,timeout=30) as response:return response.read()
-          health=json.loads(read_app('/health'))
-          if health.get('build')!='29bd80b2b4a1d65e82f87d2b2cba0a6473c86ba8':raise RuntimeError('Expected profile59 deployment is not ready')
-          html=read_app('/fun/control?v=59').decode()
-          for element in ['openProfilePreview','profilePreviewDialog','repeatProfilePreview','growProfilePreview','closeProfilePreview']:
+          for attempt in range(120):
+              try:
+                  health=json.loads(read_app('/health'))
+                  if health.get('build')=='7802db1a6c823a139c321469f30950a4f9a62b44':break
+              except Exception:pass
+              time.sleep(10)
+          else:raise RuntimeError('Expected profile62 deployment is not ready')
+          html=read_app('/fun/control?v=62').decode()
+          for element in ['profileTestTab','profilePreviewDialog','repeatProfilePreview','growProfilePreview','closeProfilePreview']:
               if ('id="'+element+'"') not in html:raise RuntimeError('Missing deployed preview control: '+element)
-          css=read_app('/portrait.css?v=59').decode()
-          if 'font:950 14px/1 Arial' not in css or '.profile-preview-dialog' not in css:raise RuntimeError('Updated bold preview styles missing')
-          print('CROWN59_PREVIEW_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'preview_controls':5,'bold_stats':True}))
-          text="نسخه59 — پیش‌نمایش خصوصی پنل و آمار برجسته\n\nپنل موبایل و کمپیوتر:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=59\n\nنمای TikTok LIVE Studio (1080×1920):\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=59\n\nرمز همان رمز قبلی است.\n\nتست بدون لایف:\n1. پنل را رفرش کنید.\n2. بخش «آزمایش آمار بدون لایف» را باز کنید.\n3. «پیش‌نمایش آمار و شمارش» را بزنید.\n4. سه کارت نمونه با عددهای متحرک دیده می‌شوند؛ مثلاً فالوور از0 تا18420 می‌رود.\n5. «تکرار شمارش از صفر» انیمیشن را دوباره اجرا می‌کند.\n6. «تست افزایش آمار» افزایش نمونه، مانند18420به18545، را نشان می‌دهد.\n7. «بستن» پنجره را می‌بندد.\n\nاین پیش‌نمایش فقط داخل پنل است؛ نیاز به اتصال TikTok ندارد و هیچ فرد، امتیاز، گیفت، انتخاب، تنظیم یا سابقه‌ای را در بازی واقعی تغییر نمی‌دهد. اعداد آن با عنوان دادهٔ آزمایشی مشخص شده‌اند.\n\nعددهای برجسته:\n• لایک صفحه، فالوور و فالووینگ در سه ردیف جدا با عددهای درشت، پُررنگ و روشن نمایش داده می‌شوند.\n• ردیف فالوور با زمینه و عدد طلایی برجسته‌تر است.\n• آمار بزرگ هم در کادر جا می‌شود؛ پنل موبایل اسکرول افقی ندارد.\n\nآمار واقعی:\n• PAGE LIKES / FOLLOWERS / FOLLOWING فقط از اطلاعات واقعی صفحه که TikTok همراه فرد می‌فرستد خوانده می‌شوند.\n• مقدار ناموجود «—» است؛ صفر واقعی0 است.\n• ورود به جایگاه: شمارش نمایشی از0 تا مقدار واقعیِ موجود، حدود1.8ثانیه.\n• داده تازه: فقط تغییر واقعیِ دریافت‌شده متحرک می‌شود.\n• لایک بازی به لایک کل صفحه اضافه نمی‌شود.\n• دعوت + FOLLOW THIS STAR روی کارت فرد واقعی دیده می‌شود؛ روی کارت نمایشی BE THE NEXT STAR است.\n\nیک صفحه و صف:\n• حداکثر24کاربر واقعی در یک صفحه ثابت؛ بقیه در صف.\n• فرد فعال منتظر جای فرد بی‌فعالیت را می‌گیرد. اگر همه فعال باشند، صف منتظر می‌ماند.\n• خروجِ گزارش‌شده از TikTok فوراً حذف می‌شود؛ برای خروج‌های گزارش‌نشده، زمان بی‌فعالیتی پنل ملاک است.\n• سابقه لایک، گیفت و امتیاز حفظ می‌شود.\n\nکنترل و زمان:\n• «مدیریت جایگاه‌ها»: انتخاب و جابه‌جایی مقام1،2و3، حذف، بازگرداندن و چیدمان خودکار.\n• تغییر دستی جایگاه امتیاز واقعی را عوض نمی‌کند.\n• مدت عکس: خودکار60ثانیه تازه‌وارد /180ثانیه پس از آخرین فعالیت؛ حالت دلخواه5تا3600ثانیه با ذخیره.\n• تایمر، مدت فعلی و شروع خودکار دور بعد حفظ شده‌اند.\n• write your Country برای30ثانیه؛ کشور فارسی، عربی، لاتین، مخفف یا پرچم پذیرفته می‌شود.\n\nنمایش و صدا:\n• سه پرتره ساختگی متفاوت با لباس سبز، کت سفید و کت زرشکی؛ امتیاز نمایشی وارد سابقه واقعی نمی‌شود.\n• گوینده Sarah از ElevenLabs؛ صدای کارت و موسیقی مستقل‌اند. تنظیم فعلی موسیقی حفظ می‌شود.\n• پیش‌نمایش آمار درخواست صوت پولی نمی‌فرستد.\n\nبرای نمای لایف «رفرش نمای لایف» را بزنید. اگر Studio نسخه قدیم را نگه داشته، Refresh همان منبع Link/Browser را بزنید."
+          css=read_app('/portrait.css?v=62').decode()
+          if 'body.test-only' not in css or '.profile-preview-dialog' not in css:raise RuntimeError('Updated bold preview styles missing')
+          print('CROWN62_TEST_TAB_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'preview_controls':5,'bold_stats':True}))
+          text="نسخه62 — تب جداگانه تست لایف\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=62\n\nتب تست مستقیم:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=62\n\nنمای TikTok LIVE Studio — 1080×1920:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=62\n\nرمز همان رمز قبلی است. پنل را رفرش کنید و «تست لایف» را بزنید.\n\nدکمه‌های تست:\n• صدای گوینده با انتخاب فارسی یا انگلیسی\n• 100،500 و1000 لایک\n• گیفت100 و1000 کوین\n• تکرار شمارش از صفر و افزایش آمار نمونه\n• بخش «تست موشن، دیزاین و تازه‌وارد»:8 حرکت،6 دیزاین و ورود پروفایل\n• برگشت به پنل قبلی\n\nتست‌ها بدون اتصال TikTok کار می‌کنند و فقط داخل صفحه آزمایش نمایش داده می‌شوند. روی امتیاز، سابقه، افراد و تنظیمات بازی زنده اثر ندارند. زبان صدای تست مستقل است؛ زبان گوینده واقعی را در بخش صدای پنل انتخاب کنید که خودکار ذخیره می‌شود.\n\nنمایش و صدا:\n• متن نام و آمار خوانا و ثابت است؛ تصویر و قاب حرکت می‌کنند.\n• آمار بزرگ با1K،3K و12.5K کوتاه می‌شود؛ مقدار کامل حفظ است.\n• گوینده واقعی ElevenLabs برای فارسی و انگلیسی؛ فایل‌های تست آماده‌اند و هر بار زدن دکمه هزینه تولید تازه ندارد.\n• تشکر لایک100،500 و1000 و گیفت واقعی: لایکر سمت چپ و گیفتر سمت راست تاج9ثانیه دیده می‌شوند و سپس جایگاه‌ها بازمی‌گردند.\n• دعوت حمایت، فالو و فعالیت با زبان انتخاب‌شده، با رعایت قطع صدا و صحبت میزبان.\n\nآمار واقعی فقط از داده دریافتی TikTok است؛ داده ناموجود «—» است. پیش‌نمایش آمار، نمونه است. اتصال واقعی برای دریافت خودکار رویدادها لازم است و این تب محدودیت سرویس اتصال TikTok را رفع نمی‌کند.\n\nیک صفحه24نفره، صف انتظار، سابقه حمایت‌کنندگان و زمان فعلی بازی حفظ شده‌اند. برای نمای قدیمی، «رفرش نمای لایف» یا Refresh منبع Link/Browser در Studio را بزنید."
           result=call('editMessageText',{'chat_id':chat,'message_id':2833,'text':text,'link_preview_options':{'is_disabled':True}})
           print('CROWN52_LINKS_UPDATED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
           PY
