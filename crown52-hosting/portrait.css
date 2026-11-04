@@ -233,3 +233,22 @@ body.experience-portraits #funCards{grid-template-rows:270px repeat(4,74px)!impo
 .profile-podium-card .country-crest{bottom:115px;width:32px;height:39px;}
 /* Leave room for the large welcome card and all four supporter boxes in9:16. */
 body.experience-portraits #funCards{grid-template-rows:270px repeat(4,68px)!important;grid-auto-rows:68px!important;}
+
+/* Bold full-width metric rows make long profile counts readable. */
+.podium-social{display:flex;flex-direction:column;gap:3px;padding:5px 4px;background:linear-gradient(145deg,#061728fa,#10263bfa);border-color:#ffe5a9aa;box-shadow:0 2px 8px #0009;}
+.podium-social-stat{display:flex;align-items:center;justify-content:space-between;gap:3px;padding:2px 3px;border-radius:3px;background:#fff1;}
+.podium-social-stat[data-social="followers"]{background:#ffd77820;border:1px solid #ffd77866;}
+.podium-social-stat b{order:2;font:950 14px/1 Arial;color:#fff7d1;text-shadow:0 1px 2px #000,0 0 4px #f7c85455;font-variant-numeric:tabular-nums;}
+.podium-social-stat[data-social="followers"] b{color:#ffe38c;}
+.podium-social-stat small{order:1;font:800 6px/1.1 Arial;color:#d9f4ff;letter-spacing:.1px;text-align:left;}
+.profile-podium-card .podium-name{bottom:107px!important;}.profile-podium-card .podium-points{bottom:128px!important;}.profile-podium-card .country-crest{bottom:153px;}
+.profile-preview-controls{padding:12px;margin-bottom:12px;border:1px solid #f5cf8866;border-radius:12px;background:#0c2739;}
+.profile-preview-dialog{width:min(820px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:16px;border:1px solid #f1d48b;border-radius:16px;background:#071d2d;color:#eef8ff;overflow:auto;}
+.profile-preview-dialog::backdrop{background:#020b14c9;}.profile-preview-dialog>header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}.profile-preview-dialog h2{font-size:19px;margin:0 0 5px;}.profile-preview-dialog header p{font-size:12px;color:#ffde91;margin:0;}
+.profile-preview-grid{margin:14px 0;direction:ltr;}.profile-preview-grid .profile-live-podium{width:100%;height:auto;padding:35px 4px 10px;gap:9px;}
+.profile-preview-grid .profile-podium-card{height:clamp(220px,40vw,330px);max-width:none;width:100%;}.profile-preview-grid .profile-podium-card.place-1{height:clamp(240px,42vw,350px);}
+.profile-preview-grid .profile-podium-card .fun-portrait{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;max-width:none!important;border:0!important;outline:0!important;border-radius:inherit!important;overflow:hidden!important;z-index:3;}
+.profile-preview-grid .profile-podium-card .avatar{width:100%!important;height:100%!important;border-radius:0!important;}.profile-preview-grid .podium-name{font-size:12px;}.profile-preview-grid .podium-points{font-size:15px;}.profile-preview-grid .podium-label{font-size:8px;}.profile-preview-grid .podium-social-stat small{font-size:7px;}.profile-preview-grid .podium-follow-call strong{font-size:7px;}.profile-preview-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.profile-preview-actions button{min-height:44px;}
+@media(max-width:480px){.profile-preview-dialog{padding:10px;}.profile-preview-grid .profile-live-podium{gap:5px;}.profile-preview-grid .podium-social{left:5px;right:5px;padding:4px 2px;}.profile-preview-grid .podium-social-stat small{font-size:5px;}.profile-preview-grid .podium-follow-call{left:5px;right:5px;}.profile-preview-grid .podium-follow-call strong{font-size:5px;}.profile-preview-dialog h2{font-size:16px;}}
+.profile-preview-grid .social-value{font-size:clamp(14px,2vw,24px)!important;}
+.profile-preview-grid{overflow:clip;}.profile-preview-dialog{overflow-x:hidden;}.profile-preview-actions{grid-template-columns:repeat(2,minmax(0,1fr));}.profile-preview-dialog .control-note{max-width:100%;white-space:normal;overflow-wrap:anywhere;}
