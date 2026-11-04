@@ -2582,8 +2582,8 @@
       "mood": "comic",
       "duration_seconds": 45
     },
-    "date": "2026-11-03",
-    "status": "render-failed",
+    "date": "2026-11-04",
+    "status": "rendering",
     "credit_from_scene": 8,
     "credit_approval_required": true,
     "credit_reason": "quota: All eligible free GPU routes exhausted: hf-included: quota: included allowance 501s below safe request 510s; credit approval required | hf-anonymous-free: The requested GPU duration (480s) is larger than the maximum allowed",
