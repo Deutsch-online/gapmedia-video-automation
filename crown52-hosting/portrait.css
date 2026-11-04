@@ -219,3 +219,17 @@ body.experience-portraits #funCards .profile-slot .profile-jewels{bottom:20px;fo
 .profile-podium-card .podium-points{z-index:20;bottom:37px;left:12px;}
 .profile-round-result .profile-podium-card .podium-name{bottom:18px;}
 .profile-round-result .profile-podium-card .podium-points{bottom:44px;left:12px;}
+
+/* Taller top-three portraits and a separate, readable social statistics strip. */
+body.experience-portraits #funCards{grid-template-rows:270px repeat(4,74px)!important;}
+#funCards .profile-podium-card{height:228px;}#funCards .profile-podium-card.place-1{height:248px;}
+.profile-podium-card .podium-name{bottom:66px!important;}.profile-podium-card .podium-points{bottom:88px!important;}
+.podium-social{position:absolute;left:9px;right:9px;bottom:29px;z-index:23;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:5px 2px;background:#061728ef;border:1px solid #e6c37e66;border-radius:5px;direction:ltr;}
+.podium-social-stat{min-width:0;text-align:center;}.podium-social-stat b{display:block;font:900 8px Arial;color:#fff2bd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.podium-social-stat small{display:block;font:700 4.2px Arial;color:#d9eff5;letter-spacing:.1px;}
+.podium-follow-call{position:absolute;bottom:8px;left:10px;right:10px;z-index:24;display:flex;align-items:center;justify-content:center;gap:4px;background:linear-gradient(110deg,#e53672,#aa277d);border:1px solid #ffc7d7;border-radius:5px;padding:3px 1px;box-shadow:0 0 7px #ee43864d;animation:podium-follow-pulse 3s ease-in-out infinite;}.podium-follow-call strong{font:900 6px Arial;color:#fff;letter-spacing:.25px;}.follow-plus{font:900 11px/10px Arial;color:#fff;}.podium-follow-sparks{position:absolute;inset:0;z-index:15;pointer-events:none;overflow:hidden;border-radius:inherit;}.podium-follow-sparks i{position:absolute;left:8%;bottom:35%;font:900 12px Arial;font-style:normal;color:#ff6ea0;opacity:0;animation:podium-follow-rise 5.4s ease-out infinite;}.podium-follow-sparks i:nth-child(2){left:82%;animation-delay:1.8s;color:#ffe8a6;}.podium-follow-sparks i:nth-child(3){left:72%;animation-delay:3.6s;}
+@keyframes podium-follow-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}@keyframes podium-follow-rise{0%{translate:0 10px;opacity:0;scale:.6}20%,60%{opacity:.8}100%{translate:5px -70px;opacity:0;scale:1.1}}
+@media(prefers-reduced-motion:reduce){.podium-follow-call,.podium-follow-sparks i{animation:none!important;}}
+
+.profile-podium-card .country-crest{bottom:115px;width:32px;height:39px;}
+/* Leave room for the large welcome card and all four supporter boxes in9:16. */
+body.experience-portraits #funCards{grid-template-rows:270px repeat(4,68px)!important;grid-auto-rows:68px!important;}
