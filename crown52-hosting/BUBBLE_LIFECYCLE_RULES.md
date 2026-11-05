@@ -11,3 +11,11 @@
 - Private test tab adds stage cycling, freeze/resume and a welcome voice sample; it does not inject events into LIVE.
 
 Read-only diagnosis on2026-11-05: the configured familydramaaf event bridge reported connected but counters remained0. This proves transport connection only. It does not prove successful event receipt, viewer retention, or that this is the current broadcaster. The panel distinguishes these states; the next useful check is an actual viewer's free comment and its event timestamp. No repeated reconnect loop, quota bypass, invented engagement or audience-growth guarantee is added.
+
+## Revision66: readability and population density
+
+Questions use a full-width, high-contrast title and a separate2×2 option grid. All three winning places are circles, with distinct rotating rims; the shared rectangular podium background is removed. The lower area packs to the space remaining on the9:16 canvas.
+
+Few newcomers use larger bubbles. As the population increases, inactive bubbles compact first. A bubble that is actively receiving reactions keeps its reached size and may grow further with its stage. If protected active bubbles cannot fit, additional display entries wait rather than shrinking active ones or covering portraits. Point totals remain below the image inside the rim.
+
+Waiting portraits show the human names Lina, Sofia and Amara instead of the word SAMPLE. A separate PREVIEW / ILLUSTRATED GUESTS notice identifies them as illustrations; they are not treated as actual viewers, winners, or welcome-voice recipients.
