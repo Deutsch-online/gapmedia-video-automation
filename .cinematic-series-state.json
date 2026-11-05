@@ -2710,8 +2710,8 @@
         },
         {
           "speaker": "marta",
-          "de": "Jetzt erkenne ich die Haltestelle. Ich steige aus.",
-          "fa": "حالا ایستگاه را شناختم. پیاده می‌شوم.",
+          "de": "Ich erkenne die Haltestelle. Ich steige aus.",
+          "fa": "ایستگاه را می‌شناسم. پیاده می‌شوم.",
           "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta moves toward the door only after the bus is stationary.",
           "motion": "Marta moves toward the door only after the bus is stationary. Keep the face stable and the mouth natural; the listener remains off-camera.",
           "visible_objects": [
@@ -2749,7 +2749,8 @@
       "story_provider": "project-authored-bank-v1"
     },
     "date": "2026-11-05",
-    "status": "rendering"
+    "status": "rendering",
+    "narration_repaired": true
   },
   "attempts": {
     "2026-10-15": 2,
