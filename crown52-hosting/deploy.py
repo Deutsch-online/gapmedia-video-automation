@@ -68,11 +68,12 @@ old_manifest={}
 try:old_manifest=json.loads(read_public(url+'/narration-manifest.json',10))
 except Exception:pass
 manifest={}
+audio_by_script={}
 for language,items in scripts.items():
  for kind,text in items.items():
   name='narration-'+kind+'-'+language+'.mp3';model_id=fa_model if language=='fa' else 'eleven_turbo_v2_5'
   text_hash=hashlib.sha256(text.encode()).hexdigest();old=old_manifest.get(name,{})
-  audio=None
+  audio=audio_by_script.get((language,text_hash,model_id))
   if old.get('text_sha')==text_hash and old.get('voice')==voice['voice_id'] and old.get('model')==model_id:
    try:
     candidate=read_public(url+'/'+name,15)
@@ -85,6 +86,7 @@ for language,items in scripts.items():
     with urllib.request.urlopen(req,timeout=90) as response:audio=response.read(3000000)
    except urllib.error.HTTPError as error:raise RuntimeError('Bilingual ElevenLabs sample failed HTTP '+str(error.code)+' language='+language+' model='+model_id) from None
    if len(audio)<100:raise RuntimeError('Invalid narrator sample: '+name)
+  audio_by_script[(language,text_hash,model_id)]=audio
   (folder/'public'/name).write_bytes(audio)
   manifest[name]={'voice':voice['voice_id'],'model':model_id,'language':language,'text_sha':text_hash,'sha256':hashlib.sha256(audio).hexdigest(),'size':len(audio)}
 (folder/'public/narration-manifest.json').write_text(json.dumps(manifest))
@@ -122,7 +124,7 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs','free-play.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())

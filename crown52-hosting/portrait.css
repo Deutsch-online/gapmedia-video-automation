@@ -309,3 +309,12 @@ body.test-only #profilePreviewDialog:not([open]){display:none;}.test-page-toolba
 @media(max-width:600px){.test-page-toolbar .profile-preview-actions{grid-template-columns:repeat(2,minmax(0,1fr));}.test-page-toolbar button{font-size:11px;padding:8px;}body.test-only #profilePreviewDialog{margin:12px auto;}}
 
 .test-extra-actions{margin-top:10px;border-top:1px solid #91c6df44;padding-top:10px;}.test-extra-actions summary{cursor:pointer;font-weight:800;color:#d6f3ff;}
+
+/* Free entertainment: neutral presentation, no spending or follow incentives. */
+.free-play-notice{position:relative;z-index:2;text-align:center;background:#092c39;color:#fff;padding:8px 12px;font:700 12px/1.4 Arial,sans-serif;}
+body.is-screen .free-play-notice{font-size:14px;}.quiz-question{font:700 15px/1.5 Arial,sans-serif;color:#fff;margin:7px 0;padding:7px;background:#092b3d;border-radius:6px;grid-column:1/-1;}
+#supporterDashboard,.podium-follow-sparks,.podium-metrics,#testPreviewGiftThanks,#testPreviewLikeThanks,#testNewEntrant,#testGift,#testViewerGift,.gift-test,.gift-groups{display:none!important;}
+.sample-profile-label{position:absolute;top:32px;left:8px;z-index:12;background:#041526;color:#fff;font:800 12px/1 Arial;padding:4px;border-radius:3px;}
+.showcase-character .podium-points{visibility:hidden;}.free-result-note{font:700 14px/1.4 Arial;color:#fff;}.free-play-notice~main{min-height:0;}
+
+.experience-tabs a[href='/control'],#minGiftCoins,label[for='minGiftCoins']{display:none!important;}

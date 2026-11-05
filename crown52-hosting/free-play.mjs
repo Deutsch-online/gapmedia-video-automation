@@ -1,0 +1,21 @@
+// Free, non-monetary entertainment. No payment or engagement buys a result.
+export const FREE_PLAY_VERSION=63;
+const questions=[
+ ['How many players start on one football team?', ['9','10','11','12'],3],
+ ['Which country is home to Barcelona?', ['Spain','Italy','France','Germany'],1],
+ ['How many minutes are in a standard football match?', ['60','75','80','90'],4],
+ ['Which shape has three sides?', ['Circle','Triangle','Square','Hexagon'],2],
+ ['What is 6 + 7?', ['11','12','13','14'],3],
+ ['Which planet is called the Red Planet?', ['Mars','Earth','Venus','Jupiter'],1]
+];
+export function roundQuiz(number=1){const [question,options,answer]=questions[((Number(number)||1)-1)%questions.length];return{question,options,answer};}
+export function answerNumber(text){const n=String(text??'').replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)).trim();return /^[1-4]$/.test(n)?Number(n):null;}
+export function migrateFreePlay(s){if(s.freePlayVersion===FREE_PLAY_VERSION)return false;
+ s.policyArchive??={};s.policyArchive.v62=structuredClone({profileLedger:s.fun?.profileLedger,profileRound:s.fun?.profileRound,football:s.fun?.football});
+ s.admission.entryMode='comment';s.admission.minCoins=0;s.audio??={};s.audio.promotionalVoice=false;
+ const f=s.fun??={people:[],queue:[]};f.profileThanksQueue=[];f.profileThanksActive=null;f.profileThanksLedger={};f.profileLedger={};f.profileAttract=null;f.podiumOverrides={};
+ for(const person of [...(f.people||[]),...(f.queue||[])]){person.activity={likes:0,comments:0,coins:0,points:0};person.level=0;person.style=null;delete person.queuedActivity;}
+ const old=f.profileRound||{};f.profileRound={...old,phase:'ready',remainingMs:(old.seconds||180)*1000,deadline:null,members:[],chartMembers:[],winner:null,throneId:null,chartThroneId:null,quizResponses:[],manualVersion:47};
+ if(f.football){const l=f.football;l.scores=Array(12).fill(0);l.members=[];l.matchSupporters=[];l.previews=[];l.queue=[];l.nextVotes=[];l.active=null;l.results=null;l.attract=null;l.phase='lobby';l.remainingMs=(l.seconds||180)*1000;l.deadline=null;l.freeVoters=[];l.season=Array.from({length:12},()=>({points:0,leaguePoints:0,wins:0,last:0}));l.allSupporters=[];}
+ if(s.liveExperience==='game'){s.liveExperience='portraits';s.viewMode='fun';f.layout='portraits';}
+ s.freePlayVersion=FREE_PLAY_VERSION;return true;}
