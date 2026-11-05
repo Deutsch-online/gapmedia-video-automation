@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 18,
+  "next_episode": 19,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -148,6 +148,14 @@
       "platforms": {
         "tiktok": 2844,
         "instagram": 2845
+      }
+    },
+    "2026-11-05": {
+      "episode": 18,
+      "message_id": 2862,
+      "platforms": {
+        "tiktok": 2862,
+        "instagram": 2863
       }
     }
   },
@@ -2587,10 +2595,8 @@
       },
       "mood": "comic",
       "duration_seconds": 45
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "story_id": "project-bus-stop-v1",
       "title_de": "Meine Haltestelle erkennen",
       "title_fa": "ایستگاهم را پیدا کنم",
@@ -2747,21 +2753,9 @@
         "transport": "urllib"
       },
       "story_provider": "project-authored-bank-v1"
-    },
-    "date": "2026-11-05",
-    "status": "exporting",
-    "narration_repaired": true,
-    "platform_receipts": {
-      "tiktok": 2862,
-      "instagram": 2863
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0018/tiktok/e0018-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0018/instagram/e0018-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0018/instagram/e0018-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
