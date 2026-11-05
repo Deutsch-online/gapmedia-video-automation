@@ -8,4 +8,4 @@ export function resultSpeech(results,language='en'){if(language==='fa'){const te
 export const profileInviteSpeech=(language='en')=>NARRATION[language==='fa'?'fa':'en'].invite;
 export function profileThanksSpeech(){return '';}
 
-export function profileWinnerSpeech(w,language='en'){return language==='fa'?'این دور تمام شد. '+(w.tied?'چند پاسخ درست با امتیاز برابر ثبت شد.':'پاسخ درست ثبت شد.')+' ممنون از همراهی شما!':'This round is complete. '+(w.tied?'Several correct answers share the top score.':'A correct answer was recorded.')+' Thank you for taking part!';}
+export function profileWinnerSpeech(w,language='en'){return language==='fa'?'این دور تمام شد. '+(w.tied?'چند شرکت‌کننده امتیاز برابر دارند.':'امتیازهای واقعی این دور ثبت شد.')+' ممنون از همراهی شما!':'This round is complete. '+(w.tied?'Several participants share the top score.':'The round scores have been recorded.')+' Thank you for taking part!';}

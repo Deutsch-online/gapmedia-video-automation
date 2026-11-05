@@ -19,3 +19,5 @@ export function migrateFreePlay(s){if(s.freePlayVersion===FREE_PLAY_VERSION)retu
  if(f.football){const l=f.football;l.scores=Array(12).fill(0);l.members=[];l.matchSupporters=[];l.previews=[];l.queue=[];l.nextVotes=[];l.active=null;l.results=null;l.attract=null;l.phase='lobby';l.remainingMs=(l.seconds||180)*1000;l.deadline=null;l.freeVoters=[];l.season=Array.from({length:12},()=>({points:0,leaguePoints:0,wins:0,last:0}));l.allSupporters=[];}
  if(s.liveExperience==='game'){s.liveExperience='portraits';s.viewMode='fun';f.layout='portraits';}
  s.freePlayVersion=FREE_PLAY_VERSION;return true;}
+
+export function quizState(round={},time=Date.now()){const remaining=round.phase==='playing'?Math.max(0,(round.deadline||time)-time):Math.max(0,round.remainingMs??(round.seconds||180)*1000);const elapsed=Math.max(0,(round.seconds||180)*1000-remaining);const slot=Math.min(Math.max(0,Math.ceil((round.seconds||180)/30)-1),Math.floor(elapsed/30000));return{...roundQuiz((round.number||1)+slot),slot,nextIn:Math.max(0,Math.min(30-elapsed%30000/1000,remaining/1000))};}

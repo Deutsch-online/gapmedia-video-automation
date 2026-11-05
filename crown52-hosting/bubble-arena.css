@@ -1,0 +1,38 @@
+/* Portraits remain unobstructed: all names, likes and quiz scores live below the orb. */
+#funCards.bubble-studio{display:flex!important;flex-direction:column!important;gap:16px!important;overflow:visible;grid-template:none!important;min-height:0!important;}
+.bubble-arena{position:relative;width:100%;aspect-ratio:1/.69;isolation:isolate;background:radial-gradient(ellipse at 50% 20%,#1a657f30,transparent 65%);border-top:1px solid #b7edff24;}
+.bubble-member{position:absolute;transform:translate(-50%,0);width:var(--bubble-size);z-index:1;transition:top 1000ms cubic-bezier(.2,.7,.25,1),left 1000ms cubic-bezier(.2,.7,.25,1),width 1100ms;overflow:visible;text-align:center;}
+.bubble-orb{position:relative;width:100%;aspect-ratio:1;border-radius:50%;background:#071c31;box-shadow:0 0 0 2px var(--bubble-color),0 0 18px color-mix(in srgb,var(--bubble-color) 34%,transparent),inset 0 0 15px #fff2;isolation:isolate;}
+.bubble-orb>.avatar{position:absolute;inset:4px;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;border-radius:50%!important;overflow:hidden;border:0!important;background-color:#0b263d;}
+.bubble-orb>.avatar img{width:100%;height:100%;object-fit:cover;}
+.bubble-glass{pointer-events:none;position:absolute;inset:0;border-radius:50%;border:1px solid #fff8;background:radial-gradient(ellipse at 30% 13%,#fff2,transparent 26%);}
+.bubble-blade{pointer-events:none;position:absolute;inset:-7px;border:2px solid transparent;border-top-color:var(--bubble-color);border-bottom-color:var(--bubble-color);border-radius:45% 55% 48% 52%;animation:bubbleBlade var(--blade-speed) linear infinite;opacity:var(--glow-power);}
+.bubble-blade.second{inset:-11px;border-top-color:transparent;border-left-color:var(--bubble-color);animation-direction:reverse;animation-duration:calc(var(--blade-speed)*1.3);}
+.bubble-caption{position:relative;margin:13px -12px 0;display:flex;align-items:center;flex-direction:column;gap:3px;line-height:1.2;background:#041b2bd9;border-radius:8px;padding:5px 2px;}
+.bubble-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 12px/1.25 Arial;color:#fff;filter:none;text-shadow:none;}
+.bubble-stat{font:800 12px/1.2 Arial;color:#b8f2ff;}.bubble-likes{font:700 10px/1.2 Arial;color:#ffc7df;}.bubble-likes:empty{display:none;}
+.bubble-member[data-contact=attacker]{z-index:8;}.bubble-member[data-contact=rival]{z-index:6;}
+.like-spark .bubble-orb,.score-growing .bubble-orb{animation:bubbleFlash 1500ms ease-out;}.bubble-empty{position:absolute;inset:30% 10% auto;text-align:center;color:#b7d7e5;font:700 14px/1.6 Arial;}
+@keyframes bubbleBlade{to{transform:rotate(360deg)}}@keyframes bubbleFlash{20%{box-shadow:0 0 0 3px #fff,0 0 35px var(--bubble-color)}100%{box-shadow:0 0 0 2px var(--bubble-color),0 0 18px #52d8ff44}}
+#funCards.bubble-studio .profile-live-podium{position:relative;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;min-height:0!important;width:100%;margin:18px 0 4px!important;}
+#funCards.bubble-studio .profile-podium-card{position:relative!important;width:100%!important;height:auto!important;aspect-ratio:.56!important;min-height:0!important;max-height:none!important;border-radius:17px!important;background:linear-gradient(150deg,#102f4b,#041726 65%)!important;border:2px solid var(--seat-metal)!important;box-shadow:0 0 16px color-mix(in srgb,var(--seat-metal) 30%,transparent)!important;overflow:visible!important;}
+#funCards.bubble-studio .place-1{--seat-metal:#f5cb6d;grid-column:2;grid-row:1;align-self:start;margin-top:-18px;}#funCards.bubble-studio .place-2{--seat-metal:#98ddf7;grid-column:1;grid-row:1;}#funCards.bubble-studio .place-3{--seat-metal:#d3a4f0;grid-column:3;grid-row:1;}
+#funCards.bubble-studio .profile-card-art{inset:4px 4px 100px!important;border-radius:12px!important;overflow:hidden!important;height:auto!important;}
+#funCards.bubble-studio .profile-card-art .fun-portrait{inset:0!important;height:100%!important;}.bubble-studio .profile-card-art .avatar{border-radius:0!important;}
+#funCards.bubble-studio .podium-name{bottom:72px!important;background:transparent!important;font-size:13px!important;line-height:16px;}
+#funCards.bubble-studio .podium-points{bottom:48px!important;left:0!important;right:0!important;text-align:center;font-size:16px!important;}
+#funCards.bubble-studio .podium-social{bottom:5px!important;height:35px!important;}.bubble-studio .podium-social-stat b{font-size:11px!important;}.bubble-studio .podium-social-stat small{font-size:5px!important;}
+#funCards.bubble-studio .podium-follow-call{display:none!important;}.bubble-studio .podium-crown{top:-28px!important;}.bubble-studio .podium-rank{top:5px;left:7px;background:#041725;border-radius:10px;padding:3px;}
+#funCards.bubble-studio .sample-profile-label{top:auto;bottom:48px;left:0;right:0;text-align:center;background:transparent;}
+#funCards.bubble-studio .profile-country-frame,#funCards.bubble-studio .podium-ornaments{display:none!important;}
+#funCards.bubble-studio .profile-country-banner{top:4px;left:20%;right:5%;}.bubble-studio .country-crest{bottom:105px!important;width:27px;}.bubble-studio .country-prompt{font-size:7px!important;top:26px;}
+#profileRoundPanel .quiz-question{font-size:13px;line-height:1.5;margin-bottom:0;}.live-health-note{border:1px solid #5facc759;border-radius:9px;padding:10px;color:#dbf4ff;background:#082a38;font:600 12px/1.7 Arial;}
+.bubble-preview-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}.bubble-preview-actions .button{flex:1;min-width:110px;}
+@media(prefers-reduced-motion:reduce){.bubble-blade,.like-spark .bubble-orb,.score-growing .bubble-orb{animation:none!important;}.bubble-member{transition:none;}}
+
+#profileRoundResult{display:none!important;}
+
+/* Compact lower arena: only the portrait and a numeric score inside its lower rim. */
+.bubble-arena .bubble-caption{display:none!important;}.bubble-arena .bubble-orb>.avatar{inset:5px 5px 24%!important;width:calc(100% - 10px)!important;height:auto!important;border-radius:50% 50% 24% 24%!important;overflow:hidden;}.bubble-arena .bubble-orb>.avatar img{object-position:50% 30%;}
+.bubble-score{position:absolute;left:12%;right:12%;bottom:5%;height:19%;display:flex;justify-content:center;align-items:center;border-radius:0 0 45% 45%;background:#04182bea;color:#fff0b2;font:900 13px/1 Arial;z-index:4;text-shadow:none;filter:none;}
+.bubble-member .bubble-glass{background:none;}.bubble-member{transition:top 1000ms cubic-bezier(.2,.7,.25,1),left 1000ms cubic-bezier(.2,.7,.25,1),width 1100ms;}
