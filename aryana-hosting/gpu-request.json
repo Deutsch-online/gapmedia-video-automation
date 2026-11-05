@@ -1,1 +1,8 @@
-{"request": "aryana-gpu-previews-v2-media-tools", "max_generations": 3, "paid_fallback": false}
+{
+  "mode": "studio-reference-preview",
+  "reference": "nov05",
+  "preview_only": true,
+  "paid_requested": false,
+  "maximum_generations": 3,
+  "approved_image_sha256": "8fbf17e794962a4d2e504eb85d3b40e65a36eef345738a01156fb0fc8923521e"
+}
