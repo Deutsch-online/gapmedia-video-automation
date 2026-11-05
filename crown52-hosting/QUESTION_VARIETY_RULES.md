@@ -1,0 +1,10 @@
+# Bilingual questions and welcome variety — version68
+
+-221 unique bilingual questions cover geography, nature, science, sport, everyday knowledge, arithmetic and number patterns. Both languages share the same question ID and answer key. Option order is fixed per question, so switching language cannot change its correct answer.
+- A persistent one-hour question history is independent of the round counter. A fresh30-second slot or new round selects an unused ID. Resetting the round does not clear the history; resuming a paused round keeps its current question. Deployment recovery uses the full private server snapshot. If a host exhausts the bank unusually quickly, the app waits for an eligible fresh question instead of repeating one inside the hour.
+- The six questions from the old short bank are quarantined for the first hour after migration.
+- Persian selection saves the display and narrator language together. Questions, answer choices, live messages and welcome speech follow that selection. Numeric choices remain Western1–4 as requested. Mathematical expressions in Persian questions use directional isolation for correct operand order.
+- Welcome narration combines20 openings and12 endings into240 distinct phrasings per language. The variant sequence is persisted. Real names are stripped of digits and symbols for speech; illustrated/test profiles are not welcomed. At most one actual visible person is welcomed per30-second opportunity while the bridge is connected; the same person is not repeated within5 minutes.
+- Private welcome tests cycle among three pre-generated samples per language. They require no new voice generation per click. Runtime narration retains the existing provider allowance and cached speech behavior; no gift/like/follow solicitations are present.
+
+Validation:120 sequential30-second question slots contain no repeated ID; resetting and restoring do not repeat a recent question; exhausting the bank forces a wait;240 welcome strings are unique per language for the same clean name. The lifecycle, eligibility, scoring deduplication and crowd-layout checks remain in place.

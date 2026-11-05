@@ -91,3 +91,6 @@
 #funCards.bubble-studio .comic-stamp,#funCards.bubble-studio .comic-canvas{display:none!important;}
 #funCards.bubble-studio .profile-live-podium{background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;}
 #funCards.bubble-studio .profile-live-podium:before,#funCards.bubble-studio .profile-live-podium:after{display:none!important;}
+html[lang=fa] #profileRoundPanel .quiz-question{direction:rtl;text-align:right;}
+html[lang=fa] #profileRoundPanel .quiz-title,html[lang=fa] #profileRoundPanel .quiz-option{font-family:Tahoma,Arial,sans-serif!important;letter-spacing:0;}
+html[lang=fa] #profileRoundPanel .quiz-next{font-family:Tahoma,Arial,sans-serif;}

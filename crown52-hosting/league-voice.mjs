@@ -1,3 +1,4 @@
+import {WELCOME_SCRIPTS} from './welcome-scripts.mjs';
 import {welcomeName} from './bubble-stages.mjs';
 import {NARRATION} from './narration-scripts.mjs';
 const NAMES=['Real Madrid','Barcelona','Chelsea','Manchester United','Manchester City','Arsenal','Paris Saint Germain','Bayern Munich','Liverpool','Juventus','AC Milan','Inter Milan'];
@@ -11,4 +12,4 @@ export function profileThanksSpeech(){return '';}
 
 export function profileWinnerSpeech(w,language='en'){return language==='fa'?'این دور تمام شد. '+(w.tied?'چند شرکت‌کننده امتیاز برابر دارند.':'امتیازهای واقعی این دور ثبت شد.')+' ممنون از همراهی شما!':'This round is complete. '+(w.tied?'Several participants share the top score.':'The round scores have been recorded.')+' Thank you for taking part!';}
 
-export function profileWelcomeSpeech(person,language='en'){const name=welcomeName(person);return language==='fa'?(name?name+' عزیز، خوش آمدید. از حضورتان خوشحالیم.':'دوست عزیز، خوش آمدید. از حضورتان خوشحالیم.'):(name?'Welcome, '+name+'. It is lovely to have you here.':'Welcome, friend. It is lovely to have you here.');}
+export function profileWelcomeSpeech(person,language='en',variant=0){const lang=language==='fa'?'fa':'en',bank=WELCOME_SCRIPTS[lang],n=Math.max(0,Math.floor(Number(variant)||0)),name=welcomeName(person)||(lang==='fa'?'دوست':'friend'),open=bank.open[n%20],close=bank.close[(n*5+Math.floor(n/20))%12];return open.replaceAll('{name}',name)+' '+close;}
