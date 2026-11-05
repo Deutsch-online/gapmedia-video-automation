@@ -43,8 +43,10 @@ if (action === 'verify') {
   // Metadata stays German; Persian belongs only to the in-video subtitles.
   const germanTitle = /\p{Script=Arabic}/u.test(String(p.plan.title_de || ''))
     ? 'Eine neue Geschichte' : p.plan.title_de;
-  const caption = `${germanTitle}\n\n#DeutschLernen #DeutschA1 #Alltagsdeutsch #DeutschDialoge`;
+  const shortTitle = Array.from(String(germanTitle || "Deutsch im Alltag").replace(/\s+/g, " ").trim()).slice(0, 70).join("");
+  const caption = `${shortTitle}\n#DeutschLernen ${platform === "instagram" ? "#Alltagsdeutsch" : "#LearnGerman"}`;
   const result = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, attempts: 1, caption });
   if (!result?.message_id) throw new Error('Telegram did not confirm delivery');
   console.log(JSON.stringify({ message_id: result.message_id }));
 }
+

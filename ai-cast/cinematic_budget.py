@@ -9,8 +9,10 @@ import re
 import math
 from datetime import datetime, timezone
 import urllib.request
+from cinematic_time_budget import policy as time_policy, TimeBudget, journal_path
 
 SCENE = None
+_TIME_SESSION = None
 
 
 def set_scene(episode, index):
@@ -70,17 +72,24 @@ def preflight(token=None):
     token = token or os.getenv('HF_TOKEN')
     result = {'checked_at': datetime.now(timezone.utc).isoformat(),
               'generation_requested': False, 'order': ['hf-included', 'hf-anonymous-free']}
+    strict = time_policy()
+    if strict:
+        result.update(order=['hf-included'], strict_time_budget=True, paid_route=False,
+                      can_admit_minimum_stage=False)
     if not token:
         return {**result, 'status': 'missing_token', 'remaining_seconds': None,
-                'can_admit_one_speaking_take': False, 'fallback': 'hf-anonymous-free'}
+                'can_admit_one_speaking_take': False, 'fallback': None if strict else 'hf-anonymous-free'}
     try:
         remaining = read_quota(token)
+        if strict:
+            minimum = strict.get('minimum_stage_seconds', 120)
+            result['can_admit_minimum_stage'] = remaining >= minimum + strict['reserve_seconds']
         return {**result, 'status': 'verified', 'remaining_seconds': remaining,
                 'can_admit_one_speaking_take': remaining >= 510,
-                'fallback': 'hf-anonymous-free' if remaining < 510 else None}
+                'fallback': 'hf-anonymous-free' if not strict and remaining < 510 else None}
     except Exception:
         return {**result, 'status': 'unverified', 'remaining_seconds': None,
-                'can_admit_one_speaking_take': False, 'fallback': 'hf-anonymous-free'}
+                'can_admit_one_speaking_take': False, 'fallback': None if strict else 'hf-anonymous-free'}
 
 
 def run_gpu(fn, required_seconds):
@@ -93,6 +102,23 @@ def run_gpu(fn, required_seconds):
         raise RuntimeError('Cached-only finishing cannot request GPU generation')
     import build
     token = os.getenv('HF_TOKEN') or None
+    strict = time_policy()
+    if strict:
+        global _TIME_SESSION
+        if not token:
+            raise RuntimeError('quota: verified included time requires the configured account token')
+        try:
+            remaining = read_quota(token)
+        except Exception:
+            raise RuntimeError('quota: cannot verify included time; no GPU request admitted') from None
+        if _TIME_SESSION is None:
+            _TIME_SESSION = TimeBudget(remaining, strict['reserve_seconds'], journal_path())
+        previous = build.TOKEN
+        try:
+            build.TOKEN = token
+            return _TIME_SESSION.run(fn, required_seconds, remaining, lambda: read_quota(token), SCENE)
+        finally:
+            build.TOKEN = previous
     previous = build.TOKEN
     errors = []
     for name, credential in ([('hf-included', token)] if token else []) + [('hf-anonymous-free', False)]:
@@ -119,3 +145,4 @@ def run_gpu(fn, required_seconds):
             build.TOKEN = previous
     prefix = 'quota: ' if any('quota' in error.lower() for error in errors) else ''
     raise RuntimeError(prefix + 'All eligible free GPU routes exhausted: ' + ' | '.join(errors))
+
