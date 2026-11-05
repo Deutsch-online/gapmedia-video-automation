@@ -1,8 +1,9 @@
 {
   "mode": "studio-reference-preview",
-  "reference": "nov05",
+  "reference": "nov05-v2",
   "preview_only": true,
   "paid_requested": false,
   "maximum_generations": 3,
+  "low_quota_provider": "Lightricks/ltx-video-distilled",
   "approved_image_sha256": "8fbf17e794962a4d2e504eb85d3b40e65a36eef345738a01156fb0fc8923521e"
 }

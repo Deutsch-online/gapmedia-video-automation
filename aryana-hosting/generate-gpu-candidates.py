@@ -25,16 +25,18 @@ if studio:
  ('speaking',root/'aryana-hosting/assets/introduction.mp3','An original adult woman seated behind a desk warmly speaking to the camera in sync with the supplied audio. Restrained natural lip and jaw movement, stable exact facial identity and nose, soft eyes, subtle head movement. Hands remain natural on the desk. Fixed camera, no zoom, no exaggerated gestures.'),
  ('smile',silence,'An original adult woman seated behind a desk listening then giving a small friendly smile and one subtle nod. Mouth stays mostly closed, no talking. One small relaxed open-hand gesture above the desk then gently resting the hand again. Preserve exact face and fingers, hair and clothing. Fixed studio camera, no zoom, no scene changes.')]
 try:
- client=Client('victor/LongCat-Video-Avatar-1.5',token=token,verbose=False,download_files='/tmp/aryana-gpu-downloads')
+ ltx=studio and quota()<600
+ report['provider']='Lightricks/ltx-video-distilled' if ltx else 'victor/LongCat-Video-Avatar-1.5'
+ client=Client(report['provider'],token=token,verbose=False,download_files='/tmp/aryana-gpu-downloads')
  for name,audio,prompt in plans:
   remaining=quota()
   # The app requests an xlarge 240-second slot, charged as up to 480 quota seconds.
   # Preserve 120 additional included seconds; never use previously approved paid episodes.
-  if remaining<600:
-   report['stopped_reason']='included_quota_below_600_seconds';break
+  if remaining<(240 if ltx else 600):
+   report['stopped_reason']='included_quota_below_safe_reserve';break
   began=time.time();job=None
   try:
-   job=client.submit(handle_file(str(image)),handle_file(str(audio)),prompt,'480p',42,'Clean speech (fast)','DBCache faster',api_name='/generate')
+   job=client.submit(prompt,'worst quality, distorted face, changing identity, extra fingers, malformed hands, camera motion, zoom, excessive blinking, exaggerated mouth, flickering, deformed background',handle_file(str(image)),None,896,512,'image-to-video',6,9,42,False,1,True,api_name='/image_to_video') if ltx else client.submit(handle_file(str(image)),handle_file(str(audio)),prompt,'480p',42,'Clean speech (fast)','DBCache faster',api_name='/generate')
    result=job.result(timeout=600)
    value=result[0] if isinstance(result,(tuple,list)) else result
    if isinstance(value,dict):value=value.get('video') or value.get('path')
