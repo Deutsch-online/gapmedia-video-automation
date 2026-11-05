@@ -2749,7 +2749,7 @@
       "story_provider": "project-authored-bank-v1"
     },
     "date": "2026-11-05",
-    "status": "exporting",
+    "status": "dispatching",
     "narration_repaired": true,
     "platform_receipts": {
       "tiktok": 2862
@@ -2758,8 +2758,8 @@
       "tiktok": "renders/cinematic-series/e0018/tiktok/e0018-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0018/instagram/e0018-instagram-45s.mp4"
     },
-    "file": "renders/cinematic-series/e0018/tiktok/e0018-tiktok-45s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0018/instagram/e0018-instagram-45s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
