@@ -516,11 +516,25 @@ def make_plan(state):
                 raise RuntimeError('The requested doctor story needs its matching official source')
             template.update(episode=episode, research_source=source)
             return validate_plan(template, episode, state['history'])
+    config = load_json(CONFIG)
+    planning = config.get('story_planning', {})
+    project_research = None
+    if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):
+        from cinematic_story_bank import select_story
+        project_research = research_source(episode)
+        bank = load_json(ROOT / planning['bank'])
+        curated = select_story(bank, episode, episode_seconds(episode, config),
+                               project_research, state['history'], config, validate_plan)
+        if curated is not None:
+            print('Project story bank selected: ' + curated['story_id'] +
+                  '; official source fetched; no external story-model request.', flush=True)
+            return curated
+        print('No unused matching project story; trying eligible free text providers.', flush=True)
     memory = [{'episode': h['episode'], 'title': h['title_de'], 'summary': h['summary'],
                'cliffhanger': h['cliffhanger'], 'deferred_scenes': h.get('deferred_scenes', []),
                'previous_creative_review': h.get('creative_review', {})} for h in state['history'] if h.get('series_version') == 'wg-alltag-v1']
     target = episode_seconds(episode) if episode >= 7 else 60
-    research = research_source(episode) if episode >= 7 else None
+    research = (project_research or research_source(episode)) if episode >= 7 else None
     mood = 'comic'
     prompt = (f'Write the NEXT {target}-second German A1/A2 animated everyday-life conversation. '
               'Marta & Lukas: Alltag in Deutschland. From episode 6 onward this is a warm recurring 3D sitcom about starting life in Germany. '
@@ -1175,12 +1189,20 @@ def production(force=False):
         checkpoint(state)
         print('No verified included time for the next GPU stage; no production started.', flush=True)
         return
-    state['attempts'][date] = state['attempts'].get(date, 0) + 1
-    checkpoint(state)
     bot('verify')
     pending = state.get('pending')
-    plan = pending['plan'] if pending else make_plan(state)
-    validate_plan(plan, state['next_episode'], state['history'])
+    try:
+        plan = pending['plan'] if pending else make_plan(state)
+        validate_plan(plan, state['next_episode'], state['history'])
+    except Exception as exc:
+        failures = state.setdefault('planning_failures', {})
+        previous = failures.get(date, {})
+        failures[date] = {'count': previous.get('count', 0) + 1,
+                          'error': provider_error(exc)[:1200], 'gpu_requested': False}
+        checkpoint(state)
+        raise
+    # Story/validation failures are not a GPU production start and cannot consume the daily slot.
+    state['attempts'][date] = state['attempts'].get(date, 0) + 1
     state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
     if not cinematic_budget.time_policy() and approved_credit(state):
         if not os.getenv('GITHUB_RUN_ID'):
@@ -1276,11 +1298,22 @@ def finish_cached():
 def main():
     os.chdir(ROOT)
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['gate', 'run', 'check', 'conform', 'finish-cached'])
+    parser.add_argument('action', choices=['gate', 'run', 'check', 'conform', 'finish-cached', 'plan-only'])
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--file')
     parser.add_argument('--seconds', type=int, default=DEFAULT_SECONDS)
     args = parser.parse_args()
+    if args.action == 'plan-only':
+        state = load_json(STATE, new_state())
+        plan = copy.deepcopy(state['pending']['plan']) if state.get('pending') else make_plan(state)
+        validate_plan(plan, state['next_episode'], state['history'])
+        target = Path(args.file or 'renders/story-plan-preview.json')
+        atomic_json(target, plan)
+        print(json.dumps({'status': 'validated-plan-only', 'episode': plan['episode'],
+                          'story_id': plan.get('story_id'), 'provider': plan.get('story_provider'),
+                          'source': plan['research_source']['url'], 'gpu_requested': False,
+                          'telegram_sent': False}, ensure_ascii=False))
+        return
     if args.action == 'finish-cached':
         finish_cached()
         return
@@ -1312,5 +1345,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

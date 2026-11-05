@@ -1,0 +1,31 @@
+name: Verify live story planning without external text models
+on:
+  push:
+    branches: [codex/fix-story-provider]
+    paths: [.story-planning-probe.json]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate authored stories and unchanged production invariants
+        run: python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
+      - name: Prepare the actual next episode using live official research, no provider credentials
+        env:
+          CINEMATIC_FREE_PLANNING_ONLY: 'on'
+        run: python ai-cast/cinematic-series.py plan-only --file renders/story-plan-preview.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-live-story-plan
+          path: renders/story-plan-preview.json
+          retention-days: 14

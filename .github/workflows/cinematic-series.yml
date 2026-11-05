@@ -20,6 +20,8 @@ on:
       - ai-cast/cinematic-series-bot.mjs
       - tests/test_cinematic_series.py
       - ai-cast/cinematic_daily.py
+      - ai-cast/cinematic_story_bank.py
+      - ai-cast/story-bank.json
       - ai-cast/cinematic_time_budget.py
       - ai-cast/cinematic_budget.py
       - tests/test_cinematic_daily.py
@@ -88,6 +90,7 @@ jobs:
           python -m unittest discover -s tests -p test_cinematic_series.py -v
           python -m unittest discover -s tests -p test_wan2gp_backend.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
+          python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m py_compile ai-cast/wan2gp_worker.py

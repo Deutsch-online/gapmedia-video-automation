@@ -1,7 +1,1 @@
-{
-  "requestedAt": "2026-10-21T16:40:26.696842+00:00",
-  "requestId": "597a83b7-2274-49d0-9c4f-5193ccb97a72",
-  "source": "owner-resume-original-3d-series-with-authored-plan",
-  "episode": 8,
-  "paid_authorized": false
-}
+{"request":"owner-fix-story-provider-20261105","episode":18,"reason":"Resume today's first actual production after two verified pre-GPU planning failures; retain Berlin-day and included-time gates."}

@@ -11,6 +11,8 @@ on:
       - ai-cast/cinematic_budget.py
       - ai-cast/cinematic_daily.py
       - ai-cast/cinematic_time_budget.py
+      - ai-cast/cinematic_story_bank.py
+      - ai-cast/story-bank.json
       - tests/test_cinematic*.py
 permissions:
   contents: read
@@ -33,6 +35,7 @@ jobs:
           sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
       - name: Verify budget, scheduling, timing and delivery invariants without service credentials
         run: |
+          python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
