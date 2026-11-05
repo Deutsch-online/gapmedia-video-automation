@@ -2749,9 +2749,11 @@
       "story_provider": "project-authored-bank-v1"
     },
     "date": "2026-11-05",
-    "status": "dispatching",
+    "status": "exporting",
     "narration_repaired": true,
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2862
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0018/tiktok/e0018-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0018/instagram/e0018-instagram-45s.mp4"
