@@ -1,6 +1,44 @@
 {
   "paid_requested": false,
   "generation_limit": 3,
-  "clips": [],
-  "quota_before": 464.9704629999999
+  "clips": [
+    {
+      "name": "listening",
+      "status": "generated",
+      "elapsed_seconds": 20.47,
+      "duration": 5.9,
+      "width": 512,
+      "height": 896,
+      "sha256": "d5d4079477907af1b0be69fe7a2dd9f031ba4113be5893e960a0411e8e839456",
+      "remaining_seconds": 426.9399189999997
+    },
+    {
+      "name": "speaking",
+      "status": "generated",
+      "elapsed_seconds": 22.21,
+      "duration": 5.9,
+      "width": 512,
+      "height": 896,
+      "sha256": "a2a56b7884c993c3ef7b3fafbd235f3edfb280dd056dfb69fa2863b4cc720d1a",
+      "remaining_seconds": 391.73580699999957
+    },
+    {
+      "name": "smile",
+      "status": "generated",
+      "elapsed_seconds": 15.03,
+      "duration": 5.9,
+      "width": 512,
+      "height": 896,
+      "sha256": "55c50e3bbc0cfdb340c8df6e28160d463613cacead2ad71ff12ef205a46aeb37",
+      "remaining_seconds": 364.6298449999995
+    }
+  ],
+  "quota_before": 464.9704629999999,
+  "preview_only": true,
+  "deployed_to_live": false,
+  "reference_style": "seated-desk-purple-studio",
+  "image_sha256": "8fbf17e794962a4d2e504eb85d3b40e65a36eef345738a01156fb0fc8923521e",
+  "provider": "Lightricks/ltx-video-distilled",
+  "elapsed_seconds": 59.34,
+  "quota_after": 364.6298449999995
 }
