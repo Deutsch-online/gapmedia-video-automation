@@ -40,17 +40,25 @@ jobs:
           for attempt in range(120):
               try:
                   health=json.loads(read_app('/health'))
-                  if health.get('build')=='9c4f05ab990a289d21f7fc06cda952a248b873bb':break
+                  if health.get('build')=='b03cb8407c0d275b6771681cc48278de033aa0c6':break
               except Exception:pass
               time.sleep(10)
-          else:raise RuntimeError('Expected profile62 deployment is not ready')
-          html=read_app('/fun/control?v=62').decode()
+          else:raise RuntimeError('Expected free63 deployment is not ready')
+          html=read_app('/fun/control?v=63').decode()
           for element in ['profileTestTab','profilePreviewDialog','repeatProfilePreview','growProfilePreview','closeProfilePreview']:
               if ('id="'+element+'"') not in html:raise RuntimeError('Missing deployed preview control: '+element)
-          css=read_app('/portrait.css?v=62').decode()
+          css=read_app('/portrait.css?v=63').decode()
           if 'body.test-only' not in css or '.profile-preview-dialog' not in css:raise RuntimeError('Updated bold preview styles missing')
-          print('CROWN62_TEST_TAB_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'preview_controls':5,'bold_stats':True}))
-          text="نسخه62 — تب جداگانه تست لایف\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=62\n\nتب تست مستقیم:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=62\n\nنمای TikTok LIVE Studio — 1080×1920:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=62\n\nرمز همان رمز قبلی است. پنل را رفرش کنید و «تست لایف» را بزنید.\n\nدکمه‌های تست:\n• صدای گوینده با انتخاب فارسی یا انگلیسی\n• 100،500 و1000 لایک\n• گیفت100 و1000 کوین\n• تکرار شمارش از صفر و افزایش آمار نمونه\n• بخش «تست موشن، دیزاین و تازه‌وارد»:8 حرکت،6 دیزاین و ورود پروفایل\n• برگشت به پنل قبلی\n\nتست‌ها بدون اتصال TikTok کار می‌کنند و فقط داخل صفحه آزمایش نمایش داده می‌شوند. روی امتیاز، سابقه، افراد و تنظیمات بازی زنده اثر ندارند. زبان صدای تست مستقل است؛ زبان گوینده واقعی را در بخش صدای پنل انتخاب کنید که خودکار ذخیره می‌شود.\n\nنمایش و صدا:\n• متن نام و آمار خوانا و ثابت است؛ تصویر و قاب حرکت می‌کنند.\n• آمار بزرگ با1K،3K و12.5K کوتاه می‌شود؛ مقدار کامل حفظ است.\n• گوینده واقعی ElevenLabs برای فارسی و انگلیسی؛ فایل‌های تست آماده‌اند و هر بار زدن دکمه هزینه تولید تازه ندارد.\n• تشکر لایک100،500 و1000 و گیفت واقعی: لایکر سمت چپ و گیفتر سمت راست تاج9ثانیه دیده می‌شوند و سپس جایگاه‌ها بازمی‌گردند.\n• دعوت حمایت، فالو و فعالیت با زبان انتخاب‌شده، با رعایت قطع صدا و صحبت میزبان.\n\nآمار واقعی فقط از داده دریافتی TikTok است؛ داده ناموجود «—» است. پیش‌نمایش آمار، نمونه است. اتصال واقعی برای دریافت خودکار رویدادها لازم است و این تب محدودیت سرویس اتصال TikTok را رفع نمی‌کند.\n\nیک صفحه24نفره، صف انتظار، سابقه حمایت‌کنندگان و زمان فعلی بازی حفظ شده‌اند. برای نمای قدیمی، «رفرش نمای لایف» یا Refresh منبع Link/Browser در Studio را بزنید."
+          state=json.loads(read_app('/api/state'))['state']
+          if state.get('freePlayVersion')!=63 or state['admission']['entryMode']!='comment' or state['admission']['minCoins']!=0:raise RuntimeError('Free play enforcement missing')
+          if 'policyArchive' in state:raise RuntimeError('Private policy archive exposed')
+          source=read_app('/narration-scripts.mjs').decode()
+          scripts=json.loads(source.split('=',1)[1].strip().rstrip(';'))
+          forbidden=['follow','فالو','لایک','گیفت','کوین']
+          if any(word in text.lower() for items in scripts.values() for text in items.values() for word in forbidden):raise RuntimeError('Promotional narration remains')
+          if b'quiz-question' not in read_app('/game.mjs'):raise RuntimeError('Quiz screen missing')
+          print('CROWN63_FREE_PLAY_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'preview_controls':5,'bold_stats':True}))
+          text="نسخه63 — استودیوی سرگرمی رایگان\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=63\n\nنمای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=63\n\nتست خصوصی:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=63\n\nرمز همان رمز قبلی است. پنل و منبع Browser/Link در Studio را رفرش کنید.\n\nتغییرات:\n• درخواست صوتی خودکار لایک، گیفت و فالو حذف شد.\n• گوینده فقط متن خوش‌آمد و توضیح سرگرمی یا نتیجهٔ واقعی را می‌گوید؛ فارسی و انگلیسی باقی است.\n• گیفت، لایک و فالو موجب ورود، امتیاز، ارتقای جایگاه یا شانس برنده‌شدن نمی‌شوند.\n• تشکرهای تبلیغی، نمایش‌های بزرگ گیفت/لایک و دکمه‌های درخواست فالو حذف شدند.\n• کارت‌های شانسی قبلی به استودیوی رایگان هدایت می‌شوند؛ جایزهٔ نقدی، کوین، گیفت یا قابل‌تبدیل وجود ندارد.\n\nقانون پرسش‌وپاسخ:\n1. پرسش و چهار گزینه روی صفحهٔ انگلیسی دیده می‌شود.\n2. هر نفر در هر دور فقط یک پاسخ1تا4 دارد؛ عدد فارسی و عربی هم پذیرفته می‌شود.\n3. پاسخ درست10امتیاز و پاسخ نادرست0است؛ پیام تکراری امتیاز اضافه ندارد.\n4. امتیاز برابر، نتیجهٔ مشترک دارد؛ پرداخت معیار شکستن تساوی نیست.\n5. مدت دور از پنل قابل تنظیم است؛ مدت فعلی حفظ شده.\n\nنظرسنجی فوتبال:\n• انتخاب با عدد، نام یا مخفف باشگاه.\n• هر نفر یک انتخاب رایگان در هر دور؛10امتیاز برای تیم.\n• پیام‌های بیشتر و پرداخت، رأی اضافه نمی‌خرند.\n\nنمایش:\n• موشن قاب، ورود پروفایل، پرچم و صدای کارت باقی است.\n• پروفایل‌های ساختگی و نتایج نمونه با SAMPLE مشخص‌اند و وارد امتیاز واقعی نمی‌شوند.\n• آمار واقعی فقط از دادهٔ TikTok است؛ دادهٔ ناموجود «—» می‌ماند.\n• سابقهٔ حمایت‌کنندگان حفظ و نتایج قدیمی جداگانه آرشیف شده‌اند.\n• تست خصوصی موشن، دیزاین، ورود و صدا بدون تغییر بازی زنده کار می‌کند.\n\nاین تغییرات محدودیت یا اخطار قبلی TikTok را رفع نمی‌کند و تضمین تأیید پلتفرم نیست. در LIVE Center جزئیات اخطار را بررسی و در صورت لزوم از مسیر رسمی درخواست بازبینی کنید. این به‌روزرسانی محدودیت فنی دریافت رویدادها را نیز دور نمی‌زند.\n\nمنابع رسمی:\nhttps://newsroom.tiktok.com/live-subscription-invite-only/?lang=en\nhttps://support.tiktok.com/en/safety-hc/account-and-user-safety/Creator-code-of-conduct"
           result=call('editMessageText',{'chat_id':chat,'message_id':2833,'text':text,'link_preview_options':{'is_disabled':True}})
           print('CROWN52_LINKS_UPDATED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
           PY
