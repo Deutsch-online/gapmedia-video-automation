@@ -2589,7 +2589,168 @@
       "duration_seconds": 45
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "project-bus-stop-v1",
+      "title_de": "Meine Haltestelle erkennen",
+      "title_fa": "ایستگاهم را پیدا کنم",
+      "summary": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop. Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-bus-stop-v1",
+      "visual_hook": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "everyday_problem": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "practical_resolution": "Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich erkenne meine Haltestelle nicht.",
+          "fa": "ایستگاهم را تشخیص نمی‌دهم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta looks from the window to the note while seated on the bus.",
+          "motion": "Marta looks from the window to the note while seated on the bus. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus window"
+          ],
+          "object_action": "Marta looks from the window to the note while seated on the bus.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Welche Haltestelle brauchst du denn?",
+          "fa": "به کدام ایستگاه می‌روی؟",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas points toward the stop-name note without taking it away.",
+          "motion": "Lukas points toward the stop-name note without taking it away. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Lukas points toward the stop-name note without taking it away.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Den Namen spreche ich noch unsicher aus.",
+          "fa": "هنوز نامش را با تردید تلفظ می‌کنم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta holds her note closer while considering how to ask.",
+          "motion": "Marta holds her note closer while considering how to ask. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Marta holds her note closer while considering how to ask.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Zeig den Namen auf deinem Zettel.",
+          "fa": "نام روی یادداشتت را نشان بده.",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas gestures to the note as a useful aid for the conversation.",
+          "motion": "Lukas gestures to the note as a useful aid for the conversation. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Lukas gestures to the note as a useful aid for the conversation.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "marta",
+          "de": "Entschuldigung, hält der Bus auch hier?",
+          "fa": "ببخشید، اتوبوس اینجا هم توقف دارد؟",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta shows the note to an unseen helper while holding the handrail.",
+          "motion": "Marta shows the note to an unseen helper while holding the handrail. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta shows the note to an unseen helper while holding the handrail.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Könnten Sie mir beim Aussteigen Bescheid sagen?",
+          "fa": "می‌شود موقع پیاده شدن خبرم کنید؟",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta politely asks the unseen helper and remains seated safely.",
+          "motion": "Marta politely asks the unseen helper and remains seated safely. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta politely asks the unseen helper and remains seated safely.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich vergleiche den Namen mit meinem Zettel.",
+          "fa": "نام را با یادداشتم مقایسه می‌کنم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta compares her note with the illustrated stop information.",
+          "motion": "Marta compares her note with the illustrated stop information. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus display"
+          ],
+          "object_action": "Marta compares her note with the illustrated stop information.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt erkenne ich die Haltestelle. Ich steige aus.",
+          "fa": "حالا ایستگاه را شناختم. پیاده می‌شوم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta moves toward the door only after the bus is stationary.",
+          "motion": "Marta moves toward the door only after the bus is stationary. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus door"
+          ],
+          "object_action": "Marta moves toward the door only after the bus is stationary.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Der Zettel hat mir wirklich geholfen.",
+          "fa": "یادداشت واقعاً کمکم کرد.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta leaves the stopped bus calmly, folding her note with relief.",
+          "motion": "Marta leaves the stopped bus calmly, folding her note with relief. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta leaves the stopped bus calmly, folding her note with relief.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 18,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Public transport in Berlin and Brandenburg",
+        "url": "https://www.vbb.de/abonnements/deutschlandticket/",
+        "excerpt": "Unterwegs mit dem Deutschlandticket - Alle Informationen und Fahrplan | VBB © VBB Das Deutschlandticket als Abo © PhotoGranary - stock.adobe.com Das bundesweit gültige Deutschlandticket wird für monatlich 63 Euro und nur im Abonnement mit monatlicher Kündigungsmöglichkeit angeboten. Für das Deutschlandticket haben Bund und Länder besondere Regularien vorgegeben. Das Deutschlandticket ist nicht frei verkäuflich am Automaten erhältlich und muss beantragt werden . Dementsprechend wird ein Vertrag zwischen Verkehrsunternehmen und Fahrgast geschlossen, inkl. Übermitt",
+        "retrieved_at": "2026-11-05T22:27:43.778875+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1"
+    },
+    "date": "2026-11-05",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -2616,7 +2777,7 @@
     "2026-11-02": 3,
     "2026-11-03": 3,
     "2026-11-04": 1,
-    "2026-11-05": 0
+    "2026-11-05": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2633,14 +2794,16 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-05T09:55:45.518917+00:00",
+    "checked_at": "2026-11-05T22:27:41.159085+00:00",
     "generation_requested": false,
     "order": [
-      "hf-included",
-      "hf-anonymous-free"
+      "hf-included"
     ],
+    "strict_time_budget": true,
+    "paid_route": false,
+    "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400,
+    "remaining_seconds": 2400.0,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
