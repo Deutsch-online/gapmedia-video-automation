@@ -49,5 +49,13 @@
     "unverified_settlement": "retain full reservation",
     "paid_fallback": false,
     "anonymous_fallback": false
+  },
+  "story_planning": {
+    "mode": "curated-first",
+    "from_episode": 18,
+    "bank": "ai-cast/story-bank.json",
+    "on_exhaustion": "existing-verified-free-providers",
+    "reuse_delivered_stories": false,
+    "official_research_required": true
   }
 }

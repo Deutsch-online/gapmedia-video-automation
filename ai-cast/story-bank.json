@@ -1,0 +1,1102 @@
+{
+  "version": 1,
+  "authorship": "Original project-authored illustrative stories; no copied reference dialogue or invented measurements.",
+  "stories": [
+    {
+      "story_id": "project-rail-direction-v1",
+      "title_de": "Erst fragen, dann einsteigen",
+      "title_fa": "اول بپرس، بعد سوار شو",
+      "summary": "Marta pauses at the open door of a stopped train, unsure whether she has chosen the right direction. After asking and checking the direction, Marta steps toward the correct stopped train with her note in hand.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-rail-direction-v1",
+      "visual_hook": "Marta pauses at the open door of a stopped train, unsure whether she has chosen the right direction.",
+      "everyday_problem": "Marta pauses at the open door of a stopped train, unsure whether she has chosen the right direction.",
+      "practical_resolution": "After asking and checking the direction, Marta steps toward the correct stopped train with her note in hand.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta pauses at the open door of a stopped train, unsure whether she has chosen the right direction.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "After asking and checking the direction, Marta steps toward the correct stopped train with her note in hand.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "research_urls": [
+        "https://www.bahn.de/angebot/regio/deutschland-ticket"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10,
+          11
+        ],
+        "60": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Warte! Ich glaube, das ist falsch.",
+          "fa": "صبر کن! فکر می‌کنم اشتباه است.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta stops her hand before boarding and looks at the route note.",
+          "motion": "Marta stops her hand before boarding and looks at the route note. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "train door",
+            "route note"
+          ],
+          "object_action": "Marta stops her hand before boarding and looks at the route note.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Welche Richtung steht auf deinem Zettel?",
+          "fa": "روی یادداشتت کدام جهت نوشته شده؟",
+          "scene": "One visible adult lukas, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Lukas points gently toward the route note held beside him.",
+          "motion": "Lukas points gently toward the route note held beside him. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note"
+          ],
+          "object_action": "Lukas points gently toward the route note held beside him.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich muss zum Hauptbahnhof fahren.",
+          "fa": "باید به ایستگاه مرکزی بروم.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta holds the route note beside the stopped train and explains her destination.",
+          "motion": "Marta holds the route note beside the stopped train and explains her destination. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note",
+            "train"
+          ],
+          "object_action": "Marta holds the route note beside the stopped train and explains her destination.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Frag nach, bevor du einsteigst.",
+          "fa": "پیش از سوار شدن سؤال کن.",
+          "scene": "One visible adult lukas, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Lukas gestures toward an unseen person beside the open train door.",
+          "motion": "Lukas gestures toward an unseen person beside the open train door. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "train door"
+          ],
+          "object_action": "Lukas gestures toward an unseen person beside the open train door.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "marta",
+          "de": "Fährt dieser Zug zum Hauptbahnhof?",
+          "fa": "این قطار به ایستگاه مرکزی می‌رود؟",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta shows her note and asks an off-camera person, staying safely on the platform.",
+          "motion": "Marta shows her note and asks an off-camera person, staying safely on the platform. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note",
+            "train door"
+          ],
+          "object_action": "Marta shows her note and asks an off-camera person, staying safely on the platform.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich möchte nicht wieder falsch fahren.",
+          "fa": "نمی‌خواهم باز مسیر را اشتباه بروم.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta lowers her note slightly and waits for the answer.",
+          "motion": "Marta lowers her note slightly and waits for the answer. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note"
+          ],
+          "object_action": "Marta lowers her note slightly and waits for the answer.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Also der Zug auf der anderen Seite?",
+          "fa": "یعنی قطار آن طرف؟",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta points toward the platform staircase rather than crossing any tracks.",
+          "motion": "Marta points toward the platform staircase rather than crossing any tracks. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "platform staircase",
+            "route note"
+          ],
+          "object_action": "Marta points toward the platform staircase rather than crossing any tracks.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Wir prüfen die Richtung noch einmal.",
+          "fa": "یک بار دیگر جهت را بررسی می‌کنیم.",
+          "scene": "One visible adult lukas, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Lukas compares the note with the platform information, keeping all text illustrative.",
+          "motion": "Lukas compares the note with the platform information, keeping all text illustrative. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note"
+          ],
+          "object_action": "Lukas compares the note with the platform information, keeping all text illustrative.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "support"
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt stimmt die Richtung. Ich steige ein.",
+          "fa": "حالا جهت درست است. سوار می‌شوم.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta approaches the correct stopped train after checking her note.",
+          "motion": "Marta approaches the correct stopped train after checking her note. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "train door",
+            "route note"
+          ],
+          "object_action": "Marta approaches the correct stopped train after checking her note.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Genau. Der Zug steht noch still.",
+          "fa": "بله. قطار هنوز ایستاده است.",
+          "scene": "One visible adult lukas, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Lukas waits beside the open door of the stopped train.",
+          "motion": "Lukas waits beside the open door of the stopped train. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "train door"
+          ],
+          "object_action": "Lukas waits beside the open door of the stopped train.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, dass ich vorher gefragt habe.",
+          "fa": "خوب شد که از قبل پرسیدم.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta holds the handrail and folds her note with a relieved expression.",
+          "motion": "Marta holds the handrail and folds her note with a relieved expression. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "route note",
+            "train handrail"
+          ],
+          "object_action": "Marta holds the handrail and folds her note with a relieved expression.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt kann ich in Ruhe weiterfahren.",
+          "fa": "حالا می‌توانم با خیال راحت ادامه بدهم.",
+          "scene": "One visible adult marta, in the same regional railway platform with a stopped train and a visible platform staircase. The other person is off camera. Marta safely steps into the stopped train and puts the note away.",
+          "motion": "Marta safely steps into the stopped train and puts the note away. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "folded route note",
+            "train handrail"
+          ],
+          "object_action": "Marta safely steps into the stopped train and puts the note away.",
+          "location_key": "project-rail-direction-v1",
+          "story_beat": "resolve"
+        }
+      ]
+    },
+    {
+      "story_id": "project-doctor-phone-v1",
+      "title_de": "Der Anruf, den ich aufgeschoben habe",
+      "title_fa": "تماسی که عقب می‌انداختم",
+      "summary": "Marta hesitates over a phone on the kitchen table because she fears not understanding the medical practice. Marta confirms the offered appointment time and writes it in her notebook, visibly relieved.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-doctor-phone-v1",
+      "visual_hook": "Marta hesitates over a phone on the kitchen table because she fears not understanding the medical practice.",
+      "everyday_problem": "Marta hesitates over a phone on the kitchen table because she fears not understanding the medical practice.",
+      "practical_resolution": "Marta confirms the offered appointment time and writes it in her notebook, visibly relieved.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta hesitates over a phone on the kitchen table because she fears not understanding the medical practice.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "Marta confirms the offered appointment time and writes it in her notebook, visibly relieved.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "research_urls": [
+        "https://www.goethe.de/de/spr/ueb/lua.html"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10,
+          11
+        ],
+        "60": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich verschiebe den Anruf schon wieder.",
+          "fa": "باز هم تماس را عقب می‌اندازم.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta hesitates with one finger above the single phone on the table.",
+          "motion": "Marta hesitates with one finger above the single phone on the table. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "notebook"
+          ],
+          "object_action": "Marta hesitates with one finger above the single phone on the table.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Was macht dir am Telefon Sorgen?",
+          "fa": "پشت تلفن نگران چه هستی؟",
+          "scene": "One visible adult lukas, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Lukas watches the phone and makes a small supportive hand gesture.",
+          "motion": "Lukas watches the phone and makes a small supportive hand gesture. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Lukas watches the phone and makes a small supportive hand gesture.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich verstehe die Antworten oft nicht.",
+          "fa": "اغلب پاسخ‌ها را نمی‌فهمم.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta looks from the phone to the blank notebook with worried eyebrows.",
+          "motion": "Marta looks from the phone to the blank notebook with worried eyebrows. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "notebook"
+          ],
+          "object_action": "Marta looks from the phone to the blank notebook with worried eyebrows.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Notier deinen Namen und dein Anliegen.",
+          "fa": "نامت و موضوع تماس را یادداشت کن.",
+          "scene": "One visible adult lukas, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Lukas points to the notebook and leaves the pen for Marta.",
+          "motion": "Lukas points to the notebook and leaves the pen for Marta. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "notebook",
+            "pen"
+          ],
+          "object_action": "Lukas points to the notebook and leaves the pen for Marta.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "marta",
+          "de": "Guten Tag. Ich möchte einen Termin vereinbaren.",
+          "fa": "سلام. می‌خواهم نوبت بگیرم.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta taps the phone on speaker mode and starts the call herself.",
+          "motion": "Marta taps the phone on speaker mode and starts the call herself. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "notebook"
+          ],
+          "object_action": "Marta taps the phone on speaker mode and starts the call herself.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Es geht um einen Kontrolltermin.",
+          "fa": "برای معاینهٔ دوره‌ای است.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta points to her own short note while speaking toward the phone.",
+          "motion": "Marta points to her own short note while speaking toward the phone. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "notebook"
+          ],
+          "object_action": "Marta points to her own short note while speaking toward the phone.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Könnten Sie bitte langsamer sprechen?",
+          "fa": "می‌شود لطفاً آهسته‌تر صحبت کنید؟",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta politely asks toward the phone and then listens with closed lips.",
+          "motion": "Marta politely asks toward the phone and then listens with closed lips. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Marta politely asks toward the phone and then listens with closed lips.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du darfst ruhig noch einmal nachfragen.",
+          "fa": "می‌توانی با خیال راحت دوباره بپرسی.",
+          "scene": "One visible adult lukas, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Lukas quietly reassures Marta and gestures toward her notebook.",
+          "motion": "Lukas quietly reassures Marta and gestures toward her notebook. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "notebook"
+          ],
+          "object_action": "Lukas quietly reassures Marta and gestures toward her notebook.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "support"
+        },
+        {
+          "speaker": "marta",
+          "de": "Dienstag um zehn. Habe ich richtig verstanden?",
+          "fa": "سه‌شنبه ساعت ده. درست فهمیدم؟",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta repeats the time and holds the pen ready while awaiting confirmation.",
+          "motion": "Marta repeats the time and holds the pen ready while awaiting confirmation. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "pen"
+          ],
+          "object_action": "Marta repeats the time and holds the pen ready while awaiting confirmation.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Schreib die bestätigte Uhrzeit gleich auf.",
+          "fa": "زمان تأییدشده را فوراً یادداشت کن.",
+          "scene": "One visible adult lukas, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Lukas points to the empty line in the notebook without taking over the call.",
+          "motion": "Lukas points to the empty line in the notebook without taking over the call. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "notebook",
+            "pen"
+          ],
+          "object_action": "Lukas points to the empty line in the notebook without taking over the call.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Danke! Ich habe den Termin notiert.",
+          "fa": "ممنون! نوبت را یادداشت کردم.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta writes the appointment note and finishes the call.",
+          "motion": "Marta writes the appointment note and finishes the call. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "phone",
+            "notebook"
+          ],
+          "object_action": "Marta writes the appointment note and finishes the call.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Nachfragen hat mir wirklich geholfen.",
+          "fa": "دوباره پرسیدن واقعاً کمکم کرد.",
+          "scene": "One visible adult marta, in the same small apartment kitchen with one phone, one notebook and one pen. The other person is off camera. Marta sets down the pen and looks relieved beside her completed note.",
+          "motion": "Marta sets down the pen and looks relieved beside her completed note. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "notebook",
+            "pen"
+          ],
+          "object_action": "Marta sets down the pen and looks relieved beside her completed note.",
+          "location_key": "project-doctor-phone-v1",
+          "story_beat": "resolve"
+        }
+      ]
+    },
+    {
+      "story_id": "project-bus-stop-v1",
+      "title_de": "Meine Haltestelle erkennen",
+      "title_fa": "ایستگاهم را پیدا کنم",
+      "summary": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop. Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-bus-stop-v1",
+      "visual_hook": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "everyday_problem": "Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "practical_resolution": "Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta looks anxiously between the bus window and her note because she cannot recognize her stop.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "Marta compares her written stop name, recognizes the stop and leaves the stationary bus calmly.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "research_urls": [
+        "https://www.vbb.de/abonnements/deutschlandticket/"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10,
+          11
+        ],
+        "60": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich erkenne meine Haltestelle nicht.",
+          "fa": "ایستگاهم را تشخیص نمی‌دهم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta looks from the window to the note while seated on the bus.",
+          "motion": "Marta looks from the window to the note while seated on the bus. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus window"
+          ],
+          "object_action": "Marta looks from the window to the note while seated on the bus.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Welche Haltestelle brauchst du denn?",
+          "fa": "به کدام ایستگاه می‌روی؟",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas points toward the stop-name note without taking it away.",
+          "motion": "Lukas points toward the stop-name note without taking it away. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Lukas points toward the stop-name note without taking it away.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Den Namen spreche ich noch unsicher aus.",
+          "fa": "هنوز نامش را با تردید تلفظ می‌کنم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta holds her note closer while considering how to ask.",
+          "motion": "Marta holds her note closer while considering how to ask. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Marta holds her note closer while considering how to ask.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Zeig den Namen auf deinem Zettel.",
+          "fa": "نام روی یادداشتت را نشان بده.",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas gestures to the note as a useful aid for the conversation.",
+          "motion": "Lukas gestures to the note as a useful aid for the conversation. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Lukas gestures to the note as a useful aid for the conversation.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "marta",
+          "de": "Entschuldigung, hält der Bus auch hier?",
+          "fa": "ببخشید، اتوبوس اینجا هم توقف دارد؟",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta shows the note to an unseen helper while holding the handrail.",
+          "motion": "Marta shows the note to an unseen helper while holding the handrail. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta shows the note to an unseen helper while holding the handrail.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Den Namen habe ich aufgeschrieben.",
+          "fa": "نامش را نوشته‌ام.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta turns the note toward the unseen helper.",
+          "motion": "Marta turns the note toward the unseen helper. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note"
+          ],
+          "object_action": "Marta turns the note toward the unseen helper.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Könnten Sie mir beim Aussteigen Bescheid sagen?",
+          "fa": "می‌شود موقع پیاده شدن خبرم کنید؟",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta politely asks the unseen helper and remains seated safely.",
+          "motion": "Marta politely asks the unseen helper and remains seated safely. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta politely asks the unseen helper and remains seated safely.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du kannst zusätzlich auf die Anzeige schauen.",
+          "fa": "می‌توانی نمایشگر را هم نگاه کنی.",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas gestures toward the bus display without inventing a real route or stop.",
+          "motion": "Lukas gestures toward the bus display without inventing a real route or stop. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "bus display",
+            "stop-name note"
+          ],
+          "object_action": "Lukas gestures toward the bus display without inventing a real route or stop.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "support"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich vergleiche den Namen mit meinem Zettel.",
+          "fa": "نام را با یادداشتم مقایسه می‌کنم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta compares her note with the illustrated stop information.",
+          "motion": "Marta compares her note with the illustrated stop information. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus display"
+          ],
+          "object_action": "Marta compares her note with the illustrated stop information.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Wir warten, bis der Bus ganz hält.",
+          "fa": "صبر می‌کنیم اتوبوس کاملاً بایستد.",
+          "scene": "One visible adult lukas, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Lukas holds the handrail and waits for the bus to stop.",
+          "motion": "Lukas holds the handrail and waits for the bus to stop. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "bus handrail",
+            "bus door"
+          ],
+          "object_action": "Lukas holds the handrail and waits for the bus to stop.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt erkenne ich die Haltestelle. Ich steige aus.",
+          "fa": "حالا ایستگاه را شناختم. پیاده می‌شوم.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta moves toward the door only after the bus is stationary.",
+          "motion": "Marta moves toward the door only after the bus is stationary. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus door"
+          ],
+          "object_action": "Marta moves toward the door only after the bus is stationary.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Der Zettel hat mir wirklich geholfen.",
+          "fa": "یادداشت واقعاً کمکم کرد.",
+          "scene": "One visible adult marta, in the same city bus interior while seated beside a handrail and a window. The other person is off camera. Marta leaves the stopped bus calmly, folding her note with relief.",
+          "motion": "Marta leaves the stopped bus calmly, folding her note with relief. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "stop-name note",
+            "bus handrail"
+          ],
+          "object_action": "Marta leaves the stopped bus calmly, folding her note with relief.",
+          "location_key": "project-bus-stop-v1",
+          "story_beat": "resolve"
+        }
+      ]
+    },
+    {
+      "story_id": "project-post-letter-v1",
+      "title_de": "Welche Briefmarke passt?",
+      "title_fa": "کدام تمبر مناسب است؟",
+      "summary": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs. After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-post-letter-v1",
+      "visual_hook": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "everyday_problem": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "practical_resolution": "After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "research_urls": [
+        "https://www.deutschepost.de/de/b/briefmarken.html"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10,
+          11
+        ],
+        "60": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich weiß nicht, welche Briefmarke passt.",
+          "fa": "نمی‌دانم کدام تمبر مناسب است.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta holds the unstamped envelope at the post-office counter.",
+          "motion": "Marta holds the unstamped envelope at the post-office counter. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta holds the unstamped envelope at the post-office counter.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Fragen wir zuerst nach dem Gewicht.",
+          "fa": "اول دربارهٔ وزنش می‌پرسیم.",
+          "scene": "One visible adult lukas, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Lukas points toward the letter scale on the counter.",
+          "motion": "Lukas points toward the letter scale on the counter. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Lukas points toward the letter scale on the counter.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Guten Tag. Ich möchte diesen Brief verschicken.",
+          "fa": "سلام. می‌خواهم این نامه را بفرستم.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta presents the envelope to an unseen postal clerk.",
+          "motion": "Marta presents the envelope to an unseen postal clerk. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta presents the envelope to an unseen postal clerk.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "marta",
+          "de": "Könnten Sie den Brief bitte wiegen?",
+          "fa": "می‌شود لطفاً نامه را وزن کنید؟",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta moves the envelope toward the scale while asking the clerk.",
+          "motion": "Marta moves the envelope toward the scale while asking the clerk. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Marta moves the envelope toward the scale while asking the clerk.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Leg ihn vorsichtig auf die Waage.",
+          "fa": "آن را با احتیاط روی ترازو بگذار.",
+          "scene": "One visible adult lukas, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Lukas gestures toward the empty scale without taking over the task.",
+          "motion": "Lukas gestures toward the empty scale without taking over the task. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Lukas gestures toward the empty scale without taking over the task.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Adresse steht schon auf dem Umschlag.",
+          "fa": "نشانی را روی پاکت نوشته‌ام.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta checks the envelope without showing private names or addresses.",
+          "motion": "Marta checks the envelope without showing private names or addresses. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta checks the envelope without showing private names or addresses.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Welche Briefmarke brauche ich dafür?",
+          "fa": "برای این نامه کدام تمبر لازم است؟",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta asks the off-camera clerk while the envelope rests on the scale.",
+          "motion": "Marta asks the off-camera clerk while the envelope rests on the scale. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Marta asks the off-camera clerk while the envelope rests on the scale.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Warte kurz auf die passende Marke.",
+          "fa": "کمی صبر کن تا تمبر مناسب را بدهند.",
+          "scene": "One visible adult lukas, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Lukas makes a small patient gesture beside the envelope.",
+          "motion": "Lukas makes a small patient gesture beside the envelope. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Lukas makes a small patient gesture beside the envelope.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "support"
+        },
+        {
+          "speaker": "marta",
+          "de": "Danke. Ich klebe sie oben rechts auf.",
+          "fa": "ممنون. آن را بالا سمت راست می‌چسبانم.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta attaches the clerk-provided stamp to the upper right corner of the envelope.",
+          "motion": "Marta attaches the clerk-provided stamp to the upper right corner of the envelope. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "postage stamp"
+          ],
+          "object_action": "Marta attaches the clerk-provided stamp to the upper right corner of the envelope.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Kontrollieren wir noch einmal die Adresse.",
+          "fa": "نشانی را یک بار دیگر بررسی کنیم.",
+          "scene": "One visible adult lukas, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Lukas points toward the address area without revealing real personal data.",
+          "motion": "Lukas points toward the address area without revealing real personal data. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Lukas points toward the address area without revealing real personal data.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Marke sitzt. Jetzt ist alles fertig.",
+          "fa": "تمبر چسبید. حالا همه‌چیز آماده است.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta holds up the completed envelope and checks the stamp.",
+          "motion": "Marta holds up the completed envelope and checks the stamp. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope",
+            "postage stamp"
+          ],
+          "object_action": "Marta holds up the completed envelope and checks the stamp.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, dass ich am Schalter gefragt habe.",
+          "fa": "خوب شد که پشت باجه پرسیدم.",
+          "scene": "One visible adult marta, in the same post-office service counter with a letter scale and writing area. The other person is off camera. Marta hands the prepared envelope toward the unseen clerk, visibly relieved.",
+          "motion": "Marta hands the prepared envelope toward the unseen clerk, visibly relieved. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta hands the prepared envelope toward the unseen clerk, visibly relieved.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "resolve"
+        }
+      ]
+    },
+    {
+      "story_id": "project-glass-sorting-v1",
+      "title_de": "Glas und Deckel richtig trennen",
+      "title_fa": "جدا کردن شیشه و درِ آن",
+      "summary": "Marta holds an empty clear jam jar and its metal lid, unsure which container to use. Marta checks the visible pictogram, sorts the empty glass and puts the lid in the appropriate packaging container.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-glass-sorting-v1",
+      "visual_hook": "Marta holds an empty clear jam jar and its metal lid, unsure which container to use.",
+      "everyday_problem": "Marta holds an empty clear jam jar and its metal lid, unsure which container to use.",
+      "practical_resolution": "Marta checks the visible pictogram, sorts the empty glass and puts the lid in the appropriate packaging container.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta holds an empty clear jam jar and its metal lid, unsure which container to use.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "Marta checks the visible pictogram, sorts the empty glass and puts the lid in the appropriate packaging container.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "research_urls": [
+        "https://www.muelltrennung-wirkt.de/de/muelltrennung/"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          10,
+          11
+        ],
+        "60": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Wohin gehört dieses leere Marmeladenglas?",
+          "fa": "این شیشهٔ خالی مربا کجا می‌رود؟",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta pauses with the empty jar and its detached metal lid in separate hands.",
+          "motion": "Marta pauses with the empty jar and its detached metal lid in separate hands. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "metal lid"
+          ],
+          "object_action": "Marta pauses with the empty jar and its detached metal lid in separate hands.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Schau auf das Bild am Glasbehälter.",
+          "fa": "تصویر روی محفظهٔ شیشه را ببین.",
+          "scene": "One visible adult lukas, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Lukas points toward the recognizable bottle-and-jar pictogram.",
+          "motion": "Lukas points toward the recognizable bottle-and-jar pictogram. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "glass container",
+            "glass-bottle pictogram"
+          ],
+          "object_action": "Lukas points toward the recognizable bottle-and-jar pictogram.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Da sind Flaschen und Gläser abgebildet.",
+          "fa": "تصویر بطری و شیشه روی آن است.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta compares the jar in her hand with the visible pictogram.",
+          "motion": "Marta compares the jar in her hand with the visible pictogram. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "glass-bottle pictogram"
+          ],
+          "object_action": "Marta compares the jar in her hand with the visible pictogram.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "marta",
+          "de": "Den Deckel habe ich schon abgeschraubt.",
+          "fa": "درِ آن را باز کرده‌ام.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta holds the detached lid beside the open empty jar.",
+          "motion": "Marta holds the detached lid beside the open empty jar. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "metal lid"
+          ],
+          "object_action": "Marta holds the detached lid beside the open empty jar.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Den legen wir zum passenden Verpackungsbehälter.",
+          "fa": "در را به محفظهٔ مناسب بسته‌بندی می‌بریم.",
+          "scene": "One visible adult lukas, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Lukas points from the metal lid to the appropriate packaging container.",
+          "motion": "Lukas points from the metal lid to the appropriate packaging container. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "metal lid",
+            "packaging container"
+          ],
+          "object_action": "Lukas points from the metal lid to the appropriate packaging container.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Glas und Deckel sind also zwei Dinge.",
+          "fa": "پس شیشه و درش دو چیز جدا هستند.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta holds the two objects apart to make the distinction visible.",
+          "motion": "Marta holds the two objects apart to make the distinction visible. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "metal lid"
+          ],
+          "object_action": "Marta holds the two objects apart to make the distinction visible.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Den Deckel lege ich erst einmal beiseite.",
+          "fa": "فعلاً درِ شیشه را کنار می‌گذارم.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta sets the lid on the designated dry sorting surface, not on the ground.",
+          "motion": "Marta sets the lid on the designated dry sorting surface, not on the ground. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "metal lid"
+          ],
+          "object_action": "Marta sets the lid on the designated dry sorting surface, not on the ground.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Jetzt kannst du das leere Glas einwerfen.",
+          "fa": "حالا می‌توانی شیشهٔ خالی را بیندازی.",
+          "scene": "One visible adult lukas, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Lukas points toward the opening of the glass container.",
+          "motion": "Lukas points toward the opening of the glass container. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "glass container"
+          ],
+          "object_action": "Lukas points toward the opening of the glass container.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "support"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich werfe nur das leere Glas ein.",
+          "fa": "فقط شیشهٔ خالی را می‌اندازم.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta carefully places the empty jar through the glass-container opening.",
+          "motion": "Marta carefully places the empty jar through the glass-container opening. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "empty clear jam jar",
+            "glass container"
+          ],
+          "object_action": "Marta carefully places the empty jar through the glass-container opening.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Dann kommt der Deckel an seinen Platz.",
+          "fa": "بعد درِ آن را سر جای مناسب می‌گذاریم.",
+          "scene": "One visible adult lukas, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Lukas gestures back toward the lid and its corresponding container.",
+          "motion": "Lukas gestures back toward the lid and its corresponding container. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "metal lid",
+            "packaging container"
+          ],
+          "object_action": "Lukas gestures back toward the lid and its corresponding container.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "check"
+        },
+        {
+          "speaker": "marta",
+          "de": "Jetzt sind beide Teile richtig einsortiert.",
+          "fa": "حالا هر دو قسمت درست جدا شده‌اند.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta puts the lid into the appropriate packaging container after checking the local pictogram.",
+          "motion": "Marta puts the lid into the appropriate packaging container after checking the local pictogram. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "metal lid",
+            "packaging container"
+          ],
+          "object_action": "Marta puts the lid into the appropriate packaging container after checking the local pictogram.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Das Bild hat mir beim Sortieren geholfen.",
+          "fa": "تصویر در جدا کردن زباله کمکم کرد.",
+          "scene": "One visible adult marta, in the same residential recycling area with a glass-bottle pictogram and separate packaging container. The other person is off camera. Marta lowers her now-empty hands and gives a small relieved nod beside the containers.",
+          "motion": "Marta lowers her now-empty hands and gives a small relieved nod beside the containers. Keep the face stable and the mouth natural; the listener remains off-camera.",
+          "visible_objects": [
+            "glass-bottle pictogram",
+            "packaging container"
+          ],
+          "object_action": "Marta lowers her now-empty hands and gives a small relieved nod beside the containers.",
+          "location_key": "project-glass-sorting-v1",
+          "story_beat": "resolve"
+        }
+      ]
+    }
+  ]
+}
