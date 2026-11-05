@@ -177,6 +177,10 @@ def close_credit_attempt(status):
 
 def due(state, config, now=None, force=False):
     local = local_date(now)
+    from cinematic_daily import daily_slot
+    scheduled = daily_slot(state, config, local, force)
+    if scheduled is not None:
+        return scheduled
     date = local.date().isoformat()
     request = config.get('manual_request', {})
     if (request.get('episode') == state.get('next_episode') and
@@ -1004,7 +1008,10 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                           'and the objects. Preserve the character identity, not the original supermarket backdrop. '
                           'Faces and important action in upper three quarters; calm lower area for later captions.')
                 def create_still():
-                    return shots.first_working(shots.KONTEXT,
+                    # Strict time accounting reserves one provider maximum per wrapper.
+                    # Do not hide a second GPU submission inside first_working's fallback loop.
+                    candidates = shots.KONTEXT[:1] if budget.time_policy() else shots.KONTEXT
+                    return shots.first_working(candidates,
                         {'input_image': handle_file(str(speaker_refs[scene['speaker']])), 'prompt': prompt,
                          'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
@@ -1163,6 +1170,11 @@ def production(force=False):
     import cinematic_budget
     state['gpu_preflight'] = cinematic_budget.preflight()
     print('HF allowance preflight: ' + json.dumps(state['gpu_preflight']), flush=True)
+    if cinematic_budget.time_policy() and not state['gpu_preflight'].get('can_admit_minimum_stage'):
+        state['last_budget_block'] = {'date': date, 'preflight': state['gpu_preflight']}
+        checkpoint(state)
+        print('No verified included time for the next GPU stage; no production started.', flush=True)
+        return
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     checkpoint(state)
     bot('verify')
@@ -1170,7 +1182,7 @@ def production(force=False):
     plan = pending['plan'] if pending else make_plan(state)
     validate_plan(plan, state['next_episode'], state['history'])
     state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
-    if approved_credit(state):
+    if not cinematic_budget.time_policy() and approved_credit(state):
         if not os.getenv('GITHUB_RUN_ID'):
             raise RuntimeError('Credit authorization requires a durable workflow run')
         request = load_json(CREDIT_REQUEST)
@@ -1191,7 +1203,8 @@ def production(force=False):
         state['pending']['status'] = 'render-failed'
         if isinstance(exc, NarrationTimingError):
             state['pending']['narration_error'] = str(exc)[:500]
-        if 'quota' in str(exc).lower():
+        strict_budget = bool(cinematic_budget.time_policy())
+        if 'quota' in str(exc).lower() and not strict_budget:
             import cinematic_budget
             if cinematic_budget.SCENE is None:
                 raise RuntimeError('Cannot determine the credit request scene scope') from exc
@@ -1203,8 +1216,12 @@ def production(force=False):
             state['quota_recovery'] = {'date': date, 'not_before':
                 gpu_retry_at(str(exc)).isoformat(),
                 'reason': 'ZeroGPU quota exhausted'}
+            if strict_budget:
+                state['pending']['time_budget_blocked'] = True
+                for key in ('credit_approval_required', 'credit_notice_status', 'credit_notice_message_id'):
+                    state['pending'].pop(key, None)
         checkpoint(state)
-        if state['pending'].get('credit_approval_required') and not state['pending'].get('credit_notice_status'):
+        if not strict_budget and state['pending'].get('credit_approval_required') and not state['pending'].get('credit_notice_status'):
             state['pending']['credit_notice_status'] = 'dispatching'
             checkpoint(state)
             notice = bot('request-credit')
@@ -1295,4 +1312,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

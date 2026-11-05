@@ -1,0 +1,41 @@
+name: Verify daily Berlin schedule and GPU time budget
+on:
+  push:
+    branches: [codex/daily-berlin-credit-time]
+  pull_request:
+    paths:
+      - .cinematic-series.json
+      - .github/workflows/cinematic-series.yml
+      - .github/workflows/daily-budget-check.yml
+      - ai-cast/cinematic-series.py
+      - ai-cast/cinematic_budget.py
+      - ai-cast/cinematic_daily.py
+      - ai-cast/cinematic_time_budget.py
+      - tests/test_cinematic*.py
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install CPU-only test dependencies
+        run: |
+          pip install 'pillow>=11,<13'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Verify budget, scheduling, timing and delivery invariants without service credentials
+        run: |
+          python -m unittest discover -s tests -p test_cinematic_daily.py -v
+          python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
+          python -m unittest discover -s tests -p test_cinematic_budget.py -v
+          python -m unittest discover -s tests -p test_cinematic_series.py -v
+          python ai-cast/cinematic-series.py check
+          node --check ai-cast/cinematic-series-bot.mjs

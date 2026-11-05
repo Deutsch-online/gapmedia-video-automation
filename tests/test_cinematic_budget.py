@@ -1,8 +1,11 @@
 import importlib.util
 import os
+import sys
 from pathlib import Path
 import unittest
 from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).parents[1] / 'ai-cast'))
 
 spec = importlib.util.spec_from_file_location('budget', Path(__file__).parents[1] / 'ai-cast/cinematic_budget.py')
 b = importlib.util.module_from_spec(spec)
@@ -73,6 +76,9 @@ class BudgetTests(unittest.TestCase):
             self.assertEqual(b.preflight('token')['status'],'unverified')
 
     def setUp(self):
+        legacy_policy = patch.object(b, "time_policy", return_value=None)
+        legacy_policy.start()
+        self.addCleanup(legacy_policy.stop)
         b.set_scene(6, 0)
 
     def test_low_allowance_blocks_before_billable_call(self):
@@ -127,3 +133,4 @@ class BudgetTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

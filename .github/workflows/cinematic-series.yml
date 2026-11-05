@@ -1,7 +1,8 @@
 name: Daily cinematic German Persian serial
 on:
   schedule:
-    - cron: '7,22,37,52 * * * *'
+    # 07:30 Europe/Berlin: the date gate admits one production start across both DST offsets.
+    - cron: '30 5,6 * * *'
   push:
     branches: [main, codex/cinematic-series-daily]
     paths:
@@ -18,6 +19,11 @@ on:
       - public/ai-cast/wg-chaos/**
       - ai-cast/cinematic-series-bot.mjs
       - tests/test_cinematic_series.py
+      - ai-cast/cinematic_daily.py
+      - ai-cast/cinematic_time_budget.py
+      - ai-cast/cinematic_budget.py
+      - tests/test_cinematic_daily.py
+      - tests/test_cinematic_time_budget.py
   workflow_dispatch:
     inputs:
       force:
@@ -82,6 +88,8 @@ jobs:
           python -m unittest discover -s tests -p test_cinematic_series.py -v
           python -m unittest discover -s tests -p test_wan2gp_backend.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
+          python -m unittest discover -s tests -p test_cinematic_daily.py -v
+          python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m py_compile ai-cast/wan2gp_worker.py
           python ai-cast/cinematic-series.py check
           node --check ai-cast/cinematic-series-bot.mjs
@@ -98,6 +106,11 @@ jobs:
             force=true
           fi
           echo "force=$force" >> "$GITHUB_OUTPUT"
+          # Code/config pushes validate only; an explicit production request may start a run.
+          if [[ "$GITHUB_EVENT_NAME" == push && "$force" == false ]]; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "$force" == true ]]; then
             python ai-cast/cinematic-series.py gate --force
           else
@@ -171,6 +184,8 @@ jobs:
             renders/cinematic-series/**/graphics-report.json
             renders/cinematic-series/**/contact.jpg
             renders/cinematic-series-cache/**/narration-timing.json
+            renders/cinematic-series-cache/budgets/*.json
           if-no-files-found: warn
           retention-days: 14
+
 
