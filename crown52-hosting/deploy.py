@@ -124,7 +124,7 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs','free-play.mjs','bubble-arena.mjs','bubble-arena.css'):
+for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs','free-play.mjs','bubble-arena.mjs','bubble-arena.css','bubble-stages.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())
