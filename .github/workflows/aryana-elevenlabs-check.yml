@@ -1,0 +1,30 @@
+name: Check existing ElevenLabs connection
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/elevenlabs-check-request.json]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check configured key, languages and existing quota without generating speech
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,urllib.error
+          key=os.getenv('ELEVENLABS_API_KEY','')
+          result={'configured':bool(key),'speech_generated':False}
+          if key:
+           def get(path):
+            with urllib.request.urlopen(urllib.request.Request('https://api.elevenlabs.io'+path,headers={'xi-api-key':key}),timeout=25) as response:return json.load(response)
+           try:
+            models=get('/v1/models');result['models']=[{'id':m['model_id'],'languages':[v.get('language_id') for v in m.get('languages',[])]} for m in models if m.get('can_do_text_to_speech') and any(v.get('language_id')=='fa' for v in m.get('languages',[]))]
+            subscription=get('/v1/user/subscription');result['quota']={k:subscription.get(k) for k in ['character_count','character_limit','status','can_extend_character_limit']}
+            result['authenticated']=True
+           except Exception as error:result.update(authenticated=False,error_type=type(error).__name__)
+          print('ARYANA_ELEVENLABS_CHECK '+json.dumps(result))
+          PY
