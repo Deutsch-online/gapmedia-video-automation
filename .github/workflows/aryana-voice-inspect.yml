@@ -39,8 +39,6 @@ jobs:
           state=call('/api/state')
           result['runtime']={name:state.get('capabilities',{}).get(name) for name in ['voiceProvider','voiceConfigured','voiceClone','liveLipSync','noEngagementRequests']}
           result['receiver_diagnostics']={k:v for k,v in state.get('live',{}).items() if k!='username'};result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions');result['preparation']={name:state.get(name) for name in ['livePreparation','entertainment','voiceArchive','lastError','voiceEngine','lipSync','programModelStatus','conversationStatus','queue']}
-          if result['runtime']['liveLipSync']:
-           call('/api/refresh-live',{});result['output_refreshed']=True
           selected=next((os.getenv(name) for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)),None)
           if selected:
            try:
@@ -48,5 +46,23 @@ jobs:
             with urllib.request.urlopen(req,timeout=25) as response:subscription=json.load(response)
             result['elevenlabs_account']={'authenticated':True,'remaining_characters':max(0,subscription.get('character_limit',0)-subscription.get('character_count',0))}
            except Exception as error:result['elevenlabs_account']={'authenticated':False,'error_type':type(error).__name__,'http_status':getattr(error,'code',None)}
+          try:
+           from huggingface_hub import hf_hub_download
+           repo='afgtakrun/aryana-live-private-state'
+           assert api.repo_info(repo,repo_type='dataset').private
+           variables=api.get_space_variables('afgtakrun/aryana-live-studio')
+           config=json.load(open(hf_hub_download('afgtakrun/aryana-live-studio','src/lipsync-config.json',repo_type='space',token=os.environ['HF_TOKEN'])))
+           scope=hashlib.sha256(':'.join(['voice-bank-v1',variables['ELEVENLABS_VOICE_ID'].value,variables['ELEVENLABS_MODEL_ID'].value,config['revision'],config['reference_sha256']]).encode()).hexdigest()
+           index=json.load(open(hf_hub_download(repo,'voice-bank/'+scope+'/index.json',repo_type='dataset',token=os.environ['HF_TOKEN'])))
+           assert index['scope']==scope
+           verified=0
+           for clip in index['clips']:
+            if not clip['group'].startswith('quick:'):continue
+            for kind,path,expected in [('audio','voice-audio/'+clip['audio'][7:],clip['audioSha']),('video','voice-video/'+scope+'/'+clip['video'][7:],clip['videoSha'])]:
+             local=hf_hub_download(repo,path,repo_type='dataset',token=os.environ['HF_TOKEN'])
+             with open(local,'rb') as stream:assert hashlib.sha256(stream.read()).hexdigest()==expected
+            verified+=1
+           result['private_media_verified']={'clips':verified,'audio_and_video_hashes_match':True,'reference_sha256':config['reference_sha256'],'server_restarted':False}
+          except Exception as error:result['private_media_verification_error']=type(error).__name__
           print('ARYANA_EXISTING_VOICE '+json.dumps(result),flush=True)
           PY
