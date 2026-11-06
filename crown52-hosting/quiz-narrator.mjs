@@ -48,7 +48,7 @@ export class QuizNarrator{
   if(!this.active&&this.queue.length){const item=this.queue.shift(),duration=Math.min(26000,Math.max(11000,item.text.length*65+4000));this.active={...item,startedAt:now,endsAt:Math.min(item.expiresAt,now+duration)};}
   return previous!==(this.active?.id||'');
  }
- view(sign){return this.active?{...this.active,speechText:this.active.text,speechUrl:sign(this.active.text,this.active.language)}:null;}
+ view(sign){return this.active?{...this.active,speechText:this.active.text,speechUrl:sign(this.active.text,this.active.language,this.active.reaction==='correct'?'correct':this.active.reaction==='try-again'?'incorrect':this.active.kind)}:null;}
 }
 
 export function narratorPreview(kind,language='en'){
