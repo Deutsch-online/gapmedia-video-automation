@@ -14,6 +14,7 @@ jobs:
       - name: Inspect names and runtime status without revealing or changing credentials
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          EULERSTREAM_API_KEY: ${{ secrets.EULERSTREAM_API_KEY || secrets.EULER_STREAM_API_KEY || secrets.EULER_API_KEY || secrets.TIKTOK_SIGN_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
@@ -25,11 +26,11 @@ jobs:
           from huggingface_hub import HfApi
           api=HfApi(token=os.environ['HF_TOKEN'])
           assert api.whoami()['name']=='afgtakrun'
-          result={'github_key_names_present':[name for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)],'spaces':{}}
+          result={'github_signing_key_present':bool(os.getenv('EULERSTREAM_API_KEY')),'github_key_names_present':[name for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)],'spaces':{}}
           for repo in ['afgtakrun/aryana-live-studio','afgtakrun/aryana-live-lipsync']:
            secret_names=list(api.get_space_secrets(repo))
            variables=api.get_space_variables(repo)
-           result['spaces'][repo]={'elevenlabs_secret_names':[name for name in secret_names if 'eleven' in name.lower()],'elevenlabs_variable_names':[name for name in variables if 'eleven' in name.lower()],'voice_provider':variables['ARYANA_VOICE_PROVIDER'].value if 'ARYANA_VOICE_PROVIDER' in variables else None}
+           result['spaces'][repo]={'signing_secret_names':[name for name in secret_names if 'euler' in name.lower()],'elevenlabs_secret_names':[name for name in secret_names if 'eleven' in name.lower()],'elevenlabs_variable_names':[name for name in variables if 'eleven' in name.lower()],'voice_provider':variables['ARYANA_VOICE_PROVIDER'].value if 'ARYANA_VOICE_PROVIDER' in variables else None}
           key=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
           base='https://afgtakrun-aryana-live-studio.hf.space'
           def call(path,data=None):
@@ -37,7 +38,7 @@ jobs:
            with urllib.request.urlopen(req,timeout=30) as response:return json.load(response)
           state=call('/api/state')
           result['runtime']={name:state.get('capabilities',{}).get(name) for name in ['voiceProvider','voiceConfigured','voiceClone','liveLipSync','noEngagementRequests']}
-          result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions');result['preparation']={name:state.get(name) for name in ['livePreparation','entertainment','voiceArchive','lastError','voiceEngine','lipSync','programModelStatus','conversationStatus','queue']}
+          result['receiver_diagnostics']={k:v for k,v in state.get('live',{}).items() if k!='username'};result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions');result['preparation']={name:state.get(name) for name in ['livePreparation','entertainment','voiceArchive','lastError','voiceEngine','lipSync','programModelStatus','conversationStatus','queue']}
           if result['runtime']['liveLipSync']:
            call('/api/refresh-live',{});result['output_refreshed']=True
           selected=next((os.getenv(name) for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)),None)
