@@ -16,5 +16,6 @@
   "quick_reactions": true,
   "eleven_requested": true,
   "skip_telegram": true,
-  "voice_archive": true
+  "voice_archive": true,
+  "build_retry": "recover-empty-cpu-replica-and-retry-existing-native-key"
 }

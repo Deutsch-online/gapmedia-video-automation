@@ -78,7 +78,17 @@ try:
  repo=account+'/aryana-live-studio';release.free(api,repo);space=api.space_info(repo);url=str(space.host).rstrip('/')
  import hmac
  admin=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),('aryana-admin-v1:'+repo).encode(),hashlib.sha256).hexdigest()
- _,raw,_=release.fetch(url+'/api/state',admin);before=json.loads(raw)
+ # An empty running replica cannot have an active receiver; restart only that failed allocation.
+ observed_runtime=api.get_space_runtime(repo)
+ if observed_runtime.raw.get('replicas',{}).get('current')==0:
+  release.free(api,repo);api.restart_space(repo);report['empty_cpu_replica_restarted']=True;write()
+ deadline=time.monotonic()+240
+ while True:
+  try:
+   _,raw,_=release.fetch(url+'/api/state',admin);before=json.loads(raw);break
+  except (OSError,ValueError):
+   if time.monotonic()>=deadline:raise RuntimeError('Studio did not become reachable before deployment')
+   time.sleep(4)
  connected=before['connection']=='connected' or bool(before.get('live',{}).get('active'));username=before['settings'].get('lastUsername','')
  if connected and not username:raise RuntimeError('Cannot safely resume an unnamed connection')
  report.update(was_connected=connected,source_commit=source_sha);write()
