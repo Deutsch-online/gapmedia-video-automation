@@ -20,6 +20,10 @@ import {loadReactionClips} from './reaction-clips.mjs';
 import {NeuralLipSync} from './neural-lipsync.mjs';
 import {EntertainmentHost} from './entertainment.mjs';
 import {AutomaticSpeechBuffer} from './automatic-speech.mjs';
+import {LiveProgram} from './live-program.mjs';
+import {speechText} from './speech-pronunciation.mjs';
+import {ActiveViewers} from './viewer-engagement.mjs';
+import {supportSegment} from './support-prompts.mjs';
 import {TopicConversation,topicChoices} from './topics.mjs';
 import {SpeechEngine} from './speech-engine.mjs';
 import {languageChoices,outputLanguage,localizedReply,localizedReaction} from './languages.mjs';
@@ -38,12 +42,12 @@ const session=new HostSession();let connectionStatus='disconnected';
 let outputRefreshToken='',outputRefreshAt=0;
 let topicRevision=0,lastCommentAt=0;
 let lastError='',speechStatus='idle',busy=false,revision=0,utterances=[],lastAuto=0,currentSpeech=null;
-const topicConversation=new TopicConversation(),entertainment=new EntertainmentHost();
-const autoBuffer=new AutomaticSpeechBuffer({valid:clip=>existsSync(join(privateDir,clip.audio.slice(1)))&&existsSync(join(privateDir,clip.video.slice(1))),playable:segment=>entertainment.playable(segment)});
+const topicConversation=new TopicConversation(),entertainment=new EntertainmentHost(),program=new LiveProgram(),activeViewers=new ActiveViewers();
+const autoBuffer=new AutomaticSpeechBuffer({valid:clip=>existsSync(join(privateDir,clip.audio.slice(1)))&&existsSync(join(privateDir,clip.video.slice(1))),playable:segment=>entertainment.playable(segment)&&program.allows(segment)&&(!segment.viewerId||activeViewers.fresh(segment.viewerId))});
 let activeVoiceKind=null;const speechDurations=new Map();
 const queue=new SpeechQueue(),joinThanks=new Map(),recentSpeech=new Map();let lastSessionSave=0;
 const durable=new DurableState({repo:process.env.ARYANA_STATE_REPO,token:process.env.ARYANA_STATE_TOKEN});
-function persisted(){return {version:1,settings,session:session.export(),lipSyncBudget:neural.budget.snapshot(),savedAt:Date.now()};}
+function persisted(){return {version:1,settings,session:session.export(),liveProgram:program.export(),lipSyncBudget:neural.budget.snapshot(),savedAt:Date.now()};}
 function checkpoint(force=false){if(!force&&Date.now()-lastSessionSave<30000)return;lastSessionSave=Date.now();const data=persisted();const target=join(privateDir,'session.json');writeFileSync(target+'.tmp',JSON.stringify(data),{mode:0o600});renameSync(target+'.tmp',target);durable.schedule(data);}
 const save=()=>{writeFileSync(settingsPath+'.tmp',JSON.stringify(settings,null,2),{mode:0o600});renameSync(settingsPath+'.tmp',settingsPath);checkpoint(true);};
 const wss=new WebSocketServer({noServer:true,maxPayload:12000});
@@ -55,6 +59,7 @@ let neuralConfig={};try{neuralConfig=JSON.parse(readFileSync(join(root,'src/lips
 const neural=new NeuralLipSync({root,privateDir,python,space:process.env.ARYANA_LIPSYNC_SPACE||neuralConfig.space,revision:process.env.ARYANA_LIPSYNC_REVISION||neuralConfig.revision,changed:()=>broadcast(),budgetChanged:()=>checkpoint(true)});
 let lipTest=null,funPreparation=null,funPreparationPromise=null;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
+const programChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,role:'program',threads:2,changed:()=>broadcast()});
 let livePreparation={status:'idle'},livePreparationPromise=null;
 function prepareLive(){
  if(livePreparationPromise)return livePreparationPromise;
@@ -65,20 +70,21 @@ function prepareLive(){
  livePreparationPromise=Promise.all(jobs).then(()=>{livePreparation={status:'ready',seconds:(Date.now()-livePreparation.at)/1000};lastError='';broadcast();}).catch(error=>{livePreparation={status:'error',error:error.message};broadcast();throw error;}).finally(()=>{livePreparationPromise=null;});
  return livePreparationPromise;
 }
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,program:program.snapshot(),programModelStatus:programChat.status,revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=0061e1f4605708e7':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending||programChat.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceClone:Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual',meta={}){
  text=localizedReaction(String(text||'').trim(),settings.language);if(!text||text.length>600)throw Error('متن باید بین 1 و 600 نویسه باشد.');
+ if(kind==='topic'&&!program.allows(meta.segment||{text}))return false;
  if(kind!=='manual'&&Date.now()-(recentSpeech.get(text)||0)<8000)return false;
  if(!queue.push(text,kind,revision,meta))throw Error('صف گفتار پر است یا این پاسخ در صف وجود دارد.');recentSpeech.set(text,Date.now());while(recentSpeech.size>1000)recentSpeech.delete(recentSpeech.keys().next().value);void pump();return true;
 }
 async function synthesize(text,selected=settings.language){
- const language=outputLanguage(selected,text),spoken=applyCorrections(text,settings.corrections);
+ const language=outputLanguage(selected,text),spoken=speechText(text,settings.corrections);
  const hash=createHash('sha256').update(language+'\n'+spoken+'\n'+(process.env.ARYANA_VOICE_PROFILE_B64||'')).digest('hex'),target=join(privateDir,'audio',hash+'.mp3');
  if(!existsSync(target))await speechEngine.synthesize({text:spoken,language,output:target});
  const files=readdirSync(join(privateDir,'audio')).filter(n=>/^[a-f0-9]{64}\.mp3$/.test(n)).map(n=>({n,at:statSync(join(privateDir,'audio',n)).mtimeMs})).sort((a,b)=>a.at-b.at);
- const pinned=new Set([...autoBuffer.pool.map(clip=>clip.audio.split('/').at(-1)),autoBuffer.prepared?.audio?.split('/').at(-1),...utterances.map(clip=>clip.audio?.split('/').at(-1)),hash+'.mp3']);
+ const pinned=new Set([...autoBuffer.pool.map(clip=>clip.audio.split('/').at(-1)),...autoBuffer.deferred.map(clip=>clip.audio.split('/').at(-1)),autoBuffer.prepared?.audio?.split('/').at(-1),...utterances.map(clip=>clip.audio?.split('/').at(-1)),hash+'.mp3']);
  while(files.length>64){const index=files.findIndex(file=>!pinned.has(file.n));if(index<0)break;const [old]=files.splice(index,1);unlinkSync(join(privateDir,'audio',old.n));}
  return '/audio/'+hash+'.mp3';
 }
@@ -98,10 +104,10 @@ async function pump(){
    if(recorded?.video)publish(recorded.video);
    else if(neural.configured){
     const requestedAt=Date.now();speechStatus='lip-preparing';broadcast();
-    void neural.submit(join(privateDir,audio.slice(1)),{kind:item.kind,priority:item.priority}).then(video=>{if(Date.now()-requestedAt>60000){if(item.revision===revision)recordError('پاسخ دیررس از صف پخش حذف شد.');return;}publish(video);}).catch(error=>{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}if(item.revision===revision&&(item.kind!=='topic'||topicVersion===topicRevision)){speechStatus='error';recordError(error.message);}});
+    void neural.submit(join(privateDir,audio.slice(1)),{kind:item.kind,priority:item.priority}).then(video=>{if(Date.now()-requestedAt>(item.kind==='topic'?180000:60000)){if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision)recordError('پاسخ دیررس از صف پخش حذف شد.');return;}publish(video);}).catch(error=>{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}if(item.revision===revision&&(item.kind!=='topic'||topicVersion===topicRevision)){speechStatus='error';recordError(error.message);}});
    }else publish(null);
   }
-  catch(error){if(item.revision===revision){speechStatus='error';recordError(error.message);}}
+  catch(error){if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision){speechStatus='error';recordError(error.message);}}
   finally{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket&&!neural.active){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}}
  }}finally{activeVoiceKind=null;busy=false;if(speechStatus!=='error')speechStatus='idle';broadcast();}
 }
@@ -121,7 +127,7 @@ async function answer(comment){
  if(typeof text!=='string'||!text.trim())throw Error('پاسخ مدل خالی بود.');return text.slice(0,600);
 }
 function receive(kind,event){
- const reaction=session.accept(kind,event,settings);if(!reaction)return;checkpoint(Boolean(reaction.milestone));broadcast();
+ const reaction=session.accept(kind,event,settings);if(!reaction)return;activeViewers.observe(event,settings);checkpoint(Boolean(reaction.milestone));broadcast();
  if(kind==='like'&&!reaction.milestone)return;
  if(kind==='join'&&!reaction.vip&&commentInbox.busy)return;
  if(kind==='join'){const id=session.identity(event),previous=joinThanks.get(id)||0;if(Date.now()-previous<600000)return;joinThanks.set(id,Date.now());while(joinThanks.size>5000)joinThanks.delete(joinThanks.keys().next().value);}
@@ -134,20 +140,21 @@ const link=new LiveLink({create:username=>{
  return {on:(event,handler)=>client.on(mapping[event]||event,handler),connect:()=>client.connect(),disconnect:()=>client.disconnect()};
 },changed:status=>{connectionStatus=status.status;broadcast();},ended:()=>{stopSpeech();checkpoint(true);},event:(kind,data)=>{
  if(kind!=='chat'){receive(kind,data);return;}
- if(!settings.autoSpeak)return;
+ activeViewers.observe(data,settings);if(!settings.autoSpeak)return;
  const comment=String(data.content||'').trim();if(!comment||comment.length>300||/^[\p{N}\s،,.]+$/u.test(comment)&&!entertainment.selection(comment))return;
  commentInbox.push(comment,{revision,source:'live'},String(data.common?.msgId||data.msgId||randomUUID()));
 
 }});
-function stopSpeech(){revision++;autoBuffer.interrupt();entertainment.reset();commentInbox.clear();queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
+function pauseProgram(){autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();}
+function stopSpeech(){revision++;autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();entertainment.reset();commentInbox.clear();queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
 async function connect(username,{warmEntertainment=true}={}){
  username=String(username||'').replace(/^@/,'').trim();if(!/^[a-zA-Z0-9_.]{2,24}$/.test(username))throw Error('یوزرنیم تیک‌تاک معتبر نیست.');
- if(settings.lastUsername!==username){session.reset();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();if(settings.entertainmentEnabled&&warmEntertainment)await prepareEntertainment();await link.start(username);
+ if(settings.lastUsername!==username){session.reset();program.reset();activeViewers.clear();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();if(settings.entertainmentEnabled&&warmEntertainment)await prepareEntertainment();await link.start(username);
 }
 const commentInbox=new CommentInbox({
  answer,
  valid:job=>job.context.revision===revision&&(job.context.source==='manual'||link.status==='connected'),
- accepted:job=>{if(entertainment.active&&!entertainment.related(job.text))entertainment.reset();lastCommentAt=Date.now();lastAuto=lastCommentAt;autoBuffer.interrupt();topicRevision++;queue.dropKind('topic');neural.cancelTopics();topicConversation.defer();session.record('comment',job.text);broadcast();},
+ accepted:job=>{if(entertainment.active&&!entertainment.related(job.text))entertainment.reset();lastCommentAt=Date.now();lastAuto=lastCommentAt;autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();topicConversation.defer();session.record('comment',job.text);broadcast();},
  speak:text=>enqueue(text,'reply'),changed:()=>broadcast(),error:error=>recordError(error.message)
 });
 const allowedHosts=hosting.hosts;
@@ -210,7 +217,7 @@ const server=http.createServer(async(req,res)=>{
     const kind=['gift','like','join'].includes(data.kind)?data.kind:'join';
     receive(kind,{user:{id:'demo-'+String(data.name||'مریم'),nickname:String(data.name||'مریم'),payGrade:{level:30}},giftId:'demo',diamondCount:100,repeatCount:1,count:50,common:{msgId:randomUUID(),createTime:Date.now()}});
    }
-   else if(action==='settings'){if(typeof data.entertainmentEnabled==='boolean'){settings.entertainmentEnabled=data.entertainmentEnabled;autoBuffer.interrupt();entertainment.reset();}if(data.topic!==undefined){if(!topicChoices.includes(data.topic))throw Error('موضوع معتبر نیست.');settings.topic=data.topic;autoBuffer.interrupt();entertainment.reset();topicConversation.defer();}if(typeof data.topicEnabled==='boolean'){settings.topicEnabled=data.topicEnabled;topicConversation.defer();}if(data.language!==undefined){if(!languageChoices.has(data.language))throw Error('زبان معتبر نیست.');if(settings.language!==data.language)stopSpeech();settings.language=data.language;}if(settings.language==='en')settings.topic='ai';if(['animated','portrait'].includes(data.avatarMode))settings.avatarMode=data.avatarMode;for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
+   else if(action==='settings'){if(typeof data.entertainmentEnabled==='boolean'){settings.entertainmentEnabled=data.entertainmentEnabled;pauseProgram();entertainment.reset();}if(data.topic!==undefined){if(!topicChoices.includes(data.topic))throw Error('موضوع معتبر نیست.');settings.topic=data.topic;pauseProgram();entertainment.reset();topicConversation.defer();}if(typeof data.topicEnabled==='boolean'){settings.topicEnabled=data.topicEnabled;if(!data.topicEnabled)pauseProgram();topicConversation.defer();}if(data.language!==undefined){if(!languageChoices.has(data.language))throw Error('زبان معتبر نیست.');if(settings.language!==data.language)stopSpeech();settings.language=data.language;}if(settings.language==='en')settings.topic='ai';if(['animated','portrait'].includes(data.avatarMode))settings.avatarMode=data.avatarMode;for(const field of ['autoSpeak','conversationEnabled','muted','subtitles'])if(typeof data[field]==='boolean')settings[field]=data[field];if(Number.isInteger(data.volume)&&data.volume>=0&&data.volume<=100)settings.volume=data.volume;save();}
    else if(action==='correction'){
     const word=String(data.word||'').trim(),spoken=String(data.spoken||'').trim();
     if(!/^[\p{L}\p{M}\u200c]{1,50}$/u.test(word)||!/^[\p{L}\p{M}\u200c]{1,70}$/u.test(spoken)||correctionKey(word)!==correctionKey(spoken))throw Error('همان کلمه را با اعراب اصلاح کنید؛ واژه عوض نشود.');
@@ -221,7 +228,7 @@ const server=http.createServer(async(req,res)=>{
     const name=String(data.name||'').trim();if(!/^[\p{L}\p{M}\s]{2,50}$/u.test(name)||/[\p{N}]/u.test(name))throw Error('نام باید فقط حروف داشته باشد.');
     if(settings.names.length>=200)throw Error('فهرست نام‌ها پر است.');if(!settings.names.includes(name))settings.names.push(name);save();
    }
-   else if(action==='reset'){if(link.active)throw Error('ابتدا اتصال واقعی و تلاش مجدد را قطع کنید.');session.reset();stopSpeech();checkpoint(true);}
+   else if(action==='reset'){if(link.active)throw Error('ابتدا اتصال واقعی و تلاش مجدد را قطع کنید.');session.reset();stopSpeech();program.reset();activeViewers.clear();checkpoint(true);}
    else return json(res,404,{error:'Unknown action'});
    broadcast();return json(res,200,{ok:true,state:state()});
   }
@@ -242,14 +249,14 @@ server.on('upgrade',(req,socket,head)=>{if(req.url!=='/events'||!allowed(req)||w
 const timer=setInterval(broadcast,1000);timer.unref();
 const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===false){ws.terminate();continue;}ws.alive=false;ws.ping();}},30000);heartbeat.unref();
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
-if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);neural.restoreBudget(restored.lipSyncBudget);}
+if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);program.restore(restored.liveProgram);neural.restoreBudget(restored.lipSyncBudget);}
 async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 async function prepareEntertainment(){
  if(funPreparationPromise)return funPreparationPromise;
  const context=(settings.language==='en'?'en':'fa')+':'+(settings.language==='en'?'ai':settings.topic),generation=revision;
- if(autoBuffer.pool.filter(clip=>clip.context===context&&autoBuffer.valid(clip)).length>=3)return;
+ if(autoBuffer.pool.filter(clip=>clip.context===context&&autoBuffer.valid(clip)).length>=4)return;
  funPreparation={status:'preparing'};busy=true;
- funPreparationPromise=(async()=>{for(const segment of entertainment.starters({language:settings.language,topic:settings.topic})){
+ funPreparationPromise=(async()=>{const segments=entertainment.starters({language:settings.language,topic:settings.topic});if(programChat.configured||process.env.ARYANA_LLM_ENABLED==='true'){const fresh=await program.next(programText,{language:settings.language,valid:()=>generation===revision});if(fresh)segments.push(fresh);}for(const segment of segments){
   if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
   const audio=await synthesize(segment.text);if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
   const duration=await neural.durationProbe(join(privateDir,audio.slice(1))),video=await neural.submit(join(privateDir,audio.slice(1)),{kind:'topic',priority:5});
@@ -259,9 +266,28 @@ async function prepareEntertainment(){
  broadcast();return funPreparationPromise;
 }
 function publishSpeech(clip){
+ if(clip.kind==='topic'&&(clip.segment?.viewerId&&!activeViewers.fresh(clip.segment.viewerId)||!program.published(clip.segment||{text:clip.text},clip.durationSeconds)))return;
+ if(clip.segment?.viewerId)activeViewers.spoken(clip.segment.viewerId);
  utterances.push({id:randomUUID(),audio:clip.audio,video:clip.video,text:clip.text,kind:clip.kind,priority:clip.priority,durationSeconds:clip.durationSeconds,segmentType:clip.segment?.type,at:Date.now()});utterances=utterances.slice(-8);
- autoBuffer.observe(clip.durationSeconds||3,clip.priority);if(clip.segment){entertainment.published(clip.segment,clip.durationSeconds);autoBuffer.remember(clip);}speechStatus='ready';lastError='';broadcast();
+ autoBuffer.observe(clip.durationSeconds||3,clip.priority);if(clip.segment){entertainment.published(clip.segment,clip.durationSeconds);autoBuffer.remember(clip);}checkpoint();speechStatus='ready';lastError='';broadcast();
 }
+async function programText(prompt,language){
+ if(process.env.ARYANA_LLM_ENABLED!=='true')return programChat.ask(prompt,language);
+ const endpoint=process.env.ARYANA_LLM_URL,model=process.env.ARYANA_LLM_MODEL,token=process.env.ARYANA_LLM_KEY;
+ if(!endpoint||!model||!token)throw Error('تنظیمات تولید گفتار تازه کامل نیست.');
+ const url=new URL(endpoint);if(url.protocol!=='https:')throw Error('نشانی مدل باید HTTPS باشد.');
+ const response=await fetch(url,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify({model,messages:[{role:'system',content:'You are Aryana, an openly virtual AI host. Give one natural spoken paragraph of 40 to 65 words developing the exact supplied lesson and part. No greeting, lists, headings, invented evidence, identity repetition, usernames or gift requests. '+(language==='en'?'Only English.':'Only fluent Afghan Dari Persian.')},{role:'user',content:prompt}],max_tokens:240,temperature:.7}),signal:AbortSignal.timeout(30000)});
+ if(!response.ok)throw Error('تولید بخش تازه پاسخ نداد.');const result=await response.json();return result.choices?.[0]?.message?.content||'';
+}
+async function nextProgramSegment(valid){
+ const support=supportSegment(Math.floor(program.scheduledSeconds/240)-1,settings.language,activeViewers.next());if(support&&program.accept(support))return support;
+ // Keep checked quiz answers and occasional entertainment, without cycling old material.
+ if(entertainment.active&&!entertainment.active.finished||program.used.size%12===0){
+  for(let attempt=0;attempt<8;attempt++){const segment=entertainment.next({language:settings.language,topic:settings.language==='en'?'ai':settings.topic});if(program.accept(segment))return segment;}
+ }
+ return program.next(programText,{language:settings.language,valid});
+}
+
 const topicTimer=setInterval(()=>{
  const live=connectionStatus==='connected'&&settings.autoSpeak&&settings.topicEnabled;
  const pendingComment=commentInbox.busy||queue.items.some(item=>item.kind==='reply')||neural.active?.kind==='reply'||neural.pending.some(item=>item.kind==='reply');
@@ -271,7 +297,7 @@ const topicTimer=setInterval(()=>{
   if(clip)publishSpeech(clip);
   if(!live||occupied||busy||funPreparationPromise||queue.length||speechEngine.snapshot().pending||neural.status().pending||autoBuffer.pending||autoBuffer.prepared||Date.now()<autoBuffer.resumeAt)return;
   const ticket=randomUUID();if(!autoBuffer.begin(ticket))return;
-  try{const segment=entertainment.next({language:settings.language,topic:settings.topic});if(!enqueue(segment.text,'topic',{autoTicket:ticket,segment,context})){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+1000;}}catch(error){autoBuffer.failed(ticket);recordError(error.message);}
+  const generation=revision,topicVersion=topicRevision;void (async()=>{try{const segment=await nextProgramSegment(()=>generation===revision&&topicVersion===topicRevision&&connectionStatus==='connected');if(!segment){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+2000;return;}if(generation!==revision||topicVersion!==topicRevision)return;if(!enqueue(segment.text,'topic',{autoTicket:ticket,segment,context})){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+1000;}}catch(error){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+10000;if(generation===revision&&topicVersion===topicRevision)recordError(error.message);}})();
  }else{
   const text=topicConversation.take({connected:live,enabled:settings.topicEnabled,autoSpeak:settings.autoSpeak,busy:occupied||busy||queue.length>0||speechEngine.snapshot().pending||neural.status().pending>0||Date.now()-(utterances.at(-1)?.at||0)<15000,lastActivity:Math.max(lastAuto,lastCommentAt),topic:settings.topic,language:settings.language});
   if(text){try{enqueue(text,'topic');}catch{topicConversation.defer();}}
@@ -279,5 +305,6 @@ const topicTimer=setInterval(()=>{
 },1000);topicTimer.unref();
 server.listen(port,hosting.bind,()=>console.log('Aryana studio: http://127.0.0.1:'+port+'\nLIVE Studio source: http://127.0.0.1:'+port+'/live'));
 if(hosting.hosted){const preparation=setTimeout(()=>void primeReactions(),8000);preparation.unref();}
-process.on('SIGTERM',()=>{stopSpeech();speechEngine.close();localChat.cancel();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});
+process.on('SIGTERM',()=>{stopSpeech();speechEngine.close();localChat.cancel();programChat.cancel();link.stop();checkpoint(true);void durable.flush().finally(()=>{for(const ws of wss.clients)ws.terminate();wss.close();server.close();});});
+
 

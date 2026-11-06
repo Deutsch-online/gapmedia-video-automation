@@ -54,7 +54,7 @@ try:
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
@@ -77,12 +77,22 @@ try:
  else:raise RuntimeError('Hotfix readiness timed out')
  _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
  if state['settings'].get('lastUsername')!=username:raise RuntimeError('Saved username was not preserved')
- if connected and state['connection']!='connected':release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
+ if connected and state['connection']!='connected':
+  release.fetch(url+'/api/lip-prepare',admin,{})
+  deadline=time.monotonic()+240
+  while time.monotonic()<deadline:
+   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
+   if state.get('livePreparation',{}).get('status')=='ready':break
+   if state.get('livePreparation',{}).get('status')=='error':raise RuntimeError('Voice warmup failed before receiver recovery')
+   time.sleep(2)
+  else:raise RuntimeError('Voice warmup before receiver recovery timed out')
+  release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
  deadline=time.monotonic()+60
  while connected and time.monotonic()<deadline:
   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
   if state['connection']=='connected':break
   time.sleep(2)
+ if connected and state['connection']!='connected':raise RuntimeError('The saved receiver was not restored')
  if request.get('video_only'):
   release.fetch(url+'/api/settings',admin,{'avatarMode':request.get('default_mode','portrait')})
   _,page,_=release.fetch(url+'/live')
@@ -164,8 +174,14 @@ try:
   message='مشکل نمایش ویدیوی آریانا اصلاح شد. پخش بخش‌بخشی ویدیو و سازگاری فایل برای مرورگرهای موبایل به‌روزرسانی شد. ویدیو همان نسخهٔ ۶۰ثانیه‌ای با چشمک‌های کمتر است. اگر مرورگر پخش خودکار را مسدود کرد، ▶ را لمس کنید. فقط AI-Generated روی خروجی دیده می‌شود.\n\n'+url+'/live?v='+version+'\nنسخهٔ موبایل:\n'+url+'/mobile?v='+version+'\nاگر منبع باز در LIVE Studio هنوز صفحهٔ قبلی را دارد، یک بار Refresh کنید. خوش‌آمد و تشکر ویدیوی هماهنگ دارند؛ پاسخ‌های تازه فعلاً صوتی‌اند.'
  if request.get('neural_lipsync'):
   message='سرگرمی آریانا اضافه شد: گفتگوی پیوسته‌تر، جوک با خندهٔ صوتی ملایم، کوییز با A/B یا ۱/۲ و توضیح جواب. دعوت به ماندن، نظر دادن و شریک‌کردن لایف هم میان برنامه است؛ پاسخ کومنت اولویت دارد.\n\nتشکر نام‌دار برای گیفت و رسیدن لایک هر نفر به ۱۰۰، ۵۰۰ و ۱۰۰۰ اضافه شد؛ هر مرحله یک بار در همان لایف. نام‌های عددی و نامطمئن خوانده نمی‌شوند.\n\nپنل را تازه کنید و «رفرش لایف» را بزنید. برای کم‌شدن وقفه، پیش از اتصال، «آماده‌سازی سرگرمی پیش از لایف» را اجرا کنید. در شروعِ آماده‌سازی یا هنگام تولید جواب تازه ممکن است مکث باشد؛ بخش‌های آماده دوباره با همان صدا و لب‌خوانی هماهنگ پخش می‌شوند.\n'+('اتصال تیک‌تاک برقرار است.' if state['connection']=='connected' else 'دریافت تیک‌تاک را از پنل وصل کنید.')
+ if request.get('two_hour_program'):
+  info=state.get('program',{})
+  if info.get('targetSeconds')!=7200 or info.get('availableLessonParts',0)<900:raise RuntimeError('Two-hour programme configuration missing')
+  report.update(two_hour_program_configured=True,programme_target_seconds=7200,lesson_parts=info['availableLessonParts'],repeat_policy=info.get('repeatPolicy'),two_hour_real_time_test=False)
+  message='برنامهٔ گفتار آریانا برای حداقل دو ساعت توسعه یافت: موضوع، مثال، بررسی اشتباه و چالش تازه. بخش پخش‌شده در کل جلسه دوباره انتخاب نمی‌شود و سابقه با رفرش از بین نمی‌رود. پاسخ کومنت اولویت دارد.\n\nآزمون زمان‌بندی دو ساعته موفق شد؛ اجرای واقعی دو ساعت با صدا و لب هنوز آزمایش نشده است. تولید تازه ممکن است مکث داشته باشد و سقف اعتبار موجود حفظ شده است. پیش از اتصال، «آماده‌سازی شروع برنامه» را اجرا کنید. پنل را تازه و «رفرش لایف» را بزنید.\n'+url+'/live'
  report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise
+
 
 
