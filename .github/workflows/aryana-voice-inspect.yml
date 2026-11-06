@@ -40,5 +40,12 @@ jobs:
           result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions')
           if result['runtime']['liveLipSync']:
            call('/api/refresh-live',{});result['output_refreshed']=True
+          selected=next((os.getenv(name) for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)),None)
+          if selected:
+           try:
+            req=urllib.request.Request('https://api.elevenlabs.io/v1/user/subscription',headers={'xi-api-key':selected})
+            with urllib.request.urlopen(req,timeout=25) as response:subscription=json.load(response)
+            result['elevenlabs_account']={'authenticated':True,'remaining_characters':max(0,subscription.get('character_limit',0)-subscription.get('character_count',0))}
+           except Exception as error:result['elevenlabs_account']={'authenticated':False,'error_type':type(error).__name__,'http_status':getattr(error,'code',None)}
           print('ARYANA_EXISTING_VOICE '+json.dumps(result),flush=True)
           PY
