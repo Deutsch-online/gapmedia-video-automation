@@ -19,7 +19,7 @@ jobs:
           token=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
           req=urllib.request.Request('https://afgtakrun-aryana-live-studio.hf.space/api/state',headers={'x-aryana-key':token})
           with urllib.request.urlopen(req,timeout=30) as response:state=json.load(response)
-          result={key:state.get(key) for key in ['livePreparation','voiceEngine','lipSync','programModelStatus','program','connection','lastError','quickReactions']}
+          result={key:state.get(key) for key in ['livePreparation','voiceEngine','lipSync','programModelStatus','program','connection','lastError','quickReactions','voiceArchive']}
           text=json.dumps(result,ensure_ascii=False)
           text=re.sub(r'https?://[^\\s"]+','[URL]',text)
           print('ARYANA_PROGRAM_READINESS '+text)
@@ -97,5 +97,5 @@ jobs:
            if state.get('entertainment',{}).get('preparation')=='error':raise RuntimeError('Programme preparation failed')
            time.sleep(3)
           else:raise RuntimeError('Programme preparation deadline')
-          print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'status':'ready','worker_resumed':True,'voice_and_lips_ready':state['capabilities']['liveLipSync'],'cached_clips':state['entertainment']['cachedClips'],'programme':state['program'],'two_hour_real_time_test':False,'connection':state['connection'],'quick_reactions':state.get('quickReactions'),'voice_provider':state['capabilities'].get('voiceProvider')},ensure_ascii=False),flush=True)
+          print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'status':'ready','worker_resumed':True,'voice_and_lips_ready':state['capabilities']['liveLipSync'],'cached_clips':state['entertainment']['cachedClips'],'programme':state['program'],'two_hour_real_time_test':False,'connection':state['connection'],'quick_reactions':state.get('quickReactions'),'voice_provider':state['capabilities'].get('voiceProvider'),'voice_archive':state.get('voiceArchive')},ensure_ascii=False),flush=True)
           PY
