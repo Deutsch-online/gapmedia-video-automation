@@ -83,7 +83,11 @@ for spec in json.loads((here/'arena-photo-manifest.json').read_text()):
 scripts=json.loads((here/'narration-scripts.mjs').read_text().split('=',1)[1].strip().rstrip(';'))
 old_manifest={}
 try:old_manifest=json.loads(read_public(url+'/narration-manifest.json',10))
-except Exception:pass
+except Exception:
+ try:
+  from huggingface_hub import hf_hub_download
+  old_manifest=json.loads(Path(hf_hub_download(repo_id=repo,repo_type='space',filename='public/narration-manifest.json',token=os.environ['HF_TOKEN'])).read_text())
+ except Exception:pass
 manifest={}
 audio_by_script={}
 for language,items in scripts.items():
@@ -96,6 +100,12 @@ for language,items in scripts.items():
     candidate=read_public(url+'/'+name,15)
     if len(candidate)>100 and hashlib.sha256(candidate).hexdigest()==old.get('sha256'):audio=candidate
    except Exception:pass
+   if audio is None:
+    try:
+     from huggingface_hub import hf_hub_download
+     candidate=Path(hf_hub_download(repo_id=repo,repo_type='space',filename='public/'+name,token=os.environ['HF_TOKEN'])).read_bytes()
+     if len(candidate)>100 and hashlib.sha256(candidate).hexdigest()==old.get('sha256'):audio=candidate
+    except Exception:pass
   if audio is None:
    settings={'stability':.5,'similarity_boost':.75,'speed':.96}
    req=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':text,'model_id':model_id,'language_code':language,'voice_settings':settings}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
