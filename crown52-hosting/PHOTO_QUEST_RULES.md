@@ -1,0 +1,13 @@
+# Photo Quest (v73)
+
+An optional creative game within the profile experience, selectable from Control > Entertainment mode: Photo Quest / Knowledge quiz. This version enables Photo Quest once for the existing profile experience; it preserves the host's duration, pause/auto-start settings, members and scores. Switching modes replaces only the prompt, not the current round timer or accumulated scores.
+
+64 bilingual prompts:32 creative/preferences questions and32 imaginary-world role choices. No identifying/private information is requested. Each prompt lasts60seconds; the existing221-question knowledge mode retains30second prompts. One-hour prompt history, reset protection and pool-exhaustion waiting apply to both banks with separate stable IDs. The history is private and persisted.
+
+A real accepted1–4choice receives10points and1build star, once per person per prompt. All four choices are valid. No correct/wrong inference, intelligence assessment, personality diagnosis, physical appearance judgment, real-world power or external reward. A creative choice changes the photo's decorative colour and one of4effects: orbit, shield, spark or wings. Every3build stars increases the design level, capped8. Choices and labels are saved in the current person's state; snapshots retain them. They are not claimed to be permanent across removal/expiry. Existing genuine like/gift point rules remain; no solicitation or paid entry is added.
+
+Show the latest real creative choice for9seconds in a photo card inside the question area, without obscuring faces in the podium. Show the person's chosen option label, actual build-star count and a conversational follow-up. Respondent photos remain next to selected options until the question changes. Lower bubbles inherit the chosen colour/effect; podium photos get matching accents. No invented live choices or automatic demo points.
+
+The female FA/EN narrator invites a choice without saying it is right/wrong. A dedicated reusable natural ElevenLabs creative-reply clip continues after the unchanged runtime daily allowance runs out; it makes no invented named claim. Personalized reading remains allowance-limited, as disclosed. New speech clip generation is only2short reusable files. The private Test photo game button cycles4effects and a private narrator sample without modifying LIVE users, scores, mode or timer.
+
+Responsive430/1080browser checks cover selected photo card,4options, respondent photos, star display, bounds and4private effects. Engine tests cover equal scores, duplicate rejection, growth, snapshots, timer-preserving mode switch and one-hour reset/exhaustion protection. Existing quiz, narrator and bubble tests remain passing.

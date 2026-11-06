@@ -4,9 +4,10 @@ import {welcomeName} from './bubble-stages.mjs';
 import {profileWelcomeSpeech} from './league-voice.mjs';
 const line=(language,en,fa)=>language==='fa'?fa:en;
 export function participantInvite(language='en'){return line(language,'Fancy a quick challenge? Have a look at the question. What do you think?','یک چالش کوتاه، چطور است؟ سؤال را ببین. به نظرت جواب کدام است؟');}
-export function questionSpeech(quiz,language='en'){if(!quiz?.available)return '';return quiz.question+' '+quiz.options.map((x,i)=>line(language,'Option ','گزینهٔ ')+(i+1)+'. '+x).join('. ')+'. '+line(language,'Which option do you think fits?','به نظر شما کدام گزینه درست است؟');}
-export function commentSpeech({person,text,accepted,correct,answer,available=true,language='en',variant=0}){
+export function questionSpeech(quiz,language='en'){if(!quiz?.available)return '';return quiz.question+' '+quiz.options.map((x,i)=>line(language,'Option ','گزینهٔ ')+(i+1)+'. '+x).join('. ')+'. '+(quiz.personal?line(language,'Which would you choose? There is no wrong choice.','کدام را می‌پسندی؟ این انتخاب، درست و اشتباه ندارد.'):line(language,'Which option do you think fits?','به نظر شما کدام گزینه درست است؟'));}
+export function commentSpeech({person,text,accepted,correct,answer,personal=false,available=true,language='en',variant=0}){
  const n=welcomeName(person)||line(language,'friend','دوست عزیز'),v=Math.abs(variant)%3;
+ if(accepted&&personal)return n+'، '+line(language,['Nice choice! Your portrait has a new power. What made you choose it?','Your portrait is taking shape! What do you like about that choice?','Another star for your creation! What would your hero do next?'][v],['انتخابت ثبت شد! عکست یک قدرت تازه گرفت. چرا این گزینه را پسندیدی؟','قهرمانت دارد شکل می‌گیرد! چه چیزی در این انتخاب دوست داری؟','یک ستارهٔ تازه برای کارتت! قهرمانت بعدش چه کار کند؟'][v]);
  if(accepted&&answer!==null){const correctLines=['Yes, you got it! What gave it away?','That is right! Did you know it, or work it out?','Nice one, that is right! What was your clue?'],correctFa=['آفرین، درست گفتی! از کجا فهمیدی؟','درست است! از قبل می‌دانستی، یا همین حالا حلش کردی؟','آفرین به دقتت، درست است! چه سرنخی پیدا کردی؟'],wrongLines=['Not this one, but good try! Shall we try the next question?','Ah, not quite. No worries! There is a fresh question coming.','Good try! That was not it. Let us have another go with the next one.'],wrongFa=['این بار درست نبود، ولی آفرین که امتحان کردی! برویم سراغ سؤال بعدی؟','این یکی درست نبود. اشکالی ندارد! سؤال بعدی یک فرصت تازه است.','آفرین به تلاشت! این بار درست نبود؛ با سؤال بعدی دوباره امتحان می‌کنیم.'];return n+'، '+(correct?line(language,correctLines[v],correctFa[v]):line(language,wrongLines[v],wrongFa[v]));}
  const t=String(text||'').trim().toLowerCase();
  if(/^(سلام|درود|hello|hi|hey)(\s|[!،,.؟?]|$)/u.test(t))return n+'، '+line(language,'hello! Glad you are here. What kind of questions do you enjoy?','سلام! خوشحالم اینجایی. بیشتر از چه جور سؤال‌هایی خوشت می‌آید؟');
@@ -28,8 +29,8 @@ export class QuizNarrator{
   const receipt=d.eventId&&d.eventId!=='0'?d.type+':'+d.eventId:d.type+':'+person.id+':'+(d.comment||Math.floor(now/5000));if(this.seen.has(receipt))return false;this.seen.set(receipt,now);
   const key=d.type+':'+person.id,delay=d.type==='comment'?6000:d.type==='like'?30000:15000;if(now<(this.cooldowns.get(key)||0))return false;this.cooldowns.set(key,now+delay);
   const quiz=quizState(game.profileRound(),now,language),response=game.profileRound().quizResponses?.find(x=>x.id===person.id&&x.questionId===quiz.id),answer=answerNumber(d.comment);
-  const text=d.type==='comment'?commentSpeech({person,text:d.comment,accepted:result.accepted,correct:response?.correct,answer,available:quiz.available,language,variant:this.serial}):thanksSpeech(person,d.type,language,this.serial);
-  return this.push(d.type,text,now,{key:receipt+':speech',priority:d.type==='comment'?100:d.type==='gift'?45:35,reaction:d.type==='comment'?(result.accepted&&answer!==null?(response?.correct?'correct':'try-again'):'conversation'):'thanks',personName:welcomeName(person)});
+  const text=d.type==='comment'?commentSpeech({person,text:d.comment,accepted:result.accepted,correct:response?.correct,personal:response?.personal,answer,available:quiz.available,language,variant:this.serial}):thanksSpeech(person,d.type,language,this.serial);
+  return this.push(d.type,text,now,{key:receipt+':speech',priority:d.type==='comment'?100:d.type==='gift'?45:35,reaction:d.type==='comment'?(result.accepted&&answer!==null?(response?.personal?'creative':response?.correct?'correct':'try-again'):'conversation'):'thanks',personName:welcomeName(person)});
  }
  setLanguage(language){if(this.language&&this.language!==language){this.queue=[];this.active=null;this.questionKey='';this.welcomeKey='';}this.language=language;}
  tick(game,now,{connected=false}={}){
@@ -48,11 +49,12 @@ export class QuizNarrator{
   if(!this.active&&this.queue.length){const item=this.queue.shift(),duration=Math.min(26000,Math.max(11000,item.text.length*65+4000));this.active={...item,startedAt:now,endsAt:Math.min(item.expiresAt,now+duration)};}
   return previous!==(this.active?.id||'');
  }
- view(sign){return this.active?{...this.active,speechText:this.active.text,speechUrl:sign(this.active.text,this.active.language,this.active.reaction==='correct'?'correct':this.active.reaction==='try-again'?'incorrect':this.active.kind)}:null;}
+ view(sign){return this.active?{...this.active,speechText:this.active.text,speechUrl:sign(this.active.text,this.active.language,this.active.reaction==='creative'?'quest':this.active.reaction==='correct'?'correct':this.active.reaction==='try-again'?'incorrect':this.active.kind)}:null;}
 }
 
 export function narratorPreview(kind,language='en'){
  const person={name:language==='fa'?'لینا':'Lina'},quiz=roundQuiz(1,language);
+ if(kind==='quest')return commentSpeech({person,accepted:true,personal:true,answer:1,language});
  if(kind==='question')return questionSpeech(quiz,language);
  if(kind==='correct'||kind==='incorrect')return commentSpeech({person,accepted:true,correct:kind==='correct',answer:1,language});
  if(kind==='comment')return commentSpeech({person,text:language==='fa'?'سلام':'hello',answer:null,language});
