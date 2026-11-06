@@ -1,0 +1,61 @@
+name: Send Aryana links to the verified owner Telegram
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/telegram-link-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: aryana-owner-link-delivery
+  cancel-in-progress: false
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Send the public player and private panel links once
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,hmac,hashlib,urllib.request
+          token=os.environ['TELEGRAM_BOT_TOKEN']
+          def tg(method,payload):
+           request=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=json.dumps(payload).encode(),headers={'content-type':'application/json'})
+           with urllib.request.urlopen(request,timeout=30) as response:body=json.load(response)
+           if not body.get('ok'):raise RuntimeError('Telegram rejected the request')
+           return body['result']
+          try:
+           bot=tg('getMe',{})
+           if bot.get('username','').lower()!='afgsocial_bot':raise RuntimeError('Unexpected bot identity')
+           recipient=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or os.environ['TELEGRAM_CHAT_ID']
+           owner=tg('getChat',{'chat_id':recipient})
+           if owner.get('type')!='private':raise RuntimeError('Expected the established private owner chat')
+           base='https://afgtakrun-aryana-live-studio.hf.space'
+           key=hmac.new(token.encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+           message='\n'.join([
+            'آریانا — لینک‌های برنامهٔ LIVE',
+            '',
+            '🎥 پخش برای LIVE Studio / OBS:',
+            base+'/live',
+            '',
+            '📱 پخش در موبایل:',
+            base+'/mobile',
+            '',
+            '🔐 پنل خصوصی مدیریت:',
+            base+'/?studio=1#'+key,
+            '',
+            'خروجی را با اندازهٔ 1080 × 1920 اضافه کنید. پس از روشن‌کردن لایف تیک‌تاک، اتصال دریافت‌کننده را از پنل فعال کنید.',
+            '',
+            'برنامه برای ۱۲۰ دقیقه گفتار تازه و حفظ سابقهٔ عدم تکرار در کل جلسه تنظیم شده است. آزمون شبیه‌سازی موفق شد؛ اجرای واقعی دو ساعت بدون وقفه هنوز تأیید نشده و به سرعت تولید و سهمیه بستگی دارد.',
+            '',
+            'لینک مدیریت را خصوصی نگه دارید.'
+           ])
+           sent=tg('sendMessage',{'chat_id':owner['id'],'text':message,'link_preview_options':{'is_disabled':True}})
+           print('ARYANA_TELEGRAM_DELIVERY '+json.dumps({'ok':True,'message_id':sent['message_id'],'bot':'afgsocial_bot','chat_type':'private'}))
+          except Exception as error:
+           print('ARYANA_TELEGRAM_DELIVERY '+json.dumps({'ok':False,'error_type':type(error).__name__}))
+           raise SystemExit(1)
+          PY

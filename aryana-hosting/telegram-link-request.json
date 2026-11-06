@@ -1,0 +1,6 @@
+{
+  "request": "send-current-live-mobile-and-private-studio-links",
+  "date": "2026-11-06",
+  "recipient": "established_owner_private_chat",
+  "delivery": "once"
+}
