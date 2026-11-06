@@ -12,63 +12,54 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 25
     steps:
-      - name: Deliver requested links to private bot conversation
+      - name: Update owner private guide after verified battle deployment
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
         run: |
           python - <<'PY'
           import os,json,time,urllib.request,urllib.error
+          origin='https://afgtakrun-live-crown-52.hf.space'
+          expected='4548c68a35cd069727d6a9f914e55a9877e7b75b'
+          def read(path):
+              with urllib.request.urlopen(origin+path,timeout=30) as r:return r.read()
+          for attempt in range(120):
+              try:
+                  health=json.loads(read('/health'))
+                  if health.get('build')==expected and health.get('arenaVersion')==78:break
+              except Exception:pass
+              time.sleep(10)
+          else:raise RuntimeError('Expected profile battle build is not ready')
+          state=json.loads(read('/api/state'))['state']
+          if state['fun']['profileRound'].get('gameMode')!='battle':raise RuntimeError('Question-free mode missing')
+          arena=state['fun'].get('arena78',{})
+          if len(arena.get('bots',[]))!=8:raise RuntimeError('Eight-character arena missing')
+          if any('pairs' in arena or 'seen' in arena for _ in [0]):raise RuntimeError('Internal hit receipts exposed')
+          if any(p.get('photoIndex') in [1,2,4] for p in arena['bots']):raise RuntimeError('Uncurated photograph still active')
+          html=read('/fun/control?v=78').decode()
+          if 'id="profileTestTab"' not in html:raise RuntimeError('Test tab missing')
+          if b'testArenaRound' not in read('/game.mjs'):raise RuntimeError('Isolated arena test missing')
+          if b'mountArenaFire' not in read('/arena-fire.mjs'):raise RuntimeError('Flowing fire renderer missing')
+          if b'element-ice' not in read('/arena-battle.css'):raise RuntimeError('Element rings missing')
+          photo=read('/arena-portraits/01.jpg')
+          if not photo.startswith(b'\xff\xd8'):raise RuntimeError('Photographic avatar missing')
+          manifest=json.loads(read('/narration-manifest.json'))
+          if len(manifest)!=122:raise RuntimeError('Named voice clips missing')
+          if any(x.get('natural_profile')!=70 for x in manifest.values()):raise RuntimeError('Unexpected voice profile')
+          if state['admission']['entryMode']!='comment' or state['admission']['minCoins']!=0:raise RuntimeError('Free entry missing')
+          if 'policyArchive' in state:raise RuntimeError('Private archive exposed')
           bot=os.environ['TELEGRAM_BOT_TOKEN']
-          if not bot:raise RuntimeError('Telegram bot credential not configured')
-          chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or '7993801735'
+          chat=os.environ.get('TELEGRAM_REVIEW_CHAT_ID') or '7993801735'
           def call(method,payload):
               req=urllib.request.Request('https://api.telegram.org/bot'+bot+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
               try:
-                  with urllib.request.urlopen(req,timeout=25) as response:data=json.load(response)
-              except urllib.error.HTTPError as exc:
-                  raise RuntimeError('Telegram HTTP '+str(exc.code)) from None
-              except Exception:
-                  raise RuntimeError('Telegram request failed') from None
+                  with urllib.request.urlopen(req,timeout=25) as r:data=json.load(r)
+              except urllib.error.HTTPError as exc:raise RuntimeError('Telegram HTTP '+str(exc.code)) from None
+              except Exception:raise RuntimeError('Telegram request failed') from None
               if not data.get('ok'):raise RuntimeError('Telegram delivery failed')
               return data['result']
-          if call('getChat',{'chat_id':chat}).get('type')!='private':
-              raise RuntimeError('Private owner chat required')
-          origin='https://afgtakrun-live-crown-52.hf.space'
-          def read_app(path):
-              with urllib.request.urlopen(origin+path,timeout=30) as response:return response.read()
-          for attempt in range(120):
-              try:
-                  health=json.loads(read_app('/health'))
-                  if health.get('build')=='ac06f4a762fee951447bc1501ef407739f926f04':break
-              except Exception:pass
-              time.sleep(10)
-          else:raise RuntimeError('Expected bubble76 deployment is not ready')
-          html=read_app('/fun/control?v=76').decode()
-          for element in ['profileTestTab','profilePreviewDialog','repeatProfilePreview','growProfilePreview','closeProfilePreview']:
-              if ('id="'+element+'"') not in html:raise RuntimeError('Missing deployed preview control: '+element)
-          css=read_app('/portrait.css?v=76').decode()
-          if 'body.test-only' not in css or '.profile-preview-dialog' not in css:raise RuntimeError('Updated bold preview styles missing')
-          state=json.loads(read_app('/api/state'))['state']
-          if state['admission']['entryMode']!='comment' or state['admission']['minCoins']!=0:raise RuntimeError('Free play enforcement missing')
-          if 'policyArchive' in state:raise RuntimeError('Private policy archive exposed')
-          if b'QUIZ_BANK' not in read_app('/question-bank.mjs'):raise RuntimeError('Question bank missing')
-          if b'welcome' not in read_app('/welcome-scripts.mjs'):raise RuntimeError('Welcome variety missing')
-          manifest=json.loads(read_app('/narration-manifest.json'))
-          if len(manifest)!=40:raise RuntimeError('Expected40 narrator clips')
-          print('CROWN76_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'clips':len(manifest)}))
-          if b'QuizNarrator' not in read_app('/quiz-narrator.mjs'):raise RuntimeError('Interactive narrator missing')
-          if b'testQuizNarrator' not in read_app('/game.mjs'):raise RuntimeError('Private narrator tests missing')
-          if not health.get('naturalVoiceOnly'):raise RuntimeError('Natural voice policy missing')
-          if any(x.get('natural_profile')!=70 for x in manifest.values()):raise RuntimeError('Old voice previews')
-          if b'quiz-answer-people' not in read_app('/game.mjs'):raise RuntimeError('Answer photos missing')
-          if b'PHOTO_QUEST_BANK' not in read_app('/photo-quest.mjs'):raise RuntimeError('Photo Quest missing')
-          if 'id="profileGameMode"' not in html:raise RuntimeError('Game mode control missing')
-          if b'QUIZ_PLAY_ORDER' not in read_app('/free-play.mjs'):raise RuntimeError('Varied quiz order missing')
-          if b'activity-frame-orbit' not in read_app('/game.mjs'):raise RuntimeError('Activity frames missing')
-          if b'SEAT_POINTS=100' not in read_app('/crown-rules.mjs'):raise RuntimeError('Confirmed crown rules missing')
-          if b'vaporizeProfile' not in read_app('/bubble-battle.mjs'):raise RuntimeError('Expiry effect missing')
-          text="نسخه76 — حمله، دفاع، انفجار و تاج‌های مرحله‌ای\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=76\n\nنمای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=76\n\nتست خصوصی:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=76\n\nپنل و منبع Studio را رفرش کنید. رمز قبلی حفظ است.\n\nقانون نهایی:\n• ورود خودکار به جایگاه:100امتیاز؛ ورود به‌تنهایی تاج نمی‌دهد.\n• هر لایک1امتیاز، هر کوین100امتیاز؛ یک گل1کوینی=100لایک.\n• پاسخ درست10، اشتباه0با دلگرمی. کمنت عادی حملهٔ نمایشی دارد ولی امتیاز اضافهٔ پرسش نمی‌گیرد.\n• نرخ جدید هدیه برای رویدادهای بعد از به‌روزرسانی است؛ امتیازهای قبلی بازنویسی نمی‌شوند. مقدار کوین واقعی جدا حفظ می‌شود.\n\nتاج — بر اساس فعالیت واقعی شخص، بالاترین سطح اعمال می‌شود:\n•200لایک یا10کوین: نقره‌ای.\n•1000لایک یا100کوین: طلایی.\n•2000لایک یا500کوین: یخی/اژدهایی.\n• معیار گیفت، ارزش مجموع کوین‌هاست، نه تعداد هدیه‌ها.\n• تاج فقط برای فرد فعال است؛ عکس نمایشی جایگاه تاج واقعی نمی‌گیرد. نشستن در جایگاه با100امتیاز می‌تواند بدون تاج باشد.\n\nرقابت:\n• با کمنت، لایک و هدیهٔ واقعی، تیرهای نورانی و ستاره‌ای به رقیب می‌رسد؛ تا ادامهٔ فعالیت تمدید می‌شود.\n• نفر اول و دوم با فعالیت تازه دفاع می‌کنند؛ تیر برمی‌گردد و مهاجم عقب می‌رود.\n• نوار POWER از فاصلهٔ امتیازها محاسبه می‌شود. در خالی شدن نیرو یا افت جایگاه، انفجار موضعی و کوچک‌شدن کوتاه پروفایل دیده می‌شود.\n• تصاحب جایگاه فقط با امتیاز بالاتر است؛ نمایش تصاحبِ بدون تاج از تاجِ کسب‌شده جداست. ضربه، امتیاز واقعی رقیب را حذف نمی‌کند.\n• با پایان مهلت حضور، عکس همان شخص به دود تبدیل و محو می‌شود؛ بقیه صفحه تار نمی‌شود. ارتقا از حباب به جایگاه، خروج یا دودشدن حساب نمی‌شود.\n• حملهٔ تاریخی/تکراری بازپخش نمی‌شود. بعد از قطع فعالیت، شلیک‌ها خاموش می‌شوند.\n\nنمایش و تست:\nسؤال‌های دانشی قبلی حالت اصلی‌اند؛ بخش بزرگ Build Your Photo حذف شده، حباب تازه‌وارد کوچک است و با فعالیت رشد می‌کند. تایمر6دقیقه‌ای، تنظیمات و سابقه حفظ‌اند. سؤال تا یک ساعت تکرار نمی‌شود.\n\nدر تب تست: «تست حمله و دفاع»، حمله، دفاع، تصاحب، پایان زمان و دود، یک گل و100لایک؛ همچنین «تست تاج‌های نقره، طلا و یخ». این دکمه‌ها به کاربران/امتیازهای واقعی لایف چیزی اضافه نمی‌کنند و اعتبار ElevenLabs مصرف نمی‌کنند.\n\nورود رایگان و بدون جایزه؛ بدون درخواست گیفت، لایک یا فالو. صدای طبیعی ذخیره‌شده پس از سهمیه ادامه دارد؛ خواندن اختصاصی سؤال تازه تا تجدید سهمیه محدود است. صدای رباتی جایگزین نمی‌شود. دریافت رویداد به اتصال واقعی TikTok وابسته است."
+          if call('getChat',{'chat_id':chat}).get('type')!='private':raise RuntimeError('Private owner chat required')
+          text="نسخه 78 — نبرد حباب‌ها و جایگاه‌های آتشین\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=78\n\nنمای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=78\n\nتست خصوصی:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=78\n\nرمز قبلی حفظ است. پنل را یک‌بار رفرش کنید؛ نمایش Studio نیز تازه می‌شود.\n\n• سؤال‌ها فعلاً از نمایش و گوینده حذف شده‌اند. ۸ شخصیت بازی با نام طبیعی و عکس پرترهٔ واقعی حضور دارند؛ ۳ جایگاه و ۵ حباب پایین. این شخصیت‌ها آمار واقعی بیننده/لایک/گیفت نیستند.\n• هر فرد شمارهٔ ثابت دارد؛ پس از حذف، شماره آزاد و قابل استفاده برای تازه‌وارد است. ورود تازه و شخصیت جایگزین از صفر شروع می‌کند.\n• با کمنتِ شماره، هدف انتخاب می‌شود؛ اعداد لاتین، فارسی و عربی پذیرفته‌اند. 0 حالت خودکار است. بدون هدف دستی، فقط نزدیک‌ترین فرد با امتیاز بالاتر هدف می‌شود؛ نفر اول هدف پایین‌ترِ خودکار ندارد.\n• هر لایک ۱ امتیاز بازی و ۱ ضربه؛ هر کوین ۱۰۰ امتیاز بازی و ۲۰ ضربه. بنابراین یک Rose یک‌کوینی ۲۰ ضربه دارد. کمنت متمایز ۱۰ امتیاز و ۱ ضربه دارد. گیفت زنجیره‌ای پس از رسید نهایی حساب می‌شود.\n• هر ۱۰۰ ضربهٔ همان مهاجم به همان هدف تا ۱ امتیاز منتقل می‌کند. ضربه‌های دو نفر مخلوط نمی‌شود. موجودی منفی نمی‌شود و لایک/کوین واقعی هرگز کم نمی‌شود.\n• فعالیت تازه دفاع می‌سازد. ۱۰۰ ضربهٔ برگشتی معمولاً ۱ امتیاز؛ هنگام حملهٔ همزمان دو نفر یا بیشتر، ۰٫۵ امتیاز دارد. تعداد ضربهٔ دسته‌ای با ×N نشان داده می‌شود؛ ذرات تزئینی ضربهٔ اضافه نیستند.\n• ورود واقعی به جایگاه از ۱۰۰ امتیاز است؛ بیشترین امتیاز واجد شرط، مقام اول را می‌گیرد. بدون فعالیت، صرف ورود جایگاه نمی‌دهد.\n• مقام اول ۳ دقیقه، دوم ۲ دقیقه، سوم ۱ دقیقه؛ زمان دیده می‌شود. با بلوک ۱۰۰ لایک یا یک کوین، مهلت جایگاه تمدید می‌شود. تازه‌وارد ۳۰ ثانیه فرصت آرام دارد؛ پس از آن حداکثر دو شخصیت در هر نوبت به فردی که مهلتش رسیده حمله می‌کنند. توقف، تایمرها را متوقف می‌کند.\n• پایان دور امتیاز بازی همه را صفر می‌کند. سابقهٔ مستقل لایکرها و گیفترها محفوظ می‌ماند. زمان دور و کلید شروع خودکار زیر کنترل میزبان است.\n\nنمایش:\nمقام اول: طلا + یخ + آتش با شعلهٔ موج‌دار و فوران؛ دوم: طلا + یخ؛ سوم: طلا. حلقه‌ها دور دایره‌اند. امتیاز بیشتر، حباب بزرگ‌تر و تزئین قوی‌تر می‌دهد؛ صورت و نوشته‌ها پوشیده نمی‌شوند.\n\nدر تب تست، «تست رقابت ۸ شخصیت و امتیاز»: ۸ شخصیت، ۱۰۰ لایک، یک گل، پایان دور و صفرشدن را در یک وضعیت جدا امتحان کنید. این تست به لایف رویداد یا امتیاز ساختگی نمی‌فرستد و صدای پولی تولید نمی‌کند.\n\nگوینده طبیعی انگلیسی/فارسی، با نام و تنوع بیشتر؛ هیچ پیام عمومیِ بی‌نام جایگزین تمام‌شدن سهمیه نمی‌شود. کمنت و فعالیت واقعی اولویت دارند. موسیقی یا بلندی صدا خودکار زیاد نشده است.\n\nسرگرمی رایگان، بدون جایزهٔ نقدی و بدون درخواست گیفت، لایک یا فالو. دریافت فعالیت واقعی همچنان به اتصال TikTok بستگی دارد."
           result=call('editMessageText',{'chat_id':chat,'message_id':2833,'text':text,'link_preview_options':{'is_disabled':True}})
-          print('CROWN52_LINKS_UPDATED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
+          print('CROWN78_GUIDE_UPDATED '+json.dumps({'build':health['build'],'clips':len(manifest),'message_id':result['message_id'],'destination_type':'private'}))
           PY
