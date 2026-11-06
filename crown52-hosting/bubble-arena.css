@@ -94,3 +94,5 @@
 html[lang=fa] #profileRoundPanel .quiz-question{direction:rtl;text-align:right;}
 html[lang=fa] #profileRoundPanel .quiz-title,html[lang=fa] #profileRoundPanel .quiz-option{font-family:Tahoma,Arial,sans-serif!important;letter-spacing:0;}
 html[lang=fa] #profileRoundPanel .quiz-next{font-family:Tahoma,Arial,sans-serif;}
+
+.quiz-atmosphere{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:8px 12px;border-radius:14px;background:#092e40;color:#eefaff;font:600 clamp(15px,2vw,22px)/1.4 Tahoma,sans-serif;border:1px solid #5fc6e280;text-align:center}.quiz-atmosphere b{color:#ffe1a0;font-size:1.4em}.quiz-atmosphere[data-reaction=correct]{background:#064c43;border-color:#83edbd}.quiz-atmosphere[data-reaction=try-again]{background:#253c68;border-color:#a6c7ff}

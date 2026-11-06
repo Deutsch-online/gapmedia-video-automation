@@ -34,8 +34,8 @@ try:
  if candidates:fa_model=next((m['model_id'] for m in candidates if m.get('model_id')=='eleven_v3'),candidates[0]['model_id'])
 except Exception:pass
 print('CROWN61_PERSIAN_MODEL '+fa_model,flush=True)
-sample_text='Welcome to the live! Thank you for your wonderful support.'
-probe=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':sample_text,'model_id':'eleven_turbo_v2_5','voice_settings':{'stability':.55,'similarity_boost':.75,'style':.18,'use_speaker_boost':True,'speed':.96}}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
+sample_text='Hi, glad you are here. Ready for a quick question?'
+probe=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':sample_text,'model_id':'eleven_v3','voice_settings':{'stability':.55,'similarity_boost':.75,'style':.18,'use_speaker_boost':True,'speed':.96}}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
 try:
  with urllib.request.urlopen(probe,timeout=30) as response:voice_sample=response.read(3000000)
 except Exception:raise RuntimeError('Female ElevenLabs speech test failed; current app not replaced') from None
@@ -71,16 +71,16 @@ manifest={}
 audio_by_script={}
 for language,items in scripts.items():
  for kind,text in items.items():
-  name='narration-'+kind+'-'+language+'.mp3';model_id=fa_model if language=='fa' else 'eleven_turbo_v2_5'
+  name='narration-'+kind+'-'+language+'.mp3';model_id=fa_model if language=='fa' else 'eleven_v3'
   text_hash=hashlib.sha256(text.encode()).hexdigest();old=old_manifest.get(name,{})
   audio=audio_by_script.get((language,text_hash,model_id))
-  if old.get('text_sha')==text_hash and old.get('voice')==voice['voice_id'] and old.get('model')==model_id:
+  if old.get('natural_profile')==70 and old.get('text_sha')==text_hash and old.get('voice')==voice['voice_id'] and old.get('model')==model_id:
    try:
     candidate=read_public(url+'/'+name,15)
     if len(candidate)>100 and hashlib.sha256(candidate).hexdigest()==old.get('sha256'):audio=candidate
    except Exception:pass
   if audio is None:
-   settings={'stability':.5} if language=='fa' else {'stability':.48,'similarity_boost':.75,'use_speaker_boost':True,'speed':1.01}
+   settings={'stability':.5,'similarity_boost':.75,'speed':.96}
    req=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice['voice_id']+'?output_format=mp3_44100_128',data=json.dumps({'text':text,'model_id':model_id,'language_code':language,'voice_settings':settings}).encode(),headers={'xi-api-key':eleven_key,'Content-Type':'application/json','Accept':'audio/mpeg'})
    try:
     with urllib.request.urlopen(req,timeout=90) as response:audio=response.read(3000000)
@@ -88,7 +88,7 @@ for language,items in scripts.items():
    if len(audio)<100:raise RuntimeError('Invalid narrator sample: '+name)
   audio_by_script[(language,text_hash,model_id)]=audio
   (folder/'public'/name).write_bytes(audio)
-  manifest[name]={'voice':voice['voice_id'],'model':model_id,'language':language,'text_sha':text_hash,'sha256':hashlib.sha256(audio).hexdigest(),'size':len(audio)}
+  manifest[name]={'natural_profile':70,'voice':voice['voice_id'],'model':model_id,'language':language,'text_sha':text_hash,'sha256':hashlib.sha256(audio).hexdigest(),'size':len(audio)}
 (folder/'public/narration-manifest.json').write_text(json.dumps(manifest))
 print('CROWN61_BILINGUAL_AUDIO_READY '+json.dumps({'languages':list(scripts),'files':len(manifest)}),flush=True)
 
