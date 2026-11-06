@@ -1,11 +1,12 @@
+import {vaporizeProfile} from './bubble-battle.mjs';
 import {bubbleStage,bubbleLife,bubbleSize,packBubbles} from './bubble-stages.mjs';
 const stores=new WeakMap();
 const compact=n=>n>=1000000?(n/1000000).toFixed(1).replace('.0','')+'M':n>=1000?(n/1000).toFixed(n%1000?1:0)+'K':String(n);
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-export function renderBubbleArena({grid,people,avatar,el,sound,now,preview=false}){
+export function renderBubbleArena({grid,people,allPeople=people,avatar,el,sound,now,preview=false}){
  let arena=grid.querySelector('.bubble-arena');if(!arena){arena=el('section','bubble-arena');arena.setAttribute('aria-label',preview?'Sample bubble arena':'Quiz challengers');grid.append(arena);}
  let state=stores.get(arena);if(!state){state={nodes:new Map(),scores:new Map(),lastBump:0,sizes:new Map(),positions:new Map()};stores.set(arena,state);}
- const shown=people.slice(0,12),alive=new Set(shown.map(p=>p.id));for(const[id,node]of state.nodes)if(!alive.has(id)){node.remove();state.nodes.delete(id);state.scores.delete(id);state.sizes.delete(id);state.positions.delete(id);}
+ const shown=people.slice(0,12),alive=new Set(shown.map(p=>p.id));for(const[id,node]of state.nodes)if(!alive.has(id)){const known=allPeople.find(p=>p.id===id);if(!known||bubbleLife(known,now)==='gone')vaporizeProfile(node,grid);node.remove();state.nodes.delete(id);state.scores.delete(id);state.sizes.delete(id);state.positions.delete(id);}
  let empty=arena.querySelector('.bubble-empty');if(!shown.length){if(!empty){empty=el('p','bubble-empty','A place for your next idea · Free quiz');arena.append(empty);}return;}empty?.remove();
  const max=Math.max(10,...shown.map(p=>Number(p.chartPoints??0)||0)),oldScores=new Map(state.scores),width=arena.clientWidth||400;
  const scene=grid.closest('#arena');if(scene){const rect=scene.getBoundingClientRect(),scale=rect.width/(scene.offsetWidth||rect.width),remaining=(rect.bottom-arena.getBoundingClientRect().top)/scale-20;arena.style.aspectRatio='auto';arena.style.height=Math.max(90,Math.min(width*.95,remaining))+'px';}const height=arena.clientHeight||width*.69,items=shown.map((p,index)=>{const meta=bubbleSize(p,shown.length,width,state.sizes.get(p.id)||{},now);state.sizes.set(p.id,meta);return{...meta,id:p.id,index,points:Number(p.chartPoints)||0,previous:state.positions.get(p.id)};}),packed=packBubbles(items,width,height),locations=new Map(packed.placed.map(p=>[p.id,p]));arena.dataset.waiting=String(packed.waiting.length);
