@@ -114,13 +114,13 @@ try:
     api.add_space_variable(repo,key='ELEVENLABS_MODEL_ID',value=voice_config['model_id'])
     api.add_space_variable(repo,key='ARYANA_VOICE_PROVIDER',value='elevenlabs')
     report['elevenlabs']='configured';report['elevenlabs_remaining_characters']=voice_config['remaining_characters']
-   except voice.VoiceUnavailable:report['elevenlabs']='account_access_or_quota_pending'
+   except Exception:report['elevenlabs']='account_access_or_quota_pending'
   else:report['elevenlabs']='github_secret_unavailable_private_setup_available'
   write()
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/speech-policy.mjs','src/daily-questions.mjs','src/quick-reactions.mjs','src/elevenlabs_voice.py','src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['src/voice-archive.mjs','src/speech-policy.mjs','src/daily-questions.mjs','src/quick-reactions.mjs','src/elevenlabs_voice.py','src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/aryana.png','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
@@ -246,7 +246,8 @@ try:
   report.update(two_hour_program_configured=True,programme_target_seconds=7200,lesson_parts=info['availableLessonParts'],repeat_policy=info.get('repeatPolicy'),two_hour_real_time_test=False)
   message='برنامهٔ گفتار آریانا برای حداقل دو ساعت توسعه یافت: موضوع، مثال، بررسی اشتباه و چالش تازه. بخش پخش‌شده در کل جلسه دوباره انتخاب نمی‌شود و سابقه با رفرش از بین نمی‌رود. پاسخ کومنت اولویت دارد.\n\nآزمون زمان‌بندی دو ساعته موفق شد؛ اجرای واقعی دو ساعت با صدا و لب هنوز آزمایش نشده است. تولید تازه ممکن است مکث داشته باشد و سقف اعتبار موجود حفظ شده است. پیش از اتصال، «آماده‌سازی شروع برنامه» را اجرا کنید. پنل را تازه و «رفرش لایف» را بزنید.\n'+url+'/live'
  if request.get('no_engagement_requests') and not state.get('capabilities',{}).get('noEngagementRequests'):raise RuntimeError('Speech policy was not activated')
- report.update(voice_provider=state.get('capabilities',{}).get('voiceProvider'),quick_reactions_ready=state.get('quickReactions',{}).get('ready'),quick_reactions_cached=state.get('quickReactions',{}).get('cachedClips'))
+ if request.get('voice_archive') and (state.get('capabilities',{}).get('voiceProvider')!='elevenlabs' or state.get('voiceArchive',{}).get('status')!='ready' or state.get('voiceArchive',{}).get('clips',0)<6):raise RuntimeError('Native voice and durable archive were not verified')
+ report.update(voice_archive=state.get('voiceArchive'),voice_provider=state.get('capabilities',{}).get('voiceProvider'),quick_reactions_ready=state.get('quickReactions',{}).get('ready'),quick_reactions_cached=state.get('quickReactions',{}).get('cachedClips'))
  release.fetch(url+'/api/refresh-live',admin,{})
  if not request.get('skip_telegram'):report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id']
  write()

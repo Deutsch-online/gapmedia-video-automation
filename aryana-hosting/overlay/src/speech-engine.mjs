@@ -12,7 +12,7 @@ export class SpeechEngine{
   child.stdout.on('data',chunk=>{if(this.child!==child)return;this.buffer+=chunk;if(this.buffer.length>100000){this.close();return;}let at;while((at=this.buffer.indexOf('\n'))>=0){const line=this.buffer.slice(0,at);this.buffer=this.buffer.slice(at+1);let result;try{result=JSON.parse(line);}catch{continue;}
    if(result.ready){this.ready=true;this.update(this.pending?'working':'ready');if(this.pending)child.stdin.write(JSON.stringify(this.pending.request)+'\n');}
    else if(result.id===this.pending?.request.id){const pending=this.pending;this.pending=null;clearTimeout(pending.timer);this.lastSeconds=(Date.now()-pending.started)/1000;
-    if(result.ok){this.warmed=true;this.update('ready');pending.resolve(result.result);}else{this.update('error');pending.reject(Error(result.code?.startsWith('elevenlabs_')?'صدای ElevenLabs آماده نشد؛ دسترسی، صدا یا سهمیه بررسی شود.':'تولید صدای اختصاصی موفق نشد.'));}
+    if(result.ok){this.warmed=true;this.update('ready');pending.resolve(result.result);}else{this.update('error');pending.reject(Object.assign(Error(result.code?.startsWith('elevenlabs_')?'صدای ElevenLabs آماده نشد؛ دسترسی، صدا یا سهمیه بررسی شود.':'تولید صدای اختصاصی موفق نشد.'),{code:result.code}));}
    }
   }});
   const failed=()=>{if(this.child!==child)return;this.child=null;this.ready=false;this.warmed=false;this.update('error');if(this.pending){clearTimeout(this.pending.timer);this.pending.reject(Error('موتور صدا متوقف شد.'));this.pending=null;}};

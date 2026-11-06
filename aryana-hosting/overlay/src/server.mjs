@@ -29,6 +29,7 @@ import {QuickReactions,quickPhrases} from './quick-reactions.mjs';
 import {dailyQuestion} from './daily-questions.mjs';
 import {TopicConversation,topicChoices} from './topics.mjs';
 import {SpeechEngine} from './speech-engine.mjs';
+import {VoiceArchive} from './voice-archive.mjs';
 import {languageChoices,outputLanguage,localizedReply,localizedReaction} from './languages.mjs';
 
 const root=fileURLToPath(new URL('..',import.meta.url)),publicDir=join(root,'public'),privateDir=join(root,'.private');
@@ -63,6 +64,7 @@ const speechEngine=new SpeechEngine({python,script:join(root,'src/speech.py'),sa
 let neuralConfig={};try{neuralConfig=JSON.parse(readFileSync(join(root,'src/lipsync-config.json'),'utf8'));}catch{}
 const neural=new NeuralLipSync({root,privateDir,python,space:process.env.ARYANA_LIPSYNC_SPACE||neuralConfig.space,revision:process.env.ARYANA_LIPSYNC_REVISION||neuralConfig.revision,changed:()=>broadcast(),budgetChanged:()=>checkpoint(true)});
 let lipTest=null,funPreparation=null,funPreparationPromise=null,voiceSetup={status:'idle'};
+const voiceArchive=new VoiceArchive({repo:elevenVoice?process.env.ARYANA_STATE_REPO:null,token:process.env.ARYANA_STATE_TOKEN,directory:privateDir,scope:createHash('sha256').update(['voice-bank-v1',process.env.ELEVENLABS_VOICE_ID,process.env.ELEVENLABS_MODEL_ID,neural.revision,neural.referenceHash].join(':')).digest('hex')});let archivedOnly=false;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
 const programChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,role:'program',threads:2,changed:()=>broadcast()});
 let livePreparation={status:'idle'},livePreparationPromise=null;
@@ -70,12 +72,12 @@ function prepareLive(){
  if(livePreparationPromise)return livePreparationPromise;
  if(localChat.pending)return Promise.reject(Error('مدل گفتگو در حال پاسخ است؛ کمی صبر کنید.'));
  livePreparation={status:'preparing',at:Date.now()};broadcast();
- const jobs=[speechEngine.warmup()];if(neural.configured)jobs.push(neural.prepare());
+ const jobs=[speechEngine.warmup().then(()=>{archivedOnly=false;}).catch(error=>{if(error.code==='elevenlabs_quota_empty'&&quickReactions.ready()){archivedOnly=true;return;}throw error;})];if(neural.configured&&!quickReactions.ready())jobs.push(neural.prepare());
  if(settings.conversationEnabled&&localChat.configured&&!localChat.ready)jobs.push(localChat.ask('سلام. فقط یک خوش‌آمد کوتاه بنویس.'));
  livePreparationPromise=Promise.all(jobs).then(()=>{livePreparation={status:'ready',seconds:(Date.now()-livePreparation.at)/1000};lastError='';broadcast();}).catch(error=>{livePreparation={status:'error',error:error.message};broadcast();throw error;}).finally(()=>{livePreparationPromise=null;});
  return livePreparationPromise;
 }
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,voiceSetup,program:program.snapshot(),programModelStatus:programChat.status,quickReactions:{ready:quickReactions.ready(),cachedClips:quickReactions.clips.size,preparing:Boolean(quickPreparation)},revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=fe6e08cb06b2bbed':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending||programChat.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{noEngagementRequests:true,idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size+quickReactions.clips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceProvider:elevenVoice?'elevenlabs':process.env.ARYANA_VOICE_PROFILE_B64?'openvoice':'edge',voiceConfigured:elevenVoice?Boolean(process.env.ELEVENLABS_API_KEY):Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceClone:!elevenVoice&&Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:!elevenVoice&&process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,voiceSetup,voiceArchive:{...voiceArchive.snapshot(),storedOnly:archivedOnly},program:program.snapshot(),programModelStatus:programChat.status,quickReactions:{ready:quickReactions.ready(),cachedClips:quickReactions.clips.size,preparing:Boolean(quickPreparation)},revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=fe6e08cb06b2bbed':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending||programChat.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{storedPlaybackReady:quickReactions.ready(),noEngagementRequests:true,idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size+quickReactions.clips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceProvider:elevenVoice?'elevenlabs':process.env.ARYANA_VOICE_PROFILE_B64?'openvoice':'edge',voiceConfigured:elevenVoice?Boolean(process.env.ELEVENLABS_API_KEY):Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceClone:!elevenVoice&&Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:!elevenVoice&&process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual',meta={}){
@@ -90,7 +92,7 @@ async function synthesize(text,selected=settings.language){
  assertSpeechAllowed(text);
  const language=outputLanguage(selected,text),spoken=speechText(text,settings.corrections);
  const hash=createHash('sha256').update(language+'\n'+spoken+'\n'+(elevenVoice?['elevenlabs',process.env.ELEVENLABS_VOICE_ID,process.env.ELEVENLABS_MODEL_ID].join(':'):process.env.ARYANA_VOICE_PROFILE_B64||'')).digest('hex'),target=join(privateDir,'audio',hash+'.mp3');
- if(!existsSync(target))await speechEngine.synthesize({text:spoken,language,output:target});
+ if(!existsSync(target)&&!await voiceArchive.restoreAudio(hash,target)){await speechEngine.synthesize({text:spoken,language,output:target});await voiceArchive.saveAudio(hash,target);}
  const files=readdirSync(join(privateDir,'audio')).filter(n=>/^[a-f0-9]{64}\.mp3$/.test(n)).map(n=>({n,at:statSync(join(privateDir,'audio',n)).mtimeMs})).sort((a,b)=>a.at-b.at);
  const pinned=new Set([...[...quickReactions.clips.values()].map(clip=>clip.audio.split('/').at(-1)),...autoBuffer.pool.map(clip=>clip.audio.split('/').at(-1)),...autoBuffer.deferred.map(clip=>clip.audio.split('/').at(-1)),autoBuffer.prepared?.audio?.split('/').at(-1),...utterances.map(clip=>clip.audio?.split('/').at(-1)),hash+'.mp3']);
  while(files.length>64){const index=files.findIndex(file=>!pinned.has(file.n));if(index<0)break;const [old]=files.splice(index,1);unlinkSync(join(privateDir,'audio',old.n));}
@@ -104,18 +106,19 @@ async function pump(){
    const recorded=applyCorrections(item.text,settings.corrections)===item.text?reactionClips.get(item.text):null;
    const audio=recorded?.audio||await synthesize(item.text);if(item.revision!==revision||item.kind==='topic'&&topicVersion!==topicRevision)continue;
    let duration=speechDurations.get(audio);if(!duration){duration=await neural.durationProbe(audio.startsWith('/assets/')?join(publicDir,audio.slice(1)):join(privateDir,audio.slice(1)));speechDurations.set(audio,duration);while(speechDurations.size>150)speechDurations.delete(speechDurations.keys().next().value);}
-   const publish=video=>{if(item.revision!==revision||item.kind==='topic'&&topicVersion!==topicRevision)return;
+   const publish=async video=>{if(item.revision!==revision||item.kind==='topic'&&topicVersion!==topicRevision)return;
     const clip={audio,video,text:item.text,kind:item.kind,priority:item.priority,durationSeconds:duration,segment:item.meta?.segment,context:item.meta?.context};
+    if(elevenVoice&&clip.kind==='topic')await voiceArchive.remember(clip,'program');if(item.revision!==revision||item.kind==='topic'&&topicVersion!==topicRevision)return;
     if(item.meta?.autoTicket){autoBuffer.ready(item.meta.autoTicket,clip);speechStatus='ready';broadcast();}
     else publishSpeech(clip);
    };
-   if(recorded?.video)publish(recorded.video);
+   if(recorded?.video)await publish(recorded.video);
    else if(neural.configured){
     const requestedAt=Date.now();speechStatus='lip-preparing';broadcast();
-    void neural.submit(join(privateDir,audio.slice(1)),{kind:item.kind,priority:item.priority}).then(video=>{if(Date.now()-requestedAt>(item.kind==='topic'?180000:60000)){if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision)recordError('پاسخ دیررس از صف پخش حذف شد.');return;}publish(video);}).catch(error=>{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}if(item.revision===revision&&(item.kind!=='topic'||topicVersion===topicRevision)){speechStatus='error';recordError(error.message);}});
-   }else publish(null);
+    void neural.submit(join(privateDir,audio.slice(1)),{kind:item.kind,priority:item.priority}).then(video=>{if(Date.now()-requestedAt>(item.kind==='topic'?180000:60000)){if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision)recordError('پاسخ دیررس از صف پخش حذف شد.');return;}return publish(video);}).catch(error=>{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}if(item.revision===revision&&(item.kind!=='topic'||topicVersion===topicRevision)){speechStatus='error';recordError(error.message);}});
+   }else await publish(null);
   }
-  catch(error){if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision){speechStatus='error';recordError(error.message);}}
+  catch(error){if(error.code==='elevenlabs_quota_empty')archivedOnly=true;if(item.meta?.autoTicket)autoBuffer.failed(item.meta.autoTicket);if(item.revision===revision){speechStatus='error';recordError(error.message);}}
   finally{if(item.meta?.autoTicket&&autoBuffer.pending===item.meta.autoTicket&&!neural.active){autoBuffer.failed(item.meta.autoTicket);autoBuffer.resumeAt=Date.now()+30000;}}
  }}finally{activeVoiceKind=null;busy=false;if(speechStatus!=='error')speechStatus='idle';broadcast();}
 }
@@ -271,6 +274,7 @@ const timer=setInterval(broadcast,1000);timer.unref();const quickTimer=setInterv
 const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===false){ws.terminate();continue;}ws.alive=false;ws.ping();}},30000);heartbeat.unref();
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
 if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);program.restore(restored.liveProgram);neural.restoreBudget(restored.lipSyncBudget);}
+for(const clip of await voiceArchive.restore()){if(hasEngagementRequest(clip.text))continue;if(clip.group.startsWith('quick:'))quickReactions.clips.set(clip.group.slice(6),clip);else if(program.allows(clip.segment||{text:clip.text}))autoBuffer.remember(clip);}
 async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 async function prepareQuickReactions(){
  if(quickReactions.ready())return;
@@ -281,7 +285,7 @@ async function prepareQuickReactions(){
   const language=key.endsWith(':en')?'en':'fa',audio=await synthesize(text,language);
   const durationSeconds=await neural.durationProbe(join(privateDir,audio.slice(1))),video=await neural.submit(join(privateDir,audio.slice(1)),{kind:'manual',priority:100});
   if(generation!==revision)throw Error('آماده‌سازی واکنش لغو شد.');
-  quickReactions.clips.set(key,{text,audio,video,durationSeconds});broadcast();
+  const clip={text,audio,video,durationSeconds};await voiceArchive.remember(clip,'quick:'+key);quickReactions.clips.set(key,clip);broadcast();
  }})().finally(()=>{quickPreparation=null;broadcast();});return quickPreparation;
 }
 
@@ -295,7 +299,7 @@ async function prepareEntertainment(){
   const audio=await synthesize(segment.text);if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
   const duration=await neural.durationProbe(join(privateDir,audio.slice(1))),video=await neural.submit(join(privateDir,audio.slice(1)),{kind:'topic',priority:5});
   if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
-  speechDurations.set(audio,duration);autoBuffer.remember({audio,video,text:segment.text,kind:'topic',priority:5,durationSeconds:duration,segment,context});broadcast();
+  speechDurations.set(audio,duration);const clip={audio,video,text:segment.text,kind:'topic',priority:5,durationSeconds:duration,segment,context};await voiceArchive.remember(clip,'program');autoBuffer.remember(clip);broadcast();
  }funPreparation={status:'ready'};})().catch(error=>{funPreparation={status:'error',error:error.message};throw error;}).finally(()=>{busy=false;funPreparationPromise=null;broadcast();void pump();});
  broadcast();return funPreparationPromise;
 }
@@ -331,6 +335,7 @@ const topicTimer=setInterval(()=>{
  if(settings.entertainmentEnabled){
   const context=(settings.language==='en'?'en':'fa')+':'+(settings.language==='en'?'ai':settings.topic),clip=autoBuffer.take({enabled:live,blocked:occupied,context});
   if(clip)publishSpeech(clip);
+  if(archivedOnly)return;
   if(!live||occupied||busy||funPreparationPromise||queue.length||speechEngine.snapshot().pending||neural.status().pending||autoBuffer.pending||autoBuffer.prepared||Date.now()<autoBuffer.resumeAt)return;
   const ticket=randomUUID();if(!autoBuffer.begin(ticket))return;
   const generation=revision,topicVersion=topicRevision;void (async()=>{try{const segment=await nextProgramSegment(()=>generation===revision&&topicVersion===topicRevision&&connectionStatus==='connected');if(!segment){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+2000;return;}if(generation!==revision||topicVersion!==topicRevision)return;if(!enqueue(segment.text,'topic',{autoTicket:ticket,segment,context})){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+1000;}}catch(error){autoBuffer.failed(ticket);autoBuffer.resumeAt=Date.now()+10000;if(generation===revision&&topicVersion===topicRevision)recordError(error.message);}})();

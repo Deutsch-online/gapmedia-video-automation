@@ -1,5 +1,5 @@
 {
-  "request": "aryana-new-studio-natural-voice-fast-reactions-nov06",
+  "request": "activate-existing-eleven-api-key-and-private-persistent-voice-bank",
   "video_only": true,
   "default_mode": "portrait",
   "on_air_test_speech": false,
@@ -11,10 +11,10 @@
   "comment_priority": true,
   "continuous_entertainment": true,
   "two_hour_program": true,
-  "new_portrait": true,
+  "new_portrait": false,
   "no_engagement_requests": true,
   "quick_reactions": true,
   "eleven_requested": true,
   "skip_telegram": true,
-  "build_retry": "ensure-ffmpeg-without-index-refresh"
+  "voice_archive": true
 }

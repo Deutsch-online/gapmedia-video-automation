@@ -31,7 +31,7 @@ jobs:
       - name: Apply only reaction rules and restore the saved connection
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY || secrets.ELEVEN_API_KEY || secrets.ELEVENLABS_KEY || secrets.ELEVEN_LABS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
