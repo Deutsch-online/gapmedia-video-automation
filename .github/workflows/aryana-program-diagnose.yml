@@ -24,3 +24,24 @@ jobs:
           text=re.sub(r'https?://[^\\s"]+','[URL]',text)
           print('ARYANA_PROGRAM_READINESS '+text)
           PY
+      - name: Read Hugging Face worker and allowance without invoking a GPU
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,urllib.error
+          headers={'Authorization':'Bearer '+os.environ['HF_TOKEN']}
+          result={}
+          def read(url):
+           with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=25) as response:return json.load(response)
+          try:
+           who=read('https://huggingface.co/api/whoami-v2');result['owner']={'name':who.get('name'),'isPro':who.get('isPro')}
+           info=read('https://huggingface.co/api/spaces/afgtakrun/aryana-live-lipsync')
+           runtime=info.get('runtime',{});result['worker']={'private':info.get('private'),'sha':info.get('sha'),'stage':runtime.get('stage'),'hardware':runtime.get('hardware'),'error':runtime.get('errorMessage')}
+           quota=read('https://huggingface.co/api/spaces/zero-gpu/quota');result['allowance']={k:quota.get(k) for k in ['current','max','next_reset','tier']}
+           try:
+            endpoints=read('https://afgtakrun-aryana-live-lipsync.hf.space/gradio_api/info');result['worker_api_available']=bool(endpoints.get('named_endpoints'))
+           except Exception as e:result['worker_api_error']=type(e).__name__
+          except Exception as e:result['error']=type(e).__name__
+          print('ARYANA_HF_READINESS '+json.dumps(result))
+          PY
