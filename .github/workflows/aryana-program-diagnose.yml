@@ -1,4 +1,4 @@
-name: Read Aryana programme readiness
+name: Restore Aryana programme readiness
 on:
   push:
     branches: [delivery/aryana-hf-20261029]
@@ -8,7 +8,7 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 12
     steps:
       - name: Read only the private readiness fields
         env:
@@ -44,4 +44,58 @@ jobs:
            except Exception as e:result['worker_api_error']=type(e).__name__
           except Exception as e:result['error']=type(e).__name__
           print('ARYANA_HF_READINESS '+json.dumps(result))
+          PY
+      - name: Install the existing Hugging Face client
+        run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2'
+      - name: Resume the pinned ZeroGPU worker and privately prepare the programme
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,time,hmac,hashlib,urllib.request,urllib.error
+          from huggingface_hub import HfApi
+          api=HfApi(token=os.environ['HF_TOKEN']);repo='afgtakrun/aryana-live-lipsync'
+          assert api.whoami()['name']=='afgtakrun'
+          info=api.space_info(repo);assert info.private and info.sha=='8206edc16462f7cbe723c3a76ddf6a7a9a4d327d'
+          runtime=api.get_space_runtime(repo)
+          assert runtime.raw.get('hardware',{}).get('requested')=='zero-a10g'
+          stage=getattr(runtime.stage,'value',runtime.stage)
+          if stage=='PAUSED':
+           api.restart_space(repo)
+           print('ARYANA_WORKER_RESUME '+json.dumps({'requested':True,'hardware':'zero-a10g','source_unchanged':True}),flush=True)
+          deadline=time.monotonic()+420
+          while time.monotonic()<deadline:
+           runtime=api.get_space_runtime(repo);stage=getattr(runtime.stage,'value',runtime.stage)
+           if stage=='RUNNING':break
+           if stage in ['RUNTIME_ERROR','BUILD_ERROR','CONFIG_ERROR']:raise RuntimeError('Worker failed to resume: '+stage)
+           time.sleep(5)
+          else:raise RuntimeError('Worker resume timed out')
+          key=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+          base='https://afgtakrun-aryana-live-studio.hf.space'
+          def call(path,data=None):
+           req=urllib.request.Request(base+path,data=json.dumps(data).encode() if data is not None else None,headers={'x-aryana-key':key,'content-type':'application/json'})
+           with urllib.request.urlopen(req,timeout=30) as response:return json.load(response)
+          state=call('/api/state')
+          if state['connection'] in ['connected','connecting','reconnecting']:
+           print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'worker_resumed':True,'live_receiver_preserved':True}),flush=True);raise SystemExit(0)
+          call('/api/lip-prepare',{})
+          deadline=time.monotonic()+240
+          while time.monotonic()<deadline:
+           state=call('/api/state')
+           if state.get('capabilities',{}).get('liveLipSync'):break
+           if state.get('livePreparation',{}).get('status')=='error':raise RuntimeError('Host warmup failed after worker resume')
+           time.sleep(3)
+          else:raise RuntimeError('Host warmup deadline')
+          try:call('/api/entertainment-prepare',{})
+          except urllib.error.HTTPError as error:
+           if error.code!=400:raise
+          deadline=time.monotonic()+300
+          while time.monotonic()<deadline:
+           state=call('/api/state')
+           if state.get('entertainment',{}).get('cachedClips',0)>=4 and not state.get('entertainment',{}).get('preparing'):break
+           if state.get('entertainment',{}).get('preparation')=='error':raise RuntimeError('Programme preparation failed')
+           time.sleep(3)
+          else:raise RuntimeError('Programme preparation deadline')
+          print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'status':'ready','worker_resumed':True,'voice_and_lips_ready':state['capabilities']['liveLipSync'],'cached_clips':state['entertainment']['cachedClips'],'programme':state['program'],'two_hour_real_time_test':False,'connection':state['connection']},ensure_ascii=False),flush=True)
           PY
