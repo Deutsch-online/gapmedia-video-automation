@@ -8,7 +8,7 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - name: Read only the private readiness fields
         env:
@@ -19,7 +19,7 @@ jobs:
           token=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
           req=urllib.request.Request('https://afgtakrun-aryana-live-studio.hf.space/api/state',headers={'x-aryana-key':token})
           with urllib.request.urlopen(req,timeout=30) as response:state=json.load(response)
-          result={key:state.get(key) for key in ['livePreparation','voiceEngine','lipSync','programModelStatus','program','connection','lastError']}
+          result={key:state.get(key) for key in ['livePreparation','voiceEngine','lipSync','programModelStatus','program','connection','lastError','quickReactions']}
           text=json.dumps(result,ensure_ascii=False)
           text=re.sub(r'https?://[^\\s"]+','[URL]',text)
           print('ARYANA_PROGRAM_READINESS '+text)
@@ -57,7 +57,7 @@ jobs:
           from huggingface_hub import HfApi
           api=HfApi(token=os.environ['HF_TOKEN']);repo='afgtakrun/aryana-live-lipsync'
           assert api.whoami()['name']=='afgtakrun'
-          info=api.space_info(repo);assert info.private and info.sha=='8206edc16462f7cbe723c3a76ddf6a7a9a4d327d'
+          info=api.space_info(repo);assert info.private and info.sha=='f2a411bfbae4598a54577665914c527d196786e1'
           runtime=api.get_space_runtime(repo)
           assert runtime.raw.get('hardware',{}).get('requested')=='zero-a10g'
           stage=getattr(runtime.stage,'value',runtime.stage)
@@ -90,12 +90,12 @@ jobs:
           try:call('/api/entertainment-prepare',{})
           except urllib.error.HTTPError as error:
            if error.code!=400:raise
-          deadline=time.monotonic()+300
+          deadline=time.monotonic()+480
           while time.monotonic()<deadline:
            state=call('/api/state')
-           if state.get('entertainment',{}).get('cachedClips',0)>=4 and not state.get('entertainment',{}).get('preparing'):break
+           if state.get('quickReactions',{}).get('ready') and state.get('entertainment',{}).get('cachedClips',0)>=4 and not state.get('entertainment',{}).get('preparing'):break
            if state.get('entertainment',{}).get('preparation')=='error':raise RuntimeError('Programme preparation failed')
            time.sleep(3)
           else:raise RuntimeError('Programme preparation deadline')
-          print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'status':'ready','worker_resumed':True,'voice_and_lips_ready':state['capabilities']['liveLipSync'],'cached_clips':state['entertainment']['cachedClips'],'programme':state['program'],'two_hour_real_time_test':False,'connection':state['connection']},ensure_ascii=False),flush=True)
+          print('ARYANA_PROGRAM_RECOVERY '+json.dumps({'status':'ready','worker_resumed':True,'voice_and_lips_ready':state['capabilities']['liveLipSync'],'cached_clips':state['entertainment']['cachedClips'],'programme':state['program'],'two_hour_real_time_test':False,'connection':state['connection'],'quick_reactions':state.get('quickReactions'),'voice_provider':state['capabilities'].get('voiceProvider')},ensure_ascii=False),flush=True)
           PY
