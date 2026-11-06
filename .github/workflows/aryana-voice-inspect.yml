@@ -1,0 +1,44 @@
+name: Inspect the existing Aryana ElevenLabs connection
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/voice-inspect-request.json]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: python -m pip install --disable-pip-version-check 'huggingface_hub>=0.34,<2'
+      - name: Inspect names and runtime status without revealing or changing credentials
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+          ELEVENLABS_KEY: ${{ secrets.ELEVENLABS_KEY }}
+          ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,hmac,hashlib,urllib.request
+          from huggingface_hub import HfApi
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          assert api.whoami()['name']=='afgtakrun'
+          result={'github_key_names_present':[name for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)],'spaces':{}}
+          for repo in ['afgtakrun/aryana-live-studio','afgtakrun/aryana-live-lipsync']:
+           secret_names=list(api.get_space_secrets(repo))
+           variables=api.get_space_variables(repo)
+           result['spaces'][repo]={'elevenlabs_secret_names':[name for name in secret_names if 'eleven' in name.lower()],'elevenlabs_variable_names':[name for name in variables if 'eleven' in name.lower()],'voice_provider':variables['ARYANA_VOICE_PROVIDER'].value if 'ARYANA_VOICE_PROVIDER' in variables else None}
+          key=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+          base='https://afgtakrun-aryana-live-studio.hf.space'
+          def call(path,data=None):
+           req=urllib.request.Request(base+path,data=json.dumps(data).encode() if data is not None else None,headers={'x-aryana-key':key,'content-type':'application/json'})
+           with urllib.request.urlopen(req,timeout=30) as response:return json.load(response)
+          state=call('/api/state')
+          result['runtime']={name:state.get('capabilities',{}).get(name) for name in ['voiceProvider','voiceConfigured','voiceClone','liveLipSync','noEngagementRequests']}
+          result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions')
+          if result['runtime']['liveLipSync']:
+           call('/api/refresh-live',{});result['output_refreshed']=True
+          print('ARYANA_EXISTING_VOICE '+json.dumps(result),flush=True)
+          PY
