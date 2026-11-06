@@ -10,12 +10,12 @@ const invitations={
  fa:[
   'به نظر شما لایف با مجری انسانی و لایف با مجری هوش مصنوعی چه تفاوتی دارد؟ دوست دارم از شما بشنوم؛ منتظر نظریات‌تان هستم، کومنت کنید.',
   'سوال‌های‌تان را در کومنت بپرسید تا برای‌تان جواب بدهم. دربارهٔ هوش مصنوعی چه چیزی را دوست دارید بدانید؟',
-  'اگر از این گفتگو لذت می‌برید، برای حمایت از لایف صفحه را تپ‌تپ کنید و لایف را با دوستان‌تان شریک کنید تا آن‌ها هم در گفتگو همراه شوند.'
+  'اگر این گفتگو برای‌تان مفید است، سوال یا تجربهٔ خود را بگویید. می‌توانید دوستان‌تان را هم به گفتگو دعوت کنید تا نظرهای متفاوت را بشنویم.'
  ],
  en:[
   'What feels different between a live with a human host and one with an AI host? I would love to hear your thoughts. Tell me in the comments!',
   'Ask me your questions in the comments, and I will answer. What would you like to know about AI?',
-  'If you enjoy this conversation, tap the screen and share this live with your friends to support it. Invite them to join our AI conversation!'
+  'If this conversation is useful, share your questions or experiences. Invite your friends to join the conversation so we can hear different points of view!'
  ]
 };
 export function topicContent(topic='ai',language='fa',index=0){if(language==='en')topic='ai';const bank=topics[topic]||topics.ai,locale=language==='en'?'en':'fa';return index%2===1?invitations[locale][Math.floor(index/2)%invitations[locale].length]:bank[locale][Math.floor(index/2)%bank[locale].length];}
@@ -24,3 +24,4 @@ export class TopicConversation{
  take({connected,enabled,autoSpeak,busy,lastActivity=0,topic='ai',language='fa'}){const time=this.now();if(!connected||!enabled||!autoSpeak||busy||time<this.nextAt||time-lastActivity<15000)return null;if(language==='en')topic='ai';const key=topic+language,index=this.turns.get(key)||0;this.turns.set(key,index+1);this.nextAt=time+this.interval;return topicContent(topic,language,index);}
  defer(){this.nextAt=this.now()+30000;}
 }
+

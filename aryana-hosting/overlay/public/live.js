@@ -1,7 +1,7 @@
 import {createEngagementOverlay} from '/engagement.js?v=host-v5';
 const $=id=>document.getElementById(id),video=$('hostVideo'),idle=$('idleVideo');
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false,localMuted=new URLSearchParams(location.search).get('preview')==='1';
-const seen=new Set();try{const saved=JSON.parse(sessionStorage.getItem('aryana-seen-speech')||'[]');if(Array.isArray(saved))for(const id of saved.slice(-1000))if(typeof id==='string')seen.add(id);}catch{}let idlePath='/assets/idle.mp4?v=0061e1f4605708e7',idleBlocked=false,idleStarting=false;
+const seen=new Set();try{const saved=JSON.parse(sessionStorage.getItem('aryana-seen-speech')||'[]');if(Array.isArray(saved))for(const id of saved.slice(-1000))if(typeof id==='string')seen.add(id);}catch{}let idlePath='/assets/idle.mp4?v=fe6e08cb06b2bbed',idleBlocked=false,idleStarting=false;
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
 function manualPlay(){const button=$('enableAudio');button.classList.toggle('needs-play',idleBlocked&&!idle.hidden);button.hidden=enabled&&!idleBlocked;}
 function startIdle(userGesture=false){
@@ -47,7 +47,7 @@ function render(state){
  if(revision!==undefined&&revision!==state.revision)stop();revision=state.revision;
  idlePath=state.playback?.idleVideo||idlePath;refreshIdle();volume=Math.max(0,Math.min(1,(state.playback?.volume??85)/100));muted=Boolean(state.playback?.muted);if(gain)gain.gain.value=(muted||localMuted)?0:volume;
  for(const item of state.utterances||[]){if(seen.has(item.id))continue;seen.add(item.id);while(seen.size>1000)seen.delete(seen.values().next().value);if(Date.now()-item.at<60000)queue.push(item);}
- queue.sort((a,b)=>(b.priority||0)-(a.priority||0)||a.at-b.at);queue=queue.slice(0,6);if(current&&current.kind!=='reply'&&queue.some(item=>item.kind==='reply')){const saved=queue;stop();queue=saved;}void next();
+ queue.sort((a,b)=>(b.priority||0)-(a.priority||0)||a.at-b.at);queue=queue.slice(0,6);if(current&&current.kind!=='reply'&&(queue.some(item=>item.kind==='reply')||current.kind==='topic'&&queue.some(item=>item.kind==='reaction'))){const saved=queue;stop();queue=saved;}void next();
 }
 async function next(){
  if(playing)return;queue=queue.filter(item=>Date.now()-item.at<60000);if(!queue.length)return;
@@ -67,4 +67,5 @@ async function poll(){if(lastStateAt&&Date.now()-lastStateAt<4500)return;try{con
 refreshIdle();connect();void poll();setInterval(()=>void poll(),2500);
 // OBS/LIVE Studio may permit audio without a gesture. A blocked resume never blocks video.
 void window.aryanaActivateAudio();
+
 

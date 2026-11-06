@@ -1,4 +1,4 @@
-const priority={milestone:80,topic:5,manual:100,gift:85,vip:90,reply:110,join:35,like:15,thanks:10};
+const priority={followup:84,'vip-gift':96,milestone:82,topic:5,manual:100,gift:85,vip:90,reply:110,join:35,like:15,thanks:10};
 export class SpeechQueue{
  constructor({now=()=>Date.now(),limit=6}={}){this.now=now;this.limit=limit;this.items=[];}
  push(text,kind='manual',revision=0,meta={}){
@@ -12,3 +12,4 @@ export class SpeechQueue{
  clear(){this.items=[];}
  get length(){return this.items.length;}
 }
+

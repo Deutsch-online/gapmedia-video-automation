@@ -1,7 +1,7 @@
 """Apply only entry/thanks rules; resume the existing receiver without on-air test speech."""
 import importlib.util,os,json,time,hashlib,subprocess,sys,urllib.request
 from pathlib import Path
-from huggingface_hub import HfApi,CommitOperationAdd
+from huggingface_hub import HfApi,CommitOperationAdd,hf_hub_download
 spec=importlib.util.spec_from_file_location('aryana_release',Path('aryana-hosting/deploy.py'));release=importlib.util.module_from_spec(spec);spec.loader.exec_module(release)
 request=json.loads(Path('aryana-hosting/live-entry-hotfix-request.json').read_text())
 source_sha=os.environ.get('ARYANA_SOURCE_SHA') or os.environ['GITHUB_SHA']
@@ -82,15 +82,47 @@ try:
  connected=before['connection']=='connected' or bool(before.get('live',{}).get('active'));username=before['settings'].get('lastUsername','')
  if connected and not username:raise RuntimeError('Cannot safely resume an unnamed connection')
  report.update(was_connected=connected,source_commit=source_sha);write()
- # Flush an identical settings checkpoint, without speaking or disconnecting.
+ # Preserve the receiver and counters before a coordinated reference upgrade.
  release.fetch(url+'/api/settings',admin,{'volume':before['settings']['volume']})
  time.sleep(31)
+ if request.get('new_portrait') and connected:
+  release.fetch(url+'/api/disconnect',admin,{})
+ if request.get('new_portrait'):
+  worker='afgtakrun/aryana-live-lipsync';worker_info=api.space_info(worker)
+  config=json.loads((release.APP/'src/lipsync-config.json').read_text())
+  if not worker_info.private or worker_info.sha!=config['revision']:raise RuntimeError('Unexpected private worker revision before upgrade')
+  old_lock=Path(hf_hub_download(worker,'model-lock.json',repo_type='space',revision=worker_info.sha,token=os.environ['HF_TOKEN'])).read_bytes()
+  lock=json.loads(old_lock);new_hash=hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()
+  if lock['reference_sha256']!=config['reference_sha256']:raise RuntimeError('Previous reference lock mismatch')
+  lock['reference_sha256']=new_hash
+  updated=api.create_commit(worker,repo_type='space',parent_commit=worker_info.sha,operations=[CommitOperationAdd(path_in_repo='reference.mp4',path_or_fileobj=str(release.APP/'public/assets/idle.mp4')),CommitOperationAdd(path_in_repo='model-lock.json',path_or_fileobj=json.dumps(lock,indent=2).encode())],commit_message='Use the approved new Aryana studio reference '+source_sha[:12])
+  config.update(revision=updated.oid,reference_sha256=new_hash);(release.APP/'src/lipsync-config.json').write_text(json.dumps(config,indent=2))
+  if 'ARYANA_LIPSYNC_REVISION' in api.get_space_variables(repo):api.add_space_variable(repo,key='ARYANA_LIPSYNC_REVISION',value=updated.oid)
+  runtime=api.get_space_runtime(worker)
+  if runtime.hardware not in (None,'zero-a10g') or runtime.requested_hardware not in (None,'zero-a10g'):raise RuntimeError('Unexpected worker hardware')
+  if str(runtime.stage)=='PAUSED':api.restart_space(worker)
+  report.update(worker_revision=updated.oid,reference_sha256=new_hash,new_portrait=True);write()
+ if request.get('eleven_requested'):
+  voice_key=os.getenv('ELEVENLABS_API_KEY','').strip()
+  report['elevenlabs_key_available']=bool(voice_key)
+  if voice_key:
+   voice_spec=importlib.util.spec_from_file_location('aryana_eleven',release.APP/'src/elevenlabs_voice.py');voice=importlib.util.module_from_spec(voice_spec);voice_spec.loader.exec_module(voice)
+   try:
+    voice_config=voice.select_configuration(voice_key)
+    api.add_space_secret(repo,key='ELEVENLABS_API_KEY',value=voice_key)
+    api.add_space_variable(repo,key='ELEVENLABS_VOICE_ID',value=voice_config['voice_id'])
+    api.add_space_variable(repo,key='ELEVENLABS_MODEL_ID',value=voice_config['model_id'])
+    api.add_space_variable(repo,key='ARYANA_VOICE_PROVIDER',value='elevenlabs')
+    report['elevenlabs']='configured';report['elevenlabs_remaining_characters']=voice_config['remaining_characters']
+   except voice.VoiceUnavailable:report['elevenlabs']='account_access_or_quota_pending'
+  else:report['elevenlabs']='github_secret_unavailable_private_setup_available'
+  write()
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['src/speech-policy.mjs','src/daily-questions.mjs','src/quick-reactions.mjs','src/elevenlabs_voice.py','src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
-  paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
+  paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/aryana.png','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
   if '<img' in page or 'poster=' in page or 'autoplay' not in page:raise RuntimeError('Video-only startup contract failed')
  if request.get('neural_lipsync'):
@@ -137,7 +169,7 @@ try:
   report['video_only_verified']=True
  if request.get('motion_release'):
   if state.get('playback',{}).get('idleVideo')!='/assets/idle.mp4?v='+hashlib.sha256((release.APP/'public/assets/idle.mp4').read_bytes()).hexdigest()[:16]:raise RuntimeError('Automatic media version update failed')
-  report.update(idle_seconds=60,idle_blinks_per_minute=6,versioned_idle_verified=True)
+  report.update(idle_seconds=60,versioned_idle_verified=True)
  if request.get('playback_compatibility'):
   asset=url+'/assets/idle.mp4'
   with urllib.request.urlopen(urllib.request.Request(asset,headers={'Range':'bytes=0-1'}),timeout=30) as response:
@@ -161,10 +193,10 @@ try:
   report['public_output_fallback_verified']=True
   if not state.get('live',{}).get('active') and state['connection']!='connected':
    release.fetch(url+'/api/entertainment-prepare',admin,{})
-   deadline=time.monotonic()+300
+   deadline=time.monotonic()+480
    while time.monotonic()<deadline:
     _,fun_raw,_=release.fetch(url+'/api/state',admin);state=json.loads(fun_raw)
-    if state.get('entertainment',{}).get('cachedClips',0)>=3 and not state.get('entertainment',{}).get('preparing'):break
+    if state.get('quickReactions',{}).get('ready') and state.get('entertainment',{}).get('cachedClips',0)>=3 and not state.get('entertainment',{}).get('preparing'):break
     if state.get('speech')=='error' or state.get('entertainment',{}).get('preparation')=='error':raise RuntimeError('Entertainment preparation failed')
     time.sleep(2)
    else:raise RuntimeError('Entertainment preparation timed out')
@@ -185,7 +217,7 @@ try:
    else:raise RuntimeError('Private neural speech test timed out')
    _,clip,_=release.fetch(url+test['video']);proof=Path('/tmp/aryana-neural-live-proof.mp4');proof.write_bytes(clip)
    media=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_format','-show_streams','-of','json',str(proof)]))
-   if not any(x.get('codec_type')=='audio' for x in media['streams']) or not test.get('voiceClone'):raise RuntimeError('Approved voice neural test failed')
+   if not any(x.get('codec_type')=='audio' for x in media['streams']) or not (test.get('voiceClone') or test.get('voiceProvider')=='elevenlabs'):raise RuntimeError('Approved voice neural test failed')
    report.update(private_neural_test='passed_not_broadcast',fresh_reply_elapsed_seconds=test['elapsedSeconds'],fresh_reply_video_seconds=float(media['format']['duration']),fresh_reply_voice_clone=True)
    _,english_raw,_=release.fetch(url+'/api/lip-test',admin,{'text':'Hello, welcome to Aryana live!','language':'en'})
    english_id=json.loads(english_raw)['state']['lipTest']['id'];deadline=time.monotonic()+240
@@ -195,7 +227,7 @@ try:
     if english.get('id')==english_id and english.get('status') in ['error','cancelled']:raise RuntimeError('English private speech test failed')
     time.sleep(2)
    else:raise RuntimeError('English private speech test timed out')
-   if not english.get('voiceClone') or not english.get('video'):raise RuntimeError('English cloned voice clip not ready')
+   if not (english.get('voiceClone') or english.get('voiceProvider')=='elevenlabs') or not english.get('video'):raise RuntimeError('English cloned voice clip not ready')
    report.update(english_private_test='passed_not_broadcast',english_reply_elapsed_seconds=english['elapsedSeconds'])
 
   if not state.get('capabilities',{}).get('liveLipSync'):raise RuntimeError('Fresh lip-sync capability was not ready')
@@ -213,7 +245,11 @@ try:
   if info.get('targetSeconds')!=7200 or info.get('availableLessonParts',0)<900:raise RuntimeError('Two-hour programme configuration missing')
   report.update(two_hour_program_configured=True,programme_target_seconds=7200,lesson_parts=info['availableLessonParts'],repeat_policy=info.get('repeatPolicy'),two_hour_real_time_test=False)
   message='برنامهٔ گفتار آریانا برای حداقل دو ساعت توسعه یافت: موضوع، مثال، بررسی اشتباه و چالش تازه. بخش پخش‌شده در کل جلسه دوباره انتخاب نمی‌شود و سابقه با رفرش از بین نمی‌رود. پاسخ کومنت اولویت دارد.\n\nآزمون زمان‌بندی دو ساعته موفق شد؛ اجرای واقعی دو ساعت با صدا و لب هنوز آزمایش نشده است. تولید تازه ممکن است مکث داشته باشد و سقف اعتبار موجود حفظ شده است. پیش از اتصال، «آماده‌سازی شروع برنامه» را اجرا کنید. پنل را تازه و «رفرش لایف» را بزنید.\n'+url+'/live'
- report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id'];write()
+ if request.get('no_engagement_requests') and not state.get('capabilities',{}).get('noEngagementRequests'):raise RuntimeError('Speech policy was not activated')
+ report.update(voice_provider=state.get('capabilities',{}).get('voiceProvider'),quick_reactions_ready=state.get('quickReactions',{}).get('ready'),quick_reactions_cached=state.get('quickReactions',{}).get('cachedClips'))
+ release.fetch(url+'/api/refresh-live',admin,{})
+ if not request.get('skip_telegram'):report['telegram_message_id']=release.tg('sendMessage',{'chat_id':chat,'text':message})['message_id']
+ write()
 except Exception as e:
  report.update(status='failed',error_type=type(e).__name__);write();raise
 

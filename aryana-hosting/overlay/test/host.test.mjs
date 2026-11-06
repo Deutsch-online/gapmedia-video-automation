@@ -28,6 +28,7 @@ test('pronunciation overrides match whole words and preserve other vocabulary',(
 
 test('entries welcome, named gifts thank the recognized person and uncertain names get generic thanks',()=>{
  for(const nickname of ['مریم','12345']){const host=new HostSession(),settings={names:[]};
-  for(const kind of ['gift','like','join']){const reaction=host.accept(kind,{user:{id:nickname,nickname},giftId:'rose',diamondCount:1,count:5,common:{msgId:kind+nickname}},settings);assert.ok(reaction);if(kind==='join'){assert.match(reaction.text,/خوش آمدید/);assert.doesNotMatch(reaction.text,/تشکر/);}else if(kind==='gift'&&nickname==='مریم'){assert.match(reaction.text,/مریم.*بسیار تشکر/);}else assert.equal(reaction.text,'بسیار تشکر!');}
+  for(const kind of ['gift','like','join']){const reaction=host.accept(kind,{user:{id:nickname,nickname},giftId:'rose',diamondCount:1,count:5,common:{msgId:kind+nickname}},settings);assert.ok(reaction);if(kind==='join'){assert.match(reaction.text,/خوش آمدید/);assert.doesNotMatch(reaction.text,/تشکر/);}else if((kind==='gift'||kind==='like')&&nickname==='مریم'){assert.match(reaction.text,/مریم.*بسیار تشکر/);}else assert.equal(reaction.text,'بسیار تشکر!');}
  }
 });
+

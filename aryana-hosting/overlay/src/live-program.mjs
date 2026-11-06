@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {curriculum,parts} from './live-curriculum.mjs';
+import {hasEngagementRequest} from './speech-policy.mjs';
 const normalize=text=>String(text||'').normalize('NFKC').toLowerCase().replace(/[\u064b-\u065f\u0670]/g,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const digest=text=>createHash('sha256').update(text).digest('hex');
 const shingles=text=>{const words=normalize(text).split(' ');return new Set(words.slice(0,-3).map((_,i)=>words.slice(i,i+4).join(' ')));};
@@ -8,7 +9,7 @@ export class LiveProgram{
  reset(){this.used=new Set();this.texts=[];this.shingleSets=[];this.hashes=new Set();this.reserved=new Map();this.cursor=0;this.scheduledSeconds=0;this.failures=0;this.lastError='';this.epoch=(this.epoch||0)+1;}
  cancel(){this.epoch++;this.reserved.clear();}
  key(segment){return segment?.key||'text:'+digest(normalize(segment?.text));}
- allows(segment){if(!segment?.text)return false;const text=normalize(segment.text);if(this.used.has(this.key(segment))||this.hashes.has(digest(text)))return false;const a=shingles(text);if(a.size<12)return true;for(const b of this.shingleSets){let shared=0;for(const term of a)if(b.has(term))shared++;if(shared/Math.min(a.size,b.size)>.8)return false;}return true;}
+ allows(segment){if(!segment?.text||hasEngagementRequest(segment.text))return false;const text=normalize(segment.text);if(this.used.has(this.key(segment))||this.hashes.has(digest(text)))return false;const a=shingles(text);if(a.size<12)return true;for(const b of this.shingleSets){let shared=0;for(const term of a)if(b.has(term))shared++;if(shared/Math.min(a.size,b.size)>.8)return false;}return true;}
  accept(segment){if(!this.allows(segment)||this.reserved.has(this.key(segment)))return false;this.reserved.set(this.key(segment),this.now());return true;}
  async next(generate,{language='fa',valid=()=>true}={}){
   const locale=language==='en'?'en':'fa',epoch=this.epoch,total=curriculum.length*parts.length;

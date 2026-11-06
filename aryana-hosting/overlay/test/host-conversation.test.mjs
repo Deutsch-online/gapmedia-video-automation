@@ -10,16 +10,17 @@ test('Gift and comment replies displace low-priority topic speech',()=>{const qu
 
 test('English LIVE never selects Afghanistan food topics, including restored legacy selections',()=>{let now=0;const planner=new TopicConversation({now:()=>now});now=30000;const text=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language:'en',topic:'food'});assert.match(text,/AI/);assert.doesNotMatch(text,/Afghan|mantu|ashak|pulao/i);});
 
-test('Host invites AI-versus-human opinions, questions, screen taps and sharing with friends in both languages',()=>{
+test('Host invites opinions and questions without requesting gifts or likes in both languages',()=>{
  for(const language of ['fa','en']){
   let now=0;const planner=new TopicConversation({now:()=>now}),spoken=[];
   for(let turn=0;turn<6;turn++){now=30000+turn*75000;spoken.push(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}));}
   const all=spoken.join(' ');
-  if(language==='en'){assert.match(all,/human host/);assert.match(all,/AI host/);assert.match(all,/thoughts/);assert.match(all,/comments/);assert.match(all,/questions.*answer/);assert.match(all,/tap the screen/);assert.match(all,/share.*friends/);assert.doesNotMatch(all,/Afghan|pulao|mantu/i);}
-  else{assert.match(all,/مجری انسانی/);assert.match(all,/مجری هوش مصنوعی/);assert.match(all,/نظریات/);assert.match(all,/کومنت/);assert.match(all,/سوال.*جواب/);assert.match(all,/تپ‌تپ/);assert.match(all,/دوستان.*شریک/);}
+  if(language==='en'){assert.match(all,/human host/);assert.match(all,/AI host/);assert.match(all,/thoughts/);assert.match(all,/comments/);assert.match(all,/questions.*answer/);assert.doesNotMatch(all,/tap the screen|send gifts|like this live/);assert.match(all,/friends.*conversation/);assert.doesNotMatch(all,/Afghan|pulao|mantu/i);}
+  else{assert.match(all,/مجری انسانی/);assert.match(all,/مجری هوش مصنوعی/);assert.match(all,/نظریات/);assert.match(all,/کومنت/);assert.match(all,/سوال.*جواب/);assert.doesNotMatch(all,/تپ‌تپ|لایک کنید|گیفت بفرست/);assert.match(all,/دوستان.*گفتگو/);}
   assert(!/share|شریک/.test(spoken[0]));assert(!/share|شریک/.test(spoken[1]));assert(!/share|شریک/.test(spoken[2]));assert(new Set(spoken).size===spoken.length);
   assert.equal(planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'}),null);
  }
 });
 
 test('AI topics explain an idea with examples before requesting audience opinions',()=>{for(const language of ['en','fa']){let now=0;const planner=new TopicConversation({now:()=>now});now=30000;const first=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'});assert.doesNotMatch(first,/[?؟]/);assert.match(first,language==='en'?/patterns.*example|examples.*autocomplete/is:/الگو.*مثال/);now+=150000;const next=planner.take({connected:true,enabled:true,autoSpeak:true,busy:false,language,topic:'ai'});assert(next);}});
+

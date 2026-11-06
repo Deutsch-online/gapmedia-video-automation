@@ -59,3 +59,19 @@ button,.outline-button{min-height:44px}.source-box{min-width:0}.preview-column{m
 .live-body.mobile-output .live-stage{transform:translate(-50%,-50%) scale(var(--live-scale,1))}
 
 
+
+
+/* Circular supporter bubbles keep the left rail clear of the host's face. */
+.live-stage .live-supporters{width:204px;top:570px;bottom:110px;left:22px;gap:12px;align-items:center}
+.live-supporters .fan-card,.live-supporters .fan-card.featured{width:158px;height:158px;min-height:158px;max-height:158px;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:15px 12px;overflow:hidden;background:radial-gradient(circle at 32% 22%,#768dd06b,#15283ad9 72%);border:1.5px solid #e9eaff70;box-shadow:inset 0 0 20px #ffffff18,0 7px 22px #0004}
+.live-supporters .fan-face{width:58px;height:58px;flex:0 0 58px;border-radius:50%}
+.live-supporters .fan-copy{text-align:center;direction:ltr;width:100%;flex:0 0 auto}
+.live-supporters .fan-copy strong{font:600 23px/1.25 Arial,sans-serif;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-supporters .fan-copy small{font:18px/1.25 Arial,sans-serif;white-space:nowrap;margin-top:4px}
+.live-supporters .fan-card.featured{width:180px;height:180px;min-height:180px;max-height:180px;border:3px solid #ffe29a;box-shadow:inset 0 0 20px #fff3,0 0 24px #ffd46c65;background:radial-gradient(circle at 30% 20%,#b5925277,#242637e8 72%)}
+.live-supporters .featured .fan-face{width:68px;height:68px;flex-basis:68px}
+.live-supporters .featured .fan-copy strong{font-size:25px;font-weight:900}
+.live-supporters .featured .fan-copy small{font-size:20px;font-weight:700}
+.live-supporters .fan-crown{position:absolute;top:5px;right:18px;font:15px Arial,sans-serif}
+
+.live-stage .output-disclosure{position:absolute;top:10px;right:12px;background:#17242b;padding:14px 22px;font:32px Arial,sans-serif;z-index:8}

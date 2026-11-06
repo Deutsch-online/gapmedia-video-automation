@@ -11,6 +11,7 @@ import ssl
 import sys
 
 import edge_tts
+import elevenlabs_voice
 signal.signal(signal.SIGTERM,lambda *_:sys.exit(143))
 
 if os.environ.get('SSL_CERT_FILE'):
@@ -21,6 +22,14 @@ async def synthesize(request):
     text = request['text']
     if not isinstance(text, str) or not 1 <= len(text) <= 1000:
         raise ValueError('Invalid sentence')
+    if elevenlabs_voice.configured():
+        target=Path(request['output']);target.parent.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='.eleven-speech-',dir=str(target.parent)) as temp:
+            staged=Path(temp)/'speech.mp3';result=elevenlabs_voice.synthesize(text,request.get('language'),staged)
+            probe=subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(staged)],check=True,capture_output=True,text=True,timeout=10)
+            if not .15<float(probe.stdout.strip())<180:raise ValueError('Invalid speech duration')
+            os.replace(staged,target)
+        return result
     voice = 'en-US-AvaNeural' if request.get('language') == 'en' else 'fa-IR-DilaraNeural'
     target = Path(request['output'])
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -46,6 +55,7 @@ async def synthesize(request):
     return {'voice': 'Aryana custom tone' if encoded_profile else voice, 'bytes': target.stat().st_size}
 
 def warmup(request):
+    if elevenlabs_voice.configured():return elevenlabs_voice.warmup()
     encoded=os.environ.get('ARYANA_VOICE_PROFILE_B64')
     if not encoded:return {'warmed':True,'clone':False}
     from voice_clone import convert
@@ -64,11 +74,13 @@ def worker():
         request=None
         try:
             request=json.loads(line)
-            result=warmup(request) if request.get('action')=='warmup' else asyncio.run(synthesize(request))
+            result=elevenlabs_voice.configure_space(request) if request.get('action')=='configure-elevenlabs' else warmup(request) if request.get('action')=='warmup' else asyncio.run(synthesize(request))
             print(json.dumps({'id':request['id'],'ok':True,'result':result}),flush=True)
-        except Exception:
-            print(json.dumps({'id':request.get('id') if isinstance(request,dict) else None,'ok':False}),flush=True)
+        except Exception as error:
+            code=str(error) if isinstance(error,elevenlabs_voice.VoiceUnavailable) else 'speech_unavailable'
+            print(json.dumps({'id':request.get('id') if isinstance(request,dict) else None,'ok':False,'code':code}),flush=True)
 
 if __name__ == '__main__':
     if '--worker' in sys.argv:worker()
     else:print(json.dumps(asyncio.run(synthesize(json.loads(sys.stdin.read(16000))))))
+

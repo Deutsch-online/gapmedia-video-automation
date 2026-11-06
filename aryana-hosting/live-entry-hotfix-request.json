@@ -1,5 +1,19 @@
 {
-  "request": "verify-and-warm-two-hour-programme-without-redeploy",
-  "program_maintenance": true,
-  "on_air_test_speech": false
+  "request": "aryana-new-studio-natural-voice-fast-reactions-nov06",
+  "video_only": true,
+  "default_mode": "portrait",
+  "on_air_test_speech": false,
+  "motion_release": true,
+  "playback_compatibility": true,
+  "neural_lipsync": true,
+  "engagement_overlay": true,
+  "viewer_invitations": true,
+  "comment_priority": true,
+  "continuous_entertainment": true,
+  "two_hour_program": true,
+  "new_portrait": true,
+  "no_engagement_requests": true,
+  "quick_reactions": true,
+  "eleven_requested": true,
+  "skip_telegram": true
 }
