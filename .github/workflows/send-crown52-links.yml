@@ -40,14 +40,14 @@ jobs:
           for attempt in range(120):
               try:
                   health=json.loads(read_app('/health'))
-                  if health.get('build')=='cc4cf89fe963507e35ef1587c86245d75bf1950e':break
+                  if health.get('build')=='b9a8d4ce66b9d39e09d0a93adb99498dd512c656':break
               except Exception:pass
               time.sleep(10)
-          else:raise RuntimeError('Expected bubble72 deployment is not ready')
-          html=read_app('/fun/control?v=72').decode()
+          else:raise RuntimeError('Expected bubble73 deployment is not ready')
+          html=read_app('/fun/control?v=73').decode()
           for element in ['profileTestTab','profilePreviewDialog','repeatProfilePreview','growProfilePreview','closeProfilePreview']:
               if ('id="'+element+'"') not in html:raise RuntimeError('Missing deployed preview control: '+element)
-          css=read_app('/portrait.css?v=72').decode()
+          css=read_app('/portrait.css?v=73').decode()
           if 'body.test-only' not in css or '.profile-preview-dialog' not in css:raise RuntimeError('Updated bold preview styles missing')
           state=json.loads(read_app('/api/state'))['state']
           if state['admission']['entryMode']!='comment' or state['admission']['minCoins']!=0:raise RuntimeError('Free play enforcement missing')
@@ -55,14 +55,16 @@ jobs:
           if b'QUIZ_BANK' not in read_app('/question-bank.mjs'):raise RuntimeError('Question bank missing')
           if b'welcome' not in read_app('/welcome-scripts.mjs'):raise RuntimeError('Welcome variety missing')
           manifest=json.loads(read_app('/narration-manifest.json'))
-          if len(manifest)!=38:raise RuntimeError('Expected38 narrator clips')
-          print('CROWN72_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'clips':len(manifest)}))
+          if len(manifest)!=40:raise RuntimeError('Expected40 narrator clips')
+          print('CROWN73_RESOURCES_VERIFIED '+json.dumps({'build':health['build'],'clips':len(manifest)}))
           if b'QuizNarrator' not in read_app('/quiz-narrator.mjs'):raise RuntimeError('Interactive narrator missing')
           if b'testQuizNarrator' not in read_app('/game.mjs'):raise RuntimeError('Private narrator tests missing')
           if not health.get('naturalVoiceOnly'):raise RuntimeError('Natural voice policy missing')
           if any(x.get('natural_profile')!=70 for x in manifest.values()):raise RuntimeError('Old voice previews')
           if b'quiz-answer-people' not in read_app('/game.mjs'):raise RuntimeError('Answer photos missing')
-          text="نسخه72 — صدای طبیعی و گفت‌وگوی سرگرم‌کننده\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=72\n\nنمای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=72\n\nتست خصوصی:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=72\n\nپنل و منبع Browser/Link در Studio را رفرش کنید. رمز همان رمز قبلی است.\n\n• صدای رباتی مرورگر و espeak حذف شد؛ فقط صدای طبیعی ElevenLabs.\n• Eleven v3 انگلیسی و فارسی، سرعت0.96، لحن زنانهٔ قبلی؛ نمونه‌های قدیمی بازسازی شدند.\n• جمله‌های معمولی کامل پخش می‌شوند؛ پاسخ به کمنت اولویت دارد. هم‌زمانی ناخواستهٔ صداها برطرف شد.\n• سؤال و گزینه‌ها، تشویق جواب درست، دلگرمی جواب اشتباه، پاسخ سلام و قوانین، تشکر کوتاه از واکنش واقعی.\n• دعوت به فکر کردن و پاسخ دادن؛ درخواست گیفت، لایک یا فالو وجود ندارد.\n•9پیام متنوع در هر زبان برای پیدا کردن سرنخ و آماده شدن برای چالش بعدی؛ نام و تشویق در نوار سؤال، دور از صورت کاربران.\n•7دکمهٔ تست خصوصی؛ امتیاز، حالت بازی و زبان لایف با تست تغییر نمی‌کند.\n\nعلت صدای قبلی:\nسهمیهٔ روزانهٔ گفتار زنده4995از5000کاراکتر مصرف شده بود و نسخهٔ قبلی می‌توانست به صدای سیستمی برگردد. سقف مصرف افزایش نیافت.\n\nراه‌حل:\n•38فایل صدای طبیعی قابل استفادهٔ مجدد آماده شده است.\n• پس از پایان سهمیه، پاسخ‌های عمومیِ هم‌نوع با صدای ذخیره‌شده ادامه دارند؛ نام و مقدار ساختگی در آنها گفته نمی‌شود.\n• خواندن اختصاصی سؤال تازه تا تجدید سهمیه محدود می‌شود؛ سؤال همچنان روی صفحه است و این وضعیت توضیح داده می‌شود.\n• وقتی صدای طبیعی قابل پخش نباشد، پیام خطا می‌دهد و صدای رباتی جایگزین نمی‌شود.\n• بلندی صدای ذخیره‌شده5٪بود؛ برای تست واضح‌تر، بلندی را در پنل بالا ببرید. حجم صدا خودکار تغییر داده نشده است.\n\nسؤال‌ها221عدد و دوزبانه‌اند؛ تا یک ساعت تکرار نمی‌شوند. حباب‌ها، امتیازدهی واقعی، حفظ سابقه و تشخیص غیرفعال‌ها باقی‌اند. نمایش‌های نمونه از افراد واقعی جدا هستند. دریافت کمنت و واکنش واقعی به اتصال TikTok وابسته است؛ این تغییر محدودیت سرویس یا اخطار حساب را دور نمی‌زند.\n\nعکس کنار پاسخ — نسخه72:\nعکس پاسخ‌دهنده کنار گزینهٔ انتخاب‌شده نشان داده می‌شود، چه جواب درست باشد چه اشتباه. سه عکس آخر هر گزینه و شمارندهٔ افراد اضافه نمایش داده می‌شود. با سؤال بعدی عکس‌ها پاک می‌شوند. در صورت در دسترس نبودن عکس، حرف اول نام دیده می‌شود. پروفایل کنار جواب با رفرش همان سؤال باقی می‌ماند."
+          if b'PHOTO_QUEST_BANK' not in read_app('/photo-quest.mjs'):raise RuntimeError('Photo Quest missing')
+          if 'id="profileGameMode"' not in html:raise RuntimeError('Game mode control missing')
+          text="نسخه73 — بازی قهرمان پروفایل\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=73\n\nنمای TikTok LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?studio=1&v=73\n\nتست خصوصی:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?tab=test&v=73\n\nپنل و منبع Studio را رفرش کنید. رمز قبلی حفظ است.\n\nبازی جدید:\n• در پنل «نوع سرگرمی» را روی «قهرمان پروفایل» بگذارید. پرسش‌وپاسخ دانشی هم قابل انتخاب است.\n•64پرسش دوزبانهٔ اختیاری دربارهٔ علایق، سلیقه و ماجراهای خیالی؛ شخصیت و هوش افراد قضاوت نمی‌شود.\n• هر مرحله60ثانیه؛ انتخاب عدد1تا4، یک بار برای هر شخص در هر سؤال.\n• همهٔ انتخاب‌ها معتبرند: یک ستارهٔ ساخت و10امتیاز. پاسخ اشتباه ندارد.\n• عکس شخص با جلوهٔ انتخابی، رنگ، برچسب انتخاب و شمار واقعی ستاره‌هایش9ثانیه نمایش داده می‌شود.\n•4جلوه: مدار ستاره، سپر، جرقه، بال. هر3ستاره سطح تزیین بالاتر می‌رود، تا8سطح.\n• رنگ و جلوه در حباب و قاب جایگاهش هم دیده می‌شود.\n• عکس پاسخ‌دهندگان کنار گزینه‌ها می‌ماند؛ سه عکس آخر و شمارندهٔ اضافه. با سؤال بعدی پاک می‌شود.\n• گوینده از انتخاب شخص استقبال و دربارهٔ دلیل انتخابش سؤال می‌کند. مکالمه از متن‌های طراحی‌شده است، چت آزاد هوش مصنوعی نیست.\n\nقوانین:\n• ورود رایگان؛ جایزهٔ نقدی یا قابل‌تبدیل ندارد. درخواست لایک، گیفت یا فالو وجود ندارد.\n• امتیازهای واقعی لایک و گیفت طبق تنظیم قبلی باقی‌اند؛ ستارهٔ ساخت فقط از انتخاب معتبر می‌آید.\n• تایمر کل دور و امتیازهای قبلی با تغییر نوع بازی پاک نمی‌شوند. اگر تایمر را متوقف کرده‌اید، «شروع/ادامه» را بزنید.\n• سؤال تا یک ساعت تکرار نمی‌شود، حتی با شروع دوبارهٔ دور؛ در صورت تمام شدن بانک منتظر می‌ماند.\n• سؤال‌های دانشی221عدد و30ثانیه‌ای باقی‌اند.\n\nتست:\nدر تب تست، «تست بازی با عکس» را چندبار بزنید؛ چهار جلوه و صدای تشویقی را خصوصی امتحان می‌کند و به لایف امتیاز یا فرد ساختگی اضافه نمی‌کند.\n\nصدا:\nصدای طبیعی زنانهٔ ElevenLabs فارسی/انگلیسی؛40فایل قابل استفادهٔ مجدد. سقف مصرف قبلی افزایش نیافته. بعد از پایان سهمیه، تشویق عمومی با صدای ذخیره‌شده ادامه دارد؛ خواندن اختصاصی سؤال تازه تا تجدید سهمیه محدود است. صدای رباتی جایگزین نمی‌شود. بلندی قبلی5٪بود؛ برای تست واضح‌تر از پنل تنظیم کنید.\n\nنمایش انتخاب‌های واقعی به دریافت رویداد TikTok وابسته است. این بازی محدودیت فنی سرویس یا اخطار حساب را دور نمی‌زند."
           result=call('editMessageText',{'chat_id':chat,'message_id':2833,'text':text,'link_preview_options':{'is_disabled':True}})
           print('CROWN52_LINKS_UPDATED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
           PY
