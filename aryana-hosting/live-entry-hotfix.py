@@ -140,6 +140,8 @@ try:
   worker_config=json.loads((release.APP/'src/lipsync-config.json').read_text())
   if not worker_info.private or worker_info.sha!=worker_config['revision']:raise RuntimeError('Private worker revision was not verified')
   paths+=['src/neural-lipsync.mjs','src/lipsync-config.json','tools/lipsync-client.py','requirements-lipsync.txt','Dockerfile','src/speech-engine.mjs','src/speech.py','src/voice_clone.py','src/languages.mjs','src/local-chat.mjs','src/local-chat.py']
+ worker_runtime=api.get_space_runtime('afgtakrun/aryana-live-lipsync')
+ if getattr(worker_runtime.stage,'value',worker_runtime.stage)=='PAUSED':api.restart_space('afgtakrun/aryana-live-lipsync')
  uploaded=api.create_commit(repo,repo_type='space',operations=[CommitOperationAdd(path_in_repo=p,path_or_fileobj=str(release.APP/p)) for p in paths],commit_message='Fix entry welcomes and exact gift thanks '+source_sha[:12])
  report['status']='building';write();deadline=time.monotonic()+600
  while time.monotonic()<deadline:
@@ -188,6 +190,13 @@ try:
    if response.status!=200 or int(response.headers.get('Content-Length','-1'))!=(release.APP/'public/assets/idle.mp4').stat().st_size:raise RuntimeError('Public media HEAD probe failed')
   report.update(byte_range_verified=True,head_verified=True)
  if request.get('neural_lipsync'):
+  deadline=time.monotonic()+360
+  while time.monotonic()<deadline:
+   worker_runtime=api.get_space_runtime('afgtakrun/aryana-live-lipsync');worker_stage=getattr(worker_runtime.stage,'value',worker_runtime.stage)
+   if worker_stage=='RUNNING':break
+   if worker_stage in ['BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR']:raise RuntimeError('Private worker failed before warmup')
+   time.sleep(4)
+  else:raise RuntimeError('Private worker was not ready before warmup')
   release.fetch(url+'/api/lip-prepare',admin,{})
   deadline=time.monotonic()+240
   while time.monotonic()<deadline:

@@ -1,7 +1,7 @@
 import {createEngagementOverlay} from '/engagement.js?v=host-v5';
 const $=id=>document.getElementById(id),video=$('hostVideo'),idle=$('idleVideo');
 let context,gain,source,enabled=false,playing=false,queue=[],revision,epoch=0,current=null,volume=.85,muted=false,localMuted=new URLSearchParams(location.search).get('preview')==='1';
-const seen=new Set();try{const saved=JSON.parse(sessionStorage.getItem('aryana-seen-speech')||'[]');if(Array.isArray(saved))for(const id of saved.slice(-1000))if(typeof id==='string')seen.add(id);}catch{}let idlePath='/assets/idle.mp4?v=fe6e08cb06b2bbed',idleBlocked=false,idleStarting=false;
+const seen=new Set();try{const saved=JSON.parse(sessionStorage.getItem('aryana-seen-speech')||'[]');if(Array.isArray(saved))for(const id of saved.slice(-1000))if(typeof id==='string')seen.add(id);}catch{}let idlePath='/assets/idle.mp4?v=1fb8948a34443954',idleBlocked=false,idleStarting=false;
 function report(status,detail=''){parent.postMessage({type:'aryana-player',status,detail},location.origin);}
 function manualPlay(){const button=$('enableAudio');button.classList.toggle('needs-play',idleBlocked&&!idle.hidden);button.hidden=enabled&&!idleBlocked;}
 function startIdle(userGesture=false){

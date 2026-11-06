@@ -67,17 +67,17 @@ let lipTest=null,funPreparation=null,funPreparationPromise=null,voiceSetup={stat
 const voiceArchive=new VoiceArchive({repo:elevenVoice?process.env.ARYANA_STATE_REPO:null,token:process.env.ARYANA_STATE_TOKEN,directory:privateDir,scope:createHash('sha256').update(['voice-bank-v1',process.env.ELEVENLABS_VOICE_ID,process.env.ELEVENLABS_MODEL_ID,neural.revision,neural.referenceHash].join(':')).digest('hex')});let archivedOnly=false;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
 const programChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,role:'program',threads:2,changed:()=>broadcast()});
-let livePreparation={status:'idle'},livePreparationPromise=null;
+let livePreparation={status:'idle'},livePreparationPromise=null,conversationWarmup=null,programWarmup=null;
 function prepareLive(){
  if(livePreparationPromise)return livePreparationPromise;
- if(localChat.pending)return Promise.reject(Error('مدل گفتگو در حال پاسخ است؛ کمی صبر کنید.'));
  livePreparation={status:'preparing',at:Date.now()};broadcast();
+ if(programChat.configured&&!programChat.ready&&!programChat.pending){programWarmup=programChat.ask('Say ready in one word.','en').catch(()=>{}).finally(()=>{programWarmup=null;broadcast();});}
  const jobs=[speechEngine.warmup().then(()=>{archivedOnly=false;}).catch(error=>{if(error.code==='elevenlabs_quota_empty'&&quickReactions.ready()){archivedOnly=true;return;}throw error;})];if(neural.configured&&!quickReactions.ready())jobs.push(neural.prepare());
- if(settings.conversationEnabled&&localChat.configured&&!localChat.ready)jobs.push(localChat.ask('سلام. فقط یک خوش‌آمد کوتاه بنویس.'));
+ if(settings.conversationEnabled&&localChat.configured&&!localChat.ready&&!localChat.pending){conversationWarmup=localChat.ask('سلام. فقط یک خوش‌آمد کوتاه بنویس.').catch(()=>{}).finally(()=>{conversationWarmup=null;broadcast();});}
  livePreparationPromise=Promise.all(jobs).then(()=>{livePreparation={status:'ready',seconds:(Date.now()-livePreparation.at)/1000};lastError='';broadcast();}).catch(error=>{livePreparation={status:'error',error:error.message};broadcast();throw error;}).finally(()=>{livePreparationPromise=null;});
  return livePreparationPromise;
 }
-const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,voiceSetup,voiceArchive:{...voiceArchive.snapshot(),storedOnly:archivedOnly},program:program.snapshot(),programModelStatus:programChat.status,quickReactions:{ready:quickReactions.ready(),cachedClips:quickReactions.clips.size,preparing:Boolean(quickPreparation)},revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=fe6e08cb06b2bbed':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending||programChat.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{storedPlaybackReady:quickReactions.ready(),noEngagementRequests:true,idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size+quickReactions.clips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceProvider:elevenVoice?'elevenlabs':process.env.ARYANA_VOICE_PROFILE_B64?'openvoice':'edge',voiceConfigured:elevenVoice?Boolean(process.env.ELEVENLABS_API_KEY):Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceClone:!elevenVoice&&Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:!elevenVoice&&process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
+const state=()=>({persona:PERSONA,...session.snapshot(),connection:connectionStatus,speech:speechStatus,lastError,voiceSetup,voiceArchive:{...voiceArchive.snapshot(),storedOnly:archivedOnly},program:program.snapshot(),programModelStatus:programChat.status,quickReactions:{ready:quickReactions.ready(),cachedClips:quickReactions.clips.size,preparing:Boolean(quickPreparation)},revision,utterances,settings,playback:{topicRevision,refreshToken:outputRefreshToken,refreshAt:outputRefreshAt,volume:settings.volume,muted:settings.muted,subtitles:false,avatarMode:settings.avatarMode,idleVideo:existsSync(join(publicDir,'assets/idle.mp4'))?'/assets/idle.mp4?v=1fb8948a34443954':null},entertainment:{preparation:funPreparation?.status||'idle',preparing:Boolean(funPreparationPromise||autoBuffer.pending||programChat.pending),buffered:Boolean(autoBuffer.prepared),cachedClips:autoBuffer.pool.length,quizActive:Boolean(entertainment.active&&!entertainment.active.finished)},queue:{pending:queue.length,speech:speechStatus,comments:commentInbox.items.length+(commentInbox.active?1:0)},live:link.snapshot(),storage:durable.status,conversationStatus:localChat.status,displayClients:wss.clients.size,avatar:{...renderer.status(),preparing:avatarPreparing},lipSync:neural.status(),voiceEngine:speechEngine.snapshot(),livePreparation,lipTest,capabilities:{storedPlaybackReady:quickReactions.ready(),noEngagementRequests:true,idleVideo:existsSync(join(publicDir,'assets/idle.mp4')),recordedReactions:reactionClips.size+quickReactions.clips.size,portrait:true,introductionAudio:true,introductionVideo:existsSync(join(publicDir,'assets/introduction.mp4')),liveLipSync:neural.configured&&neural.ready&&speechEngine.warmed,lipSyncDelivery:neural.configured?'generated_per_reply':'recorded_only',lipSyncStreaming:false,animated3d:existsSync(join(publicDir,'assets/avatar/mpfb.glb')),voiceProvider:elevenVoice?'elevenlabs':process.env.ARYANA_VOICE_PROFILE_B64?'openvoice':'edge',voiceConfigured:elevenVoice?Boolean(process.env.ELEVENLABS_API_KEY):Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceClone:!elevenVoice&&Boolean(process.env.ARYANA_VOICE_PROFILE_B64),voiceCloneMethod:!elevenVoice&&process.env.ARYANA_VOICE_PROFILE_B64?'OpenVoice V2 tone conversion':null,conversation:process.env.ARYANA_LLM_ENABLED==='true'?'external':localChat.configured?'local':'not_configured'}});
 function broadcast(){const payload=JSON.stringify(hosting.hosted?publicState(state()):state());for(const ws of wss.clients)if(ws.readyState===1&&ws.bufferedAmount<1000000)ws.send(payload);}
 function recordError(message){lastError=message;session.record('error',message);broadcast();}
 function enqueue(text,kind='manual',meta={}){
@@ -128,7 +128,7 @@ async function answer(comment){
  const quizAnswer=entertainment.answer(comment,quizLanguage);if(quizAnswer)return quizAnswer;
  if(!settings.conversationEnabled)return language==='en'?'Thank you for your comment!':'از کومنت‌تان تشکر!';
  const stock=stockReply(comment),localized=stock&&localizedReply(stock,settings.language);if(localized)return localized;
- if(localChat.configured&&process.env.ARYANA_LLM_ENABLED!=='true')return localChat.ask(comment,language);
+ if(localChat.configured&&process.env.ARYANA_LLM_ENABLED!=='true'){if(conversationWarmup)await conversationWarmup;return localChat.ask(comment,language);}
  if(process.env.ARYANA_LLM_ENABLED!=='true')return language==='en'?'Thank you for your comment. It is lovely to have you here!':'از کومنت‌تان تشکر! خوشحالم که همراه ما هستید.';
  const endpoint=process.env.ARYANA_LLM_URL,model=process.env.ARYANA_LLM_MODEL,token=process.env.ARYANA_LLM_KEY;
  if(!endpoint||!model||!token)throw Error('تنظیمات مدل گفتگو کامل نیست.');
@@ -163,8 +163,8 @@ const link=new LiveLink({create:username=>{
  commentInbox.push(comment,{revision,source:'live'},String(data.common?.msgId||data.msgId||randomUUID()));
 
 }});
-function pauseProgram(){autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();}
-function stopSpeech(){revision++;quickReactions.clear();autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();entertainment.reset();commentInbox.clear();queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
+function pauseProgram(){autoBuffer.interrupt();program.cancel();if(programChat.pending&&!programWarmup)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();}
+function stopSpeech(){revision++;quickReactions.clear();autoBuffer.interrupt();program.cancel();if(programChat.pending&&!programWarmup)programChat.cancel();entertainment.reset();commentInbox.clear();queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending&&!conversationWarmup)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
 async function connect(username,{warmEntertainment=true}={}){
  username=String(username||'').replace(/^@/,'').trim();if(!/^[a-zA-Z0-9_.]{2,24}$/.test(username))throw Error('یوزرنیم تیک‌تاک معتبر نیست.');
  if(settings.lastUsername!==username){session.reset();program.reset();activeViewers.clear();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();await prepareQuickReactions();if(settings.entertainmentEnabled&&warmEntertainment)await prepareEntertainment();await link.start(username);
@@ -172,7 +172,7 @@ async function connect(username,{warmEntertainment=true}={}){
 const commentInbox=new CommentInbox({
  answer,
  valid:job=>job.context.revision===revision&&(job.context.source==='manual'||link.status==='connected'),
- accepted:job=>{if(entertainment.active&&!entertainment.related(job.text))entertainment.reset();lastCommentAt=Date.now();lastAuto=lastCommentAt;autoBuffer.interrupt();program.cancel();if(programChat.pending)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();topicConversation.defer();session.record('comment',job.text);broadcast();},
+ accepted:job=>{if(entertainment.active&&!entertainment.related(job.text))entertainment.reset();lastCommentAt=Date.now();lastAuto=lastCommentAt;autoBuffer.interrupt();program.cancel();if(programChat.pending&&!programWarmup)programChat.cancel();topicRevision++;queue.dropKind('topic');neural.cancelTopics();topicConversation.defer();session.record('comment',job.text);broadcast();},
  speak:text=>enqueue(text,'reply'),changed:()=>broadcast(),error:error=>recordError(error.message)
 });
 const allowedHosts=hosting.hosts;
@@ -275,7 +275,7 @@ const heartbeat=setInterval(()=>{for(const ws of wss.clients){if(ws.alive===fals
 let restored=await durable.load();if(!restored){try{restored=JSON.parse(readFileSync(join(privateDir,'session.json'),'utf8'));}catch{}}
 if(restored?.version===1){settings=cleanSettings(restored.settings);session.restore(restored.session);program.restore(restored.liveProgram);neural.restoreBudget(restored.lipSyncBudget);}
 for(const clip of await voiceArchive.restore()){if(hasEngagementRequest(clip.text))continue;if(clip.group.startsWith('quick:'))quickReactions.clips.set(clip.group.slice(6),clip);else if(program.allows(clip.segment||{text:clip.text}))autoBuffer.remember(clip);}
-async function primeReactions(){if(!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
+async function primeReactions(){if(elevenVoice||!process.env.ARYANA_VOICE_PROFILE_B64||reactionClips.has('بسیار تشکر!'))return;const generation=revision;for(const text of ['از گیفت‌تان تشکر!','از لایک‌های‌تان تشکر!','تشکر از همراهی‌تان!']){if(generation!==revision||busy||queue.length)break;busy=true;speechStatus='preparing';try{await synthesize(text);}catch{}finally{busy=false;speechStatus='idle';if(queue.length)void pump();}}}
 async function prepareQuickReactions(){
  if(quickReactions.ready())return;
  if(quickPreparation)return quickPreparation;
@@ -292,9 +292,9 @@ async function prepareQuickReactions(){
 async function prepareEntertainment(){
  if(funPreparationPromise)return funPreparationPromise;
  const context=(settings.language==='en'?'en':'fa')+':'+(settings.language==='en'?'ai':settings.topic),generation=revision;
- if(autoBuffer.pool.filter(clip=>clip.context===context&&autoBuffer.valid(clip)).length>=4)return;
+ if(autoBuffer.pool.filter(clip=>clip.context===context&&autoBuffer.valid(clip)).length>=3)return;
  funPreparation={status:'preparing'};busy=true;
- funPreparationPromise=(async()=>{await prepareQuickReactions();const segments=entertainment.starters({language:settings.language,topic:settings.topic});if(programChat.configured||process.env.ARYANA_LLM_ENABLED==='true'){const fresh=await program.next(programText,{language:settings.language,valid:()=>generation===revision});if(fresh)segments.push(fresh);}for(const segment of segments){
+ funPreparationPromise=(async()=>{await prepareQuickReactions();const segments=entertainment.starters({language:settings.language,topic:settings.topic});for(const segment of segments){
   if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
   const audio=await synthesize(segment.text);if(generation!==revision)throw Error('آماده‌سازی سرگرمی لغو شد.');
   const duration=await neural.durationProbe(join(privateDir,audio.slice(1))),video=await neural.submit(join(privateDir,audio.slice(1)),{kind:'topic',priority:5});
@@ -312,6 +312,7 @@ function publishSpeech(clip){
  autoBuffer.observe(clip.durationSeconds||3,clip.priority);if(clip.segment){entertainment.published(clip.segment,clip.durationSeconds);autoBuffer.remember(clip);}checkpoint();speechStatus='ready';lastError='';broadcast();
 }
 async function programText(prompt,language){
+ if(programWarmup)await programWarmup;
  if(process.env.ARYANA_LLM_ENABLED!=='true')return programChat.ask(prompt,language);
  const endpoint=process.env.ARYANA_LLM_URL,model=process.env.ARYANA_LLM_MODEL,token=process.env.ARYANA_LLM_KEY;
  if(!endpoint||!model||!token)throw Error('تنظیمات تولید گفتار تازه کامل نیست.');
