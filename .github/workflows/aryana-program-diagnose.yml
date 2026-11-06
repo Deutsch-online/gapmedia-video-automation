@@ -1,0 +1,26 @@
+name: Read Aryana programme readiness
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/program-diagnose-request.json]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read only the private readiness fields
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,hmac,hashlib,json,urllib.request,re
+          token=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+          req=urllib.request.Request('https://afgtakrun-aryana-live-studio.hf.space/api/state',headers={'x-aryana-key':token})
+          with urllib.request.urlopen(req,timeout=30) as response:state=json.load(response)
+          result={key:state.get(key) for key in ['livePreparation','voiceEngine','lipSync','programModelStatus','program','connection','lastError']}
+          text=json.dumps(result,ensure_ascii=False)
+          text=re.sub(r'https?://[^\\s"]+','[URL]',text)
+          print('ARYANA_PROGRAM_READINESS '+text)
+          PY
