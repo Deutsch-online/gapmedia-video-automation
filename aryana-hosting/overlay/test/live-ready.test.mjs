@@ -37,3 +37,10 @@ test('fast social replies do not swallow a real question or pretend to be human'
  assert.equal(stockReply('سلام چرا امروز هوا سرد است؟'),null);
  assert.equal(stockReply('نام من user123 است'),null);
 });
+
+
+test('Connection diagnostics expose the cause category without raw credentials and preserve active retries',async()=>{
+ const client=new EventEmitter(),timers=[];client.disconnect=()=>{};client.connect=async()=>{const error=new Error('secret-token @private-account https://private.example/sign');error.name='SignatureRateLimitError';error.retryAfter=65000;throw error;};
+ const link=new LiveLink({create:()=>client,timer:(fn,delay)=>{timers.push(delay);return 1;},cancel:()=>{}});
+ await assert.rejects(link.start('account'));const state=link.snapshot();assert.equal(state.active,true);assert.equal(state.lastIssue.code,'provider_rate_limited');assert.equal(timers[0],65000);assert(!JSON.stringify(state).includes('secret-token'));assert(!JSON.stringify(state).includes('private.example'));link.stop();assert.equal(link.snapshot().active,false);
+});

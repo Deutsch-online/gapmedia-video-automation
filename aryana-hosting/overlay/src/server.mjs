@@ -30,6 +30,7 @@ import {dailyQuestion} from './daily-questions.mjs';
 import {TopicConversation,topicChoices} from './topics.mjs';
 import {SpeechEngine} from './speech-engine.mjs';
 import {VoiceArchive} from './voice-archive.mjs';
+import {privateMediaUploader} from './voice-archive-upload.mjs';
 import {languageChoices,outputLanguage,localizedReply,localizedReaction} from './languages.mjs';
 
 const root=fileURLToPath(new URL('..',import.meta.url)),publicDir=join(root,'public'),privateDir=join(root,'.private');
@@ -58,13 +59,13 @@ function checkpoint(force=false){if(!force&&Date.now()-lastSessionSave<30000)ret
 const save=()=>{writeFileSync(settingsPath+'.tmp',JSON.stringify(settings,null,2),{mode:0o600});renameSync(settingsPath+'.tmp',settingsPath);checkpoint(true);};
 const wss=new WebSocketServer({noServer:true,maxPayload:12000});
 const renderer=new AvatarRenderer({root,privateDir,changed:()=>broadcast()});let avatarPreparing=false;
-SignConfig.apiKey=undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
+SignConfig.apiKey=process.env.EULERSTREAM_API_KEY||process.env.EULER_STREAM_API_KEY||undefined;SignConfig.basePath='https://api.eulerstream.com';SignConfig.cachedInstance=undefined;
 const python=process.env.ARYANA_PYTHON||(process.platform==='win32'?join(root,'.venv','Scripts','python.exe'):join(root,'.venv','bin','python'));
 const speechEngine=new SpeechEngine({python,script:join(root,'src/speech.py'),sample:join(publicDir,'assets/voice-preview.mp3'),directory:join(privateDir,'audio'),changed:()=>broadcast()});
 let neuralConfig={};try{neuralConfig=JSON.parse(readFileSync(join(root,'src/lipsync-config.json'),'utf8'));}catch{}
 const neural=new NeuralLipSync({root,privateDir,python,space:process.env.ARYANA_LIPSYNC_SPACE||neuralConfig.space,revision:process.env.ARYANA_LIPSYNC_REVISION||neuralConfig.revision,changed:()=>broadcast(),budgetChanged:()=>checkpoint(true)});
 let lipTest=null,funPreparation=null,funPreparationPromise=null,voiceSetup={status:'idle'};
-const voiceArchive=new VoiceArchive({repo:elevenVoice?process.env.ARYANA_STATE_REPO:null,token:process.env.ARYANA_STATE_TOKEN,directory:privateDir,scope:createHash('sha256').update(['voice-bank-v1',process.env.ELEVENLABS_VOICE_ID,process.env.ELEVENLABS_MODEL_ID,neural.revision,neural.referenceHash].join(':')).digest('hex')});let archivedOnly=false;
+const voiceArchive=new VoiceArchive({repo:elevenVoice?process.env.ARYANA_STATE_REPO:null,token:process.env.ARYANA_STATE_TOKEN,directory:privateDir,uploader:privateMediaUploader({python,script:join(root,'tools/voice-archive-client.py'),repo:process.env.ARYANA_STATE_REPO,directory:privateDir}),scope:createHash('sha256').update(['voice-bank-v1',process.env.ELEVENLABS_VOICE_ID,process.env.ELEVENLABS_MODEL_ID,neural.revision,neural.referenceHash].join(':')).digest('hex')});let archivedOnly=false;
 const localChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,changed:()=>broadcast()});
 const programChat=new LocalChat({python:process.env.ARYANA_CHAT_PYTHON||python,script:join(root,'src/local-chat.py'),model:process.env.ARYANA_CHAT_MODEL,role:'program',threads:2,changed:()=>broadcast()});
 let livePreparation={status:'idle'},livePreparationPromise=null,conversationWarmup=null,programWarmup=null;
@@ -167,7 +168,7 @@ function pauseProgram(){autoBuffer.interrupt();program.cancel();if(programChat.p
 function stopSpeech(){revision++;quickReactions.clear();autoBuffer.interrupt();program.cancel();if(programChat.pending&&!programWarmup)programChat.cancel();entertainment.reset();commentInbox.clear();queue.clear();utterances=[];currentSpeech?.kill('SIGTERM');speechEngine.cancel();if(localChat.pending&&!conversationWarmup)localChat.cancel();speechStatus='idle';renderer.cancel();neural.cancel();if(lipTest?.status==='preparing')lipTest={...lipTest,status:'cancelled'};}
 async function connect(username,{warmEntertainment=true}={}){
  username=String(username||'').replace(/^@/,'').trim();if(!/^[a-zA-Z0-9_.]{2,24}$/.test(username))throw Error('یوزرنیم تیک‌تاک معتبر نیست.');
- if(settings.lastUsername!==username){session.reset();program.reset();activeViewers.clear();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();await prepareQuickReactions();if(settings.entertainmentEnabled&&warmEntertainment)await prepareEntertainment();await link.start(username);
+ if(settings.lastUsername!==username){session.reset();program.reset();activeViewers.clear();joinThanks.clear();}settings.lastUsername=username;save();stopSpeech();lastError='';await prepareLive();await prepareQuickReactions();if(settings.entertainmentEnabled&&warmEntertainment){try{await prepareEntertainment();}catch(error){recordError(error.message);}}await link.start(username);
 }
 const commentInbox=new CommentInbox({
  answer,

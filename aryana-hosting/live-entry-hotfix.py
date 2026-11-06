@@ -89,7 +89,7 @@ try:
   except (OSError,ValueError):
    if time.monotonic()>=deadline:raise RuntimeError('Studio did not become reachable before deployment')
    time.sleep(4)
- connected=before['connection']=='connected' or bool(before.get('live',{}).get('active'));username=before['settings'].get('lastUsername','')
+ connected=before['connection'] in ['connected','connecting','reconnecting'] or bool(before.get('live',{}).get('active'));username=before['settings'].get('lastUsername','')
  if connected and not username:raise RuntimeError('Cannot safely resume an unnamed connection')
  report.update(was_connected=connected,source_commit=source_sha);write()
  # Preserve the receiver and counters before a coordinated reference upgrade.
@@ -130,7 +130,7 @@ try:
  server=release.APP/'src/server.mjs';text=server.read_text();needle="build:process.env.ARYANA_BUILD_SHA||'local'"
  if needle not in text:raise RuntimeError('Unexpected server version')
  server.write_text(text.replace(needle,'build:'+json.dumps(source_sha)))
- paths=['src/voice-archive.mjs','src/speech-policy.mjs','src/daily-questions.mjs','src/quick-reactions.mjs','src/elevenlabs_voice.py','src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
+ paths=['src/live-link.mjs','src/voice-archive-upload.mjs','tools/voice-archive-client.py','src/voice-archive.mjs','src/speech-policy.mjs','src/daily-questions.mjs','src/quick-reactions.mjs','src/elevenlabs_voice.py','src/live-curriculum.mjs','src/live-program.mjs','src/speech-pronunciation.mjs','src/viewer-engagement.mjs','src/support-prompts.mjs','src/entertainment.mjs','src/automatic-speech.mjs','src/comment-inbox.mjs','src/replies.mjs','public/latin-label.js','src/topics.mjs','src/speech-queue.mjs','public/engagement.js','src/media-http.mjs','src/host.mjs','src/server.mjs','src/reaction-clips.mjs','public/assets/reaction-clips.json']
  if request.get('video_only'):
   paths+=['public/live.html','public/live.js','public/style.css','public/index.html','public/app.js','public/assets/aryana.png','public/assets/idle.mp4','public/assets/introduction.mp4','public/assets/reaction-thanks.mp4']
   page=(release.APP/'public/live.html').read_text()
@@ -153,6 +153,14 @@ try:
   except Exception:pass
   time.sleep(4)
  else:raise RuntimeError('Hotfix readiness timed out')
+ if request.get('neural_lipsync'):
+  deadline=time.monotonic()+360
+  while time.monotonic()<deadline:
+   worker_runtime=api.get_space_runtime('afgtakrun/aryana-live-lipsync');worker_stage=getattr(worker_runtime.stage,'value',worker_runtime.stage)
+   if worker_stage=='RUNNING':break
+   if worker_stage in ['BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR']:raise RuntimeError('Private worker failed before warmup')
+   time.sleep(4)
+  else:raise RuntimeError('Private worker was not ready before warmup')
  _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
  if state['settings'].get('lastUsername')!=username:raise RuntimeError('Saved username was not preserved')
  if connected and state['connection']!='connected':
@@ -164,13 +172,15 @@ try:
    if state.get('livePreparation',{}).get('status')=='error':raise RuntimeError('Voice warmup failed before receiver recovery')
    time.sleep(2)
   else:raise RuntimeError('Voice warmup before receiver recovery timed out')
-  release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
+  try:release.fetch(url+'/api/connect',admin,{'username':username,'warmEntertainment':False})
+  except (OSError,ValueError):report['receiver_restore_pending']=True
  deadline=time.monotonic()+60
  while connected and time.monotonic()<deadline:
   _,raw,_=release.fetch(url+'/api/state',admin);state=json.loads(raw)
   if state['connection']=='connected':break
   time.sleep(2)
- if connected and state['connection']!='connected':raise RuntimeError('The saved receiver was not restored')
+ if connected and state['connection']!='connected':report['receiver_restore_pending']=True
+ report['receiver_issue']=state.get('live',{}).get('lastIssue')
  if request.get('video_only'):
   release.fetch(url+'/api/settings',admin,{'avatarMode':request.get('default_mode','portrait')})
   _,page,_=release.fetch(url+'/live')
@@ -190,13 +200,6 @@ try:
    if response.status!=200 or int(response.headers.get('Content-Length','-1'))!=(release.APP/'public/assets/idle.mp4').stat().st_size:raise RuntimeError('Public media HEAD probe failed')
   report.update(byte_range_verified=True,head_verified=True)
  if request.get('neural_lipsync'):
-  deadline=time.monotonic()+360
-  while time.monotonic()<deadline:
-   worker_runtime=api.get_space_runtime('afgtakrun/aryana-live-lipsync');worker_stage=getattr(worker_runtime.stage,'value',worker_runtime.stage)
-   if worker_stage=='RUNNING':break
-   if worker_stage in ['BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR']:raise RuntimeError('Private worker failed before warmup')
-   time.sleep(4)
-  else:raise RuntimeError('Private worker was not ready before warmup')
   release.fetch(url+'/api/lip-prepare',admin,{})
   deadline=time.monotonic()+240
   while time.monotonic()<deadline:
