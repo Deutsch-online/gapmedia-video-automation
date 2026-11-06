@@ -15,5 +15,6 @@
   "no_engagement_requests": true,
   "quick_reactions": true,
   "eleven_requested": true,
-  "skip_telegram": true
+  "skip_telegram": true,
+  "build_retry": "ensure-ffmpeg-without-index-refresh"
 }
