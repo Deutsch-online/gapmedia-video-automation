@@ -37,7 +37,7 @@ jobs:
            with urllib.request.urlopen(req,timeout=30) as response:return json.load(response)
           state=call('/api/state')
           result['runtime']={name:state.get('capabilities',{}).get(name) for name in ['voiceProvider','voiceConfigured','voiceClone','liveLipSync','noEngagementRequests']}
-          result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions')
+          result['connection']=state['connection'];result['quick_reactions']=state.get('quickReactions');result['preparation']={name:state.get(name) for name in ['livePreparation','entertainment','voiceArchive','lastError','voiceEngine','lipSync','programModelStatus','conversationStatus','queue']}
           if result['runtime']['liveLipSync']:
            call('/api/refresh-live',{});result['output_refreshed']=True
           selected=next((os.getenv(name) for name in ['ELEVENLABS_API_KEY','ELEVEN_API_KEY','ELEVENLABS_KEY','ELEVEN_LABS_API_KEY'] if os.getenv(name)),None)
