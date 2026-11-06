@@ -12,6 +12,40 @@ try:
  if bot.get('username','').lower()!='afgsocial_bot':raise RuntimeError('Unexpected bot identity')
  chat=os.getenv('TELEGRAM_REVIEW_CHAT_ID') or os.environ['TELEGRAM_CHAT_ID'];owner=release.tg('getChat',{'chat_id':chat})
  if owner.get('type')!='private':raise RuntimeError('Owner chat must be private')
+ if request.get('program_maintenance'):
+  api=HfApi(token=os.environ['HF_TOKEN'])
+  if api.whoami()['name']!='afgtakrun':raise RuntimeError('Unexpected owner')
+  import hmac
+  url='https://afgtakrun-aryana-live-studio.hf.space'
+  admin=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+  def current_state():
+   _,raw,_=release.fetch(url+'/api/state',admin);return json.loads(raw)
+  state=current_state()
+  def diagnostics(state):
+   private_error=str(state.get('livePreparation',{}).get('error','')).replace(os.environ['HF_TOKEN'],'[REDACTED]')
+   return {'voice':state.get('voiceEngine'), 'lip':state.get('lipSync'), 'preparation_error':private_error[:220], 'connection':state['connection'],'program':state.get('program')}
+  report.update(status='diagnosing',details=diagnostics(state));write()
+  if state['connection']=='connected' or state.get('live',{}).get('active'):raise RuntimeError('Maintenance was not allowed to interrupt a live receiver')
+  if not state.get('capabilities',{}).get('liveLipSync'):
+   release.fetch(url+'/api/lip-prepare',admin,{})
+   deadline=time.monotonic()+250
+   while time.monotonic()<deadline:
+    state=current_state()
+    if state.get('livePreparation',{}).get('status')=='ready' and state.get('capabilities',{}).get('liveLipSync'):break
+    if state.get('livePreparation',{}).get('status')=='error':
+     report.update(details=diagnostics(state));write();raise RuntimeError('Warmup retry failed')
+    time.sleep(3)
+   else:raise RuntimeError('Warmup retry timed out')
+  release.fetch(url+'/api/entertainment-prepare',admin,{})
+  deadline=time.monotonic()+350
+  while time.monotonic()<deadline:
+   state=current_state()
+   if state.get('entertainment',{}).get('cachedClips',0)>=4 and not state.get('entertainment',{}).get('preparing'):break
+   if state.get('entertainment',{}).get('preparation')=='error':
+    report.update(details=diagnostics(state),preparation_error=state.get('lastError'));write();raise RuntimeError('Programme preparation failed')
+   time.sleep(3)
+  else:raise RuntimeError('Programme preparation timed out')
+  report.update(status='ready',details=diagnostics(state),cached_clips=state['entertainment']['cachedClips'],two_hour_real_time_test=False);write();sys.exit(0)
  if request.get('resume_only'):
   api=HfApi(token=os.environ['HF_TOKEN'])
   if api.whoami()['name']!='afgtakrun':raise RuntimeError('Unexpected owner')
