@@ -1,0 +1,15 @@
+# Island Rescue — 79
+
+The prior arena's primary failure is comprehension: a new viewer sees ranks, counters and effects without an immediately legible action or a short consequence. This game has one sentence of instructions, three large numbered destinations and a 30-second loop. It prioritises a real avatar entering a visible world, a telegraphed danger, a recoverable decision and a shared result.
+
+Normal round: 12 seconds to choose, 8-second visible warning with free movement, 5-second island collapse/rescue, 5-second survivor spotlight. Pace can be 30/45/60 seconds; extra time goes into initial choice. TikTok latency makes a sub-second reflex game unsuitable. Controls: Start/Resume, Pause, Next, Reset, Auto and Pace. Old profile battle is retained as a separate selectable mode; it does not run underneath the new game.
+
+Comment 1, 2 or 3 (Latin/Persian/Arabic digits or island/جزیره prefix) to choose. A second different choice moves the avatar, with a minimum 800ms between changes and at most four moves after the initial choice. No gift, like or score threshold is required. Late choices are queued for the next round. Joins alone place actual profile photos on the boarding raft. No invented follower/like counts. Actual supporter archive remains independent.
+
+One island's danger is selected by secure random integer before the round. The danger is withheld from both public and control snapshots until warning. The six hazard types rotate without repeating within the six-round bag. Safe landings award 10 + up to 10 streak points. An unsafe landing resets the streak, not the person's right to play; an animated rescue brings the avatar back next round. Every three rounds starts a fresh score chapter. Spotlight rotates among actual survivors and favours new participants; it is a feature slot, not a paid prize or a claim to greatest contribution. Likes and gifts create cosmetic effects and factual receipts only, never change the safe island or survival odds.
+
+With no real choice, six named game characters demonstrate the loop and the display says PRACTICE CREW. First actual choice instantly switches to LIVE CREW and removes demonstration actors from competitive results. Real joins can still appear on the raft during practice. No synthetic events are sent to TikTok or production score state by the private test.
+
+No new background music or speech generation is required. Existing sound settings remain. Sounds acknowledge landing, moving, warning and results, never loop over quiet periods. Named selective welcome remains; no stock anonymous speech or repeated questions. The former fire/shot narrator is not reused for inaccurate island play-by-play.
+
+Validation includes deterministic phase transitions, hidden outcome, choice change, aliases, duplicate receipt, likes/gifts invariance, late entry, pause, auto restart, score reset, original bridge-to-handler events, two browser sizes, reduced motion, clear new-player onboarding and a genuinely isolated panel test. Actual TikTok receipt must be reported separately from successful socket connection.
