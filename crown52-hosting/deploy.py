@@ -62,6 +62,23 @@ def read_public(source,timeout=30):
   except Exception:
    if attempt==3:raise
    time.sleep(.5*(attempt+1))
+# Install verified photographs of models for fictional game characters, never actual viewer metrics.
+photo_dir=folder/'public/arena-portraits';photo_dir.mkdir(parents=True,exist_ok=True)
+for spec in json.loads((here/'arena-photo-manifest.json').read_text()):
+ if not spec['source'].startswith('https://images.unsplash.com/photo-') or '/' in spec['name']:raise RuntimeError('Invalid game portrait source')
+ data=None
+ local=here/'arena-portraits'/spec['name']
+ if local.exists():
+  candidate=local.read_bytes()
+  if candidate.startswith(b'\xff\xd8') and len(candidate)==spec['size'] and hashlib.sha256(candidate).hexdigest()==spec['sha256']:data=candidate
+ for source in ([] if data is not None else [url+'/arena-portraits/'+spec['name'],spec['source']]):
+  try:
+   candidate=read_public(source)
+   if candidate.startswith(b'\xff\xd8') and len(candidate)==spec['size'] and hashlib.sha256(candidate).hexdigest()==spec['sha256']:data=candidate;break
+  except Exception:pass
+ if data is None:raise RuntimeError('Photographic game portrait verification failed')
+ (photo_dir/spec['name']).write_bytes(data)
+
 # Reusable bilingual files are generated once per script/voice/model and verified on reuse.
 scripts=json.loads((here/'narration-scripts.mjs').read_text().split('=',1)[1].strip().rstrip(';'))
 old_manifest={}
@@ -124,7 +141,7 @@ if mode in ('persist','repair'):
   if len(data)!=asset['size'] or hashlib.sha256(data).hexdigest()!=asset['sha256']:raise RuntimeError('Public media checksum differs: '+asset['name'])
   p=folder/'public/assets'/asset['name'];p.parent.mkdir(exist_ok=True);p.write_bytes(data)
 
-for name in ('game.mjs','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs','free-play.mjs','bubble-arena.mjs','bubble-arena.css','bubble-stages.mjs','question-bank.mjs','welcome-scripts.mjs','quiz-narrator.mjs','photo-quest.mjs','bubble-battle.mjs','crown-rules.mjs'):
+for name in ('game.mjs','engagement-scripts.mjs','arena-round.mjs','arena-fire.mjs','presence-lease.mjs','arena-battle.css','game-engine.mjs','language.mjs','game-audio.mjs','water.css','water.mjs','portrait.css','compact.css','card-motion.mjs','fun-art.mjs','fun-styles.mjs','playing-cards.mjs','playing-cards.css','gift-names.mjs','live-extras.css','index.html','gift-art.json','supporters.mjs','live-events.mjs','football-engine.mjs','football-ui.mjs','football.css','football-crests.json','league-voice.mjs','league-audio.json','audio-credits.html','showcase-portraits.json','narration-scripts.mjs','free-play.mjs','bubble-arena.mjs','bubble-arena.css','bubble-stages.mjs','question-bank.mjs','welcome-scripts.mjs','quiz-narrator.mjs','photo-quest.mjs','bubble-battle.mjs','crown-rules.mjs'):
  (folder/'public'/name).write_text((here/name).read_text())
 (folder/'server.mjs').write_text((here/'server.mjs').read_text())
 (folder/'live-bridge.mjs').write_text((here/'live-bridge.mjs').read_text())
@@ -165,6 +182,7 @@ for _ in range(95):
  if time.monotonic()-started>45 and str(runtime.stage) in ('BUILD_ERROR','RUNTIME_ERROR','CONFIG_ERROR') and runtime.raw.get('sha')==commit.oid:raise RuntimeError('Hosting failed: '+str(runtime.stage))
  time.sleep(7)
 else:raise RuntimeError('Hosting readiness timeout')
+
 
 
 

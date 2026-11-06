@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {Game} from './public/game-engine.mjs';
+import {processLiveEvent} from './public/live-events.mjs';
+import {arenaState,arenaReset,arenaTick,arenaPlayers,chooseTarget,activityShots,autoTarget} from './public/arena-round.mjs';
+import {quizState} from './public/free-play.mjs';
+const now=2000000000000;let clock=now;const g=new Game(()=>clock);g.now=()=>clock;g.s.liveExperience='portraits';g.s.viewMode='fun';g.s.fun.layout='portraits';g.s.fun.battleMode78=true;g.s.fun.autoArrival=true;g.profileGameMode('battle',clock);g.profileRound().autoStart=false;g.profileClock('start',undefined,clock);arenaTick(g.s.fun,clock,true);
+assert.equal(arenaState(g.s.fun).bots.length,8);assert.equal(quizState(g.profileRound(),clock).available,false);assert.deepEqual(arenaState(g.s.fun).seats.map(s=>(s.until-clock)/1000),[180,120,60]);
+assert.equal(new Set(arenaPlayers(g.s.fun,clock).map(p=>p.battleNumber)).size,8);
+function event(user,type,amount,text){clock+=1;const d={type,userId:user,nickname:user,eventId:user+':'+clock,likeCount:amount,coins:type==='gift'?amount:undefined,comment:text};const result=processLiveEvent(g,d);activityShots(g.s.fun,d,result,clock);return result;}
+event('Alpha','join');arenaTick(g.s.fun,clock,true);assert(!g.profilePodiumMembers(clock).some(p=>p.id==='alpha'||p.name==='Alpha'));event('Alpha','like',100);arenaTick(g.s.fun,clock,true);const p=g.s.fun.people.find(p=>p.name==='Alpha');assert(p);assert.equal(arenaState(g.s.fun).streams.find(s=>s.id===p.id).budget,100);assert(g.profilePodiumMembers(clock).some(x=>x.id===p.id));
+event('Beta','like',100);arenaTick(g.s.fun,clock,true);const b=g.s.fun.people.find(p=>p.name==='Beta');assert(b);assert(chooseTarget(g.s.fun,p.id,String(b.battleNumber),clock).accepted);assert.equal(chooseTarget(g.s.fun,p.id,String(p.battleNumber),clock).accepted,false);assert.equal(autoTarget({id:'king',points:999},[{id:'small',points:1}]),null);
+const a=arenaState(g.s.fun);a.bots=[];a.nextBotAt=clock+100000;for(const x of[g.s.fun.people[0],g.s.fun.people[1]]){x.battleAt=clock-10000;}a.streams=[{id:p.id,budget:100,lastShot:0,activeUntil:clock+20000}];a.targets[p.id]=b.id;let before=g.profileRound().chartMembers.reduce((n,m)=>n+m.points,0);for(let i=0;i<20;i++){clock+=501;arenaTick(g.s.fun,clock,true);a.bots=[];}assert(a.shots.some(s=>s.transfer)||Object.values(a.pairs).some(p=>p.hits===0));assert.equal(g.profileRound().chartMembers.reduce((n,m)=>n+m.points,0),before);assert.equal(g.s.fun.people.find(x=>x.id===p.id).activity.likes,100);
+// Exactly twenty hits per coin, independent of the 100-point coin score.
+event('Alpha','gift',1);assert.equal(a.streams.find(s=>s.id===p.id).budget,20);
+const oldNum=p.battleNumber;g.s.fun.people=g.s.fun.people.filter(x=>x.id!==p.id);event('Fresh','join');arenaTick(g.s.fun,clock,true);const fresh=g.s.fun.people.find(p=>p.name==='Fresh');assert.equal(fresh.activity.points,0);assert(fresh.battleNumber>0);assert.equal(new Set(arenaPlayers(g.s.fun,clock).map(p=>p.battleNumber)).size,arenaPlayers(g.s.fun,clock).length);
+g.profileClock('finish',undefined,clock);assert(g.s.fun.people.every(p=>p.activity.points===0));assert(arenaState(g.s.fun).bots.every(p=>p.points===0));assert.equal(g.s.fun.profileRound.chartMembers.length,0);
+console.log('arena78: 8 bots, timers, no quiz, active-only seats, independent hit budgets, conserved score, reusable number, reset PASS');
