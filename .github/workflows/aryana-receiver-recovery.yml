@@ -1,0 +1,36 @@
+name: Recover the saved Aryana TikTok receiver
+on:
+  push:
+    branches: [delivery/aryana-hf-20261029]
+    paths: [aryana-hosting/receiver-recovery-request.json]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Restore only the actual saved receiver without on-air test events
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,hmac,hashlib,json,time,urllib.request,urllib.error
+          key=hmac.new(os.environ['TELEGRAM_BOT_TOKEN'].encode(),b'aryana-admin-v1:afgtakrun/aryana-live-studio',hashlib.sha256).hexdigest()
+          base='https://afgtakrun-aryana-live-studio.hf.space'
+          def call(path,data=None):
+           request=urllib.request.Request(base+path,data=json.dumps(data).encode() if data is not None else None,headers={'x-aryana-key':key,'content-type':'application/json'})
+           with urllib.request.urlopen(request,timeout=180 if path=='/api/connect' else 25) as response:return json.load(response)
+          state=call('/api/state');username=state.get('settings',{}).get('lastUsername','')
+          result={'before':state['connection'],'saved_username':bool(username),'on_air_test_events':False}
+          if username and state['connection'] not in ['connected','connecting','reconnecting']:
+           try:call('/api/connect',{'username':username,'warmEntertainment':False})
+           except urllib.error.HTTPError as error:
+            try:message=str(json.loads(error.read()).get('error','')).replace(username,'[account]')
+            except Exception:message='Connection rejected'
+            result.update(error=message[:200],http_status=error.code)
+          state=call('/api/state');result.update(after=state['connection'],receiver=state.get('live'),preparation=state.get('livePreparation'),voice_provider=state['capabilities'].get('voiceProvider'),quick_reactions=state.get('quickReactions'))
+          # Omit account names and internal payloads from diagnostics.
+          result.pop('receiver',None)
+          print('ARYANA_RECEIVER_RECOVERY '+json.dumps(result,ensure_ascii=False),flush=True)
+          PY
