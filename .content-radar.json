@@ -1,59 +1,68 @@
 {
-  "at": "2026-11-04T23:38:12.124Z",
+  "at": "2026-11-07T02:46:48.762Z",
   "rows": [
     {
       "cat": "tiktok",
       "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
       "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
-      "date": "2026-11-04",
+      "date": "2026-11-06",
       "sources": 8,
       "clear": true,
       "score": 30
     },
     {
+      "cat": "instagram",
+      "title": "You can edit your videos with AI on Instagram’s new desktop Edits app | The Verge",
+      "url": "https://www.theverge.com/tech/1027444/instagram-edits-desktop-ai-agents-muse-mcp",
+      "date": "2026-11-05",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Just Released A Standalone Shop App, But It's Not In America Just Yet",
+      "url": "https://www.engadget.com/2308419/tiktok-just-released-a-standalone-shop-app-but-its-not-in-america-just-yet/",
+      "date": "2026-11-05",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
       "cat": "tools",
-      "title": "vivo's BluePixel-Turbo edits images in native 4K with just 4 steps – Tokenstrom",
-      "url": "https://tokenstrom.com/posts/vivo-s-bluepixel-turbo-edits-images-in-native-4k-with-just-4-steps/",
-      "date": "2026-11-04",
+      "title": "Gemini Omni 1.2 Flash: 15-second video and lower pricing",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/",
+      "date": "2026-11-05",
       "sources": 7,
       "clear": true,
-      "score": 30
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok and WTA launch Creator Club for tennis creators",
-      "url": "https://www.contentgrip.com/tiktok-wta-creator-club/",
-      "date": "2026-11-04",
-      "sources": 8,
-      "clear": true,
       "score": 29
     },
     {
       "cat": "tools",
-      "title": "Introducing Images 2.6 | OpenAI",
-      "url": "https://openai.com/index/introducing-images-2-6/",
-      "date": "2026-11-04",
-      "sources": 8,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tools",
-      "title": "Google Flow: AI Creative Studio for Video and Film",
-      "url": "https://nexchron.com/creative/google-flow-ai-creative-studio-2026",
-      "date": "2026-11-03",
-      "sources": 8,
-      "clear": true,
-      "score": 29
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Shop Is Testing Livestreams That Run Without a Host",
-      "url": "https://www.ecomcrew.com/tiktok-shop-is-testing-livestreams-that-run-without-a-host/",
-      "date": "2026-11-03",
-      "sources": 6,
+      "title": "Creative AI Briefing: November 5, 2026 (Morning) | Fervor Creative AI",
+      "url": "https://fervorcreativeai.com/briefings/2026-11-05-0505/",
+      "date": "2026-11-05",
+      "sources": 5,
       "clear": true,
       "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "New Feature — Kling 4.0 Video, GPT Image 2.5 Fast and Rerun Anywhere | GoStudio.ai Product Updates",
+      "url": "https://www.gostudio.ai/product-updates/kling-4-gpt-image-2-5-fast-and-rerun",
+      "date": "2026-11-04",
+      "sources": 6,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram’s 90-minute video push gives creators a trust edge over publishers",
+      "url": "https://www.medianexis.com/instagrams-90-minute-video-push-gives-creators-a-trust-edge-over-publishers/",
+      "date": "2026-11-02",
+      "sources": 7,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -62,25 +71,34 @@
       "date": "2026-11-02",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
-      "cat": "instagram",
-      "title": "Instagram is offering YouTubers up to $500K, Business Insider reports",
-      "url": "https://thenextweb.com/news/instagram-features-youtube-creators-paid-deals",
-      "date": "2026-11-01",
-      "sources": 8,
-      "clear": true,
-      "score": 27
+      "cat": "tiktok",
+      "title": "TikTok updates every social media manager needs to know: Here’s how TikTok is changing in 2026 [updated monthly]  | HeyOrca",
+      "url": "https://www.heyorca.com/blog/tiktok-social-news?269eda59_page=6&2b25a987_page=3",
+      "date": "2026-11-05",
+      "sources": 6,
+      "clear": false,
+      "score": 26
     },
     {
       "cat": "tools",
-      "title": "WeVisCut: Tencent Openly Releases a 9-Billion-Parameter Video Editing Agent | Neural Brew",
-      "url": "https://neuralbrew.ai/en/articles/2026/11/tencent-releases-weviscut-open-source-video-editing-agent/",
-      "date": "2026-11-02",
+      "title": "November 5 roundup: Kling 4.0 Flash opens to everyone, GIFs in OpenAI Images 2.6, Character Sheet from Luma | .neurocartel",
+      "url": "https://neurocartel.com/en/blog/ai-video-news-november-5-2026",
+      "date": "2026-11-05",
+      "sources": 6,
+      "clear": false,
+      "score": 26
+    },
+    {
+      "cat": "tools",
+      "title": "Google is giving AI video creators longer clips, better editing, and fewer frustrating mistakes - Digital Trends",
+      "url": "https://www.digitaltrends.com/cool-tech/google-is-giving-ai-video-creators-longer-clips-better-editing-and-fewer-frustrating-mistakes/",
+      "date": "2026-11-05",
       "sources": 7,
-      "clear": true,
-      "score": 27
+      "clear": false,
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -89,52 +107,34 @@
       "date": "2026-10-31",
       "sources": 7,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
-      "cat": "tools",
-      "title": "Seedance 2.5 Brings 30-Second 4K AI Video to Content Creators and Businesses at a Fraction of Traditional Production Costs - PC Tech Magazine",
-      "url": "https://pctechmag.com/2026/11/seedance-2-5-brings-30-second-4k-ai-video-to-content-creators-and-businesses-at-a-fraction-of-traditional-production-costs/",
-      "date": "2026-11-04",
-      "sources": 8,
+      "cat": "instagram",
+      "title": "Instagram Pays Creators Up to $500,000 for Long-Form Features – 90-Minute Videos, TV App, No Ad Share Yet | CineD",
+      "url": "https://www.cined.com/instagram-pays-creators-up-to-500000-for-long-form-features-90-minute-videos-tv-app-no-ad-share-yet/",
+      "date": "2026-11-02",
+      "sources": 7,
       "clear": false,
-      "score": 26
+      "score": 23
     },
     {
       "cat": "instagram",
       "title": "Instagram Is Going Beyond Reels With Features, Clips As Reels & Series: Adam Mosseri Explains What Is Changing",
       "url": "https://gadgetsnow.indiatimes.com/tech-news/instagram-is-going-beyond-reels-with-features-clips-as-reels-series-adam-mosseri-explains-what-is-changing/articleshow/135453569.cms",
       "date": "2026-11-02",
-      "sources": 7,
+      "sources": 6,
       "clear": false,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram is offering YouTubers up to $500,000 to post with its new horizontal format - Tubefilter",
-      "url": "https://www.tubefilter.com/2026/10/29/instagram-offering-youtubers-new-features-format/",
-      "date": "2026-10-29",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "instagram",
-      "title": "Would you watch a 90-minute-long video on Instagram? - The Hindu",
-      "url": "https://www.thehindu.com/sci-tech/technology/would-you-watch-a-90-minute-long-video-on-instagram/article71644021.ece",
-      "date": "2026-10-30",
-      "sources": 8,
-      "clear": true,
-      "score": 24
+      "score": 22
     },
     {
       "cat": "instagram",
       "title": "Adam Mosseri tries Instagram’s new long-form Features. | The Verge",
       "url": "https://www.theverge.com/tech/1024200/adam-mosseri-tries-instagrams-new-long-form-features",
       "date": "2026-11-01",
-      "sources": 4,
+      "sources": 3,
       "clear": true,
-      "score": 23
+      "score": 17
     }
   ],
   "shown": [
@@ -147,50 +147,50 @@
     {
       "n": 2,
       "cat": "tiktok",
-      "title": "TikTok and WTA launch Creator Club for tennis creators",
-      "url": "https://www.contentgrip.com/tiktok-wta-creator-club/"
+      "title": "TikTok Just Released A Standalone Shop App, But It's Not In America Just Yet",
+      "url": "https://www.engadget.com/2308419/tiktok-just-released-a-standalone-shop-app-but-its-not-in-america-just-yet/"
     },
     {
       "n": 3,
       "cat": "tiktok",
-      "title": "TikTok Shop Is Testing Livestreams That Run Without a Host",
-      "url": "https://www.ecomcrew.com/tiktok-shop-is-testing-livestreams-that-run-without-a-host/"
+      "title": "(November 2) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
     },
     {
       "n": 4,
-      "cat": "tools",
-      "title": "vivo's BluePixel-Turbo edits images in native 4K with just 4 steps – Tokenstrom",
-      "url": "https://tokenstrom.com/posts/vivo-s-bluepixel-turbo-edits-images-in-native-4k-with-just-4-steps/"
+      "cat": "instagram",
+      "title": "You can edit your videos with AI on Instagram’s new desktop Edits app | The Verge",
+      "url": "https://www.theverge.com/tech/1027444/instagram-edits-desktop-ai-agents-muse-mcp"
     },
     {
       "n": 5,
-      "cat": "tools",
-      "title": "Introducing Images 2.6 | OpenAI",
-      "url": "https://openai.com/index/introducing-images-2-6/"
+      "cat": "instagram",
+      "title": "Instagram’s 90-minute video push gives creators a trust edge over publishers",
+      "url": "https://www.medianexis.com/instagrams-90-minute-video-push-gives-creators-a-trust-edge-over-publishers/"
     },
     {
       "n": 6,
-      "cat": "tools",
-      "title": "Google Flow: AI Creative Studio for Video and Film",
-      "url": "https://nexchron.com/creative/google-flow-ai-creative-studio-2026"
+      "cat": "instagram",
+      "title": "Instagram Pays Creators Up to $500,000 for Long-Form Features – 90-Minute Videos, TV App, No Ad Share Yet | CineD",
+      "url": "https://www.cined.com/instagram-pays-creators-up-to-500000-for-long-form-features-90-minute-videos-tv-app-no-ad-share-yet/"
     },
     {
       "n": 7,
-      "cat": "instagram",
-      "title": "Instagram is offering YouTubers up to $500K, Business Insider reports",
-      "url": "https://thenextweb.com/news/instagram-features-youtube-creators-paid-deals"
+      "cat": "tools",
+      "title": "Gemini Omni 1.2 Flash: 15-second video and lower pricing",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash/"
     },
     {
       "n": 8,
-      "cat": "instagram",
-      "title": "Instagram Is Going Beyond Reels With Features, Clips As Reels & Series: Adam Mosseri Explains What Is Changing",
-      "url": "https://gadgetsnow.indiatimes.com/tech-news/instagram-is-going-beyond-reels-with-features-clips-as-reels-series-adam-mosseri-explains-what-is-changing/articleshow/135453569.cms"
+      "cat": "tools",
+      "title": "Creative AI Briefing: November 5, 2026 (Morning) | Fervor Creative AI",
+      "url": "https://fervorcreativeai.com/briefings/2026-11-05-0505/"
     },
     {
       "n": 9,
-      "cat": "instagram",
-      "title": "Instagram is offering YouTubers up to $500,000 to post with its new horizontal format - Tubefilter",
-      "url": "https://www.tubefilter.com/2026/10/29/instagram-offering-youtubers-new-features-format/"
+      "cat": "tools",
+      "title": "New Feature — Kling 4.0 Video, GPT Image 2.5 Fast and Rerun Anywhere | GoStudio.ai Product Updates",
+      "url": "https://www.gostudio.ai/product-updates/kling-4-gpt-image-2-5-fast-and-rerun"
     }
   ]
 }
