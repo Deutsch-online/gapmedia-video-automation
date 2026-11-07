@@ -8,9 +8,9 @@ from pathlib import Path
 
 PROFILE = 'storybook-duo-glass-v2'
 ASSET_PROFILE = 'storybook-duo-2d-v1'
-CARD = (40, 1360, 1000, 420)
-DE_SIZE, FA_SIZE = 62, 54
-DE_LEADING, FA_LEADING = 74, 66
+CARD = (40, 1380, 1000, 380)
+DE_SIZE, FA_SIZE = 56, 48
+DE_LEADING, FA_LEADING = 68, 60
 
 
 def enabled(config, episode=None):

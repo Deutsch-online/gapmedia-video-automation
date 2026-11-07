@@ -62,11 +62,12 @@ class DesignTests(unittest.TestCase):
                     target=Path(directory)/'caption.png'
                     report=design.caption_card(scene['de'],scene['fa'],target)
                     with Image.open(target) as image:bounds=image.getbbox()
-                    self.assertGreaterEqual(bounds[1],1360)
-                    self.assertLessEqual(bounds[3],1785)
+                    self.assertGreaterEqual(design.CARD[1],1350)
+                    self.assertGreaterEqual(bounds[1],design.CARD[1])
+                    self.assertLessEqual(bounds[3],design.CARD[1]+design.CARD[3]+5)
                     self.assertTrue(report['bold'])
-                    self.assertGreaterEqual(report['de_size'],60)
-                    self.assertGreaterEqual(report['fa_size'],50)
+                    self.assertGreaterEqual(report['de_size'],56)
+                    self.assertGreaterEqual(report['fa_size'],48)
 
     def test_unreadably_long_caption_fails_instead_of_tiny_text(self):
         with tempfile.TemporaryDirectory() as directory:
