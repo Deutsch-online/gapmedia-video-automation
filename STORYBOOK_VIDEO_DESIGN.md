@@ -1,0 +1,15 @@
+# Approved storybook duo and bold lower-glass subtitles
+
+The owner's reference is the kitchen two-shot preview with Marta on the left, Lukas on the right and bilingual subtitles over a translucent lower panel. The current correction increases emphasis and readability: German uses 62px DejaVu Sans Bold; Persian uses 54px Noto Sans Arabic Bold. Both have a restrained dark outline and shadow. The rounded, blurred panel has a stronger transparent dark tint, rather than an opaque white card. German stays above Persian. Fonts are never silently shrunk to fit an overlong caption.
+
+`.cinematic-series.json.visual_profile` activates this design from episode 19. The clean original character reference is `public/ai-cast/storybook-duo/reference.png`, copied from the reference used to create the owner's preview. It contains no baked subtitles. Every shot keeps both adults in one coherent setting, with the actual speaking character identified by screen side. The listener's mouth stays closed. There is no single-person portrait fallback or white background rail.
+
+New paired takes use the five-second audio-conditioned LTX-2 Space. The exact aligned German WAV used in the final mix is also sent to the model. Its live published GPU decorator must remain 85 seconds on xlarge: the reservation is 170 charged quota units, not 85. If this contract changes, generation stops before submission until reviewed. The existing account-wide and per-run included-time guards and 30-unit reserve remain active. Empty white fades are rejected; model selection is not proof of perfect faces or lip synchronization, and no face-count measurement is invented in reports.
+
+Motion/reference cache names use a separate asset version, `storybook-duo-2d-v1`. Subtitle typography is versioned separately, so a later font-only correction reuses the existing motion instead of spending GPU time again. Legacy cached episodes and delivered files remain intact. The final report records the actual caption design and requested two-character layout; real output still needs visual inspection.
+
+Both Instagram and TikTok exports keep the existing duration contract, 1080x1920, German audio, Persian/German text, short outgoing captions and private Telegram delivery receipts. Daily Berlin scheduling, included-capacity-only operation, pauses-only music and speech timing gates are unchanged. UI demonstrations, when explicitly requested by a graphic story, use a compact German example panel above the subtitles while retaining the complete background scene.
+
+When the initially fetched research topic has already been used, the story queue may fetch a different unused topic's approved official page before selecting its matching story. It never invents a source or replays a delivered story to fill the new visual format.
+
+`tests/test_cinematic_design.py` checks real font metrics, safe-area placement, full-frame layout, two-speaker direction, codec/duration/audio preservation, blank-frame rejection and the 170-unit provider contract. The `storybook-design-check` workflow verifies the live public provider decorator with no model generation and no credentials.

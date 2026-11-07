@@ -86,5 +86,21 @@ class StoryBankTests(unittest.TestCase):
         self.assertEqual(sum(x['count'] for x in state['planning_failures'].values()),1)
         self.assertTrue(all(not x['gpu_requested'] for x in state['planning_failures'].values()))
 
+    def test_used_initial_topic_can_select_an_unused_topic_with_fresh_official_source(self):
+        state=m.new_state();state['next_episode']=19
+        bus=next(item for item in self.bank['stories'] if item['story_id']=='project-bus-stop-v1')
+        state['history']=[{'episode':15,'story_id':'doctor-appointment-language-anxiety-v1','title_de':'Old doctor','scenes':[]},
+                          {'episode':18,'story_id':bus['story_id'],'title_de':bus['title_de'],'scenes':[]}]
+        source_bus=self.source(bus['research_urls'][0])
+        source_rail=self.source(self.bank['stories'][0]['research_urls'][0])
+        def research(episode,preferred_url=None,strict_preferred=False):
+            return source_rail if strict_preferred else source_bus
+        with patch.object(m,'research_source',side_effect=research) as fetched, \
+             patch.object(m,'beatapi_free_models',side_effect=AssertionError('no model required')):
+            plan=m.make_plan(state)
+        self.assertEqual(plan['story_id'],'project-rail-direction-v1')
+        self.assertTrue(fetched.call_args.kwargs['strict_preferred'])
+        self.assertEqual(plan['research_source'],source_rail)
+
 
 if __name__=='__main__':unittest.main()

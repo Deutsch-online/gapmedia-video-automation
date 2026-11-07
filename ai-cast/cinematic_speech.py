@@ -9,14 +9,17 @@ from pathlib import Path
 
 MODEL = os.getenv('LIPSYNC_SPACE', 'victor/LongCat-Video-Avatar-1.5')
 
-def backend():
-    name = os.getenv('CINEMATIC_SPEECH_BACKEND', 'gradio')
-    if name not in ('gradio', 'wan2gp'):
+def backend(name=None):
+    name = name or os.getenv('CINEMATIC_SPEECH_BACKEND', 'gradio')
+    if name not in ('gradio', 'wan2gp', 'ltx2'):
         raise ValueError('Unknown cinematic speech backend: ' + name)
     return name
 
-def model_identity():
-    if backend() == 'wan2gp':
+def model_identity(name=None):
+    if backend(name) == 'ltx2':
+        from cinematic_ltx2 import SPACE
+        return 'ltx2:' + SPACE + ':5s-8step-duo-v2'
+    if backend(name) == 'wan2gp':
         from wan2gp_worker import MODEL as model, REVISION
         return 'wan2gp:' + model + ':' + REVISION
     return MODEL
@@ -44,14 +47,17 @@ def aligned_audio(source, target):
     marker.write_text(json.dumps({'signature': signature, 'wav': audio_sha(target)}))
     return str(target)
 
-def generate(png, audio, output, motion, seed):
+def generate(png, audio, output, motion, seed, backend_name=None):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finishing cannot generate speaking clips')
+    if backend(backend_name) == 'ltx2':
+        from cinematic_ltx2 import generate_take
+        return generate_take(png,audio,output,motion,seed)
     prompt = ('One visible speaking adult cartoon character. Accurate lip and jaw movement driven by the supplied German speech. '
               'Natural real-time blinking and breathing, lively purposeful upper-body and hand actions, '
               'clear expressive comic reactions without distorting facial anatomy. No slow motion or idle portrait posing. '
               'The listener is off-camera. Keep identity and facial anatomy stable. ' + motion)
-    if backend() == 'wan2gp':
+    if backend(backend_name) == 'wan2gp':
         root = Path(os.environ.get('WAN2GP_ROOT', '/workspace/Wan2GP')).resolve()
         python = os.environ.get('WAN2GP_PYTHON', str(root / '.venv/bin/python'))
         subprocess.run([python, str(Path(__file__).with_name('wan2gp_worker.py')),
@@ -75,15 +81,18 @@ def generate(png, audio, output, motion, seed):
     from cinematic_budget import run_gpu
     run_gpu(call, required_seconds=480)
 
-def ensure_clip(png, audio, output, motion, seed):
+def ensure_clip(png, audio, output, motion, seed, backend_name=None):
     output = Path(output)
     marker = output.with_suffix('.speech.json')
     signature = {'audio_sha256': audio_sha(audio), 'image_sha256': audio_sha(png),
-                 'model': model_identity(), 'motion': motion, 'seed': seed, 'timing': 'aligned-wav-native-speed-v1'}
+                 'model': model_identity(backend_name), 'motion': motion, 'seed': seed, 'timing': 'aligned-wav-native-speed-v1'}
     if not output.exists() or not marker.exists() or json.loads(marker.read_text()) != signature:
         output.unlink(missing_ok=True)
         marker.unlink(missing_ok=True)
-        generate(png, audio, output, motion, seed)
+        if backend_name:
+            generate(png, audio, output, motion, seed, backend_name=backend_name)
+        else:
+            generate(png, audio, output, motion, seed)
         duration = float(probe(output)['format']['duration'])
         if not 5 <= duration <= 5.3:
             output.unlink(missing_ok=True)

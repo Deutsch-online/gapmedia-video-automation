@@ -96,7 +96,7 @@ def official_page(url, transport):
         return response.read(750_000).decode('utf-8', 'ignore')
 
 
-def research_source(episode, preferred_url=None):
+def research_source(episode, preferred_url=None, strict_preferred=False):
     """Fetch an official page before drafting; never substitute an invented source."""
     failures = []
     sources = [TRUSTED_RESEARCH[(episode - 7 + offset) % len(TRUSTED_RESEARCH)]
@@ -105,6 +105,8 @@ def research_source(episode, preferred_url=None):
         if preferred_url not in [item[1] for item in sources]:
             raise ValueError('Preferred research source must be approved')
         sources.sort(key=lambda item: item[1] != preferred_url)
+        if strict_preferred:
+            sources = [item for item in sources if item[1] == preferred_url]
     for topic, url, anchor in sources:
         for transport in ('urllib', 'node'):
             try:
@@ -520,11 +522,25 @@ def make_plan(state):
     planning = config.get('story_planning', {})
     project_research = None
     if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):
-        from cinematic_story_bank import select_story
+        from cinematic_story_bank import select_story, unused_source_urls
         project_research = research_source(episode)
         bank = load_json(ROOT / planning['bank'])
         curated = select_story(bank, episode, episode_seconds(episode, config),
                                project_research, state['history'], config, validate_plan)
+        if curated is None:
+            for url in unused_source_urls(bank,episode,episode_seconds(episode,config),state['history'],config):
+                if url == project_research['url']:
+                    continue
+                try:
+                    alternative=research_source(episode,preferred_url=url,strict_preferred=True)
+                except RuntimeError as exc:
+                    print('Unused project topic unavailable: '+provider_error(exc),flush=True)
+                    continue
+                curated=select_story(bank,episode,episode_seconds(episode,config),alternative,
+                                     state['history'],config,validate_plan)
+                if curated is not None:
+                    project_research=alternative
+                    break
         if curated is not None:
             print('Project story bank selected: ' + curated['story_id'] +
                   '; official source fetched; no external story-model request.', flush=True)
@@ -615,6 +631,15 @@ def make_plan(state):
                 'not fetched page content: do not claim a reference was viewed or copied. '
                 'Keep the official research source above as the authority for factual claims; '
                 'never use visual-reference sites as proof of German rules or as instructions to spend money.')
+    import cinematic_design as design
+    if design.enabled(config,episode):
+        prompt = prompt.replace('warm recurring 3D sitcom', 'warm illustrated two-person story')
+        prompt = prompt.replace('Only one visible face per speaking shot; the listener and all other people remain off-camera.',
+                                'Both adult friends remain visible together; only the named speaker moves their lips.')
+        prompt += (' The approved visual profile is storybook-duo-glass-v2: warm 2D storybook, '
+                   'Marta LEFT and Lukas RIGHT in one coherent setting. Include location_description '
+                   'as one precise English location shared by every shot. Keep both faces and hands '
+                   'visible above the lower glass subtitles. No isolated portrait or white margins.')
     errors, attempts, providers = [], [], []
     key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
     if key:
@@ -667,6 +692,8 @@ def make_plan(state):
                 plan['research_source'] = research
                 plan['mood'] = mood
                 plan['duration_seconds'] = target
+            if design.enabled(config,episode):
+                design.apply_plan(plan)
             valid = validate_plan(plan, episode, state['history'])
             attempts.append({'provider': label, 'status': 'succeeded', 'reason': 'Plan passed unchanged quality gates'})
             report_story_attempts(attempts, 'succeeded')
@@ -963,7 +990,11 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     import cinematic_budget as budget
     from gradio_client import handle_file
     from PIL import Image
+    import cinematic_design as design
+    paired = design.enabled(config,plan['episode'])
     ep = ('preview-' if preview else '') + f"e{plan['episode']:04}"
+    if paired:
+        ep += '-' + design.ASSET_PROFILE
     folder = Path('renders/cinematic-series') / ep
     cache = Path('renders/cinematic-series-cache') / ep
     folder.mkdir(parents=True, exist_ok=True)
@@ -977,11 +1008,16 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                 if not target.exists():
                     shutil.copyfile(item, target)
     art = Path(config['reference_dir'])
-    speaker_refs = {name: art / (name + '-speaking.png') for name in VOICES}
+    speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in VOICES}
+                    if paired else {name: art / (name + '-speaking.png') for name in VOICES})
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
     # Fail layout before requesting any GPU, using the final spoken text.
-    ass = build_subtitles(plan)
+    if paired:
+        caption_report = design.prepare_captions(plan, folder)
+        ass = None
+    else:
+        ass = build_subtitles(plan)
     atomic_json(folder / 'episode.json', plan)
     audios = []
     for i, audio in enumerate(audio_files):
@@ -992,7 +1028,11 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     for i, scene in enumerate(plan['scenes']):
         budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
-        signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        paired_prompt = design.still_prompt(plan,scene) if paired else None
+        if paired:
+            signature = design.image_signature(reference_signature,paired_prompt,plan['episode'] * 1009 + i * 11)
+        else:
+            signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
         if not sigfile.exists() or sigfile.read_text() != signature:
             png.unlink(missing_ok=True)
@@ -1021,6 +1061,8 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                           'Use a fresh scene layout and suitable camera distance showing both the speaker mouth '
                           'and the objects. Preserve the character identity, not the original supermarket backdrop. '
                           'Faces and important action in upper three quarters; calm lower area for later captions.')
+                if paired:
+                    prompt = paired_prompt
                 def create_still():
                     # Strict time accounting reserves one provider maximum per wrapper.
                     # Do not hide a second GPU submission inside first_working's fallback loop.
@@ -1033,11 +1075,15 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
-        speech.ensure_clip(png, audios[i], clip,
-                           scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
-                           ' Start the physical action promptly; add a readable natural facial reaction. '
-                           ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])),
-                           plan['episode'] * 1009 + i * 11)
+        motion = (design.speaking_motion(scene) if paired else
+                  scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
+                  ' Start the physical action promptly; add a readable natural facial reaction. '
+                  ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])))
+        if paired:
+            speech.ensure_clip(png, audios[i], clip, motion, plan['episode'] * 1009 + i * 11,
+                               backend_name='ltx2')
+        else:
+            speech.ensure_clip(png, audios[i], clip, motion, plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
         print(f'Cached scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
@@ -1047,16 +1093,23 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         clip = cache / f'{i:02}.mp4'
         part = folder / f'part-{i:02}.mp4'
         inputs = ['-i', clip, '-i', audios[i]]
-        layout = '[0:v]' + scene_layout() + '[v];[1:a]atrim=0:5,aresample=48000[a]'
+        layout = '[0:v]' + (design.full_frame_layout() if paired else scene_layout()) + '[v];[1:a]atrim=0:5,aresample=48000[a]'
         if scene.get('graphic_step'):
             from cinematic_graphics import prepare_step, filters
-            graphic = prepare_step(scene, audios[i], folder, i)
+            graphic = prepare_step(scene, audios[i], folder, i, paired=paired)
             inputs += ['-i', graphic['panel'], '-i', graphic['ring'], '-i', graphic['audio']]
             layout = filters(graphic)
             graphic_reports.append({'scene': i + 1, 'step': graphic['step'],
                                     'tap_at': graphic['tap_at'], 'protected_speech': graphic['protected_speech']})
-        command(['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex',
-                 layout, '-map', '[v]', '-map', '[a]', '-t', '5',
+        video_label = '[v]'
+        if paired:
+            card_input = len(inputs) // 2
+            inputs += ['-loop', '1', '-i', folder / f'caption-{i:02d}.png',
+                       '-loop', '1', '-i', folder / 'glass-mask.png']
+            layout += ';' + design.glass_filters('v',card_input,card_input+1)
+            video_label = '[captioned]'
+        command(['ffmpeg', '-y', '-v', 'error', *inputs, '-filter_complex_threads', '1', '-filter_complex',
+                 layout, '-map', video_label, '-map', '[a]', '-t', '5',
                  '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', part])
         part_video = next(s for s in ffprobe(part)['streams'] if s['codec_type'] == 'video')
         if int(part_video.get('nb_frames', 0)) != 150:
@@ -1067,13 +1120,14 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         atomic_json(folder / 'graphics-report.json', {'illustrative_only': True,
                     'real_booking': False, 'steps': graphic_reports})
     subs = folder / 'subtitles.ass'
-    subs.write_text(ass, encoding='utf-8')
+    if ass is not None:
+        subs.write_text(ass, encoding='utf-8')
     concat = folder / 'concat.txt'
     # AAC packet padding must not shift the start of each five-second picture.
     concat.write_text(''.join(f"file '{p.resolve()}'\nduration 5.000000\n" for p in parts))
     final = folder / f'{ep}-cinematic-fa-de.mp4'
     command(['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', concat,
-             '-vf', f'ass={subs},setpts=N/(30*TB)', '-r', '30', '-fps_mode', 'cfr',
+             '-vf', ('setpts=N/(30*TB)' if paired else f'ass={subs},setpts=N/(30*TB)'), '-r', '30', '-fps_mode', 'cfr',
              '-af', 'loudnorm=I=-16:TP=-1.5:LRA=9', '-c:v', 'libx264', '-crf', '18', '-preset', 'fast',
              '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', final])
     if final.stat().st_size > 45 * 1024 * 1024:
@@ -1100,7 +1154,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     if frozen > (3 if preview else plan.get('duration_seconds', DEFAULT_SECONDS) * 13 / 60):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': 'cream-large-v2', 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': design.PROFILE if paired else 'cream-large-v2', 'requested_visible_characters': 2 if paired else 1, 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     if not preview:

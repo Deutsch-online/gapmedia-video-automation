@@ -17,10 +17,13 @@ on:
       - ai-cast/comedy-pilot.json
       - ai-cast/everyday-pilot.json
       - public/ai-cast/wg-chaos/**
+      - public/ai-cast/storybook-duo/**
       - ai-cast/cinematic-series-bot.mjs
       - tests/test_cinematic_series.py
       - ai-cast/cinematic_daily.py
       - ai-cast/cinematic_story_bank.py
+      - ai-cast/cinematic_design.py
+      - ai-cast/cinematic_ltx2.py
       - ai-cast/story-bank.json
       - ai-cast/cinematic_time_budget.py
       - ai-cast/cinematic_budget.py
@@ -130,6 +133,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
           python -m unittest discover -s tests -p test_cinematic_graphics.py -v
+          python -m unittest discover -s tests -p test_cinematic_design.py -v
       - name: Restore completed cinematic scenes
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         uses: actions/cache/restore@v4
@@ -185,10 +189,9 @@ jobs:
             renders/cinematic-series/**/quality.json
             renders/cinematic-series/**/episode.json
             renders/cinematic-series/**/graphics-report.json
+            renders/cinematic-series/**/caption-design.json
             renders/cinematic-series/**/contact.jpg
             renders/cinematic-series-cache/**/narration-timing.json
             renders/cinematic-series-cache/budgets/*.json
           if-no-files-found: warn
           retention-days: 14
-
-

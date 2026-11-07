@@ -40,6 +40,28 @@ def select_story(bank, episode, seconds, source, history, config, validate):
         candidate.update(episode=episode, duration_seconds=seconds,
                          research_source=copy.deepcopy(source),
                          story_provider='project-authored-bank-v1')
+        from cinematic_design import enabled, apply_plan
+        if enabled(config,episode):
+            apply_plan(candidate)
         # No alternate, reduced validation path: all existing source/story/duration gates apply.
         return validate(candidate, episode, history, config)
     return None  # Exhaustion is explicit; never loop old stories or invent source evidence.
+
+
+def unused_source_urls(bank,episode,seconds,history,config):
+    used_ids={item.get('story_id') for item in history}
+    used_titles={str(item.get('title_de','')).casefold() for item in history}
+    request=config.get('next_story')
+    required=(request['story_id'] if request and episode>=request['from_episode']
+              and request['story_id'] not in used_ids else None)
+    urls=[]
+    for item in bank['stories']:
+        if item['story_id'] in used_ids or item['title_de'].casefold() in used_titles:
+            continue
+        if required and item['story_id']!=required:
+            continue
+        if str(seconds) not in item.get('variants',{}):
+            continue
+        for url in item['research_urls']:
+            if url not in urls:urls.append(url)
+    return urls

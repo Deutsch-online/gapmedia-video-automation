@@ -51,7 +51,7 @@ def panel(step, target):
     draw.rounded_rectangle((10, 10, 389, 889), radius=36, fill='#F5FAF8')
     draw.rounded_rectangle((142, 22, 258, 37), radius=8, fill='#173B45')
     draw.text((30, 64), 'ARZTTERMIN', font=font(24, True), fill='#173B45')
-    draw.text((30, 102), 'Illustrative App', font=font(18), fill='#4D666E')
+    draw.text((30, 102), 'Beispielansicht', font=font(18), fill='#4D666E')
     n = STEPS.index(step)
     for index in range(6):
         x = 30 + index * 57
@@ -121,7 +121,7 @@ def tap_audio(target, onset):
         wav.writeframes(samples.tobytes())
 
 
-def prepare_step(scene, audio, folder, index):
+def prepare_step(scene, audio, folder, index, paired=False):
     """Place both tap and ring after measured speech; omit sound if no safe pause."""
     from cinematic_music import protected_speech
     step = scene['graphic_step']
@@ -134,21 +134,38 @@ def prepare_step(scene, audio, folder, index):
     png = panel(step, folder / f'graphic-{index:02}.png')
     ring = folder / f'graphic-{index:02}-tap.png'
     tap_ring(step, ring)
+    if paired:
+        from PIL import Image, ImageDraw
+        image=Image.new('RGBA',(1000,230),(0,0,0,0));draw=ImageDraw.Draw(image)
+        draw.rounded_rectangle((0,0,999,229),radius=24,fill='#F5FAF8',outline='#137F82',width=3)
+        title,rows,selected=PANELS[step]
+        draw.text((30,20),f'Schritt {STEPS.index(step)+1}/6 · {title}',font=font(38,True),fill='#173B45')
+        draw.text((30,84),rows[selected],font=font(42,True),fill='#137F82')
+        draw.text((30,174),'Übungsbeispiel · keine echte Buchung',font=font(25),fill='#4D666E')
+        image.save(png)
+        cue=Image.new('RGBA',(1000,230),(0,0,0,0));d=ImageDraw.Draw(cue)
+        d.ellipse((900,136,972,208),outline='#137F82',width=8);cue.save(ring)
     wav = folder / f'graphic-{index:02}-tap.wav'
     tap_audio(wav, onset)
     return {'panel': png, 'ring': ring, 'audio': wav, 'tap_at': onset,
-            'protected_speech': protected, 'step': step}
+            'protected_speech': protected, 'step': step, 'full_frame': paired}
 
 
 def filters(graphic):
     # Fit the complete speaking frame at left; preserve face, hands and props.
     # Every UI panel occupies the same slot, with a deterministic, brief tap cue.
-    result = ('[0:v]scale=540:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
-              'pad=1080:1920:0:0:color=0xEEF4F8,setsar=1,fps=30[base];'
-              '[base][2:v]overlay=580:210[phone];')
+    if graphic.get('full_frame'):
+        from cinematic_design import full_frame_layout
+        result='[0:v]'+full_frame_layout()+'[base];[base][2:v]overlay=40:1100[phone];'
+        position='40:1100'
+    else:
+        result = ('[0:v]scale=540:1320:force_original_aspect_ratio=decrease:force_divisible_by=2,'
+                  'pad=1080:1920:0:0:color=0xEEF4F8,setsar=1,fps=30[base];'
+                  '[base][2:v]overlay=580:210[phone];')
+        position='580:210'
     onset = graphic['tap_at']
     if onset is None:
         result += '[phone]null[v];'
     else:
-        result += f"[phone][3:v]overlay=580:210:enable='between(t,{onset:.6f},{onset + .28:.6f})'[v];"
+        result += f"[phone][3:v]overlay={position}:enable='between(t,{onset:.6f},{onset + .28:.6f})'[v];"
     return result + '[1:a][4:a]amix=inputs=2:duration=first:normalize=0,atrim=0:5,aresample=48000[a]'

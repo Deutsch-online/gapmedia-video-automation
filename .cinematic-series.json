@@ -7,7 +7,7 @@
   "daily_episodes": 1,
   "max_daily_attempts": 1,
   "reference_dir": "public/ai-cast/wg-chaos",
-  "style": "wg-alltag-3d-v1",
+  "style": "warm-storybook-duo-2d-v2",
   "paid_fallback": false,
   "maximum_seconds": 45,
   "schedule_mode": "daily-berlin-budget",
@@ -16,7 +16,7 @@
     "instagram"
   ],
   "series_version": "wg-alltag-v1",
-  "genre": "3d-cartoon-newcomer-everyday-sitcom",
+  "genre": "storybook-newcomer-everyday",
   "single_speaker_takes": false,
   "manual_request": {
     "id": "owner-resume-3d-e8-20261021",
@@ -57,5 +57,22 @@
     "on_exhaustion": "existing-verified-free-providers",
     "reuse_delivered_stories": false,
     "official_research_required": true
+  },
+  "visual_profile": {
+    "id": "storybook-duo-glass-v2",
+    "reference_image": "public/ai-cast/storybook-duo/reference.png",
+    "layout": "full-frame-9:16",
+    "character_layout": "Marta left, Lukas right; both visible in the same coherent setting",
+    "subtitle_position": "lower",
+    "subtitle_background": "rounded frosted glass with subtle dark tint",
+    "de_font_size": 62,
+    "fa_font_size": 54,
+    "bold": true,
+    "speech_backend": "ltx2",
+    "provider_gpu_duration_seconds": 85,
+    "provider_quota_multiplier": 2,
+    "provider_reservation_units": 170,
+    "from_episode": 19,
+    "asset_profile": "storybook-duo-2d-v1"
   }
 }
