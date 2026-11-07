@@ -2799,7 +2799,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-06T13:48:35.291503+00:00",
+    "checked_at": "2026-11-07T11:52:50.383119+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -2808,8 +2808,8 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 168.62193099999877,
-    "can_admit_one_speaking_take": false,
+    "remaining_seconds": 2400.0,
+    "can_admit_one_speaking_take": true,
     "fallback": null
   },
   "planning_failures": {
@@ -2824,6 +2824,11 @@
       "reason": "Both logs fail in make_plan before any rendering; verified included balance was 2400s."
     },
     "2026-11-06": {
+      "count": 1,
+      "error": "RuntimeError",
+      "gpu_requested": false
+    },
+    "2026-11-07": {
       "count": 1,
       "error": "RuntimeError",
       "gpu_requested": false
