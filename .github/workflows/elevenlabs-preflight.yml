@@ -1,0 +1,46 @@
+name: ElevenLabs key and media access (read only)
+on:
+  push:
+    branches: [main, codex/elevenlabs-secret-bridge]
+    paths:
+      - scripts/elevenlabs-preflight.mjs
+      - test-elevenlabs-preflight.mjs
+      - .github/workflows/elevenlabs-preflight.yml
+      - .github/workflows/elevenlabs-media.yml
+      - scripts/elevenlabs-media.mjs
+      - test-elevenlabs-media.mjs
+  pull_request:
+    paths:
+      - scripts/elevenlabs-*.mjs
+      - test-elevenlabs-*.mjs
+      - .github/workflows/elevenlabs-*.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test credential handling without provider calls
+        run: node --test test-elevenlabs-preflight.mjs test-elevenlabs-media.mjs
+      - name: Check ElevenLabs using the repository secret
+        if: github.event_name != 'pull_request'
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY }}
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: node scripts/elevenlabs-preflight.mjs > /tmp/elevenlabs-preflight.json
+      - name: Show sanitised result only
+        if: always() && github.event_name != 'pull_request'
+        run: test ! -f /tmp/elevenlabs-preflight.json || cat /tmp/elevenlabs-preflight.json
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name != 'pull_request'
+        with:
+          name: elevenlabs-preflight
+          path: /tmp/elevenlabs-preflight.json
+          retention-days: 3
