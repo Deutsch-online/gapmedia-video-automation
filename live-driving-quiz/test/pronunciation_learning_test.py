@@ -45,3 +45,5 @@ class StandardPersianTest(unittest.TestCase):
         text=speech_text('یک راننده با خودرو در جاده است. ترمز و کلاچ را بررسی کنید.')
         self.assertIn('یِک',text);self.assertIn('راننده',text);self.assertIn('خودرو',text);self.assertIn('ترمز',text)
         self.assertNotIn('دریور',text);self.assertNotIn('موتَر',text);self.assertNotIn('بک',text)
+        share=speech_text('لطفاً لایف را شییر کنید و share کنید. شیر جدا است.')
+        self.assertIn('همرسانی',share);self.assertIn('شیر جدا',share);self.assertNotIn('شییر',share);self.assertNotIn('شِیر',share);self.assertNotIn('share',share.lower())
