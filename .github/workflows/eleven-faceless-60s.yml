@@ -1,0 +1,60 @@
+name: Produce requested ElevenLabs faceless 60-second video
+on:
+  push:
+    branches: [codex/eleven-faceless-60s]
+    paths: [.eleven-faceless-request.json]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gapmedia-eleven-faceless-60s
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install CPU rendering tools
+        run: |
+          python -m pip install 'pillow>=11,<13'
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
+      - name: Verify audio integrity and timing safeguards
+        run: |
+          node --check ai-cast/eleven-faceless-voice.mjs
+          python -m unittest discover -s tests -p test_eleven_faceless.py
+          python ai-cast/eleven-faceless-render.py --contact-only
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/eleven-faceless-60s/cache
+          key: eleven-faceless-60s-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: eleven-faceless-60s-v1-
+      - name: Generate the scoped German narration with the configured ElevenLabs key
+        env:
+          ELEVEN_API_KEY: ${{ secrets.ELEVEN_API_KEY }}
+        run: node ai-cast/eleven-faceless-voice.mjs
+      - name: Render all 1800 moving frames and the exact 60-second master
+        run: python ai-cast/eleven-faceless-render.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: renders/eleven-faceless-60s/cache
+          key: eleven-faceless-60s-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: elevenlabs-german-faceless-60s
+          path: |
+            renders/eleven-faceless-60s/wohnung-800-euro-elevenlabs-60s.mp4
+            renders/eleven-faceless-60s/contact.jpg
+            renders/eleven-faceless-60s/quality.json
+            renders/eleven-faceless-60s/subtitles.ass
+            renders/eleven-faceless-60s/german-narration.txt
+          retention-days: 14

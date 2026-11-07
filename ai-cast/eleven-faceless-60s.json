@@ -1,0 +1,81 @@
+{
+  "id": "eleven-faceless-rental-60-v1",
+  "title": "800 Euro für eine Wohnung, die du nie gesehen hast?",
+  "duration_seconds": 60,
+  "scene_seconds": 7.5,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "faceless": true,
+  "voice": {
+    "id": "pFZP5JQG7iQjIQuC4Bku",
+    "name": "Lily",
+    "model": "eleven_multilingual_v2",
+    "language": "de",
+    "max_total_characters": 1600,
+    "speed": 0.95
+  },
+  "source": {
+    "url": "https://www.polizei-beratung.de/aktuelles/detailansicht/vorsicht-vor-betrug-bei-der-wohnungssuche/",
+    "retrieved_at": "2026-10-31T14:47:15+00:00",
+    "scope": "Warning signs before viewing, preserving evidence and reporting suspicious listings; no actual transfer or report."
+  },
+  "scenes": [
+    {
+      "kind": "offer",
+      "title": "800 € sofort?",
+      "tag": "DAS ANGEBOT",
+      "narration": "Achthundert Euro sofort? Sonst ist die Wohnung weg. Würdest du zahlen?",
+      "fa": "۸۰۰ یورو همین حالا، وگرنه خانه می‌رود؛ پول می‌فرستی؟"
+    },
+    {
+      "kind": "unseen",
+      "title": "Der wichtige Haken",
+      "tag": "DIE HOFFNUNG",
+      "narration": "Endlich eine Wohnung! Aber ich habe sie noch nie gesehen.",
+      "fa": "بالاخره یک خانه، اما هنوز آن را ندیده‌ام."
+    },
+    {
+      "kind": "warning",
+      "title": "Erst Geld, dann Schlüssel?",
+      "tag": "DIE FRAGE",
+      "narration": "Ein Freund fragt: Erst zahlen, dann besichtigen? Stopp, das ist verdächtig!",
+      "fa": "دوستم گفت: اول پول، بعد بازدید؟ این مشکوک است!"
+    },
+    {
+      "kind": "stop",
+      "title": "Nicht überweisen.",
+      "tag": "DIE ENTSCHEIDUNG",
+      "narration": "Vor der Besichtigung Geld schicken? Nicht machen. Prüfe das Angebot zuerst.",
+      "fa": "پیش از بازدید پول نفرست؛ اول آگهی را بررسی کن."
+    },
+    {
+      "kind": "evidence",
+      "title": "Belege sichern.",
+      "tag": "SCHRITT 1",
+      "narration": "Speichere Anzeige und Nachrichten als Screenshots. Schicke keine Ausweiskopie.",
+      "fa": "آگهی و پیام‌ها را ذخیره کن؛ مدرک هویت نفرست."
+    },
+    {
+      "kind": "report",
+      "title": "Verdacht melden.",
+      "tag": "SCHRITT 2",
+      "narration": "Melde die verdächtige Anzeige im Portal. So warnst du andere.",
+      "fa": "آگهی مشکوک را به سایت گزارش بده؛ دیگران را آگاه کن."
+    },
+    {
+      "kind": "cancel",
+      "title": "Dein Geld bleibt.",
+      "tag": "SCHRITT 3",
+      "narration": "Brich die ungesendete Zahlung ab. Die achthundert Euro bleiben bei dir.",
+      "fa": "پرداختِ ارسال‌نشده را لغو کن؛ ۸۰۰ یورو نزدت می‌ماند."
+    },
+    {
+      "kind": "payoff",
+      "title": "Erst prüfen. Dann entscheiden.",
+      "tag": "FÜR DEINEN NÄCHSTEN SCHRITT",
+      "narration": "Erst prüfen, dann entscheiden. Ein Besuch allein garantiert keine Sicherheit.",
+      "fa": "اول بررسی، بعد تصمیم؛ بازدید تنها تضمین امنیت نیست."
+    }
+  ]
+}
