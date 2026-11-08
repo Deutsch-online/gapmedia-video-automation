@@ -2917,9 +2917,10 @@
       "visual_profile": "storybook-duo-glass-v2"
     },
     "date": "2026-11-08",
-    "status": "dispatching",
+    "status": "exporting",
     "platform_receipts": {
-      "tiktok": 2875
+      "tiktok": 2875,
+      "instagram": 2876
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0019-storybook-duo-2d-v1/tiktok/e0019-tiktok-45s.mp4",
