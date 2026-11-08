@@ -28,17 +28,20 @@ jobs:
           run-id: 42455504474
           github-token: ${{ github.token }}
           path: evidence
+      - name: Install CPU image tooling
+        run: python -m pip install pillow
       - name: Inspect actual delivered frames and quality evidence without GPU
         run: |
           python - <<'PY'
           from pathlib import Path
-          import json,base64,subprocess
+          import json,base64
+          from PIL import Image
           for p in Path('evidence').rglob('quality.json'):
-              print('ACTUAL_RENDER_QUALITY='+p.read_text())
+              print('ACTUAL_RENDER_QUALITY='+json.dumps(json.loads(p.read_text())))
           contacts=list(Path('evidence').rglob('contact.jpg'))
           for i,p in enumerate(contacts[:1]):
               out=Path('/tmp/episode19-contact.jpg')
-              subprocess.run(['ffmpeg','-v','error','-y','-i',str(p),'-vf','scale=720:-1','-frames:v','1','-q:v','7',str(out)],check=True)
+              image=Image.open(p);image.thumbnail((720,900));image.save(out,quality=65)
               print('CONTACT_JPEG_BASE64='+base64.b64encode(out.read_bytes()).decode())
           for p in Path('evidence').rglob('*.json'):
               if p.parent.name=='budgets':
