@@ -65,14 +65,23 @@
     "character_layout": "Marta left, Lukas right; both visible in the same coherent setting",
     "subtitle_position": "lower",
     "subtitle_background": "rounded frosted glass with subtle dark tint",
-    "de_font_size": 62,
-    "fa_font_size": 54,
+    "de_font_size": 48,
+    "fa_font_size": 40,
     "bold": true,
     "speech_backend": "ltx2",
     "provider_gpu_duration_seconds": 85,
     "provider_quota_multiplier": 2,
     "provider_reservation_units": 170,
     "from_episode": 19,
-    "asset_profile": "storybook-duo-2d-v1"
+    "asset_profile": "storybook-duo-2d-v1",
+    "subtitle_safe_area": {
+      "left": 48,
+      "top": 1270,
+      "width": 864,
+      "height": 340,
+      "right_clearance": 168,
+      "bottom_clearance": 310
+    },
+    "subtitle_outline_pixels": 1
   }
 }

@@ -8,9 +8,11 @@ from pathlib import Path
 
 PROFILE = 'storybook-duo-glass-v2'
 ASSET_PROFILE = 'storybook-duo-2d-v1'
-CARD = (40, 1360, 1000, 420)
-DE_SIZE, FA_SIZE = 62, 54
-DE_LEADING, FA_LEADING = 74, 66
+# Shared conservative 1080x1920 safe area for Reels/TikTok controls.
+# Leave 168px at right and 310px below the panel; preview overlays may vary.
+CARD = (48, 1270, 864, 340)
+DE_SIZE, FA_SIZE = 48, 40
+DE_LEADING, FA_LEADING = 58, 54
 
 
 def enabled(config, episode=None):
@@ -35,7 +37,7 @@ def font_file(family):
     return path
 
 
-def wrap(text, font, width=920, direction=None):
+def wrap(text, font, width=800, direction=None):
     if any(c in text for c in ('\n', '\r', '{', '}', '\\')):
         raise ValueError('Subtitle/control markup is not permitted')
     result, line = [], ''
@@ -59,7 +61,7 @@ def caption_card(de, fa, target):
     german = ImageFont.truetype(de_path, DE_SIZE)
     persian = ImageFont.truetype(fa_path, FA_SIZE)
     lines_de, lines_fa = wrap(de, german), wrap(fa, persian, direction='rtl')
-    height = len(lines_de)*DE_LEADING + len(lines_fa)*FA_LEADING + 20
+    height = len(lines_de)*DE_LEADING + len(lines_fa)*FA_LEADING + 24
     if len(lines_de) > 3 or len(lines_fa) > 2 or height > CARD[3]-24:
         raise ValueError('Shorten the subtitle before rendering; do not shrink the approved bold type')
     image = Image.new('RGBA',(1080,1920));draw = ImageDraw.Draw(image)
@@ -71,13 +73,13 @@ def caption_card(de, fa, target):
             ('de',lines_de,german,DE_LEADING,'#FFFFFF',None),
             ('fa',lines_fa,persian,FA_LEADING,'#FFF4D6','rtl')]:
         for line in lines:
-            draw.text((542,cursor+3),line,font=font,anchor='mt',direction=direction,
-                      fill=(0,0,0,185),stroke_width=3,stroke_fill=(0,0,0,185))
-            draw.text((540,cursor),line,font=font,anchor='mt',direction=direction,
-                      fill=color,stroke_width=2,stroke_fill=(0,0,0,215))
+            draw.text((x+w/2+1,cursor+2),line,font=font,anchor='mt',direction=direction,
+                      fill=(0,0,0,185),stroke_width=1,stroke_fill=(0,0,0,185))
+            draw.text((x+w/2,cursor),line,font=font,anchor='mt',direction=direction,
+                      fill=color,stroke_width=1,stroke_fill=(0,0,0,215))
             boxes.append({'language':language,'text':line,'y':cursor,'height':leading})
             cursor += leading
-        cursor += 20 if language == 'de' else 0
+        cursor += 24 if language == 'de' else 0
     target = Path(target);target.parent.mkdir(parents=True,exist_ok=True);image.save(target)
     return {'de_size':DE_SIZE,'fa_size':FA_SIZE,'bold':True,'card':CARD,'text_boxes':boxes,
             'fonts':[Path(de_path).name,Path(fa_path).name],
