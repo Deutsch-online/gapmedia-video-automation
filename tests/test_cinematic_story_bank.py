@@ -26,7 +26,7 @@ class StoryBankTests(unittest.TestCase):
 
     def test_every_authored_variant_passes_unchanged_production_validation(self):
         for item in self.bank['stories']:
-            for seconds in (45,60):
+            for seconds in map(int,item['variants']):
                 with self.subTest(story=item['story_id'],seconds=seconds):
                     config=copy.deepcopy(self.config)
                     if seconds==60:config['duration_from_episode']=19

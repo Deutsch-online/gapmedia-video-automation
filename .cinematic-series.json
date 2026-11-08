@@ -34,7 +34,7 @@
   },
   "next_story": {
     "from_episode": 20,
-    "story_id": "project-b1-jobcenter-letter-v1",
+    "story_id": "project-b1-jobcenter-breath-v2",
     "duration_seconds": 45,
     "require_graphics": false
   },
@@ -91,5 +91,14 @@
     "require_comic_beats": true,
     "structure": "visible setup, two linked escalations, final visual callback",
     "require_documented_basis": true
+  },
+  "owner_included_request": {
+    "id": "owner-breath-comedy-20261108",
+    "episode": 20,
+    "story_id": "project-b1-jobcenter-breath-v2",
+    "berlin_day": "2026-11-08",
+    "expires_at": "2026-11-08T23:00:00+00:00",
+    "included_only": true,
+    "authorization": "Owner explicitly requested this revised video if included credit remains, after reviewing the breathing-and-water punchline."
   }
 }
