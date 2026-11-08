@@ -2755,7 +2755,170 @@
       "story_provider": "project-authored-bank-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "project-post-letter-v1",
+      "title_de": "Welche Briefmarke passt?",
+      "title_fa": "کدام تمبر مناسب است؟",
+      "summary": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs. After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "cliffhanger": "Marta is ready to handle another small everyday task independently.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "project-post-letter-v1",
+      "visual_hook": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "everyday_problem": "Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "practical_resolution": "After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "marta_goal": "Marta wants to solve the practical problem herself: Marta pauses at the post-office counter, holding an unstamped envelope and unsure which stamp she needs.",
+      "marta_decision": "Marta decides to ask a clear question and verify the response before acting.",
+      "visual_payoff": "After asking at the counter, Marta attaches the provided stamp and checks the completed envelope herself.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace disconnected sentence drills with one grounded problem, useful questions and a visible result.",
+        "visible_comic_action": "A small believable moment of hesitation becomes a relieved natural reaction after Marta acts.",
+        "next_experiment": "Test one coherent location and clearer object actions; no invented engagement measurements."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Ich weiß nicht, welche Briefmarke passt.",
+          "fa": "نمی‌دانم کدام تمبر مناسب است.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta holds the unstamped envelope at the post-office counter. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta holds the unstamped envelope at the post-office counter.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta holds the unstamped envelope at the post-office counter.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Fragen wir zuerst nach dem Gewicht.",
+          "fa": "اول دربارهٔ وزنش می‌پرسیم.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Lukas points toward the letter scale on the counter. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only RIGHT man Lukas speaks, synchronized to the provided audio. LEFT woman Marta listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Lukas points toward the letter scale on the counter.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Lukas points toward the letter scale on the counter.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "tell_friend"
+        },
+        {
+          "speaker": "marta",
+          "de": "Guten Tag. Ich möchte diesen Brief verschicken.",
+          "fa": "سلام. می‌خواهم این نامه را بفرستم.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta presents the envelope to an unseen postal clerk. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta presents the envelope to an unseen postal clerk.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta presents the envelope to an unseen postal clerk.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "explain"
+        },
+        {
+          "speaker": "marta",
+          "de": "Könnten Sie den Brief bitte wiegen?",
+          "fa": "می‌شود لطفاً نامه را وزن کنید؟",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta moves the envelope toward the scale while asking the clerk. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta moves the envelope toward the scale while asking the clerk.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Marta moves the envelope toward the scale while asking the clerk.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "prepare"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Leg ihn vorsichtig auf die Waage.",
+          "fa": "آن را با احتیاط روی ترازو بگذار.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Lukas gestures toward the empty scale without taking over the task. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only RIGHT man Lukas speaks, synchronized to the provided audio. LEFT woman Marta listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Lukas gestures toward the empty scale without taking over the task.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Lukas gestures toward the empty scale without taking over the task.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Welche Briefmarke brauche ich dafür?",
+          "fa": "برای این نامه کدام تمبر لازم است؟",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta asks the off-camera clerk while the envelope rests on the scale. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta asks the off-camera clerk while the envelope rests on the scale.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "letter scale"
+          ],
+          "object_action": "Marta asks the off-camera clerk while the envelope rests on the scale.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "clarify"
+        },
+        {
+          "speaker": "marta",
+          "de": "Danke. Ich klebe sie oben rechts auf.",
+          "fa": "ممنون. آن را بالا سمت راست می‌چسبانم.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta attaches the clerk-provided stamp to the upper right corner of the envelope. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta attaches the clerk-provided stamp to the upper right corner of the envelope.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "postage stamp"
+          ],
+          "object_action": "Marta attaches the clerk-provided stamp to the upper right corner of the envelope.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Marke sitzt. Jetzt ist alles fertig.",
+          "fa": "تمبر چسبید. حالا همه‌چیز آماده است.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta holds up the completed envelope and checks the stamp. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta holds up the completed envelope and checks the stamp.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope",
+            "postage stamp"
+          ],
+          "object_action": "Marta holds up the completed envelope and checks the stamp.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Gut, dass ich am Schalter gefragt habe.",
+          "fa": "خوب شد که پشت باجه پرسیدم.",
+          "scene": "Exactly two adult friends, Marta left and Lukas right, together in the same post-office service counter with a letter scale and writing area. Marta hands the prepared envelope toward the unseen clerk, visibly relieved. Both faces, hands and objects stay above the lower caption panel.",
+          "motion": "Only LEFT woman Marta speaks, synchronized to the provided audio. RIGHT man Lukas listens with lips closed. During silence both keep lips closed. Preserve exactly these two visible adults and their positions. Small natural gestures, stable eyes, restrained mouth shapes. Object action: Marta hands the prepared envelope toward the unseen clerk, visibly relieved.. Do not introduce another object, phone or person. Maintain the same room through the final frame.",
+          "visible_objects": [
+            "envelope"
+          ],
+          "object_action": "Marta hands the prepared envelope toward the unseen clerk, visibly relieved.",
+          "location_key": "project-post-letter-v1",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 19,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Posting a letter",
+        "url": "https://www.deutschepost.de/de/b/briefmarken.html",
+        "excerpt": "Briefmarken - Postwertzeichen - Briefmarken kaufen | Deutsche Post Sendung verfolgen Sendung Porto berechnen Porto Kontakt Kontakt Standorte finden Standorte Jetzt bewerben Karriere Passende Briefmarke direkt zur Hand Für den sofortigen Versand oder als Vorrat – hier finden Sie für jeden Bedarf das richtige Porto. Internetmarke oder klassische Briefmarke ? Sie haben die Wahl! Porto einfach online bezahlen, ausdrucken und aufkleben – mit der Internetmarke ist Ihr Brief in wenigen Klicks versandbereit. Alternativ bestellen Sie sich Briefmarken in",
+        "retrieved_at": "2026-11-08T06:38:13.750783+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "location_description": "post-office service counter with a letter scale and writing area",
+      "visual_profile": "storybook-duo-glass-v2"
+    },
+    "date": "2026-11-08",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -2782,7 +2945,8 @@
     "2026-11-02": 3,
     "2026-11-03": 3,
     "2026-11-04": 1,
-    "2026-11-05": 1
+    "2026-11-05": 1,
+    "2026-11-08": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2799,7 +2963,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-07T11:52:50.383119+00:00",
+    "checked_at": "2026-11-08T06:38:11.315879+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
