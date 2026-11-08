@@ -3107,7 +3107,8 @@
       "render_style": "original-cast-realistic-comedy-v1"
     },
     "date": "2026-11-08#owner-breath-comedy-20261108",
-    "status": "rendering"
+    "status": "render-failed",
+    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 0=5.16s, 6=4.54s"
   },
   "attempts": {
     "2026-10-15": 2,
