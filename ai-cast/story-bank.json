@@ -1097,6 +1097,229 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "project-online-appointment-slippers-v1",
+      "title_de": "Termin in Hausschuhen",
+      "title_fa": "وقت ملاقات با دمپایی",
+      "summary": "Marta is ready to rush to an appointment with one shoe and a heavy folder. Discovering the appointment is online solves the travel panic, until her low webcam reveals the slippers she forgot to change.",
+      "cliffhanger": "Next time Marta checks the appointment format before planning the journey.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "online-appointment-living-room",
+      "location_description": "warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook",
+      "visual_hook": "Marta holds one outdoor shoe while wearing slippers, worried that her appointment starts in moments.",
+      "everyday_problem": "Marta prepared for a journey without checking whether her appointment takes place online.",
+      "practical_resolution": "Marta checks the confirmation, opens the video link, enables microphone and camera, then fixes the camera angle herself.",
+      "marta_goal": "Marta wants to attend her appointment on time without missing the connection.",
+      "marta_decision": "Marta reads her confirmation, opens the link herself and adjusts the laptop camera.",
+      "visual_payoff": "The low camera reveals her slippers; Marta calmly tilts the screen upward instead of changing her shoes.",
+      "creative_review": {
+        "previous_weakness_addressed": "The stamp episode had practical steps but no observable comic reversal or payoff.",
+        "visible_comic_action": "A missing outdoor shoe leads to an online appointment reveal; the webcam then gives away the slippers.",
+        "next_experiment": "Compare a visible setup and callback payoff against the previous practical-only episode at the same publication age; no causal claim."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          2,
+          6
+        ],
+        "payoff": 8
+      },
+      "research_urls": [
+        "https://www.arbeitsagentur.de/videotermin"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "60": [
+          0,
+          9,
+          1,
+          2,
+          10,
+          3,
+          4,
+          5,
+          11,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Mein Termin ist gleich. Wo ist mein Schuh?",
+          "fa": "وقتم نزدیک است. کفشم کجاست؟",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta holds one outdoor shoe and notices the slippers on her feet.",
+          "motion": "Marta holds one outdoor shoe and notices the slippers on her feet.",
+          "visible_objects": [
+            "single outdoor shoe",
+            "slippers"
+          ],
+          "object_action": "Marta holds one outdoor shoe and notices the slippers on her feet.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Marta, ist der Termin nicht online?",
+          "fa": "مارتا، مگر وقتت آنلاین نیست؟",
+          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas points once toward the open laptop, raising one eyebrow.",
+          "motion": "Lukas points once toward the open laptop, raising one eyebrow.",
+          "visible_objects": [
+            "open laptop"
+          ],
+          "object_action": "Lukas points once toward the open laptop, raising one eyebrow.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Online? Ich habe sogar den Weg geübt!",
+          "fa": "آنلاین؟ من حتی مسیر را تمرین کردم!",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta holds her route note upright and pauses in disbelief.",
+          "motion": "Marta holds her route note upright and pauses in disbelief.",
+          "visible_objects": [
+            "route note"
+          ],
+          "object_action": "Marta holds her route note upright and pauses in disbelief.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Hier steht wirklich: per Video.",
+          "fa": "اینجا واقعاً نوشته: از طریق ویدیو.",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta points to the appointment note and gives a small knowing nod.",
+          "motion": "Marta points to the appointment note and gives a small knowing nod.",
+          "visible_objects": [
+            "appointment note"
+          ],
+          "object_action": "Marta points to the appointment note and gives a small knowing nod.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du brauchst den Link, keinen Bus.",
+          "fa": "لینک لازم داری، نه اتوبوس.",
+          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas gestures toward the laptop trackpad with a restrained amused smile.",
+          "motion": "Lukas gestures toward the laptop trackpad with a restrained amused smile.",
+          "visible_objects": [
+            "open laptop"
+          ],
+          "object_action": "Lukas gestures toward the laptop trackpad with a restrained amused smile.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich öffne den Link. Mikrofon an.",
+          "fa": "لینک را باز می‌کنم. میکروفون روشن.",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta taps the trackpad once, then looks toward the laptop camera.",
+          "motion": "Marta taps the trackpad once, then looks toward the laptop camera.",
+          "visible_objects": [
+            "open laptop"
+          ],
+          "object_action": "Marta taps the trackpad once, then looks toward the laptop camera.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Kamera an. Sieht man meine Unterlagen?",
+          "fa": "دوربین روشن. مدارکم دیده می‌شود؟",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
+          "motion": "Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
+          "visible_objects": [
+            "open laptop",
+            "document folder"
+          ],
+          "object_action": "Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Die Unterlagen ja. Die Hausschuhe auch.",
+          "fa": "مدارک بله. دمپایی‌ها هم.",
+          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas glances down at the slippers, holding back a friendly laugh.",
+          "motion": "Lukas glances down at the slippers, holding back a friendly laugh.",
+          "visible_objects": [
+            "slippers"
+          ],
+          "object_action": "Lukas glances down at the slippers, holding back a friendly laugh.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Dann stelle ich die Kamera höher!",
+          "fa": "پس دوربین را بالاتر می‌گذارم!",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
+          "motion": "Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
+          "visible_objects": [
+            "open laptop",
+            "slippers"
+          ],
+          "object_action": "Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "resolve"
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Mappe ist schwerer als mein Frühstück.",
+          "fa": "پوشه از صبحانه‌ام سنگین‌تر است.",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta weighs the thick folder in one hand with a surprised glance.",
+          "motion": "Marta weighs the thick folder in one hand with a surprised glance.",
+          "visible_objects": [
+            "document folder"
+          ],
+          "object_action": "Marta weighs the thick folder in one hand with a surprised glance.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Schau zuerst in die Bestätigung.",
+          "fa": "اول تأیید وقت را ببین.",
+          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas points once to the appointment note on the desk.",
+          "motion": "Lukas points once to the appointment note on the desk.",
+          "visible_objects": [
+            "appointment note"
+          ],
+          "object_action": "Lukas points once to the appointment note on the desk.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Die Kamera steht noch viel zu tief.",
+          "fa": "دوربین هنوز خیلی پایین است.",
+          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta notices the low laptop camera angle and holds her hands still.",
+          "motion": "Marta notices the low laptop camera angle and holds her hands still.",
+          "visible_objects": [
+            "open laptop"
+          ],
+          "object_action": "Marta notices the low laptop camera angle and holds her hands still.",
+          "location_key": "online-appointment-living-room",
+          "story_beat": "act"
+        }
+      ]
     }
   ]
 }

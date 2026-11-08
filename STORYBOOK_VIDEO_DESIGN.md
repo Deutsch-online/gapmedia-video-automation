@@ -13,3 +13,7 @@ Both Instagram and TikTok exports keep the existing duration contract, 1080x1920
 When the initially fetched research topic has already been used, the story queue may fetch a different unused topic's approved official page before selecting its matching story. It never invents a source or replays a delivered story to fill the new visual format.
 
 `tests/test_cinematic_design.py` checks real font metrics, safe-area placement, full-frame layout, two-speaker direction, codec/duration/audio preservation, blank-frame rejection and the 170-unit provider contract. The `storybook-design-check` workflow verifies the live public provider decorator with no model generation and no credentials.
+
+
+## Superseding character and speech direction, episode 20 onward
+Owner feedback rejects the illustrated pair and asks for the original cast, more human anatomy and credible motion. The renderer now uses original-cast-realistic-v1 assets based on public/ai-cast/wg-chaos/characters.png. Active-speaker medium action shots retain full-frame layout and platform-safe glass captions. The LongCat HQ route requests native 720p and Exact 8-step (no DBCache), uses the same German WAV, checks the live 240s xlarge contract and reserves 480 units. Native-detail and blank-frame checks do not measure lip sync or semantic action. No extra daily start or paid fallback is allowed.

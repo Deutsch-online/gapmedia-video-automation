@@ -24,6 +24,8 @@ on:
       - ai-cast/cinematic_story_bank.py
       - ai-cast/cinematic_design.py
       - ai-cast/cinematic_ltx2.py
+      - ai-cast/cinematic_longcat.py
+      - ai-cast/cinematic_social.py
       - ai-cast/story-bank.json
       - ai-cast/cinematic_time_budget.py
       - ai-cast/cinematic_budget.py
@@ -134,6 +136,7 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-noto-core fonts-dejavu-core
           python -m unittest discover -s tests -p test_cinematic_graphics.py -v
           python -m unittest discover -s tests -p test_cinematic_design.py -v
+          python -m unittest discover -s tests -p test_cinematic_longcat.py -v
       - name: Restore completed cinematic scenes
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         uses: actions/cache/restore@v4

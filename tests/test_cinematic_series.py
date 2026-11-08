@@ -196,13 +196,13 @@ class SeriesTests(unittest.TestCase):
                                   'measure': 'Compare like-age retention.', 'evidence': 'proposed_test',
                                   'secret': 'must not be copied'}]}
         with patch.dict(os.environ, {'TELEGRAM_BOT_TOKEN': 'private-test'}, clear=True), \
-             patch.object(m.urllib.request, 'urlopen', return_value=io.BytesIO(json.dumps(value).encode())) as request:
+             patch('cinematic_social.request', return_value=value) as request:
             context = m.social_learning_context()
             self.assertEqual(len(context['experiments']), 1)
             self.assertNotIn('secret', context['experiments'][0])
             self.assertNotIn('private-test', str(request.call_args))
         with patch.dict(os.environ, {'TELEGRAM_BOT_TOKEN': 'private-test'}, clear=True), \
-             patch.object(m.urllib.request, 'urlopen', side_effect=OSError('unavailable')):
+             patch('cinematic_social.request', side_effect=OSError('unavailable')):
             self.assertEqual(m.social_learning_context(), {})
 
     def test_new_episode_requires_visible_props_and_physical_action(self):

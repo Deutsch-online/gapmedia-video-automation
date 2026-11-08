@@ -37,21 +37,23 @@ class DesignTests(unittest.TestCase):
         self.assertIn('1080:1920',value)
         self.assertNotIn('pad=',value)
 
-    def test_pair_prompts_keep_identity_positions_and_only_active_speaker(self):
+    def test_original_adult_cast_uses_one_clear_speaking_face_and_real_actions(self):
         bank=json.loads((ROOT/'ai-cast/story-bank.json').read_text())
         config=dict(self.config);config.pop('next_story',None)
-        source={'url':bank['stories'][0]['research_urls'][0],
-                'excerpt':'Official context fixture. '*8,'retrieved_at':'2026-11-07T07:00:00+00:00'}
-        plan=select_story(bank,19,45,source,[],config,m.validate_plan)
-        self.assertEqual(plan['visual_profile'],design.PROFILE)
+        source={'url':bank['stories'][-1]['research_urls'][0],
+                'excerpt':'Official context fixture. '*8,'retrieved_at':'2026-11-08T07:00:00+00:00'}
+        plan=select_story(bank,20,45,source,[],config,m.validate_plan)
         for scene in plan['scenes']:
             prompt=design.still_prompt(plan,scene)
-            self.assertIn('Marta LEFT',prompt);self.assertIn('Lukas RIGHT',prompt)
-            self.assertNotIn('only one visible face',prompt.lower())
+            self.assertIn('realistic human anatomy',prompt)
+            self.assertIn('ONLY',prompt)
+            self.assertIn('off camera',prompt)
+            self.assertIn(scene['object_action'],prompt)
+            self.assertNotIn('warm hand-illustrated',prompt)
             motion=design.speaking_motion(scene)
-            self.assertIn('lips closed',motion)
-            self.assertNotIn('listener remains off-camera',motion)
-            self.assertNotIn('The listener is off-camera',motion)
+            self.assertIn(scene['speaker'],motion)
+            self.assertIn('lips close during silence',motion)
+            self.assertIn('One small intentional gesture',motion)
 
     def test_all_story_subtitles_keep_large_bold_type_in_the_lower_safe_area(self):
         from PIL import Image

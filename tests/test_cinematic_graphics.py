@@ -28,6 +28,7 @@ class DoctorStoryTests(unittest.TestCase):
     def test_live_next_episode_uses_doctor_story_and_cannot_substitute_the_train(self):
         state = series.load_json(ROOT / '.cinematic-series-state.json')
         config = series.load_json(ROOT / '.cinematic-series.json')
+        config['next_story']={'from_episode':15,'story_id':story()['story_id'],'duration_seconds':45,'require_graphics':True}
         # This is the actual unplanned episode at integration time, including
         # all previous dialogue for repetition checks. No model or GPU call.
         state = copy.deepcopy(state)
@@ -43,12 +44,12 @@ class DoctorStoryTests(unittest.TestCase):
         llm.assert_not_called()
         replacement = copy.deepcopy(state['history'][-1])
         replacement['episode'] = 15
-        with self.assertRaisesRegex(ValueError, 'owner-requested doctor story'):
+        with self.assertRaisesRegex(ValueError, 'owner-requested story'):
             series.validate_plan(replacement, 15, state['history'], config)
         for field in ('graphic_story', 'duration_seconds'):
             broken = copy.deepcopy(plan)
             broken.pop(field)
-            with self.assertRaisesRegex(ValueError, 'all app graphics'):
+            with self.assertRaisesRegex(ValueError, 'all app graphics|specified duration'):
                 series.validate_plan(broken, 15, state['history'], config)
 
     def test_doctor_research_failure_never_falls_back_to_an_unrelated_story(self):

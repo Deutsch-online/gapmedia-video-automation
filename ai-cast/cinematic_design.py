@@ -7,7 +7,7 @@ from functools import lru_cache
 from pathlib import Path
 
 PROFILE = 'storybook-duo-glass-v2'
-ASSET_PROFILE = 'storybook-duo-2d-v1'
+ASSET_PROFILE = 'original-cast-realistic-v1'
 # Shared conservative 1080x1920 safe area for Reels/TikTok controls.
 # Leave 168px at right and 310px below the panel; preview overlays may vary.
 CARD = (48, 1270, 864, 340)
@@ -119,19 +119,23 @@ def location_description(plan):
 
 
 def still_prompt(plan,scene):
-    safe_height=1050 if scene.get('graphic_step') else 1300
-    return ('Preserve EXACTLY the two original adult friends from this reference: '
-            'Marta LEFT, brown wavy shoulder-length hair, mustard cardigan, teal trousers. '
-            'Lukas RIGHT, short brown hair, blue jacket, grey shirt. Same faces, age and clothing. '
-            'Warm hand-illustrated 2D storybook, soft textured shading and natural warm light. '
-            'Both people visible together in a medium two shot; natural closed mouths, stable eyes. '
-            'One coherent location throughout this story: '+location_description(plan)+'. '
-            f'Keep both faces, hands and important objects inside the central 80 percent width and above y={safe_height} in a 1080x1920 frame. '
-            'Calm lower area for later glass subtitles; the picture fills all of 9:16 without white borders. '
+    shot=plan['scenes'].index(scene)
+    framing=('medium action shot','closer face-and-object reaction shot','medium reaction shot with the working hand visible')[shot%3]
+    person = ('Marta, adult woman aged about 28, olive skin, chestnut curly bob, mustard top, '
+              'teal dungarees, coral shoes' if scene['speaker']=='marta' else
+              'Lukas, adult man aged about 30, copper quiff, round turquoise glasses, coral hoodie, navy trousers')
+    return ('Use the ORIGINAL adult identities in the reference, translated into realistic human anatomy. '
+            'Show ONLY '+person+'. The friend is off camera, never a second visible face. '
+            'Cinematic near-photoreal 3D adults, natural human eye size, realistic skin and fabric, '
+            'subtle asymmetry and believable adult proportions; preserve hair, wardrobe and identity cues. '
+            'No oversized cartoon eyes, plastic doll skin or caricature. '
+            'One coherent location: '+location_description(plan)+'. '
+            'Use a '+framing+'; keep the mouth large, visible and unobstructed; '
+            'one readable hand-to-object action. Keep important objects above the lower subtitle panel. '
             'Visible objects: '+', '.join(scene['visible_objects'])+'. '
             'Starting action: '+scene['object_action']+'. '
-            'Only one of each named object unless explicitly plural. No extra phones, no third person, '
-            'no captions, writing, logos or watermark. Keep the kitchen from the reference only when the requested location is a kitchen.')
+            'Natural closed mouth before speech. Full 9:16 scene, crisp optical detail, soft motivated light. '
+            'No extra objects, no subtitles, logos or watermark. Preserve the requested room, not the reference backdrop.')
 
 
 def image_signature(reference_signature,prompt,seed):
@@ -140,22 +144,20 @@ def image_signature(reference_signature,prompt,seed):
 
 
 def speaking_motion(scene):
-    speaker='LEFT woman Marta' if scene['speaker']=='marta' else 'RIGHT man Lukas'
-    listener='RIGHT man Lukas' if scene['speaker']=='marta' else 'LEFT woman Marta'
-    return (f'Only {speaker} speaks, synchronized to the provided audio. '
-            f'{listener} listens with lips closed. During silence both keep lips closed. '
-            'Preserve exactly these two visible adults and their positions. '
-            'Small natural gestures, stable eyes, restrained mouth shapes. '
-            'Object action: '+scene['object_action']+'. '
-            'Do not introduce another object, phone or person. Maintain the same room through the final frame.')
+    return ('Only the visible adult '+scene['speaker']+' speaks to the friend off camera. '
+            'Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. '
+            'One small intentional gesture only: '+scene['object_action']+'. '
+            'Keep head largely steady and mouth visible; restrained expression, natural blinking. '
+            'No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.')
 
 
 def apply_plan(plan):
     location=location_description(plan)
     plan['location_description']=location
     plan['visual_profile']=PROFILE
+    plan['render_style']='original-cast-realistic-comedy-v1'
     for scene in plan['scenes']:
-        scene['scene']=('Exactly two adult friends, Marta left and Lukas right, together in the same '+
-                        location+'. '+scene['object_action']+' Both faces, hands and objects stay above the lower caption panel.')
+        scene['scene']=('One visible adult '+scene['speaker']+' in the same '+location+
+                        '. The friend is off camera. '+scene['object_action'])
         scene['motion']=speaking_motion(scene)
     return plan

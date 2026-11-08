@@ -11,11 +11,14 @@ MODEL = os.getenv('LIPSYNC_SPACE', 'victor/LongCat-Video-Avatar-1.5')
 
 def backend(name=None):
     name = name or os.getenv('CINEMATIC_SPEECH_BACKEND', 'gradio')
-    if name not in ('gradio', 'wan2gp', 'ltx2'):
+    if name not in ('gradio', 'wan2gp', 'ltx2', 'longcat-hq'):
         raise ValueError('Unknown cinematic speech backend: ' + name)
     return name
 
 def model_identity(name=None):
+    if backend(name) == 'longcat-hq':
+        from cinematic_longcat import SPACE
+        return 'longcat-hq:' + SPACE + ':720p-exact8-clean-native5s-v1'
     if backend(name) == 'ltx2':
         from cinematic_ltx2 import SPACE
         return 'ltx2:' + SPACE + ':5s-8step-duo-v2'
@@ -50,6 +53,9 @@ def aligned_audio(source, target):
 def generate(png, audio, output, motion, seed, backend_name=None):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finishing cannot generate speaking clips')
+    if backend(backend_name) == 'longcat-hq':
+        from cinematic_longcat import generate_take
+        return generate_take(png,audio,output,motion,seed)
     if backend(backend_name) == 'ltx2':
         from cinematic_ltx2 import generate_take
         return generate_take(png,audio,output,motion,seed)

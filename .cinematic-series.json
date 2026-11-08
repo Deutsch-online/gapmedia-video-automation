@@ -7,7 +7,7 @@
   "daily_episodes": 1,
   "max_daily_attempts": 1,
   "reference_dir": "public/ai-cast/wg-chaos",
-  "style": "warm-storybook-duo-2d-v2",
+  "style": "original-cast-realistic-comedy-v1",
   "paid_fallback": false,
   "maximum_seconds": 45,
   "schedule_mode": "daily-berlin-budget",
@@ -26,18 +26,17 @@
     "from_episode": 6,
     "premise": "Marta starts with a concrete newcomer problem, tells Lukas, then demonstrates the practical solution step by step.",
     "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
-    "continuity": "Exactly nine natural-speed five-second shots, never more than 45 seconds: problem, tell a friend, demonstrate each solution step and finish with a resolved problem. Warm natural reactions; no forced comic escalation.",
+    "continuity": "Nine natural-speed five-second shots: immediate visible problem, two connected comic escalations, practical action and a visible comic payoff. Never mock nationality, accent or vulnerability.",
     "requested_story": "ai-cast/doctor-appointment-45s.json",
     "graphics": "Clearly labelled illustrative appointment app beside the speaker. A real named app needs verified UI. No real booking, patient data, face cloning or voice cloning.",
-    "credit_policy": "Explicit owner instruction required for each new credit-funded production; previous sample permissions do not carry over.",
+    "credit_policy": "Daily production is authorized only within verified included allowance; no paid or anonymous fallback and at most one start per Berlin day.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 15,
-    "story_id": "doctor-appointment-language-anxiety-v1",
-    "path": "ai-cast/doctor-appointment-45s.json",
-    "require_graphics": true,
-    "duration_seconds": 45
+    "from_episode": 20,
+    "story_id": "project-online-appointment-slippers-v1",
+    "duration_seconds": 45,
+    "require_graphics": false
   },
   "duration_exceptions": [],
   "duration_from_episode": 9,
@@ -60,20 +59,20 @@
   },
   "visual_profile": {
     "id": "storybook-duo-glass-v2",
-    "reference_image": "public/ai-cast/storybook-duo/reference.png",
+    "reference_image": "public/ai-cast/wg-chaos/characters.png",
     "layout": "full-frame-9:16",
-    "character_layout": "Marta left, Lukas right; both visible in the same coherent setting",
+    "character_layout": "Original Marta and Lukas; one visible adult speaker per dialogue shot, friend off camera in the same room",
     "subtitle_position": "lower",
     "subtitle_background": "rounded frosted glass with subtle dark tint",
     "de_font_size": 48,
     "fa_font_size": 40,
     "bold": true,
-    "speech_backend": "ltx2",
-    "provider_gpu_duration_seconds": 85,
+    "speech_backend": "longcat-hq",
+    "provider_gpu_duration_seconds": 240,
     "provider_quota_multiplier": 2,
-    "provider_reservation_units": 170,
+    "provider_reservation_units": 480,
     "from_episode": 19,
-    "asset_profile": "storybook-duo-2d-v1",
+    "asset_profile": "original-cast-realistic-v1",
     "subtitle_safe_area": {
       "left": 48,
       "top": 1270,
@@ -82,6 +81,14 @@
       "right_clearance": 168,
       "bottom_clearance": 310
     },
-    "subtitle_outline_pixels": 1
+    "subtitle_outline_pixels": 1,
+    "render_style": "near-photoreal 3D adults with natural human anatomy",
+    "native_resolution": "720p",
+    "acceleration": "Exact 8-step"
+  },
+  "story_quality": {
+    "from_episode": 20,
+    "require_comic_beats": true,
+    "structure": "visible setup, two linked escalations, final visual callback"
   }
 }

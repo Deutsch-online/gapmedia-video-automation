@@ -1,0 +1,40 @@
+{
+  "retrieved_at": "2026-11-08T08:04:00Z",
+  "source": "Authenticated project bot /internal/creative-feedback, via Node fetch",
+  "workflow_run": 42461345878,
+  "status": "available",
+  "updated_at": "2026-11-08T07:15:59.055Z",
+  "evidence_level": "matched_observations_not_causal",
+  "experiments": [
+    {
+      "hypothesis": "ممکن است شروع مبهم، انگیزهٔ تماشا را کم کند.",
+      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+      "evidence": "proposed_test_not_proven"
+    },
+    {
+      "hypothesis": "ممکن است نمای تکراری و زیرنویس مزاحم، فهم عمل را سخت کند.",
+      "change": "یک نمای عمل و یک نمای نزدیکِ شیء را متناوب کن؛ زیرنویس از صورت و شیء دور باشد و در ناحیهٔ امن بماند.",
+      "measure": "افت نگه‌داشت در کات‌ها و مقایسهٔ تکمیل در بازهٔ زمانی مشابه",
+      "evidence": "proposed_test_not_proven"
+    },
+    {
+      "hypothesis": "یک پایان قابل‌انتظار ممکن است انگیزهٔ ماندن را کم کند.",
+      "change": "یک گرفتاری آشنا، دو تشدید کوتاه و یک نتیجهٔ شاد و کمیک دیدنی در همان ۴۵ ثانیه طراحی کن؛ هر بار فقط یک تغییر آزمایش شود.",
+      "measure": "نرخ تکمیل، اشتراک‌گذاری به ازای بازدید و بازخورد واقعی مخاطب",
+      "evidence": "test_against_matched_baseline"
+    }
+  ],
+  "reference_candidates": [
+    {
+      "id": "7698379133780348192",
+      "url": "https://www.tiktok.com/@easydeutsches/video/7698379133780348192",
+      "title": "Marta & Lukas: Alltag in Deutschland · Folge 5 Wir decken den Tisch Deutsch lernen mit natürlichen Gesprächen und vertrauten Alltagssituationen. #DeutschLernen #LearnGerman #DeutschA1 #DeutschImAlltag #GermanStories     ",
+      "views": 850,
+      "relative_to_median": 2.0656136087484813,
+      "visual_reviewed": false
+    }
+  ],
+  "research_candidates": null,
+  "render_qc": null
+}
