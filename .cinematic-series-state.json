@@ -2917,7 +2917,7 @@
       "visual_profile": "storybook-duo-glass-v2"
     },
     "date": "2026-11-08",
-    "status": "exporting",
+    "status": "dispatching",
     "platform_receipts": {
       "tiktok": 2875
     },
@@ -2925,8 +2925,8 @@
       "tiktok": "renders/cinematic-series/e0019-storybook-duo-2d-v1/tiktok/e0019-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0019-storybook-duo-2d-v1/instagram/e0019-instagram-45s.mp4"
     },
-    "file": "renders/cinematic-series/e0019-storybook-duo-2d-v1/tiktok/e0019-tiktok-45s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0019-storybook-duo-2d-v1/instagram/e0019-instagram-45s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
