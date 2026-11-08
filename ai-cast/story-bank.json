@@ -1099,38 +1099,50 @@
       ]
     },
     {
-      "story_id": "project-online-appointment-slippers-v1",
-      "title_de": "Termin in Hausschuhen",
-      "title_fa": "وقت ملاقات با دمپایی",
-      "summary": "Marta is ready to rush to an appointment with one shoe and a heavy folder. Discovering the appointment is online solves the travel panic, until her low webcam reveals the slippers she forgot to change.",
-      "cliffhanger": "Next time Marta checks the appointment format before planning the journey.",
+      "story_id": "project-b1-jobcenter-letter-v1",
+      "title_de": "B1 bestanden. Brief nicht verstanden.",
+      "title_fa": "B1 قبول شدم؛ نامه را نفهمیدم",
+      "summary": "A newcomer with a B1 certificate worries about a Jobcenter letter and a deadline. Her German-born friend also struggles with its bureaucratic wording. They identify the document and deadline and Marta asks for a plain-language explanation; the joke targets the register, not the learner.",
+      "cliffhanger": "Marta knows which document to prepare and which question to ask; no official decision or benefit approval is invented.",
       "series_version": "wg-alltag-v1",
       "series_name": "Marta & Lukas: Alltag in Deutschland",
       "content_basis": "everyday-reenactment",
       "mood": "comic",
-      "location_key": "online-appointment-living-room",
-      "location_description": "warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook",
-      "visual_hook": "Marta holds one outdoor shoe while wearing slippers, worried that her appointment starts in moments.",
-      "everyday_problem": "Marta prepared for a journey without checking whether her appointment takes place online.",
-      "practical_resolution": "Marta checks the confirmation, opens the video link, enables microphone and camera, then fixes the camera angle herself.",
-      "marta_goal": "Marta wants to attend her appointment on time without missing the connection.",
-      "marta_decision": "Marta reads her confirmation, opens the link herself and adjusts the laptop camera.",
-      "visual_payoff": "The low camera reveals her slippers; Marta calmly tilts the screen upward instead of changing her shoes.",
+      "location_key": "jobcenter-letter-desk",
+      "location_description": "quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light",
+      "visual_hook": "Marta holds her B1 certificate beside a Jobcenter letter she cannot understand despite passing the language exam.",
+      "everyday_problem": "Unclear administrative German makes Marta worry that she could miss an important request and deadline.",
+      "practical_resolution": "Marta identifies the requested document and deadline, gets the contract ready and asks for a clear explanation instead of ignoring the letter.",
+      "marta_goal": "Marta wants to understand the letter and act before its stated deadline without guessing its consequences.",
+      "marta_decision": "Marta finds the required document herself and asks the Jobcenter to explain the request in plain language.",
+      "visual_payoff": "The B1 certificate sits beside a dictionary; even her German-born helper needed one, and Marta smiles at the new subject Jobcenter-Deutsch.",
       "creative_review": {
-        "previous_weakness_addressed": "The stamp episode had practical steps but no observable comic reversal or payoff.",
-        "visible_comic_action": "A missing outdoor shoe leads to an online appointment reveal; the webcam then gives away the slippers.",
-        "next_experiment": "Compare a visible setup and callback payoff against the previous practical-only episode at the same publication age; no causal claim."
+        "previous_weakness_addressed": "Replace the rejected slippers sketch with a documented migration-related language barrier and meaningful stakes.",
+        "visible_comic_action": "The confidently German-born helper opens a dictionary too; the final certificate-and-dictionary callback targets bureaucratic language.",
+        "next_experiment": "Test a B1-certificate versus official-letter hook and a shared-language comic reversal; compare matched retention only if it becomes available."
       },
       "comedy_beats": {
         "setup": 0,
         "escalations": [
           2,
-          6
+          3
         ],
         "payoff": 8
       },
+      "documented_basis": {
+        "report_url": "https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "BR24 reports language barriers and deadline risks in official correspondence experienced by refugees, including people from Afghanistan, and volunteer help with documents.",
+        "invented_elements": [
+          "Marta and Lukas",
+          "B1 certificate",
+          "all dialogue and comic actions",
+          "a rental-contract request and the illustrative Friday deadline"
+        ],
+        "disclosure_de": "Nach dokumentierten Erfahrungen. Szene nachgestellt."
+      },
       "research_urls": [
-        "https://www.arbeitsagentur.de/videotermin"
+        "https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio"
       ],
       "variants": {
         "45": [
@@ -1149,12 +1161,12 @@
           9,
           1,
           2,
-          10,
           3,
+          10,
           4,
           5,
-          11,
           6,
+          11,
           7,
           8
         ]
@@ -1162,161 +1174,165 @@
       "scenes": [
         {
           "speaker": "marta",
-          "de": "Mein Termin ist gleich. Wo ist mein Schuh?",
-          "fa": "وقتم نزدیک است. کفشم کجاست؟",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta holds one outdoor shoe and notices the slippers on her feet.",
-          "motion": "Marta holds one outdoor shoe and notices the slippers on her feet.",
+          "de": "B1 bestanden. Diesen Brief verstehe ich trotzdem nicht.",
+          "fa": "B1 را قبول شدم؛ این نامه را هنوز نمی‌فهمم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta places her language certificate beside the letter and looks between them with restrained frustration.",
+          "motion": "Marta places her language certificate beside the letter and looks between them with restrained frustration.",
           "visible_objects": [
-            "single outdoor shoe",
-            "slippers"
+            "language certificate",
+            "official-style letter"
           ],
-          "object_action": "Marta holds one outdoor shoe and notices the slippers on her feet.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta places her language certificate beside the letter and looks between them with restrained frustration.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "problem"
         },
         {
           "speaker": "lukas",
-          "de": "Marta, ist der Termin nicht online?",
-          "fa": "مارتا، مگر وقتت آنلاین نیست؟",
-          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas points once toward the open laptop, raising one eyebrow.",
-          "motion": "Lukas points once toward the open laptop, raising one eyebrow.",
+          "de": "Zeig mal. Ich bin hier geboren.",
+          "fa": "بده ببینم. من اینجا به دنیا آمده‌ام.",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Lukas reaches for the letter confidently and begins to read.",
+          "motion": "Lukas reaches for the letter confidently and begins to read.",
           "visible_objects": [
-            "open laptop"
+            "official-style letter"
           ],
-          "object_action": "Lukas points once toward the open laptop, raising one eyebrow.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Lukas reaches for the letter confidently and begins to read.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "marta",
-          "de": "Online? Ich habe sogar den Weg geübt!",
-          "fa": "آنلاین؟ من حتی مسیر را تمرین کردم!",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta holds her route note upright and pauses in disbelief.",
-          "motion": "Marta holds her route note upright and pauses in disbelief.",
+          "de": "Was bedeutet: Aufforderung zur Mitwirkung?",
+          "fa": "درخواست همکاری یعنی چه؟",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta points once to the long heading on the letter, waiting for a plain explanation.",
+          "motion": "Marta points once to the long heading on the letter, waiting for a plain explanation.",
           "visible_objects": [
-            "route note"
+            "official-style letter"
           ],
-          "object_action": "Marta holds her route note upright and pauses in disbelief.",
-          "location_key": "online-appointment-living-room",
-          "story_beat": "act"
-        },
-        {
-          "speaker": "marta",
-          "de": "Hier steht wirklich: per Video.",
-          "fa": "اینجا واقعاً نوشته: از طریق ویدیو.",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta points to the appointment note and gives a small knowing nod.",
-          "motion": "Marta points to the appointment note and gives a small knowing nod.",
-          "visible_objects": [
-            "appointment note"
-          ],
-          "object_action": "Marta points to the appointment note and gives a small knowing nod.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta points once to the long heading on the letter, waiting for a plain explanation.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "lukas",
-          "de": "Du brauchst den Link, keinen Bus.",
-          "fa": "لینک لازم داری، نه اتوبوس.",
-          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas gestures toward the laptop trackpad with a restrained amused smile.",
-          "motion": "Lukas gestures toward the laptop trackpad with a restrained amused smile.",
+          "de": "Moment. Ich hole auch ein Wörterbuch.",
+          "fa": "یک لحظه؛ من هم لغت‌نامه می‌آورم.",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Lukas slowly opens a dictionary, his confidence becoming a small embarrassed smile.",
+          "motion": "Lukas slowly opens a dictionary, his confidence becoming a small embarrassed smile.",
           "visible_objects": [
-            "open laptop"
+            "dictionary",
+            "official-style letter"
           ],
-          "object_action": "Lukas gestures toward the laptop trackpad with a restrained amused smile.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Lukas slowly opens a dictionary, his confidence becoming a small embarrassed smile.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "marta",
-          "de": "Ich öffne den Link. Mikrofon an.",
-          "fa": "لینک را باز می‌کنم. میکروفون روشن.",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta taps the trackpad once, then looks toward the laptop camera.",
-          "motion": "Marta taps the trackpad once, then looks toward the laptop camera.",
+          "de": "Ich habe Angst, eine Frist zu verpassen.",
+          "fa": "می‌ترسم مهلتی را از دست بدهم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta holds the letter steady and points to its date area, visibly concerned rather than smiling.",
+          "motion": "Marta holds the letter steady and points to its date area, visibly concerned rather than smiling.",
           "visible_objects": [
-            "open laptop"
+            "official-style letter"
           ],
-          "object_action": "Marta taps the trackpad once, then looks toward the laptop camera.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta holds the letter steady and points to its date area, visibly concerned rather than smiling.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Wir suchen zuerst: Was fehlt? Bis wann?",
+          "fa": "اول پیدا کنیم: چه چیزی کم است؟ تا کی؟",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Lukas sets a highlighter beside the letter and gestures to its requested-document and date areas.",
+          "motion": "Lukas sets a highlighter beside the letter and gestures to its requested-document and date areas.",
+          "visible_objects": [
+            "official-style letter",
+            "highlighter"
+          ],
+          "object_action": "Lukas sets a highlighter beside the letter and gestures to its requested-document and date areas.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "marta",
-          "de": "Kamera an. Sieht man meine Unterlagen?",
-          "fa": "دوربین روشن. مدارکم دیده می‌شود؟",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
-          "motion": "Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
+          "de": "Hier steht: Mietvertrag. Bis Freitag.",
+          "fa": "اینجا نوشته: قرارداد خانه؛ تا جمعه.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta takes the rental contract from her folder and places it beside the letter, visibly relieved.",
+          "motion": "Marta takes the rental contract from her folder and places it beside the letter, visibly relieved.",
           "visible_objects": [
-            "open laptop",
+            "rental contract",
             "document folder"
           ],
-          "object_action": "Marta lifts the document folder toward the laptop camera, accidentally revealing her slippers.",
-          "location_key": "online-appointment-living-room",
-          "story_beat": "act"
-        },
-        {
-          "speaker": "lukas",
-          "de": "Die Unterlagen ja. Die Hausschuhe auch.",
-          "fa": "مدارک بله. دمپایی‌ها هم.",
-          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas glances down at the slippers, holding back a friendly laugh.",
-          "motion": "Lukas glances down at the slippers, holding back a friendly laugh.",
-          "visible_objects": [
-            "slippers"
-          ],
-          "object_action": "Lukas glances down at the slippers, holding back a friendly laugh.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta takes the rental contract from her folder and places it beside the letter, visibly relieved.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "marta",
-          "de": "Dann stelle ich die Kamera höher!",
-          "fa": "پس دوربین را بالاتر می‌گذارم!",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
-          "motion": "Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
+          "de": "Können Sie mir das bitte einfach erklären?",
+          "fa": "می‌شود لطفاً این را ساده توضیح بدهید؟",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta holds the telephone near her ear and politely asks for clarification while keeping the letter on the desk.",
+          "motion": "Marta holds the telephone near her ear and politely asks for clarification while keeping the letter on the desk.",
           "visible_objects": [
-            "open laptop",
-            "slippers"
+            "telephone",
+            "official-style letter"
           ],
-          "object_action": "Marta tilts the laptop screen slightly upward, keeps her slippers on and gives a relieved smile.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta holds the telephone near her ear and politely asks for clarification while keeping the letter on the desk.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "B1 habe ich. Jetzt kommt Jobcenter-Deutsch!",
+          "fa": "B1 را دارم؛ حالا نوبت زبان جاب‌سنتر است!",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta puts the certificate and dictionary side by side, gives a wry smile and raises one eyebrow.",
+          "motion": "Marta puts the certificate and dictionary side by side, gives a wry smile and raises one eyebrow.",
+          "visible_objects": [
+            "language certificate",
+            "dictionary"
+          ],
+          "object_action": "Marta puts the certificate and dictionary side by side, gives a wry smile and raises one eyebrow.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "resolve"
         },
         {
           "speaker": "marta",
-          "de": "Die Mappe ist schwerer als mein Frühstück.",
-          "fa": "پوشه از صبحانه‌ام سنگین‌تر است.",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta weighs the thick folder in one hand with a surprised glance.",
-          "motion": "Marta weighs the thick folder in one hand with a surprised glance.",
+          "de": "Im Kurs waren die Sätze viel kürzer.",
+          "fa": "در کلاس جمله‌ها خیلی کوتاه‌تر بودند.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta glances at her certificate and makes a small amused shrug.",
+          "motion": "Marta glances at her certificate and makes a small amused shrug.",
           "visible_objects": [
-            "document folder"
+            "language certificate"
           ],
-          "object_action": "Marta weighs the thick folder in one hand with a surprised glance.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta glances at her certificate and makes a small amused shrug.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "lukas",
-          "de": "Schau zuerst in die Bestätigung.",
-          "fa": "اول تأیید وقت را ببین.",
-          "scene": "One visible adult lukas in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Lukas points once to the appointment note on the desk.",
-          "motion": "Lukas points once to the appointment note on the desk.",
+          "de": "Das ist auch für mich schwer.",
+          "fa": "برای من هم سخت است.",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Lukas closes the dictionary briefly and nods in shared frustration.",
+          "motion": "Lukas closes the dictionary briefly and nods in shared frustration.",
           "visible_objects": [
-            "appointment note"
+            "dictionary"
           ],
-          "object_action": "Lukas points once to the appointment note on the desk.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Lukas closes the dictionary briefly and nods in shared frustration.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         },
         {
           "speaker": "marta",
-          "de": "Die Kamera steht noch viel zu tief.",
-          "fa": "دوربین هنوز خیلی پایین است.",
-          "scene": "One visible adult marta in the same warm Berlin flat living room, small desk beside a sofa, morning light, one open laptop and a coat hook. The other person is off camera. Marta notices the low laptop camera angle and holds her hands still.",
-          "motion": "Marta notices the low laptop camera angle and holds her hands still.",
+          "de": "Ich lege den Vertrag gleich bereit.",
+          "fa": "قرارداد را همین حالا آماده می‌گذارم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The other person is off camera. Marta opens her folder and arranges the requested contract neatly at the front.",
+          "motion": "Marta opens her folder and arranges the requested contract neatly at the front.",
           "visible_objects": [
-            "open laptop"
+            "rental contract",
+            "document folder"
           ],
-          "object_action": "Marta notices the low laptop camera angle and holds her hands still.",
-          "location_key": "online-appointment-living-room",
+          "object_action": "Marta opens her folder and arranges the requested contract neatly at the front.",
+          "location_key": "jobcenter-letter-desk",
           "story_beat": "act"
         }
       ]

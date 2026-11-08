@@ -40,11 +40,16 @@ class HighQualityTests(unittest.TestCase):
         story=next(s for s in bank['stories'] if s['story_id']==config['next_story']['story_id'])
         source={'url':story['research_urls'][0],'excerpt':'Official source context. '*8,'retrieved_at':'2026-11-08T09:00:00+00:00'}
         plan=select_story(bank,20,45,source,[],config,module.validate_plan)
-        self.assertEqual(plan['story_id'],'project-online-appointment-slippers-v1')
+        self.assertEqual(plan['story_id'],'project-b1-jobcenter-letter-v1')
         self.assertEqual(len(plan['scenes']),9)
-        self.assertIn('slippers',plan['scenes'][0]['object_action'])
-        self.assertIn('slippers',plan['scenes'][6]['object_action'])
-        self.assertIn('tilts',plan['scenes'][8]['object_action'])
+        self.assertIn('language certificate',plan['scenes'][0]['visible_objects'])
+        self.assertIn('rental contract',plan['scenes'][6]['visible_objects'])
+        self.assertIn('dictionary',plan['scenes'][8]['object_action'])
+        self.assertEqual(plan['documented_basis']['report_url'],source['url'])
+        import copy
+        invented=copy.deepcopy(plan);invented.pop('documented_basis')
+        with self.assertRaisesRegex(ValueError,'documented migrant problem'):
+            module.validate_plan(invented,20,[],config)
         self.assertEqual(config['time_budget']['mode'],'verified-included-only')
         self.assertEqual(config['max_daily_attempts'],1)
         plan.pop('comedy_beats')
