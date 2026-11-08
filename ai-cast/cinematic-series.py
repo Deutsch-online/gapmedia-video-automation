@@ -60,6 +60,7 @@ TRUSTED_RESEARCH = (
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
     ('Posting a letter', 'https://www.deutschepost.de/de/b/briefmarken.html', 'Briefmarken'),
+    ('Documented migrant difficulties with official letters', 'https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio', 'Behördenpost'),
     ('Video appointment preparation', 'https://www.arbeitsagentur.de/videotermin', 'Videotermin'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
 )
@@ -294,6 +295,15 @@ def validate_plan(plan, episode, history, config=None):
                 len(escalations)!=2 or any(type(i) is not int for i in escalations) or
                 not 0<escalations[0]<escalations[1]<expected-1):
             raise ValueError('Comedy requires an opening setup, two linked escalation shots and the final payoff')
+    if episode>=quality_rule.get('from_episode',10**9) and quality_rule.get('require_documented_basis'):
+        basis=plan.get('documented_basis',{})
+        source=plan.get('research_source',{})
+        if (basis.get('report_url')!=source.get('url') or
+                len(source.get('excerpt',''))<90 or not source.get('retrieved_at') or
+                len(basis.get('verified_problem',''))<40 or
+                not isinstance(basis.get('invented_elements'),list) or not basis['invented_elements'] or
+                basis.get('type')!='documented-problem-adaptation'):
+            raise ValueError('A documented migrant problem requires its fetched source and explicit invented elements')
     if episode >= 4:
         for scene in plan['scenes']:
             props = scene.get('visible_objects')
@@ -648,7 +658,11 @@ def make_plan(state):
                    'then two connected comic escalations and an observable comic payoff. '
                    'No joke about nationality or accent. Keep lower glass subtitles clear of actions. '
                    'Include comedy_beats with setup:0, escalations:[two increasing intermediate shot indices], '
-                   'and payoff:the final zero-based shot index. Each escalation must visibly follow from the same problem.')
+                   'and payoff:the final zero-based shot index. Each escalation must visibly follow from the same problem. '
+                   'Base the migrant difficulty on the supplied fetched source, not an invented personal case. '
+                   'Include documented_basis: report_url equal to research_source.url, type documented-problem-adaptation, '
+                   'verified_problem as a concrete source-supported problem, invented_elements as a list of fictional details. '
+                   'Language learning and administrative language are substantive themes; never portray low German proficiency as stupidity.')
     errors, attempts, providers = [], [], []
     key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
     if key:
