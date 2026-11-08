@@ -2923,7 +2923,192 @@
       "visual_profile": "storybook-duo-glass-v2"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "project-b1-jobcenter-breath-v2",
+      "title_de": "Behördendeutsch: Erst mal Luft holen",
+      "title_fa": "زبان اداری؛ اول یک نفس بگیر!",
+      "summary": "Marta cannot understand an official letter despite B1. Her confident German-born friend reads its bureaucratic heading, pauses for breath and admits that he only found the breathing point. Marta identifies the requested document and deadline, asks for clear language and slides him water for the second sentence.",
+      "cliffhanger": "Marta knows which document to prepare and which question to ask; no official decision or benefit approval is invented.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Marta & Lukas: Alltag in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "jobcenter-letter-desk",
+      "location_description": "quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light",
+      "visual_hook": "Marta holds her B1 certificate beside a Jobcenter letter she cannot understand despite passing the language exam.",
+      "everyday_problem": "Unclear administrative German makes Marta worry that she could miss an important request and deadline.",
+      "practical_resolution": "Marta identifies the requested document and deadline, gets the contract ready and asks for a clear explanation instead of ignoring the letter.",
+      "marta_goal": "Marta wants to understand the letter and act before its stated deadline without guessing its consequences.",
+      "marta_decision": "Marta finds the required document herself and asks the Jobcenter to explain the request in plain language.",
+      "visual_payoff": "Marta slides a water glass toward her off-camera friend for the second sentence, calling back to his breathless reading.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace the rejected slippers sketch with a documented migration-related language barrier and meaningful stakes.",
+        "visible_comic_action": "Confident native-speaker reading becomes an embarrassed pause for breath; the final water-glass slide is the visible callback.",
+        "next_experiment": "Test a B1-certificate versus official-letter hook and a shared-language comic reversal; compare matched retention only if it becomes available."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          2,
+          4
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "BR24 reports language barriers and deadline risks in official correspondence experienced by refugees, including people from Afghanistan, and volunteer help with documents.",
+        "invented_elements": [
+          "Marta and Lukas",
+          "B1 certificate",
+          "all dialogue, breath pause and water-glass gag",
+          "rental-contract request and illustrative Friday deadline"
+        ],
+        "disclosure_de": "Nach dokumentierten Erfahrungen. Szene nachgestellt."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "B1 bestanden. Diesen Brief verstehe ich trotzdem nicht.",
+          "fa": "B1 را قبول شدم؛ این نامه را هنوز نمی‌فهمم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta places her language certificate beside the letter and looks between them with frustration.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta places her language certificate beside the letter and looks between them with frustration.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "language certificate",
+            "official-style letter"
+          ],
+          "object_action": "Marta places her language certificate beside the letter and looks between them with frustration.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Gib her. Deutsch ist meine Muttersprache.",
+          "fa": "بده من؛ آلمانی زبان مادری من است.",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Lukas lifts the letter with a confident smile, ready to explain it.",
+          "motion": "Only the visible adult lukas speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Lukas lifts the letter with a confident smile, ready to explain it.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "official-style letter"
+          ],
+          "object_action": "Lukas lifts the letter with a confident smile, ready to explain it.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Hinsichtlich Ihrer Mitwirkungspflicht ... Moment!",
+          "fa": "دربارهٔ وظیفهٔ همکاری شما... یک لحظه!",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Lukas reads, then closes his mouth at the pause and reaches toward the water glass, eyebrows raised.",
+          "motion": "Only the visible adult lukas speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Lukas reads, then closes his mouth at the pause and reaches toward the water glass, eyebrows raised.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "official-style letter",
+            "water glass"
+          ],
+          "object_action": "Lukas reads, then closes his mouth at the pause and reaches toward the water glass, eyebrows raised.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Hast du verstanden, was sie wollen?",
+          "fa": "فهمیدی چه می‌خواهند؟",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta points at the letter and waits for an explanation, still concerned about it.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta points at the letter and waits for an explanation, still concerned about it.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "official-style letter"
+          ],
+          "object_action": "Marta points at the letter and waits for an explanation, still concerned about it.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Nein. Nur, wo ich Luft holen muss.",
+          "fa": "نه؛ فقط فهمیدم کجا باید نفس بکشم.",
+          "scene": "One visible adult lukas in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Lukas lowers the letter slightly with a sheepish smile, the glass sitting untouched beside it.",
+          "motion": "Only the visible adult lukas speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Lukas lowers the letter slightly with a sheepish smile, the glass sitting untouched beside it.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "official-style letter",
+            "water glass"
+          ],
+          "object_action": "Lukas lowers the letter slightly with a sheepish smile, the glass sitting untouched beside it.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ich suche die Unterlagen und die Frist.",
+          "fa": "مدارک خواسته‌شده و مهلت را پیدا می‌کنم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta underlines the requested document and date areas with one small highlighter gesture.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta underlines the requested document and date areas with one small highlighter gesture.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "official-style letter",
+            "highlighter"
+          ],
+          "object_action": "Marta underlines the requested document and date areas with one small highlighter gesture.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Mietvertrag bis Freitag. Den lege ich bereit.",
+          "fa": "قرارداد خانه تا جمعه؛ آن را آماده می‌گذارم.",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta takes the rental contract from the folder and puts it beside the letter, visibly relieved.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta takes the rental contract from the folder and puts it beside the letter, visibly relieved.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "rental contract",
+            "document folder"
+          ],
+          "object_action": "Marta takes the rental contract from the folder and puts it beside the letter, visibly relieved.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Können Sie mir das bitte einfach erklären?",
+          "fa": "می‌شود لطفاً این را ساده توضیح بدهید؟",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta holds the telephone near her ear and politely asks for a plain-language explanation.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta holds the telephone near her ear and politely asks for a plain-language explanation.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "telephone",
+            "official-style letter"
+          ],
+          "object_action": "Marta holds the telephone near her ear and politely asks for a plain-language explanation.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Hier. Wasser für den zweiten Satz!",
+          "fa": "بفرما؛ آب برای جملهٔ دوم!",
+          "scene": "One visible adult marta in the same quiet Berlin flat living room, one small desk, a document folder, two chairs and soft morning light. The friend is off camera. Marta slides the water glass toward her off-camera friend and gives the letter a knowing glance.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta slides the water glass toward her off-camera friend and gives the letter a knowing glance.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "water glass",
+            "official-style letter"
+          ],
+          "object_action": "Marta slides the water glass toward her off-camera friend and gives the letter a knowing glance.",
+          "location_key": "jobcenter-letter-desk",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 20,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Documented migrant difficulties with official letters",
+        "url": "https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio",
+        "excerpt": "Hilfe bei Behördenpost: Angebot für Geflüchtete in Unterfranken | BR24 Was ist relevant? Was ist Werbung? Welche Unterlagen müssen wann in welchem Amt vorgelegt werden? Post von deutschen Behörden stellt schon viele Einheimische vor Herausforderungen. Für geflüchtete Menschen ist die \"Zettelwirtschaft\" hierzulande ein großes Problem. Der Landkreis Main-Spessart hat das erkannt und bietet deshalb Unterstützung an: Ehrenamtliche helfen dabei, das Chaos aus Papieren zu ordnen. Zum Artikel: Engagement für Geflüchtete: Wie Integration auf dem Land gelingt Int",
+        "retrieved_at": "2026-11-08T11:15:37.598289+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "original-cast-realistic-comedy-v1"
+    },
+    "date": "2026-11-08#owner-breath-comedy-20261108",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -2951,7 +3136,8 @@
     "2026-11-03": 3,
     "2026-11-04": 1,
     "2026-11-05": 1,
-    "2026-11-08": 1
+    "2026-11-08": 1,
+    "2026-11-08#owner-breath-comedy-20261108": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -2968,7 +3154,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-08T06:38:11.315879+00:00",
+    "checked_at": "2026-11-08T11:15:35.067684+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -2977,7 +3163,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 1763.389655,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
