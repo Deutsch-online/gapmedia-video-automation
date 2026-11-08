@@ -1,0 +1,50 @@
+name: Read actual creative evidence without generation
+on:
+  push:
+    branches: [codex/realistic-comedy]
+    paths: [.github/workflows/creative-evidence.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Read authenticated bot evidence with project HTTP client
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          node --input-type=module <<'JS'
+          import {createHash} from 'node:crypto';
+          const signature=createHash('sha256').update('gapmedia-monitor-v1:'+process.env.TELEGRAM_BOT_TOKEN).digest('hex');
+          const response=await fetch('https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/creative-feedback',{headers:{'X-Project-Authorization':signature},signal:AbortSignal.timeout(30000)});
+          console.log('BOT_EVIDENCE_HTTP='+response.status);
+          if(response.ok)console.log('ACTUAL_CREATIVE_EVIDENCE='+JSON.stringify(await response.json()));
+          JS
+      - uses: actions/download-artifact@v4
+        with:
+          name: cinematic-series-42455504474
+          run-id: 42455504474
+          github-token: ${{ github.token }}
+          path: evidence
+      - name: Install CPU image tooling
+        run: python -m pip install pillow
+      - name: Inspect actual delivered frames and quality evidence without GPU
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,base64
+          from PIL import Image
+          for p in Path('evidence').rglob('quality.json'):
+              print('ACTUAL_RENDER_QUALITY='+json.dumps(json.loads(p.read_text())))
+          contacts=list(Path('evidence').rglob('contact.jpg'))
+          for i,p in enumerate(contacts[:1]):
+              out=Path('/tmp/episode19-contact.jpg')
+              image=Image.open(p);image.thumbnail((720,900));image.save(out,quality=65)
+              print('CONTACT_JPEG_BASE64='+base64.b64encode(out.read_bytes()).decode())
+          for p in Path('evidence').rglob('*.json'):
+              if p.parent.name=='budgets':
+                  v=json.loads(p.read_text())
+                  print('ACTUAL_GPU_LEDGER='+json.dumps(v))
+          PY

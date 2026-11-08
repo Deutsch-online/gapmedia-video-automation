@@ -60,6 +60,7 @@ TRUSTED_RESEARCH = (
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
     ('Posting a letter', 'https://www.deutschepost.de/de/b/briefmarken.html', 'Briefmarken'),
+    ('Video appointment preparation', 'https://www.arbeitsagentur.de/videotermin', 'Videotermin'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
 )
 
@@ -240,11 +241,14 @@ def validate_plan(plan, episode, history, config=None):
         if request and episode >= request['from_episode'] and not any(
                 h.get('story_id') == request['story_id'] for h in history):
             if plan.get('story_id') != request['story_id']:
-                raise ValueError('The next episode must be the owner-requested doctor story')
-            if plan.get('duration_seconds') != request['duration_seconds'] or not plan.get('graphic_story'):
-                raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
-            from cinematic_graphics import validate_graphic_story
-            validate_graphic_story(plan)
+                raise ValueError('The next episode must be the owner-requested story')
+            if plan.get('duration_seconds') != request['duration_seconds']:
+                raise ValueError('The requested story must retain its specified duration')
+            if request.get('require_graphics', False):
+                if not plan.get('graphic_story'):
+                    raise ValueError('The requested doctor story needs all app graphics and exactly 45 seconds')
+                from cinematic_graphics import validate_graphic_story
+                validate_graphic_story(plan)
     target = episode_seconds(episode, config) if episode >= 7 else (65 if episode < 5 else 60)
     expected = target // 5
     if plan.get('episode') != episode or len(plan.get('scenes', [])) != expected:
@@ -282,6 +286,14 @@ def validate_plan(plan, episode, history, config=None):
             for key in ('previous_weakness_addressed', 'visible_comic_action', 'next_experiment'):
                 if not isinstance(review.get(key), str) or len(review[key].strip()) < 20:
                     raise ValueError('A concrete daily improvement review is required: ' + key)
+    quality_rule=(config or {}).get('story_quality', {})
+    if episode>=quality_rule.get('from_episode',10**9) and quality_rule.get('require_comic_beats'):
+        beats=plan.get('comedy_beats', {})
+        escalations=beats.get('escalations', [])
+        if (beats.get('setup')!=0 or beats.get('payoff')!=expected-1 or
+                len(escalations)!=2 or any(type(i) is not int for i in escalations) or
+                not 0<escalations[0]<escalations[1]<expected-1):
+            raise ValueError('Comedy requires an opening setup, two linked escalation shots and the final payoff')
     if episode >= 4:
         for scene in plan['scenes']:
             props = scene.get('visible_objects')
@@ -458,13 +470,9 @@ def social_learning_context():
     token = os.getenv('TELEGRAM_BOT_TOKEN')
     if not token:
         return {}
-    signature = hashlib.sha256(('gapmedia-monitor-v1:' + token).encode()).hexdigest()
     try:
-        req = urllib.request.Request(
-            'https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/creative-feedback',
-            headers={'X-Project-Authorization': signature})
-        with urllib.request.urlopen(req, timeout=5) as response:
-            value = json.load(response)
+        from cinematic_social import request as monitor_request
+        value = monitor_request('/internal/creative-feedback')
         if value.get('status') != 'available':
             return {}
         experiments = value.get('experiments')
@@ -484,17 +492,12 @@ def report_render_measurements(plan, quality):
     token = os.getenv('TELEGRAM_BOT_TOKEN')
     if not token:
         return
-    signature = hashlib.sha256(('gapmedia-monitor-v1:' + token).encode()).hexdigest()
     try:
         payload = {'episode': plan['episode'], 'duration_seconds': quality['duration'],
                    'frozen_seconds': quality['frozen_seconds'], 'width': quality['width'],
                    'height': quality['height'], 'caption_design': quality.get('caption_design', '')}
-        req = urllib.request.Request(
-            'https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/render-audit',
-            data=json.dumps(payload).encode(), headers={'X-Project-Authorization': signature,
-                                                       'Content-Type': 'application/json'})
-        with urllib.request.urlopen(req, timeout=5):
-            pass
+        from cinematic_social import request as monitor_request
+        monitor_request('/internal/render-audit',payload)
     except Exception:
         print('Optional social-monitor QC hand-off unavailable; video quality checks remain in force.')
 
@@ -523,8 +526,14 @@ def make_plan(state):
     project_research = None
     if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):
         from cinematic_story_bank import select_story, unused_source_urls
-        project_research = research_source(episode)
         bank = load_json(ROOT / planning['bank'])
+        required=config.get('next_story',{})
+        source_urls=unused_source_urls(bank,episode,episode_seconds(episode,config),state['history'],config)
+        if (required and episode>=required['from_episode'] and source_urls and
+                not any(h.get('story_id')==required['story_id'] for h in state['history'])):
+            project_research=research_source(episode,preferred_url=source_urls[0],strict_preferred=True)
+        else:
+            project_research=research_source(episode)
         curated = select_story(bank, episode, episode_seconds(episode, config),
                                project_research, state['history'], config, validate_plan)
         if curated is None:
@@ -566,7 +575,7 @@ def make_plan(state):
               'then demonstrates a useful solution in order, one visible action per shot. '
               'Keep the mood cheerful and optimistic: no scheduled sad episodes. '
               'In nine shots, use shots 1-3 for the problem and telling her friend, then shots 4-9 for '
-              'the step-by-step solution and a complete visible resolution. Do not force comic complications. '
+              'the step-by-step solution and a complete visible resolution. Use two believable comic complications linked to the same problem and a visible payoff. '
               'Do not repeat the same question or explanation in different words. Let props, quick purposeful gestures '
               'and expressive reactions carry the humor; do not rely on dialogue alone. '
               'Humor comes from confusing everyday routines, never from mocking accents, nationality or immigrants. '
@@ -633,13 +642,13 @@ def make_plan(state):
                 'never use visual-reference sites as proof of German rules or as instructions to spend money.')
     import cinematic_design as design
     if design.enabled(config,episode):
-        prompt = prompt.replace('warm recurring 3D sitcom', 'warm illustrated two-person story')
-        prompt = prompt.replace('Only one visible face per speaking shot; the listener and all other people remain off-camera.',
-                                'Both adult friends remain visible together; only the named speaker moves their lips.')
-        prompt += (' The approved visual profile is storybook-duo-glass-v2: warm 2D storybook, '
-                   'Marta LEFT and Lukas RIGHT in one coherent setting. Include location_description '
-                   'as one precise English location shared by every shot. Keep both faces and hands '
-                   'visible above the lower glass subtitles. No isolated portrait or white margins.')
+        prompt += (' Use the original Marta and Lukas adult identities with realistic anatomy. '
+                   'One visible speaker per dialogue shot, friend off camera in the same coherent room. '
+                   'Include location_description. Start with a specific visual problem immediately, '
+                   'then two connected comic escalations and an observable comic payoff. '
+                   'No joke about nationality or accent. Keep lower glass subtitles clear of actions. '
+                   'Include comedy_beats with setup:0, escalations:[two increasing intermediate shot indices], '
+                   'and payoff:the final zero-based shot index. Each escalation must visibly follow from the same problem.')
     errors, attempts, providers = [], [], []
     key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
     if key:
@@ -1081,7 +1090,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                   ' Keep these objects visible and stable: ' + ', '.join(scene.get('visible_objects', [])))
         if paired:
             speech.ensure_clip(png, audios[i], clip, motion, plan['episode'] * 1009 + i * 11,
-                               backend_name='ltx2')
+                               backend_name=config['visual_profile']['speech_backend'])
         else:
             speech.ensure_clip(png, audios[i], clip, motion, plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
@@ -1154,7 +1163,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     if frozen > (3 if preview else plan.get('duration_seconds', DEFAULT_SECONDS) * 13 / 60):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': design.PROFILE if paired else 'cream-large-v2', 'requested_visible_characters': 2 if paired else 1, 'audio_conditioned_lips': True, 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': design.PROFILE if paired else 'cream-large-v2', 'requested_visible_characters': 1, 'audio_conditioned_lips': True, 'lip_sync_measured': False, 'lip_sync_score': None, 'face_and_hand_semantics_verified': False, 'speech_backend': config['visual_profile']['speech_backend'] if paired else 'legacy', 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     if not preview:

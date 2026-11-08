@@ -8,6 +8,10 @@ on:
       - .github/workflows/storybook-design-check.yml
       - ai-cast/cinematic_design.py
       - ai-cast/cinematic_ltx2.py
+      - ai-cast/cinematic_longcat.py
+      - ai-cast/cinematic_social.py
+      - tests/test_cinematic_series.py
+      - tests/test_cinematic_longcat.py
       - ai-cast/cinematic_speech.py
       - ai-cast/cinematic-series.py
       - tests/test_cinematic_design.py
@@ -34,15 +38,18 @@ jobs:
       - name: Verify layout, both speakers, actual muxing and provider reservation units
         run: |
           python -m unittest discover -s tests -p test_cinematic_design.py -v
+          python -m unittest discover -s tests -p test_cinematic_longcat.py -v
           python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
           python -m unittest discover -s tests -p test_cinematic_graphics.py -v
       - name: Verify live provider maximum without requesting GPU
         run: |
           PYTHONPATH=ai-cast python - <<'PY'
-          from cinematic_ltx2 import verify_live_contract, QUOTA_MAXIMUM
+          from cinematic_longcat import verify_live_contract, QUOTA_MAXIMUM
           verify_live_contract()
           print('Verified charged GPU reservation:', QUOTA_MAXIMUM, 'quota units; no generation requested')
           PY
+      - name: Verify the next real story with live official research and no GPU
+        run: python ai-cast/cinematic-series.py plan-only --file renders/realistic-next-plan.json
       - name: Keep a reproducible typography sample
         run: |
           PYTHONPATH=ai-cast python - <<'PY'
@@ -64,5 +71,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: verified-bold-glass-typography
-          path: renders/bold-glass-design/
+          path: |
+            renders/bold-glass-design/
+            renders/realistic-next-plan.json
           retention-days: 14

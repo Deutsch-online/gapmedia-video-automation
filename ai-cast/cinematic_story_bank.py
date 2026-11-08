@@ -21,6 +21,8 @@ def select_story(bank, episode, seconds, source, history, config, validate):
     else:
         required_id = None
     for item in bank.get('stories', []):
+        if episode >= config.get('story_quality', {}).get('from_episode', 10**9) and config.get('story_quality', {}).get('require_comic_beats') and not item.get('comedy_beats'):
+            continue
         if item['story_id'] in used_ids or item['title_de'].casefold() in used_titles:
             continue
         if required_id and item['story_id'] != required_id:
@@ -56,6 +58,8 @@ def unused_source_urls(bank,episode,seconds,history,config):
               and request['story_id'] not in used_ids else None)
     urls=[]
     for item in bank['stories']:
+        if episode >= config.get('story_quality', {}).get('from_episode', 10**9) and config.get('story_quality', {}).get('require_comic_beats') and not item.get('comedy_beats'):
+            continue
         if item['story_id'] in used_ids or item['title_de'].casefold() in used_titles:
             continue
         if required and item['story_id']!=required:
