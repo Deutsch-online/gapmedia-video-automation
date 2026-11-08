@@ -1,6 +1,6 @@
-# قسمت ۲۰ — B1 قبول شدم؛ نامه را نفهمیدم
+# قسمت ۲۰ — زبان اداری؛ اول یک نفس بگیر!
 
-اقتباس طنز از مشکل مستند زبان نامه‌های اداری برای مهاجران. شخصیت‌ها و دیالوگ‌ها نمایشی‌اند؛ مهلت جمعه مثال است، نه یک مهلت عمومی.
+اقتباس طنز از مشکل مستند زبان نامه‌های اداری؛ شخصیت‌ها، دیالوگ، آب و مهلت جمعه نمایشی‌اند.
 
 **0 تا 5 ثانیه**
 
@@ -10,39 +10,39 @@ B1 را قبول شدم؛ این نامه را هنوز نمی‌فهمم.
 
 **5 تا 10 ثانیه**
 
-Zeig mal. Ich bin hier geboren.
+Gib her. Deutsch ist meine Muttersprache.
 
-بده ببینم. من اینجا به دنیا آمده‌ام.
+بده من؛ آلمانی زبان مادری من است.
 
 **10 تا 15 ثانیه**
 
-Was bedeutet: Aufforderung zur Mitwirkung?
+Hinsichtlich Ihrer Mitwirkungspflicht ... Moment!
 
-درخواست همکاری یعنی چه؟
+دربارهٔ وظیفهٔ همکاری شما... یک لحظه!
 
 **15 تا 20 ثانیه**
 
-Moment. Ich hole auch ein Wörterbuch.
+Hast du verstanden, was sie wollen?
 
-یک لحظه؛ من هم لغت‌نامه می‌آورم.
+فهمیدی چه می‌خواهند؟
 
 **20 تا 25 ثانیه**
 
-Ich habe Angst, eine Frist zu verpassen.
+Nein. Nur, wo ich Luft holen muss.
 
-می‌ترسم مهلتی را از دست بدهم.
+نه؛ فقط فهمیدم کجا باید نفس بکشم.
 
 **25 تا 30 ثانیه**
 
-Wir suchen zuerst: Was fehlt? Bis wann?
+Ich suche die Unterlagen und die Frist.
 
-اول پیدا کنیم: چه چیزی کم است؟ تا کی؟
+مدارک خواسته‌شده و مهلت را پیدا می‌کنم.
 
 **30 تا 35 ثانیه**
 
-Hier steht: Mietvertrag. Bis Freitag.
+Mietvertrag bis Freitag. Den lege ich bereit.
 
-اینجا نوشته: قرارداد خانه؛ تا جمعه.
+قرارداد خانه تا جمعه؛ آن را آماده می‌گذارم.
 
 **35 تا 40 ثانیه**
 
@@ -52,10 +52,8 @@ Können Sie mir das bitte einfach erklären?
 
 **40 تا 45 ثانیه**
 
-B1 habe ich. Jetzt kommt Jobcenter-Deutsch!
+Hier. Wasser für den zweiten Satz!
 
-B1 را دارم؛ حالا نوبت زبان جاب‌سنتر است!
+بفرما؛ آب برای جملهٔ دوم!
 
-منبعِ تجربهٔ واقعی: https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio
-
-پایان مشکل را معجزه‌وار حل نمی‌کند: مدرک و مهلت مشخص شده و مارتا درخواست توضیح روشن می‌کند؛ تأیید مزایا یا پاسخ اداره جعل نمی‌شود.
+منبعِ مشکل واقعی: https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio

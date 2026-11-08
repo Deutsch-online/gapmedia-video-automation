@@ -181,9 +181,12 @@ def close_credit_attempt(status):
 
 def due(state, config, now=None, force=False):
     local = local_date(now)
-    from cinematic_daily import daily_slot
+    from cinematic_daily import daily_slot,owner_included_slot
     scheduled = daily_slot(state, config, local, force)
     if scheduled is not None:
+        if not scheduled[0] and scheduled[1] in ('already-delivered','daily-production-already-started'):
+            owner_slot=owner_included_slot(state,config,local,force)
+            if owner_slot is not None:return owner_slot
         return scheduled
     date = local.date().isoformat()
     request = config.get('manual_request', {})

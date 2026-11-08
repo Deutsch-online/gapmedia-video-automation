@@ -91,3 +91,27 @@ class DailyTests(unittest.TestCase):
 
 
 if __name__ == '__main__':unittest.main()
+
+class ExplicitOwnerRequestTests(unittest.TestCase):
+    def test_extra_request_is_scoped_single_use_and_never_automatic(self):
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        from cinematic_daily import owner_included_slot,daily_slot
+        now=datetime(2026,11,8,12,tzinfo=ZoneInfo('Europe/Berlin'))
+        grant={'id':'owner-test-20261108','episode':20,'story_id':'exact-story','berlin_day':'2026-11-08','expires_at':'2026-11-08T23:00:00+00:00','included_only':True}
+        config={'schedule_mode':'daily-berlin-budget','timezone':'Europe/Berlin','daily_episodes':1,'time':'07:30','time_budget':{'mode':'verified-included-only'},'next_story':{'story_id':'exact-story'},'owner_included_request':grant}
+        state={'next_episode':20,'attempts':{'2026-11-08':1},'deliveries':{'2026-11-08':19},'pending':None}
+        self.assertFalse(daily_slot(state,config,now,True)[0])
+        self.assertIsNone(owner_included_slot(state,config,now,False))
+        accepted=owner_included_slot(state,config,now,True)
+        self.assertEqual(accepted,(True,'explicit-owner-included-request','2026-11-08#owner-test-20261108'))
+        state['attempts'][accepted[2]]=1
+        self.assertIsNone(owner_included_slot(state,config,now,True))
+        self.assertEqual(state['attempts']['2026-11-08'],1)
+        state['attempts'].pop(accepted[2]);state['pending']={'status':'dispatching','plan':{'story_id':'exact-story'}}
+        self.assertIsNone(owner_included_slot(state,config,now,True))
+        state['pending']=None
+        for key,value in [('episode',21),('story_id','another-story'),('berlin_day','2026-11-09'),('expires_at','2026-11-08T09:00:00+00:00'),('included_only',False)]:
+            old=grant[key];grant[key]=value
+            self.assertIsNone(owner_included_slot(state,config,now,True))
+            grant[key]=old
