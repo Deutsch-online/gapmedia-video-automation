@@ -1,0 +1,29 @@
+name: Read actual creative evidence without generation
+on:
+  push:
+    branches: [codex/realistic-comedy]
+    paths: [.github/workflows/creative-evidence.yml]
+permissions:
+  contents: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Read authenticated bot evidence
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os, hashlib, json, urllib.request
+          token=os.environ['TELEGRAM_BOT_TOKEN']
+          signature=hashlib.sha256(('gapmedia-monitor-v1:'+token).encode()).hexdigest()
+          url='https://afghanfollowers-telegram.afghan-video-bot.workers.dev/internal/creative-feedback'
+          request=urllib.request.Request(url,headers={'X-Project-Authorization':signature})
+          try:
+              with urllib.request.urlopen(request,timeout=30) as response: evidence=json.load(response)
+              print('ACTUAL_CREATIVE_EVIDENCE='+json.dumps(evidence,ensure_ascii=False))
+          except Exception as exc:
+              print('Evidence unavailable: '+type(exc).__name__)
+              raise
+          PY
