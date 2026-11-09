@@ -1,0 +1,102 @@
+name: Preserve and deliver the verified five-second recovery preview
+on:
+  push:
+    branches: [codex/finish-breath-comedy]
+    paths: [.github/workflows/breath-preserve-preview.yml]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install CPU-only preview tools
+        run: |
+          pip install pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-recovery-first-take
+          run-id: 42606624191
+          github-token: ${{ github.token }}
+          path: renders/cinematic-series-cache
+      - name: Render two clearly labelled previews without GPU
+        run: |
+          PYTHONPATH=ai-cast python - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          import cinematic_design as design
+          root=Path('renders/cinematic-series-cache/e0020-original-cast-realistic-v1')
+          folder=Path('renders/breath-recovery-preview');folder.mkdir(parents=True,exist_ok=True)
+          state=json.loads(Path('.cinematic-series-state.json').read_text())
+          scene=state['pending']['plan']['scenes'][0]
+          design.prepare_captions({'scenes':[scene]},folder)
+          graph='[0:v]'+design.full_frame_layout()+'[v];'+design.glass_filters('v',2,3)
+          for platform,bitrate in [('tiktok','4500k'),('instagram','3500k')]:
+              target=folder/(platform+'-5s-preview.mp4')
+              subprocess.run(['ffmpeg','-v','error','-y','-i',str(root/'00.mp4'),'-i',str(root/'00.aligned.wav'),
+                  '-loop','1','-i',str(folder/'caption-00.png'),'-loop','1','-i',str(folder/'glass-mask.png'),
+                  '-filter_complex_threads','1','-filter_complex',graph,'-map','[captioned]','-map','1:a',
+                  '-t','5','-c:v','libx264','-preset','fast','-b:v',bitrate,'-pix_fmt','yuv420p',
+                  '-c:a','aac','-b:a','192k','-movflags','+faststart',str(target)],check=True)
+              data=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(target)]))
+              video=next(s for s in data['streams'] if s['codec_type']=='video')
+              assert (video['width'],video['height'])==(1080,1920) and abs(float(video['duration'])-5)<.001
+          (folder/'preview-status.json').write_text(json.dumps({'kind':'preview-only','completed_seconds':5,'target_seconds':45,'full_episode_delivered':False,'source_run':42606624191,'source_native':[736,1248],'no_gpu_requested':True}))
+          PY
+      - name: Deliver preview privately with durable intent and receipts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import {readFileSync,writeFileSync,existsSync} from 'node:fs';
+          import {execFileSync} from 'node:child_process';
+          import {telegramConfig,verifyDelivery,sendVideo} from './lib/telegram.mjs';
+          const path='.breath-recovery-preview-delivery.json';
+          const delivery=existsSync(path)?JSON.parse(readFileSync(path,'utf8')):{kind:'preview-only',seconds:5,target_seconds:45,platforms:{}};
+          const save=()=>{
+            writeFileSync(path,JSON.stringify(delivery,null,2)+'\n');
+            execFileSync('git',['config','user.name','GapMedia Automation']);
+            execFileSync('git',['config','user.email','automation@gapmedia.local']);
+            execFileSync('git',['add',path]);
+            execFileSync('git',['commit','-m','Record private recovery preview delivery']);
+            execFileSync('git',['push','origin','HEAD']);
+          };
+          const tg=telegramConfig(process.env);
+          const verified=await verifyDelivery({token:tg.token,chatId:tg.reviewChatId,requirePrivate:true});
+          if(!verified.ok)throw Error('Private delivery verification failed');
+          for(const platform of ['tiktok','instagram']){
+            const prior=delivery.platforms[platform];
+            if(prior?.message_id)continue;
+            if(prior?.status==='dispatching')throw Error('Unresolved preview delivery; do not replay');
+            delivery.platforms[platform]={status:'dispatching'};save();
+            const result=await sendVideo({token:tg.token,chatId:tg.reviewChatId,
+              file:'renders/breath-recovery-preview/'+platform+'-5s-preview.mp4',attempts:1,
+              caption:'5s Vorschau — unvollständig · '+platform});
+            if(!result?.message_id)throw Error('Preview receipt missing');
+            delivery.platforms[platform]={status:'sent',message_id:result.message_id};save();
+          }
+          console.log('PRIVATE_PREVIEW_RECEIPTS='+JSON.stringify(delivery));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-preview-and-preserved-source
+          path: |
+            renders/breath-recovery-preview/
+            renders/cinematic-series-cache/e0020-original-cast-realistic-v1/
+          retention-days: 30
