@@ -43,7 +43,7 @@
   "time_budget": {
     "mode": "verified-included-only",
     "reserve_seconds": 30,
-    "minimum_stage_seconds": 120,
+    "minimum_stage_seconds": 720,
     "accounting": "provider reservation units, including hardware multipliers",
     "unverified_settlement": "retain full reservation",
     "paid_fallback": false,
@@ -70,7 +70,7 @@
     "speech_backend": "longcat-hq",
     "provider_gpu_duration_seconds": 240,
     "provider_quota_multiplier": 2,
-    "provider_reservation_units": 480,
+    "provider_reservation_units": 720,
     "from_episode": 19,
     "asset_profile": "original-cast-realistic-v1",
     "subtitle_safe_area": {
@@ -84,7 +84,14 @@
     "subtitle_outline_pixels": 1,
     "render_style": "near-photoreal 3D adults with natural human anatomy",
     "native_resolution": "720p",
-    "acceleration": "Exact 8-step"
+    "acceleration": "DBCache fast",
+    "provider_declared_reservation_units": 480,
+    "recovery_artifact": {
+      "episode": 20,
+      "run_id": 42606624191,
+      "name": "verified-recovery-first-take",
+      "story_id": "project-b1-jobcenter-breath-v2"
+    }
   },
   "story_quality": {
     "from_episode": 20,

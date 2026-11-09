@@ -1,0 +1,22 @@
+{
+  "source_run": 42606624191,
+  "status": "native-first-take-passed",
+  "source_native": [
+    736,
+    1248
+  ],
+  "video_seconds": 5,
+  "frames": 125,
+  "fps": 25,
+  "voice_input": "exact cached 5s aligned German WAV",
+  "quota_before": 1683.642444,
+  "quota_after": 1041.791668,
+  "observed_account_debit": 641.850776,
+  "published_gpu_reservation": 480,
+  "conservative_future_reservation": 720,
+  "limitations": [
+    "Observed account debit may include concurrent consumers; it is not an isolated provider billing measurement.",
+    "One successful native take does not prove whole-episode lip synchronization.",
+    "Full episode has not been completed or delivered."
+  ]
+}
