@@ -3,6 +3,8 @@ on:
   schedule:
     # 07:30 Europe/Berlin: the date gate admits one production start across both DST offsets.
     - cron: '30 5,6 * * *'
+    # Pending quota recovery checks only; the Berlin-day gate still admits one actual start.
+    - cron: '25 * * * *'
   push:
     branches: [main, codex/cinematic-series-daily]
     paths:
@@ -25,6 +27,7 @@ on:
       - ai-cast/cinematic_design.py
       - ai-cast/cinematic_ltx2.py
       - ai-cast/cinematic_longcat.py
+      - tests/test_light_budget_recovery.py
       - ai-cast/cinematic_social.py
       - ai-cast/story-bank.json
       - ai-cast/cinematic_time_budget.py
@@ -97,6 +100,7 @@ jobs:
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
+          python -m unittest discover -s tests -p test_light_budget_recovery.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m py_compile ai-cast/wan2gp_worker.py
           python ai-cast/cinematic-series.py check
@@ -106,6 +110,8 @@ jobs:
         id: gate
         env:
           INPUT_FORCE: ${{ inputs.force }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          BUDGET_RECOVERY_TICK: ${{ github.event.schedule == '25 * * * *' }}
         run: |
           set -euo pipefail
           force=false

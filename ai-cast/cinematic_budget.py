@@ -53,6 +53,19 @@ def read_quota(token):
     return remaining
 
 
+
+def read_reset_at(token=None):
+    """Read the service's own reset timestamp; never infer it from the calendar."""
+    token=token or os.getenv('HF_TOKEN')
+    if not token:raise RuntimeError('Quota reset credential unavailable')
+    req=urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',
+                               headers={'Authorization':'Bearer '+token})
+    with urllib.request.urlopen(req,timeout=20) as response:data=json.load(response)
+    stamp=datetime.fromisoformat(data['resetsAt'].replace('Z','+00:00'))
+    if stamp.tzinfo is None or stamp<=datetime.now(timezone.utc):
+        raise ValueError('Quota reset timestamp is not a verified future instant')
+    return stamp
+
 def guard(token, required_seconds, allow_credit=True):
     if not token:
         return  # Anonymous calls cannot bill the account.
@@ -145,4 +158,3 @@ def run_gpu(fn, required_seconds):
             build.TOKEN = previous
     prefix = 'quota: ' if any('quota' in error.lower() for error in errors) else ''
     raise RuntimeError(prefix + 'All eligible free GPU routes exhausted: ' + ' | '.join(errors))
-
