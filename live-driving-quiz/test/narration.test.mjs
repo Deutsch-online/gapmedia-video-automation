@@ -73,7 +73,7 @@ test('lesson voice buffers once, waits for other audio and stops immediately on 
 
 test('careful Persian keeps suffixes/ezafe, pronounces explicit share differently from milk, and slows the voice',()=>{
  const code="import importlib.util,json; s=importlib.util.spec_from_file_location('voice','prepare-narration.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps({'text':m.speech_text('می‌خواهم گزینه‌ی درست، همراهی شما، شییر و share و شیر و پخش زنده','fa'),'scale':m.PERSIAN_LENGTH_SCALE,'volume':m.PERSIAN_VOLUME},ensure_ascii=False))";
- const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.equal(out.scale,1.25);assert.equal(out.volume,.78);assert.match(out.text,/می‌خواهم/);assert.match(out.text,/گزینهٔ درست/);assert.match(out.text,/همراهیِ شما/);assert.match(out.text,/شِیر و شِیر و شیر/);assert.match(out.text,/لایف/);assert.doesNotMatch(out.text,/پخش زنده/);
+ const out=JSON.parse(execFileSync('python3',['-c',code],{cwd:new URL('..',import.meta.url),encoding:'utf8'}));assert.equal(out.scale,1.25);assert.equal(out.volume,.78);assert.match(out.text,/می‌خواهم/);assert.match(out.text,/گزینهٔ درست/);assert.match(out.text,/همراهیِ شما/);assert.match(out.text,/همرسانی و همرسانی و شیر/);assert.doesNotMatch(out.text,/شییر|شِیر/);assert.match(out.text,/لایف/);assert.doesNotMatch(out.text,/پخش زنده/);
 });
 test('Persian speech mode requests only Persian welcome even when both welcome languages are selected',async()=>{
  const {ctx,played}=fixture(),urls=[],speaker=new WelcomeAnnouncer({fetchAudio:async url=>{urls.push(url);return {ok:true,arrayBuffer:async()=>new ArrayBuffer(8)};}});

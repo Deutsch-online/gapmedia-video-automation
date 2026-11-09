@@ -26,7 +26,7 @@ import {LocalRecognition} from './local-recognition.mjs';
 const localRecognition=new LocalRecognition();
 const auditRecognition=new LocalRecognition({timeout:120000});
 const pronunciationAudit={state:"idle",lastError:null,checked:0};
-import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings} from './live-assistant.mjs';
+import {LiveAssistant,ASSISTANT_DEFAULTS,validAssistantSettings,normalizeAssistantSettings} from './live-assistant.mjs';
 import {answerComment,teachingNote,explainQuestion} from './teaching.mjs';
 import {suspectWords,auditKey} from './pronunciation-audit.mjs';
 import {TeacherProfile,pronunciationKey,wordPattern,parseTeacherCommand,normalWord,validWord,validateSentenceAudio,textHash,validateWordAudio} from './teacher-profile.mjs';
@@ -83,7 +83,7 @@ const validPresenter=value=>value&&typeof value.enabled==='boolean'&&Number.isIn
 if(validPresenter(loadedProgress?.presenterDisplay))settings.presenterDisplay=loadedProgress.presenterDisplay;else if(!validPresenter(settings.presenterDisplay))settings.presenterDisplay=defaults.presenterDisplay;
 const validJoinDisplay=value=>value&&typeof value.enabled==='boolean'&&['right','left'].includes(value.side)&&[56,64,72,96,112,144,160,192].includes(value.size)&&Number.isInteger(value.bottom)&&value.bottom>=80&&value.bottom<=500;
 if(validJoinDisplay(loadedProgress?.joinDisplay))settings.joinDisplay=loadedProgress.joinDisplay;else if(!validJoinDisplay(settings.joinDisplay))settings.joinDisplay=defaults.joinDisplay;
-if(validAssistantSettings(loadedProgress?.assistant))settings.assistant=loadedProgress.assistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
+const savedAssistant=normalizeAssistantSettings(loadedProgress?.assistant);if(savedAssistant)settings.assistant=savedAssistant;else if(!validAssistantSettings(settings.assistant))settings.assistant={...ASSISTANT_DEFAULTS};
 // Upgrade existing small bubbles once; subsequent explicit size choices persist.
 if((loadedProgress?.joinDisplay?loadedProgress.joinBubbleVersion:settings.joinBubbleVersion)!==3&&settings.joinDisplay.size<160)settings.joinDisplay={...settings.joinDisplay,size:160};settings.joinBubbleVersion=3;
 let teacher=new TeacherProfile(loadedProgress?.teacherProfile||settings.teacherProfile||{});settings.teacherProfile=teacher.export();
@@ -159,7 +159,7 @@ const reconnect=new LiveReconnect({enabled:Boolean(hosting.publicOrigin)&&settin
 let resumeOnReconnect=false,connectGeneration=0;
 let live={status:'disconnected',message:'حالت آزمایشی؛ هیچ گیفت واقعی دریافت نمی‌شود.',catalog:[]};
 let recent=[],lastReject=null;let recentJoins=[];
-function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const message=String(data.common?.msgId||'');const key=message&&!/^0+$/.test(message)?message:randomUUID();if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,avatar:profileAvatar(data),at:Date.now()});recentJoins=recentJoins.slice(-64);}
+function receiveJoin(data){const name=String(data.user?.nickname||data.user?.displayId||data.user?.uniqueId||"Besucher").slice(0,60);const message=String(data.common?.msgId||'');const key=message&&!/^0+$/.test(message)?message:randomUUID();if(recentJoins.some(j=>j.key===key))return;recentJoins.push({key,name,avatar:profileAvatar(data),at:Date.now()});recentJoins=recentJoins.slice(-64);assistant.noteJoin(data);}
 const freshTraffic=()=>({likesReceived:0,commentsReceived:0,answerCommentsReceived:0,commentsAccepted:0,giftsReceived:0,giftsAccepted:0,giftProfilesRecorded:0,giftProfilesUpdated:0,giftProgressReceived:0,giftDisplayRejected:0,giftDuplicates:0,lastGiftDisplayReject:null,lastCommentReject:null,lastGiftReject:null});
 let traffic=freshTraffic();let giftDisplayEvents=[];
 function recordGiftDisplay(event,result){
