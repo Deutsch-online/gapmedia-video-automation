@@ -43,7 +43,7 @@
   "time_budget": {
     "mode": "verified-included-only",
     "reserve_seconds": 30,
-    "minimum_stage_seconds": 720,
+    "minimum_stage_seconds": 480,
     "accounting": "provider reservation units, including hardware multipliers",
     "unverified_settlement": "retain full reservation",
     "paid_fallback": false,
@@ -67,10 +67,10 @@
     "de_font_size": 48,
     "fa_font_size": 40,
     "bold": true,
-    "speech_backend": "longcat-hq",
+    "speech_backend": "longcat-light",
     "provider_gpu_duration_seconds": 240,
     "provider_quota_multiplier": 2,
-    "provider_reservation_units": 720,
+    "provider_reservation_units": 480,
     "from_episode": 19,
     "asset_profile": "original-cast-realistic-v1",
     "subtitle_safe_area": {
@@ -83,8 +83,8 @@
     },
     "subtitle_outline_pixels": 1,
     "render_style": "near-photoreal 3D adults with natural human anatomy",
-    "native_resolution": "720p",
-    "acceleration": "DBCache fast",
+    "native_resolution": "480p",
+    "acceleration": "DBCache faster",
     "provider_declared_reservation_units": 480,
     "recovery_artifact": {
       "episode": 20,

@@ -56,4 +56,38 @@ class HighQualityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Comedy requires'):
             module.validate_plan(plan,20,[],config)
 
+class LightProfileTests(unittest.TestCase):
+    def test_light_requests_480p_and_keeps_the_full_published_reservation(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);raw=root/'raw.mp4';raw.write_bytes(b'fixture')
+            client=types.SimpleNamespace(predict=Mock(return_value=str(raw)))
+            with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=lambda _:client),
+                 'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
+                 patch.object(hq,'verify_live_contract'),patch.object(ltx,'reject_whiteout'), \
+                 patch.object(speech,'probe',return_value={'streams':[{'codec_type':'video','width':512,'height':864}]}), \
+                 patch.object(budget,'run_gpu',side_effect=lambda fn,required_seconds:fn()) as guard:
+                hq.generate_take(root/'still.png',root/'same-wav.wav',root/'out.mp4','Same motion.',1,light=True)
+            self.assertEqual(client.predict.call_args.args[3],'480p')
+            self.assertEqual(client.predict.call_args.args[6],'DBCache faster')
+            self.assertEqual(client.predict.call_args.args[1],str(root/'same-wav.wav'))
+            self.assertEqual(guard.call_args.kwargs['required_seconds'],480)
+
+    def test_completed_high_resolution_cache_is_preserved_but_changed_audio_is_not(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);image=root/'still.png';audio=root/'audio.wav';output=root/'take.mp4'
+            image.write_bytes(b'image');audio.write_bytes(b'approved audio');output.write_bytes(b'valid take fixture')
+            saved={'audio_sha256':speech.audio_sha(audio),'image_sha256':speech.audio_sha(image),
+                   'model':speech.model_identity('longcat-hq'),'motion':'wave','seed':5,'timing':'aligned-wav-native-speed-v1'}
+            marker=output.with_suffix('.speech.json');marker.write_text(json.dumps(saved))
+            info={'streams':[{'codec_type':'video','width':736,'height':1248}],'format':{'duration':'5'}}
+            with patch.object(speech,'generate') as generate,patch.object(speech,'probe',return_value=info):
+                speech.ensure_clip(image,audio,output,'wave',5,backend_name='longcat-light')
+                generate.assert_not_called()
+                self.assertEqual(json.loads(marker.read_text()),saved)
+                audio.write_bytes(b'changed words')
+                speech.ensure_clip(image,audio,output,'wave',5,backend_name='longcat-light')
+                generate.assert_called_once()
+            self.assertEqual(json.loads(marker.read_text())['model'],speech.model_identity('longcat-light'))
+
+
 if __name__=='__main__':unittest.main()

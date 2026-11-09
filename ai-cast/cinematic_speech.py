@@ -11,11 +11,14 @@ MODEL = os.getenv('LIPSYNC_SPACE', 'victor/LongCat-Video-Avatar-1.5')
 
 def backend(name=None):
     name = name or os.getenv('CINEMATIC_SPEECH_BACKEND', 'gradio')
-    if name not in ('gradio', 'wan2gp', 'ltx2', 'longcat-hq'):
+    if name not in ('gradio', 'wan2gp', 'ltx2', 'longcat-hq', 'longcat-light'):
         raise ValueError('Unknown cinematic speech backend: ' + name)
     return name
 
 def model_identity(name=None):
+    if backend(name) == 'longcat-light':
+        from cinematic_longcat import SPACE
+        return 'longcat-light:' + SPACE + ':480p-dbcache-faster-clean-native5s-v1'
     if backend(name) == 'longcat-hq':
         from cinematic_longcat import SPACE
         return 'longcat-hq:' + SPACE + ':720p-dbcache-fast-clean-native5s-v2'
@@ -53,6 +56,9 @@ def aligned_audio(source, target):
 def generate(png, audio, output, motion, seed, backend_name=None):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finishing cannot generate speaking clips')
+    if backend(backend_name) == 'longcat-light':
+        from cinematic_longcat import generate_take
+        return generate_take(png,audio,output,motion,seed,light=True)
     if backend(backend_name) == 'longcat-hq':
         from cinematic_longcat import generate_take
         return generate_take(png,audio,output,motion,seed)
@@ -92,7 +98,18 @@ def ensure_clip(png, audio, output, motion, seed, backend_name=None):
     marker = output.with_suffix('.speech.json')
     signature = {'audio_sha256': audio_sha(audio), 'image_sha256': audio_sha(png),
                  'model': model_identity(backend_name), 'motion': motion, 'seed': seed, 'timing': 'aligned-wav-native-speed-v1'}
-    if not output.exists() or not marker.exists() or json.loads(marker.read_text()) != signature:
+    saved=json.loads(marker.read_text()) if marker.exists() else None
+    compatible=saved==signature
+    # Preserve a completed higher-resolution take under an explicitly lighter profile.
+    # Audio, image, motion, seed and timing still have to match exactly; keep its true marker.
+    if (not compatible and backend(backend_name)=='longcat-light' and isinstance(saved,dict)
+            and saved.get('model')==model_identity('longcat-hq')
+            and {**saved,'model':signature['model']}==signature and output.exists()):
+        info=probe(output)
+        video=next(s for s in info['streams'] if s['codec_type']=='video')
+        compatible=(min(video['width'],video['height'])>=720 and
+                    5<=float(info['format']['duration'])<=5.3)
+    if not output.exists() or not marker.exists() or not compatible:
         output.unlink(missing_ok=True)
         marker.unlink(missing_ok=True)
         if backend_name:
