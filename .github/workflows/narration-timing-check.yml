@@ -1,0 +1,41 @@
+name: Measure actual next-episode German narration before GPU
+on:
+  push:
+    branches: [codex/fix-breath-narration]
+permissions:
+  contents: read
+jobs:
+  narration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU speech measurement tools
+        run: |
+          pip install 'edge-tts>=7.2,<8'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Measure all nine real voice clips at native speed
+        run: |
+          PYTHONPATH=ai-cast python - <<'PY'
+          import importlib.util,json
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('series','ai-cast/cinematic-series.py')
+          m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          state=json.loads(Path('.cinematic-series-state.json').read_text())
+          config=json.loads(Path('.cinematic-series.json').read_text())
+          plan=state['pending']['plan']
+          m.validate_plan(plan,state['next_episode'],state['history'],config)
+          folder=Path('renders/narration-fix-proof')
+          m.prepare_narration(plan,folder,config,state['history'])
+          print('ACTUAL_NARRATION_TIMING='+json.dumps(json.loads((folder/'narration-timing.json').read_text())))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: actual-native-speed-narration-proof
+          path: renders/narration-fix-proof/
+          retention-days: 7
