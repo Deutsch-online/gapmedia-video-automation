@@ -88,8 +88,9 @@
     "provider_declared_reservation_units": 480,
     "recovery_artifact": {
       "episode": 20,
-      "run_id": 42606624191,
-      "name": "verified-recovery-first-take",
+      "run_id": 42612659924,
+      "name": "recovery-preview-and-preserved-source",
+      "extract_path": "renders",
       "story_id": "project-b1-jobcenter-breath-v2"
     }
   },

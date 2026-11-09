@@ -162,6 +162,7 @@ jobs:
               with open(os.environ['GITHUB_OUTPUT'],'a') as output:
                   output.write('run_id='+str(artifact['run_id'])+'\n')
                   output.write('artifact_name='+artifact['name']+'\n')
+                  output.write('extract_path='+artifact.get('extract_path','renders/cinematic-series-cache')+'\n')
           PY
       - uses: actions/download-artifact@v4
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true' && steps.recovery.outputs.run_id != ''
@@ -169,7 +170,7 @@ jobs:
           name: ${{ steps.recovery.outputs.artifact_name }}
           run-id: ${{ steps.recovery.outputs.run_id }}
           github-token: ${{ github.token }}
-          path: renders/cinematic-series-cache
+          path: ${{ steps.recovery.outputs.extract_path }}
       - name: Make, check and deliver the next exact-duration episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
