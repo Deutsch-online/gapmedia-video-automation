@@ -1,11 +1,13 @@
-"""Single visible speaker, 720p exact inference; fail closed on changed quota contract."""
+"""Native 720p single-speaker takes with conservative charged-time admission."""
 import ast
 import shutil
 import urllib.request
 from pathlib import Path
 
 SPACE = 'victor/LongCat-Video-Avatar-1.5'
-QUOTA_MAXIMUM = 480  # published 240s xlarge reservation, charged twice
+ACCELERATION = 'DBCache fast'
+DECLARED_QUOTA_MAXIMUM = 480  # published 240s xlarge, charged twice
+QUOTA_MAXIMUM = 720  # conservative admission reservation after a 641.85-unit observed account debit
 _VERIFIED = False
 
 
@@ -24,7 +26,7 @@ def verify_contract(source):
             kw={k.arg:k.value for k in decorator.keywords}
             if (isinstance(kw.get('duration'),ast.Name) and kw['duration'].id=='_check_duration'
                     and isinstance(kw.get('size'),ast.Constant) and kw['size'].value=='xlarge'):
-                return QUOTA_MAXIMUM
+                return DECLARED_QUOTA_MAXIMUM
     raise RuntimeError('quota: unverified provider hardware; no GPU submission')
 
 
@@ -49,7 +51,7 @@ def generate_take(image,audio,output,motion,seed):
             'Stable face, natural eyes and restrained mouth movement. '+motion)
     def call():
         result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
-                   prompt,'720p',seed,'Clean speech (fast)','Exact 8-step',api_name='/generate')
+                   prompt,'720p',seed,'Clean speech (fast)',ACCELERATION,api_name='/generate')
         result=result[0] if isinstance(result,(list,tuple)) else result
         if isinstance(result,dict):
             result=result.get('video',result.get('path',result))

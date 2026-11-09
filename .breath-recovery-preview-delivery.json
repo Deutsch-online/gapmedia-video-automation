@@ -1,0 +1,15 @@
+{
+  "kind": "preview-only",
+  "seconds": 5,
+  "target_seconds": 45,
+  "platforms": {
+    "tiktok": {
+      "status": "sent",
+      "message_id": 2881
+    },
+    "instagram": {
+      "status": "sent",
+      "message_id": 2882
+    }
+  }
+}

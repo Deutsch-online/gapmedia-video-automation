@@ -18,7 +18,7 @@ def backend(name=None):
 def model_identity(name=None):
     if backend(name) == 'longcat-hq':
         from cinematic_longcat import SPACE
-        return 'longcat-hq:' + SPACE + ':720p-exact8-clean-native5s-v1'
+        return 'longcat-hq:' + SPACE + ':720p-dbcache-fast-clean-native5s-v2'
     if backend(name) == 'ltx2':
         from cinematic_ltx2 import SPACE
         return 'ltx2:' + SPACE + ':5s-8step-duo-v2'

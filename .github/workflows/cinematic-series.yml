@@ -147,6 +147,30 @@ jobs:
             cinematic-series-v2-
             comedy-preview-
             cinematic-series-v1-
+      - name: Select the verified recovery artifact only for its exact pending episode
+        id: recovery
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          config=json.loads(Path('.cinematic-series.json').read_text())
+          state=json.loads(Path('.cinematic-series-state.json').read_text())
+          artifact=config.get('visual_profile',{}).get('recovery_artifact',{})
+          plan=(state.get('pending') or {}).get('plan',{})
+          if artifact.get('episode')==state['next_episode'] and artifact.get('story_id')==plan.get('story_id'):
+              with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+                  output.write('run_id='+str(artifact['run_id'])+'\n')
+                  output.write('artifact_name='+artifact['name']+'\n')
+                  output.write('extract_path='+artifact.get('extract_path','renders/cinematic-series-cache')+'\n')
+          PY
+      - uses: actions/download-artifact@v4
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true' && steps.recovery.outputs.run_id != ''
+        with:
+          name: ${{ steps.recovery.outputs.artifact_name }}
+          run-id: ${{ steps.recovery.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ steps.recovery.outputs.extract_path }}
       - name: Make, check and deliver the next exact-duration episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:
