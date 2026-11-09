@@ -6,6 +6,9 @@
     "tiktok": {
       "status": "sent",
       "message_id": 2881
+    },
+    "instagram": {
+      "status": "dispatching"
     }
   }
 }
