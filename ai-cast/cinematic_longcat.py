@@ -6,6 +6,8 @@ from pathlib import Path
 
 SPACE = 'victor/LongCat-Video-Avatar-1.5'
 ACCELERATION = 'DBCache fast'
+LIGHT_ACCELERATION = 'DBCache faster'
+LIGHT_QUOTA_MAXIMUM = 480
 DECLARED_QUOTA_MAXIMUM = 480  # published 240s xlarge, charged twice
 QUOTA_MAXIMUM = 720  # conservative admission reservation after a 641.85-unit observed account debit
 _VERIFIED = False
@@ -40,8 +42,12 @@ def verify_live_contract():
         _VERIFIED=True
 
 
-def generate_take(image,audio,output,motion,seed):
+def generate_take(image,audio,output,motion,seed,light=False):
     verify_live_contract()
+    resolution='480p' if light else '720p'
+    acceleration=LIGHT_ACCELERATION if light else ACCELERATION
+    reservation=LIGHT_QUOTA_MAXIMUM if light else QUOTA_MAXIMUM
+    minimum_side=480 if light else 720
     import shots
     from gradio_client import handle_file
     from cinematic_budget import run_gpu
@@ -51,15 +57,15 @@ def generate_take(image,audio,output,motion,seed):
             'Stable face, natural eyes and restrained mouth movement. '+motion)
     def call():
         result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
-                   prompt,'720p',seed,'Clean speech (fast)',ACCELERATION,api_name='/generate')
+                   prompt,resolution,seed,'Clean speech (fast)',acceleration,api_name='/generate')
         result=result[0] if isinstance(result,(list,tuple)) else result
         if isinstance(result,dict):
             result=result.get('video',result.get('path',result))
             if isinstance(result,dict):result=result['path']
         shutil.copyfile(result,output)
-    run_gpu(call,required_seconds=QUOTA_MAXIMUM)
+    run_gpu(call,required_seconds=reservation)
     video=next(s for s in probe(output)['streams'] if s['codec_type']=='video')
-    if min(video['width'],video['height'])<720:
+    if min(video['width'],video['height'])<minimum_side:
         Path(output).unlink(missing_ok=True)
-        raise RuntimeError('Native video is below 720p; upscaling is not a quality fix')
+        raise RuntimeError('Native video is below the explicitly requested '+resolution+' profile')
     reject_whiteout(output)

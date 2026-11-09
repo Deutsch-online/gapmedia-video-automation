@@ -43,7 +43,7 @@
   "time_budget": {
     "mode": "verified-included-only",
     "reserve_seconds": 30,
-    "minimum_stage_seconds": 720,
+    "minimum_stage_seconds": 480,
     "accounting": "provider reservation units, including hardware multipliers",
     "unverified_settlement": "retain full reservation",
     "paid_fallback": false,
@@ -67,10 +67,10 @@
     "de_font_size": 48,
     "fa_font_size": 40,
     "bold": true,
-    "speech_backend": "longcat-hq",
+    "speech_backend": "longcat-light",
     "provider_gpu_duration_seconds": 240,
     "provider_quota_multiplier": 2,
-    "provider_reservation_units": 720,
+    "provider_reservation_units": 480,
     "from_episode": 19,
     "asset_profile": "original-cast-realistic-v1",
     "subtitle_safe_area": {
@@ -83,14 +83,14 @@
     },
     "subtitle_outline_pixels": 1,
     "render_style": "near-photoreal 3D adults with natural human anatomy",
-    "native_resolution": "720p",
-    "acceleration": "DBCache fast",
+    "native_resolution": "480p",
+    "acceleration": "DBCache faster",
     "provider_declared_reservation_units": 480,
     "recovery_artifact": {
       "episode": 20,
-      "run_id": 42612659924,
-      "name": "recovery-preview-and-preserved-source",
-      "extract_path": "renders",
+      "run_id": 42633910484,
+      "name": "verified-light-recovery-assets",
+      "extract_path": "renders/cinematic-series-cache",
       "story_id": "project-b1-jobcenter-breath-v2"
     }
   },
@@ -101,12 +101,12 @@
     "require_documented_basis": true
   },
   "owner_included_request": {
-    "id": "owner-breath-comedy-20261108",
+    "id": "owner-light-breath-20261109",
     "episode": 20,
     "story_id": "project-b1-jobcenter-breath-v2",
-    "berlin_day": "2026-11-08",
-    "expires_at": "2026-11-08T23:00:00+00:00",
+    "berlin_day": "2026-11-09",
+    "expires_at": "2026-11-09T23:00:00+00:00",
     "included_only": true,
-    "authorization": "Owner explicitly requested this revised video if included credit remains, after reviewing the breathing-and-water punchline."
+    "authorization": "Owner requested a lighter profile for the already approved episode; continue with verified remaining included time only."
   }
 }

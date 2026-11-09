@@ -215,6 +215,20 @@ def due(state, config, now=None, force=False):
         return False, 'before-daily-slot', date
     return True, 'manual' if force else 'daily-slot', date
 
+
+def gate_decision(state,config,force=False,recovery_only=False,quota_check=None):
+    go,reason,date=due(state,config,force=force)
+    if not go:return go,reason,date
+    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked'):
+        return False,'not-waiting-for-budget-recovery',date
+    if config.get('time_budget',{}).get('mode')=='verified-included-only':
+        if quota_check is None:
+            from cinematic_budget import preflight
+            quota_check=preflight()
+        if quota_check.get('status')!='verified' or not quota_check.get('can_admit_minimum_stage'):
+            return False,'waiting-for-verified-included-quota',date
+    return go,reason,date
+
 SEED_LINES = [
  ('marta', 'Guten Morgen! Fahren Sie zum Bahnhof?', 'صبح بخیر! به ایستگاه قطار می‌روید؟', 'Marta stands beside the taxi and politely asks Lukas a question; medium two shot.', 'Marta speaks and raises one hand politely; Lukas listens and nods.', 'conversation.png'),
  ('lukas', 'Ja, natürlich. Steigen Sie bitte ein.', 'بله، البته. لطفاً سوار شوید.', 'Lukas stands by the open passenger door and welcomes Marta; the seat is visible.', 'Lukas speaks and opens the passenger door wider, offering his hand.', None),
@@ -1051,6 +1065,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         speech.aligned_audio(audio, aligned)
         audios.append(aligned)
     parts = []
+    native_takes = []
     for i, scene in enumerate(plan['scenes']):
         budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
@@ -1112,6 +1127,9 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
             speech.ensure_clip(png, audios[i], clip, motion, plan['episode'] * 1009 + i * 11)
         if not clip.exists() or seconds(clip) < 2:
             raise RuntimeError('Genuine character animation is missing; static or loop fallback is not allowed')
+        source_video=next(s for s in ffprobe(clip)['streams'] if s['codec_type']=='video')
+        native_takes.append({'scene':i+1,'width':source_video['width'],'height':source_video['height'],
+                             'model':load_json(clip.with_suffix('.speech.json'),{}).get('model')})
         print(f'Cached scene {i+1}/{len(plan["scenes"])} of episode {plan["episode"]}', flush=True)
     # Finish all GPU work before spending CPU time on layout and muxing.
     graphic_reports = []
@@ -1180,7 +1198,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     if frozen > (3 if preview else plan.get('duration_seconds', DEFAULT_SECONDS) * 13 / 60):
         raise RuntimeError('Episode contains too much frozen footage')
     atomic_json(folder / 'quality.json', {'duration': duration, 'width': 1080, 'height': 1920,
-                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': design.PROFILE if paired else 'cream-large-v2', 'requested_visible_characters': 1, 'audio_conditioned_lips': True, 'lip_sync_measured': False, 'lip_sync_score': None, 'face_and_hand_semantics_verified': False, 'speech_backend': config['visual_profile']['speech_backend'] if paired else 'legacy', 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
+                'genuine_motion': True, 'German_audio': True, 'bilingual_subtitles': True, 'caption_design': design.PROFILE if paired else 'cream-large-v2', 'requested_visible_characters': 1, 'native_takes': native_takes, 'audio_conditioned_lips': True, 'lip_sync_measured': False, 'lip_sync_score': None, 'face_and_hand_semantics_verified': False, 'speech_backend': config['visual_profile']['speech_backend'] if paired else 'legacy', 'no_slow_motion': True, 'pause_music': True, 'music_during_speech_samples': music_report['nonzero_music_samples_during_protected_speech'], 'frozen_seconds': frozen})
     command(['ffmpeg', '-y', '-v', 'error', '-i', final, '-vf', 'fps=1/5,scale=216:-1,tile=5x3',
              '-frames:v', '1', folder / 'contact.jpg'])
     if not preview:
@@ -1315,9 +1333,14 @@ def production(force=False):
             state['pending']['credit_reason'] = str(exc)[:500]
         if 'quota' in str(exc).lower():
             # One deferred continuation per day; never occupy a runner waiting for GPU credits.
-            state['quota_recovery'] = {'date': date, 'not_before':
-                gpu_retry_at(str(exc)).isoformat(),
-                'reason': 'ZeroGPU quota exhausted'}
+            retry_at=gpu_retry_at(str(exc))
+            if strict_budget:
+                try:
+                    retry_at=cinematic_budget.read_reset_at()+timedelta(minutes=2)
+                except Exception:
+                    pass  # Keep the bounded fallback; do not invent an account reset.
+            state['quota_recovery'] = {'date': date, 'not_before':retry_at.isoformat(),
+                'reason': 'Waiting for verified included quota' if strict_budget else 'ZeroGPU quota exhausted'}
             if strict_budget:
                 state['pending']['time_budget_blocked'] = True
                 for key in ('credit_approval_required', 'credit_notice_status', 'credit_notice_message_id'):
@@ -1415,7 +1438,8 @@ def main():
             raise ValueError('The new duration contract must apply from its configured first episode')
         print('Cinematic series plan and duration contract verified')
     elif args.action == 'gate':
-        go, reason, date = due(load_json(STATE, new_state()), load_json(CONFIG), force=args.force)
+        go, reason, date = gate_decision(load_json(STATE, new_state()), load_json(CONFIG), force=args.force,
+                                         recovery_only=os.getenv('BUDGET_RECOVERY_TICK')=='true')
         print(json.dumps({'go': go, 'reason': reason, 'date': date}))
         if os.getenv('GITHUB_OUTPUT'):
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
