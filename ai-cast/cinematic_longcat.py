@@ -5,6 +5,7 @@ import urllib.request
 from pathlib import Path
 
 SPACE = 'victor/LongCat-Video-Avatar-1.5'
+ACCELERATION = 'DBCache fast'
 QUOTA_MAXIMUM = 480  # published 240s xlarge reservation, charged twice
 _VERIFIED = False
 
@@ -49,7 +50,7 @@ def generate_take(image,audio,output,motion,seed):
             'Stable face, natural eyes and restrained mouth movement. '+motion)
     def call():
         result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
-                   prompt,'720p',seed,'Clean speech (fast)','Exact 8-step',api_name='/generate')
+                   prompt,'720p',seed,'Clean speech (fast)',ACCELERATION,api_name='/generate')
         result=result[0] if isinstance(result,(list,tuple)) else result
         if isinstance(result,dict):
             result=result.get('video',result.get('path',result))
