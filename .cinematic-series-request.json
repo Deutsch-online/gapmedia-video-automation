@@ -1,1 +1,6 @@
-{"request":"owner-resume-narration-fixed-20261109","episode":20,"story_id":"project-b1-jobcenter-breath-v2","reason":"Resume the owner-approved pending episode after shortening scenes 0 and 6. All nine actual German voice clips passed the unchanged 4.5s ceiling in run 42599392012. Preserve existing daily counters and verified included-only quota gates."}
+{
+  "request": "owner-light-breath-20261109",
+  "episode": 20,
+  "story_id": "project-b1-jobcenter-breath-v2",
+  "reason": "Owner requested the tested lighter profile. Resume the approved episode using preserved HQ/light takes and remaining verified included quota; preserve daily counters, reserve, and all quality gates."
+}
