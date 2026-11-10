@@ -3106,8 +3106,8 @@
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "original-cast-realistic-comedy-v1"
     },
-    "date": "2026-11-09#owner-light-breath-20261109",
-    "status": "render-failed",
+    "date": "2026-11-10",
+    "status": "rendering",
     "authored_narration_correction": {
       "date": "2026-11-09",
       "failed_run": 42474864231,
@@ -3151,7 +3151,8 @@
     "2026-11-08": 1,
     "2026-11-08#owner-breath-comedy-20261108": 1,
     "2026-11-09": 1,
-    "2026-11-09#owner-light-breath-20261109": 1
+    "2026-11-09#owner-light-breath-20261109": 1,
+    "2026-11-10": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3168,7 +3169,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-09T14:39:10.675414+00:00",
+    "checked_at": "2026-11-10T12:48:18.228787+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -3177,7 +3178,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 826.5561420000001,
+    "remaining_seconds": 2400.0,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
