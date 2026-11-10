@@ -3107,7 +3107,7 @@
       "render_style": "original-cast-realistic-comedy-v1"
     },
     "date": "2026-11-10",
-    "status": "dispatching",
+    "status": "exporting",
     "authored_narration_correction": {
       "date": "2026-11-09",
       "failed_run": 42474864231,
@@ -3120,7 +3120,9 @@
       "prior_gpu_requested": false
     },
     "time_budget_blocked": true,
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2886
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0020-original-cast-realistic-v1/tiktok/e0020-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0020-original-cast-realistic-v1/instagram/e0020-instagram-45s.mp4"
