@@ -3297,7 +3297,7 @@
       "render_style": "original-cast-realistic-comedy-v1"
     },
     "date": "2026-11-11#owner-marta-shortline-20261111",
-    "status": "rendering",
+    "status": "dispatching",
     "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 7=4.90s",
     "authored_narration_correction": {
       "date": "2026-11-11",
@@ -3308,7 +3308,14 @@
       "reason": "Owner requested correcting actual scene-7 narration 4.90s over unchanged 4.5s limit; shorten only this German line and its Persian translation, preserving the approved story and motion.",
       "prior_gpu_requested": false,
       "retiming": false
-    }
+    },
+    "platform_receipts": {},
+    "platform_files": {
+      "tiktok": "renders/cinematic-series/e0021-original-cast-realistic-v1/tiktok/e0021-tiktok-45s.mp4",
+      "instagram": "renders/cinematic-series/e0021-original-cast-realistic-v1/instagram/e0021-instagram-45s.mp4"
+    },
+    "file": "renders/cinematic-series/e0021-original-cast-realistic-v1/tiktok/e0021-tiktok-45s.mp4",
+    "platform": "tiktok"
   },
   "attempts": {
     "2026-10-15": 2,
