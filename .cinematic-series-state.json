@@ -3113,7 +3113,192 @@
       "render_style": "original-cast-realistic-comedy-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "marta-first-job-s01e01-recipe-v1",
+      "title_de": "Martas erster Job (1): Das falsche PDF",
+      "title_fa": "اولین کار مارتا ـ ۱: فایل اشتباهی",
+      "summary": "Marta receives a call about her first café application in Germany. Lukas uploaded her family cake recipe instead of her CV because both files had the same ambiguous label. Marta handles the call herself and accepts an invitation to bring her cake tomorrow. Her broken oven reveals the next obstacle; this is an invented sitcom, not a hiring recommendation or a reported real case.",
+      "cliffhanger": "Tomorrow Marta must bring a cake to the café, but her oven is broken. Chapter two continues from this exact kitchen and deadline, with Lukas offering his kitchen; no sudden hiring or off-screen miracle.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Martas erster Job in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "marta-flat-kitchen-job-call",
+      "location_description": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls",
+      "visual_hook": "Marta freezes over a ringing phone about her café application and tries to hand the call to Lukas.",
+      "everyday_problem": "As a newcomer preparing her first German job application Marta is anxious about an employer's call, made worse by her friend's attachment error.",
+      "practical_resolution": "Marta takes the call herself, identifies the incorrect attachment and agrees to the café's next meeting, while the broken oven creates tomorrow's concrete problem.",
+      "marta_goal": "Marta wants her first café job in Germany and wants to manage the German application call herself despite her nervousness.",
+      "marta_decision": "Marta answers personally, owns the attachment mistake and accepts tomorrow's invitation instead of leaving Lukas to speak for her.",
+      "visual_payoff": "Marta looks from the family cake recipe to her silent broken oven after accepting the invitation to bring a cake tomorrow; the kitchen problem becomes the next episode's story.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace unconnected standalone teaching sketches with an owner-approved continuous first-job sitcom and a concrete next-day objective.",
+        "visible_comic_action": "A confident helper reveals two confusingly named files; the heroine accepts a cake invitation before her broken oven becomes the visual cliffhanger.",
+        "next_experiment": "Test whether a causal visual cliffhanger and a recurring job-search objective encourage return viewing; do not infer improvement without real matched account measurements."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          3,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official German government portal for international jobseekers explains submitting application documents including a CV, often in German and by upload or email. This documents the application/language context, not the invented cake incident.",
+        "invented_elements": [
+          "Marta and Lukas and the café",
+          "all dialogue and file confusion",
+          "employer's cake invitation",
+          "broken oven and tomorrow's deadline"
+        ],
+        "disclosure_de": "Fiktive Serie über den Berufseinstieg. Keine wahre Fallgeschichte."
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Das Café ruft an! Geh du ran!",
+          "fa": "کافه زنگ می‌زند! تو جواب بده!",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta holds out the ringing phone toward her friend off camera with worried raised brows.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta holds out the ringing phone toward her friend off camera with worried raised brows.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Marta holds out the ringing phone toward her friend off camera with worried raised brows.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du willst den Job. Nicht ich!",
+          "fa": "تو کار را می‌خواهی؛ من که نمی‌خواهم!",
+          "scene": "One visible adult lukas in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.",
+          "motion": "Only the visible adult lukas speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Guten Tag. Hier ist Marta.",
+          "fa": "سلام، مارتا هستم.",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Mein Kuchenrezept? Nicht mein Lebenslauf?",
+          "fa": "دستور کیکم؟ نه رزومه‌ام؟",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Lukas! Du hast das Rezept geschickt!",
+          "fa": "لوکاس! تو دستور کیک را فرستاده‌ای!",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone",
+            "laptop"
+          ],
+          "object_action": "Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Beide Dateien hießen: Marta, fertig.",
+          "fa": "اسم هر دو فایل «مارتا، نهایی» بود.",
+          "scene": "One visible adult lukas in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.",
+          "motion": "Only the visible adult lukas speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "laptop"
+          ],
+          "object_action": "Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ja. Das Rezept ist von meiner Mutter.",
+          "fa": "بله؛ دستور کیک از مادرم است.",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Morgen? Mit dem Kuchen? Sehr gern!",
+          "fa": "فردا؟ با کیک؟ با کمال میل!",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Moment. Unser Ofen ist doch kaputt!",
+          "fa": "یک لحظه؛ فر ما که خراب است!",
+          "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.",
+          "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
+          "visible_objects": [
+            "phone",
+            "compact oven"
+          ],
+          "object_action": "Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "resolve"
+        }
+      ],
+      "serial_id": "marta-first-job-s01",
+      "serial_chapter": 1,
+      "episode": 21,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Job applications for newcomers in Germany",
+        "url": "https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung",
+        "excerpt": "börse Vermittlungsagenturen im Check In Deutschland zählt eine vollständige Bewerbung: Anschreiben, Lebenslauf und Zeugnisse. Erfahren Sie, worauf es bei Aufbau, Foto und Vorstellungsgespräch ankommt – inklusive Hilfen wie dem Europass-Lebenslauf. So bewerben Sie sich In Berufen wie Pflege oder Medizin brauchen Sie eine Anerkennung Ihres ausländischen Abschlusses. Prüfen Sie, ob das für Ihren Beruf gilt, und lernen Sie den Ablauf des Anerkennungsverfahrens kennen. Wer braucht eine Anerkennung? Anerkennungsverfahren verstehen Bevor Sie unterschreiben: Verstehen Sie, was im deutschen Arbeitsvertrag steht – von Probezeit und Kündigungsfristen bi",
+        "retrieved_at": "2026-11-11T18:20:18.628338+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "original-cast-realistic-comedy-v1"
+    },
+    "date": "2026-11-11",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -3145,7 +3330,8 @@
     "2026-11-08#owner-breath-comedy-20261108": 1,
     "2026-11-09": 1,
     "2026-11-09#owner-light-breath-20261109": 1,
-    "2026-11-10": 1
+    "2026-11-10": 1,
+    "2026-11-11": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3162,7 +3348,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-11T12:54:30.884548+00:00",
+    "checked_at": "2026-11-11T18:20:16.427096+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
