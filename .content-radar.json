@@ -1,23 +1,86 @@
 {
-  "at": "2026-11-09T06:14:02.435Z",
+  "at": "2026-11-11T14:10:39.532Z",
   "rows": [
     {
       "cat": "instagram",
-      "title": "Instagram Features: videos de 90 minutos al estilo YouTube",
-      "url": "https://fastcompany.mx/2026/11/08/instagram-features-video-horizontal-youtube/",
-      "date": "2026-11-08",
+      "title": "Instagram’s Effect Builder makes new filters from AI prompts | The Verge",
+      "url": "https://www.theverge.com/tech/1030061/instagram-ai-effect-builder-filters",
+      "date": "2026-11-09",
       "sources": 8,
       "clear": true,
-      "score": 30
+      "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram launches visual effects creator for Edits",
+      "url": "https://tech.yahoo.com/social-media/articles/instagram-launches-visual-effects-creator-230659918.html",
+      "date": "2026-11-09",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tiktok",
+      "title": "(November 9) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
+      "date": "2026-11-09",
+      "sources": 8,
+      "clear": true,
+      "score": 28
     },
     {
       "cat": "tools",
-      "title": "We Test Pika's Open-Weight H3 Flex and Debate Epic Opening M — VP Land",
-      "url": "https://www.vp-land.com/stories/we-test-pikas-open-weight-h3-flex-and-debate-epic-opening-megascans-to-ai-training",
-      "date": "2026-11-07",
-      "sources": 7,
+      "title": "Introducing SwitchX 3.0",
+      "url": "https://beeble.ai/research/switchx-3-0",
+      "date": "2026-11-10",
+      "sources": 8,
       "clear": true,
       "score": 28
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram wants longer videos. Will creators find them worth the cost? | Today News",
+      "url": "https://www.livemint.com/news/instagram-wants-longer-videos-will-creators-find-them-worth-the-cost-11793888965355.html",
+      "date": "2026-11-08",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Creator Account: 7 Features TikTok Lists for a General Account",
+      "url": "https://smmtoolbox.com/tiktok-creator-account-what-to-use-now/",
+      "date": "2026-11-08",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Comments: 4 New Features, From 60-Second Voice to 9-Photo Carousels",
+      "url": "https://smmtoolbox.com/tiktok-comments-voice-polls-photo-carousels/",
+      "date": "2026-11-08",
+      "sources": 8,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "Seed News - ByteDance Seed Team",
+      "url": "https://seed.bytedance.com/en/blog/more-realistic-images-more-stable-editing-across-100-rounds-introducing-seedream-5-5/",
+      "date": "2026-11-09",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "Daz Studio can now turn a scene into an AI image or video",
+      "url": "https://renderu.com/en/news/post/28856",
+      "date": "2026-11-11",
+      "sources": 4,
+      "clear": true,
+      "score": 26
     },
     {
       "cat": "instagram",
@@ -26,34 +89,7 @@
       "date": "2026-11-06",
       "sources": 8,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Just Released A Standalone Shop App, But It's Not In America Just Yet",
-      "url": "https://www.engadget.com/2308419/tiktok-just-released-a-standalone-shop-app-but-its-not-in-america-just-yet/",
-      "date": "2026-11-05",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Gemini Omni Flash 1.2 Tested: Editing Video by Chatting",
-      "url": "https://www.aiformortals.co/blog/gemini-omni-flash-1-2-tested",
-      "date": "2026-11-05",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Viggle Remake: open H3 LoRAs that re-shoot any clip",
-      "url": "https://thereelstack.com/lab/viggle-remake-open-h3-loras-video-agent-mcp",
-      "date": "2026-11-06",
-      "sources": 8,
-      "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "instagram",
@@ -62,7 +98,7 @@
       "date": "2026-11-05",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tiktok",
@@ -71,61 +107,25 @@
       "date": "2026-11-05",
       "sources": 8,
       "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "tiktok",
-      "title": "TikTok Creator Studio is now part of TikTok Business Center | Soocials",
-      "url": "https://soocials.com/blog/tiktok-creator-studio-is-now-part-of-tiktok-business-center/",
-      "date": "2026-11-03",
-      "sources": 5,
+      "title": "TikTok New Features for Creators: 2026 Guide & Strategies | SimplePosty",
+      "url": "https://simpleposty.com/blog/how-to-make-the-most-of-tiktok-s-new-features-for-creators-2026",
+      "date": "2026-11-05",
+      "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 24
     },
     {
       "cat": "tools",
-      "title": "New Feature — Kling 4.0 Video, GPT Image 2.5 Fast and Rerun Anywhere | GoStudio.ai Product Updates",
-      "url": "https://www.gostudio.ai/product-updates/kling-4-gpt-image-2-5-fast-and-rerun",
-      "date": "2026-11-04",
-      "sources": 6,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram takes second shot at long videos, but creators say Features may be a tough sell",
-      "url": "https://www.moneycontrol.com/technology/instagram-takes-second-shot-at-long-videos-but-creators-say-features-may-be-a-tough-sell-article-14066341.html",
-      "date": "2026-11-02",
-      "sources": 8,
-      "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok updates every social media manager needs to know: Here’s how TikTok is changing in 2026 [updated monthly]  | HeyOrca",
-      "url": "https://www.heyorca.com/blog/tiktok-social-news",
+      "title": "GPT Image 2.6, Gemini Omni Flash 1.2, Kling 4.0 Flash and More | Glif",
+      "url": "https://glif.app/changelog/2026-11-05-gpt-image-26-video-dubbing-and-new-models",
       "date": "2026-11-05",
-      "sources": 6,
-      "clear": false,
-      "score": 23
-    },
-    {
-      "cat": "tiktok",
-      "title": "(November 2) 2026 TikTok updates, news, and features - SocialBee",
-      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
-      "date": "2026-11-02",
       "sources": 8,
       "clear": true,
-      "score": 23
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram Is Going Beyond Reels With Features, Clips As Reels & Series: Adam Mosseri Explains What Is Changing",
-      "url": "https://gadgetsnow.indiatimes.com/tech-news/instagram-is-going-beyond-reels-with-features-clips-as-reels-series-adam-mosseri-explains-what-is-changing/articleshow/135453569.cms",
-      "date": "2026-11-02",
-      "sources": 8,
-      "clear": false,
-      "score": 20
+      "score": 24
     },
     {
       "cat": "tools",
@@ -134,63 +134,63 @@
       "date": "2026-11-07",
       "sources": 1,
       "clear": true,
-      "score": 13
+      "score": 10
     }
   ],
   "shown": [
     {
       "n": 1,
       "cat": "instagram",
-      "title": "Instagram Features: videos de 90 minutos al estilo YouTube",
-      "url": "https://fastcompany.mx/2026/11/08/instagram-features-video-horizontal-youtube/"
+      "title": "Instagram’s Effect Builder makes new filters from AI prompts | The Verge",
+      "url": "https://www.theverge.com/tech/1030061/instagram-ai-effect-builder-filters"
     },
     {
       "n": 2,
       "cat": "instagram",
-      "title": "Creators see promise in Instagram’s long-form push",
-      "url": "https://digiday.com/media/creators-see-promise-in-instagrams-long-form-push-but-question-whether-exposure-is-enough/"
+      "title": "Instagram launches visual effects creator for Edits",
+      "url": "https://tech.yahoo.com/social-media/articles/instagram-launches-visual-effects-creator-230659918.html"
     },
     {
       "n": 3,
       "cat": "instagram",
-      "title": "You can edit your videos with AI on Instagram’s new desktop Edits app | The Verge",
-      "url": "https://www.theverge.com/tech/1027444/instagram-edits-desktop-ai-agents-muse-mcp"
+      "title": "Instagram wants longer videos. Will creators find them worth the cost? | Today News",
+      "url": "https://www.livemint.com/news/instagram-wants-longer-videos-will-creators-find-them-worth-the-cost-11793888965355.html"
     },
     {
       "n": 4,
-      "cat": "tools",
-      "title": "We Test Pika's Open-Weight H3 Flex and Debate Epic Opening M — VP Land",
-      "url": "https://www.vp-land.com/stories/we-test-pikas-open-weight-h3-flex-and-debate-epic-opening-megascans-to-ai-training"
+      "cat": "tiktok",
+      "title": "(November 9) 2026 TikTok updates, news, and features - SocialBee",
+      "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
     },
     {
       "n": 5,
-      "cat": "tools",
-      "title": "Gemini Omni Flash 1.2 Tested: Editing Video by Chatting",
-      "url": "https://www.aiformortals.co/blog/gemini-omni-flash-1-2-tested"
+      "cat": "tiktok",
+      "title": "TikTok Creator Account: 7 Features TikTok Lists for a General Account",
+      "url": "https://smmtoolbox.com/tiktok-creator-account-what-to-use-now/"
     },
     {
       "n": 6,
-      "cat": "tools",
-      "title": "Viggle Remake: open H3 LoRAs that re-shoot any clip",
-      "url": "https://thereelstack.com/lab/viggle-remake-open-h3-loras-video-agent-mcp"
+      "cat": "tiktok",
+      "title": "TikTok Comments: 4 New Features, From 60-Second Voice to 9-Photo Carousels",
+      "url": "https://smmtoolbox.com/tiktok-comments-voice-polls-photo-carousels/"
     },
     {
       "n": 7,
-      "cat": "tiktok",
-      "title": "TikTok Just Released A Standalone Shop App, But It's Not In America Just Yet",
-      "url": "https://www.engadget.com/2308419/tiktok-just-released-a-standalone-shop-app-but-its-not-in-america-just-yet/"
+      "cat": "tools",
+      "title": "Introducing SwitchX 3.0",
+      "url": "https://beeble.ai/research/switchx-3-0"
     },
     {
       "n": 8,
-      "cat": "tiktok",
-      "title": "TikTok quietly launches a stand-alone TikTok Shop app | TechCrunch",
-      "url": "https://techcrunch.com/2026/11/05/tiktok-quietly-launches-a-standalone-tiktok-shop-app/"
+      "cat": "tools",
+      "title": "Seed News - ByteDance Seed Team",
+      "url": "https://seed.bytedance.com/en/blog/more-realistic-images-more-stable-editing-across-100-rounds-introducing-seedream-5-5/"
     },
     {
       "n": 9,
-      "cat": "tiktok",
-      "title": "TikTok Creator Studio is now part of TikTok Business Center | Soocials",
-      "url": "https://soocials.com/blog/tiktok-creator-studio-is-now-part-of-tiktok-business-center/"
+      "cat": "tools",
+      "title": "Daz Studio can now turn a scene into an AI image or video",
+      "url": "https://renderu.com/en/news/post/28856"
     }
   ]
 }
