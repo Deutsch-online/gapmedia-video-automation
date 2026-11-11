@@ -26,15 +26,15 @@
     "from_episode": 6,
     "premise": "Each story addresses a documented substantial migrant difficulty in Germany: learning German, understanding official letters, discrimination or navigating Jobcenter and immigration offices. Original comic reenactments must identify their factual basis and invented details.",
     "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
-    "continuity": "Nine natural-speed five-second shots: immediate visible problem, two connected comic escalations, practical action and a visible comic payoff. Never mock nationality, accent or vulnerability.",
+    "continuity": "Owner-approved continuing sitcom: Marta's first job in Germany. Each 45s chapter resolves one practical step and its visible consequence sets up tomorrow; keep characters, room, props and unresolved objectives continuous. Submit future chapter scripts before generation.",
     "requested_story": "ai-cast/doctor-appointment-45s.json",
     "graphics": "Clearly labelled illustrative appointment app beside the speaker. A real named app needs verified UI. No real booking, patient data, face cloning or voice cloning.",
     "credit_policy": "Daily production is authorized only within verified included allowance; no paid or anonymous fallback and at most one start per Berlin day.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 20,
-    "story_id": "project-b1-jobcenter-breath-v2",
+    "from_episode": 21,
+    "story_id": "marta-first-job-s01e01-recipe-v1",
     "duration_seconds": 45,
     "require_graphics": false
   },
@@ -108,5 +108,14 @@
     "expires_at": "2026-11-09T23:00:00+00:00",
     "included_only": true,
     "authorization": "Owner requested a lighter profile for the already approved episode; continue with verified remaining included time only."
+  },
+  "serial_story": {
+    "id": "marta-first-job-s01",
+    "title": "Martas erster Job in Deutschland",
+    "from_episode": 21,
+    "approved_chapters": [
+      "marta-first-job-s01e01-recipe-v1"
+    ],
+    "next_chapter_requires_script_approval": true
   }
 }
