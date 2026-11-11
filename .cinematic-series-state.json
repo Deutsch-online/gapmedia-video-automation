@@ -3297,7 +3297,8 @@
       "render_style": "original-cast-realistic-comedy-v1"
     },
     "date": "2026-11-11",
-    "status": "rendering"
+    "status": "render-failed",
+    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 7=4.90s"
   },
   "attempts": {
     "2026-10-15": 2,
