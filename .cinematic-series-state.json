@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 21,
+  "next_episode": 22,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -172,6 +172,22 @@
       "platforms": {
         "tiktok": 2886,
         "instagram": 2887
+      }
+    },
+    "2026-11-11#owner-marta-shortline-20261111": {
+      "episode": 21,
+      "message_id": 2893,
+      "platforms": {
+        "tiktok": 2893,
+        "instagram": 2894
+      }
+    },
+    "2026-11-11": {
+      "episode": 21,
+      "message_id": 2893,
+      "platforms": {
+        "tiktok": 2893,
+        "instagram": 2894
       }
     }
   },
@@ -3111,10 +3127,8 @@
       "story_provider": "project-authored-bank-v1",
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "original-cast-realistic-comedy-v1"
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "story_id": "marta-first-job-s01e01-recipe-v1",
       "title_de": "Martas erster Job (1): Das falsche PDF",
       "title_fa": "اولین کار مارتا ـ ۱: فایل اشتباهی",
@@ -3295,31 +3309,9 @@
       "story_provider": "project-authored-bank-v1",
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "original-cast-realistic-comedy-v1"
-    },
-    "date": "2026-11-11#owner-marta-shortline-20261111",
-    "status": "exporting",
-    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 7=4.90s",
-    "authored_narration_correction": {
-      "date": "2026-11-11",
-      "failed_run": 43076629580,
-      "scene_indices": [
-        7
-      ],
-      "reason": "Owner requested correcting actual scene-7 narration 4.90s over unchanged 4.5s limit; shorten only this German line and its Persian translation, preserving the approved story and motion.",
-      "prior_gpu_requested": false,
-      "retiming": false
-    },
-    "platform_receipts": {
-      "tiktok": 2893,
-      "instagram": 2894
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0021-original-cast-realistic-v1/tiktok/e0021-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0021-original-cast-realistic-v1/instagram/e0021-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0021-original-cast-realistic-v1/instagram/e0021-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
