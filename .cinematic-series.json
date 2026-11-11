@@ -101,13 +101,13 @@
     "require_documented_basis": true
   },
   "owner_included_request": {
-    "id": "owner-light-breath-20261109",
-    "episode": 20,
-    "story_id": "project-b1-jobcenter-breath-v2",
-    "berlin_day": "2026-11-09",
-    "expires_at": "2026-11-09T23:00:00+00:00",
+    "id": "owner-marta-shortline-20261111",
+    "episode": 21,
+    "story_id": "marta-first-job-s01e01-recipe-v1",
+    "berlin_day": "2026-11-11",
+    "expires_at": "2026-11-11T23:00:00+00:00",
     "included_only": true,
-    "authorization": "Owner requested a lighter profile for the already approved episode; continue with verified remaining included time only."
+    "authorization": "Owner explicitly requested fixing the narration failure and continuing. One dated continuation of this exact episode only, within live verified included quota; keep all prior counters."
   },
   "serial_story": {
     "id": "marta-first-job-s01",

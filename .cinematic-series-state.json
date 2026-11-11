@@ -3254,8 +3254,8 @@
         },
         {
           "speaker": "marta",
-          "de": "Morgen? Mit dem Kuchen? Sehr gern!",
-          "fa": "فردا؟ با کیک؟ با کمال میل!",
+          "de": "Morgen mit Kuchen? Gern!",
+          "fa": "فردا با کیک؟ حتماً!",
           "scene": "One visible adult marta in the same Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. The friend is off camera. Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
           "motion": "Only the visible adult marta speaks to the friend off camera. Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. One small intentional gesture only: Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.. Keep head largely steady and mouth visible; restrained expression, natural blinking. No simultaneous speech, exaggerated mouth, camera shake, extra limbs or new objects.",
           "visible_objects": [
@@ -3298,7 +3298,17 @@
     },
     "date": "2026-11-11",
     "status": "render-failed",
-    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 7=4.90s"
+    "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 7=4.90s",
+    "authored_narration_correction": {
+      "date": "2026-11-11",
+      "failed_run": 43076629580,
+      "scene_indices": [
+        7
+      ],
+      "reason": "Owner requested correcting actual scene-7 narration 4.90s over unchanged 4.5s limit; shorten only this German line and its Persian translation, preserving the approved story and motion.",
+      "prior_gpu_requested": false,
+      "retiming": false
+    }
   },
   "attempts": {
     "2026-10-15": 2,
@@ -3358,7 +3368,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 2400,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
