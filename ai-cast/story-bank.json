@@ -1283,6 +1283,192 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "marta-first-job-s01e01-recipe-v1",
+      "title_de": "Martas erster Job (1): Das falsche PDF",
+      "title_fa": "اولین کار مارتا ـ ۱: فایل اشتباهی",
+      "summary": "Marta receives a call about her first café application in Germany. Lukas uploaded her family cake recipe instead of her CV because both files had the same ambiguous label. Marta handles the call herself and accepts an invitation to bring her cake tomorrow. Her broken oven reveals the next obstacle; this is an invented sitcom, not a hiring recommendation or a reported real case.",
+      "cliffhanger": "Tomorrow Marta must bring a cake to the café, but her oven is broken. Chapter two continues from this exact kitchen and deadline, with Lukas offering his kitchen; no sudden hiring or off-screen miracle.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Martas erster Job in Deutschland",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "marta-flat-kitchen-job-call",
+      "location_description": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls",
+      "visual_hook": "Marta freezes over a ringing phone about her café application and tries to hand the call to Lukas.",
+      "everyday_problem": "As a newcomer preparing her first German job application Marta is anxious about an employer's call, made worse by her friend's attachment error.",
+      "practical_resolution": "Marta takes the call herself, identifies the incorrect attachment and agrees to the café's next meeting, while the broken oven creates tomorrow's concrete problem.",
+      "marta_goal": "Marta wants her first café job in Germany and wants to manage the German application call herself despite her nervousness.",
+      "marta_decision": "Marta answers personally, owns the attachment mistake and accepts tomorrow's invitation instead of leaving Lukas to speak for her.",
+      "visual_payoff": "Marta looks from the family cake recipe to her silent broken oven after accepting the invitation to bring a cake tomorrow; the kitchen problem becomes the next episode's story.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace unconnected standalone teaching sketches with an owner-approved continuous first-job sitcom and a concrete next-day objective.",
+        "visible_comic_action": "A confident helper reveals two confusingly named files; the heroine accepts a cake invitation before her broken oven becomes the visual cliffhanger.",
+        "next_experiment": "Test whether a causal visual cliffhanger and a recurring job-search objective encourage return viewing; do not infer improvement without real matched account measurements."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          3,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official German government portal for international jobseekers explains submitting application documents including a CV, often in German and by upload or email. This documents the application/language context, not the invented cake incident.",
+        "invented_elements": [
+          "Marta and Lukas and the café",
+          "all dialogue and file confusion",
+          "employer's cake invitation",
+          "broken oven and tomorrow's deadline"
+        ],
+        "disclosure_de": "Fiktive Serie über den Berufseinstieg. Keine wahre Fallgeschichte."
+      },
+      "research_urls": [
+        "https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "marta",
+          "de": "Das Café ruft an! Geh du ran!",
+          "fa": "کافه زنگ می‌زند! تو جواب بده!",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta holds out the ringing phone toward her friend off camera with worried raised brows.",
+          "motion": "Marta holds out the ringing phone toward her friend off camera with worried raised brows.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Marta holds out the ringing phone toward her friend off camera with worried raised brows.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Du willst den Job. Nicht ich!",
+          "fa": "تو کار را می‌خواهی؛ من که نمی‌خواهم!",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.",
+          "motion": "Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Lukas gently pushes the offered phone back toward Marta off camera, encouraging her with a small nod.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Guten Tag. Hier ist Marta.",
+          "fa": "سلام، مارتا هستم.",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.",
+          "motion": "Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.",
+          "visible_objects": [
+            "phone"
+          ],
+          "object_action": "Marta answers and lifts the phone to her ear without covering her mouth, straightening her shoulders.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Mein Kuchenrezept? Nicht mein Lebenslauf?",
+          "fa": "دستور کیکم؟ نه رزومه‌ام؟",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.",
+          "motion": "Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Still listening to the unheard employer, Marta pulls a family cake recipe sheet toward her and reacts in disbelief.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Lukas! Du hast das Rezept geschickt!",
+          "fa": "لوکاس! تو دستور کیک را فرستاده‌ای!",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.",
+          "motion": "Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.",
+          "visible_objects": [
+            "phone",
+            "laptop"
+          ],
+          "object_action": "Marta covers the phone microphone below her mouth and points accusingly toward the laptop, addressing Lukas off camera.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lukas",
+          "de": "Beide Dateien hießen: Marta, fertig.",
+          "fa": "اسم هر دو فایل «مارتا، نهایی» بود.",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.",
+          "motion": "Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.",
+          "visible_objects": [
+            "laptop"
+          ],
+          "object_action": "Lukas points between two adjacent document tiles on the laptop, his confident smile turning sheepish; no app branding or generated legible writing.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Ja. Das Rezept ist von meiner Mutter.",
+          "fa": "بله؛ دستور کیک از مادرم است.",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.",
+          "motion": "Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Marta resumes the call and touches the family recipe gently, relaxing into a proud smile.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Morgen? Mit dem Kuchen? Sehr gern!",
+          "fa": "فردا؟ با کیک؟ با کمال میل!",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
+          "motion": "Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
+          "visible_objects": [
+            "phone",
+            "family cake recipe"
+          ],
+          "object_action": "Marta listens to the unheard invitation and gives one decisive nod, accepting for tomorrow; no claim of being hired.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "marta",
+          "de": "Moment. Unser Ofen ist doch kaputt!",
+          "fa": "یک لحظه؛ فر ما که خراب است!",
+          "scene": "Marta's modest contemporary Berlin flat kitchen, warm morning window light, a wooden kitchen table next to a compact oven with dark display, laptop and phone on the table; same room and outfits throughout, neutral cream walls. Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.",
+          "motion": "Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.",
+          "visible_objects": [
+            "phone",
+            "compact oven"
+          ],
+          "object_action": "Marta lowers her phone and turns toward the same compact oven with dark display, testing its knob once without response; her smile drops into a knowing comic stare. No smoke, sparks, exposed wiring or extra person.",
+          "location_key": "marta-flat-kitchen-job-call",
+          "story_beat": "resolve"
+        }
+      ],
+      "serial_id": "marta-first-job-s01",
+      "serial_chapter": 1
     }
   ]
 }

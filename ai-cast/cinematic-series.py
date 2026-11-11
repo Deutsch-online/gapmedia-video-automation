@@ -63,6 +63,7 @@ TRUSTED_RESEARCH = (
     ('Documented migrant difficulties with official letters', 'https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio', 'Behördenpost'),
     ('Video appointment preparation', 'https://www.arbeitsagentur.de/videotermin', 'Videotermin'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
+    ('Job applications for newcomers in Germany', 'https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung', 'Lebenslauf'),
 )
 
 class _PageText(HTMLParser):
@@ -549,6 +550,15 @@ def make_plan(state):
             template.update(episode=episode, research_source=source)
             return validate_plan(template, episode, state['history'])
     config = load_json(CONFIG)
+    serial = config.get('serial_story', {})
+    if serial and episode >= serial.get('from_episode', 10**9):
+        used = {h.get('story_id') for h in state['history']}
+        remaining = [story for story in serial.get('approved_chapters', []) if story not in used]
+        if not remaining:
+            raise RuntimeError('The next serial chapter requires the owner-approved script; no unrelated story fallback')
+        config = copy.deepcopy(config)
+        config['next_story'] = {'from_episode': serial['from_episode'],
+                                'story_id': remaining[0], 'duration_seconds': DEFAULT_SECONDS}
     planning = config.get('story_planning', {})
     project_research = None
     if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):

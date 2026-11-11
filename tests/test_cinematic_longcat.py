@@ -36,6 +36,7 @@ class HighQualityTests(unittest.TestCase):
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         from cinematic_story_bank import select_story
         config=json.loads((ROOT/'.cinematic-series.json').read_text())
+        config['next_story']={'from_episode':20,'story_id':'project-b1-jobcenter-breath-v2','duration_seconds':45}
         bank=json.loads((ROOT/'ai-cast/story-bank.json').read_text())
         story=next(s for s in bank['stories'] if s['story_id']==config['next_story']['story_id'])
         source={'url':story['research_urls'][0],'excerpt':'Official source context. '*8,'retrieved_at':'2026-11-08T09:00:00+00:00'}
