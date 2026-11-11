@@ -1,6 +1,6 @@
 {
-  "request": "owner-resume-light-breath-20261110",
-  "episode": 20,
-  "story_id": "project-b1-jobcenter-breath-v2",
-  "reason": "Owner explicitly requested execution after the provider reset. Resume the saved pending episode within the ordinary Berlin-day slot and verified included quota only. Preserve all completed takes, counters, reserve, quality checks and private delivery guards."
+  "request": "owner-start-marta-first-job-s01e01-20261111",
+  "episode": 21,
+  "story_id": "marta-first-job-s01e01-recipe-v1",
+  "reason": "Owner approved the first-job serial and explicitly requested execution. Start approved chapter one within the ordinary Berlin-day slot, verified included quota, unchanged reserve, narration/quality gates and private two-format delivery."
 }
