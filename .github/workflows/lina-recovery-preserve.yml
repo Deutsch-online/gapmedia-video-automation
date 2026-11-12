@@ -1,0 +1,60 @@
+name: Preserve verified Lina recovery clips without GPU
+on:
+  push:
+    branches: [codex/lina-preserve-recovery]
+    paths: [.github/workflows/lina-recovery-preserve.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  preserve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-43292886173-1
+          fail-on-cache-miss: true
+      - name: Verify and preserve only the saved episode; no generation credentials
+        run: |
+          python - <<'PY'
+          import hashlib,json,shutil,subprocess
+          from pathlib import Path
+          source=Path('renders/cinematic-series-cache/e0022-lina-oma-v1')
+          state=json.loads(Path('.cinematic-series-state.json').read_text())
+          plan=state['pending']['plan']
+          assert plan['episode']==22 and plan['story_id']=='lina-oma-egg-cheese-v1'
+          rows=[]
+          sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
+          for i in range(7):
+              image=source/f'{i:02}.png';audio=source/f'{i:02}.aligned.wav';clip=source/f'{i:02}.mp4'
+              marker=json.loads(clip.with_suffix('.speech.json').read_text())
+              assert marker['image_sha256']==sha(image) and marker['audio_sha256']==sha(audio)
+              assert marker['seed']==22*1009+i*11
+              assert marker['motion']==plan['scenes'][i]['motion']
+              assert marker['model'].startswith('longcat-light:')
+              probe=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(clip)]))
+              video=next(v for v in probe['streams'] if v['codec_type']=='video')
+              assert min(video['width'],video['height'])>=480
+              assert 5<=float(probe['format']['duration'])<=5.3
+              rows.append({'scene':i,'sha256':sha(clip),'duration':probe['format']['duration']})
+          for i in range(9):
+              assert (source/f'{i:02}.png').exists() and (source/f'{i:02}.mp3').exists()
+          out=Path('protected-recovery');out.mkdir()
+          shutil.copytree(source,out/source.name)
+          journal=Path('renders/cinematic-series-cache/budgets/43292886173-1.json')
+          if journal.exists():
+              (out/'budgets').mkdir();shutil.copyfile(journal,out/'budgets'/journal.name)
+          (out/'recovery-proof.json').write_text(json.dumps({'episode':22,'story_id':plan['story_id'],'completed_scenes':rows,'gpu_requested':False},indent=2))
+          print('Verified seven native speaking clips and all nine source images; no GPU requested.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-lina-seven-clips-and-source
+          path: protected-recovery/
+          retention-days: 30
