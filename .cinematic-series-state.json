@@ -3506,6 +3506,26 @@
       "sha256": "484745f4b9b18e1ad4170feea4828c6affb84c30a07c1f9a2d5a98d2a02af0c2",
       "status": "sent",
       "message_id": 2896
+    },
+    "time_budget_blocked": true,
+    "recovery_diagnosis": {
+      "failed_run": 43292886173,
+      "failed_scene": 7,
+      "error": "upstream SSE CancelledError",
+      "completed_scenes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "saved_cache_key": "cinematic-series-v2-43292886173-1",
+      "verified_remaining": 159.82963599999994,
+      "quota_checked_at": "2026-11-12T20:45:38.973200+00:00",
+      "proof_run": 43304068335,
+      "paid_fallback": false
     }
   },
   "attempts": {
@@ -3549,9 +3569,9 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-11-09#owner-light-breath-20261109",
-    "not_before": "2026-11-10T10:21:08.488000+00:00",
-    "reason": "Waiting for verified included quota"
+    "date": "2026-11-12",
+    "not_before": "2026-11-13T19:45:33.067000+00:00",
+    "reason": "Waiting for verified included quota after interrupted scene 8; retain seven completed clips"
   },
   "manual_recovery_reason": {
     "slot": "2026-10-20#analytics-episode-7-20261020",
@@ -3559,17 +3579,17 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-12T19:43:22.849254+00:00",
+    "checked_at": "2026-11-12T20:45:38.973200+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
     ],
     "strict_time_budget": true,
     "paid_route": false,
-    "can_admit_minimum_stage": true,
+    "can_admit_minimum_stage": false,
     "status": "verified",
-    "remaining_seconds": 2400.0,
-    "can_admit_one_speaking_take": true,
+    "remaining_seconds": 159.82963599999994,
+    "can_admit_one_speaking_take": false,
     "fallback": null
   },
   "planning_failures": {
@@ -3597,6 +3617,23 @@
       "count": 1,
       "error": "RuntimeError",
       "gpu_requested": false
+    }
+  },
+  "last_budget_block": {
+    "date": "2026-11-12",
+    "preflight": {
+      "checked_at": "2026-11-12T20:45:38.973200+00:00",
+      "generation_requested": false,
+      "order": [
+        "hf-included"
+      ],
+      "strict_time_budget": true,
+      "paid_route": false,
+      "can_admit_minimum_stage": false,
+      "status": "verified",
+      "remaining_seconds": 159.82963599999994,
+      "can_admit_one_speaking_take": false,
+      "fallback": null
     }
   }
 }

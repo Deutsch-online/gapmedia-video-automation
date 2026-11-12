@@ -84,7 +84,14 @@
     "render_style": "expressive premium 3D cartoon, natural slender silhouettes",
     "native_resolution": "480p",
     "acceleration": "DBCache faster",
-    "provider_declared_reservation_units": 480
+    "provider_declared_reservation_units": 480,
+    "recovery_artifact": {
+      "episode": 22,
+      "run_id": 43304068335,
+      "name": "verified-lina-seven-clips-and-source",
+      "extract_path": "renders/cinematic-series-cache",
+      "story_id": "lina-oma-egg-cheese-v1"
+    }
   },
   "story_quality": {
     "from_episode": 20,
