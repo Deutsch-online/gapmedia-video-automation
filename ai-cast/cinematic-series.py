@@ -41,7 +41,7 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'He is a supportive flatmate, never the solver of every problem. '
         'They are equal adults, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural',
-          'lina': 'de-DE-GiselaNeural', 'oma': 'de-DE-KatjaNeural'}
+          'lina': 'de-DE-AmalaNeural', 'oma': 'de-DE-KatjaNeural'}
 DEFAULT_SECONDS = 45
 LEGACY_SECONDS = 60
 EXCEPTION_SECONDS = 65

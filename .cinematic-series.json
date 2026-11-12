@@ -119,7 +119,7 @@
     "images_before_video": true,
     "reference_image": "public/ai-cast/lina-oma/reference.jpg",
     "voices": {
-      "lina": "de-DE-GiselaNeural",
+      "lina": "de-DE-AmalaNeural",
       "oma": "de-DE-KatjaNeural"
     },
     "voice_cloning": false,

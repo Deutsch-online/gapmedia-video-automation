@@ -5,10 +5,10 @@ from pathlib import Path
 
 PROFILE = 'lina-oma-v1'
 SOURCE = 'https://www.goethe.de/ins/de/de/prf/grm.html'
-SOURCES = (SOURCE, 'https://www.goethe.de/ins/de/de/m/prf/grm.html',
-           'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1',
-           'https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm')
-VOICES = {'lina': 'de-DE-GiselaNeural', 'oma': 'de-DE-KatjaNeural'}
+SOURCES = ('https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', SOURCE,
+           'https://www.goethe.de/ins/de/de/m/prf/grm.html',
+           'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1')
+VOICES = {'lina': 'de-DE-AmalaNeural', 'oma': 'de-DE-KatjaNeural'}
 DESCRIPTIONS = {
     'lina': 'Lina, a fictional healthy eight-year-old newcomer girl, naturally slender child proportions, warm brown skin, brown eyes, dark curly hair in two puffs with coral bows, mustard shirt, teal dungaree dress, coral backpack and sneakers',
     'oma': 'Oma Rosi, a lively slender grandmother aged about seventy, silver pixie hair with a playful curl, small red glasses, plum cardigan, ivory floral blouse, rust skirt and comfortable teal shoes',
