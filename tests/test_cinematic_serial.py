@@ -14,6 +14,13 @@ spec.loader.exec_module(m)
 class SerialTests(TestCase):
     def setUp(self):
         self.config = json.loads((ROOT/'.cinematic-series.json').read_text())
+        # Preserve the historical first-job contract below the new cast boundary.
+        self.config['lina_oma_series']['from_episode']=9999
+        self.config['next_story']={'from_episode':21,'story_id':'marta-first-job-s01e01-recipe-v1','duration_seconds':45}
+        original_load=m.load_json
+        reader=patch.object(m,'load_json',side_effect=lambda path,*args: copy.deepcopy(self.config) if path==m.CONFIG else original_load(path,*args))
+        reader.start()
+        self.addCleanup(reader.stop)
         self.bank = json.loads((ROOT/'ai-cast/story-bank.json').read_text())
         self.story = next(x for x in self.bank['stories'] if x['story_id'] == 'marta-first-job-s01e01-recipe-v1')
         self.state = m.new_state()

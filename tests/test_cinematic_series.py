@@ -223,7 +223,7 @@ class SeriesTests(unittest.TestCase):
         self.assertEqual(len(plan['scenes']) * 5, 65)
         self.assertEqual(len(set(s['motion'] for s in plan['scenes'])), 13)
         self.assertTrue(plan['cliffhanger'])
-        self.assertEqual({s['speaker'] for s in plan['scenes']}, set(m.VOICES))
+        self.assertEqual({s['speaker'] for s in plan['scenes']}, {'marta','lukas'})
 
     def test_berlin_summer_and_winter_slot(self):
         state = m.new_state()

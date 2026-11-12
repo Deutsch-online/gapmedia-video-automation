@@ -1,5 +1,5 @@
 {
-  "series": "Marta & Lukas: Alltag in Deutschland",
+  "series": "Lina & Oma Rosi",
   "timezone": "Europe/Berlin",
   "time": "07:30",
   "minimum_seconds": 45,
@@ -7,7 +7,7 @@
   "daily_episodes": 1,
   "max_daily_attempts": 1,
   "reference_dir": "public/ai-cast/wg-chaos",
-  "style": "original-cast-realistic-comedy-v1",
+  "style": "lina-oma-stylized-v1",
   "paid_fallback": false,
   "maximum_seconds": 45,
   "schedule_mode": "daily-berlin-budget",
@@ -16,7 +16,7 @@
     "instagram"
   ],
   "series_version": "wg-alltag-v1",
-  "genre": "storybook-newcomer-everyday",
+  "genre": "child-grandmother-german-learning-comedy",
   "single_speaker_takes": false,
   "manual_request": {
     "id": "owner-resume-3d-e8-20261021",
@@ -24,17 +24,16 @@
   },
   "content_direction": {
     "from_episode": 6,
-    "premise": "Each story addresses a documented substantial migrant difficulty in Germany: learning German, understanding official letters, discrimination or navigating Jobcenter and immigration offices. Original comic reenactments must identify their factual basis and invented details.",
-    "teaching": "One useful German phrase or distinction per episode, taught through visible objects and actions.",
-    "continuity": "Owner-approved continuing sitcom: Marta's first job in Germany. Each 45s chapter resolves one practical step and its visible consequence sets up tomorrow; keep characters, room, props and unresolved objectives continuous. Submit future chapter scripts before generation.",
-    "requested_story": "ai-cast/doctor-appointment-45s.json",
-    "graphics": "Clearly labelled illustrative appointment app beside the speaker. A real named app needs verified UI. No real booking, patient data, face cloning or voice cloning.",
+    "premise": "Lina, a fictional newly arrived eight-year-old, tries a German word or sentence incorrectly; her funny warm grandmother corrects it. Lina uses the correction and answers with a connected visible joke. Never mock accent, nationality, intelligence or body.",
+    "teaching": "One beginner German phrase: immediate wrong meaning, gentle comic reply, exact correction, child's own correct use, connected visual payoff.",
+    "continuity": "One new coherent 45-second story every Berlin day. Fixed original reference identities, nine natural-speed shots, one language distinction. Send the complete image storyboard privately before generating video clips. Resume a pending episode rather than substituting new material.",
+    "graphics": "Lower frosted bilingual captions in the existing TikTok/Reels safe area; no fake app, face clone or voice clone.",
     "credit_policy": "Daily production is authorized only within verified included allowance; no paid or anonymous fallback and at most one start per Berlin day.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 21,
-    "story_id": "marta-first-job-s01e01-recipe-v1",
+    "from_episode": 22,
+    "story_id": "lina-oma-egg-cheese-v1",
     "duration_seconds": 45,
     "require_graphics": false
   },
@@ -59,9 +58,9 @@
   },
   "visual_profile": {
     "id": "storybook-duo-glass-v2",
-    "reference_image": "public/ai-cast/wg-chaos/characters.png",
+    "reference_image": "public/ai-cast/lina-oma/reference.jpg",
     "layout": "full-frame-9:16",
-    "character_layout": "Original Marta and Lukas; one visible adult speaker per dialogue shot, friend off camera in the same room",
+    "character_layout": "Lina, a fictional eight-year-old newcomer, and Oma Rosi; one visible speaking character per shot",
     "subtitle_position": "lower",
     "subtitle_background": "rounded frosted glass with subtle dark tint",
     "de_font_size": 48,
@@ -72,7 +71,7 @@
     "provider_quota_multiplier": 2,
     "provider_reservation_units": 480,
     "from_episode": 19,
-    "asset_profile": "original-cast-realistic-v1",
+    "asset_profile": "lina-oma-v1",
     "subtitle_safe_area": {
       "left": 48,
       "top": 1270,
@@ -82,17 +81,10 @@
       "bottom_clearance": 310
     },
     "subtitle_outline_pixels": 1,
-    "render_style": "near-photoreal 3D adults with natural human anatomy",
+    "render_style": "expressive premium 3D cartoon, natural slender silhouettes",
     "native_resolution": "480p",
     "acceleration": "DBCache faster",
-    "provider_declared_reservation_units": 480,
-    "recovery_artifact": {
-      "episode": 20,
-      "run_id": 42633910484,
-      "name": "verified-light-recovery-assets",
-      "extract_path": "renders/cinematic-series-cache",
-      "story_id": "project-b1-jobcenter-breath-v2"
-    }
+    "provider_declared_reservation_units": 480
   },
   "story_quality": {
     "from_episode": 20,
@@ -117,5 +109,19 @@
       "marta-first-job-s01e01-recipe-v1"
     ],
     "next_chapter_requires_script_approval": true
+  },
+  "lina_oma_series": {
+    "enabled": true,
+    "from_episode": 22,
+    "profile": "lina-oma-v1",
+    "first_story": "lina-oma-egg-cheese-v1",
+    "daily_new_story": true,
+    "images_before_video": true,
+    "reference_image": "public/ai-cast/lina-oma/reference.jpg",
+    "voices": {
+      "lina": "de-DE-GiselaNeural",
+      "oma": "de-DE-KatjaNeural"
+    },
+    "voice_cloning": false
   }
 }
