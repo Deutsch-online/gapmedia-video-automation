@@ -20,6 +20,10 @@ jobs:
           path: renders/cinematic-series-cache
           key: cinematic-series-v2-43292886173-1
           fail-on-cache-miss: true
+      - name: Install the CPU-only video probe
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
       - name: Verify and preserve only the saved episode; no generation credentials
         run: |
           python - <<'PY'
