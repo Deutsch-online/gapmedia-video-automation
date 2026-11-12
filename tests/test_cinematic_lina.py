@@ -32,8 +32,11 @@ class LinaTests(unittest.TestCase):
 
     def test_new_days_cannot_reuse_the_same_error_or_omit_the_correction(self):
         p=self.plan();p['episode']=23
+        prior=copy.deepcopy(p)
+        prior['language_error']['wrong']=prior['language_error']['wrong'].lower().rstrip('!')
+        prior['language_error']['correct']=prior['language_error']['correct'].lower().rstrip('.')
         with self.assertRaisesRegex(ValueError,'new language distinction'):
-            m.validate_plan(p,23,[copy.deepcopy(p)])
+            m.validate_plan(p,23,[prior])
         p['scenes'][3]['de']='Das ist aber lustig!'
         with self.assertRaisesRegex(ValueError,'actual correct German'):
             m.validate_plan(p,23,[])

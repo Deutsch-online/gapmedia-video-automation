@@ -36,8 +36,9 @@ def validate(plan, history=()):
         raise ValueError('Lina must use the corrected phrase herself')
     if len(error.get('explanation', '')) < 20:
         raise ValueError('Explain the intended meaning and why the first phrase is wrong for it')
-    if any(is_plan(h) and h.get('language_error',{}).get('wrong')==wrong and
-           h.get('language_error',{}).get('correct')==correct for h in history):
+    normalize=lambda value: ' '.join(str(value).casefold().strip(' .!?…').split())
+    if any(is_plan(h) and normalize(h.get('language_error',{}).get('wrong'))==normalize(wrong) and
+           normalize(h.get('language_error',{}).get('correct'))==normalize(correct) for h in history):
         raise ValueError('Daily episodes need a new language distinction')
     if plan.get('research_source',{}).get('url') != SOURCE:
         raise ValueError('The learning sitcom requires matching live grammar research')
