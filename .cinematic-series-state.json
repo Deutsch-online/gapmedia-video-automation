@@ -3500,7 +3500,12 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-12",
-    "status": "rendering"
+    "status": "rendering",
+    "image_preview": {
+      "file": "renders/cinematic-series/e0022-lina-oma-v1/image-preview.jpg",
+      "sha256": "484745f4b9b18e1ad4170feea4828c6affb84c30a07c1f9a2d5a98d2a02af0c2",
+      "status": "dispatching"
+    }
   },
   "attempts": {
     "2026-10-15": 2,
