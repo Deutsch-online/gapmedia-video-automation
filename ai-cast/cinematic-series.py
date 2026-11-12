@@ -67,6 +67,7 @@ TRUSTED_RESEARCH = (
     ('Beginner German grammar and polite requests', 'https://www.goethe.de/ins/de/de/prf/grm.html', 'Ich möchte ein Eis'),
     ('Beginner German grammar and polite requests, mobile edition', 'https://www.goethe.de/ins/de/de/m/prf/grm.html', 'Ich möchte ein Eis'),
     ('Beginner German food and drink, Open University', 'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1', 'ich möchte'),
+    ('Beginner German requests, Schubert publisher exercise', 'https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', 'Ich möchte etwas trinken'),
     ('Job applications for newcomers in Germany', 'https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung', 'Lebenslauf'),
 )
 
@@ -100,7 +101,7 @@ def official_page(url, transport):
     with urllib.request.urlopen(req, timeout=18) as response:
         if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
             raise ValueError('official page did not return HTML')
-        return response.read(750_000).decode('utf-8', 'ignore')
+        return response.read(750_000).decode(response.headers.get_content_charset() or 'utf-8', 'ignore')
 
 
 def research_source(episode, preferred_url=None, strict_preferred=False):

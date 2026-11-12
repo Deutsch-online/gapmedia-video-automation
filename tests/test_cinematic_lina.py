@@ -68,10 +68,11 @@ class LinaTests(unittest.TestCase):
         self.assertNotIn('speaker (marta or lukas)',text)
 
     def test_source_fallback_retains_verified_matching_context_and_actual_url(self):
-        fetch=Mock(side_effect=[RuntimeError('403'),RuntimeError('403'),{**self.source,'url':SOURCES[-1]}])
+        outcomes=[RuntimeError('403')]*(len(SOURCES)-1)+[{**self.source,'url':SOURCES[-1]}]
+        fetch=Mock(side_effect=list(outcomes))
         self.assertEqual(grammar_source(fetch,22)['url'],SOURCES[-1])
         fetch.assert_called_with(22,preferred_url=SOURCES[-1],strict_preferred=True)
-        with patch.object(m,'research_source',side_effect=[RuntimeError('403'),RuntimeError('403'),{**self.source,'url':SOURCES[-1]}]):
+        with patch.object(m,'research_source',side_effect=list(outcomes)):
             plan=m.make_plan(self.state)
         self.assertEqual(plan['documented_basis']['report_url'],SOURCES[-1])
         with self.assertRaisesRegex(RuntimeError,'All approved'):
