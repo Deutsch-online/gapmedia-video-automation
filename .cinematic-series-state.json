@@ -3311,7 +3311,197 @@
       "render_style": "original-cast-realistic-comedy-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-egg-cheese-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 1,
+      "title_de": "Lina & Oma: Ich bin ein Ei?",
+      "title_fa": "لینا و اوما: من یک تخم‌مرغم؟",
+      "summary": "At breakfast newcomer Lina uses the wrong German phrase to ask for an egg. Oma jokes about the tiny egg cup, models the polite request, and Lina repeats it. When Oma calls her little mouse, Lina challenges the metaphor; Oma reveals the cheese hidden behind the girl's back. The joke is about literal meanings, not the child's intelligence or accent.",
+      "cliffhanger": "Tomorrow Lina will try another useful German phrase with Oma in an ordinary everyday situation.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-breakfast-kitchen",
+      "location_description": "the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes",
+      "visual_hook": "Lina holds a white boiled egg and announces that she herself is an egg, while Oma examines a tiny empty egg cup.",
+      "everyday_problem": "A recently arrived child knows some German but confuses saying what she is with asking for something at breakfast.",
+      "practical_resolution": "Oma teaches the polite request Ich möchte ein Ei, bitte; Lina repeats it and uses möchte again in her final playful request for cheese.",
+      "marta_goal": "Lina wants to ask Oma for an egg herself in understandable polite German.",
+      "marta_decision": "Lina tries the corrected request and then questions Oma's own little-mouse nickname, remaining a clever active learner.",
+      "visual_payoff": "Lina looks caught with cheese hidden behind her back, then playfully extends her free hand as a little mouse asking for more cheese.",
+      "language_error": {
+        "wrong": "Ich bin ein Ei!",
+        "correct": "Ich möchte ein Ei, bitte.",
+        "explanation": "Ich bin ein Ei means I am an egg. For the intended request, Ich möchte ein Ei, bitte means I would like an egg, please. The first phrase is a communicative meaning error, not an ungrammatical construction."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Replace the old adult job plot with the owner's approved child-and-grandmother word-error comedy, expressive original reference and an immediately legible egg prop.",
+        "visible_comic_action": "Oma compares the girl with a tiny egg cup; the child's little-mouse challenge is answered by the visible cheese behind her back.",
+        "next_experiment": "Compare matched first-day observations for a clear word-error hook and warm reciprocal joke, without claiming proven retention or a guaranteed view increase."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Official beginner German instruction explains the polite request pattern Ich möchte (I would like). This fictional child lesson applies that pattern to an egg, contrasting an identity statement with a request; the egg-and-cheese incident is invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "egg and mouse misunderstanding",
+          "all breakfast dialogue and hidden cheese"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin ein Ei!",
+          "fa": "اوما، من یک تخم‌مرغ هستم!",
+          "scene": "One visible cartoon character lina in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Lina lifts one white boiled egg beside her face with a confident cheeky smile; a small piece of cheese is already hidden behind her back.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina lifts one white boiled egg beside her face with a confident cheeky smile; a small piece of cheese is already hidden behind her back.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "boiled egg",
+            "piece of cheese"
+          ],
+          "object_action": "Lina lifts one white boiled egg beside her face with a confident cheeky smile; a small piece of cheese is already hidden behind her back.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Dafür bist du viel zu groß!",
+          "fa": "ولی برای تخم‌مرغ بودن خیلی بزرگی!",
+          "scene": "One visible cartoon character oma in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Oma holds up the tiny empty egg cup and gives her off-camera granddaughter a playful raised eyebrow.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma holds up the tiny empty egg cup and gives her off-camera granddaughter a playful raised eyebrow.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "egg cup"
+          ],
+          "object_action": "Oma holds up the tiny empty egg cup and gives her off-camera granddaughter a playful raised eyebrow.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Nein! Ich will ein Ei essen!",
+          "fa": "نه! می‌خواهم تخم‌مرغ بخورم!",
+          "scene": "One visible cartoon character lina in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Lina points gently at the egg in her own hand, smiling as she clarifies her meaning.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina points gently at the egg in her own hand, smiling as she clarifies her meaning.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "boiled egg"
+          ],
+          "object_action": "Lina points gently at the egg in her own hand, smiling as she clarifies her meaning.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich möchte ein Ei, bitte.",
+          "fa": "بگو: لطفاً یک تخم‌مرغ می‌خواهم.",
+          "scene": "One visible cartoon character oma in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Oma slowly offers the empty egg cup toward Lina off camera with a warm encouraging nod.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma slowly offers the empty egg cup toward Lina off camera with a warm encouraging nod.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "egg cup"
+          ],
+          "object_action": "Oma slowly offers the empty egg cup toward Lina off camera with a warm encouraging nod.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich möchte ein Ei, bitte.",
+          "fa": "لطفاً یک تخم‌مرغ می‌خواهم.",
+          "scene": "One visible cartoon character lina in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Lina places her egg in the cup with a proud little smile, keeping her other hand and cheese behind her back.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina places her egg in the cup with a proud little smile, keeping her other hand and cheese behind her back.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "boiled egg",
+            "egg cup",
+            "piece of cheese"
+          ],
+          "object_action": "Lina places her egg in the cup with a proud little smile, keeping her other hand and cheese behind her back.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Natürlich, mein Mäuschen!",
+          "fa": "البته، موش کوچولوی من!",
+          "scene": "One visible cartoon character oma in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Oma nudges the egg cup toward her off-camera granddaughter affectionately, then glances knowingly toward the cheese plate.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma nudges the egg cup toward her off-camera granddaughter affectionately, then glances knowingly toward the cheese plate.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "egg cup",
+            "cheese plate"
+          ],
+          "object_action": "Oma nudges the egg cup toward her off-camera granddaughter affectionately, then glances knowingly toward the cheese plate.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Warum sagst du dann Mäuschen?",
+          "fa": "پس چرا به من می‌گویی موش کوچولو؟",
+          "scene": "One visible cartoon character lina in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Lina lifts an eyebrow and points to herself while keeping the cheese behind her back, a playful challenge rather than confusion.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina lifts an eyebrow and points to herself while keeping the cheese behind her back, a playful challenge rather than confusion.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "piece of cheese"
+          ],
+          "object_action": "Lina lifts an eyebrow and points to herself while keeping the cheese behind her back, a playful challenge rather than confusion.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Weil du immer meinen Käse klaust!",
+          "fa": "چون همیشه پنیر مرا می‌دزدی!",
+          "scene": "One visible cartoon character oma in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Oma points gently toward the hidden cheese just outside her frame and gives a knowing amused smile.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma points gently toward the hidden cheese just outside her frame and gives a knowing amused smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "cheese plate"
+          ],
+          "object_action": "Oma points gently toward the hidden cheese just outside her frame and gives a knowing amused smile.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann möchte das Mäuschen Käse!",
+          "fa": "پس موش کوچولو پنیر می‌خواهد!",
+          "scene": "One visible cartoon character lina in the same the same cozy contemporary German home breakfast kitchen from the reference, small wooden breakfast table, softly lit window and simple chairs, egg cup and cheese plate; fixed original clothes and natural slender cartoon silhouettes. The friend is off camera. Lina reveals the cheese from behind her back with a caught-but-cheeky grin and holds out her other palm, asking for more cheese.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina reveals the cheese from behind her back with a caught-but-cheeky grin and holds out her other palm, asking for more cheese.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "piece of cheese",
+            "cheese plate"
+          ],
+          "object_action": "Lina reveals the cheese from behind her back with a caught-but-cheeky grin and holds out her other palm, asking for more cheese.",
+          "location_key": "lina-oma-breakfast-kitchen",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 22,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-12T19:43:24.383256+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-stylized-v1"
+    },
+    "date": "2026-11-12",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -3345,7 +3535,8 @@
     "2026-11-09#owner-light-breath-20261109": 1,
     "2026-11-10": 1,
     "2026-11-11": 1,
-    "2026-11-11#owner-marta-shortline-20261111": 1
+    "2026-11-11#owner-marta-shortline-20261111": 1,
+    "2026-11-12": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3362,7 +3553,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-11T18:48:47.557640+00:00",
+    "checked_at": "2026-11-12T19:43:22.849254+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
