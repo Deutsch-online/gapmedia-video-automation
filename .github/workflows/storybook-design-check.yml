@@ -32,7 +32,7 @@ jobs:
           node-version: '22'
       - name: Install CPU-only verification tools
         run: |
-          pip install 'pillow>=11,<13'
+          pip install 'pillow>=11,<13' 'edge-tts>=7,<8'
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-dejavu-core
       - name: Verify layout, both speakers, actual muxing and provider reservation units
@@ -50,6 +50,31 @@ jobs:
           PY
       - name: Verify the next real story with live official research and no GPU
         run: python ai-cast/cinematic-series.py plan-only --file renders/realistic-next-plan.json
+      - name: Measure the actual new German voices without requesting GPU
+        run: |
+          PYTHONPATH=ai-cast python - <<'PY'
+          import asyncio,importlib.util,json,edge_tts
+          from pathlib import Path
+          plan=json.loads(Path('renders/realistic-next-plan.json').read_text())
+          if plan.get('cast_profile')!='lina-oma-v1':
+              print('Legacy story: no new-cast voice proof required')
+              raise SystemExit(0)
+          spec=importlib.util.spec_from_file_location('voice_series','ai-cast/cinematic-series.py')
+          module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+          available={v['ShortName'] for v in asyncio.run(edge_tts.list_voices())}
+          for name in ('lina','oma'):
+              if module.VOICES[name] not in available:
+                  raise RuntimeError('Selected synthetic German voice is not in the live catalog: '+module.VOICES[name])
+          folder=Path('renders/lina-voice-proof');folder.mkdir(parents=True,exist_ok=True)
+          rows=[]
+          for i,scene in enumerate(plan['scenes']):
+              duration=module.measured_narration(scene,folder/f'{i:02}.mp3')
+              row={'scene':i,'voice':module.VOICES[scene['speaker']],'duration':duration}
+              print(json.dumps(row),flush=True);rows.append(row)
+              if not .4<duration<=4.5:
+                  raise RuntimeError(f'Actual scene {i} narration exceeds unchanged 4.5s ceiling')
+          (folder/'timing.json').write_text(json.dumps({'gpu_requested':False,'scenes':rows},indent=2))
+          PY
       - name: Keep a reproducible typography sample
         run: |
           PYTHONPATH=ai-cast python - <<'PY'
@@ -74,4 +99,5 @@ jobs:
           path: |
             renders/bold-glass-design/
             renders/realistic-next-plan.json
+            renders/lina-voice-proof/
           retention-days: 14

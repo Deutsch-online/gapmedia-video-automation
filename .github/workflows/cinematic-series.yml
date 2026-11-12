@@ -12,6 +12,9 @@ on:
       - .cinematic-series.json
       - .github/workflows/cinematic-series.yml
       - ai-cast/cinematic-series.py
+      - ai-cast/cinematic_lina.py
+      - ai-cast/lina-oma-story-bank.json
+      - public/ai-cast/lina-oma/**
       - ai-cast/cinematic_music.py
       - ai-cast/cinematic_speech.py
       - ai-cast/cinematic_graphics.py
@@ -99,6 +102,8 @@ jobs:
           python -m unittest discover -s tests -p test_wan2gp_backend.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
+          python -m unittest discover -s tests -p test_cinematic_lina.py -v
+          python -m unittest discover -s tests -p test_cinematic_serial.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
           python -m unittest discover -s tests -p test_light_budget_recovery.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v

@@ -119,6 +119,16 @@ def location_description(plan):
 
 
 def still_prompt(plan,scene):
+    if plan.get('cast_profile') == 'lina-oma-v1':
+        from cinematic_lina import DESCRIPTIONS
+        return ('Preserve the exact original cartoon identity, age and naturally slender proportions in the supplied reference. '
+                'Show ONLY '+DESCRIPTIONS[scene['speaker']]+'. The other character stays off camera. '
+                'Premium expressive theatrical 3D cartoon, tactile fabric, warm cinematic light, charming natural eyes. '
+                'No photorealism, doll stare, bulky silhouette, distorted hands or extra face. '
+                'One coherent location: '+location_description(plan)+'. '
+                'Medium or closer face-and-object action shot; mouth unobstructed, keep action above lower caption area. '
+                'Visible objects: '+', '.join(scene['visible_objects'])+'. Starting action: '+scene['object_action']+'. '
+                'Child-safe ordinary situation. Full vertical scene; no generated text, logos or watermarks.')
     shot=plan['scenes'].index(scene)
     framing=('medium action shot','closer face-and-object reaction shot','medium reaction shot with the working hand visible')[shot%3]
     person = ('Marta, adult woman aged about 28, olive skin, chestnut curly bob, mustard top, '
@@ -144,6 +154,12 @@ def image_signature(reference_signature,prompt,seed):
 
 
 def speaking_motion(scene):
+    if scene['speaker'] in ('lina','oma'):
+        return ('Only the visible '+('girl Lina' if scene['speaker']=='lina' else 'grandmother Rosi')+
+                ' speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. '
+                'One readable gentle action: '+scene['object_action']+'. '
+                'Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, '
+                'no extra face, exaggeration, camera shake or new props.')
     return ('Only the visible adult '+scene['speaker']+' speaks to the friend off camera. '
             'Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. '
             'One small intentional gesture only: '+scene['object_action']+'. '
@@ -155,9 +171,9 @@ def apply_plan(plan):
     location=location_description(plan)
     plan['location_description']=location
     plan['visual_profile']=PROFILE
-    plan['render_style']='original-cast-realistic-comedy-v1'
+    plan['render_style']=('lina-oma-stylized-v1' if plan.get('cast_profile')=='lina-oma-v1' else 'original-cast-realistic-comedy-v1')
     for scene in plan['scenes']:
-        scene['scene']=('One visible adult '+scene['speaker']+' in the same '+location+
+        scene['scene']=('One visible '+('cartoon character ' if plan.get('cast_profile')=='lina-oma-v1' else 'adult ')+scene['speaker']+' in the same '+location+
                         '. The friend is off camera. '+scene['object_action'])
         scene['motion']=speaking_motion(scene)
     return plan

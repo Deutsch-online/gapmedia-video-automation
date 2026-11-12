@@ -40,7 +40,8 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'coral hoodie, navy joggers and white sneakers outdoors or soft white slippers at home. '
         'He is a supportive flatmate, never the solver of every problem. '
         'They are equal adults, never grandmother and taxi driver. Preserve exact reference identity. ')
-VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural'}
+VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural',
+          'lina': 'de-DE-AmalaNeural', 'oma': 'de-DE-KatjaNeural'}
 DEFAULT_SECONDS = 45
 LEGACY_SECONDS = 60
 EXCEPTION_SECONDS = 65
@@ -63,6 +64,10 @@ TRUSTED_RESEARCH = (
     ('Documented migrant difficulties with official letters', 'https://www.br.de/nachrichten/bayern/hilfe-bei-behoerdenpost-angebot-fuer-gefluechtete-in-unterfranken,VFLXDio', 'Behördenpost'),
     ('Video appointment preparation', 'https://www.arbeitsagentur.de/videotermin', 'Videotermin'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
+    ('Beginner German grammar and polite requests', 'https://www.goethe.de/ins/de/de/prf/grm.html', 'Ich möchte ein Eis'),
+    ('Beginner German grammar and polite requests, mobile edition', 'https://www.goethe.de/ins/de/de/m/prf/grm.html', 'Ich möchte ein Eis'),
+    ('Beginner German food and drink, Open University', 'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1', 'ich möchte'),
+    ('Beginner German requests, Schubert publisher exercise', 'https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', 'Ich möchte etwas trinken'),
     ('Job applications for newcomers in Germany', 'https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung', 'Lebenslauf'),
 )
 
@@ -96,7 +101,7 @@ def official_page(url, transport):
     with urllib.request.urlopen(req, timeout=18) as response:
         if response.status != 200 or not response.headers.get('content-type', '').lower().startswith('text/html'):
             raise ValueError('official page did not return HTML')
-        return response.read(750_000).decode('utf-8', 'ignore')
+        return response.read(750_000).decode(response.headers.get_content_charset() or 'utf-8', 'ignore')
 
 
 def research_source(episode, preferred_url=None, strict_preferred=False):
@@ -220,7 +225,10 @@ def due(state, config, now=None, force=False):
 def gate_decision(state,config,force=False,recovery_only=False,quota_check=None):
     go,reason,date=due(state,config,force=force)
     if not go:return go,reason,date
-    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked'):
+    from cinematic_lina import active as child_active
+    waiting_for_daily_credit = (child_active(config,state.get('next_episode',0)) and
+                                config.get('lina_oma_series',{}).get('wait_for_included_quota') is True)
+    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked') and not waiting_for_daily_credit:
         return False,'not-waiting-for-budget-recovery',date
     if config.get('time_budget',{}).get('mode')=='verified-included-only':
         if quota_check is None:
@@ -254,6 +262,10 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history, config=None):
+    from cinematic_lina import is_plan as child_plan, validate as validate_child
+    protagonist = 'lina' if child_plan(plan) else 'marta'
+    if child_plan(plan):
+        validate_child(plan, history)
     if episode >= 7:
         config = config if config is not None else load_json(CONFIG)
         request = config.get('next_story')
@@ -294,9 +306,9 @@ def validate_plan(plan, episode, history, config=None):
             if not isinstance(plan.get(key), str) or len(plan[key].strip()) < 25:
                 raise ValueError('The newcomer must have a concrete goal, decision and visual payoff: ' + key)
         scenes = plan['scenes']
-        if scenes[0].get('speaker') != 'marta' or scenes[-1].get('speaker') != 'marta':
+        if scenes[0].get('speaker') != protagonist or scenes[-1].get('speaker') != protagonist:
             raise ValueError('Marta must own the opening problem and closing reaction')
-        if sum(scene.get('speaker') == 'marta' for scene in scenes) < (len(scenes) // 2 + 1):
+        if sum(scene.get('speaker') == protagonist for scene in scenes) < (len(scenes) // 2 + 1):
             raise ValueError('The newcomer must remain the focus of the episode')
         if target == DEFAULT_SECONDS:
             if plan.get('mood') != 'comic':
@@ -532,6 +544,9 @@ def report_render_measurements(plan, quality):
 
 def make_plan(state):
     episode = state['next_episode']
+    from cinematic_lina import active as child_active, SOURCE as CHILD_SOURCE
+    config = load_json(CONFIG)
+    new_cast = child_active(config, episode)
     if episode == 5:
         return validate_plan(load_json(ROOT / 'ai-cast/everyday-micro-dialogues.json'), episode, state['history'])
     if episode == 3:
@@ -540,7 +555,7 @@ def make_plan(state):
         return validate_plan(first_episode(), 1, state['history'])
     # The owner's authored story is used once, at the next unplanned 45s episode.
     # A pending production bypasses make_plan and keeps all its signed assets.
-    if episode >= 9 and episode_seconds(episode) == DEFAULT_SECONDS:
+    if not new_cast and episode >= 9 and episode_seconds(episode) == DEFAULT_SECONDS:
         template = load_json(ROOT / 'ai-cast/doctor-appointment-45s.json', {})
         if template and not any(h.get('story_id') == template['story_id'] or
                                 h.get('title_de') == template['title_de'] for h in state['history']):
@@ -551,7 +566,7 @@ def make_plan(state):
             return validate_plan(template, episode, state['history'])
     config = load_json(CONFIG)
     serial = config.get('serial_story', {})
-    if serial and episode >= serial.get('from_episode', 10**9):
+    if not new_cast and serial and episode >= serial.get('from_episode', 10**9):
         used = {h.get('story_id') for h in state['history']}
         remaining = [story for story in serial.get('approved_chapters', []) if story not in used]
         if not remaining:
@@ -559,6 +574,9 @@ def make_plan(state):
         config = copy.deepcopy(config)
         config['next_story'] = {'from_episode': serial['from_episode'],
                                 'story_id': remaining[0], 'duration_seconds': DEFAULT_SECONDS}
+    if new_cast:
+        config = copy.deepcopy(config)
+        config['story_planning']['bank'] = 'ai-cast/lina-oma-story-bank.json'
     planning = config.get('story_planning', {})
     project_research = None
     if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):
@@ -566,7 +584,10 @@ def make_plan(state):
         bank = load_json(ROOT / planning['bank'])
         required=config.get('next_story',{})
         source_urls=unused_source_urls(bank,episode,episode_seconds(episode,config),state['history'],config)
-        if (required and episode>=required['from_episode'] and source_urls and
+        if new_cast:
+            from cinematic_lina import grammar_source
+            project_research=grammar_source(research_source,episode)
+        elif (required and episode>=required['from_episode'] and source_urls and
                 not any(h.get('story_id')==required['story_id'] for h in state['history'])):
             project_research=research_source(episode,preferred_url=source_urls[0],strict_preferred=True)
         else:
@@ -690,6 +711,9 @@ def make_plan(state):
                    'Include documented_basis: report_url equal to research_source.url, type documented-problem-adaptation, '
                    'verified_problem as a concrete source-supported problem, invented_elements as a list of fictional details. '
                    'Language learning and administrative language are substantive themes; never portray low German proficiency as stupidity.')
+    if new_cast:
+        from cinematic_lina import prompt as child_prompt
+        prompt = child_prompt(episode, research, state['history'])
     errors, attempts, providers = [], [], []
     key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
     if key:
@@ -738,6 +762,9 @@ def make_plan(state):
                                  {'Authorization': 'Bearer ' + key})
                 raw = r['choices'][0]['message']['content']
             plan = parse_story_response(raw)
+            if new_cast:
+                plan['cast_profile'] = 'lina-oma-v1'
+                plan['series_name'] = 'Lina & Oma Rosi'
             if research:
                 plan['research_source'] = research
                 plan['mood'] = mood
@@ -1030,7 +1057,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return ass
 
 
-def render(plan, config, preview=False, history=(), persist_plan=None):
+def render(plan, config, preview=False, history=(), persist_plan=None, persist_preview=None):
     if preview and len(plan.get('scenes', [])) != 3:
         raise ValueError('A short preview must contain exactly three scenes')
     # Heavy model dependencies are loaded only for an actual production run.
@@ -1044,7 +1071,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
     paired = design.enabled(config,plan['episode'])
     ep = ('preview-' if preview else '') + f"e{plan['episode']:04}"
     if paired:
-        ep += '-' + design.ASSET_PROFILE
+        ep += '-' + (plan.get('cast_profile') or design.ASSET_PROFILE)
     folder = Path('renders/cinematic-series') / ep
     cache = Path('renders/cinematic-series-cache') / ep
     folder.mkdir(parents=True, exist_ok=True)
@@ -1058,8 +1085,9 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                 if not target.exists():
                     shutil.copyfile(item, target)
     art = Path(config['reference_dir'])
-    speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in VOICES}
-                    if paired else {name: art / (name + '-speaking.png') for name in VOICES})
+    cast_names = [name for name in VOICES if any(s['speaker']==name for s in plan['scenes'])]
+    speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in cast_names}
+                    if paired else {name: art / (name + '-speaking.png') for name in cast_names})
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
     # Fail layout before requesting any GPU, using the final spoken text.
@@ -1076,7 +1104,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
         audios.append(aligned)
     parts = []
     native_takes = []
-    for i, scene in enumerate(plan['scenes']):
+    def prepare_still(i, scene):
         budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
         paired_prompt = design.still_prompt(plan,scene) if paired else None
@@ -1126,6 +1154,17 @@ def render(plan, config, preview=False, history=(), persist_plan=None):
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
+        return png, clip
+    if plan.get('cast_profile') == 'lina-oma-v1':
+        if persist_preview is None:
+            raise RuntimeError('Child-series images must be delivered before video generation')
+        for i, scene in enumerate(plan['scenes']):
+            prepare_still(i, scene)
+        from cinematic_lina import contact_sheet
+        preview_info=contact_sheet([cache/f'{i:02}.png' for i in range(len(plan['scenes']))],folder/'image-preview.jpg')
+        persist_preview(preview_info)
+    for i, scene in enumerate(plan['scenes']):
+        png, clip = prepare_still(i, scene)
         motion = (design.speaking_motion(scene) if paired else
                   scene['motion'] + ' Object action: ' + scene.get('object_action', '') +
                   ' Start the physical action promptly; add a readable natural facial reaction. '
@@ -1327,7 +1366,10 @@ def production(force=False):
             state['pending']['plan'] = copy.deepcopy(repaired)
             state['pending']['narration_repaired'] = True
             checkpoint(state)
-        final = render(plan, config, history=state['history'], persist_plan=persist_narration)
+        def persist_preview(info):
+            from cinematic_lina import deliver_preview
+            deliver_preview(state, info, checkpoint, bot)
+        final = render(plan, config, history=state['history'], persist_plan=persist_narration, persist_preview=persist_preview)
     except Exception as exc:
         close_credit_attempt('attempt-failed')
         state['pending']['status'] = 'render-failed'

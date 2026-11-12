@@ -16,7 +16,6 @@ on:
       - ai-cast/cinematic_ltx2.py
       - ai-cast/story-bank.json
       - tests/test_cinematic*.py
-      - tests/test_light_budget_recovery.py
 permissions:
   contents: read
 jobs:
@@ -39,9 +38,10 @@ jobs:
       - name: Verify budget, scheduling, timing and delivery invariants without service credentials
         run: |
           python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
+          python -m unittest discover -s tests -p test_cinematic_lina.py -v
+          python -m unittest discover -s tests -p test_cinematic_serial.py -v
           python -m unittest discover -s tests -p test_cinematic_design.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
-          python -m unittest discover -s tests -p test_light_budget_recovery.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_series.py -v
