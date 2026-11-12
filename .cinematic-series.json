@@ -122,6 +122,7 @@
       "lina": "de-DE-GiselaNeural",
       "oma": "de-DE-KatjaNeural"
     },
-    "voice_cloning": false
+    "voice_cloning": false,
+    "wait_for_included_quota": true
   }
 }

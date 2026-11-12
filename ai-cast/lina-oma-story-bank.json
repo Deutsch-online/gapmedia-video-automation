@@ -44,7 +44,7 @@
       "documented_basis": {
         "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
         "type": "documented-problem-adaptation",
-        "verified_problem": "The Goethe-Institut grammar guide models beginner German polite requests using Ich möchte ein Eis. The episode applies that verified request pattern to an egg; it does not claim a reported true child incident.",
+        "verified_problem": "Official beginner German instruction explains the polite request pattern Ich möchte (I would like). This fictional child lesson applies that pattern to an egg, contrasting an identity statement with a request; the egg-and-cheese incident is invented.",
         "invented_elements": [
           "Lina and Oma Rosi",
           "egg and mouse misunderstanding",
@@ -53,7 +53,9 @@
         "disclosure_de": "Fiktive Lernserie. Originalfiguren."
       },
       "research_urls": [
-        "https://www.goethe.de/ins/de/de/prf/grm.html"
+        "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "https://www.goethe.de/ins/de/de/m/prf/grm.html",
+        "https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1"
       ],
       "variants": {
         "45": [

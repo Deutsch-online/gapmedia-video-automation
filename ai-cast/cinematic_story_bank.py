@@ -42,6 +42,8 @@ def select_story(bank, episode, seconds, source, history, config, validate):
         candidate.update(episode=episode, duration_seconds=seconds,
                          research_source=copy.deepcopy(source),
                          story_provider='project-authored-bank-v1')
+        if candidate.get('cast_profile')=='lina-oma-v1':
+            candidate['documented_basis']['report_url']=source['url']
         from cinematic_design import enabled, apply_plan
         if enabled(config,episode):
             apply_plan(candidate)

@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest.mock import Mock,patch
 ROOT=Path(__file__).parents[1]
 sys.path.insert(0,str(ROOT/'ai-cast'))
-from cinematic_lina import SOURCE,deliver_preview,prompt
+from cinematic_lina import SOURCE,SOURCES,deliver_preview,prompt,grammar_source
 spec=importlib.util.spec_from_file_location('lina_series',ROOT/'ai-cast/cinematic-series.py')
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 
@@ -66,3 +66,22 @@ class LinaTests(unittest.TestCase):
         self.assertIn('Lina repeats and uses that correction',text)
         self.assertIn('Never repeat a prior story',text)
         self.assertNotIn('speaker (marta or lukas)',text)
+
+    def test_source_fallback_retains_verified_matching_context_and_actual_url(self):
+        fetch=Mock(side_effect=[RuntimeError('403'),RuntimeError('403'),{**self.source,'url':SOURCES[-1]}])
+        self.assertEqual(grammar_source(fetch,22)['url'],SOURCES[-1])
+        fetch.assert_called_with(22,preferred_url=SOURCES[-1],strict_preferred=True)
+        with patch.object(m,'research_source',side_effect=[RuntimeError('403'),RuntimeError('403'),{**self.source,'url':SOURCES[-1]}]):
+            plan=m.make_plan(self.state)
+        self.assertEqual(plan['documented_basis']['report_url'],SOURCES[-1])
+        with self.assertRaisesRegex(RuntimeError,'All approved'):
+            grammar_source(Mock(side_effect=RuntimeError('403')),22)
+
+    def test_hourly_credit_wait_never_bypasses_the_day_or_live_quota_gate(self):
+        config=json.loads((ROOT/'.cinematic-series.json').read_text())
+        with patch.object(m,'due',return_value=(True,'daily-slot','2026-11-12')):
+            self.assertFalse(m.gate_decision(self.state,config,recovery_only=True,quota_check={'status':'verified','can_admit_minimum_stage':False})[0])
+            self.assertTrue(m.gate_decision(self.state,config,recovery_only=True,quota_check={'status':'verified','can_admit_minimum_stage':True})[0])
+        with patch.object(m,'due',return_value=(False,'daily-production-already-started','2026-11-12')):
+            self.assertFalse(m.gate_decision(self.state,config,recovery_only=True,quota_check={'status':'verified','can_admit_minimum_stage':True})[0])
+        self.assertEqual(self.state['attempts'],{})

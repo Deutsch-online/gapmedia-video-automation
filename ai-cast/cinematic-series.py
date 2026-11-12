@@ -65,6 +65,8 @@ TRUSTED_RESEARCH = (
     ('Video appointment preparation', 'https://www.arbeitsagentur.de/videotermin', 'Videotermin'),
     ('Sorting household waste', 'https://www.muelltrennung-wirkt.de/de/muelltrennung/', 'Mülltrennung'),
     ('Beginner German grammar and polite requests', 'https://www.goethe.de/ins/de/de/prf/grm.html', 'Ich möchte ein Eis'),
+    ('Beginner German grammar and polite requests, mobile edition', 'https://www.goethe.de/ins/de/de/m/prf/grm.html', 'Ich möchte ein Eis'),
+    ('Beginner German food and drink, Open University', 'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1', 'ich möchte'),
     ('Job applications for newcomers in Germany', 'https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung', 'Lebenslauf'),
 )
 
@@ -222,7 +224,10 @@ def due(state, config, now=None, force=False):
 def gate_decision(state,config,force=False,recovery_only=False,quota_check=None):
     go,reason,date=due(state,config,force=force)
     if not go:return go,reason,date
-    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked'):
+    from cinematic_lina import active as child_active
+    waiting_for_daily_credit = (child_active(config,state.get('next_episode',0)) and
+                                config.get('lina_oma_series',{}).get('wait_for_included_quota') is True)
+    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked') and not waiting_for_daily_credit:
         return False,'not-waiting-for-budget-recovery',date
     if config.get('time_budget',{}).get('mode')=='verified-included-only':
         if quota_check is None:
@@ -578,11 +583,12 @@ def make_plan(state):
         bank = load_json(ROOT / planning['bank'])
         required=config.get('next_story',{})
         source_urls=unused_source_urls(bank,episode,episode_seconds(episode,config),state['history'],config)
-        if (required and episode>=required['from_episode'] and source_urls and
+        if new_cast:
+            from cinematic_lina import grammar_source
+            project_research=grammar_source(research_source,episode)
+        elif (required and episode>=required['from_episode'] and source_urls and
                 not any(h.get('story_id')==required['story_id'] for h in state['history'])):
             project_research=research_source(episode,preferred_url=source_urls[0],strict_preferred=True)
-        elif new_cast:
-            project_research=research_source(episode,preferred_url=CHILD_SOURCE,strict_preferred=True)
         else:
             project_research=research_source(episode)
         curated = select_story(bank, episode, episode_seconds(episode, config),

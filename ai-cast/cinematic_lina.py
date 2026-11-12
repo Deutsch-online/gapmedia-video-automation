@@ -5,6 +5,8 @@ from pathlib import Path
 
 PROFILE = 'lina-oma-v1'
 SOURCE = 'https://www.goethe.de/ins/de/de/prf/grm.html'
+SOURCES = (SOURCE, 'https://www.goethe.de/ins/de/de/m/prf/grm.html',
+           'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1')
 VOICES = {'lina': 'de-DE-GiselaNeural', 'oma': 'de-DE-KatjaNeural'}
 DESCRIPTIONS = {
     'lina': 'Lina, a fictional healthy eight-year-old newcomer girl, naturally slender child proportions, warm brown skin, brown eyes, dark curly hair in two puffs with coral bows, mustard shirt, teal dungaree dress, coral backpack and sneakers',
@@ -19,6 +21,15 @@ def active(config, episode):
 
 def is_plan(plan):
     return plan.get('cast_profile') == PROFILE
+
+
+def grammar_source(fetch, episode):
+    for url in SOURCES:
+        try:
+            return fetch(episode, preferred_url=url, strict_preferred=True)
+        except RuntimeError:
+            continue
+    raise RuntimeError('All approved beginner grammar sources unavailable; no invented research fallback')
 
 
 def validate(plan, history=()):
@@ -40,7 +51,7 @@ def validate(plan, history=()):
     if any(is_plan(h) and normalize(h.get('language_error',{}).get('wrong'))==normalize(wrong) and
            normalize(h.get('language_error',{}).get('correct'))==normalize(correct) for h in history):
         raise ValueError('Daily episodes need a new language distinction')
-    if plan.get('research_source',{}).get('url') != SOURCE:
+    if plan.get('research_source',{}).get('url') not in SOURCES:
         raise ValueError('The learning sitcom requires matching live grammar research')
 
 
