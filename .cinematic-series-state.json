@@ -3500,7 +3500,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-13",
-    "status": "rendering",
+    "status": "dispatching",
     "image_preview": {
       "file": "renders/cinematic-series/e0022-lina-oma-v1/image-preview.jpg",
       "sha256": "484745f4b9b18e1ad4170feea4828c6affb84c30a07c1f9a2d5a98d2a02af0c2",
@@ -3526,7 +3526,14 @@
       "quota_checked_at": "2026-11-12T20:45:38.973200+00:00",
       "proof_run": 43304068335,
       "paid_fallback": false
-    }
+    },
+    "platform_receipts": {},
+    "platform_files": {
+      "tiktok": "renders/cinematic-series/e0022-lina-oma-v1/tiktok/e0022-tiktok-45s.mp4",
+      "instagram": "renders/cinematic-series/e0022-lina-oma-v1/instagram/e0022-instagram-45s.mp4"
+    },
+    "file": "renders/cinematic-series/e0022-lina-oma-v1/tiktok/e0022-tiktok-45s.mp4",
+    "platform": "tiktok"
   },
   "attempts": {
     "2026-10-15": 2,
