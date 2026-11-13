@@ -1,0 +1,48 @@
+name: Send Fire Wave studio link to private owner Telegram
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/send-fire-wave-link.yml
+permissions:
+  contents: read
+concurrency:
+  group: send-fire-wave-link
+  cancel-in-progress: false
+jobs:
+  send:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Send requested public studio link to configured private owner chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,urllib.error
+          token=os.environ.get('TELEGRAM_BOT_TOKEN','')
+          chat=os.environ.get('TELEGRAM_REVIEW_CHAT_ID') or os.environ.get('TELEGRAM_CHAT_ID','')
+          if not token or not chat:
+              raise SystemExit('Telegram bot or private owner chat is not configured')
+          def call(method,payload):
+              request=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:
+                  with urllib.request.urlopen(request,timeout=25) as response:
+                      data=json.load(response)
+              except Exception:
+                  raise SystemExit('Telegram request failed; delivery not confirmed; no automatic retry') from None
+              if not data.get('ok'):
+                  raise SystemExit('Telegram did not confirm the request; no automatic retry')
+              return data['result']
+          me=call('getMe',{})
+          if str(me.get('id'))==str(chat):
+              raise SystemExit('Destination is the bot itself')
+          if call('getChat',{'chat_id':chat}).get('type')!='private':
+              raise SystemExit('Private owner chat required; no channel or group delivery')
+          text='🔥 آتش و موج — پنل تازهٔ لایف\n\nبدون پسورد و لاگین:\nhttps://atash-wave-live.higgsfield.app/studio/?v=5\n\nامکانات: انتخاب چند افکت ویدیویی، پخش نوبتی یا تصادفی، قاب ویژهٔ گیفت‌دهنده، تشکر صوتی فارسی و انگلیسی و جایگاه راست/چپ پروفایل‌ها.\n\nبرای خروجی استودیو: در بخش اتصال، «کپی لینک استودیو» را بزنید و منبع Link را با ابعاد 1080 × 1920 بسازید.\n\nبرای محوشدن تصویر دوربین هنگام افکت، گزینهٔ «نمایش دوربین در حالت عادی و محو کامل هنگام افکت» را روشن کنید و منبع Link را بالاتر از منبع دوربین قرار دهید. پس از افکت، نمایش قبلی برمی‌گردد.\n\nرویدادهای واقعی لایک و گیفت به اتصال پل رویداد تیک‌تاک نیاز دارند. برای صدای فارسی، صدای دستگاه یا فایل صوتی فارسی لازم است.'
+          result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+          print('FIRE_WAVE_LINK_DELIVERED '+json.dumps({'message_id':result['message_id'],'destination_type':'private'}))
+          PY
