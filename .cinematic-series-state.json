@@ -3499,8 +3499,8 @@
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "lina-oma-stylized-v1"
     },
-    "date": "2026-11-12",
-    "status": "render-failed",
+    "date": "2026-11-13",
+    "status": "rendering",
     "image_preview": {
       "file": "renders/cinematic-series/e0022-lina-oma-v1/image-preview.jpg",
       "sha256": "484745f4b9b18e1ad4170feea4828c6affb84c30a07c1f9a2d5a98d2a02af0c2",
@@ -3562,7 +3562,8 @@
     "2026-11-10": 1,
     "2026-11-11": 1,
     "2026-11-11#owner-marta-shortline-20261111": 1,
-    "2026-11-12": 1
+    "2026-11-12": 1,
+    "2026-11-13": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3579,17 +3580,17 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-12T20:45:38.973200+00:00",
+    "checked_at": "2026-11-13T22:46:48.087982+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
     ],
     "strict_time_budget": true,
     "paid_route": false,
-    "can_admit_minimum_stage": false,
+    "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 159.82963599999994,
-    "can_admit_one_speaking_take": false,
+    "remaining_seconds": 2400.0,
+    "can_admit_one_speaking_take": true,
     "fallback": null
   },
   "planning_failures": {
