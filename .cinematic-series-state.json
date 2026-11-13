@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "next_episode": 22,
+  "next_episode": 23,
   "deliveries": {
     "2026-10-15": {
       "episode": 1,
@@ -188,6 +188,14 @@
       "platforms": {
         "tiktok": 2893,
         "instagram": 2894
+      }
+    },
+    "2026-11-13": {
+      "episode": 22,
+      "message_id": 2901,
+      "platforms": {
+        "tiktok": 2901,
+        "instagram": 2902
       }
     }
   },
@@ -3309,10 +3317,8 @@
       "story_provider": "project-authored-bank-v1",
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "original-cast-realistic-comedy-v1"
-    }
-  ],
-  "pending": {
-    "plan": {
+    },
+    {
       "story_id": "lina-oma-egg-cheese-v1",
       "cast_profile": "lina-oma-v1",
       "serial_id": "lina-oma-daily-v1",
@@ -3498,46 +3504,9 @@
       "story_provider": "project-authored-bank-v1",
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "lina-oma-stylized-v1"
-    },
-    "date": "2026-11-13",
-    "status": "exporting",
-    "image_preview": {
-      "file": "renders/cinematic-series/e0022-lina-oma-v1/image-preview.jpg",
-      "sha256": "484745f4b9b18e1ad4170feea4828c6affb84c30a07c1f9a2d5a98d2a02af0c2",
-      "status": "sent",
-      "message_id": 2896
-    },
-    "time_budget_blocked": true,
-    "recovery_diagnosis": {
-      "failed_run": 43292886173,
-      "failed_scene": 7,
-      "error": "upstream SSE CancelledError",
-      "completed_scenes": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "saved_cache_key": "cinematic-series-v2-43292886173-1",
-      "verified_remaining": 159.82963599999994,
-      "quota_checked_at": "2026-11-12T20:45:38.973200+00:00",
-      "proof_run": 43304068335,
-      "paid_fallback": false
-    },
-    "platform_receipts": {
-      "tiktok": 2901,
-      "instagram": 2902
-    },
-    "platform_files": {
-      "tiktok": "renders/cinematic-series/e0022-lina-oma-v1/tiktok/e0022-tiktok-45s.mp4",
-      "instagram": "renders/cinematic-series/e0022-lina-oma-v1/instagram/e0022-instagram-45s.mp4"
-    },
-    "file": "renders/cinematic-series/e0022-lina-oma-v1/instagram/e0022-instagram-45s.mp4",
-    "platform": "instagram"
-  },
+    }
+  ],
+  "pending": null,
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
