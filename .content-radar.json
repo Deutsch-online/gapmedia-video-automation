@@ -1,6 +1,60 @@
 {
-  "at": "2026-11-11T14:10:39.532Z",
+  "at": "2026-11-13T16:16:02.823Z",
   "rows": [
+    {
+      "cat": "tools",
+      "title": "Gemini Omni 1.2 Flash: 3 Video Changes",
+      "url": "https://ohwx.ai/gemini-omni-1-2-flash-video-changes/",
+      "date": "2026-11-13",
+      "sources": 8,
+      "clear": true,
+      "score": 30
+    },
+    {
+      "cat": "instagram",
+      "title": "Instagram Features: Long Videos Up to 90 Minutes, No Revenue Share Yet",
+      "url": "https://www.upgrow.com/blog/instagram-features-long-videos",
+      "date": "2026-11-12",
+      "sources": 7,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Google Flow adds five new AI video tools | Edit USA",
+      "url": "https://www.editusa.com/ai/google-flow-adds-five-tools-for-ai-video-including-new-angles-from-one-phone-clip",
+      "date": "2026-11-13",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tools",
+      "title": "Project Live Set lets you steer Adobe AI video mid-stream - Videomaker",
+      "url": "https://www.videomaker.com/news/project-live-set-lets-you-steer-adobe-ai-video-mid-stream/",
+      "date": "2026-11-13",
+      "sources": 8,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok Shop Creator Pilot Program Is Now Open | Soocials",
+      "url": "https://soocials.com/blog/tiktok-shop-creator-pilot-program-is-now-open/",
+      "date": "2026-11-10",
+      "sources": 6,
+      "clear": true,
+      "score": 27
+    },
+    {
+      "cat": "tools",
+      "title": "SwitchX 3.0: four references, moving backgrounds | Beeble Updates",
+      "url": "https://beeble.ai/updates/2026-11-11-switchx-3",
+      "date": "2026-11-11",
+      "sources": 7,
+      "clear": true,
+      "score": 27
+    },
     {
       "cat": "instagram",
       "title": "Instagram’s Effect Builder makes new filters from AI prompts | The Verge",
@@ -8,7 +62,7 @@
       "date": "2026-11-09",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "instagram",
@@ -17,7 +71,7 @@
       "date": "2026-11-09",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "tiktok",
@@ -26,171 +80,108 @@
       "date": "2026-11-09",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
-      "cat": "tools",
-      "title": "Introducing SwitchX 3.0",
-      "url": "https://beeble.ai/research/switchx-3-0",
-      "date": "2026-11-10",
+      "cat": "tiktok",
+      "title": "TikTok updates its AI video ad tools | Social Media Today",
+      "url": "https://www.socialmediatoday.com/news/tiktok-updates-its-ai-video-ad-tools/874209/",
+      "date": "2026-11-09",
       "sources": 8,
       "clear": true,
-      "score": 28
+      "score": 26
     },
     {
       "cat": "instagram",
-      "title": "Instagram wants longer videos. Will creators find them worth the cost? | Today News",
-      "url": "https://www.livemint.com/news/instagram-wants-longer-videos-will-creators-find-them-worth-the-cost-11793888965355.html",
+      "title": "Instagram Features: videos de 90 minutos al estilo YouTube",
+      "url": "https://fastcompany.mx/2026/11/08/instagram-features-video-horizontal-youtube/",
       "date": "2026-11-08",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tiktok",
       "title": "TikTok Creator Account: 7 Features TikTok Lists for a General Account",
       "url": "https://smmtoolbox.com/tiktok-creator-account-what-to-use-now/",
       "date": "2026-11-08",
-      "sources": 7,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Comments: 4 New Features, From 60-Second Voice to 9-Photo Carousels",
-      "url": "https://smmtoolbox.com/tiktok-comments-voice-polls-photo-carousels/",
-      "date": "2026-11-08",
       "sources": 8,
       "clear": true,
-      "score": 27
+      "score": 25
     },
     {
       "cat": "tools",
       "title": "Seed News - ByteDance Seed Team",
       "url": "https://seed.bytedance.com/en/blog/more-realistic-images-more-stable-editing-across-100-rounds-introducing-seedream-5-5/",
       "date": "2026-11-09",
-      "sources": 7,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Daz Studio can now turn a scene into an AI image or video",
-      "url": "https://renderu.com/en/news/post/28856",
-      "date": "2026-11-11",
-      "sources": 4,
-      "clear": true,
-      "score": 26
-    },
-    {
-      "cat": "instagram",
-      "title": "Creators see promise in Instagram’s long-form push",
-      "url": "https://digiday.com/media/creators-see-promise-in-instagrams-long-form-push-but-question-whether-exposure-is-enough/",
-      "date": "2026-11-06",
       "sources": 8,
       "clear": true,
       "score": 25
     },
     {
-      "cat": "instagram",
-      "title": "You can edit your videos with AI on Instagram’s new desktop Edits app | The Verge",
-      "url": "https://www.theverge.com/tech/1027444/instagram-edits-desktop-ai-agents-muse-mcp",
-      "date": "2026-11-05",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
       "cat": "tiktok",
-      "title": "TikTok quietly launches a stand-alone TikTok Shop app | TechCrunch",
-      "url": "https://techcrunch.com/2026/11/05/tiktok-quietly-launches-a-standalone-tiktok-shop-app/",
-      "date": "2026-11-05",
-      "sources": 8,
+      "title": "TikTok Now is the latest attempt to clone BeReal-November 2024-www.yitit.com",
+      "url": "https://www.yitit.com/tiktok-now-is-the-latest-attempt-to-clone-bereal-61014.htm",
+      "date": "2026-11-13",
+      "sources": 3,
       "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok New Features for Creators: 2026 Guide & Strategies | SimplePosty",
-      "url": "https://simpleposty.com/blog/how-to-make-the-most-of-tiktok-s-new-features-for-creators-2026",
-      "date": "2026-11-05",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "GPT Image 2.6, Gemini Omni Flash 1.2, Kling 4.0 Flash and More | Glif",
-      "url": "https://glif.app/changelog/2026-11-05-gpt-image-26-video-dubbing-and-new-models",
-      "date": "2026-11-05",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "Tesseract 0.12.4: 3D models, presenter shorts, directed video",
-      "url": "https://tesseract.dev/blog/tesseract-0-12-4/",
-      "date": "2026-11-07",
-      "sources": 1,
-      "clear": true,
-      "score": 10
+      "score": 21
     }
   ],
   "shown": [
     {
       "n": 1,
+      "cat": "tools",
+      "title": "Gemini Omni 1.2 Flash: 3 Video Changes",
+      "url": "https://ohwx.ai/gemini-omni-1-2-flash-video-changes/"
+    },
+    {
+      "n": 2,
+      "cat": "tools",
+      "title": "Google Flow adds five new AI video tools | Edit USA",
+      "url": "https://www.editusa.com/ai/google-flow-adds-five-tools-for-ai-video-including-new-angles-from-one-phone-clip"
+    },
+    {
+      "n": 3,
+      "cat": "tools",
+      "title": "Project Live Set lets you steer Adobe AI video mid-stream - Videomaker",
+      "url": "https://www.videomaker.com/news/project-live-set-lets-you-steer-adobe-ai-video-mid-stream/"
+    },
+    {
+      "n": 4,
+      "cat": "instagram",
+      "title": "Instagram Features: Long Videos Up to 90 Minutes, No Revenue Share Yet",
+      "url": "https://www.upgrow.com/blog/instagram-features-long-videos"
+    },
+    {
+      "n": 5,
       "cat": "instagram",
       "title": "Instagram’s Effect Builder makes new filters from AI prompts | The Verge",
       "url": "https://www.theverge.com/tech/1030061/instagram-ai-effect-builder-filters"
     },
     {
-      "n": 2,
+      "n": 6,
       "cat": "instagram",
       "title": "Instagram launches visual effects creator for Edits",
       "url": "https://tech.yahoo.com/social-media/articles/instagram-launches-visual-effects-creator-230659918.html"
     },
     {
-      "n": 3,
-      "cat": "instagram",
-      "title": "Instagram wants longer videos. Will creators find them worth the cost? | Today News",
-      "url": "https://www.livemint.com/news/instagram-wants-longer-videos-will-creators-find-them-worth-the-cost-11793888965355.html"
+      "n": 7,
+      "cat": "tiktok",
+      "title": "TikTok Shop Creator Pilot Program Is Now Open | Soocials",
+      "url": "https://soocials.com/blog/tiktok-shop-creator-pilot-program-is-now-open/"
     },
     {
-      "n": 4,
+      "n": 8,
       "cat": "tiktok",
       "title": "(November 9) 2026 TikTok updates, news, and features - SocialBee",
       "url": "https://socialbee.com/blog/tiktok-updates-news-features/"
     },
     {
-      "n": 5,
-      "cat": "tiktok",
-      "title": "TikTok Creator Account: 7 Features TikTok Lists for a General Account",
-      "url": "https://smmtoolbox.com/tiktok-creator-account-what-to-use-now/"
-    },
-    {
-      "n": 6,
-      "cat": "tiktok",
-      "title": "TikTok Comments: 4 New Features, From 60-Second Voice to 9-Photo Carousels",
-      "url": "https://smmtoolbox.com/tiktok-comments-voice-polls-photo-carousels/"
-    },
-    {
-      "n": 7,
-      "cat": "tools",
-      "title": "Introducing SwitchX 3.0",
-      "url": "https://beeble.ai/research/switchx-3-0"
-    },
-    {
-      "n": 8,
-      "cat": "tools",
-      "title": "Seed News - ByteDance Seed Team",
-      "url": "https://seed.bytedance.com/en/blog/more-realistic-images-more-stable-editing-across-100-rounds-introducing-seedream-5-5/"
-    },
-    {
       "n": 9,
-      "cat": "tools",
-      "title": "Daz Studio can now turn a scene into an AI image or video",
-      "url": "https://renderu.com/en/news/post/28856"
+      "cat": "tiktok",
+      "title": "TikTok updates its AI video ad tools | Social Media Today",
+      "url": "https://www.socialmediatoday.com/news/tiktok-updates-its-ai-video-ad-tools/874209/"
     }
   ]
 }
