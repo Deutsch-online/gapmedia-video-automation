@@ -1,0 +1,12 @@
+{
+  "name": "gapmedia-local-video-tools",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.22.3"
+  },
+  "dependencies": {
+    "@parcha/agentrun-dsl": "0.1.0-beta.37",
+    "openfilm": "0.3.2"
+  }
+}

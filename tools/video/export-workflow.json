@@ -1,0 +1,14 @@
+{
+  "v": 2,
+  "name": "offline-openfilm-export",
+  "schemas": {
+    "Input": {"type":"object","properties":{"master":{"type":"string","minLength":1},"sourceIdentity":{"type":"string","minLength":64}},"required":["master","sourceIdentity"],"additionalProperties":false},
+    "Result": {"type":"object","properties":{"film":{"type":"string","minLength":1}},"required":["film"],"additionalProperties":false}
+  },
+  "input": {"schemaId":"Input"},
+  "output": {"schemaId":"Result","path":"bundle"},
+  "root": {
+    "node":"call","label":"export-approved-master","via":"tool","tool":"openfilm_export",
+    "args":{"master":"{master}"},"out":"Result","as":"bundle","deadline_s":120
+  }
+}
