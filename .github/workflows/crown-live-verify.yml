@@ -1,0 +1,35 @@
+name: Verify running Crown live
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/crown-live-verify.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect live without reconnecting or sending test users
+        run: |
+          mkdir -p /tmp/live-check
+          cd /tmp/live-check
+          npm install --no-audit --no-fund ws
+          node --input-type=module - <<'JS'
+          import{WebSocket}from'ws';import fs from'node:fs';
+          const origin='https://afgtakrun-live-crown-52.hf.space';
+          const health=await(await fetch(origin+'/health')).json();console.log('LIVE_HEALTH',JSON.stringify(health));
+          const voices=new Set(),speechChecks=[],bridge=[],scenes=[];let firstTelemetry,lastTelemetry;
+          const ws=new WebSocket(origin.replace('https:','wss:')+'/relay?client=castle80');
+          const summarize=d=>{const s=d.state?.fun?.math81;if(!s)return;const snapshot={at:Date.now(),version:s.version,phase:s.phase,language:s.language,voiceEnabled:s.voiceEnabled,serial:s.serial,realPlayers:s.players?.filter(x=>!x.demo).length,waiting:s.waiting?.length,arrival:!!s.arrival,community:{likers:s.community?.likers?.filter(x=>!x.demo).length,supporters:s.community?.supporters?.filter(x=>!x.demo).length},voice:s.voice&&{id:s.voice.id,kind:s.voice.kind,language:s.voice.language,hasUrl:!!s.voice.speechUrl}};scenes.push(snapshot);if(scenes.length===1)console.log('INITIAL_SCENE',JSON.stringify(snapshot));const v=s.voice;if(v&&!voices.has(v.id)){voices.add(v.id);console.log('VOICE_EVENT',JSON.stringify(snapshot.voice));if(v.speechUrl)speechChecks.push(fetch(new URL(v.speechUrl,origin)).then(async r=>{const bytes=await r.arrayBuffer();const x={status:r.status,provider:r.headers.get('x-voice-provider'),bytes:bytes.byteLength};console.log('LIVE_AUDIO_RESULT',JSON.stringify(x));return x}));}};
+          const complete=()=>{ws.close()};const timer=setTimeout(complete,55000);
+          ws.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='sceneState')summarize(d);if(d.type==='bridgeStatus'){const x={state:d.state,code:d.code,username:d.username,stage:d.stage,telemetry:d.telemetry};bridge.push(x);console.log('BRIDGE_STATUS',JSON.stringify(x));if(d.telemetry){firstTelemetry??=d.telemetry;lastTelemetry=d.telemetry;}}});
+          ws.on('error',e=>console.log('WS_ERROR',e.message));
+          await new Promise(resolve=>ws.on('close',resolve));clearTimeout(timer);
+          const ws2=new WebSocket(origin.replace('https:','wss:')+'/relay?client=castle80');const t2=setTimeout(()=>ws2.close(),10000);ws2.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='bridgeStatus'){lastTelemetry=d.telemetry;console.log('FINAL_BRIDGE_STATUS',JSON.stringify({state:d.state,code:d.code,telemetry:d.telemetry}));ws2.close()}});await new Promise(resolve=>ws2.on('close',resolve));clearTimeout(t2);
+          await Promise.allSettled(speechChecks);console.log('FINAL_SCENE',JSON.stringify(scenes.at(-1)));console.log('EVENT_DELTA',JSON.stringify(Object.fromEntries(['received','comments','gifts','likes','joins'].map(k=>[k,(lastTelemetry?.[k]||0)-(firstTelemetry?.[k]||0)]))));console.log('VOICE_COUNT',voices.size);
+          JS
