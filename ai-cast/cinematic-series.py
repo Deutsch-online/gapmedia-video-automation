@@ -1088,6 +1088,9 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
     cast_names = [name for name in VOICES if any(s['speaker']==name for s in plan['scenes'])]
     speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in cast_names}
                     if paired else {name: art / (name + '-speaking.png') for name in cast_names})
+    if plan.get('cast_profile')=='lina-oma-v1' and plan['episode']>=23:
+        speaker_refs=design.speaker_references(config['visual_profile']['reference_image'],
+            cache/'single-speaker-references',config['lina_oma_series']['speaker_reference_sha256'])
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
     # Fail layout before requesting any GPU, using the final spoken text.

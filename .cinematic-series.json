@@ -130,6 +130,15 @@
       "oma": "de-DE-KatjaNeural"
     },
     "voice_cloning": false,
-    "wait_for_included_quota": true
+    "wait_for_included_quota": true,
+    "speaker_reference_sha256": "482c675392a0f0ed5c102f339bc5cf7a6be6d2d436a232a1951802db085e9a55",
+    "teaching_sequence_from_episode": 23,
+    "teaching_sequence": [
+      "lina-error",
+      "oma-immediate-correction",
+      "lina-correct-repetition",
+      "oma-positive-encouragement"
+    ],
+    "single_speaker_reference_from_episode": 23
   }
 }

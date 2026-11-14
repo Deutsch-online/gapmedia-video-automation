@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 
 PROFILE = 'lina-oma-v1'
+TEACHING_FROM_EPISODE = 23
+PRAISE = ('sehr gut','gut gemacht','prima','bravo','perfekt','richtig','genau','klasse','sehr schön')
 SOURCE = 'https://www.goethe.de/ins/de/de/prf/grm.html'
 SOURCES = ('https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', SOURCE,
            'https://www.goethe.de/ins/de/de/m/prf/grm.html',
@@ -46,6 +48,17 @@ def validate(plan, history=()):
         raise ValueError('Oma must supply the actual correct German phrase')
     if not any(correct.casefold() in s['de'].casefold() for s in plan['scenes'][1:] if s['speaker'] == 'lina'):
         raise ValueError('Lina must use the corrected phrase herself')
+    if plan.get('episode',0)>=TEACHING_FROM_EPISODE:
+        scenes=plan['scenes']
+        if (len(scenes)<4 or scenes[1]['speaker']!='oma' or
+                correct.casefold() not in scenes[1]['de'].casefold()):
+            raise ValueError('Oma must correct immediately in the next shot')
+        if scenes[2]['speaker']!='lina' or correct.casefold() not in scenes[2]['de'].casefold():
+            raise ValueError('Lina must immediately repeat the correct phrase after Oma')
+        praise=scenes[3]['de'].casefold().strip()
+        if (scenes[3]['speaker']!='oma' or not any(praise.startswith(word) for word in PRAISE) or
+                any(word in praise.split() for word in ('falsch','dumm','blöd','aber'))):
+            raise ValueError('Oma must immediately encourage the correct repetition')
     if len(error.get('explanation', '')) < 20:
         raise ValueError('Explain the intended meaning and why the first phrase is wrong for it')
     normalize=lambda value: ' '.join(str(value).casefold().strip(' .!?…').split())
@@ -64,7 +77,13 @@ def prompt(episode, research, history):
         'Lina is a newly arrived eight-year-old girl with some German; Oma Rosi is her warm funny grandmother. '
         'Only speakers lina and oma. Never Marta or Lukas. Lina is clever, playful and never mocked for accent, '
         'nationality or intelligence. Oma responds with a gentle visual joke and explicitly corrects one word or '
-        'sentence; Lina repeats and uses that correction. The final visible joke grows from the SAME language '
+        'sentence; Lina repeats and uses that correction. MANDATORY FIRST FOUR SHOTS: '
+        '0 Lina says the wrong phrase; 1 Oma immediately gives the exact correct phrase; '
+        '2 Lina repeats that correct phrase; 3 Oma immediately praises her warmly, e.g. Sehr gut!, Prima!, '
+        'Gut gemacht!, Bravo! or Klasse! No delayed correction, sarcasm or joke instead of praise. '
+        'A gentle smile or tiny visual joke may accompany correction, but never postpone it. '
+        'Only after these four linked turns continue the SAME everyday story and its comic payoff. '
+        'The final visible joke grows from the SAME language '
         'misunderstanding and props; no random joke or disconnected vocabulary drill. Family-safe ordinary '
         'activities only. One coherent location and original fixed reference outfits. No nationality, real child '
         'identity, cloned voice, dangerous activity, employment or legal/medical plot. The first line contains '
@@ -72,7 +91,9 @@ def prompt(episode, research, history):
         '3-6 words, under 40 characters, natural speech with meaningful pauses. Do not invent a new error by '
         'calling a grammatical and contextually correct phrase incorrect. All stories and people are fictional. '
         'Use only the supplied live official grammar context for language claims. The camera shows only the '
-        'current speaker, listener just off camera, same breakfast table or other coherent location. '
+        'current speaker in a close or medium single-person shot, listener completely outside the frame; '
+        'never put both faces or a second moving mouth in a generated speaking shot. Same breakfast table or '
+        'other coherent location, matching eyelines across the cut, pauses with mouths closed. '
         'Return only JSON with: episode, story_id (unique original string), title_de, title_fa, summary, '
         'cliffhanger (small bridge to tomorrow), series_version:wg-alltag-v1, series_name:Lina & Oma Rosi, '
         'cast_profile:lina-oma-v1, content_basis:everyday-reenactment, mood:comic, duration_seconds:45, '
