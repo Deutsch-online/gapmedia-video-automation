@@ -126,8 +126,8 @@
     "images_before_video": true,
     "reference_image": "public/ai-cast/lina-oma/reference.jpg",
     "voices": {
-      "lina": "de-DE-AmalaNeural",
-      "oma": "de-DE-KatjaNeural"
+      "lina": "de-DE-TanjaNeural",
+      "oma": "de-DE-TanjaNeural"
     },
     "voice_cloning": false,
     "wait_for_included_quota": true,
@@ -139,6 +139,14 @@
       "lina-correct-repetition",
       "oma-positive-encouragement"
     ],
-    "single_speaker_reference_from_episode": 23
+    "single_speaker_reference_from_episode": 23,
+    "voice_pitches": {
+      "lina": "+20Hz",
+      "oma": "-10Hz"
+    },
+    "clone_fallback": {
+      "status": "awaiting_owner_voice_id",
+      "automatic_clone_creation": false
+    }
   }
 }

@@ -104,6 +104,11 @@ class LinaTests(unittest.TestCase):
         self.assertIn('Never repeat a prior story',text)
         self.assertNotIn('speaker (marta or lukas)',text)
 
+    def test_two_role_voices_have_distinct_cache_identity(self):
+        girl={'speaker':'lina','de':'Guten Morgen!'}
+        grandma={'speaker':'oma','de':'Guten Morgen!'}
+        self.assertNotEqual(m.narration_signature(girl),m.narration_signature(grandma))
+
     def test_source_fallback_retains_verified_matching_context_and_actual_url(self):
         outcomes=[RuntimeError('403')]*(len(SOURCES)-1)+[{**self.source,'url':SOURCES[-1]}]
         fetch=Mock(side_effect=list(outcomes))
