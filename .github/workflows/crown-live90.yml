@@ -51,7 +51,7 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           node --check server.mjs
           node --check public/math-duel-ui.mjs
-          node --test --test-isolation=none --test-reporter=spec tests/math-duel.mjs
+          node --test --test-reporter=spec tests/math-duel.mjs
       - name: Install browser
         working-directory: /tmp/crown-app
         run: |
