@@ -54,7 +54,7 @@ def wrap(text, font, width=800, direction=None):
     return result
 
 
-def caption_card(de, fa, target):
+def caption_card(de, fa, target, lesson_label=None):
     from PIL import Image, ImageDraw, ImageFont
     de_path = font_file('DejaVu Sans:style=Bold')
     fa_path = font_file('Noto Sans Arabic:style=Bold')
@@ -80,16 +80,23 @@ def caption_card(de, fa, target):
             boxes.append({'language':language,'text':line,'y':cursor,'height':leading})
             cursor += leading
         cursor += 24 if language == 'de' else 0
+    if lesson_label:
+        label_font=ImageFont.truetype(de_path,28)
+        draw.rounded_rectangle((x,y-58,x+252,y-10),radius=14,fill=(12,22,32,210))
+        draw.text((x+126,y-34),lesson_label,font=label_font,anchor='mm',fill='#FFE4A0')
     target = Path(target);target.parent.mkdir(parents=True,exist_ok=True);image.save(target)
     return {'de_size':DE_SIZE,'fa_size':FA_SIZE,'bold':True,'card':CARD,'text_boxes':boxes,
             'fonts':[Path(de_path).name,Path(fa_path).name],
-            'de':de,'fa':fa,'caption_sha256':hashlib.sha256(image.tobytes()).hexdigest()}
+            'de':de,'fa':fa,'lesson_label':lesson_label,'caption_sha256':hashlib.sha256(image.tobytes()).hexdigest()}
 
 
 def prepare_captions(plan, folder):
     from PIL import Image, ImageDraw
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
-    reports=[caption_card(scene['de'],scene['fa'],folder/f'caption-{i:02d}.png')
+    from cinematic_lina import is_plan,TEACHING_FROM_EPISODE
+    teaching=is_plan(plan) and plan.get('episode',0)>=TEACHING_FROM_EPISODE
+    labels={0:'SO NICHT',1:'RICHTIG',2:'RICHTIG',3:'SEHR GUT!'} if teaching else {}
+    reports=[caption_card(scene['de'],scene['fa'],folder/f'caption-{i:02d}.png',lesson_label=labels.get(i))
              for i,scene in enumerate(plan['scenes'])]
     mask=Image.new('L',(CARD[2],CARD[3]),0)
     ImageDraw.Draw(mask).rounded_rectangle((0,0,CARD[2]-1,CARD[3]-1),radius=28,fill=255)
@@ -118,6 +125,36 @@ def location_description(plan):
     return match.group(1)
 
 
+def speaker_references(reference, folder, expected_sha):
+    """Isolate the two reviewed reference regions before the single-face video model."""
+    from PIL import Image
+    reference=Path(reference)
+    source_sha=hashlib.sha256(reference.read_bytes()).hexdigest()
+    if source_sha!=expected_sha:
+        raise ValueError('The character reference changed; review speaker regions before generation')
+    folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
+    regions={'lina':(0,.08,.53,.77),'oma':(.54,.04,1,.77)}
+    outputs={name:folder/(name+'-single-reference.png') for name in regions}
+    marker=folder/'reference-regions.json'
+    if marker.exists():
+        saved=json.loads(marker.read_text())
+        if (saved.get('source_sha256')==source_sha and
+                saved.get('regions')=={k:list(v) for k,v in regions.items()} and
+                all(path.exists() and hashlib.sha256(path.read_bytes()).hexdigest()==saved.get('outputs',{}).get(name)
+                    for name,path in outputs.items())):
+            return outputs
+        raise ValueError('Isolated speaker-reference cache changed; review before requesting GPU')
+    with Image.open(reference) as image:
+        w,h=image.size
+        for speaker,(x0,y0,x1,y1) in regions.items():
+            target=folder/(speaker+'-single-reference.png')
+            image.crop((round(w*x0),round(h*y0),round(w*x1),round(h*y1))).convert('RGB').save(target)
+            outputs[speaker]=target
+    marker.write_text(json.dumps({'source_sha256':source_sha,'regions':regions,
+        'outputs':{name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in outputs.items()}}))
+    return outputs
+
+
 def still_prompt(plan,scene):
     if plan.get('cast_profile') == 'lina-oma-v1':
         from cinematic_lina import DESCRIPTIONS
@@ -125,6 +162,8 @@ def still_prompt(plan,scene):
                 'Show ONLY '+DESCRIPTIONS[scene['speaker']]+'. The other character stays off camera. '
                 'Premium expressive theatrical 3D cartoon, tactile fabric, warm cinematic light, charming natural eyes. '
                 'No photorealism, doll stare, bulky silhouette, distorted hands or extra face. '
+                'Use the reference only for identity and clothes; do not copy its egg, cheese, cup or room '
+                'unless explicitly requested in this scene. '
                 'One coherent location: '+location_description(plan)+'. '
                 'Medium or closer face-and-object action shot; mouth unobstructed, keep action above lower caption area. '
                 'Visible objects: '+', '.join(scene['visible_objects'])+'. Starting action: '+scene['object_action']+'. '

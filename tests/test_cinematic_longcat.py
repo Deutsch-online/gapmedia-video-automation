@@ -69,6 +69,8 @@ class LightProfileTests(unittest.TestCase):
                  patch.object(budget,'run_gpu',side_effect=lambda fn,required_seconds:fn()) as guard:
                 hq.generate_take(root/'still.png',root/'same-wav.wav',root/'out.mp4','Same motion.',1,light=True)
             self.assertEqual(client.predict.call_args.args[3],'480p')
+            self.assertIn('Exactly one visible speaking character',client.predict.call_args.args[2])
+            self.assertNotIn('visible adult',client.predict.call_args.args[2])
             self.assertEqual(client.predict.call_args.args[6],'DBCache faster')
             self.assertEqual(client.predict.call_args.args[1],str(root/'same-wav.wav'))
             self.assertEqual(guard.call_args.kwargs['required_seconds'],480)

@@ -41,7 +41,7 @@ CAST = ('Marta is the young adult woman on the LEFT of the reference, warm olive
         'He is a supportive flatmate, never the solver of every problem. '
         'They are equal adults, never grandmother and taxi driver. Preserve exact reference identity. ')
 VOICES = {'marta': 'de-DE-KatjaNeural', 'lukas': 'de-DE-ConradNeural',
-          'lina': 'de-DE-AmalaNeural', 'oma': 'de-DE-KatjaNeural'}
+          'lina': 'de-DE-TanjaNeural', 'oma': 'de-DE-TanjaNeural'}
 DEFAULT_SECONDS = 45
 LEGACY_SECONDS = 60
 EXCEPTION_SECONDS = 65
@@ -815,6 +815,10 @@ class NarrationTimingError(RuntimeError):
 
 
 def narration_signature(scene):
+    if scene['speaker'] in ('lina','oma'):
+        from cinematic_lina import VOICE_PITCHES
+        return hashlib.sha256(json.dumps(['narration-timing-v3', VOICES[scene['speaker']],
+            VOICE_PITCHES[scene['speaker']],scene['de']],ensure_ascii=False).encode()).hexdigest()
     return hashlib.sha256(json.dumps(['narration-timing-v2', VOICES[scene['speaker']],
                                      scene['de']], ensure_ascii=False).encode()).hexdigest()
 
@@ -832,8 +836,12 @@ def measured_narration(scene, audio):
     if os.getenv('CINEMATIC_CACHED_ONLY') == 'on':
         raise RuntimeError('Cached-only finish requires validated existing narration')
     for rate in ('-5%', '+3%'):
+        pitch=[]
+        if scene['speaker'] in ('lina','oma'):
+            from cinematic_lina import VOICE_PITCHES
+            pitch=['--pitch='+VOICE_PITCHES[scene['speaker']]]
         command(['python3', '-m', 'edge_tts', '--voice', VOICES[scene['speaker']],
-                 '--text', scene['de'], '--rate=' + rate, '--write-media', audio])
+                 '--text', scene['de'], '--rate=' + rate, *pitch, '--write-media', audio])
         duration = seconds(audio)
         if .4 < duration <= 4.5:
             marker.write_text(signature)
@@ -1088,6 +1096,9 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
     cast_names = [name for name in VOICES if any(s['speaker']==name for s in plan['scenes'])]
     speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in cast_names}
                     if paired else {name: art / (name + '-speaking.png') for name in cast_names})
+    if plan.get('cast_profile')=='lina-oma-v1' and plan['episode']>=23:
+        speaker_refs=design.speaker_references(config['visual_profile']['reference_image'],
+            cache/'single-speaker-references',config['lina_oma_series']['speaker_reference_sha256'])
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
     # Fail layout before requesting any GPU, using the final spoken text.

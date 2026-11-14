@@ -48,8 +48,30 @@ jobs:
           verify_live_contract()
           print('Verified charged GPU reservation:', QUOTA_MAXIMUM, 'quota units; no generation requested')
           PY
-      - name: Verify the next real story with live official research and no GPU
-        run: python ai-cast/cinematic-series.py plan-only --file renders/realistic-next-plan.json
+      - name: Verify the authored teaching contract with live research and isolated references; no story service or GPU
+        run: |
+          PYTHONPATH=ai-cast python - <<'PY'
+          import copy,importlib.util,json
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('contract_series','ai-cast/cinematic-series.py')
+          module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+          # A deterministic regression fixture, not the next production story or a repeat publication.
+          state=module.new_state();state['next_episode']=22
+          original=module.make_plan(state)
+          plan=copy.deepcopy(original);plan['episode']=23
+          plan['scenes']=[copy.deepcopy(original['scenes'][i]) for i in (0,3,4,1,2,5,6,7,8)]
+          plan['scenes'][3].update(de='Sehr gut, Lina!',fa='آفرین، لینا!')
+          module.validate_plan(plan,23,[])
+          from cinematic_design import apply_plan,prepare_captions,speaker_references
+          apply_plan(plan)
+          config=module.load_json(module.CONFIG)
+          speaker_references(config['visual_profile']['reference_image'],'renders/dialogue-reference-proof',
+              config['lina_oma_series']['speaker_reference_sha256'])
+          prepare_captions(plan,'renders/dialogue-caption-proof')
+          plan['ci_fixture']=True
+          Path('renders/realistic-next-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
+          print('Verified authored correction/repetition/praise fixture with live source and two isolated inputs; no next-story generation or GPU requested.')
+          PY
       - name: Measure the actual new German voices without requesting GPU
         run: |
           PYTHONPATH=ai-cast python - <<'PY'
@@ -100,4 +122,6 @@ jobs:
             renders/bold-glass-design/
             renders/realistic-next-plan.json
             renders/lina-voice-proof/
+            renders/dialogue-reference-proof/
+            renders/dialogue-caption-proof/
           retention-days: 14

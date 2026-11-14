@@ -32,14 +32,51 @@ class LinaTests(unittest.TestCase):
 
     def test_new_days_cannot_reuse_the_same_error_or_omit_the_correction(self):
         p=self.plan();p['episode']=23
+        original=p['scenes']
+        p['scenes']=[original[i] for i in (0,3,4,1,2,5,6,7,8)]
+        p['scenes'][3]={**p['scenes'][3],'de':'Sehr gut, Lina!','fa':'آفرین، لینا!'}
         prior=copy.deepcopy(p)
         prior['language_error']['wrong']=prior['language_error']['wrong'].lower().rstrip('!')
         prior['language_error']['correct']=prior['language_error']['correct'].lower().rstrip('.')
         with self.assertRaisesRegex(ValueError,'new language distinction'):
             m.validate_plan(p,23,[prior])
-        p['scenes'][3]['de']='Das ist aber lustig!'
-        with self.assertRaisesRegex(ValueError,'actual correct German'):
+        p['scenes'][1]['de']='Das ist aber lustig!'
+        with self.assertRaisesRegex(ValueError,'actual correct German|correct immediately'):
             m.validate_plan(p,23,[])
+
+    def test_correction_repetition_and_encouragement_are_immediate(self):
+        p=self.plan();p['episode']=23
+        with self.assertRaisesRegex(ValueError,'correct immediately'):
+            m.validate_plan(p,23,[])
+        original=p['scenes']
+        p['scenes']=[original[i] for i in (0,3,4,1,2,5,6,7,8)]
+        p['scenes'][3]={**p['scenes'][3],'de':'Sehr gut, Lina!','fa':'آفرین، لینا!'}
+        m.validate_plan(p,23,[])
+        missing=copy.deepcopy(p);missing['scenes'][3]['de']='Dann essen wir jetzt.'
+        with self.assertRaisesRegex(ValueError,'encourage'):
+            m.validate_plan(missing,23,[])
+        wrong_turn=copy.deepcopy(p);wrong_turn['scenes'][2]['speaker']='oma'
+        with self.assertRaisesRegex(ValueError,'immediately repeat|corrected phrase herself'):
+            m.validate_plan(wrong_turn,23,[])
+
+    def test_separate_speaker_inputs_preserve_identity_and_are_stable_across_resume(self):
+        import tempfile,hashlib
+        from PIL import Image
+        from cinematic_design import speaker_references
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);source=root/'reference.png'
+            Image.new('RGB',(100,140),'teal').save(source)
+            sha=hashlib.sha256(source.read_bytes()).hexdigest()
+            refs=speaker_references(source,root/'refs',sha)
+            self.assertNotEqual(refs['lina'],refs['oma'])
+            before={k:v.read_bytes() for k,v in refs.items()}
+            again=speaker_references(source,root/'refs',sha)
+            self.assertEqual(before,{k:v.read_bytes() for k,v in again.items()})
+            with self.assertRaisesRegex(ValueError,'reference changed'):
+                speaker_references(source,root/'other','different-reference')
+            refs['oma'].write_bytes(b'changed')
+            with self.assertRaisesRegex(ValueError,'cache changed'):
+                speaker_references(source,root/'refs',sha)
 
     def test_preview_is_confirmed_once_before_video_and_uncertain_result_not_replayed(self):
         state={'pending':{}}
@@ -66,6 +103,11 @@ class LinaTests(unittest.TestCase):
         self.assertIn('Lina repeats and uses that correction',text)
         self.assertIn('Never repeat a prior story',text)
         self.assertNotIn('speaker (marta or lukas)',text)
+
+    def test_two_role_voices_have_distinct_cache_identity(self):
+        girl={'speaker':'lina','de':'Guten Morgen!'}
+        grandma={'speaker':'oma','de':'Guten Morgen!'}
+        self.assertNotEqual(m.narration_signature(girl),m.narration_signature(grandma))
 
     def test_source_fallback_retains_verified_matching_context_and_actual_url(self):
         outcomes=[RuntimeError('403')]*(len(SOURCES)-1)+[{**self.source,'url':SOURCES[-1]}]

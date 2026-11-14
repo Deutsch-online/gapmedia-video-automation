@@ -53,8 +53,11 @@ def generate_take(image,audio,output,motion,seed,light=False):
     from cinematic_budget import run_gpu
     from cinematic_speech import probe
     from cinematic_ltx2 import reject_whiteout
-    prompt=('One visible adult, realistic human proportions, clear unobstructed mouth. '
-            'Stable face, natural eyes and restrained mouth movement. '+motion)
+    prefix=('Exactly one visible speaking character. Preserve the age, identity and proportions '
+            'of the supplied single-person image. No second face or listener in the frame. '
+            'Only this mouth follows the audio; mouth closed during silence. '
+            if light else 'One visible adult, realistic human proportions, clear unobstructed mouth. ')
+    prompt=(prefix+'Stable face, natural eyes and restrained mouth movement. '+motion)
     def call():
         result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
                    prompt,resolution,seed,'Clean speech (fast)',acceleration,api_name='/generate')
