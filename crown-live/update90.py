@@ -136,3 +136,15 @@ async function leagueSpeech(req,res,url){
 """
 s=s[:a]+speech+s[b:];p.write_text(s)
 print('PATCH_READY version=90')
+
+with (root/'public/math-duel.css').open('a') as f:
+ f.write(r"""
+.screen #broadcast #spotlightCard{grid-template-columns:90px 1fr;padding:3px 0 7px}
+.screen #broadcast #spotlightCard h3{font-size:22px}
+.screen #broadcast .spotlight-portrait{width:88px;height:88px}
+.screen #broadcast .spotlight-name{font-size:25px}
+.screen #broadcast .spotlight-time{font-size:20px}
+.screen #broadcast #communityBoard h3{font-size:24px;margin:6px 0 3px}
+.screen #broadcast .community-row{min-height:62px;font-size:24px;padding:5px 2px}
+.screen #broadcast .community-info{font-size:18px}
+""")
