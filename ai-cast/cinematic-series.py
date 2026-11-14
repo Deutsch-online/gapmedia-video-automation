@@ -1263,6 +1263,15 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
              '-frames:v', '1', folder / 'contact.jpg'])
     if not preview:
         report_render_measurements(plan, load_json(folder / 'quality.json'))
+        # CPU-only companion edit: never regenerate speech/motion or alter delivery.
+        try:
+            from cinematic_openfilm import export_project
+            film = export_project(final)
+            atomic_json(folder / 'openfilm-export.json', {'status': 'complete', 'film': str(film),
+                        'generation_calls': 0, 'automatic_publication': False})
+        except Exception as exc:
+            atomic_json(folder / 'openfilm-export.json', {'status': 'failed', 'error': str(exc)[:400]})
+            print('OpenFilm companion export failed; checked master retained: ' + str(exc)[:160], flush=True)
     return str(final)
 
 
@@ -1512,3 +1521,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

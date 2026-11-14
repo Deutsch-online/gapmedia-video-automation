@@ -10,7 +10,12 @@
     "dev": "npx --yes hyperframes@0.8.79 preview",
     "check": "npx --yes hyperframes@0.8.79 check",
     "render": "npx --yes hyperframes@0.8.79 render",
-    "publish": "npx --yes hyperframes@0.8.79 publish"
+    "publish": "npx --yes hyperframes@0.8.79 publish",
+    "video:setup": "npm ci --prefix tools/video --ignore-scripts --no-audit --no-fund",
+    "video:open": "node tools/video/editor.mjs open",
+    "video:look": "node tools/video/editor.mjs look",
+    "video:render": "node tools/video/editor.mjs render",
+    "video:export": "node tools/video/run-export.mjs"
   },
   "dependencies": {
     "@typesafe-ai/sdk": "^0.6.0"

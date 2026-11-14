@@ -1,0 +1,26 @@
+name: Offline OpenFilm and AgentRun checks
+on:
+  pull_request:
+    paths: ['tools/video/**', 'ai-cast/cinematic_openfilm.py', 'tests/test_cinematic_openfilm.py', '.github/workflows/local-video-tools-check.yml']
+  push:
+    branches: [main]
+    paths: ['tools/video/**', 'ai-cast/cinematic_openfilm.py', 'tests/test_cinematic_openfilm.py', '.github/workflows/local-video-tools-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: npm ci --prefix tools/video --ignore-scripts --no-audit --no-fund
+      - run: python -m unittest discover -s tests -p test_cinematic_openfilm.py -v
+      - run: node --test tools/video/test-recovery.mjs
+      - run: python -m py_compile ai-cast/cinematic_openfilm.py ai-cast/cinematic-series.py

@@ -12,6 +12,7 @@ on:
       - .cinematic-series.json
       - .github/workflows/cinematic-series.yml
       - ai-cast/cinematic-series.py
+      - ai-cast/cinematic_openfilm.py
       - ai-cast/cinematic_lina.py
       - ai-cast/lina-oma-story-bank.json
       - public/ai-cast/lina-oma/**
@@ -97,7 +98,8 @@ jobs:
           PY
       - name: Check schedule, continuity and delivery safeguards
         run: |
-          python -m py_compile ai-cast/cinematic-series.py
+          python -m py_compile ai-cast/cinematic-series.py ai-cast/cinematic_openfilm.py
+          python -m unittest discover -s tests -p test_cinematic_openfilm.py -v
           python -m unittest discover -s tests -p test_cinematic_series.py -v
           python -m unittest discover -s tests -p test_wan2gp_backend.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
@@ -229,7 +231,10 @@ jobs:
             renders/cinematic-series/**/graphics-report.json
             renders/cinematic-series/**/caption-design.json
             renders/cinematic-series/**/contact.jpg
+            renders/cinematic-series/**/openfilm/**
+            renders/cinematic-series/**/openfilm-export.json
             renders/cinematic-series-cache/**/narration-timing.json
             renders/cinematic-series-cache/budgets/*.json
           if-no-files-found: warn
           retention-days: 14
+
