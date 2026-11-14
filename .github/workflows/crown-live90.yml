@@ -143,3 +143,5 @@ jobs:
           PY
 
 # Verify compact community layout before deployment.
+
+# Check final community selector dimensions.
