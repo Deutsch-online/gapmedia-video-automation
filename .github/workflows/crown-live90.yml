@@ -1,0 +1,143 @@
+name: Publish live arrivals, fair demo competition and continuous voice
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/crown-live90.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: crown52-math81-update
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install voice and deployment dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y espeak-ng
+          pip install 'huggingface_hub>=0.34,<2'
+      - name: Prepare exact existing Space source
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,snapshot_download
+          import os,pathlib
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          info=api.repo_info('afgtakrun/live-crown-52',repo_type='space')
+          snapshot_download('afgtakrun/live-crown-52',repo_type='space',revision=info.sha,local_dir='/tmp/crown-app',token=os.environ['HF_TOKEN'])
+          server=pathlib.Path('/tmp/crown-app/server.mjs').read_text()
+          if 'mathVersion:88' not in server:raise SystemExit('Live source changed; review and rebase required')
+          pathlib.Path('/tmp/crown-parent-sha').write_text(info.sha)
+          print('SOURCE_PARENT '+info.sha)
+          PY
+          python crown-live/update90.py /tmp/crown-app
+          mkdir -p /tmp/crown-app/tests
+          cp crown-live/tests90.mjs /tmp/crown-app/tests/math-duel.mjs
+          cp crown-live/browser90.cjs /tmp/crown-app/browser90.cjs
+      - name: Verify model, event bridge and twenty continuous backup questions
+        working-directory: /tmp/crown-app
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check server.mjs
+          node --check public/math-duel-ui.mjs
+          node --test --test-isolation=none --test-reporter=spec tests/math-duel.mjs
+      - name: Install browser
+        working-directory: /tmp/crown-app
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify arrivals, community points, display and real audio playback
+        working-directory: /tmp/crown-app
+        run: node browser90.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crown-live90-review
+          path: |
+            /tmp/crown90-arrival.png
+            /tmp/crown90-community.png
+            /tmp/crown-app/server.mjs
+            /tmp/crown-app/public/math-duel.mjs
+            /tmp/crown-app/public/math-duel-ui.mjs
+            /tmp/crown-app/public/math-duel.html
+            /tmp/crown-app/public/math-duel.css
+            /tmp/crown-app/tests/math-duel.mjs
+          if-no-files-found: ignore
+      - name: Deploy tested source with existing optional provider credential
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          SIGN_API_KEY: ${{ secrets.SIGN_API_KEY || secrets.EULERSTREAM_API_KEY }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,CommitOperationAdd
+          import os,pathlib,time,json,urllib.request
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          repo='afgtakrun/live-crown-52';root=pathlib.Path('/tmp/crown-app')
+          provider=os.environ.get('SIGN_API_KEY','').strip()
+          if provider:
+              api.add_space_secret(repo_id=repo,key='SIGN_API_KEY',value=provider)
+              print('Existing provider credential configured without logging its value')
+          else:
+              print('No existing provider credential available from repository secrets')
+          parent=pathlib.Path('/tmp/crown-parent-sha').read_text().strip()
+          files=['server.mjs','public/math-duel.mjs','public/math-duel-ui.mjs','public/math-duel.html','public/math-duel.css','tests/math-duel.mjs']
+          result=api.create_commit(repo_id=repo,repo_type='space',parent_commit=parent,commit_message='Normalize arrivals, show community supporters, score likes fairly and keep voice playing with free backup',operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
+          print('CROWN_LIVE90_COMMIT '+result.oid,flush=True)
+          origin='https://afgtakrun-live-crown-52.hf.space'
+          for attempt in range(70):
+              try:
+                  health=json.load(urllib.request.urlopen(origin+'/health',timeout=15))
+                  state=json.load(urllib.request.urlopen(origin+'/api/state',timeout=15))['state']['fun']['math81']
+                  if health.get('mathVersion')==90 and health.get('voiceBackup') and state.get('version')==90:
+                      pathlib.Path('/tmp/crown-live-health.json').write_text(json.dumps(health))
+                      print('CROWN_LIVE90_READY providerConfigured='+str(health.get('liveProviderConfigured')),flush=True)
+                      break
+              except Exception:
+                  pass
+              time.sleep(10)
+          else:raise SystemExit('Uploaded source but live readiness not confirmed; no Telegram delivery')
+          PY
+      - name: Inspect actual TikTok event-provider status without reconnecting it
+        working-directory: /tmp/crown-app
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';import{WebSocket}from'ws';
+          const result=await new Promise(resolve=>{const ws=new WebSocket('wss://afgtakrun-live-crown-52.hf.space/relay?client=connection-check');let last={state:'unknown'},settled=false;const done=value=>{if(settled)return;settled=true;clearTimeout(timer);ws.close();resolve(value)},timer=setTimeout(()=>done(last),45000);ws.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='bridgeStatus'){last={state:d.state,code:d.code||null,username:d.username||null};if(['connected','error','disconnected'].includes(d.state))done(last)}});ws.on('error',()=>done({state:'check-unavailable'}))});fs.writeFileSync('/tmp/crown-live-bridge.json',JSON.stringify(result));console.log('LIVE_PROVIDER_STATUS '+JSON.stringify(result));
+          JS
+      - name: Send verified links and remaining connection requirements to owner Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,pathlib
+          token=os.environ['TELEGRAM_BOT_TOKEN']
+          chat=str(json.load(open('.telegram-bot-chat.json'))['id'])
+          def call(method,payload):
+              request=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try: result=json.load(urllib.request.urlopen(request,timeout=30))
+              except Exception:raise SystemExit('Telegram outcome unknown; do not automatically retry')
+              if not result.get('ok'):raise SystemExit('Telegram did not confirm delivery')
+              return result['result']
+          if call('getChat',{'chat_id':chat}).get('type')!='private':raise SystemExit('Private owner chat required')
+          bridge=json.load(open('/tmp/crown-live-bridge.json'))
+          if bridge.get('state')=='connected':
+              connection='اتصال رویدادهای واقعی تیک‌تاک در بررسی فعلی برقرار است.'
+          elif bridge.get('code')=='PROVIDER_AUTH_REQUIRED':
+              connection='مانع باقی‌مانده: سرویس رویدادهای واقعی، کلید یا مجوز اتصال را رد می‌کند (PROVIDER_AUTH_REQUIRED). تا رفع آن، ورود و لایک واقعی به بازی تحویل داده نمی‌شود. کلید مجاز EulerStream را در Secrets هاست با نام SIGN_API_KEY تنظیم کنید؛ کلید را در چت نفرستید.\nhttps://huggingface.co/spaces/afgtakrun/live-crown-52/settings'
+          else:
+              connection='اتصال رویدادهای واقعی هنوز تأیید نشده است. وضعیت فعلی: '+str(bridge.get('state'))+'؛ کد: '+str(bridge.get('code') or '—')+' . وضعیت دقیق در تب اتصال لایو نمایش داده می‌شود.'
+          text='نسخهٔ تازهٔ پنل و خروجی آماده است:\n\nپنل بدون رمز:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=90\n\nخروجی LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?v=90\n\nتازه‌وارد از پایین می‌آید، زیر گزینه‌ها ۱۰ ثانیه ثابت می‌ماند و محو می‌شود. اگر تا ۳۰ ثانیه جواب ندهد از انتظار حذف می‌شود. با پاسخ‌دادن وارد جدول می‌شود.\nستون چپ: دو لایکر و دو حامی؛ جای خالی دمو است. نام هدیه، تعداد و کوین در ستون نشان داده می‌شود؛ هدیه پوینت نمی‌دهد.\nهر ۱۰ لایک یک پوینت است؛ لایک تنها کاربر را وارد رقابت نمی‌کند و ترتیب جدول بر اساس پاسخ‌هاست، پس جای دمو را با لایک نمی‌گیرد.\nبعد از سه پاسخ واقعی، دموهای بی‌پاسخ خلاف گزینهٔ پرتکرار انتخاب می‌کنند؛ رأی‌های قبلی تغییر نمی‌کند و برچسب Demo می‌ماند.\n\nصدای اصلی در سقف قبلی باقی مانده است؛ پس از خطا یا پایان سهمیه، صدای پشتیبان سرور ادامه می‌دهد. جنس صدای پشتیبان متفاوت است. ادامهٔ ۲۰ سؤال و پخش کامل سه کلیپ پشت‌سرهم در مرورگر آزموده شد.\nصدای پنل پیش‌فرض میوت است؛ خروجی لایو مستقل پخش می‌شود. رفرش خروجی و تب‌های تنظیمات حفظ شده‌اند.\n\n'+connection
+          result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
+          print('CROWN_LIVE90_PANEL_DELIVERED message_id='+str(result['message_id']))
+          PY
