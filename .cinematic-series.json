@@ -145,7 +145,7 @@
       "oma": "-10Hz"
     },
     "clone_fallback": {
-      "status": "awaiting_owner_voice_id",
+      "status": "not-needed-available-German-voice-selected",
       "automatic_clone_creation": false
     }
   }
