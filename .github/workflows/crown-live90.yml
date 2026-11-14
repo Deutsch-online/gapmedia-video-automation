@@ -141,3 +141,5 @@ jobs:
           result=call('sendMessage',{'chat_id':chat,'text':text,'link_preview_options':{'is_disabled':True}})
           print('CROWN_LIVE90_PANEL_DELIVERED message_id='+str(result['message_id']))
           PY
+
+# Verify compact community layout before deployment.
