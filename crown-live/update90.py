@@ -100,7 +100,7 @@ function backupSpeech(text,language){
  const task=backupVoiceChain.then(()=>new Promise((resolve,reject)=>{
   const child=execFile('espeak-ng',['--stdout','-v',language==='fa'?'fa':'en-us','-s','155','--stdin'],{encoding:'buffer',maxBuffer:12000000,timeout:15000},(error,stdout)=>{
    if(error||!stdout||stdout.length<100||stdout.subarray(0,4).toString()!=='RIFF')return reject(Error('Backup voice unavailable'));
-   resolve({bytes:stdout,type:'audio/wav',provider:'local-backup',mode:'backup'});
+   stdout.writeUInt32LE(stdout.length-8,4);for(let pos=12;pos+8<=stdout.length;){const tag=stdout.subarray(pos,pos+4).toString(),size=stdout.readUInt32LE(pos+4);if(tag==='data'){stdout.writeUInt32LE(stdout.length-pos-8,pos+4);break;}pos+=8+size+(size%2);}resolve({bytes:stdout,type:'audio/wav',provider:'local-backup',mode:'backup'});
   });child.stdin.on('error',()=>{});child.stdin.end(text);
  }));
  backupVoiceChain=task.catch(()=>{});return task;
