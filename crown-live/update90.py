@@ -148,3 +148,13 @@ with (root/'public/math-duel.css').open('a') as f:
 .screen #broadcast .community-row{min-height:62px;font-size:24px;padding:5px 2px}
 .screen #broadcast .community-info{font-size:18px}
 """)
+
+with (root/'public/math-duel.css').open('a') as f:
+ f.write(r"""
+.screen #broadcast #spotlightCard .spotlight-portrait{width:72px;height:72px}
+.screen #broadcast #spotlightCard{grid-template-columns:76px 1fr;gap:2px;padding:2px 0 4px}
+.screen #broadcast #spotlightCard .spotlight-name{font-size:24px}
+.screen #broadcast #spotlightCard .spotlight-time{font-size:18px}
+.screen #broadcast #communityBoard .community-row{min-height:54px;font-size:23px;padding:3px 2px;row-gap:1px}
+.screen #broadcast #communityBoard h3{font-size:23px;margin:4px 0 2px;line-height:1.15}
+""")
