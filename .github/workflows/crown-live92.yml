@@ -160,3 +160,5 @@ jobs:
           PY
 
 # Apply against the exact downloaded source directory.
+
+# Measure portraits once entrance animations settle.
