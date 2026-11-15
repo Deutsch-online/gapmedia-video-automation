@@ -18,10 +18,15 @@
     {
       "scene": 8,
       "reserved_units": 480,
-      "status": "reserved",
+      "status": "completed",
       "before": {
         "base": 2400,
         "current": 502.33523500000047,
+        "overquotaUsed": 0
+      },
+      "after": {
+        "base": 2400,
+        "current": 327.8103850000007,
         "overquotaUsed": 0
       }
     }
