@@ -31,6 +31,8 @@ on:
       - ai-cast/cinematic_design.py
       - ai-cast/cinematic_ltx2.py
       - ai-cast/cinematic_longcat.py
+      - ai-cast/cinematic_economy.py
+      - tests/test_cinematic_economy.py
       - tests/test_light_budget_recovery.py
       - ai-cast/cinematic_social.py
       - ai-cast/story-bank.json
@@ -102,6 +104,7 @@ jobs:
         run: |
           python -m py_compile ai-cast/cinematic-series.py ai-cast/cinematic_openfilm.py
           python -m unittest discover -s tests -p test_cinematic_openfilm.py -v
+          python -m unittest discover -s tests -p test_cinematic_economy.py -v
           python -m unittest discover -s tests -p test_cinematic_series.py -v
           python -m unittest discover -s tests -p test_wan2gp_backend.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
@@ -229,6 +232,7 @@ jobs:
             renders/cinematic-series/**/*-65s.mp4
             renders/cinematic-series/**/delivery-*.json
             renders/cinematic-series/**/quality.json
+            renders/cinematic-series/**/economy.json
             renders/cinematic-series/**/episode.json
             renders/cinematic-series/**/graphics-report.json
             renders/cinematic-series/**/caption-design.json
@@ -239,4 +243,5 @@ jobs:
             renders/cinematic-series-cache/budgets/*.json
           if-no-files-found: warn
           retention-days: 14
+
 

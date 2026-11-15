@@ -91,6 +91,13 @@
       "name": "verified-lina-seven-clips-and-source",
       "extract_path": "renders/cinematic-series-cache",
       "story_id": "lina-oma-egg-cheese-v1"
+    },
+    "keyframe_economy": {
+      "id": "two-speaker-keyframes-v1",
+      "from_episode": 24,
+      "maximum_generated_stills": 2,
+      "independent_speaking_takes": 9,
+      "preserve_pending_episode": 23
     }
   },
   "story_quality": {
@@ -150,3 +157,4 @@
     }
   }
 }
+

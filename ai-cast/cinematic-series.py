@@ -373,6 +373,8 @@ def validate_plan(plan, episode, history, config=None):
         raise ValueError('Episode repeats too much previous dialogue')
     if any(h.get('title_de', '').lower() == plan['title_de'].lower() for h in history):
         raise ValueError('Repeated episode title')
+    from cinematic_economy import keyframe_anchors
+    keyframe_anchors(plan, config or {})  # Reject incompatible cost plans before any GPU work.
     return plan
 
 def parse_story_response(raw):
@@ -1115,12 +1117,20 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
         audios.append(aligned)
     parts = []
     native_takes = []
+    from cinematic_economy import keyframe_anchors, report as economy_report
+    still_anchors = keyframe_anchors(plan, config) if not preview else None
+    atomic_json(folder / 'economy.json', economy_report(plan, config if not preview else {}))
     def prepare_still(i, scene):
         budget.set_scene(plan['episode'], i)
         png, clip = cache / f'{i:02}.png', cache / f'{i:02}.mp4'
-        paired_prompt = design.still_prompt(plan,scene) if paired else None
+        anchor_index = still_anchors[i] if still_anchors else i
+        anchor_scene = plan['scenes'][anchor_index]
+        image_seed = plan['episode'] * 1009 + anchor_index * 11
+        paired_prompt = design.still_prompt(plan,anchor_scene) if paired else None
         if paired:
-            signature = design.image_signature(reference_signature,paired_prompt,plan['episode'] * 1009 + i * 11)
+            signature = design.image_signature(reference_signature,paired_prompt,image_seed)
+            if still_anchors:
+                signature = hashlib.sha256(('two-speaker-keyframes-v1:' + signature).encode()).hexdigest()
         else:
             signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
@@ -1128,7 +1138,10 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
             png.unlink(missing_ok=True)
             clip.unlink(missing_ok=True)
         if not png.exists():
-            if (not scene.get('visible_objects') and
+            if still_anchors and anchor_index != i:
+                anchor_png, _ = prepare_still(anchor_index, anchor_scene)
+                shutil.copyfile(anchor_png, png)
+            elif (not scene.get('visible_objects') and
                     (config.get('single_speaker_takes') or (preview and config.get('single_speaker_preview')))):
                 shutil.copyfile(speaker_refs[scene['speaker']], png)
             elif scene.get('asset'):
@@ -1159,12 +1172,13 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
                     candidates = shots.KONTEXT[:1] if budget.time_policy() else shots.KONTEXT
                     return shots.first_working(candidates,
                         {'input_image': handle_file(str(speaker_refs[scene['speaker']])), 'prompt': prompt,
-                         'seed': plan['episode'] * 1009 + i * 11, 'randomize_seed': False,
+                         'seed': image_seed, 'randomize_seed': False,
                          'guidance_scale': 2.5, 'steps': 24}, 'cinematic reference edit')
                 result = budget.run_gpu(create_still, required_seconds=120)
                 Image.open(result).convert('RGB').save(png)
             # Preserve a finished still across a video-provider failure.
             sigfile.write_text(signature)
+        budget.set_scene(plan['episode'], i)  # A reused keyframe must not change the speaking-take quota scope.
         return png, clip
     if plan.get('cast_profile') == 'lina-oma-v1':
         if persist_preview is None:
@@ -1521,4 +1535,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
