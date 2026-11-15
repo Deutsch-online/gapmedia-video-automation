@@ -61,7 +61,9 @@ jobs:
           plan=copy.deepcopy(original);plan['episode']=23
           plan['scenes']=[copy.deepcopy(original['scenes'][i]) for i in (0,3,4,1,2,5,6,7,8)]
           plan['scenes'][3].update(de='Sehr gut, Lina!',fa='آفرین، لینا!')
-          module.validate_plan(plan,23,[])
+          fixture_config=module.load_json(module.CONFIG)
+          fixture_config['next_story']={'from_episode':22,'story_id':plan['story_id'],'duration_seconds':45,'require_graphics':False}
+          module.validate_plan(plan,23,[],fixture_config)
           from cinematic_design import apply_plan,prepare_captions,speaker_references
           apply_plan(plan)
           config=module.load_json(module.CONFIG)
