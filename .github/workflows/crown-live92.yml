@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: crown52-math81-update
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   update:
     if: github.run_attempt == 1
@@ -162,3 +162,5 @@ jobs:
 # Apply against the exact downloaded source directory.
 
 # Measure portraits once entrance animations settle.
+
+# Verify result queues fully drain before automatic next round.
