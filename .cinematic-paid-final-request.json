@@ -1,7 +1,7 @@
 {
-  "id": "owner-paid-final-e23-20261115",
+  "id": "owner-paid-final-e23-20261115-preflight-fixed",
   "authorization": "explicit-owner-paid-continuation",
-  "status": "failed-or-uncertain",
+  "status": "approved",
   "episode": 23,
   "story_id": "lina-oma-water-spoon-holiday-v1",
   "scenes": [
@@ -14,12 +14,11 @@
   "purchase_credits": false,
   "expires_at": "2026-11-16T10:35:57+00:00",
   "authorization_text": "Owner explicitly requested completing the remaining clip with paid credit on 2026-11-15. This grants one attempt only for scene 8 of this exact pending plan; ordinary daily production stays verified-included-only.",
-  "active_run": "43705052605:1",
-  "quota_before": {
-    "base": 2400,
-    "current": 502.33523500000047,
-    "overquotaUsed": 0
-  },
   "calls": [],
-  "error": "RuntimeError"
+  "reconciled_preflight": {
+    "run": "43705052605:1",
+    "calls": 0,
+    "cause": "Pillow 13.0.0 contact-sheet bytes differ from production Pillow 12.3.0; failed before any GPU submission",
+    "status": "failed-or-uncertain"
+  }
 }

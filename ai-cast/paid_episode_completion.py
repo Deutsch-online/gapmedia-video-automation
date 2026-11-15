@@ -130,6 +130,11 @@ def main():
         raise RuntimeError('Required image storyboard delivery is not confirmed')
     cache=Path('renders/cinematic-series-cache/e0023-lina-oma-v1')
     verify_assets(m,plan,config,cache)
+    from cinematic_lina import contact_sheet
+    proof=cache/'paid-preflight-preview.jpg'
+    reproduced=contact_sheet([cache/f'{i:02}.png' for i in range(9)],proof)
+    if reproduced['sha256']!=preview['sha256']:
+        raise RuntimeError('Confirmed preview cannot be reproduced; no paid claim or submission')
     quota=account_quota()
     if quota['base']<2400:
         raise RuntimeError('The account is not verified as eligible for ZeroGPU prepaid extension')
