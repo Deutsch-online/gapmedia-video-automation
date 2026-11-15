@@ -1,0 +1,10 @@
+{
+  "request": "owner-paid-final-e23-20261115",
+  "episode": 23,
+  "scenes": [
+    8
+  ],
+  "max_calls": 1,
+  "max_total_units": 480,
+  "purchase_credits": false
+}

@@ -1,0 +1,17 @@
+{
+  "id": "owner-paid-final-e23-20261115",
+  "authorization": "explicit-owner-paid-continuation",
+  "status": "approved",
+  "episode": 23,
+  "story_id": "lina-oma-water-spoon-holiday-v1",
+  "scenes": [
+    8
+  ],
+  "plan_sha": "c1d4d9c53bf943d95e491b8eba121081b09a05400e35d8a407552aa4904c2dd9",
+  "max_calls": 1,
+  "max_request_units": 480,
+  "max_total_units": 480,
+  "purchase_credits": false,
+  "expires_at": "2026-11-16T10:35:57+00:00",
+  "authorization_text": "Owner explicitly requested completing the remaining clip with paid credit on 2026-11-15. This grants one attempt only for scene 8 of this exact pending plan; ordinary daily production stays verified-included-only."
+}
