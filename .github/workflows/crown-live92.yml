@@ -1,0 +1,162 @@
+name: Publish correct-answer profiles and round winners with Follow
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/crown-live92.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: crown52-math81-update
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CROWN_PIPER_PYTHON: /tmp/crown-voice/venv/bin/python
+      CROWN_PIPER_MODEL: /tmp/crown-voice/en_US-ljspeech-medium.onnx
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install voice and deployment dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y espeak-ng
+          pip install 'huggingface_hub>=0.34,<2'
+      - name: Prepare exact existing Space source
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,snapshot_download
+          import os,pathlib
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          info=api.repo_info('afgtakrun/live-crown-52',repo_type='space')
+          snapshot_download('afgtakrun/live-crown-52',repo_type='space',revision=info.sha,local_dir='/tmp/crown-app',token=os.environ['HF_TOKEN'])
+          server=pathlib.Path('/tmp/crown-app/server.mjs').read_text()
+          if 'mathVersion:91' not in server:raise SystemExit('Live source changed; review and rebase required')
+          pathlib.Path('/tmp/crown-parent-sha').write_text(info.sha)
+          print('SOURCE_PARENT '+info.sha)
+          PY
+          python crown-live/update92.py /tmp/crown-app
+          cp crown-live/voice-backup91.py /tmp/crown-app/voice-backup.py
+          cp crown-live/voice-install91.py /tmp/crown-app/voice-install.py
+          cp crown-live/Dockerfile91 /tmp/crown-app/Dockerfile
+          python crown-live/voice-install91.py /tmp/crown-voice
+          mkdir -p /tmp/crown-app/tests
+          cp crown-live/tests90.mjs /tmp/crown-app/tests/math-duel.mjs
+          cp crown-live/browser91.cjs /tmp/crown-app/browser91.cjs
+          cp crown-live/narration91.mjs /tmp/crown-app/tests/narration91.mjs
+          cp crown-live/celebration92.mjs /tmp/crown-app/tests/celebration92.mjs
+          cp crown-live/browser92.cjs /tmp/crown-app/browser92.cjs
+      - name: Verify model, event bridge and twenty continuous backup questions
+        working-directory: /tmp/crown-app
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check server.mjs
+          node --check public/math-duel-ui.mjs
+          node --test --test-reporter=spec tests/math-duel.mjs tests/narration91.mjs tests/celebration92.mjs
+      - name: Install browser
+        working-directory: /tmp/crown-app
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify arrivals, community points, display and real audio playback
+        working-directory: /tmp/crown-app
+        run: |
+          node browser91.cjs
+          node browser92.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crown-live92-review
+          path: |
+            /tmp/crown92-correct-profile.png
+            /tmp/crown92-round-winner.png
+            /tmp/crown91-arrival.png
+            /tmp/crown91-community.png
+            /tmp/crown-app/server.mjs
+            /tmp/crown-app/public/math-duel.mjs
+            /tmp/crown-app/public/math-duel-ui.mjs
+            /tmp/crown-app/public/math-duel.html
+            /tmp/crown-app/public/math-duel.css
+            /tmp/crown-app/tests/math-duel.mjs
+            /tmp/crown-app/tests/narration91.mjs
+            /tmp/crown-app/voice-backup.py
+            /tmp/crown-app/Dockerfile
+          if-no-files-found: ignore
+      - name: Deploy tested compact bubble and calm female voice
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          CROWN_ADMIN_TOKEN: ${{ secrets.CROWN_ADMIN_TOKEN }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,CommitOperationAdd
+          import os,pathlib,time,json,urllib.request,gzip,base64
+          api=HfApi(token=os.environ['HF_TOKEN']);repo='afgtakrun/live-crown-52';root=pathlib.Path('/tmp/crown-app')
+          origin='https://afgtakrun-live-crown-52.hf.space'
+          live=json.load(urllib.request.urlopen(origin+'/api/state',timeout=20))
+          pathlib.Path('/tmp/previous-live-host').write_text(live['state'].get('liveHost',''))
+          admin=os.environ.get('CROWN_ADMIN_TOKEN','')
+          if admin:
+              try:
+                  request=urllib.request.Request(origin+'/api/admin/state',headers={'Authorization':'Bearer '+admin})
+                  current=json.load(urllib.request.urlopen(request,timeout=20))
+                  recovery=base64.b64encode(gzip.compress(json.dumps({'state':current['state'],'revision':current['revision']}).encode())).decode()
+                  if len(recovery)<60000:
+                      api.add_space_secret(repo_id=repo,key='CROWN_RECOVERY_GZIP',value=recovery)
+                      print('Current private match recovery saved without logging its content',flush=True)
+              except Exception:
+                  print('Private recovery unavailable; no private values logged',flush=True)
+          files=['server.mjs','public/math-duel.mjs','public/math-duel-ui.mjs','public/math-duel.html','public/math-duel.css','public/supporters.mjs','tests/math-duel.mjs','tests/narration91.mjs','tests/celebration92.mjs','voice-backup.py','voice-install.py','Dockerfile']
+          parent=pathlib.Path('/tmp/crown-parent-sha').read_text().strip()
+          result=api.create_commit(repo_id=repo,repo_type='space',parent_commit=parent,commit_message='Sequential correct-answer profiles with +10 and Follow, plus large round champions',operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f))for f in files])
+          print('CROWN_LIVE92_COMMIT '+result.oid,flush=True)
+          for attempt in range(100):
+              try:
+                  health=json.load(urllib.request.urlopen(origin+'/health',timeout=15))
+                  if health.get('mathVersion')==92 and health.get('backupVoice')=='female-neural':
+                      print('CROWN_LIVE92_READY calm_female_voice=True',flush=True);break
+              except Exception:pass
+              time.sleep(10)
+          else:raise SystemExit('New source uploaded, but runtime readiness not confirmed')
+          PY
+      - name: Verify actual connection and female audio on published version
+        working-directory: /tmp/crown-app
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from'node:fs';import{WebSocket}from'ws';
+          const host=fs.readFileSync('/tmp/previous-live-host','utf8').trim();let requested=false;
+          const result=await new Promise(resolve=>{const ws=new WebSocket('wss://afgtakrun-live-crown-52.hf.space/relay?client=castle80');let last={state:'unknown'},settled=false;const timer=setTimeout(()=>done(last),45000);function done(value){if(settled)return;settled=true;clearTimeout(timer);ws.close();resolve(value)}ws.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='mathPanelOK'&&requested){ws.send(JSON.stringify({type:'connectTikTok',username:host}));return;}if(d.type==='bridgeStatus'){last={state:d.state,code:d.code||null,username:d.username||null,telemetry:d.telemetry||null};if(host&&d.username!==host&&!requested){requested=true;ws.send(JSON.stringify({type:'mathPanelAccess'}));return;}if(['connected','error','disconnected','idle'].includes(d.state)&&(!host||d.username===host))done(last)}});ws.on('error',()=>done({state:'check-unavailable'}))});fs.writeFileSync('/tmp/crown-live-bridge.json',JSON.stringify(result));console.log('LIVE_PROVIDER_STATUS '+JSON.stringify(result));
+          const origin='https://afgtakrun-live-crown-52.hf.space';let checked=false;
+          for(let i=0;i<30;i++){const s=(await(await fetch(origin+'/api/state')).json()).state.fun.math81;if(s.voice?.url){const r=await fetch(origin+s.voice.url);const bytes=await r.arrayBuffer();if(!r.ok||bytes.byteLength<100)throw Error('Published audio response failed');console.log('PUBLISHED_AUDIO_OK '+JSON.stringify({status:r.status,provider:r.headers.get('x-voice-provider'),bytes:bytes.byteLength}));checked=true;break}await new Promise(r=>setTimeout(r,1000));}if(!checked)console.log('PUBLISHED_AUDIO_NO_CURRENT_ANNOUNCEMENT; server backup and browser playback already tested');
+          JS
+      - name: Send updated panel and live output links to owner Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          token=os.environ['TELEGRAM_BOT_TOKEN'];chat=str(json.load(open('.telegram-bot-chat.json'))['id'])
+          def call(method,payload):
+              request=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:result=json.load(urllib.request.urlopen(request,timeout=30))
+              except Exception:raise SystemExit('Telegram outcome unknown; do not automatically retry')
+              if not result.get('ok'):raise SystemExit('Telegram delivery not confirmed')
+              return result['result']
+          if call('getChat',{'chat_id':chat}).get('type')!='private':raise SystemExit('Private owner chat required')
+          bridge=json.load(open('/tmp/crown-live-bridge.json'))
+          if bridge.get('state')=='connected':status='اتصال واقعی با یوزرنیم @'+str(bridge.get('username'))+' تأیید شد.'
+          else:status='وضعیت دریافت لایف: '+str(bridge.get('state'))+'؛ '+str(bridge.get('code')or'—')+' . برای دریافت رویدادها، حساب باید در حال لایف باشد.'
+          message='نسخهٔ جدید فعال است.\n\nپنل بدون رمز:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=92\n\nخروجی LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?v=92\n\nپایان هر سؤال، عکس کسانی که پاسخ درست داده‌اند یکی‌یکی بزرگ نمایش داده می‌شود، همراه با +۱۰ و Follow on TikTok. هر نفر ۲٫۵ ثانیه نمایش داده می‌شود.\nپایان هر دور، عکس برنده بزرگ‌تر نمایش داده می‌شود، همراه با امتیاز نهایی و Follow. برندگان مساوی نوبتی نمایش داده می‌شوند و دور بعد پس از تمام‌شدن نمایش نتایج شروع می‌شود.\nبرنده بر اساس پاسخ‌هاست؛ لایک به‌تنهایی جای برنده را عوض نمی‌کند. دموها با برچسب Demo هستند و لینک فالو ندارند. لینک Follow کاربران واقعی در پنل یا مرورگر، پروفایل تیک‌تاک را باز می‌کند؛ در تصویر لایو فقط به‌شکل دعوت به فالو دیده می‌شود.\nحباب کوچک تازه‌واردها و صدای زنانهٔ آرام حفظ شده‌اند.\n\n'+status
+          result=call('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
+          print('CROWN_LIVE92_PANEL_DELIVERED message_id='+str(result['message_id']))
+          PY
+
+# Apply against the exact downloaded source directory.
