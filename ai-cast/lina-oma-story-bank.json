@@ -389,6 +389,202 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "lina-oma-hungry-plate-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 3,
+      "title_de": "Nur mein Teller hat Hunger!",
+      "title_fa": "فقط بشقاب من گرسنه است!",
+      "summary": "Lina confuses being hunger with having hunger. Oma immediately corrects her, Lina repeats and receives praise. Lina jokes that her plate is hungry too and offers to eat for both; when Oma points out the carrot, Lina says only the plate is hungry now.",
+      "cliffhanger": "Lina and Oma will meet another everyday German expression tomorrow.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-hunger-table",
+      "location_description": "The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina points toward her own tummy above a clearly visible plate with bread and a carrot while saying the wrong German hunger phrase.",
+      "everyday_problem": "A newcomer child transfers an everyday hunger expression into German and confuses ich bin with ich habe.",
+      "practical_resolution": "Oma teaches Ich habe Hunger immediately; Lina repeats it, is praised and uses the same expression in the final carrot joke.",
+      "marta_goal": "Lina wants to tell Oma that she is hungry in understandable ordinary German and eat her bread herself.",
+      "marta_decision": "Lina repeats the correct expression and turns the meal into a playful plate joke while reacting to the carrot.",
+      "visual_payoff": "Lina reaches toward the bread, then freezes playfully when Oma mentions the visible carrot and points to the plate as the only remaining hungry one.",
+      "language_error": {
+        "wrong": "Ich bin Hunger!",
+        "correct": "Ich habe Hunger.",
+        "explanation": "For the intended everyday hunger statement German uses haben: Ich habe Hunger. Ich bin Hunger incorrectly identifies the speaker as hunger rather than expressing the feeling. The official exercise uses the corresponding Hast du Hunger question."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Keep an original validated local fallback so a timed-out free text API does not block the next daily story; use two stable speaker keyframes and immediate correction, repetition and praise.",
+        "visible_comic_action": "Lina points at the hungry plate and reaches for bread; the visible carrot makes her suddenly shift the hunger claim entirely onto the plate.",
+        "next_experiment": "Compare a familiar hungry-child mistake and a clearly visible vegetable payoff with same-age observations when available; no causal or view-increase guarantee."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official SCHUBERT beginner food-and-drink exercise uses Hast du Hunger and Ich bin satt. This fictional lesson applies the standard haben construction for the corresponding Ich habe Hunger statement. It does not claim the family incident happened.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all family dialogue",
+          "the hungry plate and carrot joke"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin Hunger!",
+          "fa": "اوما، من گرسنگی هستم!",
+          "scene": "Only lina is visible in a single-person shot at the same kitchen table; listener completely off camera. Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible.",
+          "motion": "Only lina speaks to the exact supplied German audio; mouth closed in silence. Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich habe Hunger.",
+          "fa": "بگو: من گرسنه هستم.",
+          "scene": "Only oma is visible in a single-person shot at the same kitchen table; listener completely off camera. Oma gives one warm encouraging nod toward Lina off camera.",
+          "motion": "Only oma speaks to the exact supplied German audio; mouth closed in silence. Oma gives one warm encouraging nod toward Lina off camera. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gives one warm encouraging nod toward Lina off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich habe Hunger.",
+          "fa": "من گرسنه هستم.",
+          "scene": "Only lina is visible in a single-person shot at the same kitchen table; listener completely off camera. Lina repeats proudly and points gently at herself beside her plate.",
+          "motion": "Only lina speaks to the exact supplied German audio; mouth closed in silence. Lina repeats proudly and points gently at herself beside her plate. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina repeats proudly and points gently at herself beside her plate.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Genau so.",
+          "fa": "آفرین! دقیقاً همین‌طور.",
+          "scene": "Only oma is visible in a single-person shot at the same kitchen table; listener completely off camera. Oma gives a small warm thumbs-up toward Lina off camera.",
+          "motion": "Only oma speaks to the exact supplied German audio; mouth closed in silence. Oma gives a small warm thumbs-up toward Lina off camera. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gives a small warm thumbs-up toward Lina off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mein Teller hat auch Hunger.",
+          "fa": "بشقاب من هم گرسنه است.",
+          "scene": "Only lina is visible in a single-person shot at the same kitchen table; listener completely off camera. Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it.",
+          "motion": "Only lina speaks to the exact supplied German audio; mouth closed in silence. Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Der Teller kann nicht essen.",
+          "fa": "بشقاب نمی‌تواند غذا بخورد.",
+          "scene": "Only oma is visible in a single-person shot at the same kitchen table; listener completely off camera. Oma shakes her head once with a playful smile, looking toward the plate off camera.",
+          "motion": "Only oma speaks to the exact supplied German audio; mouth closed in silence. Oma shakes her head once with a playful smile, looking toward the plate off camera. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma shakes her head once with a playful smile, looking toward the plate off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann esse ich für uns beide!",
+          "fa": "پس من برای هر دوی ما می‌خورم!",
+          "scene": "Only lina is visible in a single-person shot at the same kitchen table; listener completely off camera. Lina reaches toward the bread without taking a bite during speech; the carrot stays visible.",
+          "motion": "Only lina speaks to the exact supplied German audio; mouth closed in silence. Lina reaches toward the bread without taking a bite during speech; the carrot stays visible. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina reaches toward the bread without taking a bite during speech; the carrot stays visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Auch die Karotte?",
+          "fa": "هویج را هم می‌خوری؟",
+          "scene": "Only oma is visible in a single-person shot at the same kitchen table; listener completely off camera. Oma points gently toward the carrot off camera with a knowing smile.",
+          "motion": "Only oma speaks to the exact supplied German audio; mouth closed in silence. Oma points gently toward the carrot off camera with a knowing smile. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma points gently toward the carrot off camera with a knowing smile.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Jetzt hat nur der Teller Hunger!",
+          "fa": "حالا فقط بشقاب گرسنه است!",
+          "scene": "Only lina is visible in a single-person shot at the same kitchen table; listener completely off camera. Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible.",
+          "motion": "Only lina speaks to the exact supplied German audio; mouth closed in silence. Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible. Restrained natural mouth and eyes, stable hands, no second face, no shaking camera or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "resolve"
+        }
+      ]
     }
   ]
 }

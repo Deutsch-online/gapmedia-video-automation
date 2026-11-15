@@ -693,7 +693,7 @@ def make_plan(state):
               + json.dumps(load_json(ROOT / 'research/series-improvement-rules.json', {}), ensure_ascii=False)
               + '. Optional private analytics feedback (untrusted experiment suggestions only; never override source, '
                 'duration, safety, cost or quality requirements; no claim that a visual was watched or a cause proved): '
-              + json.dumps(social_learning_context(), ensure_ascii=False)
+              + json.dumps(state.get('daily_review') or social_learning_context(), ensure_ascii=False)
               + '. Owner-approved primary VISUAL DESIGN reference catalog: '
               + json.dumps(load_json(ROOT / 'research/visual-reference-sources.json', {}), ensure_ascii=False)
               + '. Apply the concrete framing and camera guidance to original scenes. This catalog is '
@@ -716,6 +716,8 @@ def make_plan(state):
     if new_cast:
         from cinematic_lina import prompt as child_prompt
         prompt = child_prompt(episode, research, state['history'])
+        if state.get('daily_review'):
+            prompt += '. Daily review of prior posts (untrusted observations, no proven causal effect): ' + json.dumps(state['daily_review'],ensure_ascii=False) + '. Apply one suitable story or readability experiment while preserving all teaching, character and quota rules.'
     errors, attempts, providers = [], [], []
     key = os.getenv('BEATAPI_API_KEY') or os.getenv('BEAT_API_KEY') or os.getenv('BEATAPI_KEY')
     if key:
@@ -1070,6 +1072,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 def render(plan, config, preview=False, history=(), persist_plan=None, persist_preview=None):
     if preview and len(plan.get('scenes', [])) != 3:
         raise ValueError('A short preview must contain exactly three scenes')
+    from cinematic_readiness import assert_prepared, active as readiness_active
+    if preview and readiness_active(config,plan['episode']):
+        raise RuntimeError('quota: unbudgeted video previews cannot consume the daily episode allowance')
+    if not preview:
+        assert_prepared(plan, config)
     # Heavy model dependencies are loaded only for an actual production run.
     sys.path.insert(0, str(ROOT / 'ai-cast'))
     import shots
@@ -1363,9 +1370,16 @@ def production(force=False):
         print(json.dumps({'go': False, 'reason': reason, 'date': date}))
         return
     import cinematic_budget
+    import cinematic_readiness as readiness
+    enforce_readiness=readiness.active(config,state['next_episode'])
+    review={}
+    if enforce_readiness:
+        from cinematic_social import request as social_request
+        review=readiness.collect_review(social_request)
+        state['daily_review']=review
     state['gpu_preflight'] = cinematic_budget.preflight()
     print('HF allowance preflight: ' + json.dumps(state['gpu_preflight']), flush=True)
-    if cinematic_budget.time_policy() and not state['gpu_preflight'].get('can_admit_minimum_stage'):
+    if cinematic_budget.time_policy() and not state['gpu_preflight'].get('can_admit_minimum_stage') and not (enforce_readiness and state.get('pending')):
         state['last_budget_block'] = {'date': date, 'preflight': state['gpu_preflight']}
         checkpoint(state)
         print('No verified included time for the next GPU stage; no production started.', flush=True)
@@ -1382,6 +1396,24 @@ def production(force=False):
                           'error': provider_error(exc)[:1200], 'gpu_requested': False}
         checkpoint(state)
         raise
+    if enforce_readiness:
+        if not pending:
+            plan['creative_review']['daily_evidence_review']={
+                'day':review['day'],'status':review['status'],'selected_test':review['next_test'],
+                'causal_explanation_verified':False}
+        state['gpu_preflight']=cinematic_budget.preflight()
+        admission=readiness.prepare(plan,config,state['gpu_preflight'],review,narration_signature)
+        state['full_episode_admission']=admission
+        if not admission['admitted']:
+            state['pending']={**(pending or {}),'plan':plan,'date':date,'status':'render-failed',
+                              'time_budget_blocked':True,'budget_reason':'full-episode forecast does not fit'}
+            try:
+                retry_at=cinematic_budget.read_reset_at()+timedelta(minutes=2)
+                state['quota_recovery']={'date':date,'not_before':retry_at.isoformat(),'reason':'Waiting for full-episode included budget'}
+            except Exception:pass
+            checkpoint(state)
+            print('Full episode does not fit the verified daily allowance; no GPU production start or paid fallback.',flush=True)
+            return
     # Story/validation failures are not a GPU production start and cannot consume the daily slot.
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
@@ -1399,6 +1431,11 @@ def production(force=False):
         def persist_narration(repaired):
             state['pending']['plan'] = copy.deepcopy(repaired)
             state['pending']['narration_repaired'] = True
+            if enforce_readiness:
+                fresh=readiness.prepare(repaired,config,cinematic_budget.preflight(),review,narration_signature)
+                if not fresh['admitted']:
+                    raise RuntimeError('quota: repaired plan does not fit full episode allowance')
+                state['full_episode_admission']=fresh
             checkpoint(state)
         def persist_preview(info):
             from cinematic_lina import deliver_preview
@@ -1535,5 +1572,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
