@@ -32,8 +32,8 @@
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 22,
-    "story_id": "lina-oma-egg-cheese-v1",
+    "from_episode": 23,
+    "story_id": "lina-oma-water-spoon-holiday-v1",
     "duration_seconds": 45,
     "require_graphics": false
   },
@@ -100,13 +100,13 @@
     "require_documented_basis": true
   },
   "owner_included_request": {
-    "id": "owner-marta-shortline-20261111",
-    "episode": 21,
-    "story_id": "marta-first-job-s01e01-recipe-v1",
-    "berlin_day": "2026-11-11",
-    "expires_at": "2026-11-11T23:00:00+00:00",
+    "id": "owner-lina-e23-native-bucket-20261115",
+    "episode": 23,
+    "story_id": "lina-oma-water-spoon-holiday-v1",
+    "berlin_day": "2026-11-15",
+    "expires_at": "2026-11-15T22:00:00+00:00",
     "included_only": true,
-    "authorization": "Owner explicitly requested fixing the narration failure and continuing. One dated continuation of this exact episode only, within live verified included quota; keep all prior counters."
+    "authorization": "Owner explicitly requested fixing the failed video. One dated continuation of this exact pending episode after correcting native provider bucket validation. Keep counters, signed clips, exact audio and image preview receipt; require live included quota, no paid or anonymous fallback."
   },
   "serial_story": {
     "id": "marta-first-job-s01",

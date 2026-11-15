@@ -58,6 +58,25 @@ class HighQualityTests(unittest.TestCase):
             module.validate_plan(plan,20,[],config)
 
 class LightProfileTests(unittest.TestCase):
+    def test_native_480p_is_the_exact_source_aspect_bucket_not_a_short_side(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as folder:
+            image=Path(folder)/'oma.png'
+            Image.new('RGB',(448,896)).save(image)
+            expected=hq.expected_light_shape(image)
+            self.assertEqual(expected,(448,896))
+            hq.check_native_shape({'width':448,'height':896},expected=expected)
+            for width,height in ((224,448),(480,960),(896,448),(512,768)):
+                with self.assertRaisesRegex(RuntimeError,'bucket mismatch'):
+                    hq.check_native_shape({'width':width,'height':height},expected=expected)
+
+    def test_changed_or_missing_published_bucket_table_fails_before_gpu(self):
+        source='ASPECT_RATIO_627 = '+repr({k:([*v],1) for k,v in hq.LIGHT_BUCKETS.items()})
+        hq.verify_light_buckets(source)
+        for changed in ('ASPECT_RATIO_627 = {}',source.replace('896','900'), 'pass'):
+            with self.assertRaisesRegex(RuntimeError,'bucket table'):
+                hq.verify_light_buckets(changed)
+
     def test_light_requests_480p_and_keeps_the_full_published_reservation(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);raw=root/'raw.mp4';raw.write_bytes(b'fixture')
@@ -65,7 +84,8 @@ class LightProfileTests(unittest.TestCase):
             with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=lambda _:client),
                  'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
                  patch.object(hq,'verify_live_contract'),patch.object(ltx,'reject_whiteout'), \
-                 patch.object(speech,'probe',return_value={'streams':[{'codec_type':'video','width':512,'height':864}]}), \
+                 patch.object(hq,'expected_light_shape',return_value=(512,768)), \
+                 patch.object(speech,'probe',return_value={'streams':[{'codec_type':'video','width':512,'height':768}]}), \
                  patch.object(budget,'run_gpu',side_effect=lambda fn,required_seconds:fn()) as guard:
                 hq.generate_take(root/'still.png',root/'same-wav.wav',root/'out.mp4','Same motion.',1,light=True)
             self.assertEqual(client.predict.call_args.args[3],'480p')
@@ -94,3 +114,4 @@ class LightProfileTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
