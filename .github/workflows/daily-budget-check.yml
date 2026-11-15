@@ -42,8 +42,10 @@ jobs:
           python -m unittest discover -s tests -p test_cinematic_serial.py -v
           python -m unittest discover -s tests -p test_cinematic_design.py -v
           python -m unittest discover -s tests -p test_cinematic_daily.py -v
+          python -m unittest discover -s tests -p test_cinematic_readiness.py -v
           python -m unittest discover -s tests -p test_cinematic_time_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_budget.py -v
           python -m unittest discover -s tests -p test_cinematic_series.py -v
           python ai-cast/cinematic-series.py check
           node --check ai-cast/cinematic-series-bot.mjs
+

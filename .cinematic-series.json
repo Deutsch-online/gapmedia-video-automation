@@ -155,6 +155,16 @@
       "status": "not-needed-available-German-voice-selected",
       "automatic_clone_creation": false
     }
+  },
+  "production_readiness": {
+    "enabled": true,
+    "from_episode": 24,
+    "daily_prior_post_review": true,
+    "maximum_evidence_age_hours": 24,
+    "whole_episode_forecast_required": true,
+    "forecast_basis": "latest nine completed account debits per provider bound plus 20 percent; retain full final-call headroom",
+    "missing_analytics": "record unavailable evidence and use explicit baseline experiment; never invent a causal explanation",
+    "automatic_paid_fallback": false
   }
 }
 
