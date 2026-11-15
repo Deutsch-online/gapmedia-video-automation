@@ -37,3 +37,5 @@ with p.open('a')as f:f.write(r'''
 ''')
 p=root/'server.mjs';s=p.read_text().replace('mathVersion:91','mathVersion:92').replace('mathPanelVersion:91','mathPanelVersion:92').replace('math91','math92');p.write_text(s)
 print('CELEBRATIONS_92_READY')
+
+p=root/'public/math-duel.mjs';s=p.read_text().replace("if(s.phase==='finished'&&s.auto&&now>=Math.max", "if(s.phase==='finished'&&s.auto&&!s.celebration&&!s.celebrationQueue?.length&&now>=Math.max");p.write_text(s)
