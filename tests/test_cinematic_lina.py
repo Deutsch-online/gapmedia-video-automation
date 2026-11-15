@@ -11,6 +11,12 @@ m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 class LinaTests(unittest.TestCase):
     def setUp(self):
         self.state=m.new_state();self.state['next_episode']=22
+        # Keep the teaching fixture independent of the live next-story/recovery request.
+        real_load=m.load_json
+        fixture_config=real_load(m.CONFIG)
+        fixture_config['next_story']={'from_episode':22,'story_id':'lina-oma-egg-cheese-v1','duration_seconds':45,'require_graphics':False}
+        loader=patch.object(m,'load_json',side_effect=lambda path,*args: copy.deepcopy(fixture_config) if Path(path)==m.CONFIG else real_load(path,*args))
+        loader.start();self.addCleanup(loader.stop)
         self.source={'url':SOURCE,'retrieved_at':'2026-11-12T04:00:00+00:00',
                      'excerpt':'Goethe grammar context for beginner polite requests Ich möchte ein Eis. '*3}
 
