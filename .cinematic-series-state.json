@@ -3695,13 +3695,14 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-15#owner-lina-e23-native-bucket-20261115",
-    "status": "rendering",
+    "status": "render-failed",
     "image_preview": {
       "file": "renders/cinematic-series/e0023-lina-oma-v1/image-preview.jpg",
       "sha256": "1af10c6d6e7b93054ede774fa241a8f704d596de9e915a2f29e086919bd4bebf",
       "status": "sent",
       "message_id": 2934
-    }
+    },
+    "time_budget_blocked": true
   },
   "attempts": {
     "2026-10-15": 2,
@@ -3747,9 +3748,9 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-11-12",
-    "not_before": "2026-11-13T19:45:33.067000+00:00",
-    "reason": "Waiting for verified included quota after interrupted scene 8; retain seven completed clips"
+    "date": "2026-11-15#owner-lina-e23-native-bucket-20261115",
+    "not_before": "2026-11-16T09:34:18.439000+00:00",
+    "reason": "Waiting for verified included quota"
   },
   "manual_recovery_reason": {
     "slot": "2026-10-20#analytics-episode-7-20261020",
