@@ -43,6 +43,7 @@ jobs:
           print('SOURCE_PARENT '+info.sha)
           PY
           python crown-live/update98.py /tmp/crown-app
+          cp crown-live/live98.mjs /tmp/crown-app/tests/celebration92.mjs
           cp crown-live/timing94.mjs /tmp/crown-app/tests/timing94.mjs
           cp crown-live/direct95.mjs /tmp/crown-app/tests/direct95.mjs
           cp crown-live/bubble96.mjs /tmp/crown-app/tests/bubble96.mjs
