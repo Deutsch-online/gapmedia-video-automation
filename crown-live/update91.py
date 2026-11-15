@@ -49,3 +49,22 @@ p=root/'public/math-duel.mjs';s=p.read_text().replace('>=91000','>=90000').repla
 s=s.replace("s.finishedAt=now;s.voice=null;s.voiceQueue=[];return true;", "s.finishedAt=now;if(s.voice?.kind==='question')s.voice=null;s.voiceQueue=(s.voiceQueue||[]).filter(v=>v.kind!=='question');return true;")
 p.write_text(s)
 p=root/'public/math-duel-ui.mjs';s=p.read_text().replace("v.kind==='question'&&v.question!==latest?.serial", "v.kind==='question'&&(v.question!==latest?.serial||['finished','exhausted'].includes(latest?.phase))");p.write_text(s)
+p=root/'server.mjs';s=p.read_text();s=s.replace("const child=execFile('espeak-ng',['--stdout','-v',language==='fa'?'fa':'en-us','-s','155','--stdin'],{encoding:'buffer',maxBuffer:12000000,timeout:15000}", "const neural=language==='en'&&existsSync(process.env.CROWN_PIPER_MODEL||'/opt/crown-voice/en_US-ljspeech-medium.onnx');const command=neural?(process.env.CROWN_PIPER_PYTHON||'/opt/crown-voice/venv/bin/python'):'espeak-ng';const args=neural?[path.resolve('voice-backup.py'),process.env.CROWN_PIPER_MODEL||'/opt/crown-voice/en_US-ljspeech-medium.onnx']:['--stdout','-v',language==='fa'?'fa+f3':'en-us+f3','-s','150','-p','55','-a','75','--stdin'];const child=execFile(command,args,{encoding:'buffer',maxBuffer:12000000,timeout:35000,env:{...process.env,OMP_NUM_THREADS:'1'}}")
+s=s.replace("voiceBackup:true,", "voiceBackup:true,backupVoice:existsSync(process.env.CROWN_PIPER_MODEL||'/opt/crown-voice/en_US-ljspeech-medium.onnx')?'female-neural':'female-basic',")
+p.write_text(s)
+p=root/'public/math-duel.css'
+with p.open('a')as f:f.write(r'''
+/* Compact newcomer bubble: ring portrait below the answer grid. */
+#arrivalBanner{width:150px;margin:8px auto;padding:4px;border:0;background:transparent;border-radius:0;box-shadow:none}
+#arrivalBanner p{display:none}#arrivalBanner h2{font-size:13px;margin:0 0 4px}
+#arrivalBanner .arrival-portrait{width:72px;height:72px;border:3px solid #74f5d2;box-shadow:0 0 12px #26c9b955;border-radius:50%;margin:4px auto}
+#arrivalBanner .arrival-name{font-size:15px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#arrivalBanner .arrival-time{font-size:12px}
+.screen #broadcast #arrivalBanner{top:var(--arrival-top,1050px);bottom:auto;left:calc(50% - 110px);right:auto;width:220px;height:178px;min-height:0;max-height:178px;padding:4px;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;gap:2px;overflow:visible;justify-content:flex-start}
+.screen #broadcast #arrivalBanner h2{font-size:19px;line-height:1.1;margin:0}
+.screen #broadcast #arrivalBanner .arrival-portrait{width:100px;height:100px;max-height:none;flex-shrink:0;font-size:44px;margin:2px auto;border:4px solid #74f5d2;box-shadow:0 0 18px #26c9b955;border-radius:50%}
+.screen #broadcast #arrivalBanner .arrival-name{font-size:23px;line-height:1.15;width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.screen #broadcast #arrivalBanner p{display:none}
+.screen #broadcast #arrivalBanner .arrival-time{font-size:16px;line-height:1.1}
+''')
+p=root/'public/math-duel-ui.mjs';s=p.read_text().replace('Natural voice uses the existing allowance. A built-in backup voice continues when that service or its allowance is unavailable; the backup sounds different.','Natural voice uses the existing allowance. A local female neural voice continues when that service is unavailable.');p.write_text(s)
