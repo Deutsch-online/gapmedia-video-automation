@@ -38,6 +38,7 @@ jobs:
       - name: Verify layout, both speakers, actual muxing and provider reservation units
         run: |
           python -m unittest discover -s tests -p test_cinematic_design.py -v
+          python -m unittest discover -s tests -p test_cinematic_economy.py -v
           python -m unittest discover -s tests -p test_cinematic_longcat.py -v
           python -m unittest discover -s tests -p test_cinematic_story_bank.py -v
           python -m unittest discover -s tests -p test_cinematic_graphics.py -v
