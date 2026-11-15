@@ -1,5 +1,6 @@
 from pathlib import Path
-root=Path('/tmp/crown91')
+import sys
+root=Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/crown91')
 p=root/'public/supporters.mjs';s=p.read_text();s=s.replace("userId:String(event.userId||u.userId||u.id||'')", "userId:String([event.userId,u.userId,u.idStr,u.id,event.uniqueId,u.uniqueId,u.displayId,u.secUid].find(v=>v!==undefined&&v!==null&&!['','0','undefined','null'].includes(String(v).trim()))||'')")
 p.write_text(s)
 p=root/'public/math-duel.mjs';s=p.read_text().replace('=90','=91').replace('!==90','!==91').replace('version:90','version:91')
