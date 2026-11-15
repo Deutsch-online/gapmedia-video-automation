@@ -3506,7 +3506,197 @@
       "render_style": "lina-oma-stylized-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-water-spoon-holiday-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 2,
+      "title_de": "Mein Löffel hat frei!",
+      "title_fa": "قاشق من مرخص است!",
+      "summary": "Lina asks to eat water instead of drink it. Oma immediately models the correct request, Lina repeats it and Oma praises her. Lina then decides the spoon has a day off and tries to delegate drinking to the glass; she finally admits she wanted a day off too.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another useful expression at the same home table.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-water-kitchen",
+      "location_description": "The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.",
+      "visual_hook": "Lina holds a teaspoon over her own water glass as if water were soup, then asks Oma for water with the wrong eating verb.",
+      "everyday_problem": "A newcomer child knows the polite German request but confuses essen and trinken when asking for a glass of water.",
+      "practical_resolution": "Oma immediately supplies Ich möchte Wasser trinken. Lina repeats the exact correct request, receives warm praise and drinks from her own glass.",
+      "marta_goal": "Lina wants to ask for water herself and choose the correct German verb without needing Oma to speak for her.",
+      "marta_decision": "Lina repeats the corrected request, sets the spoon aside herself and finally raises her own glass to drink.",
+      "visual_payoff": "Lina addresses the glass as though it could drink for her, then lifts it herself with a cheeky smile: she wanted a day off too.",
+      "language_error": {
+        "wrong": "Ich möchte Wasser essen.",
+        "correct": "Ich möchte Wasser trinken.",
+        "explanation": "For the intended ordinary request to drink water, trinken is the correct verb. Essen means eat and is the mistaken choice in this drinking situation; the möchte request pattern itself is correct."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Do not wait for timed-out text providers. Use a new original source-checked lesson with immediate correction, repetition and praise before its connected visual joke.",
+        "visible_comic_action": "A spoon is laid down for a day off; Lina looks expectantly at the glass as if it could do her drinking, then accepts that she must lift it herself.",
+        "next_experiment": "Test one continuous table situation with the same glass and spoon and a short character-led payoff; no invented view or retention results."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official SCHUBERT beginner exercise includes Ich möchte etwas trinken and vocabulary for hunger and thirst. This original lesson applies that polite drinking-request pattern to water and contrasts drinking with eating. The source does not report a real child or this joke.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all water-and-spoon dialogue",
+          "the spoon and glass day-off joke"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich möchte Wasser essen.",
+          "fa": "اوما، می‌خواهم آب را بخورم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Lina holds a teaspoon just above her own water glass with a confident curious smile.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds a teaspoon just above her own water glass with a confident curious smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "water glass",
+            "teaspoon"
+          ],
+          "object_action": "Lina holds a teaspoon just above her own water glass with a confident curious smile.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich möchte Wasser trinken.",
+          "fa": "بگو: می‌خواهم آب بنوشم.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Oma points gently toward the off-camera water glass and gives an encouraging nod.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma points gently toward the off-camera water glass and gives an encouraging nod.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma points gently toward the off-camera water glass and gives an encouraging nod.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich möchte Wasser trinken.",
+          "fa": "می‌خواهم آب بنوشم.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Lina sets the teaspoon down beside her glass and repeats the corrected request proudly.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina sets the teaspoon down beside her glass and repeats the corrected request proudly.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "water glass",
+            "teaspoon"
+          ],
+          "object_action": "Lina sets the teaspoon down beside her glass and repeats the corrected request proudly.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Das hast du gut gesagt.",
+          "fa": "آفرین! این را خوب گفتی.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Oma gives one small warm thumbs-up toward her off-camera granddaughter.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gives one small warm thumbs-up toward her off-camera granddaughter.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gives one small warm thumbs-up toward her off-camera granddaughter.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann hat mein Löffel frei?",
+          "fa": "پس قاشق من مرخص است؟",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Lina points at the resting teaspoon beside her water glass with a playful raised eyebrow.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina points at the resting teaspoon beside her water glass with a playful raised eyebrow.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "water glass",
+            "teaspoon"
+          ],
+          "object_action": "Lina points at the resting teaspoon beside her water glass with a playful raised eyebrow.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Ja, heute arbeitet dein Glas.",
+          "fa": "بله، امروز گیلاس تو کار می‌کند.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Oma gestures gently toward Lina's off-camera glass, smiling at their little pretend game.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gestures gently toward Lina's off-camera glass, smiling at their little pretend game.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gestures gently toward Lina's off-camera glass, smiling at their little pretend game.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Glas, du musst alles trinken!",
+          "fa": "گیلاس، تو باید همه‌اش را بنوشی!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Lina leans toward her water glass and points at it like a tiny boss, keeping it stable on the table.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina leans toward her water glass and points at it like a tiny boss, keeping it stable on the table.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "water glass",
+            "teaspoon"
+          ],
+          "object_action": "Lina leans toward her water glass and points at it like a tiny boss, keeping it stable on the table.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein, Lina! Du trinkst selbst.",
+          "fa": "نه لینا! خودت آب می‌نوشی.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Oma points gently toward her own lips, then smiles toward Lina off camera.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma points gently toward her own lips, then smiles toward Lina off camera.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma points gently toward her own lips, then smiles toward Lina off camera.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Schade. Ich wollte auch frei!",
+          "fa": "حیف! من هم می‌خواستم مرخص باشم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen, small wooden table beside a softly lit window. One clear drinking glass with water and one clean teaspoon at Lina's place. Original unchanged clothes and slender cartoon identities.. The friend is off camera. Lina lifts her own water glass to just below her mouth with a cheeky caught-out smile; the resting spoon stays beside her.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina lifts her own water glass to just below her mouth with a cheeky caught-out smile; the resting spoon stays beside her.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "water glass",
+            "teaspoon"
+          ],
+          "object_action": "Lina lifts her own water glass to just below her mouth with a cheeky caught-out smile; the resting spoon stays beside her.",
+          "location_key": "lina-oma-water-kitchen",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 23,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-15T09:31:49.245863+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-stylized-v1"
+    },
+    "date": "2026-11-15",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -3542,7 +3732,8 @@
     "2026-11-11": 1,
     "2026-11-11#owner-marta-shortline-20261111": 1,
     "2026-11-12": 1,
-    "2026-11-13": 1
+    "2026-11-13": 1,
+    "2026-11-15": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3559,7 +3750,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-15T08:55:27.305853+00:00",
+    "checked_at": "2026-11-15T09:31:47.660476+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
