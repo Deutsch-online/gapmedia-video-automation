@@ -14,7 +14,18 @@
   "purchase_credits": false,
   "expires_at": "2026-11-16T10:35:57+00:00",
   "authorization_text": "Owner explicitly requested completing the remaining clip with paid credit on 2026-11-15. This grants one attempt only for scene 8 of this exact pending plan; ordinary daily production stays verified-included-only.",
-  "calls": [],
+  "calls": [
+    {
+      "scene": 8,
+      "reserved_units": 480,
+      "status": "reserved",
+      "before": {
+        "base": 2400,
+        "current": 502.33523500000047,
+        "overquotaUsed": 0
+      }
+    }
+  ],
   "reconciled_preflight": {
     "run": "43705052605:1",
     "calls": 0,
