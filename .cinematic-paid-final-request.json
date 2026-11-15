@@ -1,7 +1,7 @@
 {
   "id": "owner-paid-final-e23-20261115-preflight-fixed",
   "authorization": "explicit-owner-paid-continuation",
-  "status": "approved",
+  "status": "running",
   "episode": 23,
   "story_id": "lina-oma-water-spoon-holiday-v1",
   "scenes": [
@@ -20,5 +20,11 @@
     "calls": 0,
     "cause": "Pillow 13.0.0 contact-sheet bytes differ from production Pillow 12.3.0; failed before any GPU submission",
     "status": "failed-or-uncertain"
+  },
+  "active_run": "43705531383:1",
+  "quota_before": {
+    "base": 2400,
+    "current": 502.33523500000047,
+    "overquotaUsed": 0
   }
 }

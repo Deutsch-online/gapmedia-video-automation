@@ -3694,8 +3694,8 @@
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "lina-oma-stylized-v1"
     },
-    "date": "2026-11-15#owner-paid-final-e23-20261115",
-    "status": "render-failed",
+    "date": "2026-11-15#owner-paid-final-e23-20261115-preflight-fixed",
+    "status": "rendering",
     "image_preview": {
       "file": "renders/cinematic-series/e0023-lina-oma-v1/image-preview.jpg",
       "sha256": "1af10c6d6e7b93054ede774fa241a8f704d596de9e915a2f29e086919bd4bebf",
@@ -3703,7 +3703,7 @@
       "message_id": 2934
     },
     "time_budget_blocked": true,
-    "paid_request": "owner-paid-final-e23-20261115"
+    "paid_request": "owner-paid-final-e23-20261115-preflight-fixed"
   },
   "attempts": {
     "2026-10-15": 2,
@@ -3743,7 +3743,8 @@
     "2026-11-13": 1,
     "2026-11-15": 1,
     "2026-11-15#owner-lina-e23-native-bucket-20261115": 1,
-    "2026-11-15#owner-paid-final-e23-20261115": 1
+    "2026-11-15#owner-paid-final-e23-20261115": 1,
+    "2026-11-15#owner-paid-final-e23-20261115-preflight-fixed": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
