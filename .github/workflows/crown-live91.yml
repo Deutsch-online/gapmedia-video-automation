@@ -152,3 +152,5 @@ jobs:
           result=call('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
           print('CROWN_LIVE91_PANEL_DELIVERED message_id='+str(result['message_id']))
           PY
+
+# Apply against the exact downloaded source directory.
