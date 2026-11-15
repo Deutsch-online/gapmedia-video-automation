@@ -95,6 +95,11 @@ def prompt(episode, research, history):
         'current speaker in a close or medium single-person shot, listener completely outside the frame; '
         'never put both faces or a second moving mouth in a generated speaking shot. Same breakfast table or '
         'other coherent location, matching eyelines across the cut, pauses with mouths closed. '
+        'Budget direction for new episodes: use the same one-to-three visible props in every shot of each '
+        'speaker; both characters remain at the same location. The renderer makes one source keyframe per '
+        'speaker and creates nine separate audio-driven videos, so put all later gestures and object actions '
+        'in motion, keeping every starting keyframe compatible. Do not introduce or transform an object '
+        'between shots, add a new location or require an unseen prop. '
         'Return only JSON with: episode, story_id (unique original string), title_de, title_fa, summary, '
         'cliffhanger (small bridge to tomorrow), series_version:wg-alltag-v1, series_name:Lina & Oma Rosi, '
         'cast_profile:lina-oma-v1, content_basis:everyday-reenactment, mood:comic, duration_seconds:45, '
@@ -146,3 +151,4 @@ def deliver_preview(state, info, save, send):
         raise RuntimeError('Image preview receipt is missing')
     state['pending']['image_preview'].update(status='sent',message_id=receipt['message_id'])
     save(state)
+
