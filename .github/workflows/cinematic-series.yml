@@ -96,6 +96,8 @@ jobs:
                   print('MiniMax subscription allowance: could not verify')
           print('MiniMax paid-key use: disabled until included allowance and request pricing are proven')
           PY
+      - name: Install image-test dependency before safeguards
+        run: python -m pip install --disable-pip-version-check 'pillow>=11,<13'
       - name: Check schedule, continuity and delivery safeguards
         run: |
           python -m py_compile ai-cast/cinematic-series.py ai-cast/cinematic_openfilm.py
