@@ -1,5 +1,6 @@
 {
-  "request": "owner-daily-preflight-fixed-20261115",
+  "request": "owner-use-hf-local-story-20261115",
   "episode": 23,
-  "reason": "Resume the authorized ordinary daily production after fixing missing Pillow before safeguards. Preserve once-per-Berlin-day counters, live verified included quota, no paid or anonymous fallback, and image-preview receipts before speaking clips. Do not regenerate delivered episode 22."
+  "story_id": "lina-oma-water-spoon-holiday-v1",
+  "reason": "Owner asked to use Hugging Face and existing project tools to continue free production. Add a validated locally authored story to remove dependence on unavailable text APIs, then use existing authenticated HF included-quota image and LongCat speech-video tools. Preserve daily gates, one visible speaker, exact narration audio, nine-image private preview receipt, cached assets, and no paid/anonymous fallback."
 }
