@@ -3709,7 +3709,212 @@
       "render_style": "lina-oma-stylized-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-hungry-plate-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 3,
+      "title_de": "Nur mein Teller hat Hunger!",
+      "title_fa": "فقط بشقاب من گرسنه است!",
+      "summary": "Lina confuses being hunger with having hunger. Oma immediately corrects her, Lina repeats and receives praise. Lina jokes that her plate is hungry too and offers to eat for both; when Oma points out the carrot, Lina says only the plate is hungry now.",
+      "cliffhanger": "Lina and Oma will meet another everyday German expression tomorrow.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-hunger-table",
+      "location_description": "The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina points toward her own tummy above a clearly visible plate with bread and a carrot while saying the wrong German hunger phrase.",
+      "everyday_problem": "A newcomer child transfers an everyday hunger expression into German and confuses ich bin with ich habe.",
+      "practical_resolution": "Oma teaches Ich habe Hunger immediately; Lina repeats it, is praised and uses the same expression in the final carrot joke.",
+      "marta_goal": "Lina wants to tell Oma that she is hungry in understandable ordinary German and eat her bread herself.",
+      "marta_decision": "Lina repeats the correct expression and turns the meal into a playful plate joke while reacting to the carrot.",
+      "visual_payoff": "Lina reaches toward the bread, then freezes playfully when Oma mentions the visible carrot and points to the plate as the only remaining hungry one.",
+      "language_error": {
+        "wrong": "Ich bin Hunger!",
+        "correct": "Ich habe Hunger.",
+        "explanation": "For the intended everyday hunger statement German uses haben: Ich habe Hunger. Ich bin Hunger incorrectly identifies the speaker as hunger rather than expressing the feeling. The official exercise uses the corresponding Hast du Hunger question."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Keep an original validated local fallback so a timed-out free text API does not block the next daily story; use two stable speaker keyframes and immediate correction, repetition and praise.",
+        "visible_comic_action": "Lina points at the hungry plate and reaches for bread; the visible carrot makes her suddenly shift the hunger claim entirely onto the plate.",
+        "next_experiment": "Compare a familiar hungry-child mistake and a clearly visible vegetable payoff with same-age observations when available; no causal or view-increase guarantee.",
+        "daily_evidence_review": {
+          "day": "2026-11-16",
+          "status": "unavailable",
+          "selected_test": {
+            "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+            "measure": "Compare retention/completion and shares per view at the same post age when available.",
+            "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official SCHUBERT beginner food-and-drink exercise uses Hast du Hunger and Ich bin satt. This fictional lesson applies the standard haben construction for the corresponding Ich habe Hunger statement. It does not claim the family incident happened.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all family dialogue",
+          "the hungry plate and carrot joke"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin Hunger!",
+          "fa": "اوما، من گرسنگی هستم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina points gently toward her tummy with a hopeful smile, leaving her plate, bread and carrot clearly visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich habe Hunger.",
+          "fa": "بگو: من گرسنه هستم.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma gives one warm encouraging nod toward Lina off camera.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gives one warm encouraging nod toward Lina off camera.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gives one warm encouraging nod toward Lina off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich habe Hunger.",
+          "fa": "من گرسنه هستم.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina repeats proudly and points gently at herself beside her plate.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina repeats proudly and points gently at herself beside her plate.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina repeats proudly and points gently at herself beside her plate.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Genau so.",
+          "fa": "آفرین! دقیقاً همین‌طور.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma gives a small warm thumbs-up toward Lina off camera.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gives a small warm thumbs-up toward Lina off camera.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma gives a small warm thumbs-up toward Lina off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mein Teller hat auch Hunger.",
+          "fa": "بشقاب من هم گرسنه است.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina points at her own plate with a cheeky raised eyebrow; the bread and carrot remain on it.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Der Teller kann nicht essen.",
+          "fa": "بشقاب نمی‌تواند غذا بخورد.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma shakes her head once with a playful smile, looking toward the plate off camera.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma shakes her head once with a playful smile, looking toward the plate off camera.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma shakes her head once with a playful smile, looking toward the plate off camera.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann esse ich für uns beide!",
+          "fa": "پس من برای هر دوی ما می‌خورم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina reaches toward the bread without taking a bite during speech; the carrot stays visible.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina reaches toward the bread without taking a bite during speech; the carrot stays visible.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina reaches toward the bread without taking a bite during speech; the carrot stays visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Auch die Karotte?",
+          "fa": "هویج را هم می‌خوری؟",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma points gently toward the carrot off camera with a knowing smile.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma points gently toward the carrot off camera with a knowing smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "wooden table"
+          ],
+          "object_action": "Oma points gently toward the carrot off camera with a knowing smile.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Jetzt hat nur der Teller Hunger!",
+          "fa": "حالا فقط بشقاب گرسنه است!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home kitchen and wooden table. At Lina's place one small plate, one slice of bread and one carrot are visible throughout. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "plate",
+            "bread slice",
+            "carrot"
+          ],
+          "object_action": "Lina pauses her hand above the bread, grins cheekily and points at the plate instead of herself; the carrot remains visible.",
+          "location_key": "lina-oma-hunger-table",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 24,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-16T11:52:09.728196+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-stylized-v1"
+    },
+    "date": "2026-11-16",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -3749,7 +3954,8 @@
     "2026-11-15": 1,
     "2026-11-15#owner-lina-e23-native-bucket-20261115": 1,
     "2026-11-15#owner-paid-final-e23-20261115": 1,
-    "2026-11-15#owner-paid-final-e23-20261115-preflight-fixed": 1
+    "2026-11-15#owner-paid-final-e23-20261115-preflight-fixed": 1,
+    "2026-11-16": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -3766,7 +3972,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-15T09:53:22.720987+00:00",
+    "checked_at": "2026-11-16T11:52:09.729536+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -3775,7 +3981,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 1682.2899710000002,
+    "remaining_seconds": 2400.0,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -3826,6 +4032,69 @@
       "remaining_seconds": 159.82963599999994,
       "can_admit_one_speaking_take": false,
       "fallback": null
+    }
+  },
+  "daily_review": {
+    "day": "2026-11-16",
+    "attempted": true,
+    "checked_at": "2026-11-16T11:52:01.868076+00:00",
+    "status": "unavailable",
+    "causal_explanation_verified": false,
+    "visual_reviewed": false,
+    "experiments": [],
+    "prior_post_observations": [],
+    "missing": [
+      "watch-time or completion may be unavailable; views alone do not prove causes"
+    ],
+    "refresh": "requested",
+    "evidence_error": "ValueError",
+    "next_test": {
+      "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+      "measure": "Compare retention/completion and shares per view at the same post age when available.",
+      "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
+    }
+  },
+  "full_episode_admission": {
+    "work": {
+      "images": 2,
+      "videos": 9,
+      "video_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "cached_videos": 0
+    },
+    "available_units": 2400.0,
+    "estimated_generation_units": 2027.3461103999998,
+    "required_units_with_headroom": 2324.617884,
+    "admitted": true,
+    "image_bound": 56.39603640000005,
+    "video_bound": 212.72822639999995,
+    "image_basis": "recent_account_debit_upper_plus_20_percent",
+    "video_basis": "recent_account_debit_upper_plus_20_percent",
+    "reserve_units": 30,
+    "final_request_headroom": 267.2717736000001,
+    "full_episode_guaranteed": false,
+    "per_call_live_guard_required": true,
+    "paid_fallback": false,
+    "quota_status": "verified",
+    "day": "2026-11-16",
+    "episode": 24,
+    "plan_sha": "30cfe38d8f8650da49c608c97784abfbc74c702734d45ecd8fec4aeaa9a74227",
+    "review_attempted": true,
+    "review_status": "unavailable",
+    "review_source_at": null,
+    "selected_test": {
+      "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+      "measure": "Compare retention/completion and shares per view at the same post age when available.",
+      "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
     }
   }
 }
