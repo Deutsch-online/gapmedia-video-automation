@@ -585,6 +585,195 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "lina-oma-gift-bekommen-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 4,
+      "title_de": "Ein Gift für dich?!",
+      "title_fa": "یک سم برای تو؟!",
+      "summary": "Lina offers Oma a wrapped present but calls it ein Gift, which means poison. Oma immediately models ein Geschenk, Lina repeats it and Oma praises her. Oma then asks whether Lina also receives one; Lina stretches up and uses bekommen for become. Oma models Ich werde groß, Lina repeats it, and Lina offers the same present again with bekommen and Geschenk used correctly. The joke is about false friends, not the child's intelligence or accent.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another everyday German false friend at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-gift-kitchen",
+      "location_description": "The same cozy contemporary German home kitchen and living-room corner, small wooden table beside a softly lit window, one small wrapped gift box with a ribbon. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina holds a small wrapped gift box toward Oma and cheerfully calls the present ein Gift, the German word for poison.",
+      "everyday_problem": "A newcomer child treats Gift as the English word gift and bekommen as become while giving a present at home.",
+      "practical_resolution": "Oma immediately supplies Ein Geschenk für dich, praises the repetition, then replaces Ich bekomme groß with Ich werde groß before Lina uses both corrections.",
+      "marta_goal": "Lina wants to give Oma the wrapped present and say the right German words herself.",
+      "marta_decision": "Lina repeats Geschenk, stretches up on the wrong verb, repeats werde, and offers the present with the corrected words.",
+      "visual_payoff": "Lina smiles and holds the wrapped gift out toward Oma, now calling it a Geschenk and using bekommen for receiving.",
+      "language_error": {
+        "wrong": "ein Gift für dich!",
+        "correct": "Ein Geschenk für dich.",
+        "explanation": "Ein Gift means a poison, so Oma, ein Gift für dich is not a present. Ein Geschenk für dich is the intended present. Later, bekommen means to receive, while Ich werde groß means I will grow big; Ich bekomme groß uses the wrong verb."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The story bank had no unused episode left, so this approved false-friend lesson restores a local fallback with immediate correction, repetition and praise.",
+        "visible_comic_action": "Lina holds out a wrapped gift while naming it as poison, then stretches on tiptoes before offering the same box with the corrected words.",
+        "next_experiment": "Compare a familiar false-friend hook and one stable gift prop with same-age observations when available; no view or retention claim."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact word for the intended meaning, including polite patterns such as Ich möchte. This fictional lesson applies that rule to two beginner false friends: Gift means poison and the present is ein Geschenk; bekommen means to receive and growing up uses werden. The kitchen scene and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all present-giving dialogue",
+          "the wrapped gift and tiptoe joke"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "https://www.goethe.de/ins/de/de/m/prf/grm.html",
+        "https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1",
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ein Gift für dich!",
+          "fa": "اوما، یک سم برای تو!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Lina holds the small wrapped gift box out toward off-camera Oma with a proud hopeful smile.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina holds the small wrapped gift box out toward off-camera Oma with a proud hopeful smile. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Lina holds the small wrapped gift box out toward off-camera Oma with a proud hopeful smile.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ein Geschenk für dich.",
+          "fa": "نه! یک هدیه برای تو.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Oma startles, eyes wide and one hand lifted, looking at the wrapped gift box.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma startles, eyes wide and one hand lifted, looking at the wrapped gift box. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Oma startles, eyes wide and one hand lifted, looking at the wrapped gift box.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ein Geschenk für dich.",
+          "fa": "یک هدیه برای تو.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Lina repeats proudly and draws the same wrapped gift box a little closer.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina repeats proudly and draws the same wrapped gift box a little closer. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Lina repeats proudly and draws the same wrapped gift box a little closer.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut!",
+          "fa": "آفرین!",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Oma gives one small warm thumbs-up toward off-camera Lina beside the wrapped gift box.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma gives one small warm thumbs-up toward off-camera Lina beside the wrapped gift box. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Oma gives one small warm thumbs-up toward off-camera Lina beside the wrapped gift box.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Und du? Bekommst du auch eins?",
+          "fa": "و تو؟ تو هم یکی می‌گیری؟",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Oma points gently toward off-camera Lina, then toward the wrapped gift box, with a playful smile.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma points gently toward off-camera Lina, then toward the wrapped gift box, with a playful smile. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Oma points gently toward off-camera Lina, then toward the wrapped gift box, with a playful smile.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ja! Ich bekomme groß!",
+          "fa": "بله! من بزرگ می‌گیرم!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Lina stretches up on tiptoes while still holding the wrapped gift box, smiling confidently.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina stretches up on tiptoes while still holding the wrapped gift box, smiling confidently. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Lina stretches up on tiptoes while still holding the wrapped gift box, smiling confidently.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich werde groß.",
+          "fa": "نه! من بزرگ می‌شوم.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Oma shakes her head once and lifts her heels slightly, modeling the phrase with a kind smile.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head once and lifts her heels slightly, modeling the phrase with a kind smile. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Oma shakes her head once and lifts her heels slightly, modeling the phrase with a kind smile.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich werde groß.",
+          "fa": "من بزرگ می‌شوم.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Lina returns from tiptoes to a normal stance and nods proudly, still holding the wrapped gift box.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina returns from tiptoes to a normal stance and nods proudly, still holding the wrapped gift box. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Lina returns from tiptoes to a normal stance and nods proudly, still holding the wrapped gift box.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und du bekommst ein Geschenk!",
+          "fa": "و تو یک هدیه می‌گیری!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy kitchen and living-room corner. The listener is entirely off camera. Lina smiles and holds the wrapped gift box out again, offering it with the corrected words.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina smiles and holds the wrapped gift box out again, offering it with the corrected words. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "wrapped gift box"
+          ],
+          "object_action": "Lina smiles and holds the wrapped gift box out again, offering it with the corrected words.",
+          "location_key": "lina-oma-gift-kitchen",
+          "story_beat": "resolve"
+        }
+      ]
     }
   ]
 }
