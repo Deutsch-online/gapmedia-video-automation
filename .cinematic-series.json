@@ -32,8 +32,8 @@
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 23,
-    "story_id": "lina-oma-water-spoon-holiday-v1",
+    "from_episode": 25,
+    "story_id": "lina-oma-gift-bekommen-v1",
     "duration_seconds": 45,
     "require_graphics": false
   },
