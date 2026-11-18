@@ -1,0 +1,27 @@
+name: Export episode cache
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/export-episode-cache.yml
+permissions:
+  contents: read
+  actions: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: renders/cinematic-series-cache
+          key: cinematic-series-v2-export-${{ github.run_id }}
+          restore-keys: |
+            cinematic-series-v2-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e0025-cache
+          path: renders/cinematic-series-cache/e0025-lina-oma-v1
+          if-no-files-found: error
+          retention-days: 2
