@@ -4113,7 +4113,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-18#owner-lina-e25-cached-resume-20261118",
-    "status": "dispatching",
+    "status": "exporting",
     "image_preview": {
       "file": "renders/cinematic-series/e0025-lina-oma-v1/image-preview.jpg",
       "sha256": "bda396693ad65a67a2e82730a1c225ca9a65f37e200413716a03f471315fbcbe",
@@ -4122,7 +4122,9 @@
     },
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit",
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2969
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0025-lina-oma-v1/tiktok/e0025-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0025-lina-oma-v1/instagram/e0025-instagram-45s.mp4"
