@@ -70,7 +70,10 @@ def render_one(index, expected, image, audio, video):
               'of the supplied single-person image. No second face or listener in the frame. '
               'Only this mouth follows the audio; mouth closed during silence. '
               'Stable face, natural eyes and restrained mouth movement. ' + expected['motion'])
-    client = Client(SPACE, hf_token=token)
+    try:
+        client = Client(SPACE, token=token)
+    except TypeError:
+        client = Client(SPACE, hf_token=token)
     last = None
     for attempt in range(3):
         if attempt:
