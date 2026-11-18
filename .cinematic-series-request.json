@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e25-gift-bekommen-20261118",
+  "request": "owner-lina-e25-cached-resume-20261118",
   "episode": 25,
   "story_id": "lina-oma-gift-bekommen-v1",
-  "reason": "Owner asked to build episode 25 now. This push is the force flag for the daily cinematic workflow because workflow_dispatch is not available to the agent token. Included quota only; paid fallback stays off."
+  "reason": "Owner asked to resume episode 25 today from the cached clips. This push sets FORCE_TODAY so the dated included-quota grant can pass the daily-production-already-started guard. Paid fallback stays off."
 }

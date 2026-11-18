@@ -107,13 +107,13 @@
     "require_documented_basis": true
   },
   "owner_included_request": {
-    "id": "owner-lina-e23-native-bucket-20261115",
-    "episode": 23,
-    "story_id": "lina-oma-water-spoon-holiday-v1",
-    "berlin_day": "2026-11-15",
-    "expires_at": "2026-11-15T22:00:00+00:00",
+    "id": "owner-lina-e25-cached-resume-20261118",
+    "episode": 25,
+    "story_id": "lina-oma-gift-bekommen-v1",
+    "berlin_day": "2026-11-18",
+    "expires_at": "2026-11-18T22:30:00+00:00",
     "included_only": true,
-    "authorization": "Owner explicitly requested fixing the failed video. One dated continuation of this exact pending episode after correcting native provider bucket validation. Keep counters, signed clips, exact audio and image preview receipt; require live included quota, no paid or anonymous fallback."
+    "authorization": "Owner asked to finish episode 25 today after the free LongCat call was cancelled on clip 6. One included-quota continuation of this pending episode; keep the signed clips, audio and image preview. No paid or anonymous fallback."
   },
   "serial_story": {
     "id": "marta-first-job-s01",
