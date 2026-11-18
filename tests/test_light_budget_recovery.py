@@ -22,6 +22,9 @@ class BudgetRecoveryTests(unittest.TestCase):
             self.assertFalse(m.gate_decision(state,config,quota_check={'status':'unverified'})[0])
         with patch.object(m,'due',return_value=(False,'daily-production-already-started','2026-11-10')):
             self.assertFalse(m.gate_decision(state,config,recovery_only=True,quota_check=ready)[0])
+        failed={'next_episode':25,'pending':{'status':'render-failed','plan':{'episode':25}}}
+        with patch.object(m,'due',return_value=(True,'resume-cached-render','2026-11-18')):
+            self.assertTrue(m.gate_decision(failed,config,recovery_only=True,quota_check=ready)[0])
 
     def test_reset_uses_the_actual_timezone_aware_service_timestamp(self):
         for stamp,valid in [('2099-11-10T10:19:08.716Z',True),('2099-11-10T10:19:08',False),('2020-01-01T00:00:00Z',False)]:

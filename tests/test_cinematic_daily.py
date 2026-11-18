@@ -33,11 +33,21 @@ class DailyTests(unittest.TestCase):
         state['attempts'].clear();state['deliveries']['2026-11-05#old-request']={}
         self.assertEqual(m.due(state, CONFIG, now)[1], 'already-delivered')
 
-    def test_budget_failure_does_not_allow_same_day_quota_recovery_extra_attempt(self):
-        state=m.new_state();state['attempts']['2026-11-05']=1
-        state['pending']={'status':'render-failed'}
+    def test_render_failure_resumes_cached_episode_without_a_second_delivery(self):
+        state=m.new_state();state['next_episode']=25
+        state['attempts']['2026-11-05']=1
+        state['pending']={'status':'render-failed','plan':{'episode':25,'story_id':'lina-oma-gift-bekommen-v1'}}
+        state['quota_recovery']={'date':'2026-11-05','not_before':'2026-11-05T12:00:00+00:00'}
+        waiting=datetime(2026,11,5,10,tzinfo=timezone.utc)
+        self.assertEqual(m.due(state, CONFIG, waiting)[1], 'waiting-for-gpu-quota')
+        ready=datetime(2026,11,5,13,tzinfo=timezone.utc)
+        self.assertEqual(m.due(state, CONFIG, ready), (True, 'resume-cached-render', '2026-11-05'))
         state['quota_recovery']={'date':'2026-11-05','not_before':'2026-11-05T07:00:00+00:00'}
-        self.assertFalse(m.due(state, CONFIG, datetime(2026,11,5,10,tzinfo=timezone.utc))[0])
+        self.assertEqual(m.due(state, CONFIG, waiting)[1], 'resume-cached-render')
+        state['deliveries']['2026-11-05']={'episode':25,'message_id':1}
+        self.assertEqual(m.due(state, CONFIG, ready, force=True)[1], 'already-delivered')
+        fresh=m.new_state();fresh['attempts']['2026-11-05']=1
+        self.assertEqual(m.due(fresh, CONFIG, ready, force=True)[1], 'daily-production-already-started')
 
     def test_next_day_resumes_existing_plan_only_after_provider_reset(self):
         state=m.new_state();state['attempts']['2026-11-04']=1

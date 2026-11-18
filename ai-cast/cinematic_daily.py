@@ -1,7 +1,16 @@
-"""One production start per Berlin calendar day, including retries and force."""
+"""One delivered episode per Berlin calendar day. A failed render may resume."""
 from datetime import datetime
 
 MODE = 'daily-berlin-budget'
+RESUMABLE = ('render-failed', 'rendering', 'exporting')
+
+
+def resumable_render(state):
+    """The unfinished current episode, including clips already in the cache."""
+    pending = state.get('pending') or {}
+    plan = pending.get('plan')
+    return (pending.get('status') in RESUMABLE and isinstance(plan, dict)
+            and plan.get('episode') == state.get('next_episode'))
 
 
 def daily_slot(state, config, local, force=False):
@@ -14,21 +23,27 @@ def daily_slot(state, config, local, force=False):
         raise ValueError('Daily production must be once per Berlin calendar day')
     if any(str(key).split('#', 1)[0] == day for key in state.get('deliveries', {})):
         return False, 'already-delivered', day
-    if (state.get('pending') or {}).get('status') == 'dispatching':
+    pending = state.get('pending') or {}
+    if pending.get('status') == 'dispatching':
         return False, 'delivery-needs-reconciliation', day
-    starts = sum(int(value) for key, value in state.get('attempts', {}).items()
-                 if str(key).split('#', 1)[0] == day)
-    if starts >= 1:
-        return False, 'daily-production-already-started', day
     recovery = state.get('quota_recovery', {})
-    if recovery and (state.get('pending') or {}).get('status') == 'render-failed':
+    if recovery and pending.get('status') == 'render-failed':
         ready = datetime.fromisoformat(recovery['not_before'])
         if ready.tzinfo is None:
             raise ValueError('Quota recovery timestamp must include timezone')
         if local < ready:
             return False, 'waiting-for-gpu-quota', day
+    starts = sum(int(value) for key, value in state.get('attempts', {}).items()
+                 if str(key).split('#', 1)[0] == day)
+    # A failed or interrupted render keeps its cached clips and may continue.
+    # A day that already delivered, or a start with no unfinished episode, may not.
+    resume = resumable_render(state)
+    if starts >= 1 and not resume:
+        return False, 'daily-production-already-started', day
     if not force and local.strftime('%H:%M') < config['time']:
         return False, 'before-daily-slot', day
+    if resume and starts >= 1:
+        return True, 'resume-cached-render', day
     return True, 'daily-berlin-slot', day
 
 

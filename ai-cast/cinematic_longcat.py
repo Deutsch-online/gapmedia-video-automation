@@ -1,10 +1,17 @@
 """Native 720p single-speaker takes with conservative charged-time admission."""
 import ast
 import shutil
+import time
 import urllib.request
+from concurrent.futures import CancelledError
 from pathlib import Path
 
 SPACE = 'victor/LongCat-Video-Avatar-1.5'
+# Extra free ZeroGPU spaces are used only after they pass the same hardware contract.
+# virakon/LongCat-Video-Avatar-ZeroGPU is a duplicate, but its GPU decorator is
+# duration=120 rather than the verified 240s xlarge contract, so it is not listed.
+FREE_FALLBACK_SPACES = ()
+RETRY_DELAYS = (5, 15)
 ACCELERATION = 'DBCache fast'
 LIGHT_ACCELERATION = 'DBCache faster'
 LIGHT_QUOTA_MAXIMUM = 480
@@ -88,6 +95,37 @@ def verify_live_contract():
         _VERIFIED=True
 
 
+def transient_provider_error(exc):
+    """Dropped queues and streams can be retried. A spent included quota cannot."""
+    if 'quota' in str(exc).lower():
+        return False
+    if isinstance(exc, (CancelledError, TimeoutError, ConnectionError)):
+        return True
+    text = (type(exc).__name__ + ' ' + str(exc)).lower()
+    return any(token in text for token in (
+        'cancelled', 'canceled', 'timeout', 'timed out', 'queue', 'stream',
+        'connection reset', 'connection aborted', 'remote end closed',
+        '502', '503', '504', 'temporarily unavailable'))
+
+
+def speaking_spaces():
+    spaces = []
+    for name in (SPACE, *FREE_FALLBACK_SPACES):
+        if name not in spaces:
+            spaces.append(name)
+    return tuple(spaces)
+
+
+def verify_space_contract(space):
+    """Same published hardware contract as the primary space; otherwise skip it."""
+    if space == SPACE:
+        return verify_live_contract()
+    request = urllib.request.Request('https://huggingface.co/spaces/' + space + '/raw/main/app.py',
+                                     headers={'User-Agent': 'GapMedia-Contract/1.0'})
+    with urllib.request.urlopen(request, timeout=25) as response:
+        verify_contract(response.read(1_000_000).decode())
+
+
 def generate_take(image,audio,output,motion,seed,light=False):
     verify_live_contract()
     resolution='480p' if light else '720p'
@@ -104,15 +142,45 @@ def generate_take(image,audio,output,motion,seed,light=False):
             'Only this mouth follows the audio; mouth closed during silence. '
             if light else 'One visible adult, realistic human proportions, clear unobstructed mouth. ')
     prompt=(prefix+'Stable face, natural eyes and restrained mouth movement. '+motion)
-    def call():
-        result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
-                   prompt,resolution,seed,'Clean speech (fast)',acceleration,api_name='/generate')
-        result=result[0] if isinstance(result,(list,tuple)) else result
-        if isinstance(result,dict):
-            result=result.get('video',result.get('path',result))
-            if isinstance(result,dict):result=result['path']
-        shutil.copyfile(result,output)
-    run_gpu(call,required_seconds=reservation)
+    def submit(space):
+        def call():
+            result=shots.client(space).predict(handle_file(str(image)),handle_file(str(audio)),
+                       prompt,resolution,seed,'Clean speech (fast)',acceleration,api_name='/generate')
+            result=result[0] if isinstance(result,(list,tuple)) else result
+            if isinstance(result,dict):
+                result=result.get('video',result.get('path',result))
+                if isinstance(result,dict):result=result['path']
+            shutil.copyfile(result,output)
+        run_gpu(call,required_seconds=reservation)
+    last = None
+    for space in speaking_spaces():
+        if space != SPACE:
+            try:
+                verify_space_contract(space)
+            except Exception as exc:
+                print('Skipping unverified free speaking space ' + space + ': ' + type(exc).__name__, flush=True)
+                continue
+        for attempt in range(len(RETRY_DELAYS) + 1):
+            if attempt:
+                print('Retrying free speaking space ' + space + ' after a transient provider error.', flush=True)
+                time.sleep(RETRY_DELAYS[attempt - 1])
+            try:
+                submit(space)
+                last = None
+                break
+            except Exception as exc:
+                last = exc
+                if not transient_provider_error(exc):
+                    raise
+                print('Transient free-provider error on ' + space + ': ' + type(exc).__name__, flush=True)
+        else:
+            continue
+        if last is None:
+            break
+    else:
+        if last is not None:
+            raise last
+        raise RuntimeError('No verified free speaking provider accepted the take')
     video=next(s for s in probe(output)['streams'] if s['codec_type']=='video')
     try:
         check_native_shape(video, expected=expected)

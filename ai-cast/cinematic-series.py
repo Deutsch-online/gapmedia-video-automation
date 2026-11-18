@@ -226,9 +226,12 @@ def gate_decision(state,config,force=False,recovery_only=False,quota_check=None)
     go,reason,date=due(state,config,force=force)
     if not go:return go,reason,date
     from cinematic_lina import active as child_active
+    from cinematic_daily import resumable_render
     waiting_for_daily_credit = (child_active(config,state.get('next_episode',0)) and
                                 config.get('lina_oma_series',{}).get('wait_for_included_quota') is True)
-    if recovery_only and not (state.get('pending') or {}).get('time_budget_blocked') and not waiting_for_daily_credit:
+    # Hourly ticks resume an unfinished episode. They still do not start a new one.
+    if (recovery_only and not (state.get('pending') or {}).get('time_budget_blocked')
+            and not waiting_for_daily_credit and not resumable_render(state)):
         return False,'not-waiting-for-budget-recovery',date
     if config.get('time_budget',{}).get('mode')=='verified-included-only':
         if quota_check is None:
@@ -1484,6 +1487,11 @@ def production(force=False):
 
 def finish_delivery(state, plan, config, final, date):
     # Complete media preparation before declaring an uncertain upload intent.
+    calendar_day = local_date().date().isoformat()
+    for key in (date, calendar_day):
+        existing = state.get('deliveries', {}).get(key)
+        if isinstance(existing, dict) and existing.get('episode') == plan['episode']:
+            raise RuntimeError('This episode was already delivered; refusing a second send')
     target_seconds = episode_seconds(plan['episode'], config) if plan['episode'] >= 7 else plan.get('duration_seconds', DEFAULT_SECONDS)
     conform_duration(final, target_seconds)
     quality_path = Path(final).parent / 'quality.json'

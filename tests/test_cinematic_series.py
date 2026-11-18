@@ -474,6 +474,15 @@ class PlatformDeliveryTests(unittest.TestCase):
             self.assertEqual(bot.call_count, 1)
             self.assertEqual(bot.call_args.args[2], 'instagram')
 
+    def test_finish_delivery_refuses_a_second_send_of_the_same_episode(self):
+        state = m.new_state()
+        state['deliveries']['2026-11-18'] = {'episode': 25, 'message_id': 1}
+        with patch.object(m, 'conform_duration') as conform, patch.object(m, 'bot') as bot:
+            with self.assertRaisesRegex(RuntimeError, 'already delivered'):
+                m.finish_delivery(state, {'episode': 25}, {}, 'master.mp4', '2026-11-18')
+        conform.assert_not_called()
+        bot.assert_not_called()
+
     def test_unconfirmed_upload_prevents_replay(self):
         state = m.new_state()
         state['pending'] = {'status': 'dispatching'}

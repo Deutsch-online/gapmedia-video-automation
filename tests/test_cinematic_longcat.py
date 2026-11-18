@@ -95,6 +95,48 @@ class LightProfileTests(unittest.TestCase):
             self.assertEqual(client.predict.call_args.args[1],str(root/'same-wav.wav'))
             self.assertEqual(guard.call_args.kwargs['required_seconds'],480)
 
+    def test_transient_stream_drop_retries_then_uses_another_verified_free_space(self):
+        from concurrent.futures import CancelledError
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);raw=root/'raw.mp4';raw.write_bytes(b'fixture')
+            calls=[]
+            def client(space):
+                calls.append(space)
+                def predict(*_args, **_kwargs):
+                    if space==hq.SPACE and len(calls)<=3:
+                        raise CancelledError()
+                    return str(raw)
+                return types.SimpleNamespace(predict=predict)
+            with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=client),
+                 'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
+                 patch.object(hq,'verify_live_contract'),patch.object(hq,'verify_space_contract'), \
+                 patch.object(hq,'FREE_FALLBACK_SPACES',('free/other-longcat',)), \
+                 patch.object(hq,'time') as clock, \
+                 patch.object(ltx,'reject_whiteout'), \
+                 patch.object(hq,'expected_light_shape',return_value=(512,768)), \
+                 patch.object(speech,'probe',return_value={'streams':[{'codec_type':'video','width':512,'height':768}]}), \
+                 patch.object(budget,'run_gpu',side_effect=lambda fn,required_seconds:fn()):
+                hq.generate_take(root/'still.png',root/'same-wav.wav',root/'out.mp4','Same motion.',1,light=True)
+            self.assertEqual(calls,[hq.SPACE,hq.SPACE,hq.SPACE,'free/other-longcat'])
+            self.assertEqual([item.args[0] for item in clock.sleep.call_args_list], list(hq.RETRY_DELAYS))
+
+    def test_quota_and_unverified_spaces_are_not_retried_or_called(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            client=types.SimpleNamespace(predict=Mock(side_effect=RuntimeError('quota: included time spent')))
+            with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=lambda _space:client),
+                 'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
+                 patch.object(hq,'verify_live_contract'), \
+                 patch.object(hq,'expected_light_shape',return_value=(512,768)), \
+                 patch.object(hq,'FREE_FALLBACK_SPACES',('free/unverified',)), \
+                 patch.object(hq,'verify_space_contract',side_effect=RuntimeError('quota: unverified provider maximum')), \
+                 patch.object(hq,'time') as clock, \
+                 patch.object(budget,'run_gpu',side_effect=lambda fn,required_seconds:fn()):
+                with self.assertRaisesRegex(RuntimeError,'quota: included'):
+                    hq.generate_take(root/'still.png',root/'same-wav.wav',root/'out.mp4','Same motion.',1,light=True)
+            self.assertEqual(client.predict.call_count,1)
+            clock.sleep.assert_not_called()
+
     def test_completed_high_resolution_cache_is_preserved_but_changed_audio_is_not(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);image=root/'still.png';audio=root/'audio.wav';output=root/'take.mp4'
