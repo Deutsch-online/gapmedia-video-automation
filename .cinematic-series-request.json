@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e23-native-bucket-20261115",
-  "episode": 23,
-  "story_id": "lina-oma-water-spoon-holiday-v1",
-  "reason": "Resume the same still-unused dated owner continuation after isolating teaching tests from the live recovery-story configuration. All native-bucket, quality, included-quota, preview and cache gates remain enabled."
+  "request": "owner-lina-e25-gift-bekommen-20261118",
+  "episode": 25,
+  "story_id": "lina-oma-gift-bekommen-v1",
+  "reason": "Owner asked to build episode 25 now. This push is the force flag for the daily cinematic workflow because workflow_dispatch is not available to the agent token. Included quota only; paid fallback stays off."
 }
