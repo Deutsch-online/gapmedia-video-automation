@@ -192,6 +192,12 @@ jobs:
           run-id: ${{ steps.recovery.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ steps.recovery.outputs.extract_path }}
+      - name: Install free episode 25 clips and render only a missing one
+        if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PAID_FALLBACK: 'off'
+        run: python ai-cast/finish-free-clips.py
       - name: Make, check and deliver the next exact-duration episode
         if: github.ref == 'refs/heads/main' && steps.gate.outputs.go == 'true'
         env:

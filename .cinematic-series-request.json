@@ -2,5 +2,5 @@
   "request": "owner-lina-e25-cached-resume-20261118",
   "episode": 25,
   "story_id": "lina-oma-gift-bekommen-v1",
-  "reason": "Owner asked to resume episode 25 today from the cached clips. This push sets FORCE_TODAY so the dated included-quota grant can pass the daily-production-already-started guard. Paid fallback stays off."
+  "reason": "Owner asked to finish episode 25 today. Clips 6-8 are already rendered on the free ZeroGPU duplicate; this push forces assembly, and clip 9 is rendered with included quota only. Paid fallback stays off."
 }
