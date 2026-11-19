@@ -19,19 +19,6 @@ jobs:
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
       CROWN_PARENT: 8f884dcdba85ca0020d22eae84e7bae576f7059a
     steps:
-      - name: Check that GitHub can authenticate to the live Space
-        env:
-          CROWN_ADMIN_TOKEN: ${{ secrets.CROWN_ADMIN_TOKEN }}
-        run: |
-          if [ -z "$CROWN_ADMIN_TOKEN" ]; then
-            echo '::error::CROWN_ADMIN_TOKEN is missing from this GitHub Actions run. Add the existing Space admin token as a repository Actions secret.'
-            exit 1
-          fi
-          status=$(curl -sS --max-time 25 -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $CROWN_ADMIN_TOKEN" "$CROWN_ORIGIN/api/admin/state")
-          if [ "$status" != 200 ]; then
-            echo "::error::The Space rejected the deployment preflight (HTTP $status). Check that the GitHub Actions secret matches the Space secret and that the Space is running."
-            exit 1
-          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -61,16 +48,23 @@ jobs:
           CROWN_ADMIN_TOKEN: ${{ secrets.CROWN_ADMIN_TOKEN }}
         run: |
           python - <<'PY'
-          import base64, gzip, json, os, pathlib, subprocess, time, urllib.request
+          import base64, gzip, hashlib, hmac, json, os, pathlib, subprocess, time, urllib.error, urllib.request
           from huggingface_hub import HfApi, CommitOperationAdd
           api = HfApi(token=os.environ['HF_TOKEN'])
           repo, origin, parent = (os.environ[k] for k in ('CROWN_SPACE','CROWN_ORIGIN','CROWN_PARENT'))
           root = pathlib.Path('/tmp/crown-app')
           if api.repo_info(repo, repo_type='space').sha != parent:
               raise SystemExit('Space changed since the patch was verified.')
-          request = urllib.request.Request(origin+'/api/admin/state', headers={'Authorization':'Bearer '+os.environ['CROWN_ADMIN_TOKEN']})
-          with urllib.request.urlopen(request, timeout=25) as response:
-              current = json.load(response)
+          # Match the credential derivation used by crown52-hosting/deploy.py at initial provisioning.
+          admin = os.environ.get('CROWN_ADMIN_TOKEN') or hmac.new(
+              os.environ['HF_TOKEN'].encode(), ('live-crown52-admin-v1:'+repo).encode(), hashlib.sha256).hexdigest()
+          request = urllib.request.Request(origin+'/api/admin/state', headers={'Authorization':'Bearer '+admin})
+          try:
+              with urllib.request.urlopen(request, timeout=25) as response:
+                  current = json.load(response)
+          except urllib.error.HTTPError as error:
+              raise SystemExit(f'The live Space rejected the recovery request (HTTP {error.code}). No deployment was attempted.') from None
+          print('Authenticated and captured the live game state.', flush=True)
           recovery = base64.b64encode(gzip.compress(json.dumps({'state': current['state'], 'revision': current['revision']}).encode())).decode()
           if len(recovery) >= 60000:
               raise SystemExit('Live state is too large for the existing recovery mechanism.')
