@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e26-20261119",
+  "request": "owner-lina-e26-20261119-retry2",
   "episode": 26,
   "story_id": "",
-  "reason": "Retry episode 26 after free story providers timed out or returned empty JSON. Included quota was 2400s. Paid fallback stays off."
+  "reason": "Retry episode 26 after the runner apt fetch failed before planning. Free providers only. Paid fallback stays off."
 }
