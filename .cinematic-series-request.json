@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e25-cached-resume-20261118",
-  "episode": 25,
-  "story_id": "lina-oma-gift-bekommen-v1",
-  "reason": "Owner asked to finish episode 25 today. Clips 6-8 are on the free ZeroGPU duplicate; this push forces assembly after clip 9 is rendered with the included token. Paid fallback stays off."
+  "request": "owner-lina-e26-20261119",
+  "episode": 26,
+  "story_id": "",
+  "reason": "Owner asked to produce episode 26 on 2026-11-19 after GitHub cron stopped at 03:44 UTC. This push sets FORCE_TODAY. Included quota only; paid fallback stays off."
 }
