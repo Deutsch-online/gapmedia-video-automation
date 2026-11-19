@@ -774,6 +774,195 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "lina-oma-mir-ist-kalt-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 5,
+      "title_de": "Ich bin kalt?!",
+      "title_fa": "من سردم؟!",
+      "summary": "On the home sofa Lina says she is cold with Ich bin kalt. Oma immediately models Mir ist kalt, Lina repeats it, and Oma praises her and offers a blanket. Lina then calls herself boring with Ich bin langweilig. Oma models Mir ist langweilig, Lina repeats it, and Oma invites her to play. Lina ends warm under the same blanket. The joke is the grammar, not the child.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another small German feeling phrase at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-cozy-sofa",
+      "location_description": "The same cozy contemporary German home, a small sofa by a softly lit window, one folded blanket. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina hugs her arms on the sofa and announces Ich bin kalt, as if she herself were a cold thing, while a folded blanket waits beside her.",
+      "everyday_problem": "A newcomer child says Ich bin kalt and Ich bin langweilig, which describe her as cold or boring instead of how she feels.",
+      "practical_resolution": "Oma immediately supplies Mir ist kalt, praises the repetition, offers the blanket, then replaces Ich bin langweilig with Mir ist langweilig before they play.",
+      "marta_goal": "Lina wants to tell Oma that she feels cold and later bored, using the German that matches the feeling.",
+      "marta_decision": "Lina repeats Mir ist kalt, accepts the blanket, repeats Mir ist langweilig, and ends wrapped up and warm.",
+      "visual_payoff": "Lina smiles under the same folded blanket and says she is warm, using the feeling pattern instead of calling herself cold.",
+      "language_error": {
+        "wrong": "ich bin kalt",
+        "correct": "Mir ist kalt.",
+        "explanation": "Ich bin kalt says the speaker is a cold thing. Mir ist kalt says the speaker feels cold. Ich bin langweilig means I am boring, while Mir ist langweilig means I am bored."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The story bank had no unused episode left, so this approved feeling-phrase lesson restores a local fallback with immediate correction, repetition and praise.",
+        "visible_comic_action": "Lina shivers beside one folded blanket, then calls herself boring before Oma turns that same blanket into a little game.",
+        "next_experiment": "Compare a familiar grammar-feeling hook and one stable blanket prop with same-age observations when available; no view or retention claim."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          4
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact pattern for the intended meaning. This fictional lesson contrasts Ich bin, which describes what someone is, with Mir ist, which describes a feeling such as cold or boredom. The sofa scene and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all sofa dialogue",
+          "the folded blanket and play invitation"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "https://www.goethe.de/ins/de/de/m/prf/grm.html",
+        "https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1",
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin kalt!",
+          "fa": "اوما، من سرد هستم!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Lina hugs her arms and looks at the folded blanket.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina hugs her arms and looks at the folded blanket. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Lina hugs her arms and looks at the folded blanket.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Mir ist kalt.",
+          "fa": "نه! من سردمه.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Oma startles kindly and lifts the folded blanket.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma startles kindly and lifts the folded blanket. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Oma startles kindly and lifts the folded blanket.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mir ist kalt.",
+          "fa": "من سردمه.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Lina repeats the phrase and draws the folded blanket closer.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina repeats the phrase and draws the folded blanket closer. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Lina repeats the phrase and draws the folded blanket closer.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Hier, eine Decke.",
+          "fa": "آفرین! بیا، یک پتو.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Oma smiles and holds the folded blanket out.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma smiles and holds the folded blanket out. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Oma smiles and holds the folded blanket out.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Danke! Aber ich bin langweilig.",
+          "fa": "ممنون! اما من خسته‌کننده‌ام.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Lina takes the folded blanket and points at herself with a puzzled smile.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina takes the folded blanket and points at herself with a puzzled smile. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Lina takes the folded blanket and points at herself with a puzzled smile.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Du? Nein! Mir ist langweilig.",
+          "fa": "تو؟ نه! حوصله‌ام سر رفته.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Oma shakes her head once and pats the folded blanket.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head once and pats the folded blanket. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Oma shakes her head once and pats the folded blanket.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mir ist langweilig.",
+          "fa": "حوصله‌ام سر رفته.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Lina nods and rests one hand on the folded blanket.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina nods and rests one hand on the folded blanket. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Lina nods and rests one hand on the folded blanket.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Super! Komm, wir spielen.",
+          "fa": "عالی! بیا بازی کنیم.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Oma smiles and lifts one corner of the folded blanket like a game.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma smiles and lifts one corner of the folded blanket like a game. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Oma smiles and lifts one corner of the folded blanket like a game.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Jetzt ist mir warm!",
+          "fa": "حالا گرممه!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Lina wraps the folded blanket around her shoulders and smiles.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina wraps the folded blanket around her shoulders and smiles. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "folded blanket"
+          ],
+          "object_action": "Lina wraps the folded blanket around her shoulders and smiles.",
+          "location_key": "lina-oma-cozy-sofa",
+          "story_beat": "resolve"
+        }
+      ]
     }
   ]
 }
