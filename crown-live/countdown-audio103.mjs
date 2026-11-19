@@ -1,0 +1,7 @@
+// A short, quiet alternating clock click, only in the final ten seconds.
+export class CountdownAudio{
+ constructor({createContext=()=>new(globalThis.AudioContext||globalThis.webkitAudioContext)(),onBlocked=()=>{}}={}){this.createContext=createContext;this.onBlocked=onBlocked;this.context=null;this.key='';this.seen=new Set();}
+ unlock(){try{this.context??=this.createContext();if(this.context.state==='suspended')this.context.resume().catch(()=>this.onBlocked());const running=this.context.state==='running';if(!running)this.onBlocked();return running;}catch{this.onBlocked();return false;}}
+ update({key,phase,remaining,enabled,volume=1}){if(key!==this.key){this.key=key;this.seen.clear();}const seconds=Math.ceil(remaining/1000);if(!enabled||phase!=='playing'||remaining<=0||remaining>10000||seconds<1||seconds>10||this.seen.has(seconds)||volume<=0)return false;if(!this.unlock())return false;try{const ctx=this.context,osc=ctx.createOscillator(),gain=ctx.createGain(),at=ctx.currentTime;osc.type='sine';osc.frequency.setValueAtTime(seconds%2?760:1000,at);gain.gain.setValueAtTime(0,at);gain.gain.linearRampToValueAtTime(.17*Math.min(1,volume),at+.003);gain.gain.exponentialRampToValueAtTime(.001,at+.055);osc.connect(gain);gain.connect(ctx.destination);osc.onended=()=>{osc.disconnect();gain.disconnect();};osc.start(at);osc.stop(at+.06);this.seen.add(seconds);return true;}catch{return false;}}
+ close(){this.context?.close();this.context=null;}
+}
