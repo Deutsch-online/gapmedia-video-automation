@@ -17,3 +17,11 @@ Implementation:
 - Kept live bubble controls, direct answers and adjustable answer timing.
 
 The host must still be present and interact meaningfully in real time. Software changes cannot guarantee eligibility or remove an enforcement action. This is a product review, not TikTok approval.
+
+## Version 101 — 19 November 2026
+
+- Persist the normalized text of accepted narration and suppress exact repeats. Consumed welcome/thanks templates do not recycle; when the finite set is exhausted, no replacement canned speech is generated. Names remain sanitized before speech.
+- Keep the existing used-question history through resets and normal state-file restarts. Exhaustion stops question selection rather than recycling the bank. This is retention within the saved state, not a claim that historical questions can be recovered from a lost ephemeral disk or an old recovery snapshot.
+- Limit repeated correct-answer portrait enlargements for the same real account to once in 30 minutes; continue recording all genuine answers and scores. Suppress repeat entry bubbles for the same account for 10 minutes. These are product choices, **not TikTok policy thresholds or a guarantee of eligibility**. Normal live scoreboards and option avatars remain event-driven.
+- Preserve the owner's requested 30-second intermission and automatic next round. Automation itself does not establish meaningful creator presence. A host must still actively facilitate and interact; changing visual or speech repetition is not a substitute.
+- Official LIVE monetization guidance describes primarily automated content without meaningful creator presence, and passive/repetitive/unattended experiences without meaningful engagement, as potentially ineligible. It does not establish a universal safe avatar repetition count.
