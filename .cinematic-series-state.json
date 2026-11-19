@@ -4321,7 +4321,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-19#owner-lina-e26-kalt-resume-20261119",
-    "status": "dispatching",
+    "status": "exporting",
     "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 5=4.75s",
     "image_preview": {
       "file": "renders/cinematic-series/e0026-lina-oma-v1/image-preview.jpg",
@@ -4329,7 +4329,9 @@
       "status": "sent",
       "message_id": 2978
     },
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 2979
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0026-lina-oma-v1/tiktok/e0026-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0026-lina-oma-v1/instagram/e0026-instagram-45s.mp4"
