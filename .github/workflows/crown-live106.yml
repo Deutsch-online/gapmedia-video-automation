@@ -64,16 +64,16 @@ jobs:
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
           files = tracked + ['tests/profile-timing.mjs']
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Update quiz profiles, podium and question timing',
+              commit_message='Update quiz profiles, question timing and live closing screen',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=106', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=107', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
-                  if 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=106' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=107' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
@@ -103,8 +103,8 @@ jobs:
           if call('getChat', {'chat_id':chat}).get('type') != 'private':
               raise SystemExit('The saved owner chat must be private.')
           origin = os.environ['CROWN_ORIGIN']
-          message = ('آپدیت پنل Crown منتشر شد. تنظیم پروفایل‌ها، جشن سه نفر اول و وقفهٔ سؤال‌ها فعال است.\n\n'
-                     + 'پنل: '+origin+'/fun/control?v=106\n'+'خروجی: '+origin+'/fun/screen?v=106')
+          message = ('آپدیت پنل Crown منتشر شد. تنظیم پروفایل‌ها، جشن سه نفر اول، وقفهٔ سؤال‌ها و دکمهٔ ختم لایو فعال است.\n\n'
+                     + 'پنل: '+origin+'/fun/control?v=107\n'+'خروجی: '+origin+'/fun/screen?v=107')
           sent = call('sendMessage', {'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
           print('Telegram message ID:', sent['message_id'])
           PY
