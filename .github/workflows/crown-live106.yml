@@ -1,0 +1,110 @@
+name: Publish Crown Panel profile and question timing update
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/crown-live106.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: crown52-math81-update
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CROWN_SPACE: afgtakrun/live-crown-52
+      CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
+      CROWN_PARENT: 8f884dcdba85ca0020d22eae84e7bae576f7059a
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare and verify the Space update
+        run: |
+          pip install 'huggingface_hub>=0.34,<2'
+          sudo apt-get update
+          sudo apt-get install -y espeak-ng
+          git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
+          cd /tmp/crown-app
+          test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
+          base64 -d "$GITHUB_WORKSPACE/crown-live/update106.patch.gz.b64" | gzip -d > /tmp/crown106.patch
+          git apply --check /tmp/crown106.patch
+          git apply /tmp/crown106.patch
+          git diff --check
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check public/math-duel-ui.mjs
+          node --check public/quiz-show-view.mjs
+          npm test
+      - name: Publish and verify the running panel
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          CROWN_ADMIN_TOKEN: ${{ secrets.CROWN_ADMIN_TOKEN }}
+        run: |
+          python - <<'PY'
+          import base64, gzip, json, os, pathlib, subprocess, time, urllib.request
+          from huggingface_hub import HfApi, CommitOperationAdd
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          repo, origin, parent = (os.environ[k] for k in ('CROWN_SPACE','CROWN_ORIGIN','CROWN_PARENT'))
+          root = pathlib.Path('/tmp/crown-app')
+          if api.repo_info(repo, repo_type='space').sha != parent:
+              raise SystemExit('Space changed since the patch was verified.')
+          request = urllib.request.Request(origin+'/api/admin/state', headers={'Authorization':'Bearer '+os.environ['CROWN_ADMIN_TOKEN']})
+          with urllib.request.urlopen(request, timeout=25) as response:
+              current = json.load(response)
+          recovery = base64.b64encode(gzip.compress(json.dumps({'state': current['state'], 'revision': current['revision']}).encode())).decode()
+          if len(recovery) >= 60000:
+              raise SystemExit('Live state is too large for the existing recovery mechanism.')
+          api.add_space_secret(repo_id=repo, key='CROWN_RECOVERY_GZIP', value=recovery)
+          tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
+          files = tracked + ['tests/profile-timing.mjs']
+          commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
+              commit_message='Update quiz profiles, podium and question timing',
+              operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
+          print('Published Space commit:', commit.oid, flush=True)
+          for _ in range(65):
+              try:
+                  with urllib.request.urlopen(origin+'/fun/control?v=106', timeout=15) as response:
+                      html = response.read().decode()
+                  with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
+                      state = json.load(response)['state']['fun']['math81']
+                  if 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=106' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                      break
+              except (OSError, ValueError, KeyError):
+                  pass
+              time.sleep(10)
+          else:
+              raise SystemExit('Published runtime could not be verified.')
+          PY
+      - name: Send verified links to the existing private Telegram chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          token = os.environ['TELEGRAM_BOT_TOKEN']
+          chat = str(json.load(open('.telegram-bot-chat.json'))['id'])
+          def call(method, payload):
+              req = urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,
+                  data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      reply = json.load(response)
+              except Exception:
+                  raise SystemExit('Telegram outcome unknown; check the chat before retrying.') from None
+              if not reply.get('ok'):
+                  raise SystemExit('Telegram delivery was not confirmed.')
+              return reply['result']
+          if call('getChat', {'chat_id':chat}).get('type') != 'private':
+              raise SystemExit('The saved owner chat must be private.')
+          origin = os.environ['CROWN_ORIGIN']
+          message = ('آپدیت پنل Crown منتشر شد. تنظیم پروفایل‌ها، جشن سه نفر اول و وقفهٔ سؤال‌ها فعال است.\n\n'
+                     + 'پنل: '+origin+'/fun/control?v=106\n'+'خروجی: '+origin+'/fun/screen?v=106')
+          sent = call('sendMessage', {'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
+          print('Telegram message ID:', sent['message_id'])
+          PY
