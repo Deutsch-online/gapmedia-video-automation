@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e26-20261119-retry3",
+  "request": "owner-lina-e26-mir-ist-kalt-20261119",
   "episode": 26,
-  "story_id": "",
-  "reason": "Retry episode 26 after free story calls were cut off at 75s or returned no content field. Free providers only. Paid fallback stays off."
+  "story_id": "lina-oma-mir-ist-kalt-v1",
+  "reason": "Produce episode 26 from the approved Mir ist kalt story. Free providers only. Paid fallback stays off."
 }
