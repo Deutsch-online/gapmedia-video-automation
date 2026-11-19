@@ -4187,7 +4187,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-19T12:36:56.176205+00:00",
+    "checked_at": "2026-11-19T12:49:43.813932+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4237,7 +4237,7 @@
       "gpu_requested": false
     },
     "2026-11-19": {
-      "count": 2,
+      "count": 3,
       "error": "RuntimeError",
       "gpu_requested": false
     }
