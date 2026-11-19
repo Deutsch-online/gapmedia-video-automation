@@ -7,6 +7,8 @@ for repo in [production,testrepo]:
  if not api.repo_info(repo,repo_type='dataset').private:raise SystemExit('Question history repository must be private')
  if 'history.json' not in api.list_repo_files(repo,repo_type='dataset'):
   api.upload_file(repo_id=repo,repo_type='dataset',path_in_repo='history.json',path_or_fileobj=json.dumps({'schema':1,'reserved':[],'updatedAt':0}).encode(),commit_message='Initialize private non-repeating question history')
+history_path=os.environ.get('CROWN_HISTORY_FILE','history.json')
+if history_path not in api.list_repo_files(testrepo,repo_type='dataset'):api.upload_file(repo_id=testrepo,repo_type='dataset',path_in_repo=history_path,path_or_fileobj=json.dumps({'schema':1,'reserved':[],'updatedAt':0}).encode(),commit_message='Initialize isolated history verification')
 tag=os.environ.get('CROWN_RUN_TAG','local');payload={'used':[],'keep':[],'candidates':{tier:['fixture:'+tag+':'+tier+':'+str(i)for i in range(32)]for tier in ['easy','medium','hard','general']},'counts':{tier:2 for tier in ['easy','medium','hard','general']}}
 env={**os.environ,'CROWN_HISTORY_REPO':testrepo,'CROWN_HISTORY_TOKEN':os.environ['HF_TOKEN']}
 def reserve():
