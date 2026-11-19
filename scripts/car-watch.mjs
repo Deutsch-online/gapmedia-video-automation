@@ -1,6 +1,7 @@
 import {readFileSync,writeFileSync,existsSync,mkdirSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {webSearch} from '../lib/web-search.mjs';
 import {mcpExaSearch} from '../worker/src/mcp-tools.js';
 import {sendMessage} from '../lib/telegram.mjs';
 import {botChatIdFrom} from '../lib/bot-chat.mjs';
@@ -84,11 +85,28 @@ export async function run(){
   const state=existsSync(file)?JSON.parse(readFileSync(file,'utf8')):{sent:{}};
   if(!state.sent||typeof state.sent!=='object')throw Error('Invalid dedupe state');
   const urls=new Set(),coverage=[];let searched=0,read=0;
+  // Previously inspected original advertisements are also checked for material changes.
+  for(const u of [
+    'https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-edition-salzwedel-ot-brietz/49987107136864.html',
+    'https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-1-6-crdi-classic-hu-au-neu-derenburg/55840775864992.html',
+    'https://www.autoscout24.de/angebote/toyota-avensis-1-8-sol-benzin-silber-c4c69f98-666c-434d-b0f4-946999a6551e'
+  ])urls.add(u);
+  writeFileSync(file,JSON.stringify(state,null,2));
   for(const region of REGIONS){
     try{const text=await mcpExaSearch('Gebraucht Kombi Toyota Avensis 1.8 Hyundai i30 1.6 Kia Ceed SW bis 6500 Euro 170000 km '+region);
       searched++;coverage.push({region,status:'searched'});
       for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u)urls.add(u);}
     }catch{coverage.push({region,status:'search failed'});}
+    const extra=await webSearch('Kombi 1.6 Hyundai i30 Kia Ceed gebraucht '+region,{limit:6});
+    for(const hit of extra.results){const u=listingUrl(hit.url);if(u)urls.add(u);}
+    coverage.push({region,fallback:extra.engine||'unavailable',results:extra.results.length});
+  }
+  for(const town of ['burg-magdeburg','stendal','brandenburg-an-der-havel','halle-saale','braunschweig']){
+    try{const index=await get('https://auto.meinestadt.de/'+town+'/gebrauchtwagen-azl/100-171726-171735-78');
+      const html=await index.text();let added=0;
+      for(const m of html.matchAll(/href=["']([^"']+)["']/g)){const u=listingUrl(m[1].replace(/&amp;/g,'&'));if(u){urls.add(u);added++;}}
+      coverage.push({index:town,links:added});
+    }catch{coverage.push({index:town,status:'unavailable'});}
   }
   const outcomes=[];
   for(const url of [...urls].slice(0,25)){
