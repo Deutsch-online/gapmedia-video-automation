@@ -172,6 +172,30 @@ class SeriesTests(unittest.TestCase):
                 m.beatapi_story_request({'model': 'paid-model'}, 'test')
             request.assert_not_called()
 
+    def test_free_story_timeout_retries_once_with_the_longer_free_timeout(self):
+        from unittest.mock import patch
+        payload = {'model': 'glm-5.3-flash-free'}
+        with patch.object(m, 'request_json', side_effect=[TimeoutError(), {'ok': True}]) as request, \
+             patch.object(m.time, 'sleep') as wait:
+            self.assertEqual(m.beatapi_story_request(payload, 'test'), {'ok': True})
+            self.assertEqual(request.call_count, 2)
+            self.assertTrue(all(call.kwargs.get('timeout') == m.STORY_REQUEST_TIMEOUT for call in request.call_args_list))
+            wait.assert_called_once_with(65)
+        with patch.object(m, 'request_json', side_effect=json.JSONDecodeError('Expecting value', '', 0)), \
+             patch.object(m.time, 'sleep'):
+            with self.assertRaises(json.JSONDecodeError):
+                m.beatapi_story_request(payload, 'test')
+
+    def test_free_story_reply_can_arrive_outside_message_content(self):
+        response = {'model': 'deepseek-v4.1-flash-free', 'choices': [{'message': {
+            'reasoning_content': '{"episode":26}'}}]}
+        normalized = m.normalize_free_story_message(response)
+        self.assertEqual(normalized['choices'][0]['message']['content'], '{"episode":26}')
+        listed = {'choices': [{'message': {'content': [{'text': '{"episode":26}'}]}}]}
+        self.assertEqual(m.normalize_free_story_message(listed)['choices'][0]['message']['content'], '{"episode":26}')
+        untouched = {'ok': True}
+        self.assertEqual(m.normalize_free_story_message(untouched), untouched)
+
     def test_free_only_story_never_falls_back_to_unverified_credit_keys(self):
         from unittest.mock import patch
         state = m.new_state()

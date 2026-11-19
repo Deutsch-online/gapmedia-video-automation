@@ -396,10 +396,10 @@ def parse_story_response(raw):
             scene['speaker'] = speaker.strip().casefold()
     return plan
 
-def request_json(url, payload, headers):
+def request_json(url, payload, headers, timeout=75):
     data = json.dumps(payload).encode('utf-8')
     req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json', 'User-Agent': 'GapMedia-CinematicSeries/1.0', **headers})
-    with urllib.request.urlopen(req, timeout=75) as response:
+    with urllib.request.urlopen(req, timeout=timeout) as response:
         return json.load(response)
 
 
@@ -486,14 +486,50 @@ def report_story_attempts(attempts, status):
         print('Optional private provider report unavailable; outcome remains in the workflow log.', flush=True)
 
 
+# Free text models are slower than the 75s default, and a nine-scene story was
+# cut off at that limit on 2026-11-19. 180s is still one bounded call.
+STORY_REQUEST_TIMEOUT = 180
+
+
+def normalize_free_story_message(response):
+    """Use a free model's visible reply when it is not in message.content."""
+    if not isinstance(response, dict):
+        return response
+    try:
+        message = response['choices'][0]['message']
+    except (KeyError, IndexError, TypeError):
+        return response
+    if not isinstance(message, dict):
+        return response
+    content = message.get('content')
+    if isinstance(content, list):
+        parts = []
+        for part in content:
+            if isinstance(part, str):
+                parts.append(part)
+            elif isinstance(part, dict) and isinstance(part.get('text'), str):
+                parts.append(part['text'])
+        content = ''.join(parts)
+    if isinstance(content, str) and content.strip():
+        message['content'] = content
+        return response
+    for key in ('reasoning_content', 'reasoning', 'text'):
+        alt = message.get(key)
+        if isinstance(alt, str) and alt.strip():
+            message['content'] = alt
+            return response
+    return response
+
+
 def beatapi_story_request(payload, key):
     """One bounded retry for the verified free model, never a paid fallback."""
     if not re.fullmatch(r'[A-Za-z0-9_.-]+-free', str(payload.get('model', ''))):
         raise ValueError('Story request requires a zero-price model')
     for attempt in range(2):
         try:
-            return request_json('https://api.beatapi.io/v1/chat/completions', payload,
-                                {'Authorization': 'Bearer ' + key})
+            response = request_json('https://api.beatapi.io/v1/chat/completions', payload,
+                                    {'Authorization': 'Bearer ' + key}, timeout=STORY_REQUEST_TIMEOUT)
+            return normalize_free_story_message(response)
         except urllib.error.HTTPError as exc:
             if exc.code != 429 or attempt:
                 raise
@@ -505,6 +541,11 @@ def beatapi_story_request(payload, key):
                 raise
             print('Free story rate limit: waiting before one bounded retry.', flush=True)
             time.sleep(max(1, wait))
+        except (TimeoutError, json.JSONDecodeError):
+            if attempt:
+                raise
+            print('Free story response incomplete: waiting before one bounded retry.', flush=True)
+            time.sleep(65)
 
 
 def social_learning_context():
