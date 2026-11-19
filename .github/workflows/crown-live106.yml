@@ -28,7 +28,7 @@ jobs:
           python-version: '3.11'
       - name: Prepare and verify the Space update
         run: |
-          pip install 'huggingface_hub>=0.34,<2'
+          pip install 'huggingface_hub>=0.34,<2' cryptography
           sudo apt-get update
           sudo apt-get install -y espeak-ng
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
@@ -65,10 +65,31 @@ jobs:
           except urllib.error.HTTPError as error:
               raise SystemExit(f'The live Space rejected the recovery request (HTTP {error.code}). No deployment was attempted.') from None
           print('Authenticated and captured the live game state.', flush=True)
-          recovery = base64.b64encode(gzip.compress(json.dumps({'state': current['state'], 'revision': current['revision']}).encode())).decode()
-          if len(recovery) >= 60000:
-              raise SystemExit('Live state is too large for the existing recovery mechanism.')
-          api.add_space_secret(repo_id=repo, key='CROWN_RECOVERY_GZIP', value=recovery)
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          history_repo='afgtakrun/crown52-question-history-private'
+          history=api.repo_info(history_repo,repo_type='dataset')
+          if not history.private:
+              raise SystemExit('Recovery storage must be private.')
+          backup=gzip.compress(json.dumps({'state':current['state'],'revision':current['revision']}).encode())
+          nonce=os.urandom(12)
+          key=hashlib.sha256(('crown52-deploy-recovery:'+admin).encode()).digest()
+          encrypted=nonce+AESGCM(key).encrypt(nonce,backup,None)
+          filename='deploy-recovery/'+os.environ['GITHUB_RUN_ID']+'.bin'
+          saved=api.create_commit(repo_id=history_repo,repo_type='dataset',commit_message='Save encrypted Crown deployment recovery',
+              operations=[CommitOperationAdd(path_in_repo=filename,path_or_fileobj=encrypted)])
+          descriptor=json.dumps({'repo':history_repo,'commit':saved.oid,'filename':filename,'revision':current['revision']})
+          server=root/'server.mjs'
+          source=server.read_text()
+          helper=pathlib.Path('crown-live/deployment-recovery106.txt').read_text()
+          anchor='try{const data=existsSync(file)?JSON.parse(readFileSync(file)):'
+          if source.count(anchor)!=1 or source.count('mathVersion:105')!=1:
+              raise SystemExit('Recovery anchors changed in Space source.')
+          source=source.replace(anchor,helper.replace('DEPLOYMENT_RECOVERY_DESCRIPTOR',descriptor)+anchor.replace('data=','data=recoveryData||('),1)
+          source=source.replace(':null;if(data){game.restore(data.state);revision=data.revision||0}',':null);if(data){game.restore(data.state);revision=data.revision||0;if(recoveryData)restoredDeploymentRevision=revision;}',1)
+          source=source.replace('mathVersion:105','mathVersion:105,restoredDeploymentRevision',1)
+          source=source.replace("catch{console.log('No valid saved game; starting an empty lobby')}","catch(error){if(recoveryData)throw error;console.log('No valid saved game; starting an empty lobby')}",1)
+          server.write_text(source)
+          subprocess.run(['node','--check','server.mjs'],cwd=root,check=True)
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
           files = tracked + ['tests/profile-timing.mjs']
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
@@ -81,7 +102,9 @@ jobs:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
-                  if 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=107' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  with urllib.request.urlopen(origin+'/health', timeout=15) as response:
+                      health = json.load(response)
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=107' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
