@@ -1,0 +1,14 @@
+from pathlib import Path
+import sys,runpy
+runpy.run_path(str(Path(__file__).with_name('update104.py')),run_name='__main__')
+r=Path(sys.argv[1]);p=r/'public/quiz-show-view.mjs';s=p.read_text().replace('r.append(letter,votes,text);','r.append(letter,text,votes);').replace('people.slice(0,7)','people.slice(0,20)').replace('(s.choices||[]).slice(-8).map(p=>pic(p,ctx.row))','(s.choices||[]).slice(0,20).map(p=>pic(p,ctx.row))');p.write_text(s)
+p=r/'public/quiz-show-data.mjs';p.write_text(p.read_text().replace(').slice(0,10);return{day',').slice(0,20);return{day'))
+p=r/'public/math-duel.mjs';s=p.read_text();a=s.index('function revealCorrect(');b=s.index('\nfunction isRealQuizPerson',a);s=s[:a]+s[a:b].replace('values()];','values()].slice(0,20);')+s[b:];p.write_text(s)
+p=r/'public/math-duel-ui.mjs';s=p.read_text().replace("function tick(){if(!latest)return;", "function tick(){if(!latest)return;const pageKey=latest.round+':'+latest.serial;if(profilePageKey!==pageKey){profilePageKey=pageKey;profilePageStarted=performance.now();}const page=Math.floor((performance.now()-profilePageStarted)/2400);const faces=$('showAvatars');if(faces.children.length){const child=faces.children[Math.min(page,Math.ceil(faces.children.length/8)-1)*8];if(child)faces.scrollLeft=child.offsetLeft-faces.children[0].offsetLeft;}for(const id of ['showmatchRows','showdailyRows','showmonthlyRows']){const root=$(id);if(root.children.length>6){const child=root.children[Math.min(page,Math.ceil(root.children.length/6)-1)*6];if(child)root.scrollTop=child.offsetTop-root.children[0].offsetTop;}}")
+s=s.replace('function tick(){', "let profilePageKey='',profilePageStarted=0;\nfunction tick(){",1).replace('Math.floor(Math.max(0,elapsed)/2200)%Math.ceil(others.children.length/8)','Math.min(Math.floor(Math.max(0,elapsed)/2200),Math.ceil(others.children.length/8)-1)');p.write_text(s)
+p=r/'public/quiz-show.css'
+with p.open('a')as f:f.write('''
+/* Reserve enough physical space for portraits; never overlap audience cards. */
+.screen #broadcast #showMain #question{flex-basis:200px;min-height:200px;max-height:200px;margin-bottom:20px}.screen #broadcast #showMain #options{gap:10px}.screen #broadcast #showMain #options .show-option{height:90px;min-height:90px;max-height:90px}.screen #broadcast #showResponseBand{flex-basis:148px;min-height:148px}.screen #broadcast #showAvatars{justify-content:flex-start;overflow:hidden;max-width:100%;height:94px;min-height:94px;padding:3px 2px}.screen #broadcast .show-board>div{height:calc(100% - 42px);overflow:hidden}.screen #broadcast #showCommunity{position:relative;z-index:1}.screen.celebrating #broadcast #showMain #question{flex-basis:360px;min-height:360px;max-height:360px}.screen.celebrating #broadcast #showResponseBand{flex-basis:60px;min-height:60px}
+''')
+print('TOP_TWENTY_PROFILES_OPTION_ANSWER_PROFILE_ORDER_AND_NO_OVERLAP_104_READY')
