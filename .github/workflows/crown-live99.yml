@@ -27,6 +27,7 @@ jobs:
       - name: Install voice and deployment dependencies
         run: |
           pip install 'huggingface_hub>=0.34,<2'
+          python crown-live/voice-install91.py /tmp/crown-voice
       - name: Prepare exact existing Space source
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -59,7 +60,7 @@ jobs:
           node --check server.mjs
           node --check public/math-duel-ui.mjs
           node --test --test-reporter=spec tests/show99.mjs tests/position97.mjs tests/bubble96.mjs tests/direct95.mjs tests/timing94.mjs tests/narration91.mjs tests/celebration92.mjs tests/arrival93.mjs
-          node --test --test-name-pattern='^(?!voice continues)' tests/math-duel.mjs
+          node --test --test-reporter=spec tests/math-duel.mjs
       - name: Verify reference question, reveal and standings scenes
         working-directory: /tmp/crown-app
         run: |
