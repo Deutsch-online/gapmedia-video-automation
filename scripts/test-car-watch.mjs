@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {evaluate,objects,listingUrl,roadDistance} from './car-watch.mjs';
+const car={name:'Hyundai i30 CW 1.6 CRDi',offers:{price:3990,priceCurrency:'EUR',availability:'https://schema.org/InStock'},mileageFromOdometer:{value:158000,unitCode:'KMT'},bodyType:'Kombi',seatingCapacity:5,vehicleEngine:{enginePower:{value:85,unitCode:'KWT'},engineDisplacement:{value:1582}},fuelType:'Diesel',dateVehicleFirstRegistered:'2009-04-01',description:'HU 11/2028 Umweltplakette Grün'};
+const now=new Date('2026-11-19');
+test('eligible chain variant and boundaries',()=>{assert.equal(evaluate(car,'https://example.com',now).ok,true);for(const patch of [{offers:{...car.offers,price:6501}},{mileageFromOdometer:{value:170001,unitCode:'KMT'}},{description:'HU 11/2028 Umweltplakette Grün Motorschaden'},{dateVehicleFirstRegistered:''},{offers:{...car.offers,availability:'SoldOut'}},{description:'HU 07/2026 Umweltplakette Grün'}])assert.equal(evaluate({...car,...patch},'',now).ok,false);});
+test('no guessed chain or turbo petrol',()=>{assert.equal(evaluate({...car,name:'Ford Focus Turnier 1.6'},'',now).ok,false);assert.equal(evaluate({...car,name:'Hyundai i30 CW T-GDI',fuelType:'Benzin'},'',now).ok,false);});
+test('original ad URLs only',()=>{assert.equal(listingUrl('https://www.kleinanzeigen.de/s-autos/burg'),null);assert.equal(listingUrl('https://evil.example/s-anzeige/car'),null);assert.ok(listingUrl('https://www.kleinanzeigen.de/s-anzeige/car/123-216-1'));});
+test('JSON-LD does not turn result cards into vehicles',()=>{assert.equal(objects('<script type="application/ld+json">{"@type":"ItemList","itemListElement":[{"@type":"Car"}]}</script>').length,0);});
+test('actual road distance, reject no route/address',async()=>{let calls=0;const address={streetAddress:'Street 1',postalCode:'12345',addressLocality:'Town'};const route=await roadDistance(address,async()=>++calls===1?[{lat:52,lon:12}]:{code:'Ok',routes:[{distance:161001}]});assert.equal(route.km,162);await assert.rejects(roadDistance({}));await assert.rejects(roadDistance(address,async()=>[]));});

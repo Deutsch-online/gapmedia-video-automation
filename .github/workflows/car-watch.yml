@@ -1,0 +1,48 @@
+name: Family car search to private Telegram
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/car-watch.mjs', 'scripts/test-car-watch.mjs', '.github/workflows/car-watch.yml']
+permissions:
+  contents: read
+concurrency:
+  group: family-car-watch
+  cancel-in-progress: false
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate filters and route gates
+        run: node --test scripts/test-car-watch.mjs
+      - uses: actions/cache/restore@v4
+        with:
+          path: .car-watch/sent.json
+          key: family-car-watch-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            family-car-watch-
+      - name: Search original listings and deliver new candidates
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: node scripts/car-watch.mjs
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .car-watch/sent.json
+          key: family-car-watch-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: car-search-coverage-${{ github.run_id }}
+          path: .car-watch/report.json
+          if-no-files-found: ignore
+          retention-days: 7
