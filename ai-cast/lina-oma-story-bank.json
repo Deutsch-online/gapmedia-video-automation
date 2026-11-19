@@ -912,8 +912,8 @@
         },
         {
           "speaker": "oma",
-          "de": "Du? Nein! Mir ist langweilig.",
-          "fa": "تو؟ نه! حوصله‌ام سر رفته.",
+          "de": "Nein! Mir ist langweilig.",
+          "fa": "نه! حوصله‌ام سر رفته.",
           "scene": "Only oma is visible in a medium single-person shot in the same cozy home by the sofa. The listener is entirely off camera. Oma shakes her head once and pats the folded blanket.",
           "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head once and pats the folded blanket. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
           "visible_objects": [

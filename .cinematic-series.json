@@ -107,13 +107,13 @@
     "require_documented_basis": true
   },
   "owner_included_request": {
-    "id": "owner-lina-e25-cached-resume-20261118",
-    "episode": 25,
-    "story_id": "lina-oma-gift-bekommen-v1",
-    "berlin_day": "2026-11-18",
-    "expires_at": "2026-11-18T22:30:00+00:00",
+    "id": "owner-lina-e26-kalt-resume-20261119",
+    "episode": 26,
+    "story_id": "lina-oma-mir-ist-kalt-v1",
+    "berlin_day": "2026-11-19",
+    "expires_at": "2026-11-19T22:00:00+00:00",
     "included_only": true,
-    "authorization": "Owner asked to finish episode 25 today after the free LongCat call was cancelled on clip 6. One included-quota continuation of this pending episode; keep the signed clips, audio and image preview. No paid or anonymous fallback."
+    "authorization": "Owner asked to finish episode 26 today. Shot 6, Du? Nein! Mir ist langweilig, measured 4.75s and missed the 4.5s speech gate; the free repair returned nothing. One included-quota continuation with the shortened correction Nein! Mir ist langweilig. No paid or anonymous fallback."
   },
   "serial_story": {
     "id": "marta-first-job-s01",
