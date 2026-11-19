@@ -4320,8 +4320,8 @@
       "visual_profile": "storybook-duo-glass-v2",
       "render_style": "lina-oma-stylized-v1"
     },
-    "date": "2026-11-19",
-    "status": "render-failed",
+    "date": "2026-11-19#owner-lina-e26-kalt-resume-20261119",
+    "status": "rendering",
     "narration_error": "Narration timing: automatic free repair exhausted or unavailable; no GPU requested; scenes 5=4.75s"
   },
   "attempts": {
@@ -4367,7 +4367,8 @@
     "2026-11-16": 1,
     "2026-11-18": 1,
     "2026-11-18#owner-lina-e25-cached-resume-20261118": 1,
-    "2026-11-19": 1
+    "2026-11-19": 1,
+    "2026-11-19#owner-lina-e26-kalt-resume-20261119": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -4384,7 +4385,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-19T13:01:35.740913+00:00",
+    "checked_at": "2026-11-19T13:13:18.540600+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4540,7 +4541,7 @@
     "quota_status": "verified",
     "day": "2026-11-19",
     "episode": 26,
-    "plan_sha": "05fd60eb2cf85bc00aaceca60c0d78bc1a8aebcc6f1650bdc8a7876bab165db0",
+    "plan_sha": "c2c9c496adc07930c4f8c27911973440f3acfa5291bb0816fc8c731724f2ec73",
     "review_attempted": true,
     "review_status": "available",
     "review_source_at": "2026-11-19T12:20:58.721000+00:00",
