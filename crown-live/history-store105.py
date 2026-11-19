@@ -23,17 +23,17 @@ def main():
    if redirected and urllib.parse.urlparse(newurl).netloc!=urllib.parse.urlparse(req.full_url).netloc:redirected.remove_header('Authorization')
    return redirected
  opener=urllib.request.build_opener(SafeRedirect)
- repo=os.environ['CROWN_HISTORY_REPO'];token=os.environ['CROWN_HISTORY_TOKEN'];base='https://huggingface.co';headers={'Authorization':'Bearer '+token,'User-Agent':'Crown52-Question-History/105','Cache-Control':'no-cache'}
+ repo=os.environ['CROWN_HISTORY_REPO'];history_file=os.environ.get('CROWN_HISTORY_FILE','history.json');token=os.environ['CROWN_HISTORY_TOKEN'];base='https://huggingface.co';headers={'Authorization':'Bearer '+token,'User-Agent':'Crown52-Question-History/105','Cache-Control':'no-cache'}
  def request(path,data=None,content_type=None):
   h={**headers};
   if content_type:h['Content-Type']=content_type
   req=urllib.request.Request(base+path,data=data,headers=h)
   with opener.open(req,timeout=25)as r:return json.load(r)
  def read():
-  info=request('/api/datasets/'+repo+'/revision/main');sha=info['sha'];value=request('/datasets/'+repo+'/resolve/'+sha+'/history.json');return sha,value
+  info=request('/api/datasets/'+repo+'/revision/main');sha=info['sha'];value=request('/datasets/'+repo+'/resolve/'+sha+'/'+urllib.parse.quote(history_file,safe='/'));return sha,value
  def write(sha,ledger):
   content=base64.b64encode(json.dumps(ledger,separators=(',',':')).encode()).decode()
-  body='\n'.join(json.dumps(x)for x in [{'key':'header','value':{'summary':'Reserve unique quiz questions before broadcast','parentCommit':sha}},{'key':'file','value':{'path':'history.json','encoding':'base64','content':content}}])+'\n'
+  body='\n'.join(json.dumps(x)for x in [{'key':'header','value':{'summary':'Reserve unique quiz questions before broadcast','parentCommit':sha}},{'key':'file','value':{'path':history_file,'encoding':'base64','content':content}}])+'\n'
   request('/api/datasets/'+repo+'/commit/main',body.encode(),'application/x-ndjson')
  payload=json.load(sys.stdin);print(json.dumps(reserve(payload,read,write),separators=(',',':')))
 if __name__=='__main__':
