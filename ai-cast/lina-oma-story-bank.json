@@ -963,6 +963,393 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "lina-oma-sieben-jahre-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 6,
+      "title_de": "Ich habe sieben Jahre?!",
+      "title_fa": "من هفت سال دارم؟!",
+      "summary": "Lina tells Oma her age with Ich habe sieben Jahre, the Persian calque. Oma immediately models Ich bin sieben Jahre alt, Lina repeats it, and Oma praises her. Oma then asks her own age. Lina says Du hast achtzig Jahre, Oma models Du bist achtzig Jahre alt, and Lina repeats it before proudly saying she is seven. The joke is the grammar, not the child.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another small German pattern at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-age-sofa",
+      "location_description": "The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina holds up seven fingers beside a small candle cake and announces that she has seven years.",
+      "everyday_problem": "A newcomer child uses haben for age, saying she has seven years and that Oma has eighty years.",
+      "practical_resolution": "Oma immediately supplies Ich bin sieben Jahre alt, praises the repetition, then replaces Du hast achtzig Jahre with Du bist achtzig Jahre alt.",
+      "marta_goal": "Lina wants to tell Oma her age and then Oma's age in understandable German.",
+      "marta_decision": "Lina repeats Ich bin sieben Jahre alt, tries the same wrong verb for eighty, and repeats the corrected age.",
+      "visual_payoff": "Lina smiles, holds up seven fingers again, and says she is seven beside the same candle cake.",
+      "language_error": {
+        "wrong": "ich habe sieben Jahre",
+        "correct": "Ich bin sieben Jahre alt.",
+        "explanation": "Ich habe sieben Jahre copies the Persian pattern of having years. German age uses sein: Ich bin sieben Jahre alt. Du hast achtzig Jahre has the same mistake; Du bist achtzig Jahre alt is the correction."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The next unused lesson is a familiar age calque, with immediate correction, repetition and praise before the second age line.",
+        "visible_comic_action": "Lina counts seven on her fingers beside one cake, then aims the same wrong verb at Oma's age.",
+        "next_experiment": "Compare a clear age-calque hook and one stable cake prop with same-age observations when available; no view or retention claim."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact pattern for the intended meaning. This fictional lesson contrasts haben plus Jahre with sein plus Jahre alt. The home scene, the cake and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all age dialogue",
+          "the small candle cake"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "https://www.goethe.de/ins/de/de/m/prf/grm.html",
+        "https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1",
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich habe sieben Jahre!",
+          "fa": "اوما، من هفت سال دارم!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina holds up seven fingers beside the small candle cake.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina holds up seven fingers beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina holds up seven fingers beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich bin sieben Jahre alt.",
+          "fa": "نه! من هفت‌ساله‌ام.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma shakes her head once and points at the seven candles on the cake.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head once and points at the seven candles on the cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma shakes her head once and points at the seven candles on the cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich bin sieben Jahre alt.",
+          "fa": "من هفت‌ساله‌ام.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina repeats the phrase and points at herself beside the small candle cake.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina repeats the phrase and points at herself beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina repeats the phrase and points at herself beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut!",
+          "fa": "آفرین!",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma smiles and gives one small warm nod beside the small candle cake.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma smiles and gives one small warm nod beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma smiles and gives one small warm nod beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Und ich? Wie alt bin ich?",
+          "fa": "و من؟ من چند ساله‌ام؟",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma taps her own chest once, still beside the small candle cake.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma taps her own chest once, still beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma taps her own chest once, still beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Du hast achtzig Jahre!",
+          "fa": "تو هشتاد سال داری!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina points toward off-camera Oma and grins beside the small candle cake.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina points toward off-camera Oma and grins beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina points toward off-camera Oma and grins beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Du bist achtzig Jahre alt.",
+          "fa": "نه! تو هشتاد ساله‌ای.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma shakes her head once and smiles beside the small candle cake.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head once and smiles beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma shakes her head once and smiles beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Du bist achtzig Jahre alt.",
+          "fa": "تو هشتاد ساله‌ای.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina nods and repeats the phrase while looking at the small candle cake.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina nods and repeats the phrase while looking at the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina nods and repeats the phrase while looking at the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und ich bin sieben!",
+          "fa": "و من هفت‌ساله‌ام!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina smiles and holds up seven fingers again beside the small candle cake.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina smiles and holds up seven fingers again beside the small candle cake. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina smiles and holds up seven fingers again beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "resolve"
+        }
+      ]
+    },
+    {
+      "story_id": "lina-oma-fahrrad-fahren-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 7,
+      "title_de": "Ich gehe mit dem Fahrrad?!",
+      "title_fa": "با دوچرخه می‌روم؟!",
+      "summary": "Lina says she goes with the bicycle using gehen. Oma immediately models Ich fahre mit dem Fahrrad, Lina repeats it, and Oma praises her. Oma asks about the bus tomorrow. Lina again uses gehen, Oma models Ich fahre mit dem Bus, and Lina repeats it before inviting Oma to ride with her. The joke is the grammar, not the child.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another small German movement phrase at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-ride-sofa",
+      "location_description": "The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina walks two fingers beside a toy bicycle and says she goes with it, as if the bicycle were a walking trip.",
+      "everyday_problem": "A newcomer child uses gehen for a bicycle and then for a bus, instead of fahren.",
+      "practical_resolution": "Oma immediately supplies Ich fahre mit dem Fahrrad, praises the repetition, then replaces Ich gehe mit dem Bus with Ich fahre mit dem Bus.",
+      "marta_goal": "Lina wants to tell Oma that she rides the bicycle and later the bus.",
+      "marta_decision": "Lina repeats the bicycle correction, tries gehen for the bus, and then repeats Ich fahre mit dem Bus.",
+      "visual_payoff": "Lina smiles and holds the toy bicycle toward Oma, inviting her to ride along.",
+      "language_error": {
+        "wrong": "ich gehe mit dem Fahrrad",
+        "correct": "Ich fahre mit dem Fahrrad.",
+        "explanation": "Gehen is for going on foot. A bicycle or bus uses fahren: Ich fahre mit dem Fahrrad. Ich gehe mit dem Bus repeats the same mistake; Ich fahre mit dem Bus is the correction."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The following unused lesson keeps one vehicle pattern, with immediate correction, repetition and praise before the bus line.",
+        "visible_comic_action": "Lina walks her fingers beside a toy bicycle, then does the same walk beside the toy bus.",
+        "next_experiment": "Compare a vehicle-verb hook and two stable toy props with same-age observations when available; no view or retention claim."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact pattern for the intended meaning. This fictional lesson contrasts gehen on foot with fahren for a bicycle and a bus. The home scene, the toys and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all vehicle dialogue",
+          "the toy bicycle and toy bus"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.goethe.de/ins/de/de/prf/grm.html",
+        "https://www.goethe.de/ins/de/de/m/prf/grm.html",
+        "https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1",
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich gehe mit dem Fahrrad!",
+          "fa": "اوما، با دوچرخه می‌روم!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina walks two fingers beside the toy bicycle, with the toy bus still visible.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina walks two fingers beside the toy bicycle, with the toy bus still visible. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina walks two fingers beside the toy bicycle, with the toy bus still visible.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich fahre mit dem Fahrrad.",
+          "fa": "نه! با دوچرخه می‌رانم.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma shakes her head and rolls the toy bicycle a little with one hand.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head and rolls the toy bicycle a little with one hand. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma shakes her head and rolls the toy bicycle a little with one hand.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Fahrrad.",
+          "fa": "با دوچرخه می‌رانم.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina repeats the phrase and rolls the toy bicycle forward a little.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina repeats the phrase and rolls the toy bicycle forward a little. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina repeats the phrase and rolls the toy bicycle forward a little.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut!",
+          "fa": "آفرین!",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma smiles and gives one small warm nod beside the toy bicycle and toy bus.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma smiles and gives one small warm nod beside the toy bicycle and toy bus. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma smiles and gives one small warm nod beside the toy bicycle and toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Und morgen? Mit dem Bus?",
+          "fa": "و فردا؟ با اتوبوس؟",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma points from the toy bicycle to the toy bus with a playful smile.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma points from the toy bicycle to the toy bus with a playful smile. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma points from the toy bicycle to the toy bus with a playful smile.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ja! Ich gehe mit dem Bus!",
+          "fa": "بله! با اتوبوس می‌روم!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina nods and walks two fingers beside the toy bus.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina nods and walks two fingers beside the toy bus. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina nods and walks two fingers beside the toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich fahre mit dem Bus.",
+          "fa": "نه! با اتوبوس می‌رانم.",
+          "scene": "Only oma is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Oma shakes her head and taps the toy bus once.",
+          "motion": "Only the visible oma speaks with exactly the supplied German audio. Oma shakes her head and taps the toy bus once. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma shakes her head and taps the toy bus once.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Bus.",
+          "fa": "با اتوبوس می‌رانم.",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina repeats the phrase and rests one hand on the toy bus.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina repeats the phrase and rests one hand on the toy bus. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina repeats the phrase and rests one hand on the toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und du fährst mit mir!",
+          "fa": "و تو هم با من می‌رانی!",
+          "scene": "Only lina is visible in a medium single-person shot in the same cozy home. The listener is entirely off camera. Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her.",
+          "motion": "Only the visible lina speaks with exactly the supplied German audio. Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her. Small natural lip movements; mouth closed during silence, stable eyes and fingers, one restrained gesture, no second face or speaking listener, no camera shake or extra props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "resolve"
+        }
+      ]
     }
   ]
 }
