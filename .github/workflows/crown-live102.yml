@@ -1,0 +1,166 @@
+name: Restore visible live supporters and improve text clarity
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/crown-live102.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: crown52-math81-update
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CROWN_PIPER_PYTHON: /tmp/crown-voice/venv/bin/python
+      CROWN_PIPER_MODEL: /tmp/crown-voice/en_US-ljspeech-medium.onnx
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install voice and deployment dependencies
+        run: |
+          pip install 'huggingface_hub>=0.34,<2'
+          python crown-live/voice-install91.py /tmp/crown-voice
+      - name: Prepare exact existing Space source
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,snapshot_download
+          import os,pathlib
+          api=HfApi(token=os.environ['HF_TOKEN'])
+          info=api.repo_info('afgtakrun/live-crown-52',repo_type='space')
+          snapshot_download('afgtakrun/live-crown-52',repo_type='space',revision=info.sha,local_dir='/tmp/crown-app',token=os.environ['HF_TOKEN'])
+          server=pathlib.Path('/tmp/crown-app/server.mjs').read_text()
+          if 'mathVersion:101' not in server:raise SystemExit('Live source changed; review and rebase required')
+          pathlib.Path('/tmp/crown-parent-sha').write_text(info.sha)
+          print('SOURCE_PARENT '+info.sha)
+          PY
+          python crown-live/update102.py /tmp/crown-app
+          cp crown-live/tests101/nonrepeat.mjs /tmp/crown-app/tests/nonrepeat101.mjs
+          cp crown-live/browser100.cjs /tmp/crown-app/browser100.cjs
+          cp crown-live/browser102.cjs /tmp/crown-app/browser102.cjs
+      - name: Verify saved bubble size and motion, persistent flags and existing answer timing
+        working-directory: /tmp/crown-app
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check server.mjs
+          node --check public/math-duel-ui.mjs
+          node --test --test-reporter=spec tests/nonrepeat101.mjs tests/settings100.mjs tests/show99.mjs tests/position97.mjs tests/bubble96.mjs tests/direct95.mjs tests/timing94.mjs tests/narration91.mjs tests/celebration92.mjs tests/arrival93.mjs
+          node --test --test-reporter=spec tests/math-duel.mjs
+      - name: Verify real thirty second countdown, auto restart and round duration persistence
+        working-directory: /tmp/crown-app
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+          node browser100.cjs
+          node browser102.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crown-live102-round-settings-review
+          path: |
+            /tmp/crown100-countdown.png
+            /tmp/crown100-saved-round-duration.png
+            /tmp/crown100-next-round.png
+            /tmp/crown102-1080.png
+            /tmp/crown102-720.png
+            /tmp/crown102-360.png
+            /tmp/crown-app/public/math-duel.mjs
+            /tmp/crown-app/public/math-duel-ui.mjs
+            /tmp/crown-app/tests/settings100.mjs
+          if-no-files-found: ignore
+      - name: Deploy tested name reading and automatic round settings
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          CROWN_ADMIN_TOKEN: ${{ secrets.CROWN_ADMIN_TOKEN }}
+        run: |
+          python - <<'PY'
+          from huggingface_hub import HfApi,CommitOperationAdd
+          import os,pathlib,time,json,urllib.request,gzip,base64
+          api=HfApi(token=os.environ['HF_TOKEN']);repo='afgtakrun/live-crown-52';root=pathlib.Path('/tmp/crown-app')
+          origin='https://afgtakrun-live-crown-52.hf.space'
+          live=json.load(urllib.request.urlopen(origin+'/api/state',timeout=20))
+          pathlib.Path('/tmp/previous-live-host').write_text(live['state'].get('liveHost',''))
+          pathlib.Path('/tmp/previous-quiz-settings.json').write_text(json.dumps(live['state']['fun']['math81']))
+          admin=os.environ.get('CROWN_ADMIN_TOKEN','')
+          if admin:
+              try:
+                  request=urllib.request.Request(origin+'/api/admin/state',headers={'Authorization':'Bearer '+admin})
+                  current=json.load(urllib.request.urlopen(request,timeout=20))
+                  recovery=base64.b64encode(gzip.compress(json.dumps({'state':current['state'],'revision':current['revision']}).encode())).decode()
+                  if len(recovery)<60000:
+                      api.add_space_secret(repo_id=repo,key='CROWN_RECOVERY_GZIP',value=recovery)
+                      print('Current private match recovery saved without logging its content',flush=True)
+              except Exception:
+                  print('Private recovery unavailable; no private values logged',flush=True)
+          files=['server.mjs','public/math-duel.mjs','public/math-duel-ui.mjs','public/math-duel.html','public/quiz-show-view.mjs','public/quiz-show.css','tests/nonrepeat101.mjs']
+          parent=pathlib.Path('/tmp/crown-parent-sha').read_text().strip()
+          result=api.create_commit(repo_id=repo,repo_type='space',parent_commit=parent,commit_message='Sequential correct-answer profiles with +10 and Follow, plus large round champions',operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f))for f in files])
+          print('CROWN_LIVE102_COMMIT '+result.oid,flush=True)
+          for attempt in range(100):
+              try:
+                  health=json.load(urllib.request.urlopen(origin+'/health',timeout=15))
+                  if health.get('mathVersion')==102 and health.get('backupVoice')=='female-neural':
+                      print('CROWN_LIVE102_READY calm_female_voice=True',flush=True);break
+              except Exception:pass
+              time.sleep(10)
+          else:raise SystemExit('New source uploaded, but runtime readiness not confirmed')
+          PY
+      - name: Restore owner settings and refresh existing live outputs
+        working-directory: /tmp/crown-app
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from'node:fs';import{WebSocket}from'ws';
+          const origin='https://afgtakrun-live-crown-52.hf.space',old=JSON.parse(fs.readFileSync('/tmp/previous-quiz-settings.json','utf8')),current=(await(await fetch(origin+'/api/state')).json()).state.fun.math81;
+          const ws=new WebSocket(origin.replace('https:','wss:')+'/relay?client=castle80'),pending=new Map();let resolveAccess,rejectAccess;const ready=new Promise((yes,no)=>{resolveAccess=yes;rejectAccess=no}),readyTimer=setTimeout(()=>rejectAccess(Error('Panel access timed out')),10000);ws.on('open',()=>ws.send(JSON.stringify({type:'mathPanelAccess'})));ws.on('error',e=>rejectAccess(e));ws.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='mathPanelOK'){clearTimeout(readyTimer);resolveAccess()}if(d.type==='uiAck'){const p=pending.get(d.id);if(p){pending.delete(d.id);clearTimeout(p.timer);p.yes()}}if(d.type==='uiError'){const p=pending.get(d.id);if(p){pending.delete(d.id);clearTimeout(p.timer);p.no(Error('Settings command failed'))}}});await ready;
+          const command=(action,value)=>new Promise((yes,no)=>{const id=crypto.randomUUID(),timer=setTimeout(()=>{pending.delete(id);no(Error('Command timed out'))},10000);pending.set(id,{yes,no,timer});ws.send(JSON.stringify({type:'uiCommand',command:'mathControl',id,action,value}))});
+          for(const[key,action]of[['seconds','duration'],['questionMode','questionMode'],['language','language'],['questionDuration','questionDuration'],['outputVolume','outputVolume'],['voiceEnabled','voice'],['spotlightEnabled','spotlight'],['arrivalSize','arrivalSize'],['arrivalMotion','arrivalMotion'],['arrivalSide','arrivalSide']])if(old[key]!==undefined&&old[key]!==current[key])await command(action,old[key]);
+          if(old.arrivalX!==undefined&&old.arrivalY!==undefined)await command('arrivalPosition',{x:old.arrivalX,y:old.arrivalY});
+          await command('auto',true);if(current.phase==='ready'&&['playing','reveal','finished'].includes(old.phase))await command('start');
+          const id=crypto.randomUUID();await new Promise((yes,no)=>{const timer=setTimeout(()=>no(Error('Refresh timed out')),10000);pending.set(id,{yes,no,timer});ws.send(JSON.stringify({type:'uiCommand',command:'mathRefresh',id}))});ws.close();console.log('OWNER_SETTINGS_RESTORED_AND_LIVE_OUTPUT_REFRESHED');
+          JS
+      - name: Verify actual connection and female audio on published version
+        working-directory: /tmp/crown-app
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from'node:fs';import{WebSocket}from'ws';
+          const host=fs.readFileSync('/tmp/previous-live-host','utf8').trim();let requested=false;
+          const result=await new Promise(resolve=>{const ws=new WebSocket('wss://afgtakrun-live-crown-52.hf.space/relay?client=castle80');let last={state:'unknown'},settled=false;const timer=setTimeout(()=>done(last),45000);function done(value){if(settled)return;settled=true;clearTimeout(timer);ws.close();resolve(value)}ws.on('message',raw=>{const d=JSON.parse(String(raw));if(d.type==='mathPanelOK'&&requested){ws.send(JSON.stringify({type:'connectTikTok',username:host}));return;}if(d.type==='bridgeStatus'){last={state:d.state,code:d.code||null,username:d.username||null,telemetry:d.telemetry||null};if(host&&d.username!==host&&!requested){requested=true;ws.send(JSON.stringify({type:'mathPanelAccess'}));return;}if(['connected','error','disconnected','idle'].includes(d.state)&&(!host||d.username===host))done(last)}});ws.on('error',()=>done({state:'check-unavailable'}))});fs.writeFileSync('/tmp/crown-live-bridge.json',JSON.stringify(result));console.log('LIVE_PROVIDER_STATUS '+JSON.stringify(result));
+          const origin='https://afgtakrun-live-crown-52.hf.space';let checked=false;
+          for(let i=0;i<30;i++){const s=(await(await fetch(origin+'/api/state')).json()).state.fun.math81;if(s.voice?.url){const r=await fetch(origin+s.voice.url);const bytes=await r.arrayBuffer();if(!r.ok||bytes.byteLength<100)throw Error('Published audio response failed');console.log('PUBLISHED_AUDIO_OK '+JSON.stringify({status:r.status,provider:r.headers.get('x-voice-provider'),bytes:bytes.byteLength}));checked=true;break}await new Promise(r=>setTimeout(r,1000));}if(!checked)console.log('PUBLISHED_AUDIO_NO_CURRENT_ANNOUNCEMENT; server backup and browser playback already tested');
+          JS
+      - name: Send updated panel and live output links to owner Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          token=os.environ['TELEGRAM_BOT_TOKEN'];chat=str(json.load(open('.telegram-bot-chat.json'))['id'])
+          def call(method,payload):
+              request=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+              try:result=json.load(urllib.request.urlopen(request,timeout=30))
+              except Exception:raise SystemExit('Telegram outcome unknown; do not automatically retry')
+              if not result.get('ok'):raise SystemExit('Telegram delivery not confirmed')
+              return result['result']
+          if call('getChat',{'chat_id':chat}).get('type')!='private':raise SystemExit('Private owner chat required')
+          bridge=json.load(open('/tmp/crown-live-bridge.json'))
+          if bridge.get('state')=='connected':status='اتصال واقعی با یوزرنیم @'+str(bridge.get('username'))+' تأیید شد.'
+          else:status='وضعیت دریافت لایف: '+str(bridge.get('state'))+'؛ '+str(bridge.get('code')or'—')+' . برای دریافت رویدادها، حساب باید در حال لایف باشد.'
+          message='نسخهٔ ۱۰۲ فعال شد.\n\nپنل:\nhttps://afgtakrun-live-crown-52.hf.space/fun/control?v=102\n\nخروجی LIVE Studio:\nhttps://afgtakrun-live-crown-52.hf.space/fun/screen?v=102\n\nدو لایکر برتر و هدیه‌دهنده‌ها دوباره با عکس، تعداد لایک، نام و تعداد هدیه و کوین، در دو ستون واضح زیر پاسخ‌ها نمایش داده می‌شوند. دریافت رویداد واقعی حفظ شده است.\nنوشته‌ها درشت‌تر و رنگ‌ها یکدست و پرکنتراست شدند. مقیاس‌دهی متن در صفحه‌های کوچک اصلاح شد؛ در اندازهٔ اصلی خروجی هیچ کوچک‌نمایی اعمال نمی‌شود.\nنمایش در مرورگر با اندازه‌های ۱۰۸۰×۱۹۲۰، ۷۲۰×۱۲۸۰ و ۳۶۰×۶۴۰ آزمایش شد. خروجی فعلی رفرش شد.\n\nبرای وضوح نهایی در LIVE Studio، اندازهٔ خود منبع Browser/Link را 1080×1920، برش را صفر و حالت را Fit قرار دهید. پنجرهٔ کوچک مرورگر را ضبط و سپس بزرگ نکنید. وضوح ویدئوی ارسال‌شده از داخل این پنل قابل تغییر نیست.\n\n'+status
+          result=call('sendMessage',{'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
+          print('CROWN_LIVE102_PANEL_DELIVERED message_id='+str(result['message_id']))
+          PY
+
+# Apply against the exact downloaded source directory.
+
+# Measure portraits once entrance animations settle.
+
+# Verify result queues fully drain before automatic next round.
