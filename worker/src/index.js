@@ -396,6 +396,38 @@ async function dueGermanLessonDispatch(env, now = new Date()) {
   return true;
 }
 
+// GitHub's own cron has missed the 07:30 Berlin cinematic slot. The Worker
+// already wakes every five minutes, so it writes the same request file the
+// workflow treats as FORCE_TODAY: once at 07:30, then at 10:30 and 13:30 if
+// that Berlin day still has no delivery. The workflow gate still refuses a
+// second send.
+async function dueCinematicDispatch(env, now = new Date()) {
+  const { date, hm } = berlinClock(now);
+  const [hour, minute] = hm.split(":").map(Number);
+  const batch = hour === 7 && minute >= 30 && minute < 40 ? "0730"
+    : hour === 10 && minute >= 30 && minute < 40 ? "1030"
+    : hour === 13 && minute >= 30 && minute < 40 ? "1330" : "";
+  if (!batch) return false;
+  const key = `cinematic-dispatch:${date}:${batch}`;
+  if (env.BOT_STATE && await env.BOT_STATE.get(key)) return false;
+  const state = await repositoryJson(env, ".cinematic-series-state.json");
+  const delivered = state && Object.keys(state.deliveries || {}).some((item) => String(item).split("#", 1)[0] === date);
+  if (delivered) {
+    if (env.BOT_STATE) await env.BOT_STATE.put(key, "already-delivered", { expirationTtl: 3 * 24 * 60 * 60 });
+    return false;
+  }
+  await writeGithubRequest(env, ".cinematic-series-request.json", {
+    requestedAt: now.toISOString(),
+    source: "cloudflare-scheduled",
+    requestId: crypto.randomUUID(),
+    date,
+    batch,
+    episode: state?.next_episode ?? null,
+  }, `chore: trigger cinematic episode ${date}-${batch}`);
+  if (env.BOT_STATE) await env.BOT_STATE.put(key, "sent", { expirationTtl: 3 * 24 * 60 * 60 });
+  return true;
+}
+
 // Telegram must tell the creator exactly what has started. A proposal is not a
 // render, and describing it as one was the main reason commands looked like
 // they were merely saved or silently ignored.
@@ -658,6 +690,7 @@ export default {
     ctx.waitUntil(Promise.allSettled([
       dueDailyDispatch(env),
       dueGermanLessonDispatch(env),
+      dueCinematicDispatch(env),
       (async()=>{
         const owner=env.ALLOWED_CHAT_ID||await env.BOT_STATE?.get('social:owner')||(await repositoryJson(env,'.telegram-bot-chat.json'))?.id;
         await runSocialMonitor(env,{owner,notify:async(id,text)=>replyText(env,id,text)});
@@ -1042,5 +1075,5 @@ export default {
 };
 
 // Kept outside the HTTP handler solely for deterministic local command tests.
-export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch, webhookSecret };
+export { NUMBERED_ACTIONS, menuCode, commandFromPending, videoAction, prepareTopicLocally, acknowledgementFor, bareTopicPick, parseChatIntent, berlinClock, dueDailyDispatch, dueGermanLessonDispatch, dueCinematicDispatch, webhookSecret };
 

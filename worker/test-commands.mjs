@@ -2,7 +2,7 @@
 // local-PC bot test: the phone uses worker/src/index.js, so it needs its own
 // regression test for the exact commands the creator actually types.
 import assert from "node:assert/strict";
-import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch, dueGermanLessonDispatch, webhookSecret } from "./src/index.js";
+import worker, { NUMBERED_ACTIONS, menuCode, videoAction, commandFromPending, acknowledgementFor, bareTopicPick, parseChatIntent, dueDailyDispatch, dueGermanLessonDispatch, dueCinematicDispatch, webhookSecret } from "./src/index.js";
 
 assert.equal(videoAction("تیک تاک بساز").action, "build-tiktok");
 assert.equal(videoAction("انستا بساز").action, "build-instagram");
@@ -154,6 +154,42 @@ assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: le
 assert.equal(await dueGermanLessonDispatch({ GITHUB_TOKEN: "test", BOT_STATE: lessonState }, new Date("2026-09-18T03:01:00Z")), false);
 assert.equal(lessonScheduleCalls.filter((c) => c.url.includes(".trigger-lesson-dispatch") && c.init.method === "PUT").length, 2);
 assert.equal(lessonScheduleCalls.some((c) => c.url.includes(".german-manual-build-request.json")), false);
+globalThis.fetch = savedFetch;
+
+// A missed 07:30 Berlin GitHub cron is caught at 07:30, 10:30 and 13:30.
+// Each window writes the request file once. A day that already has a delivery
+// does not write again.
+const cinematicCalls = [];
+const cinematicKv = new Map();
+globalThis.fetch = async (url, init = {}) => {
+  cinematicCalls.push({ url: String(url), init });
+  const text = String(url);
+  if (text.includes(".cinematic-series-state.json")) {
+    const body = Buffer.from(JSON.stringify({ next_episode: 26, deliveries: {} })).toString("base64");
+    return new Response(JSON.stringify({ content: body, encoding: "base64" }), { status: 200 });
+  }
+  if (text.includes("api.github.com/")) return new Response(JSON.stringify({ sha: "prior" }), { status: init.method === "PUT" ? 201 : 200 });
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+};
+const cinematicState = { get: async (key) => cinematicKv.get(key), put: async (key, value) => cinematicKv.set(key, value) };
+const cinematicEnv = { GITHUB_TOKEN: "test", BOT_STATE: cinematicState };
+for (const instant of ["2026-11-19T06:32:00Z", "2026-11-19T09:32:00Z", "2026-11-19T12:32:00Z"]) {
+  assert.equal(await dueCinematicDispatch(cinematicEnv, new Date(instant)), true);
+  assert.equal(await dueCinematicDispatch(cinematicEnv, new Date(instant)), false);
+}
+assert.equal(await dueCinematicDispatch(cinematicEnv, new Date("2026-11-19T08:00:00Z")), false);
+assert.equal(cinematicCalls.filter((c) => c.url.includes(".cinematic-series-request.json") && c.init.method === "PUT").length, 3);
+const deliveredCalls = [];
+globalThis.fetch = async (url, init = {}) => {
+  deliveredCalls.push({ url: String(url), init });
+  if (String(url).includes(".cinematic-series-state.json")) {
+    const body = Buffer.from(JSON.stringify({ next_episode: 27, deliveries: { "2026-11-19": { episode: 26 } } })).toString("base64");
+    return new Response(JSON.stringify({ content: body, encoding: "base64" }), { status: 200 });
+  }
+  return new Response(JSON.stringify({ sha: "prior" }), { status: 200 });
+};
+assert.equal(await dueCinematicDispatch({ GITHUB_TOKEN: "test", BOT_STATE: { get: async () => undefined, put: async () => {} } }, new Date("2026-11-19T09:35:00Z")), false);
+assert.equal(deliveredCalls.some((c) => c.init?.method === "PUT"), false);
 globalThis.fetch = savedFetch;
 
 console.log("cloud Telegram command contract holds");
