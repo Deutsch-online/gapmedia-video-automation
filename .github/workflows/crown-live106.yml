@@ -1,4 +1,4 @@
-name: Publish silent Crown quiz countdown
+name: Publish animated Crown portrait frames
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: 2226ee3ab7dd47d4faf104e5247135afc10a0fd3
+      CROWN_PARENT: f35448c60446d2833be1efceab0f7196b773eaa6
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,10 +34,11 @@ jobs:
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          python "$GITHUB_WORKSPACE/crown-live/remove-countdown108.py"
+          python "$GITHUB_WORKSPACE/crown-live/update-portraits109.py"
           git diff --check
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
+          node --check public/quiz-show-view.mjs
           node --check public/quiz-show-view.mjs
           cp server.mjs /tmp/crown-production-server.mjs
           trap 'cp /tmp/crown-production-server.mjs server.mjs' EXIT
@@ -91,18 +92,18 @@ jobs:
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
           files = tracked
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Remove audible quiz countdown ticks',
+              commit_message='Enlarge quiz portraits and add animated fire and smoke frames',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=108', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=109', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=108' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=109' in html and 'quiz-show.css?v=109' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass

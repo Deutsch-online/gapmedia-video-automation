@@ -1,0 +1,119 @@
+
+.fire-portrait {
+  --portrait-size: 130px;
+  --fire-edge: 9px;
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--portrait-size);
+  height: var(--portrait-size);
+  margin: var(--fire-edge);
+  vertical-align: middle;
+}
+.fire-portrait::before,
+.fire-portrait::after,
+.portrait-flame {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.fire-portrait::before {
+  z-index: -1;
+  inset: -15%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 25% 65%, #6e567cbf, transparent 43%),
+    radial-gradient(ellipse at 70% 35%, #ddc2df99, transparent 49%),
+    radial-gradient(ellipse at 54% 70%, #95568399, transparent 61%);
+  filter: blur(8px);
+  animation: portrait-smoke-drift 3.6s ease-out infinite;
+}
+.fire-portrait::after {
+  z-index: 1;
+  inset: calc(-1 * var(--fire-edge));
+  border-radius: 50%;
+  padding: max(3px, calc(var(--fire-edge) * .62));
+  background: conic-gradient(#ff782c, #ffdf73, #fe5837, #fff2a3, #fc4229, #ff9b27, #ff782c);
+  mask: linear-gradient(#fff 0 0) content-box exclude, linear-gradient(#fff 0 0);
+  filter: drop-shadow(0 0 5px #ff7b28);
+  animation: portrait-fire-orbit 2.8s linear infinite;
+}
+.portrait-flame {
+  z-index: -1;
+  inset: -11%;
+  border-radius: 49% 51% 46% 54%;
+  background:
+    radial-gradient(ellipse at 24% 13%, #fff3ab 0, #ff8527 23%, transparent 43%),
+    radial-gradient(ellipse at 82% 21%, #ffe96a 0, #f94320 25%, transparent 44%),
+    radial-gradient(ellipse at 18% 77%, #ffbc39 0, #ff4328 20%, transparent 43%),
+    radial-gradient(ellipse at 80% 79%, #ffeb8a 0, #fa5124 21%, transparent 45%);
+  animation: portrait-flame-flicker .85s ease-in-out infinite alternate;
+}
+#broadcast #celebrationCard:not([hidden]) .fire-portrait > .player-avatar,
+#broadcast #showPodium .fire-portrait > .player-avatar {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  margin: 0;
+  outline-offset: 0;
+}
+#celebrationCard > .fire-portrait {
+  grid-row: 2;
+  grid-column: 1;
+}
+#celebrationCard .other-correct-respondents .fire-portrait {
+  --portrait-size: 53px;
+  --fire-edge: 4px;
+}
+#showPodium .fire-portrait { --portrait-size: min(18vw, 105px); }
+#showPodium .place-1 .fire-portrait { --portrait-size: min(22vw, 130px); }
+
+.screen #broadcast #celebrationCard:not([hidden]) {
+  height: 650px;
+  min-height: 650px;
+  max-height: 650px;
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
+  padding: 17px 28px;
+}
+.screen.celebrating #broadcast #showMain #question {
+  flex-basis: 650px;
+  min-height: 650px;
+  max-height: 650px;
+}
+.screen #celebrationCard > .fire-portrait {
+  --portrait-size: 220px;
+  --fire-edge: 14px;
+}
+.screen #broadcast #celebrationCard:not([hidden]) .other-correct-respondents {
+  grid-auto-rows: 112px;
+  max-height: 226px;
+}
+.screen #celebrationCard .other-correct-respondents .fire-portrait {
+  --portrait-size: 78px;
+  --fire-edge: 6px;
+}
+.screen #broadcast #showPodium .fire-portrait {
+  --portrait-size: 204px;
+  --fire-edge: 12px;
+}
+.screen #broadcast #showPodium .place-1 .fire-portrait {
+  --portrait-size: 266px;
+  --fire-edge: 17px;
+}
+
+@keyframes portrait-fire-orbit { to { transform: rotate(1turn); } }
+@keyframes portrait-flame-flicker {
+  0% { transform: rotate(-12deg) scale(.96, 1.03); opacity: .85; }
+  45% { transform: rotate(6deg) scale(1.06, .96); }
+  100% { transform: rotate(17deg) scale(1.02, 1.11); opacity: 1; }
+}
+@keyframes portrait-smoke-drift {
+  0% { transform: translate(-4%, 8%) scale(.94); opacity: .14; }
+  35% { opacity: .85; }
+  100% { transform: translate(26%, -34%) scale(1.35); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fire-portrait::before, .fire-portrait::after, .portrait-flame { animation: none; }
+}
