@@ -1,0 +1,100 @@
+diff --git a/public/math-duel.html b/public/math-duel.html
+index e94fc7d..e534480 100644
+--- a/public/math-duel.html
++++ b/public/math-duel.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=116"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
++<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=117"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
+ <div id="showMain"><section class="quiz"><div class="show-timer"><progress id="progress" max="30000" value="30000"></progress><b id="seconds"></b></div><div id="question" dir="ltr">Ready to start</div><div id="options"></div><p id="answerHint"></p><div id="showResponseBand"><div id="showAnswerCount"></div><div id="showAvatars"></div><div id="showFastest" hidden></div></div><small id="last" hidden></small><div id="selectionFeed" hidden></div></section>
+ <section id="showStandings" hidden><h2 id="showStandingsTitle">🏆 LEADERBOARD 🏆</h2><div id="nextRoundCountdown" hidden role="timer" aria-live="off"><span id="nextRoundLabel">NEXT ROUND IN</span><b id="nextRoundSeconds">30</b><span id="nextRoundUnit">seconds</span></div><div id="showPodium"></div><div id="showStandingsRows"></div></section></div>
+ <section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
+diff --git a/public/quiz-show.css b/public/quiz-show.css
+index 9b35769..558ce45 100644
+--- a/public/quiz-show.css
++++ b/public/quiz-show.css
+@@ -697,3 +697,85 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ .screen #broadcast #showCommunity .gift-profile > .player-avatar {
+   --community-avatar-scale: var(--gift-avatar-size, 1.6);
+ }
++
++/* Keep the profile circles independent of flex shrink and row height. */
++.screen #broadcast #celebrationCard:not([hidden]) {
++  height: 835px;
++  min-height: 835px;
++  max-height: 835px;
++  padding: 12px 24px 16px;
++  grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
++}
++.screen.celebrating #broadcast #showMain #question {
++  flex-basis: 835px;
++  min-height: 835px;
++  max-height: 835px;
++}
++.screen #broadcast #celebrationCard > .top-fire-portrait {
++  --portrait-size: 366px;
++  --fire-edge: 10px;
++  width: var(--portrait-size);
++  height: var(--portrait-size);
++  min-height: var(--portrait-size);
++  max-width: none;
++  aspect-ratio: 1;
++  margin: 48px auto 0;
++}
++.screen #broadcast #celebrationCard .celebration-name {
++  font-size: 44px;
++  line-height: 1.08;
++}
++.screen #broadcast #celebrationCard:not([hidden]) .other-correct-respondents {
++  grid-template-columns: repeat(var(--profile-columns,4), minmax(0,215px));
++  grid-auto-rows: 140px;
++  align-items: start;
++  justify-content: center;
++  max-height: 282px;
++}
++.screen #broadcast #celebrationCard:not([hidden]) .other-correct-respondents.few-respondents {
++  grid-template-columns: repeat(var(--profile-columns,4), minmax(0,225px));
++  grid-auto-rows: 193px;
++}
++.screen #broadcast #celebrationCard .other-correct-respondents .row {
++  display: grid;
++  grid-template-columns: minmax(0,1fr);
++  grid-template-rows: max-content max-content max-content;
++  align-content: start;
++  justify-items: center;
++  gap: 3px;
++  height: auto;
++  min-height: 0;
++  max-height: none;
++  padding: 0;
++  line-height: 1.05;
++}
++.screen #broadcast #celebrationCard .other-correct-respondents .top-fire-portrait {
++  --portrait-size: 97px;
++  width: var(--portrait-size);
++  height: var(--portrait-size);
++  min-width: var(--portrait-size);
++  min-height: var(--portrait-size);
++  max-width: none;
++  aspect-ratio: 1;
++  margin: 2px 0 0;
++}
++.screen #broadcast #celebrationCard .few-respondents .top-fire-portrait {
++  --portrait-size: 144px;
++}
++.screen #broadcast #celebrationCard .top-fire-portrait > .player-avatar {
++  width: calc(var(--portrait-size) - 5px);
++  height: calc(var(--portrait-size) - 5px);
++  min-width: calc(var(--portrait-size) - 5px);
++  min-height: calc(var(--portrait-size) - 5px);
++  aspect-ratio: 1;
++  box-sizing: border-box;
++  margin: 0;
++}
++.screen #broadcast #celebrationCard .other-correct-respondents .row > span:not(.fire-portrait) {
++  max-width: 100%;
++  font-size: 26px;
++  text-align: center;
++}
++.screen #broadcast #celebrationCard .other-correct-respondents .row > b {
++  font-size: 25px;
++}
