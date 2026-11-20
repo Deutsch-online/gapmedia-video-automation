@@ -1,0 +1,111 @@
+diff --git a/public/math-duel.html b/public/math-duel.html
+index a71a654..21aacc7 100644
+--- a/public/math-duel.html
++++ b/public/math-duel.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=119"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
++<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=120"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
+ <div id="showMain"><section class="quiz"><div class="show-timer"><progress id="progress" max="30000" value="30000"></progress><b id="seconds"></b></div><div id="question" dir="ltr">Ready to start</div><div id="options"></div><p id="answerHint"></p><div id="showResponseBand"><div id="showAnswerCount"></div><div id="showAvatars"></div><div id="showFastest" hidden></div></div><small id="last" hidden></small><div id="selectionFeed" hidden></div></section>
+ <section id="showStandings" hidden><h2 id="showStandingsTitle">🏆 LEADERBOARD 🏆</h2><div id="nextRoundCountdown" hidden role="timer" aria-live="off"><span id="nextRoundLabel">NEXT ROUND IN</span><b id="nextRoundSeconds">30</b><span id="nextRoundUnit">seconds</span></div><div id="showPodium"></div><div id="showStandingsRows"></div></section></div>
+ <div id="liveActivityLane"><section id="spotlightCard" hidden></section></div><section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
+diff --git a/public/quiz-show.css b/public/quiz-show.css
+index a49042e..17c2d33 100644
+--- a/public/quiz-show.css
++++ b/public/quiz-show.css
+@@ -783,13 +783,11 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ /* Supporter thank-you cards occupy their own space on the live output. */
+ .screen #liveActivityLane {
+   position: relative;
+-  flex: 0 0 122px;
+-  min-height: 122px;
++  flex: 0 0 174px;
++  min-height: 174px;
+   display: grid;
+-  grid-template-columns: repeat(2,minmax(0,1fr));
+   align-items: center;
+   direction: ltr;
+-  gap: 16px;
+   margin: 6px 0;
+ }
+ .screen #liveActivityLane:not(:has(> :not([hidden]))),
+@@ -801,18 +799,19 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   position: relative;
+   inset: auto;
+   display: grid;
+-  grid-template-columns: minmax(56px,78px) minmax(0,1fr);
++  --thanks-portrait: clamp(96px, calc(82px * var(--spotlight-size, 1.4)), 132px);
++  grid-template-columns: var(--thanks-portrait) minmax(0,1fr);
+   grid-template-rows: auto auto;
+   align-items: center;
+   justify-items: start;
+   align-content: center;
+-  gap: 3px 14px;
+-  width: min(100%,440px);
+-  height: 106px;
+-  max-height: 106px;
+-  padding: 9px 14px;
++  gap: 6px 24px;
++  width: min(100%,700px);
++  height: 162px;
++  max-height: 162px;
++  padding: 12px 24px;
+   border: 1px solid #9ba6d2;
+-  border-radius: 14px;
++  border-radius: 22px;
+   background: #171333;
+   box-shadow: none;
+   text-align: start;
+@@ -821,15 +820,15 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   transform: none;
+ }
+ .screen #broadcast #liveActivityLane > #spotlightCard:not([hidden]) {
+-  grid-column: 1;
+-  grid-row: 1;
++  justify-self: start;
+ }
+ .screen #liveActivityLane .spotlight-portrait {
+   grid-column: 1;
+   grid-row: 1 / span 2;
+ }
+-.screen #broadcast #liveActivityLane .spotlight-portrait {
+-  width: clamp(56px,calc(60px * var(--bubble-scale,1)),78px);
++.screen #broadcast #liveActivityLane > #spotlightCard:not([hidden]) .spotlight-portrait {
++  width: var(--thanks-portrait);
++  font-size: 52px;
+   height: auto;
+   aspect-ratio: 1;
+   margin: 0;
+@@ -838,7 +837,8 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   grid-column: 2;
+   grid-row: 1;
+   margin: 0;
+-  font-size: 22px;
++  font-size: 35px;
++  line-height: 1.12;
+   color: #ffdfa0;
+   text-align: start;
+ }
+@@ -849,7 +849,7 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   max-width: 100%;
+   margin: 0;
+   color: #fff;
+-  font-size: 27px;
++  font-size: 46px;
+   line-height: 1.1;
+   text-align: start;
+   overflow: hidden;
+@@ -885,13 +885,12 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ }
+ 
+ .screen #broadcast #liveActivityLane > #spotlightCard[data-kind="support"]:not([hidden]) {
+-  grid-template-columns: 94px minmax(0,1fr);
++  --thanks-portrait: clamp(108px, calc(82px * var(--spotlight-size, 1.6)), 132px);
+   border: 2px solid #ffcc68;
+   background: radial-gradient(ellipse at 12% 50%, #613414 0%, #251426 55%, #171333 100%);
+   box-shadow: inset 0 0 18px #ffaa3d35;
+ }
+ .screen #broadcast #liveActivityLane #spotlightCard[data-kind="support"] .spotlight-portrait {
+-  width: 82px;
+   border: 3px solid #ffe59e;
+   box-shadow: 0 0 0 3px #a55822, 0 0 15px #ffb944b3;
+   animation: gift-frame-glow 2.5s ease-in-out infinite alternate;
