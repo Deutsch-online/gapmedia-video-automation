@@ -4335,7 +4335,204 @@
       "render_style": "lina-oma-stylized-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-sieben-jahre-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 6,
+      "title_de": "Ich habe sieben Jahre?!",
+      "title_fa": "من هفت سال دارم؟!",
+      "summary": "Lina tells Oma her age with Ich habe sieben Jahre, the Persian calque. Oma immediately models Ich bin sieben Jahre alt, Lina repeats it, and Oma praises her. Oma then asks her own age. Lina says Du hast achtzig Jahre, Oma models Du bist achtzig Jahre alt, and Lina repeats it before proudly saying she is seven. The joke is the grammar, not the child.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another small German pattern at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-age-sofa",
+      "location_description": "The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina holds up seven fingers beside a small candle cake and announces that she has seven years.",
+      "everyday_problem": "A newcomer child uses haben for age, saying she has seven years and that Oma has eighty years.",
+      "practical_resolution": "Oma immediately supplies Ich bin sieben Jahre alt, praises the repetition, then replaces Du hast achtzig Jahre with Du bist achtzig Jahre alt.",
+      "marta_goal": "Lina wants to tell Oma her age and then Oma's age in understandable German.",
+      "marta_decision": "Lina repeats Ich bin sieben Jahre alt, tries the same wrong verb for eighty, and repeats the corrected age.",
+      "visual_payoff": "Lina smiles, holds up seven fingers again, and says she is seven beside the same candle cake.",
+      "language_error": {
+        "wrong": "ich habe sieben Jahre",
+        "correct": "Ich bin sieben Jahre alt.",
+        "explanation": "Ich habe sieben Jahre copies the Persian pattern of having years. German age uses sein: Ich bin sieben Jahre alt. Du hast achtzig Jahre has the same mistake; Du bist achtzig Jahre alt is the correction."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The next unused lesson is a familiar age calque, with immediate correction, repetition and praise before the second age line.",
+        "visible_comic_action": "Lina counts seven on her fingers beside one cake, then aims the same wrong verb at Oma's age.",
+        "next_experiment": "Compare a clear age-calque hook and one stable cake prop with same-age observations when available; no view or retention claim.",
+        "daily_evidence_review": {
+          "day": "2026-11-20",
+          "status": "available",
+          "selected_test": {
+            "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+            "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+            "evidence": "proposed_test_not_proven"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact pattern for the intended meaning. This fictional lesson contrasts haben plus Jahre with sein plus Jahre alt. The home scene, the cake and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all age dialogue",
+          "the small candle cake"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich habe sieben Jahre!",
+          "fa": "اوما، من هفت سال دارم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina holds up seven fingers beside the small candle cake.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds up seven fingers beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina holds up seven fingers beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich bin sieben Jahre alt.",
+          "fa": "نه! من هفت‌ساله‌ام.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma shakes her head once and points at the seven candles on the cake.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma shakes her head once and points at the seven candles on the cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma shakes her head once and points at the seven candles on the cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich bin sieben Jahre alt.",
+          "fa": "من هفت‌ساله‌ام.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina repeats the phrase and points at herself beside the small candle cake.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina repeats the phrase and points at herself beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina repeats the phrase and points at herself beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut!",
+          "fa": "آفرین!",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma smiles and gives one small warm nod beside the small candle cake.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma smiles and gives one small warm nod beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma smiles and gives one small warm nod beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Und ich? Wie alt bin ich?",
+          "fa": "و من؟ من چند ساله‌ام؟",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma taps her own chest once, still beside the small candle cake.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma taps her own chest once, still beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma taps her own chest once, still beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Du hast achtzig Jahre!",
+          "fa": "تو هشتاد سال داری!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina points toward off-camera Oma and grins beside the small candle cake.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina points toward off-camera Oma and grins beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina points toward off-camera Oma and grins beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Du bist achtzig Jahre alt.",
+          "fa": "نه! تو هشتاد ساله‌ای.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma shakes her head once and smiles beside the small candle cake.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma shakes her head once and smiles beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Oma shakes her head once and smiles beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Du bist achtzig Jahre alt.",
+          "fa": "تو هشتاد ساله‌ای.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina nods and repeats the phrase while looking at the small candle cake.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina nods and repeats the phrase while looking at the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina nods and repeats the phrase while looking at the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und ich bin sieben!",
+          "fa": "و من هفت‌ساله‌ام!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one small candle cake. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina smiles and holds up seven fingers again beside the small candle cake.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina smiles and holds up seven fingers again beside the small candle cake.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "small candle cake"
+          ],
+          "object_action": "Lina smiles and holds up seven fingers again beside the small candle cake.",
+          "location_key": "lina-oma-age-sofa",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 27,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-20T08:03:08.563714+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-stylized-v1"
+    },
+    "date": "2026-11-20",
+    "status": "render-failed",
+    "time_budget_blocked": true,
+    "budget_reason": "full-episode forecast does not fit"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -4387,8 +4584,8 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-11-18#owner-lina-e25-cached-resume-20261118",
-    "not_before": "2026-11-19T09:11:28.136000+00:00",
+    "date": "2026-11-20",
+    "not_before": "2026-11-20T13:15:24.060000+00:00",
     "reason": "Waiting for full-episode included budget"
   },
   "manual_recovery_reason": {
@@ -4397,7 +4594,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-19T13:13:18.540600+00:00",
+    "checked_at": "2026-11-20T08:03:08.565546+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4406,7 +4603,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 837.0749599999999,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -4470,27 +4667,27 @@
     }
   },
   "daily_review": {
-    "day": "2026-11-19",
+    "day": "2026-11-20",
     "attempted": true,
-    "checked_at": "2026-11-19T13:01:32.686120+00:00",
+    "checked_at": "2026-11-20T08:03:05.521864+00:00",
     "status": "available",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
     "experiments": [
       {
-        "change": "Testing different cultural hooks in video intros for immigrant learners",
-        "measure": "Median views and engagement metrics",
-        "evidence": "hypothesis_not_proven"
+        "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+        "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+        "evidence": "proposed_test_not_proven"
       },
       {
-        "change": "Comparing engagement for videos with and without caption safe areas",
-        "measure": "Median completion and share rates",
-        "evidence": "hypothesis_not_proven"
+        "change": "یک نمای عمل و یک نمای نزدیکِ شیء را متناوب کن؛ زیرنویس از صورت و شیء دور باشد و در ناحیهٔ امن بماند.",
+        "measure": "افت نگه‌داشت در کات‌ها و مقایسهٔ تکمیل در بازهٔ زمانی مشابه",
+        "evidence": "proposed_test_not_proven"
       },
       {
-        "change": "Evaluating video engagement with different prop visibility and relevance",
-        "measure": "Watch time and interaction metrics",
-        "evidence": "hypothesis_not_proven"
+        "change": "یک گرفتاری آشنا، دو تشدید کوتاه و یک نتیجهٔ شاد و کمیک دیدنی در همان ۴۵ ثانیه طراحی کن؛ هر بار فقط یک تغییر آزمایش شود.",
+        "measure": "نرخ تکمیل، اشتراک‌گذاری به ازای بازدید و بازخورد واقعی مخاطب",
+        "evidence": "test_against_matched_baseline"
       }
     ],
     "prior_post_observations": [
@@ -4498,14 +4695,14 @@
         "id": "7707919548778876192",
         "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
         "views": 928,
-        "relative_to_median": 1.8977505112474438
+        "relative_to_median": 1.6996336996336996
       }
     ],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-19T12:20:58.721000+00:00",
+    "source_updated_at": "2026-11-20T07:45:59.139000+00:00",
     "evidence_level": "matched_observations_not_causal",
     "render_qc": {
       "duration": null,
@@ -4515,9 +4712,9 @@
       "lip_sync_measured": null
     },
     "next_test": {
-      "change": "Testing different cultural hooks in video intros for immigrant learners",
-      "measure": "Median views and engagement metrics",
-      "evidence": "hypothesis_not_proven"
+      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+      "evidence": "proposed_test_not_proven"
     }
   },
   "full_episode_admission": {
@@ -4537,30 +4734,30 @@
       ],
       "cached_videos": 0
     },
-    "available_units": 2400.0,
-    "estimated_generation_units": 2060.5513199999987,
-    "required_units_with_headroom": 2353.9804271999988,
-    "admitted": true,
-    "image_bound": 55.706642399999964,
-    "video_bound": 216.57089279999983,
+    "available_units": 837.0749599999999,
+    "estimated_generation_units": 1981.8765120000028,
+    "required_units_with_headroom": 2284.1170248000026,
+    "admitted": false,
+    "image_bound": 56.020563599999875,
+    "video_bound": 207.75948720000034,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
     "video_basis": "recent_account_debit_upper_plus_20_percent",
     "reserve_units": 30,
-    "final_request_headroom": 263.4291072000002,
+    "final_request_headroom": 272.2405127999997,
     "full_episode_guaranteed": false,
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-19",
-    "episode": 26,
-    "plan_sha": "c2c9c496adc07930c4f8c27911973440f3acfa5291bb0816fc8c731724f2ec73",
+    "day": "2026-11-20",
+    "episode": 27,
+    "plan_sha": "3398254f734427a4ed1c4c8c14692133b03e7b5bd93bd0de5efb39a4b018dddb",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-19T12:20:58.721000+00:00",
+    "review_source_at": "2026-11-20T07:45:59.139000+00:00",
     "selected_test": {
-      "change": "Testing different cultural hooks in video intros for immigrant learners",
-      "measure": "Median views and engagement metrics",
-      "evidence": "hypothesis_not_proven"
+      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+      "evidence": "proposed_test_not_proven"
     }
   }
 }
