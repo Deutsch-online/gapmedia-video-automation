@@ -1,0 +1,232 @@
+diff --git a/public/math-duel-ui.mjs b/public/math-duel-ui.mjs
+index 97d23fd..701ba9e 100644
+--- a/public/math-duel-ui.mjs
++++ b/public/math-duel-ui.mjs
+@@ -1,4 +1,4 @@
+-import {renderQuizShow,buildShowOption,profileFollow,framePortrait} from './quiz-show-view.mjs?v=115';
++import {renderQuizShow,buildShowOption,profileFollow,framePortrait} from './quiz-show-view.mjs?v=116';
+ import {profileFlag,profileFlagUrl} from './fun-styles.mjs';
+ const $=id=>document.getElementById(id),screen=location.pathname.endsWith('/screen');document.body.classList.toggle('screen',screen);let panelLang='en';try{panelLang=localStorage.getItem('crown-panel-language')||'en'}catch{}const labels={en:{title:'Math Duel LIVE',roundTime:'ROUND TIME',boss:'👑 Number Boss',points:'Correct answer +10 · free to play',correct:'✅ Correct answers',rank:'🏆 Live leaderboard',enableAudio:'Enable live voice',panel:'Control panel · no password',panelLanguage:'Panel language',start:'▶ Start / resume',pause:'Ⅱ Pause',next:'Next question',reset:'New match',duration:'Round duration (seconds)',save:'Save duration',outputLanguage:'Live output & voice language',voice:'Read questions, welcome viewers & thank supporters',demo:'Practice players · control panel only',showcase:'Demo match · computer players',rival:'Practice rivals · computer players',auto:'Start the next round automatically after 30 seconds',connect:'Connect LIVE',disconnect:'Disconnect',copy:'Copy display link',test:'Manual test · affects this match',testAnswer:'Test answer',testJoin:'Test welcome',testLike:'Test like response',testThanks:'Test appreciation',other:'Other games panel',ready:'Ready',paused:'Paused',finished:'Round finished',exhausted:'All questions used · no repeats',waiting:'Waiting for players',number:'Type the answer as a number in the live chat.',option:'Type A, B, C or D — or the answer.',connected:'Connected to game server',offline:'Reconnecting to server…',success:'Panel ready · no password needed',resetConfirm:'Clear scores for this match? Question history will be kept.',saved:'Display link copied',audioOn:'Live voice enabled',audioBlocked:'Tap Enable live voice to allow playback',audioUnavailable:'Audio could not play; trying the next announcement',previous:'Previous answer: ',question:'Question',round:'Round',level:'Level',seconds:'seconds',countryHint:'Your flag: AF / AFG / country name',countryHelp:'Choose your country with its name, 2-letter or 3-letter code, or flag emoji. Examples: AFG, DE, GER, USA, UK, افغانستان.',countryTest:'Test country comment',history:'Unique questions used',available:'available'},fa:{title:'مسابقهٔ ریاضی و دانستنی‌ها',roundTime:'زمان دور',boss:'👑 قهرمان اعداد',points:'پاسخ درست +۱۰ · بازی رایگان',correct:'✅ پاسخ‌های درست',rank:'🏆 رتبه‌بندی زنده',enableAudio:'فعال‌کردن صدای لایو',panel:'پنل مدیریت · بدون رمز',panelLanguage:'زبان پنل',start:'▶ شروع / ادامه',pause:'Ⅱ توقف',next:'سؤال بعدی',reset:'مسابقهٔ تازه',duration:'زمان دور (ثانیه)',save:'ثبت زمان',outputLanguage:'زبان خروجی لایو و گفتار',voice:'خواندن سؤال، خوشامدگویی و تشکر',demo:'بازیکنان تمرینی · فقط در پنل',showcase:'مسابقهٔ دمو · بازیکنان رایانه‌ای',rival:'رقیب تمرینی · بازیکنان رایانه‌ای',auto:'شروع خودکار دور بعد پس از ۳۰ ثانیه',connect:'اتصال لایو',disconnect:'قطع اتصال',copy:'کپی لینک نمایش',test:'آزمایش دستی · روی همین مسابقه اثر دارد',testAnswer:'آزمایش پاسخ',testJoin:'آزمایش خوشامدگویی',testLike:'آزمایش واکنش لایک',testThanks:'آزمایش قدردانی',other:'پنل سایر بازی‌ها',ready:'آماده',paused:'متوقف',finished:'پایان دور',exhausted:'همهٔ سؤال‌ها استفاده شدند · بدون تکرار',waiting:'منتظر شرکت‌کنندگان',number:'پاسخ عددی را در چت لایو بنویس.',option:'حرف گزینه یا خود پاسخ را بنویس',connected:'متصل به سرور بازی',offline:'در حال اتصال مجدد…',success:'پنل آماده است · رمز لازم نیست',resetConfirm:'امتیازهای این مسابقه پاک شود؟ سابقهٔ سؤال‌ها حفظ می‌شود.',saved:'لینک نمایش کپی شد',audioOn:'صدای لایو فعال است',audioBlocked:'برای پخش، دکمهٔ فعال‌کردن صدا را بزنید',audioUnavailable:'صدای طبیعی در دسترس نیست یا سهمیهٔ روزانه تمام شده',previous:'پاسخ سؤال قبل: ',question:'سؤال',round:'دور',level:'مرحله',seconds:'ثانیه',countryHint:'پرچمت: AF / AFG / نام کشور',countryHelp:'نام کشور، کد دو یا سه‌حرفی یا ایموجی پرچم را کامنت کن؛ مانند AFG، DE، GER، USA، UK، افغانستان.',countryTest:'آزمایش کامنت کشور',history:'سؤال‌های یکتای استفاده‌شده',available:'موجود'}};
+ 
+@@ -28,7 +28,7 @@ function renderArrival(event){const root=$('arrivalBanner');if(!event){root.hidd
+ 
+ let answerFlightQuestion='',answerFlightSeen=new Set();
+ function animateAnswerArrivals(s){if(!screen)return;const firstSnapshot=!answerFlightQuestion;const key=s.round+':'+s.serial;if(key!==answerFlightQuestion){answerFlightQuestion=key;answerFlightSeen.clear();document.querySelectorAll('.answer-flight').forEach(e=>e.remove());}if(firstSnapshot){for(const p of s.choices||[])answerFlightSeen.add(p.id);return;}if(s.phase!=='playing')return;for(const person of s.choices||[]){if(!realLivePerson(person)||answerFlightSeen.has(person.id))continue;answerFlightSeen.add(person.id);const target=[...document.querySelectorAll('#options .voters .player-avatar')].find(e=>e.dataset.respondent===person.id);if(!target||performance.now()-received>2000)continue;const end=target.getBoundingClientRect(),canvas=$('broadcast').getBoundingClientRect(),scale=canvas.width/1080,flight=row('','',person).querySelector('.player-avatar');flight.classList.add('answer-flight');$('broadcast').append(flight);flight.style.left=((end.left-canvas.left)/scale)+'px';flight.style.top=((end.top-canvas.top)/scale)+'px';if(matchMedia('(prefers-reduced-motion: reduce)').matches){flight.remove();continue;}const animation=flight.animate([{transform:'translate('+((canvas.right-end.right)/scale-32)+'px,'+((canvas.bottom-end.bottom)/scale-220)+'px) scale(1.2)',opacity:0},{opacity:1,offset:.15},{transform:'translate(0,0) scale(1)',opacity:1}],{duration:900,easing:'cubic-bezier(.22,.8,.3,1)'});animation.onfinish=()=>flight.remove();animation.oncancel=()=>flight.remove();}}
+-function renderCelebration(event){if(event?.kind!=='correct'||!realLivePerson(event?.person))event=null;const root=$('celebrationCard');document.body.classList.toggle('celebrating',!!event);if(!event){root.hidden=true;root.replaceChildren();delete root.dataset.key;return;}root.hidden=false;if(screen){const q=document.querySelector('.quiz');root.style.setProperty('--arrival-top',(q.offsetTop+q.offsetHeight+10)+'px');}const key=event.id+'|'+language();if(root.dataset.key===key)return;root.dataset.key=key;root.dataset.kind=event.kind;root.replaceChildren();const fa=language()==='fa',heading=document.createElement('h2');heading.textContent=event.kind==='winner'?(fa?'🏆 برندهٔ دور':'🏆 ROUND WINNER'):(fa?'⚡ اولین پاسخ صحیح':'⚡ FIRST CORRECT ANSWER');const portrait=row('','',event.person).querySelector('.player-avatar');portrait.classList.add('celebration-portrait');const name=document.createElement('strong');name.className='celebration-name';name.textContent=event.person.name;const points=document.createElement('b');points.className='celebration-points';points.textContent=event.kind==='correct'?'+'+String(event.gained||10):fmt(event.points)+' '+(fa?'پوینت':'POINTS');const order=document.createElement('small');order.textContent=event.total>1?(event.kind==='winner'?(fa?'برندهٔ مشترک · ':'Shared win · '):'')+fmt(event.ordinal)+' / '+fmt(event.total):'';const context=document.createElement('p');context.className='celebration-context';context.textContent=(fa?'سؤال ':'Question ')+fmt(event.serial)+' · '+(fa?event.answerFa:event.answerEn);root.append(heading,context,framePortrait(portrait,'fire'),name,points,order);portrait.classList.add('fastest-ring');if(event.others?.length){const others=document.createElement('div');others.className='other-correct-respondents';for(const person of event.others){const item=row(person.name,'+'+String(person.gained||10),person);const avatar=item.querySelector('.player-avatar');const before=avatar.nextSibling;item.insertBefore(framePortrait(avatar),before);others.append(item);}root.append(others);}const follow=profileFollow(event.person,language());if(follow)root.append(follow);}
++function renderCelebration(event){if(event?.kind!=='correct'||!realLivePerson(event?.person))event=null;const root=$('celebrationCard');document.body.classList.toggle('celebrating',!!event);if(!event){root.hidden=true;root.replaceChildren();delete root.dataset.key;return;}root.hidden=false;if(screen){const q=document.querySelector('.quiz');root.style.setProperty('--arrival-top',(q.offsetTop+q.offsetHeight+10)+'px');}const key=event.id+'|'+language();if(root.dataset.key===key)return;root.dataset.key=key;root.dataset.kind=event.kind;root.replaceChildren();const fa=language()==='fa',heading=document.createElement('h2');heading.textContent=event.kind==='winner'?(fa?'🏆 برندهٔ دور':'🏆 ROUND WINNER'):(fa?'⚡ اولین پاسخ صحیح':'⚡ FIRST CORRECT ANSWER');const portrait=row('','',event.person).querySelector('.player-avatar');portrait.classList.add('celebration-portrait');const name=document.createElement('strong');name.className='celebration-name';name.textContent=event.person.name;const points=document.createElement('b');points.className='celebration-points';points.textContent=event.kind==='correct'?'+'+String(event.gained||10):fmt(event.points)+' '+(fa?'پوینت':'POINTS');const order=document.createElement('small');order.textContent=event.total>1?(event.kind==='winner'?(fa?'برندهٔ مشترک · ':'Shared win · '):'')+fmt(event.ordinal)+' / '+fmt(event.total):'';const context=document.createElement('p');context.className='celebration-context';context.textContent=(fa?'سؤال ':'Question ')+fmt(event.serial)+' · '+(fa?event.answerFa:event.answerEn);root.append(heading,context,framePortrait(portrait,'fire'),name,points,order);portrait.classList.add('fastest-ring');if(event.others?.length){const others=document.createElement('div');others.className='other-correct-respondents';others.style.setProperty('--profile-columns',String(Math.min(event.others.length,4)));others.classList.toggle('few-respondents',event.others.length<=4);for(const person of event.others){const item=row(person.name,'+'+String(person.gained||10),person);const avatar=item.querySelector('.player-avatar');const before=avatar.nextSibling;item.insertBefore(framePortrait(avatar),before);others.append(item);}root.append(others);}const follow=profileFollow(event.person,language());if(follow)root.append(follow);}
+ 
+ let positionDraft=null,positionTimer=0,positionLastSent=0,positionDragging=false,positionDragOffset=null;
+ const positionClamp=n=>Math.max(0,Math.min(100,Math.round(Number(n)||0)));
+diff --git a/public/math-duel.html b/public/math-duel.html
+index f76ceba..e94fc7d 100644
+--- a/public/math-duel.html
++++ b/public/math-duel.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=115"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
++<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=116"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
+ <div id="showMain"><section class="quiz"><div class="show-timer"><progress id="progress" max="30000" value="30000"></progress><b id="seconds"></b></div><div id="question" dir="ltr">Ready to start</div><div id="options"></div><p id="answerHint"></p><div id="showResponseBand"><div id="showAnswerCount"></div><div id="showAvatars"></div><div id="showFastest" hidden></div></div><small id="last" hidden></small><div id="selectionFeed" hidden></div></section>
+ <section id="showStandings" hidden><h2 id="showStandingsTitle">🏆 LEADERBOARD 🏆</h2><div id="nextRoundCountdown" hidden role="timer" aria-live="off"><span id="nextRoundLabel">NEXT ROUND IN</span><b id="nextRoundSeconds">30</b><span id="nextRoundUnit">seconds</span></div><div id="showPodium"></div><div id="showStandingsRows"></div></section></div>
+ <section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
+@@ -27,4 +27,4 @@
+ <section id="settings-studio" role="tabpanel" aria-labelledby="tab-studio" class="settings-page" hidden><h3 data-t="studioTab">LIVE Studio</h3><p data-t="studioIntro">Add a Link / Browser source using this display URL.</p><input id="screenUrl" readonly aria-label="Live screen URL"><div class="actions"><button id="copy" data-t="copy">Copy display link</button><button id="refreshOutputs" data-t="refreshOutputs">Refresh live output</button><a id="openOutput" target="_blank" rel="noopener" class="button-link" data-t="openOutput">Open live output</a></div><div class="studio-spec"><span data-t="sourceSize">Source size</span><b>1080 × 1920</b><span data-t="sourcePosition">Position X / Y</span><b>0 / 0</b><span data-t="crop">Crop (all sides)</span><b>0</b><span data-t="fit">Scale mode</span><b data-t="fitContain">Fit to screen · keep aspect ratio</b></div><p class="setting-note" data-t="studioReset">For an existing source, reset its crop / transform, set 1080 × 1920, then Fit to screen. Avoid Fill / Stretch.</p><p data-t="studioAudio">Capture audio from the browser source. Keep panel monitoring muted to prevent a second copy.</p><p data-t="studioPreview">Muted output preview</p><div class="studio-preview"><iframe id="studioPreview" title="Muted live output preview" loading="lazy" tabindex="-1" data-src="/fun/screen?v=105&amp;preview=1&amp;mute=1"></iframe></div></section>
+ <section id="settings-language" role="tabpanel" aria-labelledby="tab-language" class="settings-page" hidden><h3 data-t="languageTab">Languages</h3><label class="setting-field"><span data-t="panelLanguage">Panel language</span><select id="panelLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label><label class="setting-field"><span data-t="outputLanguage">Live output & voice language</span><select id="outputLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label></section>
+ <section id="settings-bank" role="tabpanel" aria-labelledby="tab-bank" class="settings-page" hidden><h3 data-t="bankTab">Question bank</h3><dl class="bank-summary"><dt data-t="bankTotal"></dt><dd id="bankTotal"></dd><dt data-t="bankRemaining"></dt><dd id="bankRemaining"></dd><dt data-t="bankStorage"></dt><dd id="bankStorage"></dd><dt data-t="bankLastSaved"></dt><dd id="bankLastSaved"></dd></dl><button id="saveQuestions" data-t="saveQuestions">Save question history now</button><p id="bankSaveStatus" role="status"></p><p class="setting-note" data-t="bankNote"></p><a href="/question-bank-sources.html" target="_blank" rel="noopener">Sources / منابع</a></section><section id="settings-test" role="tabpanel" aria-labelledby="tab-test" class="settings-page" hidden><h3 data-t="testTab">Tests</h3><p data-t="test">Manual test · affects this match</p><form id="testForm"><input id="testName" placeholder="Viewer name" value="Test player" required><input id="testAnswer" placeholder="Numeric answer" inputmode="numeric" required><button data-t="testAnswer">Test answer</button></form><p data-t="countryHelp"></p><form id="countryForm"><input id="testCountry" placeholder="AFG / DE / USA / افغانستان" aria-label="Country comment" required><button data-t="countryTest">Test country comment</button></form><div class="actions"><button id="testJoin" data-t="testJoin">Test welcome</button><button id="testThanks" data-t="testThanks">Test appreciation</button><button id="testLike" data-t="testLike">Test thanks</button></div></section>
+-</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=115"></script></body></html>
+\ No newline at end of file
++</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=116"></script></body></html>
+\ No newline at end of file
+diff --git a/public/math-duel.mjs b/public/math-duel.mjs
+index a592c5e..4445fc3 100644
+--- a/public/math-duel.mjs
++++ b/public/math-duel.mjs
+@@ -85,8 +85,8 @@ export function beginLiveQuizSession(s,now=Date.now()){
+ export function mathEvent(s,raw,now=Date.now()){
+  if(s.liveEnded)return false;
+  const d=normalizeLiveEvent(raw);mathTick(s,now);const id=String(d.userId||d.uniqueId||'');if(!id||id==='0'||id.startsWith('demo:'))return false;
+- s.viewerProfiles??={};const prior=s.viewerProfiles[id],name=String(d.nickname||prior?.name||d.uniqueId||id).replace(/[<>\r\n]/g,'').slice(0,40);let avatar=prior?.avatar||'';try{const u=new URL(d.avatar||'');if(u.protocol==='https:')avatar=u.href;}catch{}
+- const uniqueId=String(d.uniqueId||prior?.uniqueId||'').replace(/^@/,'');const person=s.viewerProfiles[id]={...prior,id,name,avatar,isTest:d.isTest===true,uniqueId:/^[a-zA-Z0-9_.]{1,30}$/.test(uniqueId)?uniqueId:'',observedAt:prior?.observedAt??now};
++ s.viewerProfiles??={};const prior=s.viewerProfiles[id],name=String(d.nickname||prior?.name||d.uniqueId||id).replace(/[<>\r\n]/g,'').slice(0,40);const takeAvatar=!!d.avatar&&(!prior?.avatar||d.avatarQuality>=(prior.avatarQuality??0));const avatar=takeAvatar?d.avatar:prior?.avatar||'',avatarQuality=takeAvatar?d.avatarQuality:prior?.avatarQuality??0;
++ const uniqueId=String(d.uniqueId||prior?.uniqueId||'').replace(/^@/,'');const person=s.viewerProfiles[id]={...prior,id,name,avatar,avatarQuality,isTest:d.isTest===true,uniqueId:/^[a-zA-Z0-9_.]{1,30}$/.test(uniqueId)?uniqueId:'',observedAt:prior?.observedAt??now};
+  if(d.type==='leave'){if(s.waiting)delete s.waiting[id];return true;}
+  const first=!prior||prior.observedAt===undefined;let arrivalChanged=false;if(d.type==='join'||first){arrivalChanged=queueArrival(s,person,now);s.waiting??={};if(!person.hasAnswered&&!s.waiting[id])s.waiting[id]={person:{...person},expiresAt:now+30000};}
+  s.welcomed??={};if(d.type==='join'||first){if(s.welcomed[id]===undefined||now-s.welcomed[id]>=600000){s.welcomed[id]=now;const welcome=phrase(s,'welcome',name,now),instructions=s.language==='fa'?' برای پاسخ، شمارهٔ گزینه یا خود جواب را بنویس.':' Reply with the option number or the answer.';speak(s,welcome||'','welcome',now,d.isTest===true);}}
+diff --git a/public/quiz-show-view.mjs b/public/quiz-show-view.mjs
+index 995b5cb..b292510 100644
+--- a/public/quiz-show-view.mjs
++++ b/public/quiz-show-view.mjs
+@@ -40,4 +40,11 @@ podium.classList.toggle('winner-celebration',celebrating);podium.classList.toggl
+ const podiumKey=JSON.stringify([lang,s.round,celebrating,leaders]);
+ if(podium.dataset.renderKey!==podiumKey){
+ podium.dataset.renderKey=podiumKey;
+-podium.replaceChildren();for(const index of[1,0,2]){const p=leaders[index];if(!p)continue;const slot=document.createElement('div');slot.className='podium-place place-'+(index+1);const portrait=pic(p,ctx.row),rank=document.createElement('b'),name=document.createElement('strong'),score=document.createElement('small');portrait.classList.add('podium-avatar');if(index===0)portrait.classList.add('round-leader-ring');rank.className='podium-step';rank.textContent=String(index+1);name.textContent=p.name;score.textContent=ctx.fmt(p.score??p.answerPoints??0);slot.append(celebrating?framePortrait(portrait,['gold','ice','fire'][index],index===0):portrait,rank,name,score);const follow=s.phase==='finished'&&profileFollow(p,lang);if(follow)slot.append(follow);podium.append(slot);}if(!leaders.length){const empty=document.createElement('p');empty.className='show-empty';empty.textContent=w.empty;podium.append(empty);}}$('showStandingsRows').replaceChildren(...(boards.match||[]).slice(3,10).map((p,i)=>scoreRow(p,i+3,ctx)));$('showAvatars').replaceChildren(...(s.choices||[]).slice(0,20).map(p=>pic(p,ctx.row)));$('answerHint').textContent=w.hint;$('showAnswerCount').textContent=s.reveal?ctx.fmt(s.reveal.correct)+' / '+ctx.fmt(s.reveal.total)+' '+w.correct:ctx.fmt((s.choices||[]).length)+' '+w.answers;$('showAnswerCount').classList.toggle('show-correct-total',!!s.reveal);const fastest=$('showFastest');fastest.replaceChildren();fastest.hidden=!s.reveal;if(s.reveal)for(const p of s.reveal.fastest||[]){const item=document.createElement('div');item.className='fastest-player';const name=document.createElement('span');name.textContent=p.name;const meta=document.createElement('b');meta.textContent='+'+String(p.gained||10)+' · '+((p.elapsed||0)/1000).toFixed(1)+'s';item.append(pic(p,ctx.row),name,meta);fastest.append(item);}$('showAvatars').hidden=!!s.reveal;$('showJoinTicker').textContent=s.arrival?s.arrival.person.name+' '+w.joined:'';const activity=[];for(const p of s.community?.likers||[])activity.push('♥ '+p.name+' '+ctx.fmt(p.likes));for(const p of s.community?.supporters||[])activity.push('✦ '+p.name+' · '+(p.lastGift?.name||'Gift')+' ×'+ctx.fmt(p.lastGift?.count||1));$('showCommunityTicker').textContent=activity.join('   ·   ');$('showCommunityTicker').hidden=true;if(s.celebration&&document.body.classList.contains('screen')){const q=$('question').getBoundingClientRect(),canvas=$('broadcast').getBoundingClientRect(),scale=canvas.width/1080;$('celebrationCard').style.top=((q.top-canvas.top)/scale)+'px';}if(document.body.classList.contains('screen')&&!showingBoard){const q=$('question');q.style.fontSize=s.kind==='math'?'100px':'60px';let font=parseFloat(q.style.fontSize);const range=document.createRange();range.selectNodeContents(q);while(font>36&&range.getBoundingClientRect().height/($('broadcast').getBoundingClientRect().width/1080)>q.clientHeight-48){font-=2;q.style.fontSize=font+'px';}for(const el of document.querySelectorAll('.option-text')){let f=48;el.style.fontSize=f+'px';while(f>26&&el.scrollHeight>68){f-=2;el.style.fontSize=f+'px';}}}if(s.phase==='paused')$('seconds').textContent=w.paused;else if(s.phase==='reveal')$('seconds').textContent=w.reveal;}
++podium.replaceChildren();for(const index of[1,0,2]){const p=leaders[index];if(!p)continue;const slot=document.createElement('div');slot.className='podium-place place-'+(index+1);const portrait=pic(p,ctx.row),rank=document.createElement('b'),name=document.createElement('strong'),score=document.createElement('small');portrait.classList.add('podium-avatar');if(index===0)portrait.classList.add('round-leader-ring');rank.className='podium-step';
++const numeral=document.createElement('span');
++numeral.className='podium-medal';
++numeral.textContent=lang==='fa'?'۱۲۳'[index]:String(index+1);
++const rankLabel=document.createElement('span');
++rankLabel.className='podium-medal-label';
++rankLabel.textContent=(lang==='fa'?['مقام اول','مقام دوم','مقام سوم']:['1st place','2nd place','3rd place'])[index];
++rank.append(numeral,rankLabel);name.textContent=p.name;score.textContent=ctx.fmt(p.score??p.answerPoints??0);slot.append(celebrating?framePortrait(portrait,['gold','ice','fire'][index],index===0):portrait,rank,name,score);const follow=s.phase==='finished'&&profileFollow(p,lang);if(follow)slot.append(follow);podium.append(slot);}if(!leaders.length){const empty=document.createElement('p');empty.className='show-empty';empty.textContent=w.empty;podium.append(empty);}}$('showStandingsRows').replaceChildren(...(boards.match||[]).slice(3,10).map((p,i)=>scoreRow(p,i+3,ctx)));$('showAvatars').replaceChildren(...(s.choices||[]).slice(0,20).map(p=>pic(p,ctx.row)));$('answerHint').textContent=w.hint;$('showAnswerCount').textContent=s.reveal?ctx.fmt(s.reveal.correct)+' / '+ctx.fmt(s.reveal.total)+' '+w.correct:ctx.fmt((s.choices||[]).length)+' '+w.answers;$('showAnswerCount').classList.toggle('show-correct-total',!!s.reveal);const fastest=$('showFastest');fastest.replaceChildren();fastest.hidden=!s.reveal;if(s.reveal)for(const p of s.reveal.fastest||[]){const item=document.createElement('div');item.className='fastest-player';const name=document.createElement('span');name.textContent=p.name;const meta=document.createElement('b');meta.textContent='+'+String(p.gained||10)+' · '+((p.elapsed||0)/1000).toFixed(1)+'s';item.append(pic(p,ctx.row),name,meta);fastest.append(item);}$('showAvatars').hidden=!!s.reveal;$('showJoinTicker').textContent=s.arrival?s.arrival.person.name+' '+w.joined:'';const activity=[];for(const p of s.community?.likers||[])activity.push('♥ '+p.name+' '+ctx.fmt(p.likes));for(const p of s.community?.supporters||[])activity.push('✦ '+p.name+' · '+(p.lastGift?.name||'Gift')+' ×'+ctx.fmt(p.lastGift?.count||1));$('showCommunityTicker').textContent=activity.join('   ·   ');$('showCommunityTicker').hidden=true;if(s.celebration&&document.body.classList.contains('screen')){const q=$('question').getBoundingClientRect(),canvas=$('broadcast').getBoundingClientRect(),scale=canvas.width/1080;$('celebrationCard').style.top=((q.top-canvas.top)/scale)+'px';}if(document.body.classList.contains('screen')&&!showingBoard){const q=$('question');q.style.fontSize=s.kind==='math'?'100px':'60px';let font=parseFloat(q.style.fontSize);const range=document.createRange();range.selectNodeContents(q);while(font>36&&range.getBoundingClientRect().height/($('broadcast').getBoundingClientRect().width/1080)>q.clientHeight-48){font-=2;q.style.fontSize=font+'px';}for(const el of document.querySelectorAll('.option-text')){let f=48;el.style.fontSize=f+'px';while(f>26&&el.scrollHeight>68){f-=2;el.style.fontSize=f+'px';}}}if(s.phase==='paused')$('seconds').textContent=w.paused;else if(s.phase==='reveal')$('seconds').textContent=w.reveal;}
+diff --git a/public/quiz-show.css b/public/quiz-show.css
+index 3113276..9b35769 100644
+--- a/public/quiz-show.css
++++ b/public/quiz-show.css
+@@ -584,3 +584,116 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ .frames-expired .top-fire-portrait > .player-avatar {
+   border: 2px solid var(--rim-dark) !important;
+ }
++
++/* Portrait dimensions are measured on the 1080×1920 broadcast canvas. */
++.screen #celebrationCard > .top-fire-portrait {
++  --portrait-size: 292px;
++  margin-top: 60px;
++  margin-bottom: 3px;
++}
++.screen #broadcast #celebrationCard:not([hidden]) {
++  height: 750px;
++  min-height: 750px;
++  max-height: 750px;
++  padding: 16px 30px;
++}
++.screen.celebrating #broadcast #showMain #question {
++  flex-basis: 750px;
++  min-height: 750px;
++  max-height: 750px;
++}
++.screen #broadcast #celebrationCard .celebration-name {
++  font-size: 36px;
++  line-height: 1.15;
++}
++.screen #broadcast #celebrationCard:not([hidden]) .other-correct-respondents {
++  grid-template-columns: repeat(var(--profile-columns, 4), minmax(0, 224px));
++  grid-auto-rows: 126px;
++  justify-content: center;
++  max-height: 254px;
++}
++.screen #celebrationCard .other-correct-respondents .top-fire-portrait {
++  --portrait-size: 82px;
++  --fire-edge: 4px;
++  margin: 4px auto 0;
++}
++.screen #celebrationCard .other-correct-respondents.few-respondents .top-fire-portrait {
++  --portrait-size: 114px;
++}
++.screen #broadcast #celebrationCard .other-correct-respondents.few-respondents {
++  grid-auto-rows: 167px;
++}
++.screen #celebrationCard .other-correct-respondents .row > span:not(.fire-portrait) {
++  max-width: 185px;
++  font-size: 23px;
++}
++.screen #broadcast #showPodium .top-fire-portrait {
++  --portrait-size: 222px;
++}
++.screen #broadcast #showPodium .place-1 .top-fire-portrait {
++  --portrait-size: 290px;
++}
++#broadcast #showPodium .podium-step {
++  --medal-top: #dfedff;
++  --medal-bottom: #6c91c1;
++  --medal-edge: #b3c7e5;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: .42em;
++  width: fit-content;
++  height: auto;
++  min-height: 0;
++  padding: .18em .48em;
++  font-size: 16px;
++  text-decoration: none;
++  border-radius: 99px;
++  border: 1px solid var(--medal-edge);
++  color: #181126;
++  background: linear-gradient(165deg,var(--medal-top),var(--medal-bottom));
++  box-shadow: inset 0 1px 0 #ffffff89,0 4px 10px #05001488;
++}
++#broadcast #showPodium .place-1 .podium-step {
++  --medal-top: #fff6be;
++  --medal-bottom: #edaa3b;
++  --medal-edge: #ffe18a;
++}
++#broadcast #showPodium .place-3 .podium-step {
++  --medal-top: #ffd8b6;
++  --medal-bottom: #d4875b;
++  --medal-edge: #ffbd8f;
++}
++#broadcast #showPodium .podium-medal {
++  flex: none;
++  display: grid;
++  place-items: center;
++  width: 1.45em;
++  height: 1.45em;
++  font-weight: 900;
++  border: 1px solid #3a26368c;
++  border-radius: 50%;
++  background: #ffffff54;
++}
++#broadcast #showPodium .podium-medal-label {
++  font-size: .64em;
++  font-weight: 800;
++  white-space: nowrap;
++}
++.screen #broadcast #showPodium .podium-step {
++  font-size: 37px;
++}
++.screen #celebrationCard .other-correct-respondents .top-fire-portrait {
++  max-width: none;
++}
++.screen #broadcast #showCommunity .live-community-row {
++  grid-template-columns: 70px minmax(0, 1fr) auto;
++}
++.screen #broadcast #showCommunity .live-community-row > .player-avatar {
++  --community-avatar-scale: var(--like-avatar-size, 1.4);
++  width: min(62px, calc(35px * var(--community-avatar-scale)));
++  height: min(62px, calc(35px * var(--community-avatar-scale)));
++  transform: none;
++}
++.screen #broadcast #showCommunity .gift-profile > .player-avatar {
++  --community-avatar-scale: var(--gift-avatar-size, 1.6);
++}
+diff --git a/public/supporters.mjs b/public/supporters.mjs
+index 0eb3dd8..b2e1f0d 100644
+--- a/public/supporters.mjs
++++ b/public/supporters.mjs
+@@ -1,5 +1,20 @@
+ export const eventIds=event=>[event.uniqueId,event.user?.uniqueId,event.user?.displayId,event.userId,event.user?.userId,event.user?.id].map(v=>String(v||'').trim().replace(/^@/,'').toLowerCase()).filter(Boolean);
+-export function normalizeLiveEvent(event){const u=event.user||{},gift=event.gift||{},number=v=>Number.isFinite(Number(v))?Number(v):0;return {...event,uniqueId:event.uniqueId||u.uniqueId||u.displayId||'',userId:String([event.userId,u.userId,u.idStr,u.id,event.uniqueId,u.uniqueId,u.displayId,u.secUid].find(v=>v!==undefined&&v!==null&&!['','0','undefined','null'].includes(String(v).trim()))||''),comment:String(event.comment??event.text??event.content??''),nickname:event.nickname||event.nickName||u.nickname||u.nickName||'',avatar:u.avatarLarge?.urlList?.[0]||u.avatarMedium?.urlList?.[0]||event.avatar||event.profilePictureUrl||u.profilePictureUrl||u.avatarThumb?.urlList?.[0]||u.avatarThumb?.url?.[0]||'',giftType:number(event.giftType??event.giftDetails?.giftType??gift.type),diamondCount:number(event.diamondCount??event.giftDetails?.diamondCount??gift.diamondCount),repeatCount:Math.max(1,number(event.repeatCount||1)),repeatEnd:event.repeatEnd===true||Number(event.repeatEnd)===1,eventId:String(event.eventId||event.common?.msgId||event.msgId||'')};}
++function liveAvatar(event,user){
++ const candidates=[
++  [3,user.avatarLarge],
++  [2,user.avatarMedium],
++  [1,event.avatar||event.profilePictureUrl||user.profilePictureUrl],
++  [0,user.avatarThumb]
++ ];
++ for(const [quality,photo] of candidates){
++  const urls=typeof photo==='string'?[photo]:photo?.urlList??photo?.url??[];
++  for(const value of Array.isArray(urls)?urls:[urls]){
++   try{const url=new URL(value);if(url.protocol==='https:')return{avatar:url.href,avatarQuality:quality};}catch{}
++  }
++ }
++ return {avatar:'',avatarQuality:0};
++}
++export function normalizeLiveEvent(event){const u=event.user||{},gift=event.gift||{},number=v=>Number.isFinite(Number(v))?Number(v):0;return {...event,uniqueId:event.uniqueId||u.uniqueId||u.displayId||'',userId:String([event.userId,u.userId,u.idStr,u.id,event.uniqueId,u.uniqueId,u.displayId,u.secUid].find(v=>v!==undefined&&v!==null&&!['','0','undefined','null'].includes(String(v).trim()))||''),comment:String(event.comment??event.text??event.content??''),nickname:event.nickname||event.nickName||u.nickname||u.nickName||'',...liveAvatar(event,u),giftType:number(event.giftType??event.giftDetails?.giftType??gift.type),diamondCount:number(event.diamondCount??event.giftDetails?.diamondCount??gift.diamondCount),repeatCount:Math.max(1,number(event.repeatCount||1)),repeatEnd:event.repeatEnd===true||Number(event.repeatEnd)===1,eventId:String(event.eventId||event.common?.msgId||event.msgId||'')};}
+ const key=v=>String(v||'').trim().replace(/^@/,'').toLowerCase();
+ export function recordSupporter(state,event,now=Date.now()){
+  if(!['like','gift'].includes(event.type))return false;
+diff --git a/tests/challenge104.mjs b/tests/challenge104.mjs
+index 14283c7..1af0469 100644
+--- a/tests/challenge104.mjs
++++ b/tests/challenge104.mjs
+@@ -10,3 +10,11 @@ test('question IDs do not repeat across match resets and state-file restarts',()
+ test('large or medium SDK avatars are preferred to blurry thumbnails',()=>{const base={type:'join',user:{idStr:'123456',avatarThumb:{urlList:['https://example.com/40.jpg']},avatarMedium:{urlList:['https://example.com/200.jpg']},avatarLarge:{urlList:['https://example.com/720.jpg']}}};assert.equal(normalizeLiveEvent(base).avatar,'https://example.com/720.jpg');delete base.user.avatarLarge;assert.equal(normalizeLiveEvent(base).avatar,'https://example.com/200.jpg');});
+ 
+ test('all correct profiles appear even when the leaderboard is capped at twenty',()=>{const s=mathState({},0);mathControl(s,'start',null,1000);for(let i=0;i<25;i++)answer(s,'person-'+i,1100+i);assert.equal(mathView(s,1200).leaderboards.match.length,20);mathControl(s,'next',null,2000);assert.equal(s.celebration.person.id,'person-0');assert.equal(s.celebration.others.length,24);assert.equal(s.players.length,25);assert.equal(s.players.at(-1).answerPoints,10);});
++
++test('a later low-resolution event does not replace a sharper viewer portrait',()=>{
++ const state=mathState({},1000);
++ const id='clear-viewer';
++ mathEvent(state,{type:'join',user:{idStr:id,avatarLarge:{url:['https://example.com/720.jpg']}}},1100);
++ mathEvent(state,{type:'like',user:{idStr:id,avatarThumb:{urlList:['https://example.com/40.jpg']}},likeCount:1},1200);
++ assert.equal(state.viewerProfiles[id].avatar,'https://example.com/720.jpg');
++});
