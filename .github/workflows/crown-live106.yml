@@ -1,4 +1,4 @@
-name: Publish jewel crown celebrations and frame timing controls
+name: Restore the original illustrated Crown rings
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: 3ba7fa6df9193621cd84fbc94e2ab52aa6bf2821
+      CROWN_PARENT: 6bed1a3c08c2a257db009bdb981e8636ccc9a4b4
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,13 +28,13 @@ jobs:
           python-version: '3.11'
       - name: Prepare and verify the Space update
         run: |
-          pip install 'huggingface_hub>=0.34,<2' cryptography
+          pip install 'huggingface_hub>=0.34,<2' cryptography pillow
           sudo apt-get update
           sudo apt-get install -y espeak-ng
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          python "$GITHUB_WORKSPACE/crown-live/update-frames111.py"
+          python "$GITHUB_WORKSPACE/crown-live/update-frames112.py" "$GITHUB_WORKSPACE/live-rings/public/frames"
           git diff --check
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
@@ -90,20 +90,20 @@ jobs:
           server.write_text(source)
           subprocess.run(['node','--check','server.mjs'],cwd=root,check=True)
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
-          files = tracked
+          files = tracked + [f'public/quiz-frames/{style}.webp' for style in ('fire','gold','ice')]
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Add jeweled portrait rings, champion crown and configurable frame durations',
+              commit_message='Restore the illustrated lion, dragon and ice portrait rings',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=111', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=112', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=111' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=111' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=112' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=112' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
