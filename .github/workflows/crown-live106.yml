@@ -1,4 +1,4 @@
-name: Publish Crown Panel profile and question timing update
+name: Publish silent Crown quiz countdown
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: 8f884dcdba85ca0020d22eae84e7bae576f7059a
+      CROWN_PARENT: 2226ee3ab7dd47d4faf104e5247135afc10a0fd3
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,9 +34,7 @@ jobs:
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          base64 -d "$GITHUB_WORKSPACE/crown-live/update106.patch.gz.b64" | gzip -d > /tmp/crown106.patch
-          git apply --check /tmp/crown106.patch
-          git apply /tmp/crown106.patch
+          python "$GITHUB_WORKSPACE/crown-live/remove-countdown108.py"
           git diff --check
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
@@ -80,31 +78,28 @@ jobs:
           descriptor=json.dumps({'repo':history_repo,'commit':saved.oid,'filename':filename,'revision':current['revision']})
           server=root/'server.mjs'
           source=server.read_text()
-          helper=pathlib.Path('crown-live/deployment-recovery106.txt').read_text()
-          anchor='try{const data=existsSync(file)?JSON.parse(readFileSync(file)):'
-          if source.count(anchor)!=1 or source.count('mathVersion:105')!=1:
-              raise SystemExit('Recovery anchors changed in Space source.')
-          source=source.replace(anchor,helper.replace('DEPLOYMENT_RECOVERY_DESCRIPTOR',descriptor)+anchor.replace('data=','data=recoveryData||('),1)
-          source=source.replace(':null;if(data){game.restore(data.state);revision=data.revision||0}',':null);if(data){game.restore(data.state);revision=data.revision||0;if(recoveryData)restoredDeploymentRevision=revision;}',1)
-          source=source.replace('mathVersion:105','mathVersion:105,restoredDeploymentRevision',1)
-          source=source.replace("catch{console.log('No valid saved game; starting an empty lobby')}","catch(error){if(recoveryData)throw error;console.log('No valid saved game; starting an empty lobby')}",1)
+          import re
+          source, replaced = re.subn(r'(?m)^const deploymentRecovery = [^\n]+;$',
+              lambda _: 'const deploymentRecovery = '+descriptor+';', source)
+          if replaced != 1:
+              raise SystemExit('Recovery descriptor changed in Space source.')
           server.write_text(source)
           subprocess.run(['node','--check','server.mjs'],cwd=root,check=True)
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
-          files = tracked + ['tests/profile-timing.mjs']
+          files = tracked
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Update quiz profiles, question timing and live closing screen',
+              commit_message='Remove audible quiz countdown ticks',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=107', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=108', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=107' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=108' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
@@ -112,30 +107,19 @@ jobs:
           else:
               raise SystemExit('Published runtime could not be verified.')
           PY
-      - name: Send verified links to the existing private Telegram chat
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      - name: Reload the existing broadcast output
+        working-directory: /tmp/crown-app
         run: |
-          python - <<'PY'
-          import json, os, urllib.request
-          token = os.environ['TELEGRAM_BOT_TOKEN']
-          chat = str(json.load(open('.telegram-bot-chat.json'))['id'])
-          def call(method, payload):
-              req = urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,
-                  data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
-              try:
-                  with urllib.request.urlopen(req, timeout=30) as response:
-                      reply = json.load(response)
-              except Exception:
-                  raise SystemExit('Telegram outcome unknown; check the chat before retrying.') from None
-              if not reply.get('ok'):
-                  raise SystemExit('Telegram delivery was not confirmed.')
-              return reply['result']
-          if call('getChat', {'chat_id':chat}).get('type') != 'private':
-              raise SystemExit('The saved owner chat must be private.')
-          origin = os.environ['CROWN_ORIGIN']
-          message = ('آپدیت پنل Crown منتشر شد. تنظیم پروفایل‌ها، جشن سه نفر اول، وقفهٔ سؤال‌ها و دکمهٔ ختم لایو فعال است.\n\n'
-                     + 'پنل: '+origin+'/fun/control?v=107\n'+'خروجی: '+origin+'/fun/screen?v=107')
-          sent = call('sendMessage', {'chat_id':chat,'text':message,'link_preview_options':{'is_disabled':True}})
-          print('Telegram message ID:', sent['message_id'])
-          PY
+          node --input-type=module - <<'JS'
+          import WebSocket from 'ws';
+          const ws=new WebSocket(process.env.CROWN_ORIGIN.replace('https:','wss:')+'/relay?client=castle80');
+          const id=crypto.randomUUID();
+          const timer=setTimeout(()=>{ws.terminate();process.exitCode=1;},10000);
+          ws.on('open',()=>ws.send(JSON.stringify({type:'mathPanelAccess'})));
+          ws.on('message',raw=>{
+            const message=JSON.parse(raw);
+            if(message.type==='mathPanelOK')ws.send(JSON.stringify({type:'uiCommand',command:'mathRefresh',id}));
+            if(message.type==='uiAck'&&message.id===id){clearTimeout(timer);ws.close();}
+          });
+          ws.on('error',()=>{clearTimeout(timer);process.exitCode=1;});
+          JS
