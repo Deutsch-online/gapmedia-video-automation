@@ -1,0 +1,204 @@
+diff --git a/public/math-duel-ui.mjs b/public/math-duel-ui.mjs
+index 1230568..97d23fd 100644
+--- a/public/math-duel-ui.mjs
++++ b/public/math-duel-ui.mjs
+@@ -1,4 +1,4 @@
+-import {renderQuizShow,buildShowOption,profileFollow,framePortrait} from './quiz-show-view.mjs?v=113';
++import {renderQuizShow,buildShowOption,profileFollow,framePortrait} from './quiz-show-view.mjs?v=115';
+ import {profileFlag,profileFlagUrl} from './fun-styles.mjs';
+ const $=id=>document.getElementById(id),screen=location.pathname.endsWith('/screen');document.body.classList.toggle('screen',screen);let panelLang='en';try{panelLang=localStorage.getItem('crown-panel-language')||'en'}catch{}const labels={en:{title:'Math Duel LIVE',roundTime:'ROUND TIME',boss:'👑 Number Boss',points:'Correct answer +10 · free to play',correct:'✅ Correct answers',rank:'🏆 Live leaderboard',enableAudio:'Enable live voice',panel:'Control panel · no password',panelLanguage:'Panel language',start:'▶ Start / resume',pause:'Ⅱ Pause',next:'Next question',reset:'New match',duration:'Round duration (seconds)',save:'Save duration',outputLanguage:'Live output & voice language',voice:'Read questions, welcome viewers & thank supporters',demo:'Practice players · control panel only',showcase:'Demo match · computer players',rival:'Practice rivals · computer players',auto:'Start the next round automatically after 30 seconds',connect:'Connect LIVE',disconnect:'Disconnect',copy:'Copy display link',test:'Manual test · affects this match',testAnswer:'Test answer',testJoin:'Test welcome',testLike:'Test like response',testThanks:'Test appreciation',other:'Other games panel',ready:'Ready',paused:'Paused',finished:'Round finished',exhausted:'All questions used · no repeats',waiting:'Waiting for players',number:'Type the answer as a number in the live chat.',option:'Type A, B, C or D — or the answer.',connected:'Connected to game server',offline:'Reconnecting to server…',success:'Panel ready · no password needed',resetConfirm:'Clear scores for this match? Question history will be kept.',saved:'Display link copied',audioOn:'Live voice enabled',audioBlocked:'Tap Enable live voice to allow playback',audioUnavailable:'Audio could not play; trying the next announcement',previous:'Previous answer: ',question:'Question',round:'Round',level:'Level',seconds:'seconds',countryHint:'Your flag: AF / AFG / country name',countryHelp:'Choose your country with its name, 2-letter or 3-letter code, or flag emoji. Examples: AFG, DE, GER, USA, UK, افغانستان.',countryTest:'Test country comment',history:'Unique questions used',available:'available'},fa:{title:'مسابقهٔ ریاضی و دانستنی‌ها',roundTime:'زمان دور',boss:'👑 قهرمان اعداد',points:'پاسخ درست +۱۰ · بازی رایگان',correct:'✅ پاسخ‌های درست',rank:'🏆 رتبه‌بندی زنده',enableAudio:'فعال‌کردن صدای لایو',panel:'پنل مدیریت · بدون رمز',panelLanguage:'زبان پنل',start:'▶ شروع / ادامه',pause:'Ⅱ توقف',next:'سؤال بعدی',reset:'مسابقهٔ تازه',duration:'زمان دور (ثانیه)',save:'ثبت زمان',outputLanguage:'زبان خروجی لایو و گفتار',voice:'خواندن سؤال، خوشامدگویی و تشکر',demo:'بازیکنان تمرینی · فقط در پنل',showcase:'مسابقهٔ دمو · بازیکنان رایانه‌ای',rival:'رقیب تمرینی · بازیکنان رایانه‌ای',auto:'شروع خودکار دور بعد پس از ۳۰ ثانیه',connect:'اتصال لایو',disconnect:'قطع اتصال',copy:'کپی لینک نمایش',test:'آزمایش دستی · روی همین مسابقه اثر دارد',testAnswer:'آزمایش پاسخ',testJoin:'آزمایش خوشامدگویی',testLike:'آزمایش واکنش لایک',testThanks:'آزمایش قدردانی',other:'پنل سایر بازی‌ها',ready:'آماده',paused:'متوقف',finished:'پایان دور',exhausted:'همهٔ سؤال‌ها استفاده شدند · بدون تکرار',waiting:'منتظر شرکت‌کنندگان',number:'پاسخ عددی را در چت لایو بنویس.',option:'حرف گزینه یا خود پاسخ را بنویس',connected:'متصل به سرور بازی',offline:'در حال اتصال مجدد…',success:'پنل آماده است · رمز لازم نیست',resetConfirm:'امتیازهای این مسابقه پاک شود؟ سابقهٔ سؤال‌ها حفظ می‌شود.',saved:'لینک نمایش کپی شد',audioOn:'صدای لایو فعال است',audioBlocked:'برای پخش، دکمهٔ فعال‌کردن صدا را بزنید',audioUnavailable:'صدای طبیعی در دسترس نیست یا سهمیهٔ روزانه تمام شده',previous:'پاسخ سؤال قبل: ',question:'سؤال',round:'دور',level:'مرحله',seconds:'ثانیه',countryHint:'پرچمت: AF / AFG / نام کشور',countryHelp:'نام کشور، کد دو یا سه‌حرفی یا ایموجی پرچم را کامنت کن؛ مانند AFG، DE، GER، USA، UK، افغانستان.',countryTest:'آزمایش کامنت کشور',history:'سؤال‌های یکتای استفاده‌شده',available:'موجود'}};
+ 
+diff --git a/public/math-duel.html b/public/math-duel.html
+index 5614dfb..f76ceba 100644
+--- a/public/math-duel.html
++++ b/public/math-duel.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=114"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
++<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=115"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
+ <div id="showMain"><section class="quiz"><div class="show-timer"><progress id="progress" max="30000" value="30000"></progress><b id="seconds"></b></div><div id="question" dir="ltr">Ready to start</div><div id="options"></div><p id="answerHint"></p><div id="showResponseBand"><div id="showAnswerCount"></div><div id="showAvatars"></div><div id="showFastest" hidden></div></div><small id="last" hidden></small><div id="selectionFeed" hidden></div></section>
+ <section id="showStandings" hidden><h2 id="showStandingsTitle">🏆 LEADERBOARD 🏆</h2><div id="nextRoundCountdown" hidden role="timer" aria-live="off"><span id="nextRoundLabel">NEXT ROUND IN</span><b id="nextRoundSeconds">30</b><span id="nextRoundUnit">seconds</span></div><div id="showPodium"></div><div id="showStandingsRows"></div></section></div>
+ <section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
+@@ -27,4 +27,4 @@
+ <section id="settings-studio" role="tabpanel" aria-labelledby="tab-studio" class="settings-page" hidden><h3 data-t="studioTab">LIVE Studio</h3><p data-t="studioIntro">Add a Link / Browser source using this display URL.</p><input id="screenUrl" readonly aria-label="Live screen URL"><div class="actions"><button id="copy" data-t="copy">Copy display link</button><button id="refreshOutputs" data-t="refreshOutputs">Refresh live output</button><a id="openOutput" target="_blank" rel="noopener" class="button-link" data-t="openOutput">Open live output</a></div><div class="studio-spec"><span data-t="sourceSize">Source size</span><b>1080 × 1920</b><span data-t="sourcePosition">Position X / Y</span><b>0 / 0</b><span data-t="crop">Crop (all sides)</span><b>0</b><span data-t="fit">Scale mode</span><b data-t="fitContain">Fit to screen · keep aspect ratio</b></div><p class="setting-note" data-t="studioReset">For an existing source, reset its crop / transform, set 1080 × 1920, then Fit to screen. Avoid Fill / Stretch.</p><p data-t="studioAudio">Capture audio from the browser source. Keep panel monitoring muted to prevent a second copy.</p><p data-t="studioPreview">Muted output preview</p><div class="studio-preview"><iframe id="studioPreview" title="Muted live output preview" loading="lazy" tabindex="-1" data-src="/fun/screen?v=105&amp;preview=1&amp;mute=1"></iframe></div></section>
+ <section id="settings-language" role="tabpanel" aria-labelledby="tab-language" class="settings-page" hidden><h3 data-t="languageTab">Languages</h3><label class="setting-field"><span data-t="panelLanguage">Panel language</span><select id="panelLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label><label class="setting-field"><span data-t="outputLanguage">Live output & voice language</span><select id="outputLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label></section>
+ <section id="settings-bank" role="tabpanel" aria-labelledby="tab-bank" class="settings-page" hidden><h3 data-t="bankTab">Question bank</h3><dl class="bank-summary"><dt data-t="bankTotal"></dt><dd id="bankTotal"></dd><dt data-t="bankRemaining"></dt><dd id="bankRemaining"></dd><dt data-t="bankStorage"></dt><dd id="bankStorage"></dd><dt data-t="bankLastSaved"></dt><dd id="bankLastSaved"></dd></dl><button id="saveQuestions" data-t="saveQuestions">Save question history now</button><p id="bankSaveStatus" role="status"></p><p class="setting-note" data-t="bankNote"></p><a href="/question-bank-sources.html" target="_blank" rel="noopener">Sources / منابع</a></section><section id="settings-test" role="tabpanel" aria-labelledby="tab-test" class="settings-page" hidden><h3 data-t="testTab">Tests</h3><p data-t="test">Manual test · affects this match</p><form id="testForm"><input id="testName" placeholder="Viewer name" value="Test player" required><input id="testAnswer" placeholder="Numeric answer" inputmode="numeric" required><button data-t="testAnswer">Test answer</button></form><p data-t="countryHelp"></p><form id="countryForm"><input id="testCountry" placeholder="AFG / DE / USA / افغانستان" aria-label="Country comment" required><button data-t="countryTest">Test country comment</button></form><div class="actions"><button id="testJoin" data-t="testJoin">Test welcome</button><button id="testThanks" data-t="testThanks">Test appreciation</button><button id="testLike" data-t="testLike">Test thanks</button></div></section>
+-</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=114"></script></body></html>
+\ No newline at end of file
++</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=115"></script></body></html>
+\ No newline at end of file
+diff --git a/public/quiz-show-view.mjs b/public/quiz-show-view.mjs
+index feae1df..995b5cb 100644
+--- a/public/quiz-show-view.mjs
++++ b/public/quiz-show-view.mjs
+@@ -1,21 +1,13 @@
++import {addTopFireFrame} from './top-fire-frame.mjs?v=115';
+ const $=id=>document.getElementById(id);
+ const copy={en:{title:'QUIZ SHOW',nextRound:'NEXT ROUND IN',seconds:'seconds',question:'QUESTION',answers:'answers',correct:'correct',hint:'Type A–D, 1–4, or the answer in chat!',standings:'🏆 LEADERBOARD 🏆',match:'SHOW',daily:'TODAY',monthly:'MONTH',empty:'Be the first to score',joined:'joined the quiz',ready:'Ready for the next question',reveal:'ANSWER REVEAL',paused:'Paused',fastest:'Fastest answers',categories:{math:'NUMBERS & MATH',world:'WORLD & GEOGRAPHY',science:'SCIENCE & NATURE',sport:'SPORT',gaming:'GAMING & INTERNET',film:'FILM & TV',general:'GENERAL KNOWLEDGE'}},fa:{title:'QUIZ SHOW',nextRound:'دور بعد تا',seconds:'ثانیه',question:'سؤال',answers:'پاسخ',correct:'درست',hint:'در چت یک، دو، سه، چهار یا خود پاسخ را بنویس. حروف A تا D و شمارهٔ گزینه هم پذیرفته می‌شوند.',standings:'🏆 جدول امتیازها 🏆',match:'مسابقه',daily:'امروز',monthly:'ماه',empty:'اولین امتیاز را بگیر',joined:'به مسابقه پیوست',ready:'آمادهٔ سؤال بعد',reveal:'اعلام پاسخ',paused:'متوقف',fastest:'سریع‌ترین پاسخ‌ها',categories:{math:'اعداد و ریاضی',world:'جهان و جغرافیا',science:'علم و طبیعت',sport:'ورزش',gaming:'بازی و اینترنت',film:'فیلم و تلویزیون',general:'دانستنی‌ها'}}};
+ function pic(p,row){const avatar=row('','',p).querySelector('.player-avatar');if(avatar)avatar.title=p.name;return avatar;}
+ export function framePortrait(avatar,style='gold',crowned=false){
+  const frame=document.createElement('span');
+- frame.className='fire-portrait heritage-portrait';
++ frame.className='fire-portrait top-fire-portrait';
+  frame.dataset.frame=style;
+- const flame=document.createElement('span');
+- flame.className='portrait-flame';
+- flame.setAttribute('aria-hidden','true');
+- frame.append(flame,avatar);
+- const artwork=document.createElement('img');
+- artwork.className='portrait-artwork';
+- artwork.src='/quiz-frames/'+style+'.webp?v=112';
+- artwork.alt='';
+- artwork.draggable=false;
+- artwork.setAttribute('aria-hidden','true');
+- frame.append(artwork);
++ frame.append(avatar);
++ addTopFireFrame(frame);
+  if(crowned){
+   const crown=document.createElement('span');
+   crown.className='champion-crown';
+diff --git a/public/quiz-show.css b/public/quiz-show.css
+index 8cf94fe..3113276 100644
+--- a/public/quiz-show.css
++++ b/public/quiz-show.css
+@@ -533,3 +533,54 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ .screen #broadcast :is(.show-timer, .clock, #nextRoundCountdown, #nextQuestionStatus, .arrival-time, .spotlight-time) {
+   display: none !important;
+ }
++
++/* Upper flame and blue smoke are rendered live around the current portrait. */
++.top-fire-portrait {
++  --rim-bright: #ffe0a3;
++  --rim-dark: #88603e;
++}
++.top-fire-portrait[data-frame="ice"] {
++  --rim-bright: #b9eaff;
++  --rim-dark: #57758c;
++}
++.top-fire-portrait[data-frame="fire"] {
++  --rim-bright: #ffd1a0;
++  --rim-dark: #995437;
++}
++.top-fire-effect {
++  position: absolute;
++  pointer-events: none;
++  left: -45.75%;
++  top: -64.36%;
++  width: 191.5%;
++  height: 191.5%;
++  z-index: -1;
++}
++.top-fire-portrait::before {
++  display: none;
++}
++.top-fire-portrait::after {
++  inset: 0;
++  border: 2px solid var(--rim-dark);
++  padding: 2px;
++  border-radius: 50%;
++  background: linear-gradient(28deg,var(--rim-dark),var(--rim-bright) 23%,#715033 57%,var(--rim-bright) 78%,var(--rim-dark));
++  mask: linear-gradient(#fff 0 0) content-box exclude, linear-gradient(#fff 0 0);
++  filter: none;
++  animation: none;
++}
++#broadcast .top-fire-portrait > .player-avatar {
++  width: 96%;
++  height: 96%;
++  border-color: transparent !important;
++  outline: 0;
++  box-shadow: inset 0 0 11px #d6ebff36;
++}
++#celebrationCard > .top-fire-portrait,
++#showPodium .top-fire-portrait {
++  margin-top: calc(var(--portrait-size) * .30);
++}
++.frames-expired .top-fire-effect { display: none; }
++.frames-expired .top-fire-portrait > .player-avatar {
++  border: 2px solid var(--rim-dark) !important;
++}
+diff --git a/public/top-fire-frame.mjs b/public/top-fire-frame.mjs
+new file mode 100644
+index 0000000..bd240c9
+--- /dev/null
++++ b/public/top-fire-frame.mjs
+@@ -0,0 +1,81 @@
++const size=360,cx=180,cy=215,radius=94;
++const smooth=(a,b,x)=>{const q=Math.max(0,Math.min(1,(x-a)/(b-a)));return q*q*(3-2*q);};
++const grid=new Float32Array(16384);
++let seed=43012;
++for(let i=0;i<grid.length;i++){seed=(Math.imul(seed,1664525)+1013904223)|0; grid[i]=(seed>>>0)/4294967296;}
++function noise(x,y){
++ const i=Math.floor(x),j=Math.floor(y),a=smooth(0,1,x-i),b=smooth(0,1,y-j);
++ const u=grid[(i&127)+(j&127)*128],v=grid[((i+1)&127)+(j&127)*128];
++ const w=grid[(i&127)+((j+1)&127)*128],z=grid[((i+1)&127)+((j+1)&127)*128];
++ return (u+(v-u)*a)*(1-b)+(w+(z-w)*a)*b;
++}
++function turbulence(x,y){return .58*noise(x,y)+.27*noise(2.1*x+13,2.1*y-8)+.15*noise(4.1*x-15,4.1*y+9);}
++export function renderFireFrame(ctx,pixels,t){
++ const data=pixels.data, resolution=pixels.width, scale=size/resolution;
++ data.fill(0);
++ const burst=Math.pow(Math.max(0,Math.sin(t*2)),7);
++ const wind=.15*Math.sin(t)+.10*Math.sin(3*t);
++ for(let row=0;row<resolution;row++)for(let column=0;column<resolution;column++){
++  const x=column*scale,y=row*scale;
++  const dx=x-cx,dy=y-cy,r=Math.hypot(dx,dy),distance=r-radius;
++  if(distance<1||distance>112)continue;
++  const theta=Math.atan2(dy,dx);
++  const up=Math.max(0,-dy);
++  const bend=up*(.10+wind)+7*Math.sin(up*.045+t*2);
++  const fireAngle=Math.atan2(dy,dx-bend);
++  const fireSide=Math.pow(Math.max(0,-Math.sin(fireAngle)),2.65);
++  const smokeSide=Math.pow(Math.max(0,Math.cos(theta+2.32-wind)),.8);
++  if(!fireSide&&!smokeSide)continue;
++  const driftX=.17*t+.65*Math.cos(t),driftY=.47*t+.45*Math.sin(t);
++  const nx=(x-bend)/22+driftX,ny=y/30+driftY;
++  const curl=turbulence(nx+5.2,ny+7.8);
++  const heat=turbulence(nx*1.31+curl*2.6,ny*1.46-curl*3.4);
++  const rise=Math.max(0,-dy)/radius;
++  const length=6+fireSide*(41+32*burst)+9*rise;
++  const strands=.65+.29*Math.sin(fireAngle*26+t*4+curl*8)+.12*Math.sin(fireAngle*47-t*5);
++  const edge=length*Math.max(.22,strands)*(.58+heat*.76);
++  const flame=fireSide*smooth(0,4,distance)*(1-smooth(edge*.22,edge,distance))*smooth(.22,.72,heat+(.55-distance/edge)*.31);
++  const smokeNoise=turbulence(nx*.71+curl*2+8,ny*.74+curl*2-7);
++  const bank=smokeSide*smooth(2,22,distance)*(1-smooth(28,104,distance))*smooth(.34,.76,smokeNoise);
++  if(flame<.008&&bank<.008)continue;
++  const fade=smooth(0,32,Math.min(x,y,size-1-x,size-1-y));
++  const k=(row*resolution+column)*4;
++  if(flame>bank*.82){
++   const hot=Math.min(1,Math.max(0,flame*.87+.43-distance/(edge*1.42)));
++   data[k]=255;data[k+1]=Math.round(28+207*hot);data[k+2]=Math.round(10+155*hot**2);
++   data[k+3]=Math.round(Math.min(.97,flame*1.7)*255*fade);
++  }else{
++   data[k]=Math.round(29+63*smokeNoise);data[k+1]=Math.round(60+114*smokeNoise);data[k+2]=Math.round(92+132*smokeNoise);
++   data[k+3]=Math.round(Math.min(.54,bank*1.2)*255*fade);
++  }
++ }
++ ctx.putImageData(pixels,0,0);
++}
++
++const frames=new Set();
++let raf=0,last=-Infinity;
++function paint(time){
++ if(time-last>=52){
++  last=time;
++  for(const frame of frames){
++   if(!frame.canvas.isConnected){frames.delete(frame);continue;}
++   if(!frame.canvas.getClientRects().length||frame.canvas.closest('.frames-expired,[hidden]'))continue;
++   renderFireFrame(frame.ctx,frame.pixels,time/620+frame.offset);
++  }
++ }
++ raf=frames.size?requestAnimationFrame(paint):0;
++}
++
++export function addTopFireFrame(host){
++ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
++ const canvas=document.createElement('canvas');
++ canvas.className='top-fire-effect';
++ canvas.setAttribute('aria-hidden','true');
++ canvas.width=canvas.height=180;
++ const ctx=canvas.getContext('2d');
++ if(!ctx)return;
++ host.prepend(canvas);
++ const frame={canvas,ctx,pixels:ctx.createImageData(canvas.width,canvas.height),offset:Math.random()*3};
++ frames.add(frame);
++ if(!raf)raf=requestAnimationFrame(paint);
++}

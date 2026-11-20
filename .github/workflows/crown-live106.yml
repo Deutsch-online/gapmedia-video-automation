@@ -1,4 +1,4 @@
-name: Publish timer-free Crown output and prevent repeated narration
+name: Publish real-time upper flames for Crown portraits
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: e8e477ba47d92151dab2b932e0647d798c7372d0
+      CROWN_PARENT: 6364340c0aa78d4d883b65518383d45e7e2dd69e
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,13 +34,14 @@ jobs:
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          cp "$GITHUB_WORKSPACE/crown-live/no-replay114.patch" /tmp/answers-session113.patch
+          cp "$GITHUB_WORKSPACE/crown-live/top-fire115.patch" /tmp/answers-session113.patch
           git apply --check /tmp/answers-session113.patch
           git apply /tmp/answers-session113.patch
           git diff --check
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
           node --check public/quiz-show-view.mjs
+          node --check public/top-fire-frame.mjs
           node --check public/quiz-show-view.mjs
           cp server.mjs /tmp/crown-production-server.mjs
           trap 'cp /tmp/crown-production-server.mjs server.mjs' EXIT
@@ -93,20 +94,20 @@ jobs:
           server.write_text(source)
           subprocess.run(['node','--check','server.mjs'],cwd=root,check=True)
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
-          files = tracked
+          files = tracked + ['public/top-fire-frame.mjs']
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Hide public timers and prevent question and narration replay',
+              commit_message='Render upper flames and drifting smoke around live portraits',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=114', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=115', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=114' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=114' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=115' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=115' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
