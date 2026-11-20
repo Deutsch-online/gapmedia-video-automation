@@ -1,6 +1,6 @@
 {
-  "request": "owner-lina-e26-kalt-resume-20261119",
-  "episode": 26,
-  "story_id": "lina-oma-mir-ist-kalt-v1",
-  "reason": "Continue episode 26 after shot 6 missed the 4.5s speech gate. Shortened only that line. Free providers only. Paid fallback stays off."
+  "request": "owner-lina-e27-sieben-jahre-20261120",
+  "episode": 27,
+  "story_id": "lina-oma-sieben-jahre-v1",
+  "reason": "The 07:30 Berlin cron did not fire. Produce episode 27 from the approved seven-years story. Free providers only. Paid fallback stays off."
 }
