@@ -35,12 +35,12 @@ export function evaluate(v,url,now=new Date()){
   if(!(mileage>0&&mileage<=170000)||!/^KMT$|^km$/i.test(v.mileageFromOdometer?.unitCode||v.mileageFromOdometer?.unitText||''))return reject('mileage');
   const name=String(v.name||'');
   const body=String(v.bodyType||'');
-  if(!/kombi|estate|station.?wagon|touring sports|sportswagon|\bcw\b|\bsw\b/i.test(name+' '+body))return reject('not verified estate');
+  const estate=/kombi|estate|station.?wagon|touring sports|sportswagon|\bcw\b|\bsw\b/i.test(name+' '+body);
   if(v.seatingCapacity!=null&&number(v.seatingCapacity)!==5)return reject('seats');
   const e=v.vehicleEngine||{},power=number(e.enginePower);
   const unit=String(e.enginePower?.unitCode||e.enginePower?.unitText||'');
   const ps=/KWT|kW/i.test(unit)?Math.round(power*1.35962):/PS|hp/i.test(unit)?power:null;
-  if(!(ps>=110&&ps<=140))return reject('power');
+  if(!(ps>=94&&ps<=147))return reject('power');
   const cc=number(e.engineDisplacement);
   const fuel=String(v.fuelType||e.fuelType||'');
   const diesel=/diesel/i.test(fuel),petrol=/benzin|petrol|gasoline|hybrid/i.test(fuel);
@@ -49,17 +49,33 @@ export function evaluate(v,url,now=new Date()){
   const registration=String(v.dateVehicleFirstRegistered||'');
   if(!/^\d{4}-\d{2}/.test(registration)||new Date(registration)>now)return reject('registration unknown');
   const year=Number(registration.slice(0,4));
-  const chain=(/avensis/i.test(name)&&cc===1794&&ps===129&&year>=2003&&year<=2008)||
-    (/(i30|cee.?d)/i.test(name)&&year>=2007&&year<=2017&&((diesel&&cc===1582&&[110,115,116,128,136].includes(ps))||(!diesel&&cc===1591&&[122,125,126,128,135].includes(ps))))||
-    (/auris/i.test(name)&&/hybrid/i.test(fuel+' '+name)&&cc===1798&&ps===136);
-  if(!chain)return reject('chain engine not in verified variant list');
+  if(year<2010)return reject('year before2010');
+  if(diesel)return reject('diesel excluded');
+  const manual=/manual|schalt/i.test(String(v.vehicleTransmission||''));
+  const chain=(/corolla/i.test(name)&&estate&&cc===1598&&ps===124&&manual)||
+    (/jazz/i.test(name)&&cc===1318&&ps===102)||
+    (/yaris/i.test(name)&&cc===1329&&ps===99)||
+    (/i30/i.test(name)&&estate&&cc===1396&&ps===109&&manual)||
+    (/cee.?d/i.test(name)&&estate&&cc===1396&&ps===109)||
+    (/insight/i.test(name)&&cc===1339&&[98,102].includes(ps)&&/hybrid/i.test(fuel+' '+name))||
+    (/swift/i.test(name)&&cc===1242&&ps===94)||
+    (/avensis/i.test(name)&&estate&&cc===1798&&ps===147&&manual);
+  if(!chain)return reject('not an allowed chain engine/body/transmission variant');
   const description=String(v.description||'');
   // Negated defect words are intentionally conservative: false exclusions are preferable to recommending faults.
   if(/motorschaden|getriebeschaden|unfallschaden|unfallwagen|bastler|nicht fahrbereit|ölverbrauch|DPF.{0,30}(voll|defekt)|nur.{0,20}(export|gewerb)|reparierter unfallschaden/i.test(description))return reject('disclosed fault');
+  if(!(v.serviceHistory===true||/scheckheft(?:gepflegt)?|serviceheft|service history/i.test(description))||/kein.{0,12}scheckheft|ohne.{0,12}scheckheft/i.test(description))return reject('service book not evidenced');
+  const co2=number(v.carbonDioxideEmissions);
+  if(co2===null||co2<=0)return reject('registered CO2/tax pending');
+  let carbon=0;
+  if(year<2021)carbon=Math.max(0,co2-(year<=2011?120:year<=2013?110:95))*2;
+  else {let previous=95;for(const [upper,rate] of [[115,2],[135,2.2],[155,2.5],[175,2.9],[195,3.4],[Infinity,4]]){carbon+=Math.max(0,Math.min(co2,upper)-previous)*rate;previous=upper;}}
+  const tax=Math.floor(Math.ceil(cc/100)*2+carbon);
+  if(tax>=150)return reject('tax not below150');
   const hu=description.match(/(?:HU|TÜV|AU)[^\d]{0,18}(0[1-9]|1[0-2])[.\/ -](20\d{2})/i);
   if(!hu||Number(hu[2])<2027||new Date(Number(hu[2]),Number(hu[1]),0)<now)return reject('HU unknown or expired');
   if(diesel&&!/(?:plakette|umweltplakette)[^.!\n]{0,35}(?:grün|gruen|green)/i.test(description))return reject('diesel green sticker not evidenced');
-  return {ok:true,name,price,mileage,ps,cc,fuel,registration,hu:hu[1]+'/'+hu[2],url,
+  return {ok:true,name,price,mileage,ps,cc,fuel,registration,tax,hu:hu[1]+'/'+hu[2],url,
     gearbox:String(v.vehicleTransmission||'نامعلوم'),address:offer.seller?.address||v.seller?.address,
     seller:offer.seller?.name||v.seller?.name||'نامعلوم'};
 }
@@ -93,11 +109,11 @@ export async function run(){
   ])urls.add(u);
   writeFileSync(file,JSON.stringify(state,null,2));
   for(const region of REGIONS){
-    try{const text=await mcpExaSearch('Gebraucht Kombi Toyota Avensis 1.8 Hyundai i30 1.6 Kia Ceed SW bis 6500 Euro 170000 km '+region);
+    try{const text=await mcpExaSearch('Gebraucht Toyota Corolla Kombi 1.6 Honda Jazz 1.3 Toyota Yaris 1.33 Hyundai i30 CW Kia Ceed SW 1.4 Honda Insight Suzuki Swift 1.2 Avensis 1.8 ab2010 bis6500Euro 170000km '+region);
       searched++;coverage.push({region,status:'searched'});
       for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u)urls.add(u);}
     }catch{coverage.push({region,status:'search failed'});}
-    const extra=await webSearch('Kombi 1.6 Hyundai i30 Kia Ceed gebraucht '+region,{limit:6});
+    const extra=await webSearch('Steuerkette Benzin Honda Jazz Toyota Yaris Suzuki Swift Hyundai i30 CW 1.4 gebraucht '+region,{limit:6});
     for(const hit of extra.results){const u=listingUrl(hit.url);if(u)urls.add(u);}
     coverage.push({region,fallback:extra.engine||'unavailable',results:extra.results.length});
   }
@@ -116,7 +132,7 @@ export async function run(){
       const cars=objects(html);if(cars.length!==1){outcomes.push({url,reason:'missing/ambiguous structured vehicle data'});continue;}
       const car=evaluate(cars[0],url);if(!car.ok){outcomes.push({url,reason:car.reason});continue;}
       await new Promise(r=>setTimeout(r,1100)); // public geocoder rate limit
-      const route=await roadDistance(car.address);if(route.km>160){outcomes.push({url,reason:'road distance'});continue;}
+      const route=await roadDistance(car.address);if(route.km>150){outcomes.push({url,reason:'road distance'});continue;}
       const fingerprint=createHash('sha256').update(JSON.stringify([car.price,car.mileage,car.hu,car.gearbox])).digest('hex');
       if(state.sent[url]===fingerprint)continue;
       const message='گزینهٔ تازه برای بررسی مدارک؛ تأیید خرید نیست\n'+car.name+'\n'+
@@ -124,7 +140,7 @@ export async function run(){
         'زنجیر طبق ترکیب موتور/سال؛ تطبیق VIN لازم است.\nHU طبق متن: '+car.hu+'؛ اصل گزارش دیده نشده\n'+
         'فروشنده: '+car.seller+'\nفاصلهٔ جاده‌ای: '+route.km+' km؛ '+route.source+'\n'+
         'سابقهٔ مالک، سرویس، تصادف و وضعیت فنی نیازمند مدارک است. برچسب سبز دیزل مجوز تمام شهرها نیست.\n'+
-        'هزینهٔ سوخت نمونه برای ۱۱۰۰ کیلومتر: بنزینی ۱۳۹–۱۷۸€ (۷–۹L، قیمت فرضی۱٫۸۰€)، دیزل ۹۴–۱۲۲€ (۵–۶٫۵L،۱٫۷۰€). Steuer بدون مدارک نامعلوم؛ بیمهٔ غیرالزام‌آور۵۰–۱۰۰€ و ذخیرهٔ تعمیر۱۰۰–۱۶۰€ ماهانه.\n'+url;
+        'هزینهٔ سوخت نمونه برای ۱۱۰۰ کیلومتر: بنزینی ۱۳۹–۱۷۸€ (۷–۹L، قیمت فرضی۱٫۸۰€)، دیزل ۹۴–۱۲۲€ (۵–۶٫۵L،۱٫۷۰€). Steuer محاسباتی با CO₂ آگهی (نیازمند تطبیق مدارک): '+car.tax+'€ در سال؛ بیمهٔ غیرالزام‌آور۵۰–۱۰۰€ و ذخیرهٔ تعمیر۱۰۰–۱۶۰€ ماهانه.\n'+url;
       const result=await sendMessage({token,chatId,text:escape(message),disablePreview:true});
       if(!result.ok)throw Error('Telegram send rejected');
       state.sent[url]=fingerprint;writeFileSync(file,JSON.stringify(state,null,2));
