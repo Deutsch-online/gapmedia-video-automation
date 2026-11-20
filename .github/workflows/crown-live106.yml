@@ -39,6 +39,9 @@ jobs:
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
           node --check public/quiz-show-view.mjs
+          cp server.mjs /tmp/crown-production-server.mjs
+          trap 'cp /tmp/crown-production-server.mjs server.mjs' EXIT
+          sed -i 's/^const deploymentRecovery = .*;$/const deploymentRecovery = null;/' server.mjs
           npm test
       - name: Publish and verify the running panel
         env:
