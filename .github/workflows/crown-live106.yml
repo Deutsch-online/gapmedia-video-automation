@@ -1,4 +1,4 @@
-name: Publish larger round portraits in the Crown reveal card
+name: Publish clearer Crown LIVE profiles and supporter thanks
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: bd4c57a6228e8544d17c9b30e06d0caabcf52d8c
+      CROWN_PARENT: a9469fec0d54781b265dc77d6f65b6c30ed20d3e
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,7 +34,7 @@ jobs:
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          cp "$GITHUB_WORKSPACE/crown-live/large-reveal117.patch" /tmp/answers-session113.patch
+          cp "$GITHUB_WORKSPACE/crown-live/clear-screen118.patch" /tmp/answers-session113.patch
           git apply --check /tmp/answers-session113.patch
           git apply /tmp/answers-session113.patch
           git diff --check
@@ -96,18 +96,18 @@ jobs:
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
           files = tracked
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Enlarge reveal portraits and prevent squashed profile circles',
+              commit_message='Improve LIVE layout and acknowledge gift and like milestones',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=117', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=118', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=116' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=117' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'id="liveActivityLane"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=118' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=118' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
