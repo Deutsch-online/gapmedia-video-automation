@@ -1,0 +1,115 @@
+diff --git a/public/math-duel-ui.mjs b/public/math-duel-ui.mjs
+index c3d7535..d59e7b2 100644
+--- a/public/math-duel-ui.mjs
++++ b/public/math-duel-ui.mjs
+@@ -27,7 +27,7 @@ const portrait=row('', '',event.person).querySelector('.player-avatar');portrait
+ 
+ function renderCommunity(community,focus){if(!community)return;const root=$('communityBoard');root.replaceChildren();for(const[kind,list,label]of[['like',community.likers,'topLikers'],['support',community.supporters,'supporters']]){const h=document.createElement('h3');h.textContent=t(label);root.append(h);if(!list.length){const empty=document.createElement('p');empty.className='empty';empty.textContent=t('liveEmpty');root.append(empty);}for(const p of list){const card=row(p.name,kind==='like'?fmt(p.likes):'',p);card.classList.add('community-row');card.dataset.community=kind;if(focus?.person.id===p.id)card.classList.add('featured-supporter');const info=document.createElement('small');info.className='community-info';info.textContent=kind==='like'?fmt(p.likePoints||0)+' PT · '+t('likeRule'):(p.lastGift?.name||'Gift')+' ×'+fmt(p.lastGift?.count||1)+' · '+fmt(p.lastGift?.coins||0)+' '+t('coins');if(kind==='support'&&p.lastGift?.image){const im=document.createElement('img');im.className='gift-thumb';try{const u=new URL(p.lastGift.image,location.origin);if(u.protocol==='https:'||u.origin===location.origin){im.src=u.href;im.alt=p.lastGift.name;card.append(im)}}catch{}}card.append(info);root.append(card);}}}
+ function renderWaiting(people){const root=$('waitingBoard');root.replaceChildren();if(!people.length)return;const h=document.createElement('h3');h.textContent=t('newViewers');root.append(h);for(const p of people.slice(-2))root.append(row(p.name,t('waitingHint'),p));}
+-function renderArrival(event){const root=$('arrivalBanner');if(!event){root.hidden=true;root.replaceChildren();delete root.dataset.id;return;}root.hidden=false;const key=event.id+'|'+JSON.stringify(event.person)+'|'+language();if(root.dataset.id!==key){root.dataset.id=key;root.classList.remove('arrival-fading');root.replaceChildren();const h=document.createElement('h2');h.textContent=t('welcome');const portrait=row('', '',event.person).querySelector('.player-avatar');portrait.classList.add('arrival-portrait');const name=document.createElement('strong');name.textContent=event.person.name;name.className='arrival-name';const note=document.createElement('p');note.className='arrival-note';note.textContent=t('waitingHint')+' · '+t('countryHint');const timer=document.createElement('b');timer.className='arrival-time';root.append(h,portrait,name,note,timer);root.style.animation='none';void root.offsetWidth;root.style.animation='';}if(screen)layoutArrival();root.classList.toggle('arrival-fading',event.fading);}
++function renderArrival(event){const root=$('arrivalBanner');if(!event){root.hidden=true;root.replaceChildren();delete root.dataset.id;return;}root.hidden=false;const key=event.id+'|'+JSON.stringify(event.person)+'|'+language();if(root.dataset.id!==key){root.dataset.id=key;root.classList.remove('arrival-fading');root.replaceChildren();const h=document.createElement('h2');h.textContent=t('welcome');const portrait=row('', '',event.person).querySelector('.player-avatar');portrait.classList.add('arrival-portrait');const name=document.createElement('strong');name.textContent=event.person.name;name.className='arrival-name';const note=document.createElement('p');note.textContent=t('waitingHint')+' · '+t('countryHint');const timer=document.createElement('b');timer.className='arrival-time';root.append(h,portrait,name,note,timer);root.style.animation='none';void root.offsetWidth;root.style.animation='';}if(screen)layoutArrival();root.classList.toggle('arrival-fading',event.fading);}
+ 
+ let answerFlightQuestion='',answerFlightSeen=new Set();
+ function animateAnswerArrivals(s){if(!screen)return;const firstSnapshot=!answerFlightQuestion;const key=s.round+':'+s.serial;if(key!==answerFlightQuestion){answerFlightQuestion=key;answerFlightSeen.clear();document.querySelectorAll('.answer-flight').forEach(e=>e.remove());}if(firstSnapshot){for(const p of s.choices||[])answerFlightSeen.add(p.id);return;}if(s.phase!=='playing')return;for(const person of s.choices||[]){if(!realLivePerson(person)||answerFlightSeen.has(person.id))continue;answerFlightSeen.add(person.id);const target=[...document.querySelectorAll('#options .voters .player-avatar')].find(e=>e.dataset.respondent===person.id);if(!target||performance.now()-received>2000)continue;const end=target.getBoundingClientRect(),canvas=$('broadcast').getBoundingClientRect(),scale=canvas.width/1080,flight=row('','',person).querySelector('.player-avatar');flight.classList.add('answer-flight');$('broadcast').append(flight);flight.style.left=((end.left-canvas.left)/scale)+'px';flight.style.top=((end.top-canvas.top)/scale)+'px';if(matchMedia('(prefers-reduced-motion: reduce)').matches){flight.remove();continue;}const animation=flight.animate([{transform:'translate('+((canvas.right-end.right)/scale-32)+'px,'+((canvas.bottom-end.bottom)/scale-220)+'px) scale(1.2)',opacity:0},{opacity:1,offset:.15},{transform:'translate(0,0) scale(1)',opacity:1}],{duration:900,easing:'cubic-bezier(.22,.8,.3,1)'});animation.onfinish=()=>flight.remove();animation.oncancel=()=>flight.remove();}}
+@@ -35,7 +35,7 @@ function renderCelebration(event){if(event?.kind!=='correct'||!realLivePerson(ev
+ 
+ let positionDraft=null,positionTimer=0,positionLastSent=0,positionDragging=false,positionDragOffset=null;
+ const positionClamp=n=>Math.max(0,Math.min(100,Math.round(Number(n)||0)));
+-function layoutArrival(scaleOverride){if(!latest)return;const pos=positionDraft||{x:latest.arrivalX??(latest.arrivalSide==='left'?0:100),y:latest.arrivalY??65},scale=scaleOverride??((latest.arrivalSize??100)/100);const width=220*scale,height=178*scale;if(screen){const bubble=$('arrivalBanner');bubble.style.setProperty('--lane-x',String(pos.x/100));bubble.style.setProperty('--lane-y',(pos.y-50)*.16+'px');}const stage=$('arrivalPositionPreview'),handle=$('arrivalDragHandle');if(stage.clientWidth){const sx=stage.clientWidth/1080,sy=stage.clientHeight/1920;handle.style.width=(width*sx)+'px';handle.style.height=(height*sy)+'px';handle.style.left=((28+(1080-56-width)*pos.x/100)*sx)+'px';handle.style.top=((28+(1920-56-height)*pos.y/100)*sy)+'px';}for(const key of['x','y']){$('arrival'+key.toUpperCase()).value=String(pos[key]);$('arrival'+key.toUpperCase()+'Value').textContent=String(pos[key])+'%';}}
++function layoutArrival(scaleOverride){if(!latest)return;const pos=positionDraft||{x:latest.arrivalX??(latest.arrivalSide==='left'?0:100),y:latest.arrivalY??65},scale=scaleOverride??((latest.arrivalSize??100)/100);const width=220*scale,height=178*scale;if(screen){const bubble=$('arrivalBanner');bubble.style.left=(28+(1080-56-width)*pos.x/100)+'px';bubble.style.right='auto';bubble.style.setProperty('--arrival-top',(28+(1920-56-height)*pos.y/100)+'px');}const stage=$('arrivalPositionPreview'),handle=$('arrivalDragHandle');if(stage.clientWidth){const sx=stage.clientWidth/1080,sy=stage.clientHeight/1920;handle.style.width=(width*sx)+'px';handle.style.height=(height*sy)+'px';handle.style.left=((28+(1080-56-width)*pos.x/100)*sx)+'px';handle.style.top=((28+(1920-56-height)*pos.y/100)*sy)+'px';}for(const key of['x','y']){$('arrival'+key.toUpperCase()).value=String(pos[key]);$('arrival'+key.toUpperCase()+'Value').textContent=String(pos[key])+'%';}}
+ function flushArrivalPosition(){clearTimeout(positionTimer);positionTimer=0;positionLastSent=performance.now();if(positionDraft&&!send({type:'uiCommand',command:'mathControl',id:crypto.randomUUID(),action:'arrivalPosition',value:{...positionDraft}}))positionDraft=null;}
+ function moveArrivalPosition(x,y,finish=false){positionDraft={x:positionClamp(x),y:positionClamp(y)};layoutArrival();if(finish)flushArrivalPosition();else if(!positionTimer)positionTimer=setTimeout(flushArrivalPosition,Math.max(0,120-(performance.now()-positionLastSent)));}
+ function installArrivalPositionControls(){for(const key of['X','Y']){$('arrival'+key).oninput=()=>moveArrivalPosition($('arrivalX').value,$('arrivalY').value);$('arrival'+key).onchange=()=>moveArrivalPosition($('arrivalX').value,$('arrivalY').value,true);}$('arrivalPositionReset').onclick=()=>moveArrivalPosition(latest?.arrivalSide==='left'?0:100,65,true);const handle=$('arrivalDragHandle');handle.onpointerdown=e=>{if(!authed)return;e.preventDefault();positionDragging=true;const r=handle.getBoundingClientRect();positionDragOffset={x:e.clientX-r.left,y:e.clientY-r.top};handle.setPointerCapture(e.pointerId);};handle.onpointermove=e=>{if(!positionDragging||!positionDragOffset)return;const stage=$('arrivalPositionPreview'),r=stage.getBoundingClientRect(),scale=(latest?.arrivalSize??100)/100,sx=stage.clientWidth/1080,sy=stage.clientHeight/1920;const left=(e.clientX-r.left-stage.clientLeft-positionDragOffset.x)/sx,top=(e.clientY-r.top-stage.clientTop-positionDragOffset.y)/sy;moveArrivalPosition((left-28)/(1080-56-220*scale)*100,(top-28)/(1920-56-178*scale)*100);};const finish=()=>{if(!positionDragging)return;positionDragging=false;positionDragOffset=null;flushArrivalPosition();};handle.onpointerup=finish;handle.onpointercancel=finish;handle.onlostpointercapture=finish;handle.onkeydown=e=>{const delta=e.shiftKey?10:1,move={ArrowLeft:[-delta,0],ArrowRight:[delta,0],ArrowUp:[0,-delta],ArrowDown:[0,delta]}[e.key];if(!move)return;e.preventDefault();const p=positionDraft||{x:latest?.arrivalX??100,y:latest?.arrivalY??65};moveArrivalPosition(p.x+move[0],p.y+move[1],true);};}
+diff --git a/public/math-duel.html b/public/math-duel.html
+index 2f48be3..a71a654 100644
+--- a/public/math-duel.html
++++ b/public/math-duel.html
+@@ -1,8 +1,8 @@
+-<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=118"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
++<!doctype html><html lang="en" dir="ltr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Math Duel LIVE · Crown Panel</title><link rel="stylesheet" href="/math-duel.css?v=107"><link rel="stylesheet" href="/quiz-show.css?v=119"><body><main id="broadcast"><header class="show-header"><h1>QUIZ SHOW</h1><div class="show-meta"><span id="showCategory">GENERAL KNOWLEDGE</span><span>·</span><strong id="serial"></strong></div><div class="clock"><b id="roundTime">3:00</b></div></header>
+ <div id="showMain"><section class="quiz"><div class="show-timer"><progress id="progress" max="30000" value="30000"></progress><b id="seconds"></b></div><div id="question" dir="ltr">Ready to start</div><div id="options"></div><p id="answerHint"></p><div id="showResponseBand"><div id="showAnswerCount"></div><div id="showAvatars"></div><div id="showFastest" hidden></div></div><small id="last" hidden></small><div id="selectionFeed" hidden></div></section>
+ <section id="showStandings" hidden><h2 id="showStandingsTitle">🏆 LEADERBOARD 🏆</h2><div id="nextRoundCountdown" hidden role="timer" aria-live="off"><span id="nextRoundLabel">NEXT ROUND IN</span><b id="nextRoundSeconds">30</b><span id="nextRoundUnit">seconds</span></div><div id="showPodium"></div><div id="showStandingsRows"></div></section></div>
+-<div id="liveActivityLane"><section id="spotlightCard" hidden></section><div id="arrivalBanner" hidden role="status" aria-live="polite"></div></div><section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
+-<section id="liveOutro" aria-live="polite" hidden><h2 data-t="liveThanks">Thank you for watching!</h2><p data-t="liveGoodbye">This live has ended. See you next time!</p></section><section id="celebrationCard" hidden role="status" aria-live="polite"></section>
++<div id="liveActivityLane"><section id="spotlightCard" hidden></section></div><section id="showCommunity" aria-label="Live audience activity"><div class="community-group"><h3 id="showLikersTitle">TOP LIKERS</h3><div id="showLikers"></div></div><div class="community-group"><h3 id="showSupportersTitle">GIFTS</h3><div id="showSupporters"></div></div></section><div id="showJoinTicker" role="status"></div><div id="showCommunityTicker" hidden></div><div id="showLeaderboards" class="show-boards"><section class="show-board match"><h3 id="showmatchTitle">SHOW</h3><div id="showmatchRows"></div></section><section class="show-board daily"><h3 id="showdailyTitle">TODAY</h3><div id="showdailyRows"></div></section><section class="show-board monthly"><h3 id="showmonthlyTitle">MONTH</h3><div id="showmonthlyRows"></div></section></div>
++<section id="liveOutro" aria-live="polite" hidden><h2 data-t="liveThanks">Thank you for watching!</h2><p data-t="liveGoodbye">This live has ended. See you next time!</p></section><section id="celebrationCard" hidden role="status" aria-live="polite"></section><div id="arrivalBanner" hidden role="status" aria-live="polite"></div>
+ <section id="legacyStats" hidden><div id="level"></div><progress id="boss" max="1000"></progress><div id="bossPoints"></div><div id="leader"></div><div id="roundSummary" hidden></div><div id="demoStatus" hidden></div><div id="answersColumn"><div id="answerList" hidden><div id="responses"></div></div><div id="communityBoard"></div></div><div id="ranking"></div><div id="waitingBoard"></div></section><div id="connection" role="status"></div><div class="soundbar"><span id="voiceStatus"></span></div><button id="screenAudioUnlock" hidden data-t="enableAudio">Enable live voice</button>
+ <aside id="panel"><h2 data-t="panel">Control panel</h2><p id="liveEventHealth" class="live-health" role="status"></p><p class="setting-note" data-t="autosaved">Changes are saved automatically.</p>
+ <div id="controls">
+@@ -27,4 +27,4 @@
+ <section id="settings-studio" role="tabpanel" aria-labelledby="tab-studio" class="settings-page" hidden><h3 data-t="studioTab">LIVE Studio</h3><p data-t="studioIntro">Add a Link / Browser source using this display URL.</p><input id="screenUrl" readonly aria-label="Live screen URL"><div class="actions"><button id="copy" data-t="copy">Copy display link</button><button id="refreshOutputs" data-t="refreshOutputs">Refresh live output</button><a id="openOutput" target="_blank" rel="noopener" class="button-link" data-t="openOutput">Open live output</a></div><div class="studio-spec"><span data-t="sourceSize">Source size</span><b>1080 × 1920</b><span data-t="sourcePosition">Position X / Y</span><b>0 / 0</b><span data-t="crop">Crop (all sides)</span><b>0</b><span data-t="fit">Scale mode</span><b data-t="fitContain">Fit to screen · keep aspect ratio</b></div><p class="setting-note" data-t="studioReset">For an existing source, reset its crop / transform, set 1080 × 1920, then Fit to screen. Avoid Fill / Stretch.</p><p data-t="studioAudio">Capture audio from the browser source. Keep panel monitoring muted to prevent a second copy.</p><p data-t="studioPreview">Muted output preview</p><div class="studio-preview"><iframe id="studioPreview" title="Muted live output preview" loading="lazy" tabindex="-1" data-src="/fun/screen?v=105&amp;preview=1&amp;mute=1"></iframe></div></section>
+ <section id="settings-language" role="tabpanel" aria-labelledby="tab-language" class="settings-page" hidden><h3 data-t="languageTab">Languages</h3><label class="setting-field"><span data-t="panelLanguage">Panel language</span><select id="panelLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label><label class="setting-field"><span data-t="outputLanguage">Live output & voice language</span><select id="outputLanguage"><option value="en">English</option><option value="fa">فارسی</option></select></label></section>
+ <section id="settings-bank" role="tabpanel" aria-labelledby="tab-bank" class="settings-page" hidden><h3 data-t="bankTab">Question bank</h3><dl class="bank-summary"><dt data-t="bankTotal"></dt><dd id="bankTotal"></dd><dt data-t="bankRemaining"></dt><dd id="bankRemaining"></dd><dt data-t="bankStorage"></dt><dd id="bankStorage"></dd><dt data-t="bankLastSaved"></dt><dd id="bankLastSaved"></dd></dl><button id="saveQuestions" data-t="saveQuestions">Save question history now</button><p id="bankSaveStatus" role="status"></p><p class="setting-note" data-t="bankNote"></p><a href="/question-bank-sources.html" target="_blank" rel="noopener">Sources / منابع</a></section><section id="settings-test" role="tabpanel" aria-labelledby="tab-test" class="settings-page" hidden><h3 data-t="testTab">Tests</h3><p data-t="test">Manual test · affects this match</p><form id="testForm"><input id="testName" placeholder="Viewer name" value="Test player" required><input id="testAnswer" placeholder="Numeric answer" inputmode="numeric" required><button data-t="testAnswer">Test answer</button></form><p data-t="countryHelp"></p><form id="countryForm"><input id="testCountry" placeholder="AFG / DE / USA / افغانستان" aria-label="Country comment" required><button data-t="countryTest">Test country comment</button></form><div class="actions"><button id="testJoin" data-t="testJoin">Test welcome</button><button id="testThanks" data-t="testThanks">Test appreciation</button><button id="testLike" data-t="testLike">Test thanks</button></div></section>
+-</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=118"></script></body></html>
+\ No newline at end of file
++</div><p id="message" role="alert"></p></aside></main><script type="module" src="/math-duel-ui.mjs?v=119"></script></body></html>
+\ No newline at end of file
+diff --git a/public/quiz-show.css b/public/quiz-show.css
+index 9fbb4b4..a49042e 100644
+--- a/public/quiz-show.css
++++ b/public/quiz-show.css
+@@ -780,7 +780,7 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   font-size: 25px;
+ }
+ 
+-/* Activity cards occupy their own space on the live output. */
++/* Supporter thank-you cards occupy their own space on the live output. */
+ .screen #liveActivityLane {
+   position: relative;
+   flex: 0 0 122px;
+@@ -797,7 +797,7 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+ .screen[data-show-phase="finished"] #liveActivityLane {
+   display: none;
+ }
+-.screen #broadcast #liveActivityLane > :is(#arrivalBanner,#spotlightCard):not([hidden]) {
++.screen #broadcast #liveActivityLane > #spotlightCard:not([hidden]) {
+   position: relative;
+   inset: auto;
+   display: grid;
+@@ -824,24 +824,17 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   grid-column: 1;
+   grid-row: 1;
+ }
+-.screen #broadcast #liveActivityLane > #arrivalBanner:not([hidden]) {
+-  grid-column: 2;
+-  grid-row: 1;
+-  justify-self: start;
+-  margin-left: calc((100% - min(100%,440px)) * var(--lane-x,1));
+-  translate: 0 var(--lane-y,0px);
+-}
+-.screen #liveActivityLane :is(.arrival-portrait,.spotlight-portrait) {
++.screen #liveActivityLane .spotlight-portrait {
+   grid-column: 1;
+   grid-row: 1 / span 2;
+ }
+-.screen #broadcast #liveActivityLane :is(.arrival-portrait,.spotlight-portrait) {
++.screen #broadcast #liveActivityLane .spotlight-portrait {
+   width: clamp(56px,calc(60px * var(--bubble-scale,1)),78px);
+   height: auto;
+   aspect-ratio: 1;
+   margin: 0;
+ }
+-.screen #broadcast #liveActivityLane :is(h2,h3) {
++.screen #broadcast #liveActivityLane h3 {
+   grid-column: 2;
+   grid-row: 1;
+   margin: 0;
+@@ -849,7 +842,7 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   color: #ffdfa0;
+   text-align: start;
+ }
+-.screen #broadcast #liveActivityLane :is(.arrival-name,.spotlight-name) {
++.screen #broadcast #liveActivityLane .spotlight-name {
+   grid-column: 2;
+   grid-row: 2;
+   min-width: 0;
+@@ -863,9 +856,7 @@ body:not(.screen) #broadcast #celebrationCard:not([hidden]) {
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+-.screen #liveActivityLane .arrival-note,
+ .screen #liveActivityLane .spotlight-time,
+-.screen #liveActivityLane .arrival-time,
+ .screen #broadcast #showJoinTicker { display: none; }
+ .screen #broadcast #showResponseBand {
+   flex-basis: 112px;
