@@ -1,0 +1,89 @@
+
+/* Cast-metal filigree, inset jewels, and a separate light sweep. */
+.fire-portrait {
+  --metal-light: #fff6b6;
+  --metal-mid: #dc8a28;
+  --metal-shadow: #6d340c;
+  --metal-gem: #fff9e0;
+}
+.fire-portrait > .player-avatar { grid-area: 1 / 1; }
+.place-2 .fire-portrait {
+  --metal-light: #f3fbff;
+  --metal-mid: #93a9d2;
+  --metal-shadow: #3c507b;
+  --metal-gem: #d7f5ff;
+}
+.place-3 .fire-portrait {
+  --metal-light: #ffe0b9;
+  --metal-mid: #cd7957;
+  --metal-shadow: #6e382d;
+  --metal-gem: #ffd4b8;
+}
+.portrait-metal {
+  position: absolute;
+  z-index: 2;
+  inset: calc(-1 * var(--fire-edge));
+  box-sizing: border-box;
+  border-radius: 50%;
+  padding: max(4px, calc(var(--fire-edge) * .86));
+  pointer-events: none;
+  background:
+    repeating-conic-gradient(from 8deg, #fff7cf70 0deg 1deg, transparent 2deg 7deg, #40260570 9deg 12deg),
+    conic-gradient(var(--metal-shadow), var(--metal-light), var(--metal-mid), var(--metal-shadow), var(--metal-light), var(--metal-mid), var(--metal-shadow));
+  mask: linear-gradient(#fff 0 0) content-box exclude, linear-gradient(#fff 0 0);
+  filter: drop-shadow(0 0 2px #fff5bd);
+}
+.fire-portrait::after {
+  inset: calc(-1.32 * var(--fire-edge));
+  background: conic-gradient(transparent 0 63%, #fff8d5 68%, #ffad29 73%, transparent 80%, #fff1b1 88%, transparent 94%);
+}
+.fire-portrait .portrait-flame { inset: -16%; }
+.champion-crown {
+  position: absolute;
+  z-index: 4;
+  top: -19%;
+  left: 22%;
+  width: 56%;
+  height: 24%;
+  background:
+    radial-gradient(circle at 50% 62%, #fff 0 4%, #9ff8ff 5% 8%, #6350ba 9% 12%, transparent 13%),
+    radial-gradient(circle at 27% 69%, var(--metal-gem) 0 4%, #b25b15 5% 7%, transparent 8%),
+    radial-gradient(circle at 73% 69%, var(--metal-gem) 0 4%, #b25b15 5% 7%, transparent 8%),
+    linear-gradient(130deg, #9c4810 5%, #fff2a0 24%, #eea22a 43%, #fff9bb 58%, #c3791a 76%, #fff2a8 91%);
+  clip-path: polygon(0 17%, 25% 43%, 31% 6%, 45% 34%, 50% 0, 56% 34%, 70% 6%, 76% 43%, 100% 17%, 87% 91%, 50% 100%, 13% 91%);
+  animation: champion-crown-glint 1.65s ease-in-out infinite alternate;
+}
+.winner-celebration:not(.frames-expired) .place-1 {
+  padding-top: clamp(16px, 5vw, 32px);
+}
+.screen .winner-celebration:not(.frames-expired) .place-1 { padding-top: 55px; }
+.winner-celebration:not(.frames-expired) .place-1::after {
+  inset: -2% -20% 9%;
+  background:
+    radial-gradient(circle at 14% 25%, #fffbdc 0 1%, #ffc744 2%, transparent 5%),
+    radial-gradient(circle at 88% 28%, #fffbdc 0 1%, #ffc744 2%, transparent 4%),
+    radial-gradient(circle at 79% 4%, #fffef1 0 1%, #ffd878 2%, transparent 5%),
+    radial-gradient(circle at 22% 58%, #fffbdc 0 1%, #ffa521 2%, transparent 4%),
+    conic-gradient(from 12deg, transparent, #ffce4938, transparent 21%, #ffce4938, transparent 52%, #ffce4938, transparent 83%, #ffce4938, transparent);
+  filter: none;
+  animation: champion-rays 3s ease-in-out infinite alternate;
+}
+.frames-expired :is(.portrait-flame,.portrait-metal,.champion-crown),
+.frames-expired .fire-portrait::before,
+.frames-expired .fire-portrait::after,
+.frames-expired .podium-place::before,
+.frames-expired .podium-place::after {
+  display: none;
+}
+@keyframes champion-crown-glint {
+  from { filter: brightness(1); transform: translateY(0) rotate(-3deg); }
+  to { filter: brightness(1.45); transform: translateY(-6%) rotate(3deg); }
+}
+@keyframes champion-rays {
+  from { opacity: .48; transform: scale(.98); }
+  to { opacity: 1; transform: scale(1.09); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .champion-crown,
+  .winner-celebration:not(.frames-expired) .place-1::after { animation: none; }
+}

@@ -1,4 +1,4 @@
-name: Publish Crown quiz profiles-to-question pause
+name: Publish jewel crown celebrations and frame timing controls
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ jobs:
     env:
       CROWN_SPACE: afgtakrun/live-crown-52
       CROWN_ORIGIN: https://afgtakrun-live-crown-52.hf.space
-      CROWN_PARENT: 49f34a9b428c7881f4def46b65e7a1ccd4f7c47c
+      CROWN_PARENT: 3ba7fa6df9193621cd84fbc94e2ab52aa6bf2821
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,7 +34,7 @@ jobs:
           git clone --quiet --depth 1 "https://huggingface.co/spaces/$CROWN_SPACE" /tmp/crown-app
           cd /tmp/crown-app
           test "$(git rev-parse HEAD)" = "$CROWN_PARENT"
-          python "$GITHUB_WORKSPACE/crown-live/question-break110.py"
+          python "$GITHUB_WORKSPACE/crown-live/update-frames111.py"
           git diff --check
           npm ci --ignore-scripts --no-audit --no-fund
           node --check public/math-duel-ui.mjs
@@ -92,18 +92,18 @@ jobs:
           tracked = subprocess.check_output(['git','diff','--name-only'], cwd=root, text=True).splitlines()
           files = tracked
           commit = api.create_commit(repo_id=repo, repo_type='space', parent_commit=parent,
-              commit_message='Start the next-question countdown only after the profile showcase',
+              commit_message='Add jeweled portrait rings, champion crown and configurable frame durations',
               operations=[CommitOperationAdd(path_in_repo=f,path_or_fileobj=str(root/f)) for f in files])
           print('Published Space commit:', commit.oid, flush=True)
           for _ in range(65):
               try:
-                  with urllib.request.urlopen(origin+'/fun/control?v=110', timeout=15) as response:
+                  with urllib.request.urlopen(origin+'/fun/control?v=111', timeout=15) as response:
                       html = response.read().decode()
                   with urllib.request.urlopen(origin+'/api/state', timeout=15) as response:
                       state = json.load(response)['state']['fun']['math81']
                   with urllib.request.urlopen(origin+'/health', timeout=15) as response:
                       health = json.load(response)
-                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=110' in html and 'questionBreakRemaining' in state and 'quiz-show.css?v=109' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
+                  if health.get('restoredDeploymentRevision') == current['revision'] and 'id="liveOutro"' in html and 'data-action="endLive"' in html and 'liveEnded' in state and 'id="settings-profiles"' in html and 'math-duel-ui.mjs?v=111' in html and 'questionBreakRemaining' in state and 'winnerFrameRemaining' in state and 'id="winnerFrameSeconds"' in html and 'quiz-show.css?v=111' in html and 'questionBreak' in state and state.get('historyStatus')=='synced':
                       break
               except (OSError, ValueError, KeyError):
                   pass
