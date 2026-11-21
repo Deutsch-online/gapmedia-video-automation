@@ -4535,7 +4535,213 @@
       "render_style": "lina-oma-stylized-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-fahrrad-fahren-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 7,
+      "title_de": "Ich gehe mit dem Fahrrad?!",
+      "title_fa": "با دوچرخه می‌روم؟!",
+      "summary": "Lina says she goes with the bicycle using gehen. Oma immediately models Ich fahre mit dem Fahrrad, Lina repeats it, and Oma praises her. Oma asks about the bus tomorrow. Lina again uses gehen, Oma models Ich fahre mit dem Bus, and Lina repeats it before inviting Oma to ride with her. The joke is the grammar, not the child.",
+      "cliffhanger": "Tomorrow Lina and Oma will try another small German movement phrase at home.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-ride-sofa",
+      "location_description": "The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.",
+      "visual_hook": "Lina walks two fingers beside a toy bicycle and says she goes with it, as if the bicycle were a walking trip.",
+      "everyday_problem": "A newcomer child uses gehen for a bicycle and then for a bus, instead of fahren.",
+      "practical_resolution": "Oma immediately supplies Ich fahre mit dem Fahrrad, praises the repetition, then replaces Ich gehe mit dem Bus with Ich fahre mit dem Bus.",
+      "marta_goal": "Lina wants to tell Oma that she rides the bicycle and later the bus.",
+      "marta_decision": "Lina repeats the bicycle correction, tries gehen for the bus, and then repeats Ich fahre mit dem Bus.",
+      "visual_payoff": "Lina smiles and holds the toy bicycle toward Oma, inviting her to ride along.",
+      "language_error": {
+        "wrong": "ich gehe mit dem Fahrrad",
+        "correct": "Ich fahre mit dem Fahrrad.",
+        "explanation": "Gehen is for going on foot. A bicycle or bus uses fahren: Ich fahre mit dem Fahrrad. Ich gehe mit dem Bus repeats the same mistake; Ich fahre mit dem Bus is the correction."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "The following unused lesson keeps one vehicle pattern, with immediate correction, repetition and praise before the bus line.",
+        "visible_comic_action": "Lina walks her fingers beside a toy bicycle, then does the same walk beside the toy bus.",
+        "next_experiment": "Compare a vehicle-verb hook and two stable toy props with same-age observations when available; no view or retention claim.",
+        "daily_evidence_review": {
+          "day": "2026-11-21",
+          "status": "available",
+          "selected_test": {
+            "change": "Implement culturally sensitive, cheerful opening scene",
+            "measure": "Compare engagement metrics (likes, comments)",
+            "evidence": "hypothesis_not_proven"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          1,
+          5
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "Approved beginner German pages teach choosing the exact pattern for the intended meaning. This fictional lesson contrasts gehen on foot with fahren for a bicycle and a bus. The home scene, the toys and every line are invented.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all vehicle dialogue",
+          "the toy bicycle and toy bus"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich gehe mit dem Fahrrad!",
+          "fa": "اوما، با دوچرخه می‌روم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina walks two fingers beside the toy bicycle, with the toy bus still visible.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina walks two fingers beside the toy bicycle, with the toy bus still visible.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina walks two fingers beside the toy bicycle, with the toy bus still visible.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "problem"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich fahre mit dem Fahrrad.",
+          "fa": "نه! با دوچرخه می‌رانم.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma shakes her head and rolls the toy bicycle a little with one hand.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma shakes her head and rolls the toy bicycle a little with one hand.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma shakes her head and rolls the toy bicycle a little with one hand.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Fahrrad.",
+          "fa": "با دوچرخه می‌رانم.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina repeats the phrase and rolls the toy bicycle forward a little.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina repeats the phrase and rolls the toy bicycle forward a little.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina repeats the phrase and rolls the toy bicycle forward a little.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut!",
+          "fa": "آفرین!",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma smiles and gives one small warm nod beside the toy bicycle and toy bus.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma smiles and gives one small warm nod beside the toy bicycle and toy bus.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma smiles and gives one small warm nod beside the toy bicycle and toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Und morgen? Mit dem Bus?",
+          "fa": "و فردا؟ با اتوبوس؟",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma points from the toy bicycle to the toy bus with a playful smile.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma points from the toy bicycle to the toy bus with a playful smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma points from the toy bicycle to the toy bus with a playful smile.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ja! Ich gehe mit dem Bus!",
+          "fa": "بله! با اتوبوس می‌روم!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina nods and walks two fingers beside the toy bus.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina nods and walks two fingers beside the toy bus.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina nods and walks two fingers beside the toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein! Ich fahre mit dem Bus.",
+          "fa": "نه! با اتوبوس می‌رانم.",
+          "scene": "One visible cartoon character oma in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Oma shakes her head and taps the toy bus once.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma shakes her head and taps the toy bus once.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Oma shakes her head and taps the toy bus once.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Bus.",
+          "fa": "با اتوبوس می‌رانم.",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina repeats the phrase and rests one hand on the toy bus.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina repeats the phrase and rests one hand on the toy bus.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina repeats the phrase and rests one hand on the toy bus.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "act"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und du fährst mit mir!",
+          "fa": "و تو هم با من می‌رانی!",
+          "scene": "One visible cartoon character lina in the same The same cozy contemporary German home, a small sofa by a softly lit window, one toy bicycle and one toy bus. Fixed original clothes and slender cartoon identities.. The friend is off camera. Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props.",
+          "visible_objects": [
+            "toy bicycle",
+            "toy bus"
+          ],
+          "object_action": "Lina smiles and holds the toy bicycle toward off-camera Oma, the toy bus still beside her.",
+          "location_key": "lina-oma-ride-sofa",
+          "story_beat": "resolve"
+        }
+      ],
+      "episode": 28,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-21T11:33:29.185871+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-stylized-v1"
+    },
+    "date": "2026-11-21",
+    "status": "render-failed",
+    "time_budget_blocked": true,
+    "budget_reason": "full-episode forecast does not fit"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -4588,8 +4794,8 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-11-20",
-    "not_before": "2026-11-20T13:15:24.060000+00:00",
+    "date": "2026-11-21",
+    "not_before": "2026-11-21T13:26:15.638000+00:00",
     "reason": "Waiting for full-episode included budget"
   },
   "manual_recovery_reason": {
@@ -4598,7 +4804,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-20T13:24:05.716467+00:00",
+    "checked_at": "2026-11-21T11:33:29.187302+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4607,7 +4813,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 818.086969,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -4671,27 +4877,27 @@
     }
   },
   "daily_review": {
-    "day": "2026-11-20",
+    "day": "2026-11-21",
     "attempted": true,
-    "checked_at": "2026-11-20T13:24:03.526925+00:00",
+    "checked_at": "2026-11-21T11:33:25.491613+00:00",
     "status": "available",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
     "experiments": [
       {
-        "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
-        "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
-        "evidence": "proposed_test_not_proven"
+        "change": "Implement culturally sensitive, cheerful opening scene",
+        "measure": "Compare engagement metrics (likes, comments)",
+        "evidence": "hypothesis_not_proven"
       },
       {
-        "change": "یک نمای عمل و یک نمای نزدیکِ شیء را متناوب کن؛ زیرنویس از صورت و شیء دور باشد و در ناحیهٔ امن بماند.",
-        "measure": "افت نگه‌داشت در کات‌ها و مقایسهٔ تکمیل در بازهٔ زمانی مشابه",
-        "evidence": "proposed_test_not_proven"
+        "change": "Enhance prop visibility and ensure captions in safe areas",
+        "measure": "Track video completion rates and viewer comments",
+        "evidence": "hypothesis_not_proven"
       },
       {
-        "change": "یک گرفتاری آشنا، دو تشدید کوتاه و یک نتیجهٔ شاد و کمیک دیدنی در همان ۴۵ ثانیه طراحی کن؛ هر بار فقط یک تغییر آزمایش شود.",
-        "measure": "نرخ تکمیل، اشتراک‌گذاری به ازای بازدید و بازخورد واقعی مخاطب",
-        "evidence": "test_against_matched_baseline"
+        "change": "Incorporate natural movements and place captions in safe areas",
+        "measure": "Analyze watch time and share rate",
+        "evidence": "hypothesis_not_proven"
       }
     ],
     "prior_post_observations": [
@@ -4699,14 +4905,14 @@
         "id": "7707919548778876192",
         "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
         "views": 928,
-        "relative_to_median": 1.6996336996336996
+        "relative_to_median": 1.5389718076285241
       }
     ],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-20T13:10:58.514000+00:00",
+    "source_updated_at": "2026-11-21T10:45:58.471000+00:00",
     "evidence_level": "matched_observations_not_causal",
     "render_qc": {
       "duration": null,
@@ -4716,9 +4922,9 @@
       "lip_sync_measured": null
     },
     "next_test": {
-      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
-      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
-      "evidence": "proposed_test_not_proven"
+      "change": "Implement culturally sensitive, cheerful opening scene",
+      "measure": "Compare engagement metrics (likes, comments)",
+      "evidence": "hypothesis_not_proven"
     }
   },
   "full_episode_admission": {
@@ -4738,30 +4944,30 @@
       ],
       "cached_videos": 0
     },
-    "available_units": 2400.0,
-    "estimated_generation_units": 1981.8765120000028,
-    "required_units_with_headroom": 2284.1170248000026,
-    "admitted": true,
+    "available_units": 818.086969,
+    "estimated_generation_units": 1984.1692439999972,
+    "required_units_with_headroom": 2286.1550087999976,
+    "admitted": false,
     "image_bound": 56.020563599999875,
-    "video_bound": 207.75948720000034,
+    "video_bound": 208.01423519999972,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
     "video_basis": "recent_account_debit_upper_plus_20_percent",
     "reserve_units": 30,
-    "final_request_headroom": 272.2405127999997,
+    "final_request_headroom": 271.9857648000003,
     "full_episode_guaranteed": false,
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-20",
-    "episode": 27,
-    "plan_sha": "3398254f734427a4ed1c4c8c14692133b03e7b5bd93bd0de5efb39a4b018dddb",
+    "day": "2026-11-21",
+    "episode": 28,
+    "plan_sha": "067162004ba8b0f7ac2a5895ed72d8adb4550acfdf1b7a068900dffbd3a14a83",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-20T13:10:58.514000+00:00",
+    "review_source_at": "2026-11-21T10:45:58.471000+00:00",
     "selected_test": {
-      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
-      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
-      "evidence": "proposed_test_not_proven"
+      "change": "Implement culturally sensitive, cheerful opening scene",
+      "measure": "Compare engagement metrics (likes, comments)",
+      "evidence": "hypothesis_not_proven"
     }
   }
 }
