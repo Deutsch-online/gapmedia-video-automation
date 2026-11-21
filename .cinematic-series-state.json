@@ -4738,7 +4738,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-21",
-    "status": "exporting",
+    "status": "dispatching",
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit",
     "image_preview": {
@@ -4754,8 +4754,8 @@
       "tiktok": "renders/cinematic-series/e0028-lina-oma-v1/tiktok/e0028-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0028-lina-oma-v1/instagram/e0028-instagram-45s.mp4"
     },
-    "file": "renders/cinematic-series/e0028-lina-oma-v1/tiktok/e0028-tiktok-45s.mp4",
-    "platform": "tiktok"
+    "file": "renders/cinematic-series/e0028-lina-oma-v1/instagram/e0028-instagram-45s.mp4",
+    "platform": "instagram"
   },
   "attempts": {
     "2026-10-15": 2,
