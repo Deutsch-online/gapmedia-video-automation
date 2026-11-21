@@ -57,7 +57,6 @@ def episode_seconds(episode, config=None):
         raise ValueError('The 45-second contract must start at episode 9 or later')
     return EXCEPTION_SECONDS if episode in exceptions else (DEFAULT_SECONDS if episode >= start else LEGACY_SECONDS)
 TRUSTED_RESEARCH = (
-    ('Beginner German transport verbs, Schubert publisher', 'https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm', 'Verkehrsmittel'),
     ('Everyday German: shopping, doctor and train', 'https://www.goethe.de/de/spr/ueb/lua.html', 'Einkaufen, Arztbesuch, Zug fahren'),
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
@@ -70,6 +69,7 @@ TRUSTED_RESEARCH = (
     ('Beginner German food and drink, Open University', 'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1', 'ich möchte'),
     ('Beginner German requests, Schubert publisher exercise', 'https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', 'Ich möchte etwas trinken'),
     ('Job applications for newcomers in Germany', 'https://www.make-it-in-germany.com/de/arbeiten-in-deutschland/jobsuche-bewerbung', 'Lebenslauf'),
+    ('Beginner German transport verbs, Schubert publisher', 'https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm', 'Verkehrsmittel'),
 )
 
 class _PageText(HTMLParser):
