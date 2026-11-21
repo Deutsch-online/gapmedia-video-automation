@@ -4738,7 +4738,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-21",
-    "status": "render-failed",
+    "status": "rendering",
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit"
   },
@@ -4787,7 +4787,8 @@
     "2026-11-18#owner-lina-e25-cached-resume-20261118": 1,
     "2026-11-19": 1,
     "2026-11-19#owner-lina-e26-kalt-resume-20261119": 1,
-    "2026-11-20": 1
+    "2026-11-20": 1,
+    "2026-11-21": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -4804,7 +4805,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-21T11:33:29.187302+00:00",
+    "checked_at": "2026-11-21T13:40:27.013646+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4813,7 +4814,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 818.086969,
+    "remaining_seconds": 2400.0,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -4879,7 +4880,7 @@
   "daily_review": {
     "day": "2026-11-21",
     "attempted": true,
-    "checked_at": "2026-11-21T11:33:25.491613+00:00",
+    "checked_at": "2026-11-21T13:40:24.931021+00:00",
     "status": "available",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
@@ -4912,7 +4913,7 @@
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-21T10:45:58.471000+00:00",
+    "source_updated_at": "2026-11-21T12:55:58.737000+00:00",
     "evidence_level": "matched_observations_not_causal",
     "render_qc": {
       "duration": null,
@@ -4944,10 +4945,10 @@
       ],
       "cached_videos": 0
     },
-    "available_units": 818.086969,
+    "available_units": 2400.0,
     "estimated_generation_units": 1984.1692439999972,
     "required_units_with_headroom": 2286.1550087999976,
-    "admitted": false,
+    "admitted": true,
     "image_bound": 56.020563599999875,
     "video_bound": 208.01423519999972,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
@@ -4963,7 +4964,7 @@
     "plan_sha": "067162004ba8b0f7ac2a5895ed72d8adb4550acfdf1b7a068900dffbd3a14a83",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-21T10:45:58.471000+00:00",
+    "review_source_at": "2026-11-21T12:55:58.737000+00:00",
     "selected_test": {
       "change": "Implement culturally sensitive, cheerful opening scene",
       "measure": "Compare engagement metrics (likes, comments)",
