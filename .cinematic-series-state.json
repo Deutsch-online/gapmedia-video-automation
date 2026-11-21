@@ -4738,7 +4738,7 @@
       "render_style": "lina-oma-stylized-v1"
     },
     "date": "2026-11-21",
-    "status": "dispatching",
+    "status": "exporting",
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit",
     "image_preview": {
@@ -4748,7 +4748,8 @@
       "message_id": 2994
     },
     "platform_receipts": {
-      "tiktok": 2995
+      "tiktok": 2995,
+      "instagram": 2996
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0028-lina-oma-v1/tiktok/e0028-tiktok-45s.mp4",
