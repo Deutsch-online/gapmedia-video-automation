@@ -7,11 +7,21 @@ PROFILE = 'lina-oma-v1'
 TEACHING_FROM_EPISODE = 23
 PRAISE = ('sehr gut','gut gemacht','prima','bravo','perfekt','richtig','genau','klasse','sehr schön')
 SOURCE = 'https://www.goethe.de/ins/de/de/prf/grm.html'
-SOURCES = ('https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', SOURCE,
+TRANSPORT_SOURCE='https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm'
+SOURCES = ('https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm', TRANSPORT_SOURCE, SOURCE,
            'https://www.goethe.de/ins/de/de/m/prf/grm.html',
            'https://www.open.edu/openlearn/languages/beginners-german-food-and-drink/content-section-0/?printable=1')
 VOICES = {'lina': 'de-DE-TanjaNeural', 'oma': 'de-DE-TanjaNeural'}
-VOICE_PITCHES = {'lina': '+20Hz', 'oma': '-10Hz'}
+LEGACY_VOICE_PITCHES = {'lina': '+20Hz', 'oma': '-10Hz'}
+VOICE_PITCHES = {'lina': '+0Hz', 'oma': '-10Hz'}
+SOFT_VOICE_FROM_EPISODE = 29
+
+
+def voice_pitch(speaker, episode=None):
+    # Unversioned legacy helpers keep their original signed audio.
+    pitches = VOICE_PITCHES if episode is not None and episode >= SOFT_VOICE_FROM_EPISODE else LEGACY_VOICE_PITCHES
+    return pitches[speaker]
+
 DESCRIPTIONS = {
     'lina': 'Lina, a fictional healthy eight-year-old newcomer girl, naturally slender child proportions, warm brown skin, brown eyes, dark curly hair in two puffs with coral bows, mustard shirt, teal dungaree dress, coral backpack and sneakers',
     'oma': 'Oma Rosi, a lively slender grandmother aged about seventy, silver pixie hair with a playful curl, small red glasses, plum cardigan, ivory floral blouse, rust skirt and comfortable teal shoes',
@@ -37,6 +47,8 @@ def grammar_source(fetch, episode):
 
 
 def validate(plan, history=()):
+    from cinematic_staging import validate as validate_staging
+    validate_staging(plan,history)
     if {s['speaker'] for s in plan['scenes']} != set(VOICES):
         raise ValueError('Lina and Oma must be the only speaking characters')
     error = plan.get('language_error', {})
@@ -71,8 +83,12 @@ def validate(plan, history=()):
 
 
 def prompt(episode, research, history):
-    memory = [{k: h.get(k) for k in ('story_id', 'title_de', 'summary', 'language_error')}
+    memory = [{k: h.get(k) for k in ('story_id', 'title_de', 'summary', 'language_error', 'setting_type', 'location_description')}
               for h in history if is_plan(h)]
+    extra=''
+    if episode>=29:
+        from cinematic_staging import guidance
+        extra=guidance()
     return (
         'Create an ORIGINAL daily 45-second German A1 learning comedy with exactly nine five-second shots. '
         'Lina is a newly arrived eight-year-old girl with some German; Oma Rosi is her warm funny grandmother. '
@@ -95,11 +111,8 @@ def prompt(episode, research, history):
         'current speaker in a close or medium single-person shot, listener completely outside the frame; '
         'never put both faces or a second moving mouth in a generated speaking shot. Same breakfast table or '
         'other coherent location, matching eyelines across the cut, pauses with mouths closed. '
-        'Budget direction for new episodes: use the same one-to-three visible props in every shot of each '
-        'speaker; both characters remain at the same location. The renderer makes one source keyframe per '
-        'speaker and creates nine separate audio-driven videos, so put all later gestures and object actions '
-        'in motion, keeping every starting keyframe compatible. Do not introduce or transform an object '
-        'between shots, add a new location or require an unseen prop. '
+        'Budget direction: reuse only compatible staged keyframes and keep shared objects physically consistent. '
+        'Use the per-episode staging instructions below to choose source compositions; all nine audio-driven videos stay independent. '
         'Return only JSON with: episode, story_id (unique original string), title_de, title_fa, summary, '
         'cliffhanger (small bridge to tomorrow), series_version:wg-alltag-v1, series_name:Lina & Oma Rosi, '
         'cast_profile:lina-oma-v1, content_basis:everyday-reenactment, mood:comic, duration_seconds:45, '
@@ -114,7 +127,7 @@ def prompt(episode, research, history):
         'Keep German and Persian captions readable without shrinking. No newline/control markup in scene '
         'strings, no generated text or logos in image instructions. Never repeat a prior story, wrong/correct '
         'pair, title or four prior lines. Episode: '+str(episode)+'. Live source: '+json.dumps(research,ensure_ascii=False)+
-        '. Previous child-series stories: '+json.dumps(memory,ensure_ascii=False))
+        '. Previous child-series stories: '+json.dumps(memory,ensure_ascii=False)+extra)
 
 
 def contact_sheet(images, target):
@@ -151,4 +164,5 @@ def deliver_preview(state, info, save, send):
         raise RuntimeError('Image preview receipt is missing')
     state['pending']['image_preview'].update(status='sent',message_id=receipt['message_id'])
     save(state)
+
 
