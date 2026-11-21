@@ -1,11 +1,26 @@
 """Two source keyframes, nine independent speaking takes; no quota-policy changes."""
 PROFILE = 'two-speaker-keyframes-v1'
+STAGED_PROFILE = 'story-staged-keyframes-v2'
+
+def selected_policy(plan,config):
+    staged=config.get('visual_profile',{}).get('staged_keyframes',{})
+    return staged if staged and plan['episode']>=staged.get('from_episode',10**9) else config.get('visual_profile',{}).get('keyframe_economy',{})
+
+def profile_id(plan,config):
+    return selected_policy(plan,config).get('id',PROFILE)
 
 
 def keyframe_anchors(plan, config):
-    policy = config.get('visual_profile', {}).get('keyframe_economy', {})
+    policy = selected_policy(plan,config)
     if not policy or plan['episode'] < policy.get('from_episode', 10**9):
         return None
+    if policy.get('id') == STAGED_PROFILE:
+        from cinematic_staging import validate
+        validate(plan)
+        if policy.get('maximum_generated_stills')!=3:
+            raise ValueError('Staged economy requires exactly three source compositions')
+        first={}
+        return [first.setdefault(scene['keyframe_group'],i) for i,scene in enumerate(plan['scenes'])]
     if policy.get('id') != PROFILE or policy.get('maximum_generated_stills') != 2:
         raise ValueError('Unknown keyframe economy policy')
     if plan.get('cast_profile') != 'lina-oma-v1' or len(plan.get('scenes', [])) != 9:
@@ -31,10 +46,11 @@ def keyframe_anchors(plan, config):
 
 def report(plan, config):
     anchors = keyframe_anchors(plan, config)
-    return {'profile': PROFILE if anchors else 'individual-stills',
+    return {'profile': profile_id(plan,config) if anchors else 'individual-stills',
             'planned_image_submissions': len(set(anchors)) if anchors else len(plan['scenes']),
             'planned_independent_video_takes': len(plan['scenes']),
             'output_seconds': plan.get('duration_seconds'),
             'cached_submissions_may_be_zero': True,
             'full_episode_quota_guaranteed': False,
             'per_call_live_quota_guard_unchanged': True}
+

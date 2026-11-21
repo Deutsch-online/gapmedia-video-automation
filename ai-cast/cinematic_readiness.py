@@ -72,17 +72,19 @@ def collect_review(fetch, now=None, root=Path('renders/cinematic-series-cache/re
 def remaining_work(plan,config,cache,narration_signature):
     import cinematic_design as design
     import cinematic_speech as speech
-    from cinematic_economy import keyframe_anchors
+    from cinematic_economy import keyframe_anchors, profile_id
     cache=Path(cache);cache.mkdir(parents=True,exist_ok=True)
-    refs=design.speaker_references(config['visual_profile']['reference_image'],cache/'single-speaker-references',
-                                  config['lina_oma_series']['speaker_reference_sha256'])
+    from cinematic_staging import reference_spec
+    ref_spec=reference_spec(config,plan['episode'])
+    refs=design.speaker_references(ref_spec['image'],cache/'single-speaker-references',
+                                  ref_spec['sha'],regions=ref_spec['regions'])
     reference_sha=hashlib.sha256(b''.join(refs[role].read_bytes() for role in ('lina','oma'))).hexdigest()
     pooled=keyframe_anchors(plan,config);anchors=pooled or list(range(len(plan['scenes'])))
     image_valid=[];video_missing=[]
     for i,scene in enumerate(plan['scenes']):
         anchor=anchors[i];seed=plan['episode']*1009+anchor*11
         sig=design.image_signature(reference_sha,design.still_prompt(plan,plan['scenes'][anchor]),seed)
-        if pooled:sig=hashlib.sha256(('two-speaker-keyframes-v1:'+sig).encode()).hexdigest()
+        if pooled:sig=hashlib.sha256((profile_id(plan,config)+':'+sig).encode()).hexdigest()
         image,audio,wav=cache/f'{i:02}.png',cache/f'{i:02}.mp3',cache/f'{i:02}.aligned.wav'
         valid=False;clip_valid=False
         try:
@@ -141,7 +143,7 @@ def prepare(plan,config,quota,review,narration_signature):
     if config['visual_profile'].get('speech_backend')!='longcat-light':
         raise ValueError('Whole-episode budget profile needs a reviewed provider cost model')
     cache=Path('renders/cinematic-series-cache')/f"e{plan['episode']:04}-lina-oma-v1"
-    work=remaining_work(plan,config,cache,narration_signature)
+    work=remaining_work(plan,config,cache,lambda scene:narration_signature(scene,episode=plan['episode']))
     if (work['images'] or work['videos']) and quota.get('status')!='verified':
         raise RuntimeError('quota: full episode allowance is unverified')
     available=quota.get('remaining_seconds') if quota.get('status')=='verified' else 0
@@ -158,3 +160,4 @@ def assert_prepared(plan,config):
     proof=read(proof_path(plan),{})
     if proof.get('plan_sha')!=digest(plan) or proof.get('day')!=berlin_day() or proof.get('review_attempted') is not True or proof.get('admitted') is not True:
         raise RuntimeError('quota: daily prior-post review and full-episode admission must pass before rendering')
+

@@ -125,7 +125,7 @@ def location_description(plan):
     return match.group(1)
 
 
-def speaker_references(reference, folder, expected_sha):
+def speaker_references(reference, folder, expected_sha, regions=None):
     """Isolate the two reviewed reference regions before the single-face video model."""
     from PIL import Image
     reference=Path(reference)
@@ -133,7 +133,9 @@ def speaker_references(reference, folder, expected_sha):
     if source_sha!=expected_sha:
         raise ValueError('The character reference changed; review speaker regions before generation')
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
-    regions={'lina':(0,.08,.53,.77),'oma':(.54,.04,1,.77)}
+    regions=regions or {'lina':(0,.08,.53,.77),'oma':(.54,.04,1,.77)}
+    if set(regions)!={'lina','oma'} or any(len(v)!=4 or not 0<=v[0]<v[2]<=1 or not 0<=v[1]<v[3]<=1 for v in regions.values()):
+        raise ValueError('Invalid reviewed single-speaker crop regions')
     outputs={name:folder/(name+'-single-reference.png') for name in regions}
     marker=folder/'reference-regions.json'
     if marker.exists():
@@ -156,6 +158,23 @@ def speaker_references(reference, folder, expected_sha):
 
 
 def still_prompt(plan,scene):
+    from cinematic_staging import human
+    if human(plan):
+        from cinematic_lina import DESCRIPTIONS
+        identity=DESCRIPTIONS[scene['speaker']].replace('cartoon','human')
+        return ('Photorealistic live-action photograph of an ORIGINAL FICTIONAL human. Preserve the exact '
+                'identity, age, hair and outfit palette of the supplied neutral identity reference. Show ONLY '+identity+
+                '. Natural human-sized eyes, realistic skin texture and age-appropriate facial proportions. '
+                'No cartoon, 3D render, doll face, beauty filter, enlarged eyes or extra person. '
+                'The neutral reference is not the scene: build this episode-specific place: '+location_description(plan)+'. '
+                'Composition: '+scene['framing']+'. The face, hands and working object must all be clearly visible. '
+                'Starting physical action: '+scene['object_action']+'. Foreground real full-size objects: '+
+                ', '.join(scene['visible_objects'])+'. Never replace real objects with toys. '
+                'The person physically touches or operates the object as specified, rather than merely talking '
+                'about it. Accurate body scale, practical spatial relationships, believable contact and weight. '
+                'Natural daylight or practical location lighting, real materials. Keep face and action in the '
+                'upper two thirds for lower captions. One speaking face only, listener fully off camera. '
+                'Do not copy a kitchen, sofa, studio background or food from any reference. No text or watermark.')
     if plan.get('cast_profile') == 'lina-oma-v1':
         from cinematic_lina import DESCRIPTIONS
         return ('Preserve the exact original cartoon identity, age and naturally slender proportions in the supplied reference. '
@@ -194,11 +213,12 @@ def image_signature(reference_signature,prompt,seed):
 
 def speaking_motion(scene):
     if scene['speaker'] in ('lina','oma'):
+        staged=(' Framing: '+scene['framing']+'. Camera: '+scene['camera_action']+'. Physically demonstrate: '+scene.get('demonstration',scene['object_action'])+'. Preserve human anatomy, natural eye size and believable contact with the real object.' if scene.get('keyframe_group') else '')
         return ('Only the visible '+('girl Lina' if scene['speaker']=='lina' else 'grandmother Rosi')+
                 ' speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. '
                 'One readable gentle action: '+scene['object_action']+'. '
                 'Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, '
-                'no extra face, exaggeration, camera shake or new props.')
+                'no extra face, exaggeration, camera shake or new props.'+staged)
     return ('Only the visible adult '+scene['speaker']+' speaks to the friend off camera. '
             'Mouth and jaw follow the supplied German audio at natural speed; lips close during silence. '
             'One small intentional gesture only: '+scene['object_action']+'. '
@@ -210,9 +230,11 @@ def apply_plan(plan):
     location=location_description(plan)
     plan['location_description']=location
     plan['visual_profile']=PROFILE
-    plan['render_style']=('lina-oma-stylized-v1' if plan.get('cast_profile')=='lina-oma-v1' else 'original-cast-realistic-comedy-v1')
+    from cinematic_staging import human
+    plan['render_style']=('lina-oma-human-v2' if human(plan) else 'lina-oma-stylized-v1' if plan.get('cast_profile')=='lina-oma-v1' else 'original-cast-realistic-comedy-v1')
     for scene in plan['scenes']:
-        scene['scene']=('One visible '+('cartoon character ' if plan.get('cast_profile')=='lina-oma-v1' else 'adult ')+scene['speaker']+' in the same '+location+
+        scene['scene']=('One visible '+('human character ' if human(plan) else 'cartoon character ' if plan.get('cast_profile')=='lina-oma-v1' else 'adult ')+scene['speaker']+' in the same '+location+
                         '. The friend is off camera. '+scene['object_action'])
         scene['motion']=speaking_motion(scene)
     return plan
+

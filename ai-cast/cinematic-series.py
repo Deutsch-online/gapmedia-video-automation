@@ -57,6 +57,7 @@ def episode_seconds(episode, config=None):
         raise ValueError('The 45-second contract must start at episode 9 or later')
     return EXCEPTION_SECONDS if episode in exceptions else (DEFAULT_SECONDS if episode >= start else LEGACY_SECONDS)
 TRUSTED_RESEARCH = (
+    ('Beginner German transport verbs, Schubert publisher', 'https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm', 'Verkehrsmittel'),
     ('Everyday German: shopping, doctor and train', 'https://www.goethe.de/de/spr/ueb/lua.html', 'Einkaufen, Arztbesuch, Zug fahren'),
     ('Travel by regional train', 'https://www.bahn.de/angebot/regio/deutschland-ticket', 'Deutschland-Ticket'),
     ('Public transport in Berlin and Brandenburg', 'https://www.vbb.de/abonnements/deutschlandticket/', 'Deutschlandticket'),
@@ -859,20 +860,20 @@ class NarrationTimingError(RuntimeError):
     pass
 
 
-def narration_signature(scene):
+def narration_signature(scene, episode=None):
     if scene['speaker'] in ('lina','oma'):
-        from cinematic_lina import VOICE_PITCHES
+        from cinematic_lina import voice_pitch
         return hashlib.sha256(json.dumps(['narration-timing-v3', VOICES[scene['speaker']],
-            VOICE_PITCHES[scene['speaker']],scene['de']],ensure_ascii=False).encode()).hexdigest()
+            voice_pitch(scene['speaker'],episode),scene['de']],ensure_ascii=False).encode()).hexdigest()
     return hashlib.sha256(json.dumps(['narration-timing-v2', VOICES[scene['speaker']],
                                      scene['de']], ensure_ascii=False).encode()).hexdigest()
 
 
-def measured_narration(scene, audio):
+def measured_narration(scene, audio, episode=None):
     """Measure real TTS, including cached audio; never crop or rush speech to fit."""
     audio = Path(audio)
     marker = audio.with_suffix('.audio.sig')
-    signature = narration_signature(scene)
+    signature = narration_signature(scene, episode=episode)
     if audio.exists() and marker.exists() and marker.read_text() == signature:
         duration = seconds(audio)
         if .4 < duration <= 4.5:
@@ -883,8 +884,8 @@ def measured_narration(scene, audio):
     for rate in ('-5%', '+3%'):
         pitch=[]
         if scene['speaker'] in ('lina','oma'):
-            from cinematic_lina import VOICE_PITCHES
-            pitch=['--pitch='+VOICE_PITCHES[scene['speaker']]]
+            from cinematic_lina import voice_pitch
+            pitch=['--pitch='+voice_pitch(scene['speaker'],episode)]
         command(['python3', '-m', 'edge_tts', '--voice', VOICES[scene['speaker']],
                  '--text', scene['de'], '--rate=' + rate, *pitch, '--write-media', audio])
         duration = seconds(audio)
@@ -940,9 +941,13 @@ def prepare_narration(plan, cache, config, history=(), persist=None):
     cache = Path(cache)
     cache.mkdir(parents=True, exist_ok=True)
     working = copy.deepcopy(plan)
+    def measure(scene, audio):
+        if scene['speaker'] in ('lina','oma'):
+            return measured_narration(scene,audio,episode=plan['episode'])
+        return measured_narration(scene,audio)
     failures, durations = {}, {}
     for i, scene in enumerate(working['scenes']):
-        durations[i] = measured_narration(scene, cache / f'{i:02}.mp3')
+        durations[i] = measure(scene, cache / f'{i:02}.mp3')
         if not .4 < durations[i] <= 4.5:
             failures[i] = durations[i]
     attempts = []
@@ -966,7 +971,7 @@ def prepare_narration(plan, cache, config, history=(), persist=None):
                 with tempfile.TemporaryDirectory(dir=cache) as scratch:
                     for i in failures:
                         audio = Path(scratch) / f'{i:02}.mp3'
-                        duration = measured_narration(candidate['scenes'][i], audio)
+                        duration = measure(candidate['scenes'][i], audio)
                         if not .4 < duration <= 4.5:
                             raise NarrationTimingError(f'Narration timing: repair still does not fit scene {i} ({duration:.2f}s)')
                     for i in failures:
@@ -1144,11 +1149,13 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
                     shutil.copyfile(item, target)
     art = Path(config['reference_dir'])
     cast_names = [name for name in VOICES if any(s['speaker']==name for s in plan['scenes'])]
-    speaker_refs = ({name: Path(config['visual_profile']['reference_image']) for name in cast_names}
+    from cinematic_staging import reference_spec
+    ref_spec=reference_spec(config,plan['episode']) if paired else None
+    speaker_refs = ({name: Path(ref_spec['image']) for name in cast_names}
                     if paired else {name: art / (name + '-speaking.png') for name in cast_names})
     if plan.get('cast_profile')=='lina-oma-v1' and plan['episode']>=23:
-        speaker_refs=design.speaker_references(config['visual_profile']['reference_image'],
-            cache/'single-speaker-references',config['lina_oma_series']['speaker_reference_sha256'])
+        speaker_refs=design.speaker_references(ref_spec['image'],
+            cache/'single-speaker-references',ref_spec['sha'],regions=ref_spec['regions'])
     reference_signature = hashlib.sha256(b''.join(p.read_bytes() for p in speaker_refs.values())).hexdigest()
     audio_files = prepare_narration(plan, cache, config, history, persist_plan)
     # Fail layout before requesting any GPU, using the final spoken text.
@@ -1165,7 +1172,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
         audios.append(aligned)
     parts = []
     native_takes = []
-    from cinematic_economy import keyframe_anchors, report as economy_report
+    from cinematic_economy import keyframe_anchors, profile_id, report as economy_report
     still_anchors = keyframe_anchors(plan, config) if not preview else None
     atomic_json(folder / 'economy.json', economy_report(plan, config if not preview else {}))
     def prepare_still(i, scene):
@@ -1178,7 +1185,7 @@ def render(plan, config, preview=False, history=(), persist_plan=None, persist_p
         if paired:
             signature = design.image_signature(reference_signature,paired_prompt,image_seed)
             if still_anchors:
-                signature = hashlib.sha256(('two-speaker-keyframes-v1:' + signature).encode()).hexdigest()
+                signature = hashlib.sha256((profile_id(plan,config)+':' + signature).encode()).hexdigest()
         else:
             signature = hashlib.sha256(json.dumps(['single-speaker-props-v2', config.get('single_speaker_takes', False), STYLE, CAST, reference_signature, scene], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         sigfile = cache / f'{i:02}.sig'
@@ -1613,6 +1620,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

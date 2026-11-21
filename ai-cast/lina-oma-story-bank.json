@@ -1350,6 +1350,241 @@
           "story_beat": "resolve"
         }
       ]
+    },
+    {
+      "story_id": "lina-oma-fahrrad-park-human-v2",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 8,
+      "title_de": "Fliegen? Nein, Fahrrad fahren!",
+      "title_fa": "پرواز؟ نه، دوچرخه‌سواری!",
+      "summary": "On a quiet traffic-free park path Lina calls riding her bicycle flying. Oma demonstrates the pedal and corrects the phrase immediately. Lina repeats correctly and is praised. Her playful search for wings turns into a safe short ride, then she invites Oma to take her turn.",
+      "cliffhanger": "Tomorrow another real everyday place brings Lina and Oma a fresh German expression.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-park-cycling-path",
+      "location_description": "A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.",
+      "visual_hook": "Lina stands beside a real child-sized bicycle with both feet firmly on the path and a fitted helmet, briefly opens one arm like an airplane while holding the handlebar and calls her intended ride flying.",
+      "everyday_problem": "A child learning German chooses fliegen when she intends riding a bicycle on the ground, and needs the everyday fahren pattern.",
+      "practical_resolution": "Oma shows the pedal of her own parked bicycle and immediately models Ich fahre mit dem Fahrrad. Lina repeats it, receives praise and then actually pedals a short distance safely.",
+      "marta_goal": "Lina wants to describe and perform a real short bicycle ride herself in the park, rather than discuss a toy on a sofa.",
+      "marta_decision": "Lina uses the corrected phrase, puts her foot on the pedal, holds both handlebars and rides a short safe stretch at a natural easy pace.",
+      "visual_payoff": "After her airplane-arm joke, Lina performs a real short ride with no wings, stops with both feet on the ground and invites Oma to have a turn on her own bicycle.",
+      "language_error": {
+        "wrong": "ich fliege mit dem Fahrrad",
+        "correct": "Ich fahre mit dem Fahrrad.",
+        "explanation": "For the intended ordinary ground ride on a bicycle, fahren is the appropriate verb; fliegen means fly and does not describe this park ride. This is an intended-meaning error, not a blanket claim that every sentence using fliegen is ungrammatical."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Replace repeated sofa/table portraits and toy substitutes with photorealistic fictional people, a real park, full-size bicycles, visible pedal/handlebar contact and three deliberate starting compositions. Remove artificial Lina pitch elevation.",
+        "visible_comic_action": "Lina briefly poses like an airplane beside her stationary bicycle, searches playfully for wings, then discovers that her own pedaling is what makes the bicycle go.",
+        "next_experiment": "Compare a clear outdoor physical-demonstration hook with matched-age completion and shares when available; staging metadata does not prove the generated motion has been visually verified."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official SCHUBERT A1 transport exercise teaches fahren with mit plus transport nouns in the dative and includes Fahrrad. This original story applies that transport pattern to an actual bicycle ride; the characters and airplane joke are fictional.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all park dialogue",
+          "the airplane-arm misunderstanding"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich fliege mit dem Fahrrad!",
+          "fa": "اوما، با دوچرخه پرواز می‌کنم!",
+          "scene": "One visible fictional human lina on the same traffic-free park path. Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.",
+          "motion": "Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "problem",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich fahre mit dem Fahrrad.",
+          "fa": "بگو: با دوچرخه می‌روم.",
+          "scene": "One visible fictional human oma on the same traffic-free park path. Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.",
+          "motion": "Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible."
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Fahrrad.",
+          "fa": "با دوچرخه می‌روم.",
+          "scene": "One visible fictional human lina on the same traffic-free park path. Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.",
+          "motion": "Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Schau auf die Pedale.",
+          "fa": "آفرین! به رکاب‌ها نگاه کن.",
+          "scene": "One visible fictional human oma on the same traffic-free park path. Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.",
+          "motion": "Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture."
+        },
+        {
+          "speaker": "lina",
+          "de": "Und wo sind die Flügel?",
+          "fa": "پس بال‌ها کجا هستند؟",
+          "scene": "One visible fictional human lina on the same traffic-free park path. Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.",
+          "motion": "Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded."
+        },
+        {
+          "speaker": "oma",
+          "de": "Flügel brauchst du hier nicht.",
+          "fa": "اینجا به بال نیاز نداری.",
+          "scene": "One visible fictional human oma on the same traffic-free park path. Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.",
+          "motion": "Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works."
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann fahre ich. Ganz langsam!",
+          "fa": "پس دوچرخه‌سواری می‌کنم؛ آرام!",
+          "scene": "One visible fictional human lina on the same traffic-free park path. Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.",
+          "motion": "Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-ride",
+          "framing": "closer-face-and-object",
+          "camera_action": "gentle-follow",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion."
+        },
+        {
+          "speaker": "oma",
+          "de": "Genau! Du fährst schon allein.",
+          "fa": "دقیقاً! حالا خودت دوچرخه می‌رانی.",
+          "scene": "One visible fictional human oma on the same traffic-free park path. Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.",
+          "motion": "Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Oma, jetzt bist du dran!",
+          "fa": "اوما، حالا نوبت توست!",
+          "scene": "One visible fictional human lina on the same traffic-free park path. Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.",
+          "motion": "Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn. Only this speaker follows the exact German audio; listener stays off camera, mouth closes in silence.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-ride",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn."
+        }
+      ],
+      "setting_type": "park-path"
     }
   ]
 }

@@ -27,13 +27,13 @@
     "premise": "Lina, a fictional newly arrived eight-year-old, tries a German word or sentence incorrectly; her funny warm grandmother corrects it. Lina uses the correction and answers with a connected visible joke. Never mock accent, nationality, intelligence or body.",
     "teaching": "One beginner German phrase: immediate wrong meaning, gentle comic reply, exact correction, child's own correct use, connected visual payoff.",
     "continuity": "One new coherent 45-second story every Berlin day. Fixed original reference identities, nine natural-speed shots, one language distinction. Send the complete image storyboard privately before generating video clips. Resume a pending episode rather than substituting new material.",
-    "graphics": "Lower frosted bilingual captions in the existing TikTok/Reels safe area; no fake app, face clone or voice clone.",
+    "graphics": "Photorealistic original human characters from episode 28; real story-specific objects and practical actions, distinct settings between episodes, three staged compositions, lower safe-area glass captions and one visible speaking face. Preserve historical cartoon assets.",
     "credit_policy": "Daily production is authorized only within verified included allowance; no paid or anonymous fallback and at most one start per Berlin day.",
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 27,
-    "story_id": "lina-oma-sieben-jahre-v1",
+    "from_episode": 29,
+    "story_id": "lina-oma-fahrrad-park-human-v2",
     "duration_seconds": 45,
     "require_graphics": false
   },
@@ -98,6 +98,32 @@
       "maximum_generated_stills": 2,
       "independent_speaking_takes": 9,
       "preserve_pending_episode": 23
+    },
+    "human_cast": {
+      "id": "lina-oma-human-v2",
+      "from_episode": 29,
+      "reference_image": "public/ai-cast/lina-oma-human/reference.jpg",
+      "speaker_reference_sha256": "e330d785bd0a5deda3cff4f07961accc5ba8b86cf9d9661329ebc719f45ed0f1",
+      "speaker_regions": {
+        "lina": [
+          0,
+          0.06,
+          0.49,
+          0.7
+        ],
+        "oma": [
+          0.57,
+          0,
+          1,
+          0.7
+        ]
+      }
+    },
+    "staged_keyframes": {
+      "id": "story-staged-keyframes-v2",
+      "from_episode": 29,
+      "maximum_generated_stills": 3,
+      "independent_speaking_takes": 9
     }
   },
   "story_quality": {
@@ -148,13 +174,18 @@
     ],
     "single_speaker_reference_from_episode": 23,
     "voice_pitches": {
-      "lina": "+20Hz",
+      "lina": "+0Hz",
       "oma": "-10Hz"
     },
     "clone_fallback": {
       "status": "not-needed-available-German-voice-selected",
       "automatic_clone_creation": false
-    }
+    },
+    "legacy_voice_pitches": {
+      "lina": "+20Hz",
+      "oma": "-10Hz"
+    },
+    "soft_voice_from_episode": 29
   },
   "production_readiness": {
     "enabled": true,
@@ -167,4 +198,3 @@
     "automatic_paid_fallback": false
   }
 }
-
