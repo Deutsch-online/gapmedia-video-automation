@@ -6,8 +6,21 @@ import {mcpExaSearch} from '../worker/src/mcp-tools.js';
 import {sendMessage} from '../lib/telegram.mjs';
 import {botChatIdFrom} from '../lib/bot-chat.mjs';
 
-const HEADERS={'user-agent':'FamilyCarWatch/1.0 (personal used-car research)'};
+const HEADERS={'user-agent':'Mozilla/5.0 (compatible; FamilyCarWatch/2.0; personal car research)','accept':'text/html,application/xhtml+xml'};
 export const REGIONS=['Burg Magdeburg Schönebeck','Stendal Gardelegen Salzwedel','Brandenburg an der Havel Potsdam','Halle Dessau Brehna','Braunschweig Wolfsburg'];
+
+export const MODELS=['Toyota Corolla Kombi 1.6','Honda Jazz 1.3','Toyota Yaris 1.33','Hyundai i30 CW 1.4','Kia Ceed SW 1.4','Honda Insight Hybrid','Suzuki Swift 1.2','Toyota Avensis Kombi'];
+export function searchQueries(region){
+  // The shared Exa client truncates at 250 characters. Keep location first and
+  // search each model separately so neither geography nor models disappear.
+  return MODELS.map(model=>region+' '+model+' gebraucht bis 6500 Euro ab 2010 bis 200000 km TÜV Scheckheft');
+}
+export function coverageHealth({searched,discovered,read,outcomes}){
+  const parsed=outcomes.filter(x=>x.evaluated).length;
+  return {healthy:searched>0&&read>=3&&parsed>=1,parsed,
+    reason:read<3?'too few original pages readable':parsed<1?'no original vehicle data parsed':searched<1?'search unavailable':'ok'};
+}
+
 const ALLOWED=new Set(['suchen.mobile.de','m.mobile.de','www.autoscout24.de','www.kleinanzeigen.de']);
 export function listingUrl(raw){
   try{const u=new URL(raw);if(u.protocol!=='https:'||!ALLOWED.has(u.hostname))return null;
@@ -110,11 +123,14 @@ export async function run(){
   ])urls.add(u);
   writeFileSync(file,JSON.stringify(state,null,2));
   for(const region of REGIONS){
-    try{const text=await mcpExaSearch('Gebraucht Toyota Corolla Kombi 1.6 Honda Jazz 1.3 Toyota Yaris 1.33 Hyundai i30 CW Kia Ceed SW 1.4 Honda Insight Suzuki Swift 1.2 Avensis 1.8 ab2010 bis6500Euro 200000km Toyota Avensis Kombi 2.0 2.2 D4D '+region);
-      searched++;coverage.push({region,status:'searched'});
-      for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u)urls.add(u);}
-    }catch{coverage.push({region,status:'search failed'});}
-    const extra=await webSearch('Steuerkette Benzin Honda Jazz Toyota Yaris Suzuki Swift Hyundai i30 CW 1.4 gebraucht '+region,{limit:6});
+    for(const query of searchQueries(region)){
+      try{
+        const text=await mcpExaSearch(query);
+        searched++;coverage.push({region,query,status:'searched'});
+        for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u)urls.add(u);}
+      }catch{coverage.push({region,query,status:'search failed'});}
+    }
+    const extra=await webSearch(region+' Toyota Yaris Honda Jazz Hyundai i30 Kombi bis 6500 Euro',{limit:6});
     for(const hit of extra.results){const u=listingUrl(hit.url);if(u)urls.add(u);}
     coverage.push({region,fallback:extra.engine||'unavailable',results:extra.results.length});
   }
@@ -126,16 +142,20 @@ export async function run(){
     }catch{coverage.push({index:town,status:'unavailable'});}
   }
   const outcomes=[];
-  for(const url of [...urls].slice(0,25)){
+  // Rotate the read window instead of repeatedly spending it on the same old ads.
+  const found=[...urls],offset=(Number(state.cursor)||0)%Math.max(1,found.length);
+  const window=found.slice(offset).concat(found.slice(0,offset)).slice(0,80);
+  state.cursor=(offset+window.length)%Math.max(1,found.length);
+  for(const url of window){
     try{
       const response=await get(url);if(!listingUrl(response.url))throw Error('redirected off original listing');
       const html=await response.text();read++;
       const cars=objects(html);if(cars.length!==1){outcomes.push({url,reason:'missing/ambiguous structured vehicle data'});continue;}
-      const car=evaluate(cars[0],url);if(!car.ok){outcomes.push({url,reason:car.reason});continue;}
+      const car=evaluate(cars[0],url);if(!car.ok){outcomes.push({url,evaluated:true,reason:car.reason});continue;}
       await new Promise(r=>setTimeout(r,1100)); // public geocoder rate limit
-      const route=await roadDistance(car.address);if(route.km>150){outcomes.push({url,reason:'road distance'});continue;}
+      const route=await roadDistance(car.address);if(route.km>150){outcomes.push({url,evaluated:true,reason:'road distance'});continue;}
       const fingerprint=createHash('sha256').update(JSON.stringify([car.price,car.mileage,car.hu,car.gearbox])).digest('hex');
-      if(state.sent[url]===fingerprint)continue;
+      if(state.sent[url]===fingerprint){outcomes.push({url,evaluated:true,status:'unchanged'});continue;}
       const message='گزینهٔ تازه برای بررسی مدارک؛ تأیید خرید نیست\n'+car.name+'\n'+
         car.price+' € | '+car.mileage+' km | '+car.registration+'\n'+car.cc+' cc | '+car.ps+' PS | '+car.fuel+' | '+car.gearbox+'\n'+
         'زنجیر طبق ترکیب موتور/سال؛ تطبیق VIN لازم است.\nHU طبق متن: '+car.hu+'؛ اصل گزارش دیده نشده\n'+
@@ -145,11 +165,27 @@ export async function run(){
       const result=await sendMessage({token,chatId,text:escape(message),disablePreview:true});
       if(!result.ok)throw Error('Telegram send rejected');
       state.sent[url]=fingerprint;writeFileSync(file,JSON.stringify(state,null,2));
-      outcomes.push({url,status:'sent'});
+      outcomes.push({url,evaluated:true,status:'sent'});
     }catch{outcomes.push({url,reason:'fetch/route/delivery unavailable; not verified'});}
   }
-  writeFileSync('.car-watch/report.json',JSON.stringify({at:new Date().toISOString(),coverage,discovered:urls.size,read,outcomes},null,2));
-  console.log(JSON.stringify({searched,discovered:urls.size,read,sent:outcomes.filter(x=>x.status==='sent').length}));
-  if(!searched||!read)throw Error('Search coverage unavailable; this is NOT a no-match result');
+  const health=coverageHealth({searched,discovered:urls.size,read,outcomes});
+  const summary={at:new Date().toISOString(),searched,discovered:urls.size,read,health,
+    sent:outcomes.filter(x=>x.status==='sent').length,coverage,outcomes};
+  writeFileSync('.car-watch/report.json',JSON.stringify(summary,null,2));
+  console.log(JSON.stringify({searched,discovered:urls.size,read,parsed:health.parsed,sent:summary.sent,healthy:health.healthy}));
+  // Report outages as outages, never as an empty market. At most one per day.
+  const day=summary.at.slice(0,10);
+  if((!health.healthy&&state.healthNoticeDay!==day)||process.env.CAR_WATCH_DIAGNOSTIC==='1'){
+    const message='وضعیت فنی جستجوی خودرو\n'+
+      'جستجو: '+searched+' | لینک پیدا شده: '+urls.size+' | صفحه خوانده‌شده: '+read+' | اطلاعات خودرو قابل‌تحلیل: '+health.parsed+' | ارسال گزینه: '+summary.sent+'\n'+
+      (health.healthy?'جستجو انجام شد؛ فقط گزینه‌های عبورکرده از شرایط ارسال می‌شوند.':'پوشش جستجو ناقص است؛ محدودیت خواندن آگهی‌ها وجود دارد. این نتیجه به معنی نبود خودروی مناسب نیست.')+'\n'+
+      'گزارش اجرا: https://github.com/Deutsch-online/gapmedia-video-automation/actions/runs/'+(process.env.GITHUB_RUN_ID||'');
+    const delivery=await sendMessage({token,chatId,text:escape(message),disablePreview:true});
+    if(!delivery.ok)throw Error('Diagnostic Telegram delivery failed');
+    state.healthNoticeDay=day;
+    console.log('Car search diagnostic delivered to verified private chat');
+  }
+  writeFileSync(file,JSON.stringify(state,null,2));
+  if(!health.healthy)throw Error('Insufficient search coverage: '+health.reason);
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)run().catch(()=>{console.error('Car search failed. See coverage artifact; no credentials logged.');process.exitCode=1;});
