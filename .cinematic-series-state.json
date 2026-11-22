@@ -4989,7 +4989,12 @@
     "date": "2026-11-22",
     "status": "rendering",
     "time_budget_blocked": true,
-    "budget_reason": "full-episode forecast does not fit"
+    "budget_reason": "full-episode forecast does not fit",
+    "image_preview": {
+      "file": "renders/cinematic-series/e0029-lina-oma-v1/image-preview.jpg",
+      "sha256": "1e6d8affb831c3d070ecf2e5a92409a14fa1c93626ba13d9601c733ca864e537",
+      "status": "dispatching"
+    }
   },
   "attempts": {
     "2026-10-15": 2,
