@@ -4744,7 +4744,253 @@
       "render_style": "lina-oma-stylized-v1"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-fahrrad-park-human-v2",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 8,
+      "title_de": "Fliegen? Nein, Fahrrad fahren!",
+      "title_fa": "پرواز؟ نه، دوچرخه‌سواری!",
+      "summary": "On a quiet traffic-free park path Lina calls riding her bicycle flying. Oma demonstrates the pedal and corrects the phrase immediately. Lina repeats correctly and is praised. Her playful search for wings turns into a safe short ride, then she invites Oma to take her turn.",
+      "cliffhanger": "Tomorrow another real everyday place brings Lina and Oma a fresh German expression.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-park-cycling-path",
+      "location_description": "A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.",
+      "visual_hook": "Lina stands beside a real child-sized bicycle with both feet firmly on the path and a fitted helmet, briefly opens one arm like an airplane while holding the handlebar and calls her intended ride flying.",
+      "everyday_problem": "A child learning German chooses fliegen when she intends riding a bicycle on the ground, and needs the everyday fahren pattern.",
+      "practical_resolution": "Oma shows the pedal of her own parked bicycle and immediately models Ich fahre mit dem Fahrrad. Lina repeats it, receives praise and then actually pedals a short distance safely.",
+      "marta_goal": "Lina wants to describe and perform a real short bicycle ride herself in the park, rather than discuss a toy on a sofa.",
+      "marta_decision": "Lina uses the corrected phrase, puts her foot on the pedal, holds both handlebars and rides a short safe stretch at a natural easy pace.",
+      "visual_payoff": "After her airplane-arm joke, Lina performs a real short ride with no wings, stops with both feet on the ground and invites Oma to have a turn on her own bicycle.",
+      "language_error": {
+        "wrong": "ich fliege mit dem Fahrrad",
+        "correct": "Ich fahre mit dem Fahrrad.",
+        "explanation": "For the intended ordinary ground ride on a bicycle, fahren is the appropriate verb; fliegen means fly and does not describe this park ride. This is an intended-meaning error, not a blanket claim that every sentence using fliegen is ungrammatical."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Replace repeated sofa/table portraits and toy substitutes with photorealistic fictional people, a real park, full-size bicycles, visible pedal/handlebar contact and three deliberate starting compositions. Remove artificial Lina pitch elevation.",
+        "visible_comic_action": "Lina briefly poses like an airplane beside her stationary bicycle, searches playfully for wings, then discovers that her own pedaling is what makes the bicycle go.",
+        "next_experiment": "Compare a clear outdoor physical-demonstration hook with matched-age completion and shares when available; staging metadata does not prove the generated motion has been visually verified.",
+        "daily_evidence_review": {
+          "day": "2026-11-22",
+          "status": "unavailable",
+          "selected_test": {
+            "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+            "measure": "Compare retention/completion and shares per view at the same post age when available.",
+            "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The official SCHUBERT A1 transport exercise teaches fahren with mit plus transport nouns in the dative and includes Fahrrad. This original story applies that transport pattern to an actual bicycle ride; the characters and airplane joke are fictional.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all park dialogue",
+          "the airplane-arm misunderstanding"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich fliege mit dem Fahrrad!",
+          "fa": "اوما، با دوچرخه پرواز می‌کنم!",
+          "scene": "One visible human character lina in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "problem",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina stands still beside the bicycle with both feet grounded, holds the handlebar and briefly opens her free arm like an airplane."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich fahre mit dem Fahrrad.",
+          "fa": "بگو: با دوچرخه می‌روم.",
+          "scene": "One visible human character oma in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: gentle-push. Physically demonstrate: Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma stands by her own parked bicycle and points clearly at its near pedal while keeping her face visible."
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich fahre mit dem Fahrrad.",
+          "fa": "با دوچرخه می‌روم.",
+          "scene": "One visible human character lina in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: gentle-push. Physically demonstrate: Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina holds both handlebars and places one foot lightly on the pedal while the bicycle remains stationary."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sehr gut! Schau auf die Pedale.",
+          "fa": "آفرین! به رکاب‌ها نگاه کن.",
+          "scene": "One visible human character oma in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma smiles warmly and indicates the pedal of her own parked bicycle with one small clear gesture."
+        },
+        {
+          "speaker": "lina",
+          "de": "Und wo sind die Flügel?",
+          "fa": "پس بال‌ها کجا هستند؟",
+          "scene": "One visible human character lina in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-setup",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina looks playfully from one handlebar to the other while holding her stationary bicycle, with both feet grounded."
+        },
+        {
+          "speaker": "oma",
+          "de": "Flügel brauchst du hier nicht.",
+          "fa": "اینجا به بال نیاز نداری.",
+          "scene": "One visible human character oma in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: gentle-push. Physically demonstrate: Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "adult bicycle",
+          "demonstration": "Oma gently turns the near pedal of her parked bicycle a quarter turn with her foot to demonstrate how cycling works."
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann fahre ich. Ganz langsam!",
+          "fa": "پس دوچرخه‌سواری می‌کنم؛ آرام!",
+          "scene": "One visible human character lina in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: gentle-follow. Physically demonstrate: Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "lina-ride",
+          "framing": "closer-face-and-object",
+          "camera_action": "gentle-follow",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina, helmet fastened and both hands on the handlebars, pedals a short easy stretch on the empty park path; movement is real-time, never slow motion."
+        },
+        {
+          "speaker": "oma",
+          "de": "Genau! Du fährst schon allein.",
+          "fa": "دقیقاً! حالا خودت دوچرخه می‌رانی.",
+          "scene": "One visible human character oma in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "adult bicycle"
+          ],
+          "object_action": "Oma stands still beside her parked bicycle, follows Lina with her eyes and gives a small approving smile.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "act",
+          "keyframe_group": "oma-demo",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Oma, jetzt bist du dran!",
+          "fa": "اوما، حالا نوبت توست!",
+          "scene": "One visible human character lina in the same A real leafy German neighborhood park with a quiet paved cycling-practice path, a low wooden fence and natural autumn daylight. No traffic, no kitchen, sofa or toys. Lina has a real child-sized bicycle and a correctly fitted helmet; Oma stands by her own parked adult bicycle. Keep spatial direction and the same path across cuts. Original character clothes and identities.. The friend is off camera. Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "child bicycle",
+            "fitted helmet"
+          ],
+          "object_action": "Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn.",
+          "location_key": "lina-oma-park-cycling-path",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-ride",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "child bicycle",
+          "demonstration": "Lina has stopped safely with both feet down, keeps both hands on her handlebars and grins toward Oma off camera, inviting her turn."
+        }
+      ],
+      "setting_type": "park-path",
+      "episode": 29,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German transport verbs, Schubert publisher",
+        "url": "https://www.schubert-verlag.de/aufgaben/uebungen_a1/a1_kap6_verkehrsmittel.htm",
+        "excerpt": "n | Impressum | Datenschutz | Nutzungsbedingungen | Startseite aufrufen | Sprachniveau A1 Kapitel 6 Verkehrsmittel Ergänzen Sie die richtigen Formen von fahren und die Nomen im Dativ. Die Lösung erfahren Sie, wenn Sie auf die Ampel klicken und mit der Maus dort verweilen. 1. das Auto: Er mit nach Spanien. 2. der Bus: Frau Amsel mit nach München. 3. das Schiff: du mit nach New York? 4. der Zug: Der Chef mit in die Schweiz. 5. die Fähre: Wir mit nach England. 6. das Motorrad: Matthias mit zu Martina. 7. die Bahn: ihr mit an die Ostsee? 8. das Fahrrad: Wohin du mit ? der Aufgaben wurden richtig gelöst. Hier stellen wir Ihnen diese Aufgabe als Ar",
+        "retrieved_at": "2026-11-22T08:25:22.244060+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-human-v2"
+    },
+    "date": "2026-11-22",
+    "status": "render-failed",
+    "time_budget_blocked": true,
+    "budget_reason": "full-episode forecast does not fit"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -4798,8 +5044,8 @@
     "2026-10-20#analytics-episode-7-20261020": 1
   },
   "quota_recovery": {
-    "date": "2026-11-21",
-    "not_before": "2026-11-21T13:26:15.638000+00:00",
+    "date": "2026-11-22",
+    "not_before": "2026-11-22T13:42:36.631000+00:00",
     "reason": "Waiting for full-episode included budget"
   },
   "manual_recovery_reason": {
@@ -4808,7 +5054,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-21T13:40:27.013646+00:00",
+    "checked_at": "2026-11-22T08:25:22.246423+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -4817,7 +5063,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 803.3646250000002,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -4881,59 +5127,28 @@
     }
   },
   "daily_review": {
-    "day": "2026-11-21",
+    "day": "2026-11-22",
     "attempted": true,
-    "checked_at": "2026-11-21T13:40:24.931021+00:00",
-    "status": "available",
+    "checked_at": "2026-11-22T08:25:14.157736+00:00",
+    "status": "unavailable",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
-    "experiments": [
-      {
-        "change": "Implement culturally sensitive, cheerful opening scene",
-        "measure": "Compare engagement metrics (likes, comments)",
-        "evidence": "hypothesis_not_proven"
-      },
-      {
-        "change": "Enhance prop visibility and ensure captions in safe areas",
-        "measure": "Track video completion rates and viewer comments",
-        "evidence": "hypothesis_not_proven"
-      },
-      {
-        "change": "Incorporate natural movements and place captions in safe areas",
-        "measure": "Analyze watch time and share rate",
-        "evidence": "hypothesis_not_proven"
-      }
-    ],
-    "prior_post_observations": [
-      {
-        "id": "7707919548778876192",
-        "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
-        "views": 928,
-        "relative_to_median": 1.5389718076285241
-      }
-    ],
+    "experiments": [],
+    "prior_post_observations": [],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-21T12:55:58.737000+00:00",
-    "evidence_level": "matched_observations_not_causal",
-    "render_qc": {
-      "duration": null,
-      "width": 1080,
-      "height": 1920,
-      "frozen_seconds": 0,
-      "lip_sync_measured": null
-    },
+    "evidence_error": "ValueError",
     "next_test": {
-      "change": "Implement culturally sensitive, cheerful opening scene",
-      "measure": "Compare engagement metrics (likes, comments)",
-      "evidence": "hypothesis_not_proven"
+      "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+      "measure": "Compare retention/completion and shares per view at the same post age when available.",
+      "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
     }
   },
   "full_episode_admission": {
     "work": {
-      "images": 2,
+      "images": 3,
       "videos": 9,
       "video_indices": [
         0,
@@ -4948,30 +5163,30 @@
       ],
       "cached_videos": 0
     },
-    "available_units": 2400.0,
-    "estimated_generation_units": 1984.1692439999972,
-    "required_units_with_headroom": 2286.1550087999976,
-    "admitted": true,
+    "available_units": 803.3646250000002,
+    "estimated_generation_units": 2105.1659123999966,
+    "required_units_with_headroom": 2399.932109999997,
+    "admitted": false,
     "image_bound": 56.020563599999875,
-    "video_bound": 208.01423519999972,
+    "video_bound": 215.2338023999997,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
     "video_basis": "recent_account_debit_upper_plus_20_percent",
     "reserve_units": 30,
-    "final_request_headroom": 271.9857648000003,
+    "final_request_headroom": 264.7661976000003,
     "full_episode_guaranteed": false,
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-21",
-    "episode": 28,
-    "plan_sha": "067162004ba8b0f7ac2a5895ed72d8adb4550acfdf1b7a068900dffbd3a14a83",
+    "day": "2026-11-22",
+    "episode": 29,
+    "plan_sha": "27909610472e42b2169cf690232869d2ef2a840b7c5433d67ef85a29540fdbb3",
     "review_attempted": true,
-    "review_status": "available",
-    "review_source_at": "2026-11-21T12:55:58.737000+00:00",
+    "review_status": "unavailable",
+    "review_source_at": null,
     "selected_test": {
-      "change": "Implement culturally sensitive, cheerful opening scene",
-      "measure": "Compare engagement metrics (likes, comments)",
-      "evidence": "hypothesis_not_proven"
+      "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+      "measure": "Compare retention/completion and shares per view at the same post age when available.",
+      "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
     }
   }
 }
