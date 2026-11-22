@@ -4987,7 +4987,7 @@
       "render_style": "lina-oma-human-v2"
     },
     "date": "2026-11-22",
-    "status": "dispatching",
+    "status": "exporting",
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit",
     "image_preview": {
@@ -4997,7 +4997,8 @@
       "message_id": 3002
     },
     "platform_receipts": {
-      "tiktok": 3003
+      "tiktok": 3003,
+      "instagram": 3004
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0029-lina-oma-v1/tiktok/e0029-tiktok-45s.mp4",
