@@ -150,7 +150,7 @@ export async function run(){
     try{
       const response=await get(url);if(!listingUrl(response.url))throw Error('redirected off original listing');
       const html=await response.text();read++;
-      const cars=objects(html);if(cars.length!==1){outcomes.push({url,reason:'missing/ambiguous structured vehicle data'});continue;}
+      const cars=objects(html);if(cars.length!==1){console.log(JSON.stringify({diagnostic:'vehicle-format',host:new URL(url).hostname,types:[...html.matchAll(/"@type"\s*:\s*"([^"]+)"/g)].map(m=>m[1]).slice(0,12),sample:html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(0,650)}));outcomes.push({url,reason:'missing/ambiguous structured vehicle data'});continue;}
       const car=evaluate(cars[0],url);if(!car.ok){outcomes.push({url,evaluated:true,reason:car.reason});continue;}
       await new Promise(r=>setTimeout(r,1100)); // public geocoder rate limit
       const route=await roadDistance(car.address);if(route.km>150){outcomes.push({url,evaluated:true,reason:'road distance'});continue;}
