@@ -4987,7 +4987,7 @@
       "render_style": "lina-oma-human-v2"
     },
     "date": "2026-11-22",
-    "status": "rendering",
+    "status": "dispatching",
     "time_budget_blocked": true,
     "budget_reason": "full-episode forecast does not fit",
     "image_preview": {
@@ -4995,7 +4995,14 @@
       "sha256": "1e6d8affb831c3d070ecf2e5a92409a14fa1c93626ba13d9601c733ca864e537",
       "status": "sent",
       "message_id": 3002
-    }
+    },
+    "platform_receipts": {},
+    "platform_files": {
+      "tiktok": "renders/cinematic-series/e0029-lina-oma-v1/tiktok/e0029-tiktok-45s.mp4",
+      "instagram": "renders/cinematic-series/e0029-lina-oma-v1/instagram/e0029-instagram-45s.mp4"
+    },
+    "file": "renders/cinematic-series/e0029-lina-oma-v1/tiktok/e0029-tiktok-45s.mp4",
+    "platform": "tiktok"
   },
   "attempts": {
     "2026-10-15": 2,
