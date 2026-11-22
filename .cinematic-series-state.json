@@ -4993,7 +4993,8 @@
     "image_preview": {
       "file": "renders/cinematic-series/e0029-lina-oma-v1/image-preview.jpg",
       "sha256": "1e6d8affb831c3d070ecf2e5a92409a14fa1c93626ba13d9601c733ca864e537",
-      "status": "dispatching"
+      "status": "sent",
+      "message_id": 3002
     }
   },
   "attempts": {
