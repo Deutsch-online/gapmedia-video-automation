@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {evaluate,objects,listingUrl,roadDistance,searchQueries,coverageHealth,discoveryLead,leadMessage} from './car-watch.mjs';
-const car={name:'Hyundai i30 CW 1.4',offers:{price:3990,priceCurrency:'EUR',availability:'https://schema.org/InStock'},mileageFromOdometer:{value:158000,unitCode:'KMT'},bodyType:'Kombi',seatingCapacity:5,vehicleEngine:{enginePower:{value:80,unitCode:'KWT'},engineDisplacement:{value:1396}},fuelType:'Benzin',dateVehicleFirstRegistered:'2011-04-01',vehicleTransmission:'Schaltgetriebe',carbonDioxideEmissions:139,description:'HU 11/2028 Scheckheftgepflegt'};
+const car={name:'Toyota Avensis Kombi 1.8',offers:{price:3990,priceCurrency:'EUR',availability:'https://schema.org/InStock'},mileageFromOdometer:{value:158000,unitCode:'KMT'},bodyType:'Kombi',seatingCapacity:5,vehicleEngine:{enginePower:{value:108,unitCode:'KWT'},engineDisplacement:{value:1798}},fuelType:'Benzin',dateVehicleFirstRegistered:'2011-04-01',vehicleTransmission:'Schaltgetriebe',carbonDioxideEmissions:139,description:'HU 11/2028 Unfallfrei Scheckheftgepflegt'};
 const now=new Date('2026-11-19');
 test('eligible chain variant and boundaries',()=>{assert.equal(evaluate(car,'https://example.com',now).ok,true);for(const patch of [{offers:{...car.offers,price:6501}},{mileageFromOdometer:{value:200001,unitCode:'KMT'}},{description:'HU 11/2028 Umweltplakette Grün Motorschaden'},{dateVehicleFirstRegistered:''},{offers:{...car.offers,availability:'SoldOut'}},{description:'HU 07/2026 Umweltplakette Grün'}])assert.equal(evaluate({...car,...patch},'',now).ok,false);});
 test('no guessed chain or turbo petrol',()=>{assert.equal(evaluate({...car,name:'Ford Focus Turnier 1.6'},'',now).ok,false);assert.equal(evaluate({...car,name:'Hyundai i30 CW T-GDI',fuelType:'Benzin'},'',now).ok,false);});
@@ -11,11 +11,11 @@ test('actual road distance, reject no route/address',async()=>{let calls=0;const
 
 test('new hard limits and excluded older diesel',()=>{for(const patch of [{dateVehicleFirstRegistered:'2009-04-01'},{description:'HU 11/2028 ohne Scheckheft'}])assert.equal(evaluate({...car,...patch},'',now).ok,false);});
 
-test('200000km and automatic allowed, only whitelisted diesel',()=>{assert.equal(evaluate({...car,mileageFromOdometer:{value:199999,unitCode:'KMT'},vehicleTransmission:'Automatik'},'',now).ok,true);assert.equal(evaluate({...car,name:'Hyundai i30 CW 1.4',fuelType:'Diesel'},'',now).ok,false);const av={...car,name:'Toyota Avensis Kombi 2.2 D-4D',fuelType:'Diesel',vehicleEngine:{enginePower:{value:110,unitCode:'KWT'},engineDisplacement:{value:2231}},description:'HU 11/2028 Scheckheft Umweltplakette Grün'};assert.equal(evaluate(av,'',now).ok,true);});
+test('200000km and automatic allowed, only whitelisted diesel',()=>{assert.equal(evaluate({...car,mileageFromOdometer:{value:199999,unitCode:'KMT'},vehicleTransmission:'Automatik'},'',now).ok,true);assert.equal(evaluate({...car,name:'Hyundai i30 CW 1.4',fuelType:'Diesel'},'',now).ok,false);const av={...car,name:'Toyota Avensis Kombi 2.2 D-4D',fuelType:'Diesel',vehicleEngine:{enginePower:{value:110,unitCode:'KWT'},engineDisplacement:{value:2231}},description:'HU 11/2028 Unfallfrei Scheckheft Umweltplakette Grün'};assert.equal(evaluate(av,'',now).ok,true);});
 
 test('every model query retains the region within Exa limit',()=>{
   for(const region of ['Burg Magdeburg Schönebeck','Brandenburg an der Havel Potsdam']){
-    const queries=searchQueries(region);assert.equal(queries.length,8);
+    const queries=searchQueries(region);assert.equal(queries.length,3);
     for(const q of queries){assert.ok(q.startsWith(region));assert.ok(q.length<=250);}
   }
 });
@@ -25,17 +25,11 @@ test('a green workflow must not conceal unreadable ads',()=>{
   assert.equal(coverageHealth({searched:40,discovered:100,read:30,outcomes:[{evaluated:true,reason:'price'}]}).healthy,true);
 });
 
-test('unverified leads contain original ad links and explicit unknowns',()=>{
- const url='https://www.kleinanzeigen.de/s-anzeige/toyota-yaris-1-33/123-216-1';
- const lead=discoveryLead(url);assert.ok(lead);const msg=leadMessage([lead]);
- assert.ok(msg.includes(url));assert.ok(msg.includes('تأیید نشده'));assert.ok(msg.includes('پیشنهاد خرید نیست'));
- assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-autos/toyota-yaris'),null);
- assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/hyundai-i30-crdi/123-216-1'),null);
- assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/toyota-avensis-motorschaden/123-216-1'),null);
- assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/honda-jazz-2007/123-216-1'),null);
-});
 
-test('known rejected ads and explicitly missing HU are never discovery leads',()=>{
- assert.equal(discoveryLead('https://suchen.mobile.de/auto-inserat/hyundai-i30-trend-ohne-t%C3%BCv-wolfsburg/47881590849856.html'),null);
- assert.equal(discoveryLead('https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-edition-salzwedel-ot-brietz/49987107136864.html'),null);
+test('only Avensis 2011+ accepted; raw leads cannot bypass full checks',()=>{
+ assert.equal(evaluate({...car,dateVehicleFirstRegistered:'2010-11-01'},'',now).ok,false);
+ assert.equal(evaluate({...car,name:'Honda Jazz'},'',now).ok,false);
+ assert.equal(evaluate({...car,description:'HU 11/2028 Scheckheftgepflegt'},'',now).ok,false);
+ assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/toyota-avensis-2012/123-216-1'),null);
+ for(const q of searchQueries('Burg'))assert.ok(q.includes('Avensis')&&q.includes('2011'));
 });

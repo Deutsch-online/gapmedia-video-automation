@@ -9,11 +9,11 @@ import {botChatIdFrom} from '../lib/bot-chat.mjs';
 const HEADERS={'user-agent':'Mozilla/5.0 (compatible; FamilyCarWatch/2.0; personal car research)','accept':'text/html,application/xhtml+xml'};
 export const REGIONS=['Burg Magdeburg Schönebeck','Stendal Gardelegen Salzwedel','Brandenburg an der Havel Potsdam','Halle Dessau Brehna','Braunschweig Wolfsburg'];
 
-export const MODELS=['Toyota Corolla Kombi 1.6','Honda Jazz 1.3','Toyota Yaris 1.33','Hyundai i30 CW 1.4','Kia Ceed SW 1.4','Honda Insight Hybrid','Suzuki Swift 1.2','Toyota Avensis Kombi'];
+export const MODELS=['Toyota Avensis Kombi 1.8 Benzin','Toyota Avensis Kombi 2.0 Diesel','Toyota Avensis Kombi 2.2 Diesel'];
 export function searchQueries(region){
   // The shared Exa client truncates at 250 characters. Keep location first and
   // search each model separately so neither geography nor models disappear.
-  return MODELS.map(model=>region+' '+model+' gebraucht bis 6500 Euro ab 2010 bis 200000 km TÜV Scheckheft');
+  return MODELS.map(model=>region+' '+model+' gebraucht bis 6500 Euro ab 2011 bis 200000 km TÜV Scheckheft');
 }
 export function coverageHealth({searched,discovered,read,outcomes}){
   const parsed=outcomes.filter(x=>x.evaluated).length;
@@ -30,17 +30,8 @@ export function listingUrl(raw){
 }
 
 export function discoveryLead(raw){
-  const url=listingUrl(raw);if(!url)return null;
-  const slug=decodeURIComponent(new URL(url).pathname).toLowerCase();
-  // Discovery is deliberately separate from recommendations: no invented price,
-  // mileage, location, timing drive or availability from a search query.
-  if(!/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/.test(slug))return null;
-  if(/bastler|motorschaden|getriebeschaden|unfall|ersatzteil|schlacht|motorblock|turbo|tsi|t-gdi|ecoboost|ohne[- ]?(?:tüv|tuv|hu)|lpg/.test(slug))return null;
-  if(/49987107136864|55840775864992|c4c69f98-666c-434d-b0f4-946999a6551e/.test(url))return null;
-  if(/i30|cee.?d/.test(slug)&&/crdi|diesel/.test(slug))return null;
-  if(/(?:^|[-/])(?:19\d{2}|200[0-9])(?:[-/]|$)/.test(slug))return null;
-  const title=new URL(url).pathname.split('/').filter(Boolean).find(x=>/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/i.test(x));
-  return {url,title:decodeURIComponent(title||'آگهی خودرو').replace(/-/g,' ').slice(0,150)};
+  // Avensis 2011+ only: raw links cannot bypass year, condition and route gates.
+  return null;
 }
 export function leadMessage(leads){
   return 'لینک آگهی‌های مرتبط برای بررسی اولیه — پیشنهاد خرید نیست\n'+
@@ -82,7 +73,8 @@ export function evaluate(v,url,now=new Date()){
   const registration=String(v.dateVehicleFirstRegistered||'');
   if(!/^\d{4}-\d{2}/.test(registration)||new Date(registration)>now)return reject('registration unknown');
   const year=Number(registration.slice(0,4));
-  if(year<2010)return reject('year before2010');
+  if(year<2011)return reject('year before2011');
+  if(!/avensis/i.test(name))return reject('Avensis only');
   if(diesel&&!/avensis/i.test(name))return reject('diesel model outside shortlist');
   const manual=/manual|schalt/i.test(String(v.vehicleTransmission||''));
   const chain=(/corolla/i.test(name)&&estate&&cc===1598&&ps===124)||
@@ -96,6 +88,7 @@ export function evaluate(v,url,now=new Date()){
     (/avensis/i.test(name)&&estate&&diesel&&year>=2010&&year<=2015&&((cc===1998&&[124,126].includes(ps))||(cc===2231&&[150,177].includes(ps))));
   if(!chain)return reject('not an allowed chain engine/body/transmission variant');
   const description=String(v.description||'');
+  if(!/unfallfrei|keine(?: bekannten)? (?:technischen )?mängel|technisch (?:einwandfrei|mängelfrei)/i.test(description))return reject('no explicit accident-free or fault-free seller claim');
   // Negated defect words are intentionally conservative: false exclusions are preferable to recommending faults.
   if(/motorschaden|getriebeschaden|unfallschaden|unfallwagen|bastler|nicht fahrbereit|ölverbrauch|DPF.{0,30}(voll|defekt)|nur.{0,20}(export|gewerb)|reparierter unfallschaden/i.test(description))return reject('disclosed fault');
   if(!(v.serviceHistory===true||/scheckheft(?:gepflegt)?|serviceheft|service history/i.test(description))||/kein.{0,12}scheckheft|ohne.{0,12}scheckheft/i.test(description))return reject('service book not evidenced');
@@ -136,6 +129,13 @@ export async function run(){
   if(!state.sent||typeof state.sent!=='object')throw Error('Invalid dedupe state');
   const urls=new Set(),leads=new Map(),coverage=[];let searched=0,read=0,leadLinksSent=0;
   state.leads=state.leads||{};
+  if(state.profile!=='avensis-only-2011-v1'){
+    const result=await sendMessage({token,chatId,disablePreview:true,text:
+      'جستجوی بات تغییر کرد: فقط Toyota Avensis کُمبی مدل ۲۰۱۱ به بعد، تا ۶۵۰۰ یورو، حداکثر۲۰۰هزار کیلومتر، فاصلهٔ جاده‌ای تا۱۵۰ کیلومتر از بورگ، موتور زنجیری، HU معتبر حداقل۲۰۲۷ و سابقهٔ سرویس. آگهی دارای عیب اعلام‌شده یا مشخصات ناکافی ارسال نمی‌شود. سلامت واقعی نیاز به معاینه دارد؛ فعلاً گزینهٔ مطابق شرایط تأیید نشده است.'});
+    if(!result.ok)throw Error('Profile Telegram delivery failed');
+    state.profile='avensis-only-2011-v1';
+    console.log('Avensis-only profile delivered to verified private Telegram');
+  }
   writeFileSync(file,JSON.stringify(state,null,2));
   for(const region of REGIONS){
     for(const query of searchQueries(region)){
@@ -145,16 +145,9 @@ export async function run(){
         for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u){urls.add(u);const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
       }catch{coverage.push({region,query,status:'search failed'});}
     }
-    const extra=await webSearch(region+' Toyota Yaris Honda Jazz Hyundai i30 Kombi bis 6500 Euro',{limit:6});
+    const extra=await webSearch(region+' Toyota Avensis Kombi ab 2011 bis 6500 Euro 200000 km unfallfrei',{limit:6});
     for(const hit of extra.results){const u=listingUrl(hit.url);if(u){urls.add(u);const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
     coverage.push({region,fallback:extra.engine||'unavailable',results:extra.results.length});
-  }
-  for(const town of ['burg-magdeburg','stendal','brandenburg-an-der-havel','halle-saale','braunschweig']){
-    try{const index=await get('https://auto.meinestadt.de/'+town+'/gebrauchtwagen-azl/100-171726-171735-78');
-      const html=await index.text();let added=0;
-      for(const m of html.matchAll(/href=["']([^"']+)["']/g)){const u=listingUrl(m[1].replace(/&amp;/g,'&'));if(u){urls.add(u);added++;const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
-      coverage.push({index:town,links:added});
-    }catch{coverage.push({index:town,status:'unavailable'});}
   }
   // Deliver useful direct links even when the detail pages block automation.
   // These are explicitly unverified discovery links, never qualified matches.

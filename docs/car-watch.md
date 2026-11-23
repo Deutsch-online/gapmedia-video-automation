@@ -1,22 +1,2 @@
-# Family car search — current owner criteria (20 November2026)
-Every30minutes; private Telegram only, no contact with sellers.
-MaxEUR6500, firstregistration2010+, mileage200000km, max150km one-way road
-route from Burg bei Magdeburg town centre (exact home address unknown).
-HU at least2027 and not expired; service-book evidence required. All claims
-remain pending actual documents and independent inspection. No TSI, DSG,
-timing-belt engine, major damage or known faults.
-
-Exact chain engine shortlist: Corolla estate1.6/124PS; Jazz1.3/102;
-Yaris1.33/99; i30CW1.4/109; CeedSW1.4/109; Insight1.3hybrid;
-Swift1.2/94; Avensis estate1.8/147; Avensis estate2.0/2.2diesel.
-Manual or automatic accepted. Chain fitment is checked by displacement,
-power and year; VIN/engine-code confirmation remains mandatory.
-Avensis diesel automatic gate currently supports1998cc124/126PS and
-2231cc150/177PS2010–2015; unrecognised later engine variants are skipped.
-Tax has no fixedEUR150 ceiling now; report estimate if CO2 known, otherwise
-unknown. Reliability is not guaranteed by chain fitment.
-Conservative JSON-LD-only extraction; blocked/ambiguous pages are skipped.
-Five regional searches plus fallback index; coverage artifact records failures.
-OSRM route must be <=150km; unknown routes do not qualify.
-Telegram fingerprints cached; cache eviction may permit repeats.
-Tests: node --test scripts/test-car-watch.mjs
+# Owner car search — 23 November 2026
+Only Toyota Avensis estates registered 2011 or later. EUR6500 maximum, 200000km maximum, 150km one-way road from Burg town centre. Chain engines from the existing Avensis whitelist, manual or automatic; petrol/diesel accepted. Require service-book claim, explicit accident-free or fault-free seller claim, no disclosed defects, valid HU into 2027+. Claims remain pending independent inspection and original documents. Raw unverified discovery links disabled for this stricter profile. Exa searches each Avensis engine separately in five regions. No seller contact. Private Telegram only. Half-hour cron is unchanged; GitHub schedule can be delayed. Profile confirmation is delivered once. Extraction/access limitations remain visible in Actions coverage artifacts; do not claim no matches when coverage is unavailable.
