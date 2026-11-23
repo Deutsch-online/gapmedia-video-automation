@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {evaluate,objects,listingUrl,roadDistance,searchQueries,coverageHealth} from './car-watch.mjs';
+import {evaluate,objects,listingUrl,roadDistance,searchQueries,coverageHealth,discoveryLead,leadMessage} from './car-watch.mjs';
 const car={name:'Hyundai i30 CW 1.4',offers:{price:3990,priceCurrency:'EUR',availability:'https://schema.org/InStock'},mileageFromOdometer:{value:158000,unitCode:'KMT'},bodyType:'Kombi',seatingCapacity:5,vehicleEngine:{enginePower:{value:80,unitCode:'KWT'},engineDisplacement:{value:1396}},fuelType:'Benzin',dateVehicleFirstRegistered:'2011-04-01',vehicleTransmission:'Schaltgetriebe',carbonDioxideEmissions:139,description:'HU 11/2028 Scheckheftgepflegt'};
 const now=new Date('2026-11-19');
 test('eligible chain variant and boundaries',()=>{assert.equal(evaluate(car,'https://example.com',now).ok,true);for(const patch of [{offers:{...car.offers,price:6501}},{mileageFromOdometer:{value:200001,unitCode:'KMT'}},{description:'HU 11/2028 Umweltplakette Grün Motorschaden'},{dateVehicleFirstRegistered:''},{offers:{...car.offers,availability:'SoldOut'}},{description:'HU 07/2026 Umweltplakette Grün'}])assert.equal(evaluate({...car,...patch},'',now).ok,false);});
@@ -23,4 +23,14 @@ test('a green workflow must not conceal unreadable ads',()=>{
   assert.equal(coverageHealth({searched:5,discovered:55,read:1,outcomes:[]}).healthy,false);
   assert.equal(coverageHealth({searched:40,discovered:100,read:30,outcomes:[]}).healthy,false);
   assert.equal(coverageHealth({searched:40,discovered:100,read:30,outcomes:[{evaluated:true,reason:'price'}]}).healthy,true);
+});
+
+test('unverified leads contain original ad links and explicit unknowns',()=>{
+ const url='https://www.kleinanzeigen.de/s-anzeige/toyota-yaris-1-33/123-216-1';
+ const lead=discoveryLead(url);assert.ok(lead);const msg=leadMessage([lead]);
+ assert.ok(msg.includes(url));assert.ok(msg.includes('تأیید نشده'));assert.ok(msg.includes('پیشنهاد خرید نیست'));
+ assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-autos/toyota-yaris'),null);
+ assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/hyundai-i30-crdi/123-216-1'),null);
+ assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/toyota-avensis-motorschaden/123-216-1'),null);
+ assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/honda-jazz-2007/123-216-1'),null);
 });

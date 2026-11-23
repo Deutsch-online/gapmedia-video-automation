@@ -28,6 +28,25 @@ export function listingUrl(raw){
   for(const k of [...u.searchParams.keys()])if(k.startsWith('utm_'))u.searchParams.delete(k);
   return u.href;}catch{return null;}
 }
+
+export function discoveryLead(raw){
+  const url=listingUrl(raw);if(!url)return null;
+  const slug=decodeURIComponent(new URL(url).pathname).toLowerCase();
+  // Discovery is deliberately separate from recommendations: no invented price,
+  // mileage, location, timing drive or availability from a search query.
+  if(!/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/.test(slug))return null;
+  if(/bastler|motorschaden|getriebeschaden|unfall|ersatzteil|schlacht|motorblock|turbo|tsi|t-gdi|ecoboost/.test(slug))return null;
+  if(/i30|cee.?d/.test(slug)&&/crdi|diesel/.test(slug))return null;
+  if(/(?:^|[-/])(?:19\d{2}|200[0-9])(?:[-/]|$)/.test(slug))return null;
+  const title=new URL(url).pathname.split('/').filter(Boolean).find(x=>/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/i.test(x));
+  return {url,title:decodeURIComponent(title||'آگهی خودرو').replace(/-/g,' ').slice(0,150)};
+}
+export function leadMessage(leads){
+  return 'لینک آگهی‌های مرتبط برای بررسی اولیه — پیشنهاد خرید نیست\n'+
+    'خواندن کامل مشخصات ممکن نشد. قیمت زیر ۶۵۰۰€، کارکرد، سال، زنجیر، HU، وضعیت فروش و فاصلهٔ حداکثر۱۵۰ کیلومتر هنوز تأیید نشده‌اند.\n\n'+
+    leads.map((lead,i)=>(i+1)+'. '+lead.title+'\n'+lead.url).join('\n\n');
+}
+
 export function objects(html){
   const found=[];
   function walk(v){if(!v||typeof v!=='object')return;if(Array.isArray(v)){v.forEach(walk);return;}
@@ -114,32 +133,38 @@ export async function run(){
   const file='.car-watch/sent.json';
   const state=existsSync(file)?JSON.parse(readFileSync(file,'utf8')):{sent:{}};
   if(!state.sent||typeof state.sent!=='object')throw Error('Invalid dedupe state');
-  const urls=new Set(),coverage=[];let searched=0,read=0;
-  // Previously inspected original advertisements are also checked for material changes.
-  for(const u of [
-    'https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-edition-salzwedel-ot-brietz/49987107136864.html',
-    'https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-1-6-crdi-classic-hu-au-neu-derenburg/55840775864992.html',
-    'https://www.autoscout24.de/angebote/toyota-avensis-1-8-sol-benzin-silber-c4c69f98-666c-434d-b0f4-946999a6551e'
-  ])urls.add(u);
+  const urls=new Set(),leads=new Map(),coverage=[];let searched=0,read=0,leadLinksSent=0;
+  state.leads=state.leads||{};
   writeFileSync(file,JSON.stringify(state,null,2));
   for(const region of REGIONS){
     for(const query of searchQueries(region)){
       try{
         const text=await mcpExaSearch(query);
         searched++;coverage.push({region,query,status:'searched'});
-        for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u)urls.add(u);}
+        for(const m of text.matchAll(/https:\/\/[^\s<>"\])]+/g)){const u=listingUrl(m[0]);if(u){urls.add(u);const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
       }catch{coverage.push({region,query,status:'search failed'});}
     }
     const extra=await webSearch(region+' Toyota Yaris Honda Jazz Hyundai i30 Kombi bis 6500 Euro',{limit:6});
-    for(const hit of extra.results){const u=listingUrl(hit.url);if(u)urls.add(u);}
+    for(const hit of extra.results){const u=listingUrl(hit.url);if(u){urls.add(u);const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
     coverage.push({region,fallback:extra.engine||'unavailable',results:extra.results.length});
   }
   for(const town of ['burg-magdeburg','stendal','brandenburg-an-der-havel','halle-saale','braunschweig']){
     try{const index=await get('https://auto.meinestadt.de/'+town+'/gebrauchtwagen-azl/100-171726-171735-78');
       const html=await index.text();let added=0;
-      for(const m of html.matchAll(/href=["']([^"']+)["']/g)){const u=listingUrl(m[1].replace(/&amp;/g,'&'));if(u){urls.add(u);added++;}}
+      for(const m of html.matchAll(/href=["']([^"']+)["']/g)){const u=listingUrl(m[1].replace(/&amp;/g,'&'));if(u){urls.add(u);added++;const lead=discoveryLead(u);if(lead)leads.set(u,lead);}}
       coverage.push({index:town,links:added});
     }catch{coverage.push({index:town,status:'unavailable'});}
+  }
+  // Deliver useful direct links even when the detail pages block automation.
+  // These are explicitly unverified discovery links, never qualified matches.
+  const fresh=[...leads.values()].filter(x=>!state.leads[x.url]&&!state.sent[x.url]).slice(0,5);
+  if(fresh.length){
+    const delivered=await sendMessage({token,chatId,text:escape(leadMessage(fresh)),disablePreview:true});
+    if(!delivered.ok)throw Error('Discovery links Telegram delivery failed');
+    for(const lead of fresh)state.leads[lead.url]=new Date().toISOString();
+    leadLinksSent=fresh.length;
+    writeFileSync(file,JSON.stringify(state,null,2));
+    console.log(JSON.stringify({event:'discovery_links_delivered',count:leadLinksSent,urls:fresh.map(x=>x.url)}));
   }
   const outcomes=[];
   // Rotate the read window instead of repeatedly spending it on the same old ads.
@@ -170,12 +195,12 @@ export async function run(){
   }
   const health=coverageHealth({searched,discovered:urls.size,read,outcomes});
   const summary={at:new Date().toISOString(),searched,discovered:urls.size,read,health,
-    sent:outcomes.filter(x=>x.status==='sent').length,coverage,outcomes};
+    sent:outcomes.filter(x=>x.status==='sent').length,leadLinksSent,coverage,outcomes};
   writeFileSync('.car-watch/report.json',JSON.stringify(summary,null,2));
-  console.log(JSON.stringify({searched,discovered:urls.size,read,parsed:health.parsed,sent:summary.sent,healthy:health.healthy}));
+  console.log(JSON.stringify({searched,discovered:urls.size,read,parsed:health.parsed,sent:summary.sent,leadLinksSent,healthy:health.healthy}));
   // Report outages as outages, never as an empty market. At most one per day.
   const day=summary.at.slice(0,10);
-  if((!health.healthy&&state.healthNoticeDay!==day)||process.env.CAR_WATCH_DIAGNOSTIC==='1'){
+  if(process.env.CAR_WATCH_DIAGNOSTIC==='1'&&!leadLinksSent){
     const message='وضعیت فنی جستجوی خودرو\n'+
       'جستجو: '+searched+' | لینک پیدا شده: '+urls.size+' | صفحه خوانده‌شده: '+read+' | اطلاعات خودرو قابل‌تحلیل: '+health.parsed+' | ارسال گزینه: '+summary.sent+'\n'+
       (health.healthy?'جستجو انجام شد؛ فقط گزینه‌های عبورکرده از شرایط ارسال می‌شوند.':'پوشش جستجو ناقص است؛ محدودیت خواندن آگهی‌ها وجود دارد. این نتیجه به معنی نبود خودروی مناسب نیست.')+'\n'+
