@@ -1,0 +1,81 @@
+name: Redeliver episode 29 privately at owner request
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/redeliver-e29-20261123.yml]
+permissions:
+  contents: write
+concurrency:
+  group: gapmedia-lesson
+  cancel-in-progress: false
+jobs:
+  redeliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Forward confirmed original videos privately with durable receipts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import {telegramConfig} from './lib/telegram.mjs';
+          import {readFileSync,writeFileSync,existsSync,mkdirSync} from 'node:fs';
+          import {execFileSync} from 'node:child_process';
+          import {createHash} from 'node:crypto';
+          const tg=telegramConfig(process.env);
+          const path='ops/e29-redelivery-20261123.json';
+          async function api(method,body={}) {
+            let response;
+            try { response=await fetch('https://api.telegram.org/bot'+tg.token+'/'+method,{
+              method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(45000)});
+            } catch {throw new Error('Telegram response unknown; do not replay');}
+            const data=await response.json();
+            if(!data.ok) throw new Error(method+': '+String(data.description||'rejected').replaceAll(tg.token,'[redacted]'));
+            return data.result;
+          }
+          const me=await api('getMe');
+          const chat=await api('getChat',{chat_id:tg.reviewChatId});
+          if(chat.type!=='private'||chat.id===me.id)throw new Error('Only established private owner destination allowed');
+          const fingerprint=createHash('sha256').update(String(chat.id)).digest('hex');
+          const state=JSON.parse(readFileSync('.cinematic-series-state.json','utf8'));
+          const original=state.deliveries?.['2026-11-22'];
+          if(original?.episode!==29||original.platforms?.tiktok!==3003||original.platforms?.instagram!==3004)
+            throw new Error('Original episode receipts differ');
+          const journal=existsSync(path)?JSON.parse(readFileSync(path,'utf8')):{
+            request:'owner-not-received-e29-20261123',episode:29,source_run:45043666021,
+            destination_fingerprint:fingerprint,bot_username:me.username,platforms:{}};
+          if(journal.destination_fingerprint!==fingerprint)throw new Error('Destination changed; reconcile first');
+          function save(){
+            mkdirSync('ops',{recursive:true});writeFileSync(path,JSON.stringify(journal,null,2)+'\n');
+            execFileSync('git',['config','user.name','github-actions[bot]']);
+            execFileSync('git',['config','user.email','41898282+github-actions[bot]@users.noreply.github.com']);
+            execFileSync('git',['add',path]);
+            execFileSync('git',['commit','-m','Checkpoint owner-requested episode 29 redelivery']);
+            execFileSync('git',['pull','--rebase','origin','main']);
+            execFileSync('git',['push','origin','HEAD:main']);
+          }
+          console.log(JSON.stringify({bot_username:me.username,private_destination:true}));
+          for(const [platform,message_id] of Object.entries(original.platforms)){
+            const previous=journal.platforms[platform];
+            if(previous?.status==='confirmed')continue;
+            if(previous)throw new Error('Prior submission needs reconciliation; never replay');
+            journal.platforms[platform]={status:'dispatching',original_message_id:message_id,at:new Date().toISOString()};
+            save();
+            const result=await api('forwardMessage',{chat_id:chat.id,from_chat_id:chat.id,message_id});
+            const receipt=journal.platforms[platform];
+            receipt.status='confirmed';receipt.message_id=result.message_id;
+            receipt.duration=result.video?.duration;receipt.video_bytes=result.video?.file_size;
+            receipt.is_video=Boolean(result.video);
+            save();
+            console.log(JSON.stringify({platform,...receipt}));
+            if(!result.video||result.video.duration!==45)throw new Error('Forwarded message is not expected 45-second video');
+          }
+          JS
