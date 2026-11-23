@@ -6,9 +6,13 @@
   "bot_username": "afgsocial_bot",
   "platforms": {
     "tiktok": {
-      "status": "dispatching",
+      "status": "confirmed",
       "original_message_id": 3003,
-      "at": "2026-11-23T21:28:53.783Z"
+      "at": "2026-11-23T21:28:53.783Z",
+      "message_id": 3015,
+      "duration": 0,
+      "video_bytes": 26315013,
+      "is_video": true
     }
   }
 }
