@@ -34,3 +34,8 @@ test('unverified leads contain original ad links and explicit unknowns',()=>{
  assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/toyota-avensis-motorschaden/123-216-1'),null);
  assert.equal(discoveryLead('https://www.kleinanzeigen.de/s-anzeige/honda-jazz-2007/123-216-1'),null);
 });
+
+test('known rejected ads and explicitly missing HU are never discovery leads',()=>{
+ assert.equal(discoveryLead('https://suchen.mobile.de/auto-inserat/hyundai-i30-trend-ohne-t%C3%BCv-wolfsburg/47881590849856.html'),null);
+ assert.equal(discoveryLead('https://suchen.mobile.de/auto-inserat/hyundai-i30-cw-edition-salzwedel-ot-brietz/49987107136864.html'),null);
+});

@@ -35,7 +35,8 @@ export function discoveryLead(raw){
   // Discovery is deliberately separate from recommendations: no invented price,
   // mileage, location, timing drive or availability from a search query.
   if(!/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/.test(slug))return null;
-  if(/bastler|motorschaden|getriebeschaden|unfall|ersatzteil|schlacht|motorblock|turbo|tsi|t-gdi|ecoboost/.test(slug))return null;
+  if(/bastler|motorschaden|getriebeschaden|unfall|ersatzteil|schlacht|motorblock|turbo|tsi|t-gdi|ecoboost|ohne[- ]?(?:tüv|tuv|hu)|lpg/.test(slug))return null;
+  if(/49987107136864|55840775864992|c4c69f98-666c-434d-b0f4-946999a6551e/.test(url))return null;
   if(/i30|cee.?d/.test(slug)&&/crdi|diesel/.test(slug))return null;
   if(/(?:^|[-/])(?:19\d{2}|200[0-9])(?:[-/]|$)/.test(slug))return null;
   const title=new URL(url).pathname.split('/').filter(Boolean).find(x=>/yaris|jazz|insight|swift|avensis|corolla|i30|cee.?d/i.test(x));
