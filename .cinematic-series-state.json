@@ -5241,7 +5241,8 @@
     "image_preview": {
       "file": "renders/cinematic-series/e0030-lina-oma-v1/image-preview.jpg",
       "sha256": "fa0c2150fe31c6e369fe2cd8c2cad3c9dfed2e2b82485f570fd1d8de73245556",
-      "status": "dispatching"
+      "status": "sent",
+      "message_id": 3020
     }
   },
   "attempts": {
