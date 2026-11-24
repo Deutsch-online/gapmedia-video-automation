@@ -4993,7 +4993,252 @@
       "render_style": "lina-oma-human-v2"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-durst-schule-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 9,
+      "title_de": "Jetzt hat Oma Durst!",
+      "title_fa": "حالا اوما تشنه است!",
+      "summary": "After school thirsty Lina uses sein instead of haben. Oma immediately corrects her, Lina repeats and is praised. Oma visibly fills Lina's small bottle from her larger bottle. Lina drinks, discovers Oma's bottle is now empty, and offers her own bottle back with a playful smile.",
+      "cliffhanger": "Tomorrow Lina and Oma discover another everyday German expression in a different place.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-school-water-bench",
+      "location_description": "A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.",
+      "visual_hook": "Lina tips her open empty bottle above her palm and looks into it, puzzled; not a drop comes out.",
+      "everyday_problem": "A newly arrived child says Ich bin Durst instead of Ich habe Durst when she wants water after school.",
+      "practical_resolution": "Lina learns Ich habe Durst, watches her small bottle filled with real drinking water and actually takes a small sip.",
+      "marta_goal": "Lina wants to say she is thirsty and drink from her empty bottle after lessons.",
+      "marta_decision": "She repeats the correction, holds her bottle upright for filling, drinks and notices Oma's bottle is now empty.",
+      "visual_payoff": "Oma's generous refill leaves her own bottle empty. Lina notices and offers the newly filled bottle toward off-camera Oma, reversing who needs water.",
+      "language_error": {
+        "wrong": "ich bin Durst",
+        "correct": "Ich habe Durst.",
+        "explanation": "For the intended statement that the speaker feels thirsty, German uses haben: Ich habe Durst. Ich bin Durst identifies the speaker as thirst instead. The official publisher exercise pairs Ich habe with Durst and Ich möchte etwas trinken."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Use an actual school entrance, visible empty and full bottles, real pouring and sipping, and a connected visual reversal instead of repeated sofa portraits.",
+        "visible_comic_action": "Oma fills Lina's bottle so generously that her own bottle is empty; Lina discovers who is thirsty now and offers the water back.",
+        "next_experiment": "Test immediate visible empty-bottle hook and a real pouring payoff; compare completion and shares only with valid matched-age analytics.",
+        "daily_evidence_review": {
+          "day": "2026-11-24",
+          "status": "available",
+          "selected_test": {
+            "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+            "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+            "evidence": "proposed_test_not_proven"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The original SCHUBERT A1 exercise asks learners to complete Ich habe [word]. Ich möchte etwas trinken, with Durst in its word bank. This original fictional story applies that first-person haben expression.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all school-entrance dialogue",
+          "the empty-bottle reversal"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin Durst!",
+          "fa": "اوما، من تشنگی هستم!",
+          "scene": "One visible human character lina in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Lina tips her open empty bottle over her palm; no water comes out.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina tips her open empty bottle over her palm; no water comes out.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina tips her open empty bottle over her palm; no water comes out.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina tips her open empty bottle over her palm; no water comes out.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "problem",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina tips her open empty bottle over her palm; no water comes out."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich habe Durst.",
+          "fa": "بگو: من تشنه هستم.",
+          "scene": "One visible human character oma in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Oma gently tilts her larger capped water bottle to show the water inside.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gently tilts her larger capped water bottle to show the water inside.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma gently tilts her larger capped water bottle to show the water inside.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma gently tilts her larger capped water bottle to show the water inside.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma gently tilts her larger capped water bottle to show the water inside."
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich habe Durst.",
+          "fa": "من تشنه هستم.",
+          "scene": "One visible human character lina in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Lina turns her small bottle upright and holds its open neck steady.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina turns her small bottle upright and holds its open neck steady.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina turns her small bottle upright and holds its open neck steady.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina turns her small bottle upright and holds its open neck steady.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina turns her small bottle upright and holds its open neck steady."
+        },
+        {
+          "speaker": "oma",
+          "de": "Prima! Hier ist Wasser.",
+          "fa": "آفرین! اینجا آب هست.",
+          "scene": "One visible human character oma in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Oma unscrews her larger bottle cap, keeping the bottle upright.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma unscrews her larger bottle cap, keeping the bottle upright.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma unscrews her larger bottle cap, keeping the bottle upright.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma unscrews her larger bottle cap, keeping the bottle upright.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma unscrews her larger bottle cap, keeping the bottle upright."
+        },
+        {
+          "speaker": "lina",
+          "de": "Meine Flasche ist auch leer!",
+          "fa": "بطری من هم خالی است!",
+          "scene": "One visible human character lina in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Lina holds her open empty bottle upright and taps its transparent side.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds her open empty bottle upright and taps its transparent side.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina holds her open empty bottle upright and taps its transparent side.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina holds her open empty bottle upright and taps its transparent side.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina holds her open empty bottle upright and taps its transparent side."
+        },
+        {
+          "speaker": "oma",
+          "de": "Dann füllen wir sie.",
+          "fa": "پس آن را پُر می‌کنیم.",
+          "scene": "One visible human character oma in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: gentle-push. Physically demonstrate: Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears."
+        },
+        {
+          "speaker": "lina",
+          "de": "Danke! Das tut gut.",
+          "fa": "ممنون! چقدر خوب است.",
+          "scene": "One visible human character lina in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-drink",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking."
+        },
+        {
+          "speaker": "oma",
+          "de": "Oh! Meine ist jetzt leer.",
+          "fa": "اوه! حالا بطری من خالی است.",
+          "scene": "One visible human character oma in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Oma gently tilts her now empty larger bottle and looks inside it.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma gently tilts her now empty larger bottle and looks inside it.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma gently tilts her now empty larger bottle and looks inside it.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma gently tilts her now empty larger bottle and looks inside it.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma gently tilts her now empty larger bottle and looks inside it."
+        },
+        {
+          "speaker": "lina",
+          "de": "Jetzt hat Oma Durst!",
+          "fa": "حالا اوما تشنه است!",
+          "scene": "One visible human character lina in the same A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.. The friend is off camera. Lina smiles and offers her upright filled bottle toward off-camera Oma.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina smiles and offers her upright filled bottle toward off-camera Oma.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina smiles and offers her upright filled bottle toward off-camera Oma.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina smiles and offers her upright filled bottle toward off-camera Oma.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-drink",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina smiles and offers her upright filled bottle toward off-camera Oma."
+        }
+      ],
+      "setting_type": "school-entrance",
+      "episode": 30,
+      "duration_seconds": 45,
+      "research_source": {
+        "topic": "Beginner German requests, Schubert publisher exercise",
+        "url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "excerpt": ". . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen . Ich möchte etwas trinken. 8. Hast du . . . Gasherd Kartoffelsalat Tafel Vanillepudding Durst Majonäse Bananen Tomaten Hunger Quarkkuchen ?  Ich bin satt. der Aufgaben wurden richtig gelöst. © SCHUBERT-Verlag Leipzig Autorin: Grazyna Werner",
+        "retrieved_at": "2026-11-24T14:36:31.612544+00:00",
+        "transport": "urllib"
+      },
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-human-v2"
+    },
+    "date": "2026-11-24",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -5041,7 +5286,8 @@
     "2026-11-19#owner-lina-e26-kalt-resume-20261119": 1,
     "2026-11-20": 1,
     "2026-11-21": 1,
-    "2026-11-22": 1
+    "2026-11-22": 1,
+    "2026-11-24": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -5058,7 +5304,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-24T14:05:00.110341+00:00",
+    "checked_at": "2026-11-24T14:36:31.614853+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -5209,25 +5455,25 @@
       "cached_videos": 0
     },
     "available_units": 2400.0,
-    "estimated_generation_units": 2105.1659123999966,
-    "required_units_with_headroom": 2399.932109999997,
+    "estimated_generation_units": 2047.5753624000004,
+    "required_units_with_headroom": 2349.2566512000003,
     "admitted": true,
-    "image_bound": 56.020563599999875,
-    "video_bound": 215.2338023999997,
+    "image_bound": 57.56898719999972,
+    "video_bound": 208.31871120000014,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
     "video_basis": "recent_account_debit_upper_plus_20_percent",
     "reserve_units": 30,
-    "final_request_headroom": 264.7661976000003,
+    "final_request_headroom": 271.68128879999983,
     "full_episode_guaranteed": false,
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-22",
-    "episode": 29,
-    "plan_sha": "27909610472e42b2169cf690232869d2ef2a840b7c5433d67ef85a29540fdbb3",
+    "day": "2026-11-24",
+    "episode": 30,
+    "plan_sha": "3bcb5b79a53679b5f9612fceecc187f7b154e814b5abf11543c18bd6b1071090",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-22T15:55:58.949000+00:00",
+    "review_source_at": "2026-11-24T13:20:58.915000+00:00",
     "selected_test": {
       "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
       "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
