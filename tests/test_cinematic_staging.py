@@ -10,7 +10,7 @@ from cinematic_lina import voice_pitch
 
 class StagingTests(unittest.TestCase):
     def setUp(self):
-        self.plan=copy.deepcopy(json.loads((ROOT/'ai-cast/lina-oma-story-bank.json').read_text())['stories'][-1])
+        self.plan=copy.deepcopy(next(p for p in json.loads((ROOT/'ai-cast/lina-oma-story-bank.json').read_text())['stories'] if p['story_id']=='lina-oma-fahrrad-park-human-v2'))
         self.plan.update(episode=29,duration_seconds=45)
         self.config=json.loads((ROOT/'.cinematic-series.json').read_text())
 

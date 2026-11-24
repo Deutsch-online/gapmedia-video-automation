@@ -1585,6 +1585,242 @@
         }
       ],
       "setting_type": "park-path"
+    },
+    {
+      "story_id": "lina-oma-durst-schule-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 9,
+      "title_de": "Jetzt hat Oma Durst!",
+      "title_fa": "حالا اوما تشنه است!",
+      "summary": "After school thirsty Lina uses sein instead of haben. Oma immediately corrects her, Lina repeats and is praised. Oma visibly fills Lina's small bottle from her larger bottle. Lina drinks, discovers Oma's bottle is now empty, and offers her own bottle back with a playful smile.",
+      "cliffhanger": "Tomorrow Lina and Oma discover another everyday German expression in a different place.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-school-water-bench",
+      "location_description": "A quiet German primary-school entrance after lessons, beside one wooden bench and a brick wall in soft daylight. No other people in view. Lina holds her small empty reusable water bottle. Oma holds her larger refill bottle with drinking water. Same bench, wall and eyelines in every shot.",
+      "visual_hook": "Lina tips her open empty bottle above her palm and looks into it, puzzled; not a drop comes out.",
+      "everyday_problem": "A newly arrived child says Ich bin Durst instead of Ich habe Durst when she wants water after school.",
+      "practical_resolution": "Lina learns Ich habe Durst, watches her small bottle filled with real drinking water and actually takes a small sip.",
+      "marta_goal": "Lina wants to say she is thirsty and drink from her empty bottle after lessons.",
+      "marta_decision": "She repeats the correction, holds her bottle upright for filling, drinks and notices Oma's bottle is now empty.",
+      "visual_payoff": "Oma's generous refill leaves her own bottle empty. Lina notices and offers the newly filled bottle toward off-camera Oma, reversing who needs water.",
+      "language_error": {
+        "wrong": "ich bin Durst",
+        "correct": "Ich habe Durst.",
+        "explanation": "For the intended statement that the speaker feels thirsty, German uses haben: Ich habe Durst. Ich bin Durst identifies the speaker as thirst instead. The official publisher exercise pairs Ich habe with Durst and Ich möchte etwas trinken."
+      },
+      "creative_review": {
+        "previous_weakness_addressed": "Use an actual school entrance, visible empty and full bottles, real pouring and sipping, and a connected visual reversal instead of repeated sofa portraits.",
+        "visible_comic_action": "Oma fills Lina's bottle so generously that her own bottle is empty; Lina discovers who is thirsty now and offers the water back.",
+        "next_experiment": "Test immediate visible empty-bottle hook and a real pouring payoff; compare completion and shares only with valid matched-age analytics."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "documented_basis": {
+        "report_url": "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm",
+        "type": "documented-problem-adaptation",
+        "verified_problem": "The original SCHUBERT A1 exercise asks learners to complete Ich habe [word]. Ich möchte etwas trinken, with Durst in its word bank. This original fictional story applies that first-person haben expression.",
+        "invented_elements": [
+          "Lina and Oma Rosi",
+          "all school-entrance dialogue",
+          "the empty-bottle reversal"
+        ],
+        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
+      },
+      "research_urls": [
+        "https://www.schubert-verlag.de/aufgaben/xg/xg03_03.htm"
+      ],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ich bin Durst!",
+          "fa": "اوما، من تشنگی هستم!",
+          "scene": "Lina tips her open empty bottle over her palm; no water comes out.",
+          "motion": "Lina tips her open empty bottle over her palm; no water comes out.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina tips her open empty bottle over her palm; no water comes out.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "problem",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina tips her open empty bottle over her palm; no water comes out."
+        },
+        {
+          "speaker": "oma",
+          "de": "Sag: Ich habe Durst.",
+          "fa": "بگو: من تشنه هستم.",
+          "scene": "Oma gently tilts her larger capped water bottle to show the water inside.",
+          "motion": "Oma gently tilts her larger capped water bottle to show the water inside.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma gently tilts her larger capped water bottle to show the water inside.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma gently tilts her larger capped water bottle to show the water inside."
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich habe Durst.",
+          "fa": "من تشنه هستم.",
+          "scene": "Lina turns her small bottle upright and holds its open neck steady.",
+          "motion": "Lina turns her small bottle upright and holds its open neck steady.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina turns her small bottle upright and holds its open neck steady.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina turns her small bottle upright and holds its open neck steady."
+        },
+        {
+          "speaker": "oma",
+          "de": "Prima! Hier ist Wasser.",
+          "fa": "آفرین! اینجا آب هست.",
+          "scene": "Oma unscrews her larger bottle cap, keeping the bottle upright.",
+          "motion": "Oma unscrews her larger bottle cap, keeping the bottle upright.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma unscrews her larger bottle cap, keeping the bottle upright.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma unscrews her larger bottle cap, keeping the bottle upright."
+        },
+        {
+          "speaker": "lina",
+          "de": "Meine Flasche ist auch leer!",
+          "fa": "بطری من هم خالی است!",
+          "scene": "Lina holds her open empty bottle upright and taps its transparent side.",
+          "motion": "Lina holds her open empty bottle upright and taps its transparent side.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina holds her open empty bottle upright and taps its transparent side.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-empty",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina holds her open empty bottle upright and taps its transparent side."
+        },
+        {
+          "speaker": "oma",
+          "de": "Dann füllen wir sie.",
+          "fa": "پس آن را پُر می‌کنیم.",
+          "scene": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.",
+          "motion": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma pours a short controlled stream into Lina's small bottle held by a hand entering the lower side; no second face appears."
+        },
+        {
+          "speaker": "lina",
+          "de": "Danke! Das tut gut.",
+          "fa": "ممنون! چقدر خوب است.",
+          "scene": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.",
+          "motion": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "lina-drink",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina takes a small sip from her now filled bottle during the silent pause, then lowers it before speaking."
+        },
+        {
+          "speaker": "oma",
+          "de": "Oh! Meine ist jetzt leer.",
+          "fa": "اوه! حالا بطری من خالی است.",
+          "scene": "Oma gently tilts her now empty larger bottle and looks inside it.",
+          "motion": "Oma gently tilts her now empty larger bottle and looks inside it.",
+          "visible_objects": [
+            "large refill bottle",
+            "small water bottle"
+          ],
+          "object_action": "Oma gently tilts her now empty larger bottle and looks inside it.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "act",
+          "keyframe_group": "oma-refill",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "large refill bottle",
+          "demonstration": "Oma gently tilts her now empty larger bottle and looks inside it."
+        },
+        {
+          "speaker": "lina",
+          "de": "Jetzt hat Oma Durst!",
+          "fa": "حالا اوما تشنه است!",
+          "scene": "Lina smiles and offers her upright filled bottle toward off-camera Oma.",
+          "motion": "Lina smiles and offers her upright filled bottle toward off-camera Oma.",
+          "visible_objects": [
+            "small water bottle"
+          ],
+          "object_action": "Lina smiles and offers her upright filled bottle toward off-camera Oma.",
+          "location_key": "lina-oma-school-water-bench",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-drink",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "small water bottle",
+          "demonstration": "Lina smiles and offers her upright filled bottle toward off-camera Oma."
+        }
+      ],
+      "setting_type": "school-entrance"
     }
   ]
 }

@@ -32,8 +32,8 @@
     "daily_improvement": "Use research/series-improvement-rules.json and real available analytics. Record one small experiment and one previous weakness addressed; do not promise more views or invent measurements."
   },
   "next_story": {
-    "from_episode": 29,
-    "story_id": "lina-oma-fahrrad-park-human-v2",
+    "from_episode": 30,
+    "story_id": "lina-oma-durst-schule-v1",
     "duration_seconds": 45,
     "require_graphics": false
   },
