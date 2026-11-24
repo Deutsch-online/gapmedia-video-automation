@@ -1492,6 +1492,9 @@ def production(force=False):
     except Exception as exc:
         close_credit_attempt('attempt-failed')
         state['pending']['status'] = 'render-failed'
+        state['pending']['render_error'] = {'type': type(exc).__name__, 'detail': provider_error(exc)[:1000],
+            'scene': list(cinematic_budget.SCENE) if cinematic_budget.SCENE is not None else None,
+            'at': datetime.now(timezone.utc).isoformat(), 'automatic_gpu_replay': False}
         if isinstance(exc, NarrationTimingError):
             state['pending']['narration_error'] = str(exc)[:500]
         strict_budget = bool(cinematic_budget.time_policy())
@@ -1620,6 +1623,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

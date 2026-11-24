@@ -1,4 +1,4 @@
-import sys,tempfile,types,unittest,json,importlib.util
+import sys,tempfile,types,unittest,json,importlib.util,threading
 from pathlib import Path
 from unittest.mock import Mock,patch
 ROOT=Path(__file__).parents[1];sys.path.insert(0,str(ROOT/'ai-cast'))
@@ -17,7 +17,7 @@ class HighQualityTests(unittest.TestCase):
     def test_bounded_acceleration_native_720p_and_same_audio_with_bounded_reservation(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);raw=root/'raw.mp4';raw.write_bytes(b'provider fixture')
-            client=types.SimpleNamespace(predict=Mock(return_value=(str(raw),42)))
+            client=types.SimpleNamespace(predict=Mock(return_value=(str(raw),42)),stream_messages=lambda *a,**k:None,pending_event_ids=set(),pending_lock=threading.Lock())
             with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=Mock(return_value=client)),
                  'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
                  patch.object(hq,'verify_live_contract'),patch.object(ltx,'reject_whiteout'), \
@@ -80,7 +80,7 @@ class LightProfileTests(unittest.TestCase):
     def test_light_requests_480p_and_keeps_the_full_published_reservation(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);raw=root/'raw.mp4';raw.write_bytes(b'fixture')
-            client=types.SimpleNamespace(predict=Mock(return_value=str(raw)))
+            client=types.SimpleNamespace(predict=Mock(return_value=str(raw)),stream_messages=lambda *a,**k:None,pending_event_ids=set(),pending_lock=threading.Lock())
             with patch.dict(sys.modules,{'shots':types.SimpleNamespace(client=lambda _:client),
                  'gradio_client':types.SimpleNamespace(handle_file=lambda p:p)}), \
                  patch.object(hq,'verify_live_contract'),patch.object(ltx,'reject_whiteout'), \
