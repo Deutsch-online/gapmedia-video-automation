@@ -1,6 +1,69 @@
 {
-  "at": "2026-11-22T06:38:01.105Z",
+  "at": "2026-11-24T10:53:15.561Z",
   "rows": [
+    {
+      "cat": "instagram",
+      "title": "Instagram's Long-Form Video Push: A Game Changer for Creators?, ETBrandEquity",
+      "url": "https://brandequity.economictimes.indiatimes.com/news/digital/reels-got-creators-hooked-can-instagrams-long-form-bet-take-them-further/136087128",
+      "date": "2026-11-23",
+      "sources": 7,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok taps Jumio for biometric verification in AI likeness detection rollout | Biometric Update",
+      "url": "https://www.biometricupdate.com/202611/tiktok-taps-jumio-for-biometric-verification-in-ai-likeness-detection-rollout",
+      "date": "2026-11-23",
+      "sources": 6,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "Updates from the 2026 TikTok Safety and Innovation Forum - Newsroom | TikTok",
+      "url": "https://newsroom.tiktok.com/TikTok-updates-from-the-2026-tiktok-safety-and-innovation-forum?lang=en-150",
+      "date": "2026-11-23",
+      "sources": 5,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok lets users verify AI content, giving brands a new guard against reputational risk",
+      "url": "https://www.emarketer.com/content/tiktok-lets-users-verify-ai-content-giving-brands-new-guard-against-reputational-risk",
+      "date": "2026-11-23",
+      "sources": 7,
+      "clear": true,
+      "score": 29
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok adds new AI transparency and parental controls",
+      "url": "https://tech.yahoo.com/social-media/articles/tiktok-adds-ai-transparency-parental-214548238.html",
+      "date": "2026-11-22",
+      "sources": 7,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "AI filmmaking releases for 16 to 22 November | Bait Society",
+      "url": "https://www.baitsociety.ai/news/ai-model-releases-9-to-15-november/",
+      "date": "2026-11-22",
+      "sources": 7,
+      "clear": true,
+      "score": 28
+    },
+    {
+      "cat": "tools",
+      "title": "Adobe Firefly Creative Agent: Plan Mode and Video Tools",
+      "url": "https://grainzilla.com/adobe-fireflys-creative-agent-gets-plan-mode-a-model-selector-and-always-on-agents-while-firefly-video-adds-a-story-to-cut-timeline/",
+      "date": "2026-11-22",
+      "sources": 8,
+      "clear": true,
+      "score": 28
+    },
     {
       "cat": "tools",
       "title": "AI Image & Video Model News Roundup – November 21, 2026",
@@ -8,52 +71,25 @@
       "date": "2026-11-21",
       "sources": 7,
       "clear": true,
-      "score": 29
+      "score": 27
+    },
+    {
+      "cat": "tiktok",
+      "title": "TikTok takes its deepfake detection tool global and adds an AI checker",
+      "url": "https://thenextweb.com/news/tiktok-ai-checker-likeness-detection-global",
+      "date": "2026-11-19",
+      "sources": 7,
+      "clear": true,
+      "score": 25
     },
     {
       "cat": "instagram",
       "title": "Instagram now lets you edit your stories after you post them | The Verge",
       "url": "https://www.theverge.com/tech/1036941/instagram-now-lets-you-edit-your-stories-after-you-post-them",
       "date": "2026-11-18",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Symphony erweitert KI-Werbevideos auf bis zu 30 Sekunden – News – Schnappnot",
-      "url": "https://schnappnot.net/t/405/",
-      "date": "2026-11-19",
       "sources": 7,
       "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tiktok",
-      "title": "More tools to provide clarity and control around AI-generated content - Newsroom | TikTok",
-      "url": "https://newsroom.tiktok.com/TikTok-more-tools-to-provide-clarity-and-control-around-ai-generated-content?lang=en-150",
-      "date": "2026-11-19",
-      "sources": 6,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "tools",
-      "title": "Research Preview: Pika Enact — Pika Blog",
-      "url": "https://pika.art/blog/pika-enact",
-      "date": "2026-11-18",
-      "sources": 8,
-      "clear": true,
-      "score": 27
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram is helping creators crack down on copycat videos | The Verge",
-      "url": "https://www.theverge.com/tech/1035943/instagram-creators-crack-down-copycat-videos",
-      "date": "2026-11-17",
-      "sources": 8,
-      "clear": true,
-      "score": 26
+      "score": 24
     },
     {
       "cat": "instagram",
@@ -62,25 +98,16 @@
       "date": "2026-11-17",
       "sources": 8,
       "clear": true,
-      "score": 25
+      "score": 23
     },
     {
       "cat": "instagram",
-      "title": "Instagram takes on AI copycats as Meta tests Direct, a messaging-only app",
-      "url": "https://thenextweb.com/news/instagram-content-protection-ai-reposts-direct-messaging-app",
+      "title": "Instagram is helping creators crack down on copycat videos | The Verge",
+      "url": "https://www.theverge.com/tech/1035943/instagram-creators-crack-down-copycat-videos",
       "date": "2026-11-17",
-      "sources": 7,
-      "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok rolls out deepfake detection tool for public figures to fight back against disinformation | Euronews",
-      "url": "https://www.euronews.com/2026/11/20/tiktok-rolls-out-deepfake-detection-tool-for-public-figures-to-fight-back-against-disinfor",
-      "date": "2026-11-20",
       "sources": 8,
-      "clear": false,
-      "score": 25
+      "clear": true,
+      "score": 23
     },
     {
       "cat": "tools",
@@ -89,108 +116,81 @@
       "date": "2026-11-17",
       "sources": 7,
       "clear": true,
-      "score": 25
-    },
-    {
-      "cat": "instagram",
-      "title": "Instagram now lets creators add Amazon affiliate links in reels and feed posts | TechCrunch",
-      "url": "https://techcrunch.com/2026/11/16/instagram-now-lets-creators-add-amazon-affiliate-links-in-reels-and-feed-posts/",
-      "date": "2026-11-16",
-      "sources": 8,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "(November 16) 2026 TikTok updates, news, and features - SocialBee",
-      "url": "https://socialbee.com/blog/tiktok-updates-news-features/",
-      "date": "2026-11-16",
-      "sources": 6,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tiktok",
-      "title": "TikTok Bulletin Board: Direct Updates to Your Fans! (New Feature) (2026)",
-      "url": "https://smartdataweek.com/article/tiktok-bulletin-board-direct-updates-to-your-fans-new-feature",
-      "date": "2026-11-16",
-      "sources": 7,
-      "clear": true,
-      "score": 24
-    },
-    {
-      "cat": "tools",
-      "title": "Omni Flash 1.2 Tutorial: Google Flow Step by Step",
-      "url": "https://gossipfunda.com/google-flow-omni-flash-1-2-tutorial/",
-      "date": "2026-11-15",
-      "sources": 7,
-      "clear": true,
       "score": 23
     },
     {
+      "cat": "instagram",
+      "title": "Instagram lance « Features », son engagement dans les vidéos horizontales jusqu'à 90 minutes - Francia.org.ve",
+      "url": "https://www.francia.org.ve/instagram-lance-features-son-engagement-dans-les-videos-horizontales-jusqua-90-minutes/",
+      "date": "2026-11-18",
+      "sources": 7,
+      "clear": false,
+      "score": 21
+    },
+    {
       "cat": "tools",
-      "title": "Introducing AI Model Selection in Envato",
-      "url": "https://elements.envato.com/learn/ai-model-selection-envato",
-      "date": "2026-11-17",
-      "sources": 2,
+      "title": "Introducing Envato’s new AI experience",
+      "url": "https://elements.envato.com/learn/introducing-envatos-new-ai-experience",
+      "date": "2026-11-18",
+      "sources": 1,
       "clear": true,
-      "score": 13
+      "score": 8
     }
   ],
   "shown": [
     {
       "n": 1,
-      "cat": "tools",
-      "title": "AI Image & Video Model News Roundup – November 21, 2026",
-      "url": "https://www.kombitz.com/2026/11/21/ai-image-video-model-news-roundup-november-21-2026/"
+      "cat": "instagram",
+      "title": "Instagram's Long-Form Video Push: A Game Changer for Creators?, ETBrandEquity",
+      "url": "https://brandequity.economictimes.indiatimes.com/news/digital/reels-got-creators-hooked-can-instagrams-long-form-bet-take-them-further/136087128"
     },
     {
       "n": 2,
-      "cat": "tools",
-      "title": "Research Preview: Pika Enact — Pika Blog",
-      "url": "https://pika.art/blog/pika-enact"
-    },
-    {
-      "n": 3,
-      "cat": "tools",
-      "title": "MAI Image 2.7: Frontier quality at a fraction of the cost | Microsoft AI",
-      "url": "https://microsoft.ai/news/introducing-mai-image-2-7/"
-    },
-    {
-      "n": 4,
       "cat": "instagram",
       "title": "Instagram now lets you edit your stories after you post them | The Verge",
       "url": "https://www.theverge.com/tech/1036941/instagram-now-lets-you-edit-your-stories-after-you-post-them"
     },
     {
-      "n": 5,
-      "cat": "instagram",
-      "title": "Instagram is helping creators crack down on copycat videos | The Verge",
-      "url": "https://www.theverge.com/tech/1035943/instagram-creators-crack-down-copycat-videos"
-    },
-    {
-      "n": 6,
+      "n": 3,
       "cat": "instagram",
       "title": "Instagram's new tool for creators targets unauthorized reposts and AI-modified videos | TechCrunch",
       "url": "https://techcrunch.com/2026/11/17/instagrams-new-tool-for-creators-targets-unauthorized-reposts-and-ai-modified-videos/"
     },
     {
-      "n": 7,
+      "n": 4,
       "cat": "tiktok",
-      "title": "TikTok Symphony erweitert KI-Werbevideos auf bis zu 30 Sekunden – News – Schnappnot",
-      "url": "https://schnappnot.net/t/405/"
+      "title": "TikTok taps Jumio for biometric verification in AI likeness detection rollout | Biometric Update",
+      "url": "https://www.biometricupdate.com/202611/tiktok-taps-jumio-for-biometric-verification-in-ai-likeness-detection-rollout"
+    },
+    {
+      "n": 5,
+      "cat": "tiktok",
+      "title": "Updates from the 2026 TikTok Safety and Innovation Forum - Newsroom | TikTok",
+      "url": "https://newsroom.tiktok.com/TikTok-updates-from-the-2026-tiktok-safety-and-innovation-forum?lang=en-150"
+    },
+    {
+      "n": 6,
+      "cat": "tiktok",
+      "title": "TikTok lets users verify AI content, giving brands a new guard against reputational risk",
+      "url": "https://www.emarketer.com/content/tiktok-lets-users-verify-ai-content-giving-brands-new-guard-against-reputational-risk"
+    },
+    {
+      "n": 7,
+      "cat": "tools",
+      "title": "AI filmmaking releases for 16 to 22 November | Bait Society",
+      "url": "https://www.baitsociety.ai/news/ai-model-releases-9-to-15-november/"
     },
     {
       "n": 8,
-      "cat": "tiktok",
-      "title": "More tools to provide clarity and control around AI-generated content - Newsroom | TikTok",
-      "url": "https://newsroom.tiktok.com/TikTok-more-tools-to-provide-clarity-and-control-around-ai-generated-content?lang=en-150"
+      "cat": "tools",
+      "title": "Adobe Firefly Creative Agent: Plan Mode and Video Tools",
+      "url": "https://grainzilla.com/adobe-fireflys-creative-agent-gets-plan-mode-a-model-selector-and-always-on-agents-while-firefly-video-adds-a-story-to-cut-timeline/"
     },
     {
       "n": 9,
-      "cat": "tiktok",
-      "title": "TikTok rolls out deepfake detection tool for public figures to fight back against disinformation | Euronews",
-      "url": "https://www.euronews.com/2026/11/20/tiktok-rolls-out-deepfake-detection-tool-for-public-figures-to-fight-back-against-disinfor"
+      "cat": "tools",
+      "title": "AI Image & Video Model News Roundup – November 21, 2026",
+      "url": "https://www.kombitz.com/2026/11/21/ai-image-video-model-news-roundup-november-21-2026/"
     }
   ]
 }
