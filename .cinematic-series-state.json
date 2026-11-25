@@ -5237,7 +5237,7 @@
       "render_style": "lina-oma-human-v2"
     },
     "date": "2026-11-25#owner-e30-finish-two-clips-20261125",
-    "status": "dispatching",
+    "status": "exporting",
     "image_preview": {
       "file": "renders/cinematic-series/e0030-lina-oma-v1/image-preview.jpg",
       "sha256": "fa0c2150fe31c6e369fe2cd8c2cad3c9dfed2e2b82485f570fd1d8de73245556",
@@ -5255,7 +5255,8 @@
       "automatic_gpu_replay": false
     },
     "platform_receipts": {
-      "tiktok": 3024
+      "tiktok": 3024,
+      "instagram": 3025
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0030-lina-oma-v1/tiktok/e0030-tiktok-45s.mp4",
