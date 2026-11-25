@@ -5237,7 +5237,7 @@
       "render_style": "lina-oma-human-v2"
     },
     "date": "2026-11-25",
-    "status": "rendering",
+    "status": "render-failed",
     "image_preview": {
       "file": "renders/cinematic-series/e0030-lina-oma-v1/image-preview.jpg",
       "sha256": "fa0c2150fe31c6e369fe2cd8c2cad3c9dfed2e2b82485f570fd1d8de73245556",
@@ -5245,7 +5245,17 @@
       "message_id": 3020
     },
     "time_budget_blocked": true,
-    "budget_reason": "full-episode forecast does not fit"
+    "budget_reason": "full-episode forecast does not fit",
+    "render_error": {
+      "type": "RuntimeError",
+      "detail": "RuntimeError",
+      "scene": [
+        30,
+        7
+      ],
+      "at": "2026-11-25T16:02:31.065195+00:00",
+      "automatic_gpu_replay": false
+    }
   },
   "attempts": {
     "2026-10-15": 2,
@@ -5304,8 +5314,8 @@
   },
   "quota_recovery": {
     "date": "2026-11-25",
-    "not_before": "2026-11-25T14:38:45.841000+00:00",
-    "reason": "Waiting for full-episode included budget"
+    "not_before": "2026-11-25T21:04:31.065358+00:00",
+    "reason": "Waiting for verified included quota"
   },
   "manual_recovery_reason": {
     "slot": "2026-10-20#analytics-episode-7-20261020",
