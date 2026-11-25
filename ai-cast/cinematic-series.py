@@ -1455,13 +1455,20 @@ def production(force=False):
         if not admission['admitted']:
             state['pending']={**(pending or {}),'plan':plan,'date':date,'status':'render-failed',
                               'time_budget_blocked':True,'budget_reason':'full-episode forecast does not fit'}
-            try:
-                retry_at=cinematic_budget.read_reset_at()+timedelta(minutes=2)
-                state['quota_recovery']={'date':date,'not_before':retry_at.isoformat(),'reason':'Waiting for full-episode included budget'}
-            except Exception:pass
+            unavailable=state['gpu_preflight'].get('status')!='verified'
+            error=(cinematic_budget.QuotaVerificationError('Live allowance unavailable') if unavailable
+                   else RuntimeError('quota: full episode budget does not fit'))
+            state['quota_recovery']=cinematic_budget.recovery_record(
+                error,date,datetime.now(timezone.utc),cinematic_budget.read_reset_at)
             checkpoint(state)
             print('Full episode does not fit the verified daily allowance; no GPU production start or paid fallback.',flush=True)
             return
+    # Accepted live admission supersedes earlier quota waits; do not carry stale flags
+    # into a later, unrelated render failure.
+    state.pop('quota_recovery', None)
+    if pending:
+        for key in ('time_budget_blocked', 'budget_reason'):
+            pending.pop(key, None)
     # Story/validation failures are not a GPU production start and cannot consume the daily slot.
     state['attempts'][date] = state['attempts'].get(date, 0) + 1
     state['pending'] = {**(pending or {}), 'plan': plan, 'date': date, 'status': 'rendering'}
@@ -1509,12 +1516,11 @@ def production(force=False):
             # One deferred continuation per day; never occupy a runner waiting for GPU credits.
             retry_at=gpu_retry_at(str(exc))
             if strict_budget:
-                try:
-                    retry_at=cinematic_budget.read_reset_at()+timedelta(minutes=2)
-                except Exception:
-                    pass  # Keep the bounded fallback; do not invent an account reset.
-            state['quota_recovery'] = {'date': date, 'not_before':retry_at.isoformat(),
-                'reason': 'Waiting for verified included quota' if strict_budget else 'ZeroGPU quota exhausted'}
+                state['quota_recovery'] = cinematic_budget.recovery_record(
+                    exc, date, datetime.now(timezone.utc), cinematic_budget.read_reset_at)
+            else:
+                state['quota_recovery'] = {'date': date, 'not_before':retry_at.isoformat(),
+                    'reason': 'ZeroGPU quota exhausted'}
             if strict_budget:
                 state['pending']['time_budget_blocked'] = True
                 for key in ('credit_approval_required', 'credit_notice_status', 'credit_notice_message_id'):
@@ -1623,6 +1629,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 

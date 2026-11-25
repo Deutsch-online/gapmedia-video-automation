@@ -7,7 +7,9 @@ import json
 import os
 import re
 import math
-from datetime import datetime, timezone
+import time
+import urllib.error
+from datetime import datetime, timezone, timedelta
 import urllib.request
 from cinematic_time_budget import policy as time_policy, TimeBudget, journal_path
 
@@ -38,11 +40,31 @@ def credit_authorized():
         return False
 
 
+class QuotaVerificationError(RuntimeError):
+    """No GPU was admitted because the live allowance could not be read."""
+
+
+def quota_response(token):
+    # These are three read-only GETs, never three generation submissions.
+    for attempt in range(3):
+        req = urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',
+                                     headers={'Authorization': 'Bearer ' + token})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            if exc.code != 429 and exc.code < 500:
+                raise
+            if attempt == 2:
+                raise
+        except (OSError, ValueError):
+            if attempt == 2:
+                raise
+        time.sleep(2 ** attempt)
+
+
 def read_quota(token):
-    req = urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',
-                                 headers={'Authorization': 'Bearer ' + token})
-    with urllib.request.urlopen(req, timeout=20) as response:
-        data = json.load(response)
+    data = quota_response(token)
     if isinstance(data.get('current'), bool):
         raise ValueError('Invalid quota value')
     remaining = float(data['current'])
@@ -58,9 +80,7 @@ def read_reset_at(token=None):
     """Read the service's own reset timestamp; never infer it from the calendar."""
     token=token or os.getenv('HF_TOKEN')
     if not token:raise RuntimeError('Quota reset credential unavailable')
-    req=urllib.request.Request('https://huggingface.co/api/spaces/zero-gpu/quota',
-                               headers={'Authorization':'Bearer '+token})
-    with urllib.request.urlopen(req,timeout=20) as response:data=json.load(response)
+    data=quota_response(token)
     stamp=datetime.fromisoformat(data['resetsAt'].replace('Z','+00:00'))
     if stamp.tzinfo is None or stamp<=datetime.now(timezone.utc):
         raise ValueError('Quota reset timestamp is not a verified future instant')
@@ -74,7 +94,7 @@ def guard(token, required_seconds, allow_credit=True):
     try:
         remaining = read_quota(token)
     except Exception:
-        raise RuntimeError('quota: cannot verify included allowance; credit approval required before authenticated generation') from None
+        raise QuotaVerificationError('quota: cannot verify live allowance; no GPU request admitted') from None
     # Reserve the provider maximum, not a guessed average, plus a small margin.
     if remaining < required_seconds + 30:
         raise RuntimeError(f'quota: included allowance {remaining:.0f}s below safe request {required_seconds + 30}s; credit approval required')
@@ -123,7 +143,7 @@ def run_gpu(fn, required_seconds):
         try:
             remaining = read_quota(token)
         except Exception:
-            raise RuntimeError('quota: cannot verify included time; no GPU request admitted') from None
+            raise QuotaVerificationError('quota: cannot verify live allowance; no GPU request admitted') from None
         if _TIME_SESSION is None:
             _TIME_SESSION = TimeBudget(remaining, strict['reserve_seconds'], journal_path())
         previous = build.TOKEN
@@ -158,3 +178,19 @@ def run_gpu(fn, required_seconds):
             build.TOKEN = previous
     prefix = 'quota: ' if any('quota' in error.lower() for error in errors) else ''
     raise RuntimeError(prefix + 'All eligible free GPU routes exhausted: ' + ' | '.join(errors))
+
+
+
+def recovery_record(error, day, now, reset_reader=read_reset_at):
+    if isinstance(error, QuotaVerificationError):
+        return {'date':day,'kind':'verification-unavailable',
+                'not_before':(now+timedelta(minutes=5)).isoformat(),
+                'reason':'Live allowance could not be verified; retry the read, not an assumed quota reset',
+                'reset_verified':False,'gpu_request_admitted':False}
+    try:
+        reset=reset_reader()
+        return {'date':day,'kind':'included-quota','not_before':(reset+timedelta(minutes=2)).isoformat(),
+                'reason':'Waiting for verified included quota','reset_verified':True}
+    except Exception:
+        return {'date':day,'kind':'reset-unverified','not_before':(now+timedelta(minutes=10)).isoformat(),
+                'reason':'Recheck live quota; service reset could not be verified','reset_verified':False}
