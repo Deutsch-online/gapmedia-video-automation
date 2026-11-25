@@ -71,8 +71,14 @@ class TimeBudget:
         started = time.monotonic()
         try:
             result = callback()
-        except BaseException:
+        except BaseException as exc:
             entry['status'] = 'failed-or-uncertain'
+            entry['error_type'] = type(exc).__name__
+            # A reading is diagnostic, never proof that a lost result is safe to replay.
+            try:
+                entry['after_failure'] = amount(read_after(), 'allowance after interrupted generation')
+            except Exception:
+                pass
             raise
         else:
             entry['status'] = 'completed'
@@ -99,3 +105,4 @@ def journal_path():
     if not all(part.replace('-', '').isalnum() for part in (run, attempt)):
         raise ValueError('Invalid run identity')
     return Path('renders/cinematic-series-cache/budgets') / f'{run}-{attempt}.json'
+

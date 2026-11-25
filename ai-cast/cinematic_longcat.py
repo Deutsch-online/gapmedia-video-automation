@@ -105,7 +105,9 @@ def generate_take(image,audio,output,motion,seed,light=False):
             if light else 'One visible adult, realistic human proportions, clear unobstructed mouth. ')
     prompt=(prefix+'Stable face, natural eyes and restrained mouth movement. '+motion)
     def call():
-        result=shots.client(SPACE).predict(handle_file(str(image)),handle_file(str(audio)),
+        from cinematic_transport import protect_stream
+        client=protect_stream(shots.client(SPACE))
+        result=client.predict(handle_file(str(image)),handle_file(str(audio)),
                    prompt,resolution,seed,'Clean speech (fast)',acceleration,api_name='/generate')
         result=result[0] if isinstance(result,(list,tuple)) else result
         if isinstance(result,dict):
@@ -121,4 +123,5 @@ def generate_take(image,audio,output,motion,seed,light=False):
         Path(output).replace(Path(output).with_suffix('.rejected.mp4'))
         raise
     reject_whiteout(output)
+
 
