@@ -1,6 +1,6 @@
 {
-  "request": "owner-resume-e30-transport-fixed-20261125",
+  "request": "owner-e30-finish-two-clips-20261125",
   "episode": 30,
   "story_id": "lina-oma-durst-schule-v1",
-  "reason": "Owner explicitly requests fixing and continuing unfinished production. Transport fix PR56 is merged. Resume the same signed episode using preserved completed cache, verify whole remaining budget and per-call quota, retain image-preview receipt. No new story, no paid fallback, no change to daily-start or quality gates."
+  "reason": "Owner explicitly requests execution now. Resume exact unfinished episode with seven cached clips. PR56 and PR57 merged. One-time included-only continuation scoped in configuration; check live whole remaining budget and full per-call reservations. Preserve signed plan, preview receipt and all quality gates. No paid fallback."
 }
