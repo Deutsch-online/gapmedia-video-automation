@@ -72,3 +72,6 @@ __pycache__/
 .cache/wan2gp-uv/
 
 .teacher-private/
+
+# Private local Mausbot pairing/session state and task receipts
+.mausbot-telegram/

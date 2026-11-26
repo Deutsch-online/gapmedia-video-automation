@@ -2,7 +2,9 @@ name: Validate Telegram chatbot
 on:
   push:
     branches: [main]
-    paths: ['worker/src/**', worker/set-commands.mjs, 'worker/test-*.mjs', scripts/social-watchdog.mjs, scripts/test-social-watchdog.mjs, .github/workflows/deploy-credit-webhook.yml]
+    paths: ['worker/src/**', worker/set-commands.mjs, 'worker/test-*.mjs', scripts/social-watchdog.mjs, scripts/test-social-watchdog.mjs, scripts/mausbot-telegram-bridge.mjs, scripts/test-mausbot-telegram-bridge.mjs, .github/workflows/deploy-credit-webhook.yml]
+  pull_request:
+    paths: ['worker/src/**', 'worker/test-*.mjs', scripts/mausbot-telegram-bridge.mjs, scripts/test-mausbot-telegram-bridge.mjs, .github/workflows/deploy-credit-webhook.yml]
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,5 +34,7 @@ jobs:
           node worker/test-mcp.mjs
           node worker/test-command-registry.mjs
           node worker/test-series-assistant.mjs
+          node worker/test-mausbot.mjs
+          node scripts/test-mausbot-telegram-bridge.mjs
           node worker/test-social-monitor.mjs
           node scripts/test-social-watchdog.mjs
