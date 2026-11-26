@@ -5314,7 +5314,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-26T12:58:56.238324+00:00",
+    "checked_at": "2026-11-26T15:37:33.539134+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -5379,7 +5379,7 @@
       "gpu_requested": false
     },
     "2026-11-26": {
-      "count": 1,
+      "count": 2,
       "error": "RuntimeError",
       "gpu_requested": false
     }
@@ -5404,7 +5404,7 @@
   "daily_review": {
     "day": "2026-11-26",
     "attempted": true,
-    "checked_at": "2026-11-26T12:58:54.701856+00:00",
+    "checked_at": "2026-11-26T15:37:31.898428+00:00",
     "status": "available",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
@@ -5430,14 +5430,14 @@
         "id": "7707919548778876192",
         "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
         "views": 928,
-        "relative_to_median": 1.5376967688483845
+        "relative_to_median": 1.5364238410596027
       }
     ],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-26T12:50:58.083000+00:00",
+    "source_updated_at": "2026-11-26T15:00:58.155000+00:00",
     "evidence_level": "matched_observations_not_causal",
     "render_qc": {
       "duration": null,
