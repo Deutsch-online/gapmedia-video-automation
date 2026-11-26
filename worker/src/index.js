@@ -1,3 +1,4 @@
+import {mausbotCommand,mausbotRoute} from './mausbot-bridge.js';
 import {handleTeacherSection,teacherResultSecret} from './teacher-section.js';
 import {runAssistantAI,veniceStatus,formatVeniceStatus} from './venice-ai.js';
 import {memoryTransfer,memoryContext,handleMemory,resolveFollowup} from './project-memory.js';
@@ -665,6 +666,8 @@ export default {
     ]));
   },
   async fetch(request, env, ctx) {
+    const mausRoute=await mausbotRoute(request,env,(chatId,text)=>telegram(env,'sendMessage',{chat_id:chatId,text,disable_web_page_preview:true}));
+    if(mausRoute)return mausRoute;
     const page=publicPage(request);
     if(page)return page;
     const route=new URL(request.url).pathname;
@@ -792,6 +795,8 @@ export default {
       await replyText(env,chatId,'رمز یا توکن را در چت نفرستید. این پیام در حافظهٔ گفتگو ذخیره یا برای مدل ارسال نشد. برای اتصال رسمی از /connect استفاده کنید.');
       return new Response('ok');
     }
+    const mausCommand=await mausbotCommand({env,owner,message,updateId:update.update_id});
+    if(mausCommand){if(mausCommand.text)await replyText(env,chatId,mausCommand.text);return new Response('ok');}
     // The bot's updates arrive HERE, by webhook — which is exactly why the
     // repo cannot discover this chat for itself: Telegram answers getUpdates
     // with «Conflict: can't use getUpdates method while webhook is active»
