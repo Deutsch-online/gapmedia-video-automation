@@ -632,6 +632,13 @@ def make_plan(state):
                                 None, state['history'], config, validate_plan)
         if authored is None:
             raise RuntimeError('Original comedy queue exhausted; prepare a new original script, never reuse a delivered episode')
+        review = state.get('daily_review') or {}
+        experiment = review.get('next_test') or {}
+        if isinstance(experiment.get('change'), str) and experiment['change'].strip():
+            authored['creative_review']['next_experiment'] = experiment['change'][:700]
+        authored['audience_review'] = {key: review.get(key) for key in
+                                      ('day', 'status', 'source_updated_at', 'evidence_level',
+                                       'prior_post_observations', 'missing', 'platform_research')}
         print('Original comedy selected: ' + authored['story_id'] + '; no lesson or external story-model request.', flush=True)
         return authored
     project_research = None
@@ -1435,7 +1442,7 @@ def production(force=False):
     review={}
     if enforce_readiness:
         from cinematic_social import request as social_request
-        review=readiness.collect_review(social_request)
+        review=readiness.collect_review(social_request, researcher=readiness.platform_research)
         state['daily_review']=review
     state['gpu_preflight'] = cinematic_budget.preflight()
     print('HF allowance preflight: ' + json.dumps(state['gpu_preflight']), flush=True)
