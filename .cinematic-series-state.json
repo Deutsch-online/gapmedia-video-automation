@@ -5480,7 +5480,7 @@
       "render_style": "lina-oma-human-v2"
     },
     "date": "2026-11-27",
-    "status": "dispatching",
+    "status": "exporting",
     "image_preview": {
       "file": "renders/cinematic-series/e0031-lina-oma-v1/image-preview.jpg",
       "sha256": "9c15b67bebf3d241240723c66cef3916ca11c868fe52f47b561ef6005748ca70",
@@ -5488,7 +5488,8 @@
       "message_id": 3052
     },
     "platform_receipts": {
-      "tiktok": 3053
+      "tiktok": 3053,
+      "instagram": 3054
     },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0031-lina-oma-v1/tiktok/e0031-tiktok-45s.mp4",
