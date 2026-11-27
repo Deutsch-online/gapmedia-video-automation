@@ -36,13 +36,13 @@ def platform_research(day, root=Path('renders/cinematic-series-cache/readiness')
     """Refresh public platform guidance once per Berlin day, without paid models."""
     path = Path(root)/day/'platform-research.json'
     cached = read(path, {})
-    if cached.get('day') == day:
+    if cached.get('day') == day and cached.get('version') == 2:
         return cached
-    result = {'day': day, 'checked_at': datetime.now(timezone.utc).isoformat(),
+    result = {'version': 2, 'day': day, 'checked_at': datetime.now(timezone.utc).isoformat(),
               'sources': [], 'viral_guarantee': False,
               'experiment': 'Test an immediately visible comic conflict and a genuinely visible payoff; compare matched-age completion and shares per view when available.'}
-    urls = ('https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content',
-            'https://ads.tiktok.com/business/creativecenter/quicktok/online/tiktok_creative_accelerator/pc/en')
+    urls = ('https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you',
+            'https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content')
     for url in urls:
         item = {'url': url, 'status': 'unavailable'}
         try:
@@ -53,12 +53,13 @@ def platform_research(day, root=Path('renders/cinematic-series-cache/readiness')
             html = data.decode('utf-8', 'ignore')
             html = re.sub(r'<(script|style)\b[^>]*>.*?</\1>', ' ', html, flags=re.S|re.I)
             text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', html))
-            match = re.search(r'watch time|time spent watching|safe zone', text, flags=re.I)
+            match = re.search(r'watch time|time spent watching|watch in full|user interactions|safe zone', text, flags=re.I)
             item['relevant_excerpt'] = text[max(0, match.start()-80):match.start()+300] if match else None
             item['semantic_guidance_found'] = bool(match)
         except Exception as exc:
             item['error'] = type(exc).__name__
         result['sources'].append(item)
+    result['status'] = 'available' if any(s.get('semantic_guidance_found') for s in result['sources']) else 'unavailable'
     save(path, result)
     return result
 
