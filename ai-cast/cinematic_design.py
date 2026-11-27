@@ -9,8 +9,9 @@ from pathlib import Path
 PROFILE = 'storybook-duo-glass-v2'
 ASSET_PROFILE = 'original-cast-realistic-v1'
 # Shared conservative 1080x1920 safe area for Reels/TikTok controls.
-# Leave 168px at right and 310px below the panel; preview overlays may vary.
-CARD = (48, 1270, 864, 340)
+# Reserve room for search, the right action rail, author and expanded descriptions.
+# UI differs by phone; these are conservative project margins, not universal TikTok coordinates.
+CARD = (48, 1120, 864, 280)
 DE_SIZE, FA_SIZE = 48, 40
 DE_LEADING, FA_LEADING = 58, 54
 
@@ -25,8 +26,11 @@ def enabled(config, episode=None):
 
 
 def full_frame_layout():
-    return ('scale=1080:1920:force_original_aspect_ratio=increase:force_divisible_by=2,'
-            'crop=1080:1920,setsar=1,fps=30')
+    return ('split=2[phone-background][phone-subject];'
+            '[phone-background]scale=1080:1920:force_original_aspect_ratio=increase,'
+            'crop=1080:1920,boxblur=40:2[phone-fill];'
+            '[phone-subject]scale=1080:1660:force_original_aspect_ratio=decrease:force_divisible_by=2[phone-fit];'
+            '[phone-fill][phone-fit]overlay=(W-w)/2:240,setsar=1,fps=30')
 
 
 @lru_cache(maxsize=4)
@@ -173,7 +177,10 @@ def still_prompt(plan,scene):
                 'The person physically touches or operates the object as specified, rather than merely talking '
                 'about it. Accurate body scale, practical spatial relationships, believable contact and weight. '
                 'Natural daylight or practical location lighting, real materials. Keep face and action in the '
-                'upper two thirds for lower captions. One speaking face only, listener fully off camera. '
+                'phone-safe central area: complete hair and head with generous space above, never crop the head. '
+                'On the 1080x1920 composition keep the complete head below y=260, face and hands left of x=900, '
+                'and the working prop and decisive action above y=1080. Lower captions start at y=1120. '
+                'One speaking face only, listener fully off camera. '
                 'Do not copy a kitchen, sofa, studio background or food from any reference. No text or watermark.')
     if plan.get('cast_profile') == 'lina-oma-v1':
         from cinematic_lina import DESCRIPTIONS
