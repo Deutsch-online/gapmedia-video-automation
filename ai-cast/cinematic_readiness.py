@@ -2,6 +2,8 @@
 import hashlib
 import json
 import math
+import re
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -30,7 +32,38 @@ def active(config,episode):
     return policy.get('enabled') is True and episode>=policy.get('from_episode',10**9)
 
 
-def collect_review(fetch, now=None, root=Path('renders/cinematic-series-cache/readiness')):
+def platform_research(day, root=Path('renders/cinematic-series-cache/readiness')):
+    """Refresh public platform guidance once per Berlin day, without paid models."""
+    path = Path(root)/day/'platform-research.json'
+    cached = read(path, {})
+    if cached.get('day') == day:
+        return cached
+    result = {'day': day, 'checked_at': datetime.now(timezone.utc).isoformat(),
+              'sources': [], 'viral_guarantee': False,
+              'experiment': 'Test an immediately visible comic conflict and a genuinely visible payoff; compare matched-age completion and shares per view when available.'}
+    urls = ('https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content',
+            'https://ads.tiktok.com/business/creativecenter/quicktok/online/tiktok_creative_accelerator/pc/en')
+    for url in urls:
+        item = {'url': url, 'status': 'unavailable'}
+        try:
+            request = urllib.request.Request(url, headers={'User-Agent': 'GapMedia-Research/1.0'})
+            with urllib.request.urlopen(request, timeout=6) as response:
+                data = response.read(350000)
+            item.update(status='fetched', content_sha256=hashlib.sha256(data).hexdigest())
+            html = data.decode('utf-8', 'ignore')
+            html = re.sub(r'<(script|style)\b[^>]*>.*?</\1>', ' ', html, flags=re.S|re.I)
+            text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', html))
+            match = re.search(r'watch time|time spent watching|safe zone', text, flags=re.I)
+            item['relevant_excerpt'] = text[max(0, match.start()-80):match.start()+300] if match else None
+            item['semantic_guidance_found'] = bool(match)
+        except Exception as exc:
+            item['error'] = type(exc).__name__
+        result['sources'].append(item)
+    save(path, result)
+    return result
+
+
+def collect_review(fetch, now=None, root=Path('renders/cinematic-series-cache/readiness'), researcher=None):
     now=now or datetime.now(timezone.utc);day=berlin_day(now)
     path=Path(root)/day/'prior-post-review.json'
     previous=read(path,{})
@@ -41,6 +74,8 @@ def collect_review(fetch, now=None, root=Path('renders/cinematic-series-cache/re
     result={'day':day,'attempted':True,'checked_at':now.isoformat(),'status':'unavailable',
             'causal_explanation_verified':False,'visual_reviewed':False,'experiments':[],
             'prior_post_observations':[], 'missing':['watch-time or completion may be unavailable; views alone do not prove causes']}
+    if researcher is not None:
+        result['platform_research'] = researcher(day)
     try:
         fetch('/internal/social-run',{})  # Existing authenticated monitor, with its own hourly lease.
         result['refresh']='requested'
@@ -62,7 +97,7 @@ def collect_review(fetch, now=None, root=Path('renders/cinematic-series-cache/re
         if isinstance(value.get('render_qc'),dict):
             result['render_qc']={k:value['render_qc'].get(k) for k in ('duration','width','height','frozen_seconds','lip_sync_measured')}
     except Exception as exc:result['evidence_error']=type(exc).__name__
-    result['next_test']=(result['experiments'] or [{'change':'Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.',
+    result['next_test']=(result['experiments'] or [{'change':'Open with a visible comic problem within two seconds, show two connected escalations and a visible payoff; no introductions or teaching drills.',
         'measure':'Compare retention/completion and shares per view at the same post age when available.',
         'evidence':'baseline_quality_test; analytics unavailable, no proven cause'}])[0]
     save(path,result)
