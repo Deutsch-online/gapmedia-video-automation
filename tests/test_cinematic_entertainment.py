@@ -18,6 +18,7 @@ class EntertainmentTests(unittest.TestCase):
         state = series.load_json(series.STATE)
         state['next_episode'] = 31
         state['pending'] = None
+        state['history'] = [h for h in state['history'] if h.get('episode', 0) < 31]
         with patch.object(series, 'research_source', side_effect=AssertionError('fiction needs no research service')), \
              patch.object(series, 'beatapi_free_models', side_effect=AssertionError('authored comedy needs no model')):
             return series.make_plan(state), state
