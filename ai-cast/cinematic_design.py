@@ -94,7 +94,7 @@ def prepare_captions(plan, folder):
     from PIL import Image, ImageDraw
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
     from cinematic_lina import is_plan,TEACHING_FROM_EPISODE
-    teaching=is_plan(plan) and plan.get('episode',0)>=TEACHING_FROM_EPISODE
+    teaching=is_plan(plan) and plan.get('episode',0)>=TEACHING_FROM_EPISODE and plan.get('content_mode')!='original-comedy'
     labels={0:'SO NICHT',1:'RICHTIG',2:'RICHTIG',3:'SEHR GUT!'} if teaching else {}
     reports=[caption_card(scene['de'],scene['fa'],folder/f'caption-{i:02d}.png',lesson_label=labels.get(i))
              for i,scene in enumerate(plan['scenes'])]
