@@ -2046,6 +2046,237 @@
       "setting_type": "laundry-room",
       "content_mode": "original-comedy",
       "fiction_disclosure": "Fiktive Comedy. Originalfiguren."
+    },
+    {
+      "story_id": "lina-oma-nur-einen-kaffee-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 11,
+      "title_de": "Nur auf einen Kaffee?!",
+      "title_fa": "فقط برای یک قهوه؟!",
+      "summary": "Lina sees Oma arriving with an oversized suitcase and thinks she is moving in. Oma insists she is only visiting for coffee. The suitcase is for biscuits, the tote for emergency cake. The emergency is running out of biscuits. Lina warmly invites her to stay until Christmas. Original family comedy about a grandmother overpacking for a short visit; no educational dialogue.",
+      "cliffhanger": "Next day the two meet another small everyday misunderstanding; a complete self-contained family joke.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-coffee-visit-hallway",
+      "location_description": "A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.",
+      "visual_hook": "Oma's oversized rolling suitcase is already visibly parked beside the apartment doorway while Lina holds a tiny coffee cup and stares at the luggage.",
+      "everyday_problem": "A supposedly brief family coffee visit arrives with luggage big enough for moving house.",
+      "practical_resolution": "Lina discovers Oma has comically overpacked snacks rather than clothes and welcomes her longer visit.",
+      "marta_goal": "Lina wants to know whether Oma is moving into their apartment or simply visiting for coffee.",
+      "marta_decision": "She compares the huge luggage with her tiny coffee cup and playfully invites Oma to stay for Christmas.",
+      "visual_payoff": "Oma raises the biscuit packet beside the oversized luggage while Lina raises her tiny cup in a welcoming toast; the visual contrast remains real and visible.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace the missing sock-on-hand effect that failed in episode 31 with large real luggage visible from the beginning. No hidden-prop transformation, teaching, correction or repeated drill. A new hallway setting with purposeful luggage motion.",
+        "visible_comic_action": "An absurdly large rolling suitcase for a tiny coffee visit, followed by a second emergency snack bag; the practical visual contrast is present from the first frame.",
+        "next_experiment": "Test a legible luggage-versus-cup hook and a short reciprocal family punchline; compare matched-age completion and shares, not first-hour views against a full-day benchmark."
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "research_urls": [],
+      "variants": {
+        "45": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ziehst du bei uns ein?",
+          "fa": "اوما، می‌خواهی پیش ما زندگی کنی؟",
+          "scene": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "motion": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "object_action": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench",
+            "large rolling suitcase"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "problem",
+          "keyframe_group": "lina-arrival",
+          "framing": "medium-wide-action",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein. Nur auf einen Kaffee.",
+          "fa": "نه، فقط برای یک قهوه.",
+          "scene": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "motion": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "object_action": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mit diesem riesigen Koffer?",
+          "fa": "با این چمدان غول‌پیکر؟",
+          "scene": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "motion": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "object_action": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench",
+            "large rolling suitcase"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-arrival",
+          "framing": "medium-wide-action",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Das sind nur die Kekse.",
+          "fa": "این‌ها فقط بیسکویت‌هاست.",
+          "scene": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "motion": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "object_action": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und was ist in der Tasche?",
+          "fa": "پس داخل ساک چیست؟",
+          "scene": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "motion": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "object_action": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Kuchen. Für den Notfall.",
+          "fa": "کیک. برای وقت اضطراری.",
+          "scene": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "motion": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "object_action": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Welcher Notfall denn?",
+          "fa": "کدام وقت اضطراری؟",
+          "scene": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "motion": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "object_action": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Wenn die Kekse alle sind!",
+          "fa": "وقتی بیسکویت‌ها تمام شود!",
+          "scene": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "motion": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "object_action": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann bleib bis Weihnachten!",
+          "fa": "پس تا کریسمس پیش ما بمان!",
+          "scene": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "motion": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "object_action": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        }
+      ],
+      "setting_type": "hallway",
+      "content_mode": "original-comedy",
+      "fiction_disclosure": "Fiktive Comedy. Originalfiguren."
     }
   ]
 }
