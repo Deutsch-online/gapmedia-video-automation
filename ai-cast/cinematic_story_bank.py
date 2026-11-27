@@ -4,14 +4,17 @@ from datetime import datetime
 
 
 def select_story(bank, episode, seconds, source, history, config, validate):
+    from cinematic_lina import entertainment
+    comedy = entertainment(config, episode)
     if bank.get('version') != 1:
         raise ValueError('Unknown project story-bank format')
-    if (not isinstance(source, dict) or len(source.get('excerpt', '')) < 90 or
+    if not comedy and (not isinstance(source, dict) or len(source.get('excerpt', '')) < 90 or
             not source.get('url') or not source.get('retrieved_at')):
         raise ValueError('Project stories require freshly fetched official research')
-    stamp = datetime.fromisoformat(source['retrieved_at'].replace('Z', '+00:00'))
-    if stamp.tzinfo is None:
-        raise ValueError('Research timestamp must include timezone')
+    if not comedy:
+        stamp = datetime.fromisoformat(source['retrieved_at'].replace('Z', '+00:00'))
+        if stamp.tzinfo is None:
+            raise ValueError('Research timestamp must include timezone')
     request = config.get('next_story')
     used_ids = {item.get('story_id') for item in history}
     used_titles = {str(item.get('title_de', '')).casefold() for item in history}
@@ -21,13 +24,15 @@ def select_story(bank, episode, seconds, source, history, config, validate):
     else:
         required_id = None
     for item in bank.get('stories', []):
+        if comedy != (item.get('content_mode') == 'original-comedy'):
+            continue
         if episode >= config.get('story_quality', {}).get('from_episode', 10**9) and config.get('story_quality', {}).get('require_comic_beats') and not item.get('comedy_beats'):
             continue
         if item['story_id'] in used_ids or item['title_de'].casefold() in used_titles:
             continue
         if required_id and item['story_id'] != required_id:
             continue
-        if source['url'] not in item['research_urls']:
+        if not comedy and source['url'] not in item['research_urls']:
             continue
         indices = item.get('variants', {}).get(str(seconds))
         if not indices:
@@ -42,7 +47,7 @@ def select_story(bank, episode, seconds, source, history, config, validate):
         candidate.update(episode=episode, duration_seconds=seconds,
                          research_source=copy.deepcopy(source),
                          story_provider='project-authored-bank-v1')
-        if candidate.get('cast_profile')=='lina-oma-v1':
+        if not comedy and candidate.get('cast_profile')=='lina-oma-v1':
             candidate['documented_basis']['report_url']=source['url']
         from cinematic_design import enabled, apply_plan
         if enabled(config,episode):
