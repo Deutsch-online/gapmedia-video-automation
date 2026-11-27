@@ -1,6 +1,5 @@
 {
-  "request": "owner-e30-finish-two-clips-20261125",
-  "episode": 30,
-  "story_id": "lina-oma-durst-schule-v1",
-  "reason": "Owner explicitly requests execution now. Resume exact unfinished episode with seven cached clips. PR56 and PR57 merged. One-time included-only continuation scoped in configuration; check live whole remaining budget and full per-call reservations. Preserve signed plan, preview receipt and all quality gates. No paid fallback."
+  "requestedAt": "2026-11-27T00:44:38.658Z",
+  "source": "telegram-cloud-worker",
+  "requestId": "65dc8de7-d76f-497d-af42-44335a29128d"
 }
