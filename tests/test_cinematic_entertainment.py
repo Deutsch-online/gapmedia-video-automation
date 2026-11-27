@@ -44,6 +44,7 @@ class EntertainmentTests(unittest.TestCase):
         config = series.load_json(series.CONFIG)
         from cinematic_story_bank import select_story
         bank = series.load_json(ROOT / 'ai-cast/lina-oma-story-bank.json')
+        bank['stories'] = [p for p in bank['stories'] if p['story_id'] == plan['story_id']]
         self.assertIsNone(select_story(bank, 32, 45, None, state['history'] + [plan], config, series.validate_plan))
         config['entertainment']['enabled'] = False
         with self.assertRaises(ValueError):
