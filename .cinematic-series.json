@@ -74,11 +74,11 @@
     "asset_profile": "lina-oma-v1",
     "subtitle_safe_area": {
       "left": 48,
-      "top": 1270,
+      "top": 1120,
       "width": 864,
-      "height": 340,
+      "height": 280,
       "right_clearance": 168,
-      "bottom_clearance": 310
+      "bottom_clearance": 520
     },
     "subtitle_outline_pixels": 1,
     "render_style": "expressive premium 3D cartoon, natural slender silhouettes",
@@ -124,6 +124,14 @@
       "from_episode": 29,
       "maximum_generated_stills": 3,
       "independent_speaking_takes": 9
+    },
+    "phone_subject_safe_area": {
+      "top": 240,
+      "fit_width": 1080,
+      "fit_height": 1660,
+      "horizontal_offset": 0,
+      "background": "blurred-full-frame",
+      "head_and_hands_must_be_visible": true
     }
   },
   "story_quality": {
