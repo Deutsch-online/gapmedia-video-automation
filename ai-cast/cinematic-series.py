@@ -263,10 +263,12 @@ def first_episode():
                        for s, d, f, p, m, a in SEED_LINES]}
 
 def validate_plan(plan, episode, history, config=None):
-    from cinematic_lina import is_plan as child_plan, validate as validate_child
+    from cinematic_lina import is_plan as child_plan, validate as validate_child, entertainment
+    config = config if config is not None else load_json(CONFIG)
+    comedy = child_plan(plan) and entertainment(config, episode)
     protagonist = 'lina' if child_plan(plan) else 'marta'
     if child_plan(plan):
-        validate_child(plan, history)
+        validate_child(plan, history, config)
     if episode >= 7:
         config = config if config is not None else load_json(CONFIG)
         request = config.get('next_story')
@@ -299,7 +301,7 @@ def validate_plan(plan, episode, history, config=None):
             raise ValueError('Do not reuse the old taxi-season scene assets')
     if episode >= 7:
         source = plan.get('research_source')
-        if not isinstance(source, dict) or source.get('url') not in [item[1] for item in TRUSTED_RESEARCH]:
+        if not comedy and (not isinstance(source, dict) or source.get('url') not in [item[1] for item in TRUSTED_RESEARCH]):
             raise ValueError('A fetched official research source is required')
         if plan.get('mood') not in ('comic', 'poignant'):
             raise ValueError('Story mood must be comic or poignant')
@@ -326,7 +328,7 @@ def validate_plan(plan, episode, history, config=None):
                 len(escalations)!=2 or any(type(i) is not int for i in escalations) or
                 not 0<escalations[0]<escalations[1]<expected-1):
             raise ValueError('Comedy requires an opening setup, two linked escalation shots and the final payoff')
-    if episode>=quality_rule.get('from_episode',10**9) and quality_rule.get('require_documented_basis'):
+    if not comedy and episode>=quality_rule.get('from_episode',10**9) and quality_rule.get('require_documented_basis'):
         basis=plan.get('documented_basis',{})
         source=plan.get('research_source',{})
         if (basis.get('report_url')!=source.get('url') or
@@ -622,6 +624,16 @@ def make_plan(state):
         config = copy.deepcopy(config)
         config['story_planning']['bank'] = 'ai-cast/lina-oma-story-bank.json'
     planning = config.get('story_planning', {})
+    from cinematic_lina import entertainment
+    if new_cast and entertainment(config, episode):
+        from cinematic_story_bank import select_story
+        bank = load_json(ROOT / planning['bank'])
+        authored = select_story(bank, episode, episode_seconds(episode, config),
+                                None, state['history'], config, validate_plan)
+        if authored is None:
+            raise RuntimeError('Original comedy queue exhausted; prepare a new original script, never reuse a delivered episode')
+        print('Original comedy selected: ' + authored['story_id'] + '; no lesson or external story-model request.', flush=True)
+        return authored
     project_research = None
     if planning.get('mode') == 'curated-first' and episode >= planning.get('from_episode', 18):
         from cinematic_story_bank import select_story, unused_source_urls
@@ -1594,7 +1606,7 @@ def main():
         atomic_json(target, plan)
         print(json.dumps({'status': 'validated-plan-only', 'episode': plan['episode'],
                           'story_id': plan.get('story_id'), 'provider': plan.get('story_provider'),
-                          'source': plan['research_source']['url'], 'gpu_requested': False,
+                          'source': (plan.get('research_source') or {}).get('url'), 'gpu_requested': False,
                           'telegram_sent': False}, ensure_ascii=False))
         return
     if args.action == 'finish-cached':
