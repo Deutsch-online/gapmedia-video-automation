@@ -23,9 +23,20 @@ jobs:
           node-version: '22'
       - uses: actions/cache/restore@v4
         with:
-          path: .cache/social-watchdog.json
-          key: social-watchdog-v1-${{ github.run_id }}
-          restore-keys: social-watchdog-v1-
+          path: |
+            .cache/social-watchdog.json
+            .cache/platform-research
+          key: social-watchdog-v2-${{ github.run_id }}
+          restore-keys: social-watchdog-v2-
+      - name: Refresh daily public platform guidance independently of video quota
+        run: |
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,'ai-cast')
+          from cinematic_readiness import platform_research,berlin_day
+          print(json.dumps(platform_research(berlin_day(),Path('.cache/platform-research'))))
+          PY
       - name: Monitor accounts and report operational blockers
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -34,5 +45,7 @@ jobs:
       - uses: actions/cache/save@v4
         if: always()
         with:
-          path: .cache/social-watchdog.json
-          key: social-watchdog-v1-${{ github.run_id }}
+          path: |
+            .cache/social-watchdog.json
+            .cache/platform-research
+          key: social-watchdog-v2-${{ github.run_id }}
