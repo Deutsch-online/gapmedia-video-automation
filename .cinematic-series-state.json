@@ -5314,7 +5314,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-26T22:29:47.757439+00:00",
+    "checked_at": "2026-11-27T00:46:24.841080+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -5382,6 +5382,11 @@
       "count": 3,
       "error": "RuntimeError",
       "gpu_requested": false
+    },
+    "2026-11-27": {
+      "count": 1,
+      "error": "RuntimeError",
+      "gpu_requested": false
     }
   },
   "last_budget_block": {
@@ -5402,54 +5407,23 @@
     }
   },
   "daily_review": {
-    "day": "2026-11-26",
+    "day": "2026-11-27",
     "attempted": true,
-    "checked_at": "2026-11-26T22:29:46.388100+00:00",
-    "status": "available",
+    "checked_at": "2026-11-27T00:45:53.148999+00:00",
+    "status": "unavailable",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
-    "experiments": [
-      {
-        "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
-        "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
-        "evidence": "proposed_test_not_proven"
-      },
-      {
-        "change": "یک نمای عمل و یک نمای نزدیکِ شیء را متناوب کن؛ زیرنویس از صورت و شیء دور باشد و در ناحیهٔ امن بماند.",
-        "measure": "افت نگه‌داشت در کات‌ها و مقایسهٔ تکمیل در بازهٔ زمانی مشابه",
-        "evidence": "proposed_test_not_proven"
-      },
-      {
-        "change": "یک گرفتاری آشنا، دو تشدید کوتاه و یک نتیجهٔ شاد و کمیک دیدنی در همان ۴۵ ثانیه طراحی کن؛ هر بار فقط یک تغییر آزمایش شود.",
-        "measure": "نرخ تکمیل، اشتراک‌گذاری به ازای بازدید و بازخورد واقعی مخاطب",
-        "evidence": "test_against_matched_baseline"
-      }
-    ],
-    "prior_post_observations": [
-      {
-        "id": "7707919548778876192",
-        "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
-        "views": 928,
-        "relative_to_median": 1.5364238410596027
-      }
-    ],
+    "experiments": [],
+    "prior_post_observations": [],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
     "refresh": "requested",
-    "source_updated_at": "2026-11-26T21:30:57.993000+00:00",
-    "evidence_level": "matched_observations_not_causal",
-    "render_qc": {
-      "duration": null,
-      "width": 1080,
-      "height": 1920,
-      "frozen_seconds": 0,
-      "lip_sync_measured": null
-    },
+    "evidence_error": "ValueError",
     "next_test": {
-      "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
-      "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
-      "evidence": "proposed_test_not_proven"
+      "change": "Show the language mistake and its object immediately; correct, repeat and praise in the first four turns.",
+      "measure": "Compare retention/completion and shares per view at the same post age when available.",
+      "evidence": "baseline_quality_test; analytics unavailable, no proven cause"
     }
   },
   "full_episode_admission": {
