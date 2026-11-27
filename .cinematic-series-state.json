@@ -5251,7 +5251,237 @@
       "render_style": "lina-oma-human-v2"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-socken-memory-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 10,
+      "title_de": "Erwischt, Oma!",
+      "title_fa": "اوما، گیر افتادی!",
+      "summary": "Waiting for laundry, Lina appoints herself detective of a missing sock. Oma loudly blames the closed idle washing machine while concealing the sock on her own hand. Lina follows the evidence to Oma's waving sock-covered hand and awards it the game. Original warm family comedy, no lesson or language correction.",
+      "cliffhanger": "Tomorrow Lina and Oma stumble into another small everyday mystery; original family comedy with a new place and visual joke.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-laundry-sock-game",
+      "location_description": "A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.",
+      "visual_hook": "Lina holds a lone striped sock up like evidence in a serious detective investigation.",
+      "everyday_problem": "Lina has a clean striped sock with no matching partner while sorting laundry with Oma.",
+      "practical_resolution": "Lina spots its partner on Oma's hand and turns the missing-sock search into a playful win.",
+      "marta_goal": "Lina wants to solve the mystery of the missing matching sock.",
+      "marta_decision": "Lina searches the basket, then follows a movement behind it to Oma's hand.",
+      "visual_payoff": "Oma's sock-covered hand waves above the basket, exposing the supposed machine theft as her joke; Lina raises its matching sock triumphantly and claims the promised cake.",
+      "creative_review": {
+        "previous_weakness_addressed": "Remove teaching, correction and repeated phrases. Start with a visible missing-sock mystery and build one connected playful accusation and reveal in a new laundry room.",
+        "visible_comic_action": "The apparently missing sock is on Oma's waving hand; Lina humorously awards that hand the game. Warm reciprocal play, no mocking pronunciation.",
+        "next_experiment": "Test a visible missing-sock reveal after one short corrected phrase; compare valid matched-age completion and shares when available, without inventing retention evidence.",
+        "daily_evidence_review": {
+          "day": "2026-11-27",
+          "status": "available",
+          "selected_test": {
+            "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+            "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+            "evidence": "proposed_test_not_proven"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma! Eine Socke ist verschwunden!",
+          "fa": "اوما! یک جوراب ناپدید شده!",
+          "scene": "One visible human character lina in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Lina raises a lone clean striped sock like detective evidence beside the folding table.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina raises a lone clean striped sock like detective evidence beside the folding table.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina raises a lone clean striped sock like detective evidence beside the folding table.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "striped socks",
+            "folding table"
+          ],
+          "object_action": "Lina raises a lone clean striped sock like detective evidence beside the folding table.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "problem",
+          "keyframe_group": "lina-sort",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "striped socks",
+          "demonstration": "Lina raises a lone clean striped sock like detective evidence beside the folding table."
+        },
+        {
+          "speaker": "oma",
+          "de": "Bestimmt wieder die Waschmaschine!",
+          "fa": "حتماً باز کار ماشین لباس‌شویی است!",
+          "scene": "One visible human character oma in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "wicker laundry basket",
+            "striped socks"
+          ],
+          "object_action": "Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "oma-game",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "wicker laundry basket",
+          "demonstration": "Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim."
+        },
+        {
+          "speaker": "lina",
+          "de": "Ich ermittle. Niemand verlässt den Raum!",
+          "fa": "تحقیق می‌کنم. کسی از اتاق بیرون نرود!",
+          "scene": "One visible human character lina in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Lina peers into the wicker basket while holding the lone striped sock above the table.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina peers into the wicker basket while holding the lone striped sock above the table.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina peers into the wicker basket while holding the lone striped sock above the table.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "striped socks",
+            "folding table"
+          ],
+          "object_action": "Lina peers into the wicker basket while holding the lone striped sock above the table.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "lina-sort",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "striped socks",
+          "demonstration": "Lina peers into the wicker basket while holding the lone striped sock above the table."
+        },
+        {
+          "speaker": "oma",
+          "de": "Auch nicht zum Kuchen?",
+          "fa": "حتی برای کیک هم نه؟",
+          "scene": "One visible human character oma in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Oma slides a matching pair of clean socks from the basket onto the folding table.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma slides a matching pair of clean socks from the basket onto the folding table.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma slides a matching pair of clean socks from the basket onto the folding table.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "wicker laundry basket",
+            "striped socks"
+          ],
+          "object_action": "Oma slides a matching pair of clean socks from the basket onto the folding table.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "oma-game",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "wicker laundry basket",
+          "demonstration": "Oma slides a matching pair of clean socks from the basket onto the folding table."
+        },
+        {
+          "speaker": "lina",
+          "de": "Erst die Socke. Dann der Kuchen!",
+          "fa": "اول جوراب، بعد کیک!",
+          "scene": "One visible human character lina in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Lina holds up a lone striped sock beside the matched pair on the table.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds up a lone striped sock beside the matched pair on the table.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina holds up a lone striped sock beside the matched pair on the table.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "striped socks",
+            "folding table"
+          ],
+          "object_action": "Lina holds up a lone striped sock beside the matched pair on the table.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "lina-sort",
+          "framing": "medium-wide-action",
+          "camera_action": "locked",
+          "demonstrated_object": "striped socks",
+          "demonstration": "Lina holds up a lone striped sock beside the matched pair on the table."
+        },
+        {
+          "speaker": "oma",
+          "de": "Dann suchen wir lieber schnell!",
+          "fa": "پس بهتر است زود پیدایش کنیم!",
+          "scene": "One visible human character oma in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Oma peers into the basket, keeping her sock-covered hand behind its rim.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma peers into the basket, keeping her sock-covered hand behind its rim.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma peers into the basket, keeping her sock-covered hand behind its rim.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "wicker laundry basket",
+            "striped socks"
+          ],
+          "object_action": "Oma peers into the basket, keeping her sock-covered hand behind its rim.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "oma-game",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "wicker laundry basket",
+          "demonstration": "Oma peers into the basket, keeping her sock-covered hand behind its rim."
+        },
+        {
+          "speaker": "lina",
+          "de": "Oma! Schau auf deine Hand!",
+          "fa": "اوما! به دستت نگاه کن!",
+          "scene": "One visible human character lina in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Lina leans closer, lifts the lone striped sock and points toward off-camera Oma.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina leans closer, lifts the lone striped sock and points toward off-camera Oma.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina leans closer, lifts the lone striped sock and points toward off-camera Oma.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "striped socks",
+            "folding table"
+          ],
+          "object_action": "Lina leans closer, lifts the lone striped sock and points toward off-camera Oma.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "lina-reveal",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked",
+          "demonstrated_object": "striped socks",
+          "demonstration": "Lina leans closer, lifts the lone striped sock and points toward off-camera Oma."
+        },
+        {
+          "speaker": "oma",
+          "de": "Oh! Die Socke winkt!",
+          "fa": "اوه! جوراب دست تکان می‌دهد!",
+          "scene": "One visible human character oma in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Oma raises her hand wearing the matching striped sock above the basket and gives one small wave.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma raises her hand wearing the matching striped sock above the basket and gives one small wave.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma raises her hand wearing the matching striped sock above the basket and gives one small wave.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "wicker laundry basket",
+            "striped socks"
+          ],
+          "object_action": "Oma raises her hand wearing the matching striped sock above the basket and gives one small wave.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "act",
+          "keyframe_group": "oma-game",
+          "framing": "medium-demonstration",
+          "camera_action": "locked",
+          "demonstrated_object": "wicker laundry basket",
+          "demonstration": "Oma raises her hand wearing the matching striped sock above the basket and gives one small wave."
+        },
+        {
+          "speaker": "lina",
+          "de": "Erwischt! Der Kuchen gehört mir!",
+          "fa": "گیر افتادی! کیک مال من است!",
+          "scene": "One visible human character lina in the same A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.. The friend is off camera. Lina holds up the lone matching sock like a small winner's flag and laughs warmly.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina holds up the lone matching sock like a small winner's flag and laughs warmly.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: gentle-push. Physically demonstrate: Lina holds up the lone matching sock like a small winner's flag and laughs warmly.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "visible_objects": [
+            "striped socks",
+            "folding table"
+          ],
+          "object_action": "Lina holds up the lone matching sock like a small winner's flag and laughs warmly.",
+          "location_key": "lina-oma-laundry-sock-game",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-reveal",
+          "framing": "closer-face-and-object",
+          "camera_action": "gentle-push",
+          "demonstrated_object": "striped socks",
+          "demonstration": "Lina holds up the lone matching sock like a small winner's flag and laughs warmly."
+        }
+      ],
+      "setting_type": "laundry-room",
+      "content_mode": "original-comedy",
+      "fiction_disclosure": "Fiktive Comedy. Originalfiguren.",
+      "episode": 31,
+      "duration_seconds": 45,
+      "research_source": null,
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-human-v2"
+    },
+    "date": "2026-11-27",
+    "status": "rendering"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -5302,7 +5532,8 @@
     "2026-11-22": 1,
     "2026-11-24": 1,
     "2026-11-25": 1,
-    "2026-11-25#owner-e30-finish-two-clips-20261125": 1
+    "2026-11-25#owner-e30-finish-two-clips-20261125": 1,
+    "2026-11-27": 1
   },
   "manual_recovery": {
     "2026-10-16": 1,
@@ -5314,7 +5545,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-27T10:01:14.337354+00:00",
+    "checked_at": "2026-11-27T10:29:26.907930+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -5459,17 +5690,24 @@
   },
   "full_episode_admission": {
     "work": {
-      "images": 0,
-      "videos": 2,
+      "images": 3,
+      "videos": 9,
       "video_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
         7,
         8
       ],
-      "cached_videos": 7
+      "cached_videos": 0
     },
-    "available_units": 1882.0131020000001,
-    "estimated_generation_units": 421.92616320000013,
-    "required_units_with_headroom": 720.9630816000001,
+    "available_units": 2400.0,
+    "estimated_generation_units": 2071.374696,
+    "required_units_with_headroom": 2370.4116144,
     "admitted": true,
     "image_bound": 57.56898719999972,
     "video_bound": 210.96308160000007,
@@ -5481,12 +5719,12 @@
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-25",
-    "episode": 30,
-    "plan_sha": "3bcb5b79a53679b5f9612fceecc187f7b154e814b5abf11543c18bd6b1071090",
+    "day": "2026-11-27",
+    "episode": 31,
+    "plan_sha": "7c839e8762224ab8e056c1955a859a8a6e9dcc635e1266da4e81ed513c682a1f",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-25T19:35:58.022000+00:00",
+    "review_source_at": "2026-11-27T09:20:58.087000+00:00",
     "selected_test": {
       "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
       "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
