@@ -55,7 +55,10 @@ if (action === 'verify') {
   const germanTitle = /\p{Script=Arabic}/u.test(String(p.plan.title_de || ''))
     ? 'Eine neue Geschichte' : p.plan.title_de;
   const shortTitle = Array.from(String(germanTitle || "Deutsch im Alltag").replace(/\s+/g, " ").trim()).slice(0, 70).join("");
-  const caption = `${shortTitle}\n#DeutschLernen ${platform === "instagram" ? "#Alltagsdeutsch" : "#LearnGerman"}`;
+  const tags = p.plan.content_mode === 'original-comedy'
+    ? '#Familiencomedy #OmaUndEnkelin'
+    : `#DeutschLernen ${platform === "instagram" ? "#Alltagsdeutsch" : "#LearnGerman"}`;
+  const caption = `${shortTitle}\n${tags}`;
   const result = await sendVideo({ token: tg.token, chatId: tg.reviewChatId, file, attempts: 1, caption });
   if (!result?.message_id) throw new Error('Telegram did not confirm delivery');
   console.log(JSON.stringify({ message_id: result.message_id }));
