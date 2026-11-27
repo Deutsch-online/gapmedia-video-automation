@@ -46,11 +46,20 @@ def grammar_source(fetch, episode):
     raise RuntimeError('All approved beginner grammar sources unavailable; no invented research fallback')
 
 
-def validate(plan, history=()):
+def entertainment(config, episode):
+    rule = (config or {}).get('entertainment', {})
+    return rule.get('enabled') is True and episode >= rule.get('from_episode', 10**9)
+
+
+def validate(plan, history=(), config=None):
     from cinematic_staging import validate as validate_staging
     validate_staging(plan,history)
     if {s['speaker'] for s in plan['scenes']} != set(VOICES):
         raise ValueError('Lina and Oma must be the only speaking characters')
+    if entertainment(config, plan.get('episode', 0)):
+        if plan.get('content_mode') != 'original-comedy' or plan.get('fiction_disclosure') != 'Fiktive Comedy. Originalfiguren.':
+            raise ValueError('Entertainment episodes must be disclosed original fiction')
+        return  # Story, staging, voice, duration and budget checks still run.
     error = plan.get('language_error', {})
     wrong, correct = error.get('wrong'), error.get('correct')
     if not isinstance(wrong, str) or not isinstance(correct, str) or not wrong or wrong == correct:
