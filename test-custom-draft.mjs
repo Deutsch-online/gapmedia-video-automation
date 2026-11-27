@@ -9,38 +9,38 @@
 //   · hook|step               — the same separator, shorter
 //   · lead line + ۱./۲./… steps — the only structural cue that survives the
 //     newline flattening; this is what "خط‌به‌خط" actually has to mean now
-//   · a bare sentence         — becomes a draft only when the workflow supplies
-//     its Grok key; without that key it must fail clearly and must not write a
-//     draft. This keeps the local/offline path deterministic and honest.
-//
+//   · a bare sentence         — uses the keyless API, and fails safely if unavailable.
 //   node test-custom-draft.mjs
-import { existsSync, readFileSync, rmSync, writeFileSync, renameSync } from "node:fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const DRAFT = ".content-draft.json";
 const saved = existsSync(DRAFT) ? readFileSync(DRAFT, "utf8") : null;
 
-function run(text, { noGemini = false } = {}) {
+function run(text, { freeAiStatus = 200 } = {}) {
   rmSync(DRAFT, { force: true });
-  // custom-draft.mjs's own loadEnv() reads .env straight off disk and lets it
-  // win over whatever this subprocess's env carries — a real key sitting in
-  // .env (correctly, for normal local use) can't be hidden by clearing
-  // GEMINI_API_KEY/GOOGLE_API_KEY from `env:` below. To genuinely exercise
-  // the no-key path, .env is moved aside for the duration of this one call.
-  const ENV_FILE = ".env", ENV_BAK = ".env.test-custom-draft.bak";
-  const hadEnv = noGemini && existsSync(ENV_FILE);
-  if (hadEnv) renameSync(ENV_FILE, ENV_BAK);
-  let r;
-  try {
-    r = spawnSync(process.execPath, ["custom-draft.mjs", text], {
-      encoding: "utf8",
-      env: noGemini
-        ? { ...process.env, NO_TELEGRAM: "1", GEMINI_API_KEY: "", GOOGLE_API_KEY: "" }
-        : { ...process.env, NO_TELEGRAM: "1" },
-    });
-  } finally {
-    if (hadEnv) renameSync(ENV_BAK, ENV_FILE);
-  }
+  const preload = `
+    globalThis.fetch = async (url, options) => {
+      if (url !== "https://api.apisfreellm.com/v1/chat/completions") throw new Error("Unexpected request");
+      const body = JSON.parse(options.body);
+      if (options.method !== "POST" || options.headers.authorization ||
+          body.model !== "free-ai" || !body.messages[0].content.includes(${JSON.stringify(text)})) {
+        throw new Error("Unexpected request payload");
+      }
+      return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({
+        title: "ساخت ویدیوی کوتاه",
+        hook: "چطور در چند ثانیه توجه مخاطب را جلب کنیم؟",
+        steps: ["موضوع را روشن کن", "یک نمونه نشان بده"],
+      }) } }] }), { status: ${freeAiStatus} });
+    };
+  `;
+  const r = spawnSync(process.execPath, [
+    "--import", "data:text/javascript;base64," + Buffer.from(preload).toString("base64"),
+    "custom-draft.mjs", text,
+  ], {
+    encoding: "utf8",
+    env: { ...process.env, NO_TELEGRAM: "1", GAPMEDIA_DRAFT_PROVIDER: "free-ai" },
+  });
   const draft = existsSync(DRAFT) ? JSON.parse(readFileSync(DRAFT, "utf8")) : null;
   return { status: r.status, out: (r.stdout || "") + (r.stderr || ""), draft };
 }
@@ -83,20 +83,17 @@ const check = (label, cond, detail) => {
   check("بدون لید: گام اول قلاب هم می‌شود", r.draft?.generated?.hook?.ask === "یک نمونهٔ واقعی نشان بده" && r.draft?.generated?.tips?.length === 2);
 }
 
-// 5) Offline/no-key fallback. Cloud execution supplies GEMINI_API_KEY for
-// this shape; local execution must not pretend it drafted a topic without it.
+// 5) A bare topic uses the keyless API and writes a reviewable draft.
 {
-  const r = run("محتوا: چگونه با یک ویدیوی کوتاه، مشتری مناسب برای خدماتت جذب کنی؟".replace(/^محتوا:\s*/, ""), { noGemini: true });
-  check("موضوع خام: هیچ پیش‌نویسی ساخته نمی‌شود", r.draft === null, r.draft ? "یک پیش‌نویس ساخته شد — این نادرست است" : "");
-  // Names the actual missing secret (GEMINI_API_KEY), not just "try a
-  // different format" — a creator can't fix a key nobody set, and the old
-  // wording hid that from the one person who could (the owner).
-  check("  و خطا مشخص و راهنماست، نه پیام عمومی", /GEMINI_API_KEY/.test(r.out) && /عنوان \| قلاب \| گام/.test(r.out) && /شماره‌گذاری‌شده/.test(r.out));
-  check("  و فرآیند سالم خارج می‌شود (پیام رفت، نه کرش)", r.status === 0, `exit ${r.status}`);
+  const topic = "چگونه با یک ویدیوی کوتاه مشتری جذب کنیم؟";
+  const r = run(topic);
+  check("موضوع خام: پیش‌نویس با free-ai", r.status === 0 && r.draft?.generated?.tips?.length === 2, r.out);
+  const failure = run(topic, { freeAiStatus: 429 });
+  check("محدودیت API: پیش‌نویس ناقص ذخیره نمی‌شود", failure.draft === null, `exit=${failure.status}; draft=${!!failure.draft}; ${failure.out}`);
 }
 
 if (saved !== null) writeFileSync(DRAFT, saved); else rmSync(DRAFT, { force: true });
 
 console.log("");
-console.log(bad === 0 ? "custom-draft.mjs handles structured input and safely refuses a bare topic without the cloud drafting key" : `${bad} check(s) failed`);
+console.log(bad === 0 ? "custom-draft.mjs handles structured input and uses the keyless API for bare topics" : `${bad} check(s) failed`);
 process.exit(bad === 0 ? 0 : 1);

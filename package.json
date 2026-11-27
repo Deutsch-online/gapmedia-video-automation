@@ -15,7 +15,8 @@
     "video:open": "node tools/video/editor.mjs open",
     "video:look": "node tools/video/editor.mjs look",
     "video:render": "node tools/video/editor.mjs render",
-    "video:export": "node tools/video/run-export.mjs"
+    "video:export": "node tools/video/run-export.mjs",
+    "video:moneyprinter": "node tools/video/moneyprinter.mjs"
   },
   "dependencies": {
     "@typesafe-ai/sdk": "^0.6.0"
