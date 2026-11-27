@@ -64,7 +64,8 @@ class DesignTests(unittest.TestCase):
                     target=Path(directory)/'caption.png'
                     report=design.caption_card(scene['de'],scene['fa'],target)
                     with Image.open(target) as image:bounds=image.getbbox()
-                    self.assertGreaterEqual(design.CARD[1],1200)
+                    self.assertGreaterEqual(design.CARD[1],1000)
+                    self.assertLessEqual(design.CARD[1]+design.CARD[3],1400)
                     self.assertLessEqual(design.CARD[0]+design.CARD[2],912)
                     self.assertLessEqual(design.CARD[1]+design.CARD[3],1610)
                     self.assertGreaterEqual(bounds[0],48)
