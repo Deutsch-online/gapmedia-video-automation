@@ -196,5 +196,12 @@
     "forecast_basis": "latest nine completed account debits per provider bound plus 20 percent; retain full final-call headroom",
     "missing_analytics": "record unavailable evidence and use explicit baseline experiment; never invent a causal explanation",
     "automatic_paid_fallback": false
+  },
+  "entertainment": {
+    "enabled": true,
+    "from_episode": 31,
+    "purpose": "original situational comedy; no German lessons, corrections or drills",
+    "research": "optional creative inspiration; original fiction does not require external research availability",
+    "preserve_quality_budget_and_delivery": true
   }
 }
