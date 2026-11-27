@@ -1827,29 +1827,24 @@
       "cast_profile": "lina-oma-v1",
       "serial_id": "lina-oma-daily-v1",
       "serial_chapter": 10,
-      "title_de": "Oma, deine Hand gewinnt!",
-      "title_fa": "اوما، دست تو برنده شد!",
-      "summary": "Waiting for laundry, newcomer Lina mistakenly calls herself boring. Oma immediately teaches Mir ist langweilig, Lina repeats and receives warm praise. They turn pairing clean socks into a small game. One sock is missing from the table because Oma has playfully worn it on her hand. Lina spots it and declares Oma's hand the winner. The joke is about an ordinary missing sock, never the learner or accent.",
-      "cliffhanger": "Tomorrow Lina tries another useful German expression with Oma in a new everyday place.",
+      "title_de": "Erwischt, Oma!",
+      "title_fa": "اوما، گیر افتادی!",
+      "summary": "Waiting for laundry, Lina appoints herself detective of a missing sock. Oma loudly blames the closed idle washing machine while concealing the sock on her own hand. Lina follows the evidence to Oma's waving sock-covered hand and awards it the game. Original warm family comedy, no lesson or language correction.",
+      "cliffhanger": "Tomorrow Lina and Oma stumble into another small everyday mystery; original family comedy with a new place and visual joke.",
       "series_version": "wg-alltag-v1",
       "series_name": "Lina & Oma Rosi",
       "content_basis": "everyday-reenactment",
       "mood": "comic",
       "location_key": "lina-oma-laundry-sock-game",
       "location_description": "A bright shared German laundry room, a closed idle washing machine behind a waist-high folding table and a wicker laundry basket. Two pairs of clean striped socks, no other people. Consistent daylight and positions; all handling above the caption area. Fictional photorealistic human Lina and Oma with natural skin, eyes and hands.",
-      "visual_hook": "Lina holds one clean striped sock upright like a stiff little statue and sighs beside a basket of laundry.",
-      "everyday_problem": "A newly arrived child confuses Ich bin langweilig, describing herself as boring, with Mir ist langweilig, expressing that she feels bored while waiting.",
-      "practical_resolution": "Lina says Mir ist langweilig correctly and joins a real sock-pairing game with Oma instead of passively waiting.",
-      "marta_goal": "Lina wants to say she feels bored and find something to do while waiting.",
-      "marta_decision": "She uses the corrected phrase, sorts the socks and notices the missing partner on Oma's hand.",
-      "visual_payoff": "A striped sock emerges waving on Oma's hand; Lina places its matching sock upright on the table and declares Oma's hand the winner.",
-      "language_error": {
-        "wrong": "ich bin langweilig",
-        "correct": "Mir ist langweilig.",
-        "explanation": "Ich bin langweilig describes the speaker as boring. Mir ist langweilig expresses feeling bored. Both are grammatical, but only the second communicates Lina's intended feeling; the correction concerns meaning, not her accent."
-      },
+      "visual_hook": "Lina holds a lone striped sock up like evidence in a serious detective investigation.",
+      "everyday_problem": "Lina has a clean striped sock with no matching partner while sorting laundry with Oma.",
+      "practical_resolution": "Lina spots its partner on Oma's hand and turns the missing-sock search into a playful win.",
+      "marta_goal": "Lina wants to solve the mystery of the missing matching sock.",
+      "marta_decision": "Lina searches the basket, then follows a movement behind it to Oma's hand.",
+      "visual_payoff": "Oma's sock-covered hand waves above the basket, exposing the supposed machine theft as her joke; Lina raises its matching sock triumphantly and claims the promised cake.",
       "creative_review": {
-        "previous_weakness_addressed": "Resolve the exhausted authored queue without calling unreliable external text models. Use a new laundry room, a visible sock game and a connected visual reveal rather than repeating the school-bottle story.",
+        "previous_weakness_addressed": "Remove teaching, correction and repeated phrases. Start with a visible missing-sock mystery and build one connected playful accusation and reveal in a new laundry room.",
         "visible_comic_action": "The apparently missing sock is on Oma's waving hand; Lina humorously awards that hand the game. Warm reciprocal play, no mocking pronunciation.",
         "next_experiment": "Test a visible missing-sock reveal after one short corrected phrase; compare valid matched-age completion and shares when available, without inventing retention evidence."
       },
@@ -1861,21 +1856,7 @@
         ],
         "payoff": 8
       },
-      "documented_basis": {
-        "report_url": "https://www.goethe.de/ins/de/de/prf/grm.html",
-        "type": "documented-problem-adaptation",
-        "verified_problem": "Goethe provides official beginner German grammar learning materials. This original fictional scene teaches the standard contrast between a personal description with sein and the experiencer dative in Mir ist langweilig. The page is general teaching context, not a report of this incident.",
-        "invented_elements": [
-          "Lina and Oma Rosi",
-          "all dialogue and the sock game",
-          "the laundry-room incident"
-        ],
-        "disclosure_de": "Fiktive Lernserie. Originalfiguren."
-      },
-      "research_urls": [
-        "https://www.goethe.de/ins/de/de/prf/grm.html",
-        "https://www.goethe.de/ins/de/de/m/prf/grm.html"
-      ],
+      "research_urls": [],
       "variants": {
         "45": [
           0,
@@ -1892,27 +1873,27 @@
       "scenes": [
         {
           "speaker": "lina",
-          "de": "Oma, ich bin langweilig!",
-          "fa": "اوما، من کسل‌کننده هستم!",
-          "scene": "Lina holds one clean striped sock stiffly upright above the folding table and sighs.",
-          "motion": "Lina holds one clean striped sock stiffly upright above the folding table and sighs.",
+          "de": "Oma! Eine Socke ist verschwunden!",
+          "fa": "اوما! یک جوراب ناپدید شده!",
+          "scene": "Lina raises a lone clean striped sock like detective evidence beside the folding table.",
+          "motion": "Lina raises a lone clean striped sock like detective evidence beside the folding table.",
           "visible_objects": [
             "striped socks",
             "folding table"
           ],
-          "object_action": "Lina holds one clean striped sock stiffly upright above the folding table and sighs.",
+          "object_action": "Lina raises a lone clean striped sock like detective evidence beside the folding table.",
           "location_key": "lina-oma-laundry-sock-game",
           "story_beat": "problem",
           "keyframe_group": "lina-sort",
           "framing": "medium-wide-action",
           "camera_action": "locked",
           "demonstrated_object": "striped socks",
-          "demonstration": "Lina holds one clean striped sock stiffly upright above the folding table and sighs."
+          "demonstration": "Lina raises a lone clean striped sock like detective evidence beside the folding table."
         },
         {
           "speaker": "oma",
-          "de": "Sag: Mir ist langweilig.",
-          "fa": "بگو: حوصله‌ام سر رفته.",
+          "de": "Bestimmt wieder die Waschmaschine!",
+          "fa": "حتماً باز کار ماشین لباس‌شویی است!",
           "scene": "Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.",
           "motion": "Oma sets the wicker basket on the table, her sock-covered right hand resting behind its rim.",
           "visible_objects": [
@@ -1930,27 +1911,27 @@
         },
         {
           "speaker": "lina",
-          "de": "Mir ist langweilig.",
-          "fa": "حوصله‌ام سر رفته.",
-          "scene": "Lina lowers the striped sock onto the table beside the clean laundry.",
-          "motion": "Lina lowers the striped sock onto the table beside the clean laundry.",
+          "de": "Ich ermittle. Niemand verlässt den Raum!",
+          "fa": "تحقیق می‌کنم. کسی از اتاق بیرون نرود!",
+          "scene": "Lina peers into the wicker basket while holding the lone striped sock above the table.",
+          "motion": "Lina peers into the wicker basket while holding the lone striped sock above the table.",
           "visible_objects": [
             "striped socks",
             "folding table"
           ],
-          "object_action": "Lina lowers the striped sock onto the table beside the clean laundry.",
+          "object_action": "Lina peers into the wicker basket while holding the lone striped sock above the table.",
           "location_key": "lina-oma-laundry-sock-game",
           "story_beat": "act",
           "keyframe_group": "lina-sort",
           "framing": "medium-wide-action",
           "camera_action": "locked",
           "demonstrated_object": "striped socks",
-          "demonstration": "Lina lowers the striped sock onto the table beside the clean laundry."
+          "demonstration": "Lina peers into the wicker basket while holding the lone striped sock above the table."
         },
         {
           "speaker": "oma",
-          "de": "Prima! Wir spielen Socken-Memory.",
-          "fa": "آفرین! بازی جفت‌کردن جوراب‌ها!",
+          "de": "Auch nicht zum Kuchen?",
+          "fa": "حتی برای کیک هم نه؟",
           "scene": "Oma slides a matching pair of clean socks from the basket onto the folding table.",
           "motion": "Oma slides a matching pair of clean socks from the basket onto the folding table.",
           "visible_objects": [
@@ -1968,8 +1949,8 @@
         },
         {
           "speaker": "lina",
-          "de": "Hier fehlt eine Socke!",
-          "fa": "اینجا یک جوراب کم است!",
+          "de": "Erst die Socke. Dann der Kuchen!",
+          "fa": "اول جوراب، بعد کیک!",
           "scene": "Lina holds up a lone striped sock beside the matched pair on the table.",
           "motion": "Lina holds up a lone striped sock beside the matched pair on the table.",
           "visible_objects": [
@@ -1987,8 +1968,8 @@
         },
         {
           "speaker": "oma",
-          "de": "Wo hat sie sich versteckt?",
-          "fa": "کجا پنهان شده؟",
+          "de": "Dann suchen wir lieber schnell!",
+          "fa": "پس بهتر است زود پیدایش کنیم!",
           "scene": "Oma peers into the basket, keeping her sock-covered hand behind its rim.",
           "motion": "Oma peers into the basket, keeping her sock-covered hand behind its rim.",
           "visible_objects": [
@@ -2044,8 +2025,8 @@
         },
         {
           "speaker": "lina",
-          "de": "Oma, deine Hand gewinnt!",
-          "fa": "اوما، دست تو برنده شد!",
+          "de": "Erwischt! Der Kuchen gehört mir!",
+          "fa": "گیر افتادی! کیک مال من است!",
           "scene": "Lina holds up the lone matching sock like a small winner's flag and laughs warmly.",
           "motion": "Lina holds up the lone matching sock like a small winner's flag and laughs warmly.",
           "visible_objects": [
@@ -2062,7 +2043,9 @@
           "demonstration": "Lina holds up the lone matching sock like a small winner's flag and laughs warmly."
         }
       ],
-      "setting_type": "laundry-room"
+      "setting_type": "laundry-room",
+      "content_mode": "original-comedy",
+      "fiction_disclosure": "Fiktive Comedy. Originalfiguren."
     }
   ]
 }
