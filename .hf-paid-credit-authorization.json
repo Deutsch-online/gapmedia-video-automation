@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "authorization_id": "owner-existing-hf-credit-20261128-until-december",
+  "authorized_at": "2026-11-28T11:17:48.557355+00:00",
+  "provider": "huggingface",
+  "scope": "Complete production using existing account credit only when included allowance is insufficient",
+  "total_limit_usd": 1.0,
+  "limit_is_per_day": false,
+  "expires_at": "2026-12-31T23:00:00+00:00",
+  "expiry_timezone": "Europe/Berlin",
+  "existing_credit_only": true,
+  "purchase_or_topup_allowed": false,
+  "enable_pay_as_you_go_allowed": false,
+  "change_quality_or_duration_allowed": false,
+  "replay_unknown_generation_allowed": false,
+  "account_balance_usd": null,
+  "account_billing_verified": false,
+  "request_price_bound_verified": false,
+  "generation_enabled": false,
+  "status": "authorized-pending-live-billing-verification",
+  "blocking_reason": "Paid fallback requires verified live account credit and maximum dollar cost; included quota restored to 2400 seconds, so current production uses free quota.",
+  "deployment_status": "authorization-record-only"
+}
