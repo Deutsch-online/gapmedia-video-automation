@@ -5486,7 +5486,286 @@
       "render_style": "lina-oma-human-v2"
     }
   ],
-  "pending": null,
+  "pending": {
+    "plan": {
+      "story_id": "lina-oma-nur-einen-kaffee-v1",
+      "cast_profile": "lina-oma-v1",
+      "serial_id": "lina-oma-daily-v1",
+      "serial_chapter": 11,
+      "title_de": "Nur auf einen Kaffee?!",
+      "title_fa": "فقط برای یک قهوه؟!",
+      "summary": "Lina sees Oma arriving with an oversized suitcase and thinks she is moving in. Oma insists she is only visiting for coffee. The suitcase is for biscuits, the tote for emergency cake. The emergency is running out of biscuits. Lina warmly invites her to stay until Christmas. Original family comedy about a grandmother overpacking for a short visit; no educational dialogue.",
+      "cliffhanger": "Next day the two meet another small everyday misunderstanding; a complete self-contained family joke.",
+      "series_version": "wg-alltag-v1",
+      "series_name": "Lina & Oma Rosi",
+      "content_basis": "everyday-reenactment",
+      "mood": "comic",
+      "location_key": "lina-oma-coffee-visit-hallway",
+      "location_description": "A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.",
+      "visual_hook": "Oma's oversized rolling suitcase is already visibly parked beside the apartment doorway while Lina holds a tiny coffee cup and stares at the luggage.",
+      "everyday_problem": "A supposedly brief family coffee visit arrives with luggage big enough for moving house.",
+      "practical_resolution": "Lina discovers Oma has comically overpacked snacks rather than clothes and welcomes her longer visit.",
+      "marta_goal": "Lina wants to know whether Oma is moving into their apartment or simply visiting for coffee.",
+      "marta_decision": "She compares the huge luggage with her tiny coffee cup and playfully invites Oma to stay for Christmas.",
+      "visual_payoff": "Oma raises the biscuit packet beside the oversized luggage while Lina raises her tiny cup in a welcoming toast; the visual contrast remains real and visible.",
+      "creative_review": {
+        "previous_weakness_addressed": "Replace the missing sock-on-hand effect that failed in episode 31 with large real luggage visible from the beginning. No hidden-prop transformation, teaching, correction or repeated drill. A new hallway setting with purposeful luggage motion.",
+        "visible_comic_action": "An absurdly large rolling suitcase for a tiny coffee visit, followed by a second emergency snack bag; the practical visual contrast is present from the first frame.",
+        "next_experiment": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+        "daily_evidence_review": {
+          "day": "2026-11-28",
+          "status": "available",
+          "selected_test": {
+            "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
+            "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
+            "evidence": "proposed_test_not_proven"
+          },
+          "causal_explanation_verified": false
+        }
+      },
+      "comedy_beats": {
+        "setup": 0,
+        "escalations": [
+          4,
+          6
+        ],
+        "payoff": 8
+      },
+      "scenes": [
+        {
+          "speaker": "lina",
+          "de": "Oma, ziehst du bei uns ein?",
+          "fa": "اوما، می‌خواهی پیش ما زندگی کنی؟",
+          "scene": "One visible human character lina in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench",
+            "large rolling suitcase"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina raises a tiny empty coffee cup beside the oversized rolling suitcase at the doorway.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "problem",
+          "keyframe_group": "lina-arrival",
+          "framing": "medium-wide-action",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Nein. Nur auf einen Kaffee.",
+          "fa": "نه، فقط برای یک قهوه.",
+          "scene": "One visible human character oma in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma rolls her oversized suitcase one short step into the hall and stops it beside the entry bench.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Mit diesem riesigen Koffer?",
+          "fa": "با این چمدان غول‌پیکر؟",
+          "scene": "One visible human character lina in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-wide-action. Camera: locked. Physically demonstrate: Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench",
+            "large rolling suitcase"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina leans toward the large suitcase and holds her tiny coffee cup beside its handle for comparison.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-arrival",
+          "framing": "medium-wide-action",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Das sind nur die Kekse.",
+          "fa": "این‌ها فقط بیسکویت‌هاست.",
+          "scene": "One visible human character oma in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma lifts a biscuit packet next to the tall suitcase handle, keeping the canvas tote on the floor.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Und was ist in der Tasche?",
+          "fa": "پس داخل ساک چیست؟",
+          "scene": "One visible human character lina in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina lowers her cup onto the entry bench and gestures toward off-camera Oma's tote.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Kuchen. Für den Notfall.",
+          "fa": "کیک. برای وقت اضطراری.",
+          "scene": "One visible human character oma in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma lifts the large canvas tote a little from the floor, then places it safely back beside the suitcase.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Welcher Notfall denn?",
+          "fa": "کدام وقت اضطراری؟",
+          "scene": "One visible human character lina in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina picks up her tiny coffee cup again and tilts it with a puzzled smile.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "oma",
+          "de": "Wenn die Kekse alle sind!",
+          "fa": "وقتی بیسکویت‌ها تمام شود!",
+          "scene": "One visible human character oma in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "motion": "Only the visible grandmother Rosi speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: medium-demonstration. Camera: locked. Physically demonstrate: Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "visible_objects": [
+            "large rolling suitcase",
+            "canvas tote",
+            "biscuit packet"
+          ],
+          "demonstrated_object": "large rolling suitcase",
+          "demonstration": "Oma holds up the biscuit packet in front of the oversized suitcase and hugs it playfully.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "act",
+          "keyframe_group": "oma-luggage",
+          "framing": "medium-demonstration",
+          "camera_action": "locked"
+        },
+        {
+          "speaker": "lina",
+          "de": "Dann bleib bis Weihnachten!",
+          "fa": "پس تا کریسمس پیش ما بمان!",
+          "scene": "One visible human character lina in the same A bright German apartment entrance hall with one wooden entry bench and a coat rack. Oma has just arrived for a short family visit with an oversized real rolling suitcase, a large canvas tote and a biscuit packet. Lina holds one small empty coffee cup. No other faces. Same doorway, bench, daylight and props throughout. Natural fictional human faces and hands; complete heads with generous headroom. Keep faces, hands and objects in the phone-safe central area.. The friend is off camera. Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "motion": "Only the visible girl Lina speaks; the listener is off camera. Use exactly the supplied German audio; lips close in silence. One readable gentle action: Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.. Small natural mouth movements, lively restrained eyebrows, stable eyes and hands, no face drift, no extra face, exaggeration, camera shake or new props. Framing: closer-face-and-object. Camera: locked. Physically demonstrate: Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.. Preserve human anatomy, natural eye size and believable contact with the real object.",
+          "object_action": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "visible_objects": [
+            "small coffee cup",
+            "entry bench"
+          ],
+          "demonstrated_object": "small coffee cup",
+          "demonstration": "Lina raises the tiny cup in a welcoming toast toward off-camera Oma and laughs.",
+          "location_key": "lina-oma-coffee-visit-hallway",
+          "story_beat": "resolve",
+          "keyframe_group": "lina-reaction",
+          "framing": "closer-face-and-object",
+          "camera_action": "locked"
+        }
+      ],
+      "setting_type": "hallway",
+      "content_mode": "original-comedy",
+      "fiction_disclosure": "Fiktive Comedy. Originalfiguren.",
+      "episode": 32,
+      "duration_seconds": 45,
+      "research_source": null,
+      "story_provider": "project-authored-bank-v1",
+      "visual_profile": "storybook-duo-glass-v2",
+      "render_style": "lina-oma-human-v2",
+      "audience_review": {
+        "day": "2026-11-28",
+        "status": "available",
+        "source_updated_at": "2026-11-28T08:05:58.048000+00:00",
+        "evidence_level": "matched_observations_not_causal",
+        "prior_post_observations": [
+          {
+            "id": "7707919548778876192",
+            "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
+            "views": 928,
+            "relative_to_median": 1.5089430894308944
+          }
+        ],
+        "missing": [
+          "watch-time or completion may be unavailable; views alone do not prove causes"
+        ],
+        "platform_research": {
+          "version": 2,
+          "day": "2026-11-28",
+          "checked_at": "2026-11-28T08:14:48.717607+00:00",
+          "sources": [
+            {
+              "url": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+              "status": "fetched",
+              "content_sha256": "a40945cf6030e9ba4349be71f68ac27fcb6af2bc90378667824236a0b33e9875",
+              "relevant_excerpt": " feed. Recommendations are based on a number of factors, including things like: User interactions such as the videos you like or share, accounts you follow, comments you post, and content you create. Video information , which might include details like captions, sounds, and hashtags. Device and account settings like your language preference, country setting, and device type. Th",
+              "semantic_guidance_found": true
+            },
+            {
+              "url": "https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content",
+              "status": "fetched",
+              "content_sha256": "880ed97625ca8e8d24056d527f2dc72c60905ef3d9830ebabb992ac3061319a8",
+              "relevant_excerpt": null,
+              "semantic_guidance_found": false
+            }
+          ],
+          "viral_guarantee": false,
+          "experiment": "Test an immediately visible comic conflict and a genuinely visible payoff; compare matched-age completion and shares per view when available.",
+          "status": "available"
+        }
+      }
+    },
+    "date": "2026-11-28",
+    "status": "render-failed",
+    "time_budget_blocked": true,
+    "budget_reason": "full-episode forecast does not fit"
+  },
   "attempts": {
     "2026-10-15": 2,
     "2026-10-16": 4,
@@ -5550,7 +5829,7 @@
     "paid_authorized": false
   },
   "gpu_preflight": {
-    "checked_at": "2026-11-27T10:29:26.907930+00:00",
+    "checked_at": "2026-11-28T08:14:53.219555+00:00",
     "generation_requested": false,
     "order": [
       "hf-included"
@@ -5559,7 +5838,7 @@
     "paid_route": false,
     "can_admit_minimum_stage": true,
     "status": "verified",
-    "remaining_seconds": 2400.0,
+    "remaining_seconds": 779.6383210000001,
     "can_admit_one_speaking_take": true,
     "fallback": null
   },
@@ -5643,9 +5922,9 @@
     }
   },
   "daily_review": {
-    "day": "2026-11-27",
+    "day": "2026-11-28",
     "attempted": true,
-    "checked_at": "2026-11-27T10:01:13.377503+00:00",
+    "checked_at": "2026-11-28T08:14:48.717526+00:00",
     "status": "available",
     "causal_explanation_verified": false,
     "visual_reviewed": false,
@@ -5671,14 +5950,38 @@
         "id": "7707919548778876192",
         "url": "https://www.tiktok.com/@easydeutsches/video/7707919548778876192",
         "views": 928,
-        "relative_to_median": 1.5364238410596027
+        "relative_to_median": 1.5089430894308944
       }
     ],
     "missing": [
       "watch-time or completion may be unavailable; views alone do not prove causes"
     ],
+    "platform_research": {
+      "version": 2,
+      "day": "2026-11-28",
+      "checked_at": "2026-11-28T08:14:48.717607+00:00",
+      "sources": [
+        {
+          "url": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+          "status": "fetched",
+          "content_sha256": "a40945cf6030e9ba4349be71f68ac27fcb6af2bc90378667824236a0b33e9875",
+          "relevant_excerpt": " feed. Recommendations are based on a number of factors, including things like: User interactions such as the videos you like or share, accounts you follow, comments you post, and content you create. Video information , which might include details like captions, sounds, and hashtags. Device and account settings like your language preference, country setting, and device type. Th",
+          "semantic_guidance_found": true
+        },
+        {
+          "url": "https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content",
+          "status": "fetched",
+          "content_sha256": "880ed97625ca8e8d24056d527f2dc72c60905ef3d9830ebabb992ac3061319a8",
+          "relevant_excerpt": null,
+          "semantic_guidance_found": false
+        }
+      ],
+      "viral_guarantee": false,
+      "experiment": "Test an immediately visible comic conflict and a genuinely visible payoff; compare matched-age completion and shares per view when available.",
+      "status": "available"
+    },
     "refresh": "requested",
-    "source_updated_at": "2026-11-27T09:20:58.087000+00:00",
+    "source_updated_at": "2026-11-28T08:05:58.048000+00:00",
     "evidence_level": "matched_observations_not_causal",
     "render_qc": {
       "duration": null,
@@ -5710,30 +6013,37 @@
       ],
       "cached_videos": 0
     },
-    "available_units": 2400.0,
-    "estimated_generation_units": 2071.374696,
-    "required_units_with_headroom": 2370.4116144,
-    "admitted": true,
+    "available_units": 779.6383210000001,
+    "estimated_generation_units": 2071.3951511999994,
+    "required_units_with_headroom": 2370.429796799999,
+    "admitted": false,
     "image_bound": 57.56898719999972,
-    "video_bound": 210.96308160000007,
+    "video_bound": 210.96535440000005,
     "image_basis": "recent_account_debit_upper_plus_20_percent",
     "video_basis": "recent_account_debit_upper_plus_20_percent",
     "reserve_units": 30,
-    "final_request_headroom": 269.03691839999993,
+    "final_request_headroom": 269.0346456,
     "full_episode_guaranteed": false,
     "per_call_live_guard_required": true,
     "paid_fallback": false,
     "quota_status": "verified",
-    "day": "2026-11-27",
-    "episode": 31,
-    "plan_sha": "7c839e8762224ab8e056c1955a859a8a6e9dcc635e1266da4e81ed513c682a1f",
+    "day": "2026-11-28",
+    "episode": 32,
+    "plan_sha": "61f79c098ae2b9d9a46fe3b4f43a47fa68f7d77929e8a5401f90a605021ba9ff",
     "review_attempted": true,
     "review_status": "available",
-    "review_source_at": "2026-11-27T09:20:58.087000+00:00",
+    "review_source_at": "2026-11-28T08:05:58.048000+00:00",
     "selected_test": {
       "change": "در دو ثانیهٔ اول مشکل واقعی مارتا و شیء مرتبط را نشان بده؛ معرفی طولانی را حذف کن.",
       "measure": "نگه‌داشت سه ثانیهٔ اول و نسبت زمان تماشا به طول ویدیو",
       "evidence": "proposed_test_not_proven"
     }
+  },
+  "quota_recovery": {
+    "date": "2026-11-28",
+    "kind": "included-quota",
+    "not_before": "2026-11-28T10:31:49.531000+00:00",
+    "reason": "Waiting for verified included quota",
+    "reset_verified": true
   }
 }
