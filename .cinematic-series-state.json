@@ -5762,14 +5762,16 @@
       }
     },
     "date": "2026-11-28",
-    "status": "dispatching",
+    "status": "exporting",
     "image_preview": {
       "file": "renders/cinematic-series/e0032-lina-oma-v1/image-preview.jpg",
       "sha256": "9fca9e5a181bff9cb2d6b6b7e912f0c8b613c2d8c9433094a7774b0e9ccf9655",
       "status": "sent",
       "message_id": 3058
     },
-    "platform_receipts": {},
+    "platform_receipts": {
+      "tiktok": 3059
+    },
     "platform_files": {
       "tiktok": "renders/cinematic-series/e0032-lina-oma-v1/tiktok/e0032-tiktok-45s.mp4",
       "instagram": "renders/cinematic-series/e0032-lina-oma-v1/instagram/e0032-instagram-45s.mp4"
